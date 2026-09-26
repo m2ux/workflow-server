@@ -1,14 +1,56 @@
 #!/usr/bin/env python3
-"""Identify GitHub API operations that require native approval.
+"""
+PreToolUse hook for Bash: prompt before `gh api` calls that carry real
+consequence, and let routine writes through.
 
-Reads and routine writes are allowed by the common command policy. Sensitive
-endpoints and irreversible deletes require confirmation. HTTP methods account
-for explicit method flags and implicit POST from field/input arguments."""
+A broad `Bash(gh api:*)` allow rule auto-approves every `gh api` invocation.
+This hook narrows that grant: it parses each `gh api` segment, classifies the
+request, and forces a permission prompt (permissionDecision "ask") for the
+subset that is hard to undo, grants standing access, or is visible outside the
+repository. Reads and routine writes — opening and editing pull requests and
+issues, comments, reviews, labels, assignees, milestones — fall through to the
+allow rule and auto-approve.
+
+A request prompts when any of these holds:
+
+  * a segment of the endpoint path is in SENSITIVE_SEGMENTS. That set covers
+    secrets and variables, deploy keys and webhooks, collaborators, branch
+    protection and rulesets, environments, the whole `actions` and `git`
+    subtrees, direct `contents` commits, merges, releases, pages, deployments,
+    commit statuses and checks, and the org / team / app / admin namespaces.
+  * the method is DELETE and the path is not one of CHEAP_DELETES — a comment,
+    reaction, label assignment, assignee, review request, lock, or
+    subscription, each of which one further call recreates.
+  * the endpoint is a bare `repos/<owner>/<repo>` under a non-read method: that
+    endpoint edits repository settings, including visibility and the archived
+    flag, or deletes the repository outright.
+  * the endpoint or the method cannot be read off the command line.
+  * the request is a GraphQL mutation, or a GraphQL call whose document is not
+    inline and so cannot be shown to be a query.
+
+Method resolution mirrors gh: an explicit -X / --method wins in any spelling
+(-X POST, -XPOST, --method POST, --method=POST); with no method flag, gh sends
+POST when a field flag is present (-f / -F / --field / --raw-field / --input)
+and GET otherwise.
+
+Endpoint matching treats `{owner}` and `{repo}` as ordinary path segments, so
+gh's placeholder form classifies the same as a literal path — a merge via
+`repos/{owner}/{repo}/pulls/1/merge` prompts just as the spelled-out path does.
+
+Sensitivity is a property of the operation, not of who owns the target: a write
+classifies the same in any repository. Add an owner check here if writes to
+repositories outside a trusted set should also prompt.
+
+Errors resolve to a prompt. An unparseable command, an absent endpoint, an
+unrecognized method, and an internal fault all ask, because falling through
+would hand the write to the blanket allow rule.
+
+Dry-run: python3 gate-gh-api-hazards.py --test 'gh api repos/o/r -f x=1'
+"""
 from __future__ import annotations
 
-from contracts import Decision
-
 import fnmatch
+import json
 import shlex
 import sys
 
@@ -210,10 +252,40 @@ def gh_api_prompt_segments(cmd: str) -> list[tuple[str, str]] | None:
     return flagged
 
 
-def ask(detail: str) -> Decision:
-    return Decision("ask", "This GitHub API operation requires native approval because " + detail + ".")
+def ask(detail: str) -> None:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "ask",
+            "permissionDecisionReason": (
+                "A broad `Bash(gh api:*)` allow auto-approves reads and routine "
+                "writes; this call is held back for confirmation because "
+                + detail
+                + "."
+            ),
+        }
+    }))
+    sys.exit(0)
 
 
+def run_hook() -> None:
+    try:
+        payload = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        sys.exit(0)
+    if payload.get("tool_name") != "Bash":
+        sys.exit(0)
+    cmd = payload.get("tool_input", {}).get("command")
+    if not isinstance(cmd, str) or not cmd.strip():
+        sys.exit(0)
+    if "gh" not in cmd or "api" not in cmd:
+        sys.exit(0)
+    flagged = gh_api_prompt_segments(cmd)
+    if flagged is None:
+        ask("the command does not parse, so the request cannot be classified")
+    if flagged:
+        ask("; ".join(f"{seg} — {why}" for seg, why in flagged))
+    sys.exit(0)
 
 
 def run_test(args: list[str]) -> None:
@@ -230,7 +302,17 @@ def run_test(args: list[str]) -> None:
     sys.exit(0)
 
 
+def main() -> None:
+    if len(sys.argv) >= 2 and sys.argv[1] == "--test":
+        run_test(sys.argv[2:])
+        return
+    run_hook()
 
 
 if __name__ == "__main__":
-    run_test(sys.argv[2:] if sys.argv[1:2] == ["--test"] else sys.argv[1:])
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception as exc:  # fail toward the prompt, never toward the write
+        ask(f"the hook raised {type(exc).__name__} while classifying the call")

@@ -1,13 +1,56 @@
 #!/usr/bin/env python3
-"""Identify filesystem mutations confined to scripts/sbx writable roots.
+"""PreToolUse hook for Bash: DENY + REDIRECT in-sandbox file mutation to `sbx`.
 
-A corrective denial names the launcher when every operand is provably within
-a writable root. Other shapes delegate to native permissions."""
+`rm`, `mv`, `ln`, `chmod`, `chown` and `chgrp` are rejected by
+compound-bash-allow.py's DENY_BINARIES, and carry no allow rule of their own, so
+a bare invocation reaches the user as a permission prompt. One such segment
+forfeits auto-approval for the WHOLE command, because that hook's verdict is
+all-or-nothing per invocation: a twelve-command chain whose only unmatched
+segment is `rm -rf /tmp/scratch` prompts in full.
+
+When every path the segment mutates lies inside a root sbx binds read-write, the
+sandbox runs the command unchanged, and the prefixed form
+(Bash(<...>/scripts/sbx *)) auto-approves. This hook detects that case and returns
+`deny` with a message telling the agent to re-issue the command prefixed with
+sbx. A `deny` decision is reliable, unlike an `updatedInput` rewrite, which
+misbehaves when several PreToolUse Bash hooks are configured.
+
+Writable roots are computed exactly as sbx computes them (see scripts/sbx): /tmp
+always, plus the git top-level of the launch cwd and any directory named in
+$SBX_EXTRA_ROOTS, each kept only where it lives under
+$SBX_PROJECTS_BASE (default $HOME/projects). Agreement matters — a redirect
+whose target the sandbox cannot write trades a prompt for an EROFS failure. An
+extra root counts here when it is set in this hook's own environment, which is
+the session-wide case; a root named on the command line alone reaches sbx but
+not the hook, so that segment stays undecided and prompts.
+
+The hook stays SILENT (normal permission flow, i.e. a prompt) whenever the
+target cannot be proven writable:
+
+  * any operand outside the writable roots — the sandbox's read-only bind would
+    block it, so the bare form is the one that works;
+  * `..` in an operand, or a symlink whose resolved path crosses the boundary in
+    either direction — the literal argument and the sandbox's view of it differ;
+  * a flag whose value is a separate token (-t, --reference, ...), or any
+    `--opt=value` form: a path could hide there;
+  * `dd`, whose operands are `if=`/`of=` pairs rather than positionals;
+  * a relative operand in a chain that `cd`s outside its first segment, where
+    the effective cwd is not attributable.
+
+Redirection targets are not inspected. The outer shell performs a redirection
+before sbx starts, so the sandbox never governed it; compound-bash-allow.py
+takes the same position for its own rules (`Bash(cat:*)` already matches
+`cat f > anywhere`).
+
+Fails OPEN (exit 0, no output) on any parse error — a miss falls through to the
+prompt, never to silent un-sandboxed mutation.
+
+Dry-run: python3 redirect-fs-mutation.py --test 'rm -rf /tmp/x'
+"""
 from __future__ import annotations
 
-from contracts import Decision
-
-import compound_bash_allow as compound
+import importlib.util
+import json
 import os
 import re
 import shlex
@@ -15,7 +58,21 @@ import subprocess
 import sys
 from pathlib import Path
 
-from permissions import SBX
+_HERE = os.path.dirname(os.path.realpath(__file__))
+
+
+def _sbx_path() -> str:
+    """Workspace scripts/sbx when present; else ~/.claude/bin/sbx."""
+    here = Path(__file__).resolve().parent
+    for base in (here, *here.parents):
+        if (base / "scripts" / "sbx").is_file():
+            return str(base / "scripts" / "sbx")
+        if base.name == "scripts" and (base / "sbx").is_file():
+            return str(base / "sbx")
+    return str(Path.home() / ".claude" / "bin" / "sbx")
+
+
+SBX = _sbx_path()
 
 ALREADY_WRAPPED = frozenset({"sbx", "bwrap"})
 
@@ -41,6 +98,14 @@ _REDIR_OP = re.compile(r"^\d*(?:>>|&>|>&|<&|>|<)$")
 _REDIR_ATTACHED = re.compile(r"^\d*(?:>>|&>|>&|<&|>|<)\S")
 
 
+def _load_compound_hook():
+    """Reuse the quote-aware splitter and cwd resolution from
+    compound-bash-allow.py so segment detection matches the allow hook exactly."""
+    path = os.path.join(_HERE, "compound-bash-allow.py")
+    spec = importlib.util.spec_from_file_location("compound_bash_allow", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def writable_roots(base_cwd: str) -> list[str]:
@@ -157,7 +222,10 @@ def _cd_outside_first_segment(segments: list[str]) -> bool:
 def find_redirects(cmd: str, cwd: str) -> list[str]:
     """The mutating segments sbx can run unchanged. Empty when the command should
     fall through to the normal permission flow."""
-    cba = compound
+    try:
+        cba = _load_compound_hook()
+    except Exception:
+        return []  # fail open
     segments = cba.split_compound(cmd)
     if not segments:  # None (risky tokens / unbalanced) or empty
         return []
@@ -178,7 +246,7 @@ def find_redirects(cmd: str, cwd: str) -> list[str]:
     return found
 
 
-def deny(segments: list[str]) -> Decision:
+def deny(segments: list[str]) -> None:
     reason = (
         "Blocked before the permission prompt: this mutates the filesystem with "
         "an un-sandboxed " + ", ".join(sorted({s.split()[0] for s in segments}))
@@ -190,9 +258,32 @@ def deny(segments: list[str]) -> Decision:
         "auto-approval for the whole chain. Prefix ONLY the mutating segments; "
         "leave the rest of the chain as written."
     )
-    return Decision('deny', reason)
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": reason,
+        }
+    }))
+    sys.exit(0)
 
 
+def run_hook() -> None:
+    try:
+        payload = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        sys.exit(0)
+    if payload.get("tool_name") != "Bash":
+        sys.exit(0)
+    cmd = payload.get("tool_input", {}).get("command")
+    if not isinstance(cmd, str) or not cmd.strip():
+        sys.exit(0)
+    if not any(m in cmd for m in MUTATORS):
+        sys.exit(0)
+    segments = find_redirects(cmd, payload.get("cwd") or os.getcwd())
+    if segments:
+        deny(segments)
+    sys.exit(0)
 
 
 def run_test(args: list[str]) -> None:
@@ -205,7 +296,17 @@ def run_test(args: list[str]) -> None:
     sys.exit(0)
 
 
+def main() -> None:
+    if len(sys.argv) >= 2 and sys.argv[1] == "--test":
+        run_test(sys.argv[2:])
+        return
+    run_hook()
 
 
 if __name__ == "__main__":
-    run_test(sys.argv[2:] if sys.argv[1:2] == ["--test"] else sys.argv[1:])
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception:
+        sys.exit(0)  # fail open: never block on internal error

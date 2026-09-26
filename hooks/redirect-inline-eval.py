@@ -1,13 +1,69 @@
 #!/usr/bin/env python3
-"""Identify interpreter invocations that require scripts/sbx.
+"""PreToolUse hook for Bash: DENY + REDIRECT un-sandboxed inline eval to `sbx`.
 
-Inline programs and scratch scripts inside writable sandbox roots receive a
-corrective denial. Project-local script execution uses project_scripts.py."""
+Inline-eval interpreter invocations run arbitrary code with no file for the
+location hook to vet, and are not allowlisted. They have no legitimate
+un-sandboxed use, so this hook forces them through the sandbox launcher
+scripts/sbx (bubblewrap, profile C: active project + /tmp
+read-write, rest read-only, no network):
+
+    python/python2/python3   -c
+    node/nodejs              -e -p --eval --print
+    perl                     -e -E
+    ruby                     -e
+    php                      -r
+    bun                      -e
+    Rscript                  -e
+    deno                     eval   (subcommand form)
+
+Also caught: the same interpreters reading their program from STDIN, which is
+inline eval by another spelling — `python3 - <<'EOF'`, `python3 <<'EOF'`,
+`cat x.py | node`, `deno run -`. See _reads_program_from_stdin().
+
+For a matching bare command the hook returns `deny` with a message telling the
+agent to re-issue it prefixed with `sbx`. The prefixed form is allowlisted
+(Bash(<workspace>/scripts/sbx *)) and auto-approves, so the user sees no
+prompt. A `deny` decision is reliable (unlike an `updatedInput` rewrite, which
+misbehaves when multiple PreToolUse Bash hooks are configured).
+
+Also redirected: an interpreter running a SCRIPT FILE that the location check
+will not auto-allow. compound-bash-allow.py approves `bash x.sh`, `python3 x.py`
+and `npx tsx x.ts` only when the target resolves INSIDE the project root, so a
+scratch script — the session scratchpad, anything else under /tmp — reaches the
+user as a prompt even though the sandbox runs it unchanged. When the script
+resolves inside a root sbx binds read-write, this hook redirects it instead.
+See segment_runs_unvetted_script().
+
+A script outside those roots (say ~/.claude/hooks/x.py) still prompts. The
+sandbox can read it, but nothing here can show what it WRITES, so the bare form
+stays the one that runs — the same conservatism redirect-fs-mutation.py applies
+to its own operands.
+
+NOT handled here (deliberately):
+  * Filesystem-mutating binaries (rm/mv/ln/chmod/chown/chgrp): redirect-fs-
+    mutation.py owns those, and redirects one only when every path it touches
+    lies inside a writable root, since the sandbox's read-only bind would block
+    a mutation outside. `dd` and any undecidable operand shape stay hard-denied
+    by compound-bash-allow.py's DENY_BINARIES, which prompts on bare use.
+  * `python3 <project-file>.py` and other interpreter+file forms whose target IS
+    project-local — the location check already auto-approves those, and forcing
+    them through sbx would trade a clean allow for a pointless round trip.
+  * `bash -c '...'` / `sh -c '...'`: inline eval by another spelling, but the
+    shells are absent from EVAL_FLAGS, so these fall through to a prompt.
+  * Commands already wrapped (first token sbx / bwrap).
+  * An interpreter named inside another command's quoted argument (only the
+    segment's leading binary is inspected).
+
+Fails OPEN (exit 0, no output) on any parse error or risky-token bail — a miss
+falls through to the normal prompt, never to silent un-sandboxed execution.
+
+Dry-run: python3 redirect-inline-python.py --test 'cmd'
+"""
 from __future__ import annotations
 
-from contracts import Decision
-
-import compound_bash_allow as compound
+import importlib.util
+from pathlib import Path
+import json
 import os
 import shlex
 import sys
@@ -17,7 +73,22 @@ from project_scripts import (
     extract_script_token,
     resolve_project_local_script,
 )
-from permissions import SBX
+
+_HERE = os.path.dirname(os.path.realpath(__file__))
+
+
+def _sbx_path() -> str:
+    """Workspace scripts/sbx when present; else ~/.claude/bin/sbx."""
+    here = Path(__file__).resolve().parent
+    for base in (here, *here.parents):
+        if (base / "scripts" / "sbx").is_file():
+            return str(base / "scripts" / "sbx")
+        if base.name == "scripts" and (base / "sbx").is_file():
+            return str(base / "sbx")
+    return str(Path.home() / ".claude" / "bin" / "sbx")
+
+
+SBX = _sbx_path()
 
 # interpreter basename -> inline-eval flags that mean "arbitrary code follows".
 # Exact-token match, plus the space-less combined form (e.g. `-cCODE`).
@@ -53,13 +124,28 @@ INFO_FLAGS = frozenset({
 ALREADY_WRAPPED = frozenset({"sbx", "bwrap"})
 
 
+def _load_sibling(filename: str, modname: str):
+    path = os.path.join(_HERE, filename)
+    spec = importlib.util.spec_from_file_location(modname, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
+def _load_compound_hook():
+    """Reuse the quote-aware splitter/normalizers from compound-bash-allow.py so
+    segment detection matches the allow hook exactly."""
+    return _load_sibling("compound-bash-allow.py", "compound_bash_allow")
 
 
 def _writable_roots(base_cwd: str) -> list[str]:
-    from redirect_fs_mutation import writable_roots
-    return writable_roots(base_cwd)
+    """Borrowed from redirect-fs-mutation.py so both redirects agree with scripts/sbx
+    on where the sandbox can write."""
+    try:
+        rfm = _load_sibling("redirect-fs-mutation.py", "redirect_fs_mutation")
+    except Exception:
+        return ["/tmp"]
+    return rfm.writable_roots(base_cwd)
 
 
 def _inside(path: str, roots: list[str]) -> bool:
@@ -68,7 +154,7 @@ def _inside(path: str, roots: list[str]) -> bool:
 
 def _unwrap_runners(seg: str, cba) -> str:
     """Peel `nice` / `timeout` / `xargs` wrappers so the inner command is what
-    gets judged, the way compound_bash_allow.py checks its own rules. Without
+    gets judged, the way compound-bash-allow.py checks its own rules. Without
     this, `timeout 240 bash /tmp/x.sh` reads as a `timeout` invocation and slips
     past both detectors."""
     for _ in range(4):
@@ -147,7 +233,7 @@ def segment_runs_unvetted_script(seg: str, cba, base_cwd: str, roots: list[str])
     """True when the segment runs a script file the sandbox can execute but the
     location check will not auto-allow — in practice a scratch script under /tmp.
 
-    A project-local target returns False: compound_bash_allow.py already approves
+    A project-local target returns False: compound-bash-allow.py already approves
     that bare, so redirecting it would cost a round trip and buy nothing.
     """
     seg = cba.strip_env_prefix(_unwrap_runners(seg, cba))
@@ -175,7 +261,10 @@ def segment_runs_unvetted_script(seg: str, cba, base_cwd: str, roots: list[str])
 
 def find_needs_sandbox(cmd: str, cwd: str) -> str | None:
     """"eval", "script", or None when nothing needs redirecting."""
-    cba = compound
+    try:
+        cba = _load_compound_hook()
+    except Exception:
+        return None  # fail open
     segments = cba.split_compound(cmd)
     if not segments:  # None (risky tokens / unbalanced) or empty
         return None
@@ -188,7 +277,7 @@ def find_needs_sandbox(cmd: str, cwd: str) -> str | None:
     return None
 
 
-def deny(kind: str = "eval") -> Decision:
+def deny(kind: str = "eval") -> None:
     if kind == "script":
         reason = (
             "Blocked before the permission prompt: this runs a script that carries "
@@ -203,7 +292,14 @@ def deny(kind: str = "eval") -> Decision:
             "as written. If the script needs the NETWORK, or must write outside the "
             "project and /tmp, the sandbox blocks it — say so and use the bare form."
         )
-        return Decision('deny', reason)
+        print(json.dumps({
+            "hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                "permissionDecision": "deny",
+                "permissionDecisionReason": reason,
+            }
+        }))
+        sys.exit(0)
     reason = (
         "Blocked before the permission prompt: this runs an un-sandboxed inline "
         "interpreter — either an eval flag (python -c / node -e / perl -e ...) "
@@ -219,9 +315,30 @@ def deny(kind: str = "eval") -> Decision:
         "sandbox blocks it — that logic belongs in a committed project script, "
         "not an inline one-liner."
     )
-    return Decision('deny', reason)
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": reason,
+        }
+    }))
+    sys.exit(0)
 
 
+def run_hook() -> None:
+    try:
+        payload = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        sys.exit(0)
+    if payload.get("tool_name") != "Bash":
+        sys.exit(0)
+    cmd = payload.get("tool_input", {}).get("command")
+    if not isinstance(cmd, str) or not cmd.strip():
+        sys.exit(0)
+    kind = find_needs_sandbox(cmd, payload.get("cwd") or os.getcwd())
+    if kind:
+        deny(kind)
+    sys.exit(0)
 
 
 def run_test(args: list[str]) -> None:
@@ -237,7 +354,17 @@ def run_test(args: list[str]) -> None:
     sys.exit(0)
 
 
+def main() -> None:
+    if len(sys.argv) >= 2 and sys.argv[1] == "--test":
+        run_test(sys.argv[2:])
+        return
+    run_hook()
 
 
 if __name__ == "__main__":
-    run_test(sys.argv[2:] if sys.argv[1:2] == ["--test"] else sys.argv[1:])
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception:
+        sys.exit(0)  # fail open: never block on internal error

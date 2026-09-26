@@ -1,10 +1,63 @@
 #!/usr/bin/env python3
-"""Classify compound shell commands using supplied command patterns.
+"""
+PreToolUse hook for Bash: auto-approve
 
-The quote-aware splitter, prefix normalization, and project-script checks are
-shared by all harnesses. Direct single commands require an explicit pattern;
-safe-command defaults apply to compound commands. The diagnostic CLI reads
-config/permissions.json. Optional safe commands live in config/compound-bash.json."""
+  1. Compound commands when every segment is individually allowed by existing
+     permission rules or trivially safe, AND
+
+  2. Single commands when they match an existing rule *after* env-prefix
+     (`VAR=val cmd ...`) or git-prefix (`git -C <path> ...`) normalization —
+     forms Claude Code's built-in matcher does not see through. Direct-match
+     singles are left to Claude Code's normal flow.
+
+Without this, Claude Code prompts for approval on compounds like
+    git status && echo done
+even when both `git *` and `echo` would be allowed individually, and on
+singles like
+    git -C /path/to/repo status
+    COMPOUND_BASH_HOOK_DEBUG=1 python3 script.py
+where the unprefixed forms (`git status`, `python3 ...`) match an allow rule
+but the prefixed forms don't.
+
+Reads merged Bash() allow rules from
+    ~/.claude/settings.json
+    $CLAUDE_PROJECT_DIR/.claude/settings.json
+    $CLAUDE_PROJECT_DIR/.claude/settings.local.json
+splits the candidate command on top-level &&, ||, ;, |, newline (respecting
+quotes, parens, and escapes), and emits {permissionDecision: "allow"} only if
+every segment matches an allow rule OR begins with a side-effect-free command.
+
+Shell control-flow keywords are stripped from the front of a segment before it is
+rule-checked, so `while true; do touch x; sleep 1; done` is judged on `true`,
+`touch x` and `sleep 1` rather than on `while`/`do`/`done`. Keywords are never
+safe-listed: `do rm -rf /` reduces to `rm -rf /` and is rejected.
+
+Grouped commands are unwrapped the same way. The splitter deliberately tracks
+paren depth, so a subshell arrives intact as ONE segment whose apparent binary is
+`(echo` — `cat f || (echo missing; find . -name f)` would never match a rule.
+strip_group_wrapper() returns the body for re-splitting. Brace groups need no
+special case: `{` and `}` are handled as control-flow keywords, since the
+splitter cuts `{ echo a; }` into `{ echo a` and `}` before either is judged.
+
+Heredocs with a quoted delimiter (`<<'EOF'` / `<<"EOF"`) are stripped before
+analysis: bash performs no expansion on such bodies, so they are inert stdin
+data. Unquoted heredocs (`<<EOF`, whose body IS expanded), herestrings, $(...),
+backticks, and process substitution still force a bail.
+
+If any segment is unrecognized, or the command contains one of those bail-out
+constructs, the hook stays silent and normal permission flow takes over.
+
+Optional config:
+    config/compound-bash.json beside the directory that holds this script.
+    {
+      "extraSafeCommands": ["my-tool", "another"],
+      // or to fully replace the default safe list:
+      "safeCommands": ["echo", "cat", "grep"]
+    }
+
+Debug: set COMPOUND_BASH_HOOK_DEBUG=1 to print analysis to stderr.
+Dry-run: python3 compound-bash-allow.py --test 'cmd1 && cmd2'
+"""
 from __future__ import annotations
 
 import fnmatch
@@ -85,6 +138,7 @@ def has_unquoted_risky_token(cmd: str) -> bool:
     return False
 
 _ENV_LEAD = re.compile(r"""^\s*[A-Za-z_]\w*=(?:'[^']*'|"[^"]*"|[^\s'"])*\s+""")
+_BASH_RULE = re.compile(r"^Bash\((.*)\)$", re.DOTALL)
 _HEREDOC_OP = re.compile(r"<<-?[ \t]*(['\"]?)(\w+)\1")
 
 
@@ -149,8 +203,28 @@ def debug(*args: object) -> None:
 
 
 def load_allow_rules() -> list[str]:
-    from permissions import load_policy
-    return load_policy()["shell"]
+    cwd = Path(os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd())
+    paths = [
+        Path.home() / ".claude" / "settings.json",
+        cwd / ".claude" / "settings.json",
+        cwd / ".claude" / "settings.local.json",
+    ]
+    rules: list[str] = []
+    for p in paths:
+        try:
+            text = p.read_text()
+        except (FileNotFoundError, OSError):
+            continue
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            debug(f"skipping malformed settings: {p}")
+            continue
+        for rule in data.get("permissions", {}).get("allow", []) or []:
+            m = _BASH_RULE.match(rule)
+            if m:
+                rules.append(m.group(1))
+    return rules
 
 
 def load_safe_commands() -> set[str]:
@@ -578,23 +652,24 @@ def strip_group_wrapper(seg: str) -> str | None:
 def matches_rule(seg: str, rule: str) -> bool:
     if rule == seg:
         return True
-    # A trailing space and wildcard permit the command with or without args.
-    for suffix in (" *",):
+    # Both `Bash(name *)` and `Bash(name:*)` forms denote "name with any args".
+    for suffix in (" *", ":*"):
         if rule.endswith(suffix):
             prefix = rule[: -len(suffix)]
             if seg == prefix or seg.startswith(prefix + " "):
                 return True
     # Interior-wildcard rules (e.g. `git -C /tmp/* rebase *` to permit rebase in
     # any /tmp worktree) are matched as a glob. Only engaged when the rule has a
-    # '*' that the trailing-suffix logic above doesn't already cover.
+    # '*' that the trailing-suffix logic above doesn't already cover, so plain
+    # `cmd *` / `cmd:*` rules keep their exact prefix semantics.
     if has_interior_glob(rule) and fnmatch.fnmatchcase(seg, rule):
         return True
     return False
 
 
 def has_interior_glob(rule: str) -> bool:
-    """True iff `rule` contains a '*' beyond the trailing ` *` suffix."""
-    return "*" in rule.rstrip("* ")
+    """True iff `rule` contains a '*' beyond the trailing ` *` / `:*` suffix."""
+    return "*" in rule.rstrip("* ").rstrip(":")
 
 
 def is_segment_allowed(seg: str, rules: list[str], safe: set[str], base_cwd: str | None = None) -> tuple[bool, str]:
@@ -662,7 +737,7 @@ def is_segment_allowed(seg: str, rules: list[str], safe: set[str], base_cwd: str
             if ok:
                 return True, f"{binary}-wrapped ({why})"
             return False, f"{binary} payload rejected: {inner!r} ({why})"
-    # Location-based grant from project_scripts.py: a segment
+    # Location-based grant (shared with allow-project-scripts.py): a segment
     # that runs a script living inside the enclosing project is allowed even
     # without an interpreter allow-rule. DENY_BINARIES already returned above,
     # so this can't resurrect rm/mv/etc.
@@ -702,16 +777,21 @@ def analyze(cmd: str, rules: list[str], safe: set[str], cwd: str | None = None) 
         return False, "empty command"
     base_cwd = leading_cd_base(segments, cwd or os.getcwd())
     if len(segments) == 1:
-        # Singles require a rule, a recognized wrapper, or a project-local
-        # script. Safe-command defaults alone apply only to compound segments.
+        # Single segment: only emit `allow` when normalization (env-prefix or
+        # git-prefix) was required, the command was flock-wrapped, or it matched
+        # an interior-glob rule — Claude Code's matcher already handles the
+        # direct-rule and safe-list cases via its allowlist, but may not support
+        # interior-glob patterns. Surfacing the hook only for these cases avoids
+        # shadowing Claude Code's normal flow and avoids over-permitting
+        # safe-list singles that lack an explicit rule.
         seg = segments[0]
         ok, why = is_segment_allowed(seg, rules, safe, base_cwd)
         debug(f"  single {seg!r} -> {ok} ({why})")
-        if ok and (why.startswith("rule:") or "env-stripped" in why or "git-normalized" in why
+        if ok and ("env-stripped" in why or "git-normalized" in why
                    or "-wrapped" in why or "glob-rule" in why
                    or "group-unwrapped" in why
                    or "project-local-script" in why):
-            return True, f"single — {why}"
+            return True, f"single (normalized) — {why}"
         return False, "single command — let normal flow decide"
     for seg in segments:
         ok, why = is_segment_allowed(seg, rules, safe, base_cwd)
@@ -721,8 +801,36 @@ def analyze(cmd: str, rules: list[str], safe: set[str], cwd: str | None = None) 
     return True, f"{len(segments)} segments individually allowed"
 
 
+def emit_allow(reason: str) -> None:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "allow",
+            "permissionDecisionReason": reason,
+        }
+    }))
+    sys.exit(0)
 
 
+def run_hook() -> None:
+    try:
+        payload = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        sys.exit(0)
+    if payload.get("tool_name") != "Bash":
+        sys.exit(0)
+    cmd = payload.get("tool_input", {}).get("command")
+    if not isinstance(cmd, str) or not cmd.strip():
+        sys.exit(0)
+    cwd = payload.get("cwd") or os.getcwd()
+    rules = load_allow_rules()
+    safe = load_safe_commands()
+    debug(f"command: {cmd!r}")
+    ok, why = analyze(cmd, rules, safe, cwd)
+    debug(f"decision: {'ALLOW' if ok else 'silent'} — {why}")
+    if ok:
+        emit_allow(why)
+    sys.exit(0)
 
 
 def run_test(args: list[str]) -> None:
@@ -747,7 +855,18 @@ def run_test(args: list[str]) -> None:
     sys.exit(0 if ok else 1)
 
 
+def main() -> None:
+    if len(sys.argv) >= 2 and sys.argv[1] == "--test":
+        run_test(sys.argv[2:])
+        return
+    run_hook()
 
 
 if __name__ == "__main__":
-    run_test(sys.argv[2:] if sys.argv[1:2] == ["--test"] else sys.argv[1:])
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception as e:
+        debug(f"error: {e}")
+        sys.exit(0)

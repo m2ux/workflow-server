@@ -5,16 +5,16 @@ alwaysApply: true
 
 # Bash composition rules
 
-Applies to every shell invocation in this workspace. The shared command policy rejects these constructs before evaluating allowlist grants:
+Applies to every Bash invocation in this workspace. These constructs trigger a non-bypassable confirmation prompt even when the command prefix is allowlisted, so **never use them**:
 
 - Backslash-escaped line continuations — `\<newline>`
 - Parameter expansion — `$VAR`, `${VAR}`, `${VAR:-default}`
 - Command substitution — `$(...)`, backticks
 - Process substitution — `<(...)`, `>(...)`
 - Arithmetic expansion — `$((...))`
-- `find -exec`, `find -execdir`, and `find -delete`
+- `find -exec` and `find -delete` — not covered by a `Bash(find *)` rule
 
-**The match is textual; quoting does not exempt you.** Each harness adapter passes the raw command to the shared evaluator. The patterns also match inside quotes, labels, search patterns, and comments:
+**The match is textual, not semantic — quoting does not exempt you.** A PreToolUse hook scans the raw command string, so these are denied wherever the characters appear: inside single quotes, in an `echo`/`--message` label, in a `grep`/`sed` pattern, in a trailing `#` comment. Consequences worth internalising, because they are the ones that keep biting:
 
 - **Never type a literal backtick in a Bash command at all.** Not for markdown emphasis, not in a progress label. Use plain words. When the pattern itself needs one, put the pattern in a Python or Node file, run it under `sbx`, and compose the character as `chr(96)`. A commit message quoting a backticked name goes to a file and `git commit -F <file>`.
 - `awk '{print $NF}'` is denied — `$NF` reads as `$NAME`, and `$(NF)` would trip the `$(` rule instead. Reach for `rev | cut -d' ' -f1`, or put the field work in a script file run under `sbx`.
@@ -29,7 +29,7 @@ Instead:
 - **Heredocs** — allowed (`<<`, `<<<`). Use for multi-line input.
 - **Commit messages** — `git commit -F - <<'EOF' … EOF`, or write the message to a file and `git commit -F <file>`. Never `git commit -m "$(cat …)"`.
 
-To check a command, write it to a file and run `python3 __WORKSPACE__/hooks/block_dynamic_shell.py --test < /tmp/cmd.txt`.
+Unsure whether a command will trip? Write it to a file and dry-run the hook: `python3 __WORKSPACE__/.claude/hooks/block-dynamic-shell.py --test < /tmp/cmd.txt` (passing it as an argument would trip the hook on your own test call).
 
 # Sandboxed execution (`sbx`)
 

@@ -1,8 +1,68 @@
 #!/usr/bin/env python3
-"""Classify read-only curl commands against config/curl-allow.json.
+"""
+PreToolUse hook for Bash: auto-approve READ-ONLY `curl` commands whose every
+target URL is on a trusted host allowlist.
 
-Every command segment must be an allowed curl invocation or an inert helper.
-The URL host and configured path prefixes must both match."""
+Why a hook and not a `Bash(curl ...)` allow rule: curl's target URL is a free
+argument a prefix rule can't constrain. A rule like `Bash(curl -s -o /dev/null
+-w *)` would auto-approve a GET to ANY host — and a GET exfiltrates via the
+query string even with the body discarded (`-o /dev/null`). So plain curl is
+correctly left to prompt. This hook narrows the gap the same way
+`webfetch-allow.py` does for WebFetch: it grants only a specific safe shape.
+
+It emits {permissionDecision: "allow"} ONLY when EVERY segment of the command
+is one of:
+  * a READ curl — method GET/HEAD or unspecified; NO body/upload flags
+    (-d/--data*, -F/--form*, -T/--upload-file); NO egress-redirection or
+    host-spoofing flags (--proxy/-x, --resolve, --connect-to, --doh-url,
+    --interface, --socks*); NO config smuggling (-K/--config); output only to
+    /dev/null or stdout (-o/-D restricted; -O/--remote-name* rejected); and
+    EVERY URL's host is in the configured allowlist — OR
+  * a trivially inert command (echo/printf/true/false/:) — OR
+  * a read-only stream filter (head/tail/cut/wc), so bounding a response with
+    `| head -c 400` keeps the grant.
+Anything else -> stay silent -> normal permission flow (prompt) takes over.
+
+Design principle: bail (stay silent) on ANY unrecognized flag, unparseable
+input, missing/unknown-scheme URL, or non-allowlisted host. The hook can only
+REDUCE prompts for the vetted shape; it can never over-permit.
+
+Caveat: a shaper's operands go uninspected, so `curl <allowed> | head -c 4 FILE`
+reads FILE. That is a local read with no egress or write, which the threat model
+(exfiltration and writes) does not cover; `sort`/`uniq` stay out precisely
+because their operands DO write.
+
+Caveat: `-L`/`--location` is permitted, so a redirect FROM a trusted host to a
+non-allowlisted host would be followed. This matches the WebFetch trust model
+(you trust the host and its redirects). Remove "L"/"--location" from the flag
+sets below if you want strict no-follow behavior.
+
+Config: config/curl-allow.json beside the directory that holds this script.
+    {
+      "allowedHosts": ["github.com", "raw.githubusercontent.com"],
+      "allowPrefixes": {
+        "github.com": ["*"],
+        "raw.githubusercontent.com": ["/my-org/"]
+      }
+    }
+Two layers, BOTH must pass for a URL to be auto-approved:
+  * allowedHosts — the host-trust gate (always enforced). Case-insensitive,
+    exact; an entry beginning with "." (e.g. ".githubusercontent.com") also
+    matches any subdomain. Missing/malformed -> built-in DEFAULT_HOSTS.
+  * allowPrefixes — an OPTIONAL per-host path-narrowing filter:
+      - absent/empty            -> no narrowing (all paths on allowed hosts).
+      - dict (host -> rules)    -> per-site scoping. A host NOT in the map is
+        unrestricted (allowedHosts already gated it). rules of ["*"] (or empty)
+        allow all paths for that host; otherwise the URL's PATH must start with
+        a listed rule (e.g. "/my-org/"), or the full URL must start with an
+        http(s):// rule. Host keys honor the same "."-subdomain wildcard.
+      - list (legacy flat form) -> one set of full-URL prefixes applied
+        uniformly to every host; "*" or empty = all.
+    The host gate always applies, so a prefix can never open an untrusted host.
+
+Debug: CURL_ALLOW_HOOK_DEBUG=1 prints analysis to stderr.
+Dry-run: python3 curl-read-allow.py --test 'curl -s -o /dev/null -w "%{http_code}" https://github.com/x'
+"""
 from __future__ import annotations
 
 import json
@@ -439,8 +499,32 @@ def analyze(cmd: str, allowed: list[str], prefixes: object) -> bool:
     return saw_curl  # only act when there's at least one curl to vet
 
 
+def emit_allow(reason: str) -> None:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "allow",
+            "permissionDecisionReason": reason,
+        }
+    }))
+    sys.exit(0)
 
 
+def run_hook() -> None:
+    try:
+        payload = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        sys.exit(0)
+    if payload.get("tool_name") != "Bash":
+        sys.exit(0)
+    cmd = payload.get("tool_input", {}).get("command")
+    if not isinstance(cmd, str) or "curl" not in cmd:
+        sys.exit(0)
+    allowed, prefixes = load_config()
+    debug(f"command: {cmd!r}")
+    if analyze(cmd, allowed, prefixes):
+        emit_allow("read-only curl to allowlisted host(s)/prefix(es) — auto-approved")
+    sys.exit(0)
 
 
 def run_test(args: list[str]) -> None:
@@ -455,7 +539,18 @@ def run_test(args: list[str]) -> None:
     sys.exit(0 if ok else 1)
 
 
+def main() -> None:
+    if len(sys.argv) >= 2 and sys.argv[1] == "--test":
+        run_test(sys.argv[2:])
+        return
+    run_hook()
 
 
 if __name__ == "__main__":
-    run_test(sys.argv[2:] if sys.argv[1:2] == ["--test"] else sys.argv[1:])
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception as e:
+        debug(f"error: {e}")
+        sys.exit(0)  # fail open: never block on internal error
