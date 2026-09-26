@@ -2,74 +2,53 @@ import { z } from 'zod';
 import { SemanticVersionSchema } from './common.js';
 import { enforcement } from './enforcement.js';
 
-/**
- * A component that holds a list, stating the fields one entry of it carries.
- *
- * A component's description says what the list is; it cannot say what is addressable inside one
- * entry in a form anything can read back. A step iterating the list and reading a field off an item
- * is making a claim about that entry, and `entry` is where the claim is settled — authored as
- * `#####` sub-sections beneath the component, the same way a component is authored beneath an
- * output.
- */
 export const ComponentEntrySchema = z.object({
-  description: z.string().optional().describe('What the component is — the prose above its first `#####` sub-section.'),
-  entry: z.record(z.string()).describe('Named fields one entry of this component carries (authored as `#####` sub-sections under the component). Each key is a field id, value its description.'),
-});
+  description: z.string().optional().describe('Component description above its first `#####` field heading.'),
+  entry: z.record(z.string().describe('Description of the named entry field.')).describe('Field identifiers mapped to descriptions for each list entry, authored as `#####` headings.'),
+}).describe('Description and named fields of a list component.');
 export type ComponentEntry = z.infer<typeof ComponentEntrySchema>;
 
 export const OutputComponentsDefinitionSchema = z.record(z.union([
-  z.string().describe('The spec or description for that component.'),
+  z.string().describe('Component specification or description.'),
   ComponentEntrySchema,
-])).describe('Named output components: each key is a component id, value is the spec or description for that component, or — where the component holds a list — the fields one entry of it carries');
+]).describe('Component description or list-entry definition.')).describe('Component identifiers mapped to descriptions or list-entry field definitions.');
 export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
 
 export const InputItemDefinitionSchema = z.object({
-  id: enforcement(z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques.'), { owner: 'Engine', strictness: 'enforced' }),
-  description: z.string().optional().describe('Human-readable description of this input. Optional inputs say so in prose (a leading "(optional)"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag.'),
+  id: enforcement(z.string().describe('Stable input identifier with words separated by hyphens.'), { owner: 'Engine', strictness: 'enforced' }),
+  description: z.string().optional().describe('Input description, beginning with `(optional)` when the input is optional.'),
   default: enforcement(z.unknown().optional().describe('Default value when not supplied'), { owner: 'Engine', strictness: 'advisory' }),
-  components: OutputComponentsDefinitionSchema.optional().describe('Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components.'),
-  source: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: where this input\'s value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique files.'),
-});
+  components: OutputComponentsDefinitionSchema.optional().describe('Named parts of a composite input, authored as `####` headings.'),
+  source: z.string().optional().describe('Input value source annotation; omitted from authored technique files.'),
+}).describe('Named technique input with optional default and component definitions.');
 export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;
 
 export const ProtocolStepSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().optional(),
-  description: z.string().optional(),
-});
+  id: z.string().optional().describe('Identifier of the protocol instruction.'),
+  name: z.string().optional().describe('Short label for the protocol instruction.'),
+  description: z.string().optional().describe('Instruction text.'),
+}).describe('Protocol instruction with an optional identifier and label.');
 export type ProtocolStep = z.infer<typeof ProtocolStepSchema>;
 
-export const InputsDefinitionSchema = z.array(InputItemDefinitionSchema).describe('Inputs the technique expects from context: array of named items (mirrors output structure for deterministic binding)');
+export const InputsDefinitionSchema = z.array(InputItemDefinitionSchema).describe('Named inputs accepted by the technique.');
 export type InputsDefinition = z.infer<typeof InputsDefinitionSchema>;
 
-/** A single protocol block: an optional label and an ordered list of imperative step bullets. */
 export const ProtocolBlockSchema = z.object({
-  title: z.string().optional().describe('Optional label for this block (the authored `### Title`, ordinal prefix stripped).'),
-  steps: z.array(z.string()).describe('Ordered imperative step bullets for this block.'),
-});
+  title: z.string().optional().describe('Block label, authored as a `###` heading.'),
+  steps: z.array(z.string().describe('Imperative instruction within the protocol block.')).describe('Ordered imperative step bullets for this block.'),
+}).describe('Labeled or unlabeled group of ordered protocol instructions.');
 export type ProtocolBlock = z.infer<typeof ProtocolBlockSchema>;
 
-/** Protocol: a single ordered list of step blocks (no "phase" construct). Blocks are positional, in
- *  authored order. A technique's protocol is its own — a container contract contributes inputs,
- *  outputs and rules to its descendants, never steps. */
-export const ProtocolDefinitionSchema = z.array(ProtocolBlockSchema);
+export const ProtocolDefinitionSchema = z.array(ProtocolBlockSchema).describe('Protocol blocks in execution order.');
 export type ProtocolDefinition = z.infer<typeof ProtocolDefinitionSchema>;
 
-/** Named rules: each key is a rule name or group; each value is a single rule string or an array of related rules. */
 export const RulesDefinitionSchema = z.record(z.union([
   z.string().describe('Single rule text.'),
-  z.array(z.string()).describe('Array of related rules grouped under this key.'),
-]));
+  z.array(z.string().describe('Directive within the named rule group.')).describe('Array of related rules grouped under this key.'),
+]).describe('Single directive or group of related directives.')).describe('Rule names mapped to a directive or related directives.');
 export type RulesDefinition = z.infer<typeof RulesDefinitionSchema>;
 
-/**
- * An artifact name is a filename: one path segment ending in an extension, where a `{token}`
- * placeholder stands wherever literal text would. Whatever an author writes here becomes the file a
- * worker creates, so anything that cannot be a filename — prose, several names joined by `/`, a
- * mode selector in parentheses, a YAML key — is rejected at load (the technique is dropped with a
- * logged warning, the same treatment a mistyped `audience` gets) instead of being derived into a
- * nonsense filename. A technique that writes several files declares one output per artifact.
- */
+/** Filename grammar shared by schema validation and artifact checks. */
 export const ARTIFACT_NAME_PATTERN = /^(?:[A-Za-z0-9._-]|\{[A-Za-z0-9._$-]+\})+\.[A-Za-z0-9]+$/;
 
 /** Rejection message for {@link ARTIFACT_NAME_PATTERN}: cause, then the conforming forms. */
@@ -77,69 +56,56 @@ const ARTIFACT_NAME_MESSAGE =
   'an artifact name is a single filename — one path segment ending in an extension, `{token}` placeholders allowed (`01-audit-report.md`, `{package_name}-plan.md`). Declare one output per artifact when a technique writes several files';
 
 export const OutputArtifactSchema = z.object({
-  name: enforcement(z.string().regex(ARTIFACT_NAME_PATTERN, ARTIFACT_NAME_MESSAGE).describe('Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). One filename, one path segment, with an extension — a technique writing several files declares one output per artifact. Declare the name here, never hardcode it in Protocol prose.'), { owner: 'Engine', strictness: 'enforced' }),
+  name: enforcement(z.string().regex(ARTIFACT_NAME_PATTERN, ARTIFACT_NAME_MESSAGE).describe('Single artifact filename with an extension and optional `{variable}` placeholders; declare one output per artifact.'), { owner: 'Engine', strictness: 'enforced' }),
   action: z.enum(['create', 'update']).default('create').optional().describe('Whether this output creates a new artifact or updates an existing one'),
-});
+}).describe('Artifact filename and create-or-update action.');
 export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;
 
 export const OutputItemDefinitionSchema = z.object({
-  id: enforcement(z.string().describe('Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Stable output identifier with words separated by hyphens, distinct from its artifact filename.'), { owner: 'Engine', strictness: 'enforced' }),
   description: z.string().optional().describe('Human-readable description of this output'),
   components: OutputComponentsDefinitionSchema.optional(),
-  entry: z.record(z.string()).optional().describe('Named fields one entry carries, for an output that IS a list rather than a value with parts (authored as a reserved `#### entry` sub-section whose `#####` children are the fields). Its presence is how an output states that it is a list; `components` names the parts of an output that is not.'),
-  artifact: OutputArtifactSchema.optional().describe('Optional. When populated, specifies the artifact name to create when persisting this output.'),
-  audience: z.enum(['human', 'agent']).optional().describe('Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the `artifactPrefix` rule.'),
-  values: z.array(z.string()).min(1).optional().describe('The complete set of values this output admits, one of which a run leaves standing. Authored as a reserved `#### values` section. Absent where the output is not a closed set.'),
-  fieldValues: z.record(z.array(z.string()).min(1)).optional().describe('The complete set of values one entry field or component admits, keyed by that field. Authored as `#####` children of `#### values`. Absent where no nested field is a closed set.'),
-  destination: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files.'),
-});
+  entry: z.record(z.string().describe('Description of the named list-entry field.')).optional().describe('List-entry fields under `#### entry` with `#####` field headings; mutually exclusive with `components`.'),
+  artifact: OutputArtifactSchema.optional().describe('Filename and create-or-update action for a persisted output.'),
+  audience: z.enum(['human', 'agent']).optional().describe('Intended reader of this output or artifact: `human` by default, or `agent`.'),
+  values: z.array(z.string().describe('Allowed output value.')).min(1).optional().describe('Complete set of allowed output values, authored under `#### values`.'),
+  fieldValues: z.record(z.array(z.string().describe('Allowed value for the named field.')).min(1).describe('Nonempty set of allowed values for the named field.')).optional().describe('Field names mapped to allowed value sets, authored as `#####` headings under `#### values`.'),
+  destination: z.string().optional().describe('Output variable name annotation when different from its identifier; omitted from authored technique files.'),
+}).describe('Named output with its structure, allowed values, and optional artifact.');
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 
 export const OutputsDefinitionSchema = z.array(
-  // An output is a value with parts or a list of entries, never both: `components` names the parts,
-  // `entry` names what one element carries, and an output declaring each is describing two different
-  // shapes of one value. Refused at load — the technique is dropped with a logged warning, the same
-  // treatment a mistyped `audience` gets — because a reader addressing into it would be answered by
-  // whichever declaration the access happened to select.
   OutputItemDefinitionSchema.refine(
     (output) => output.entry === undefined || output.components === undefined,
     { message: 'an output declares `components` (its parts) or `entry` (what one element carries), never both' },
   ),
-).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
+).describe('Named outputs with optional descriptions and either components or list-entry fields.');
 export type OutputsDefinition = z.infer<typeof OutputsDefinitionSchema>;
 
-// Delivery-only blocks, populated by the server at composition time: entries whose winning
-// definition comes from an ancestor contract (workflow-root or group TECHNIQUE.md) are delivered
-// here, partitioned out of `inputs`/`outputs`. Never authored — the markdown loader maps only the
-// canonical `## Inputs`/`## Outputs` headings, so these cannot originate from a technique file.
-
 export const InheritedInputsSchema = z.object({
-  note: z.string().describe('One-line scope note: why these inputs are shared contract context rather than specific to this technique.'),
+  note: z.string().describe('Brief explanation of the shared input scope.'),
   items: InputsDefinitionSchema,
-}).describe('Inputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique\'s own inputs.');
+}).describe('Shared inputs from the workflow or group contract; omitted from authored technique files.');
 export type InheritedInputs = z.infer<typeof InheritedInputsSchema>;
 
 export const InheritedOutputsSchema = z.object({
-  note: z.string().describe('One-line scope note: why these outputs are shared contract obligations rather than specific to this technique.'),
+  note: z.string().describe('Brief explanation of the shared output obligations.'),
   items: OutputsDefinitionSchema,
-}).describe('Outputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique\'s own outputs.');
+}).describe('Shared outputs from the workflow or group contract; omitted from authored technique files.');
 export type InheritedOutputs = z.infer<typeof InheritedOutputsSchema>;
 
-// A nested technique (`<sub>.md`) validates against the same TechniqueSchema below: the markdown
-// loader parses it into the technique shape and the server delivers it like any technique.
-
 export const TechniqueSchema = z.object({
-  id: enforcement(z.string(), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Unique technique identifier.'), { owner: 'Engine', strictness: 'enforced' }),
   version: enforcement(SemanticVersionSchema, { owner: 'Engine', strictness: 'advisory' }),
-  capability: enforcement(z.string(), { owner: 'Engine', strictness: 'advisory' }),
-  provenance_note: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique files.'),
+  capability: enforcement(z.string().describe('Capability or result the technique provides.'), { owner: 'Engine', strictness: 'advisory' }),
+  provenance_note: z.string().optional().describe('Input and output provenance annotation; omitted from authored technique files.'),
   rules: RulesDefinitionSchema.optional(),
   inputs: InputsDefinitionSchema.optional(),
   inherited_inputs: InheritedInputsSchema.optional(),
   protocol: enforcement(ProtocolDefinitionSchema.optional(), { owner: 'Engine', strictness: 'advisory' }),
   outputs: OutputsDefinitionSchema.optional(),
   inherited_outputs: InheritedOutputsSchema.optional(),
-}).strict();
+}).strict().describe('Capability with its inputs, protocol, rules, and outputs.');
 export type Technique = z.infer<typeof TechniqueSchema>;
 
 export function validateTechnique(data: unknown): Technique { return TechniqueSchema.parse(data); }

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-// Step indices are 1-based integers
-const StepIndex = z.number().int().min(1);
+const StepIndex = z.number().int().min(1).describe('One-based integer step index.');
 
 export const HistoryEventTypeSchema = z.enum([
   'workflow_started', 'workflow_completed', 'workflow_aborted',
@@ -82,30 +81,29 @@ export const HistoryEventTypeSchema = z.enum([
   // `get_activity`. No `chars` field — wire size lives on activity_dispatched, and
   // counting this event there would double-charge the same payload.
   'activity_delivered',
-]);
+]).describe('Category of the recorded session event.');
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 
 export const HistoryEntrySchema = z.object({
-  timestamp: z.string().datetime(),
+  timestamp: z.string().datetime().describe('ISO 8601 timestamp of the event.'),
   type: HistoryEventTypeSchema,
-  activity: z.string().optional(),
+  activity: z.string().optional().describe('Activity identifier associated with the event.'),
   step: StepIndex.optional(),
-  checkpoint: z.string().optional(),
-  decision: z.string().optional(),
-  loop: z.string().optional(),
-  data: z.record(z.unknown()).optional(),
-  error: z.object({ message: z.string(), code: z.string().optional() }).optional(),
-});
+  checkpoint: z.string().optional().describe('Checkpoint identifier associated with the event.'),
+  decision: z.string().optional().describe('Decision identifier associated with the event.'),
+  loop: z.string().optional().describe('Loop identifier associated with the event.'),
+  data: z.record(z.unknown().describe('Value of a named event detail.')).optional().describe('Additional values describing the event.'),
+  error: z.object({ message: z.string().describe('Explanation of the error.'), code: z.string().optional().describe('Identifier for the error category.') }).optional().describe('Error message and optional code.'),
+}).describe('Timestamped record of session progress or an error.');
 export type HistoryEntry = z.infer<typeof HistoryEntrySchema>;
 
-// Key format: "activityId-checkpointId" (e.g., "review-approve")
 export const CheckpointResponseSchema = z.object({
-  optionId: z.string(),
-  respondedAt: z.string().datetime(),
+  optionId: z.string().describe('Identifier of the selected option.'),
+  respondedAt: z.string().datetime().describe('ISO 8601 timestamp of the response.'),
   effects: z.object({
-    variablesSet: z.record(z.unknown()).optional(),
-    /** The activity exit the selected option named. The destination is the workflow graph's to say. */
-    exit: z.string().optional(),
-  }).optional(),
-});
+    variablesSet: z.record(z.unknown().describe('Value assigned to the named variable.')).optional().describe('Assigned values keyed by variable name.'),
+
+    exit: z.string().optional().describe('Activity exit named by the selected option.'),
+  }).optional().describe('Variable assignments and activity exit associated with the response.'),
+}).describe('Recorded checkpoint choice, response time, and effects.');
 export type CheckpointResponse = z.infer<typeof CheckpointResponseSchema>;

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ComparisonOperatorSchema = z.enum([
   '==', '!=', '>', '<', '>=', '<=', 'exists', 'notExists',
-]);
+]).describe('Comparison or presence test applied to a variable.');
 
 export type ComparisonOperator = z.infer<typeof ComparisonOperatorSchema>;
 
@@ -13,20 +13,34 @@ export type Condition =
   | { type: 'not'; condition: Condition; };
 
 export const SimpleConditionSchema = z.object({
-  type: z.literal('simple'),
-  variable: z.string(),
+  type: z.literal('simple').describe('Identifies a variable comparison or presence test.'),
+  variable: z.string().describe('Variable name or dot-separated path to the value to test.'),
   operator: ComparisonOperatorSchema,
-  value: z.union([z.string(), z.number(), z.boolean(), z.null()]).optional(),
-});
+  value: z.union([
+    z.string().describe('Text value to compare.'),
+    z.number().describe('Numeric value to compare.'),
+    z.boolean().describe('Boolean value to compare.'),
+    z.null().describe('Null value to compare.'),
+  ]).optional().describe('Comparison value; unnecessary for `exists` and `notExists` tests.'),
+}).describe('Comparison of a variable with a value, or a test of its presence.');
 
 export type SimpleCondition = z.infer<typeof SimpleConditionSchema>;
 
 export const ConditionSchema: z.ZodType<Condition> = z.union([
   SimpleConditionSchema,
-  z.object({ type: z.literal('and'), conditions: z.lazy(() => z.array(ConditionSchema).min(2)) }),
-  z.object({ type: z.literal('or'), conditions: z.lazy(() => z.array(ConditionSchema).min(2)) }),
-  z.object({ type: z.literal('not'), condition: z.lazy(() => ConditionSchema) }),
-]);
+  z.object({
+    type: z.literal('and').describe('Identifies an all-members condition.'),
+    conditions: z.lazy(() => z.array(ConditionSchema).min(2)).describe('At least two conditions that must all be true.'),
+  }).describe('Condition requiring every member to be true.'),
+  z.object({
+    type: z.literal('or').describe('Identifies an any-member condition.'),
+    conditions: z.lazy(() => z.array(ConditionSchema).min(2)).describe('At least two conditions, one or more of which must be true.'),
+  }).describe('Condition requiring at least one member to be true.'),
+  z.object({
+    type: z.literal('not').describe('Identifies a negated condition.'),
+    condition: z.lazy(() => ConditionSchema).describe('Condition that must be false.'),
+  }).describe('Condition requiring its member to be false.'),
+]).describe('Variable test or combination of conditions using `and`, `or`, or `not`.');
 
 export function evaluateCondition(condition: Condition, variables: Record<string, unknown>): boolean {
   switch (condition.type) {
