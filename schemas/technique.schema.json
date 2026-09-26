@@ -8,14 +8,17 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "description": "Unique technique identifier."
         },
         "version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Version in numeric `major.minor.patch` form."
         },
         "capability": {
-          "type": "string"
+          "type": "string",
+          "description": "Capability or result the technique provides."
         },
         "provenance_note": {
           "type": "string",
@@ -32,12 +35,15 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Directive within the named rule group."
                 },
                 "description": "Array of related rules grouped under this key."
               }
-            ]
-          }
+            ],
+            "description": "Single directive or group of related directives."
+          },
+          "description": "Rule names mapped to a directive or related directives."
         },
         "inputs": {
           "type": "array",
@@ -73,7 +79,8 @@
                         "entry": {
                           "type": "object",
                           "additionalProperties": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Description of the named entry field."
                           },
                           "description": "Field identifiers mapped to descriptions for each list entry, authored as `#####` headings."
                         }
@@ -81,9 +88,11 @@
                       "required": [
                         "entry"
                       ],
-                      "additionalProperties": false
+                      "additionalProperties": false,
+                      "description": "Description and named fields of a list component."
                     }
-                  ]
+                  ],
+                  "description": "Component description or list-entry definition."
                 },
                 "description": "Named parts of a composite input, authored as `####` headings."
               },
@@ -95,7 +104,8 @@
             "required": [
               "id"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Named technique input with optional default and component definitions."
           },
           "description": "Named inputs accepted by the technique."
         },
@@ -129,7 +139,8 @@
               "steps": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Imperative instruction within the protocol block."
                 },
                 "description": "Ordered imperative step bullets for this block."
               }
@@ -137,8 +148,10 @@
             "required": [
               "steps"
             ],
-            "additionalProperties": false
-          }
+            "additionalProperties": false,
+            "description": "Labeled or unlabeled group of ordered protocol instructions."
+          },
+          "description": "Protocol blocks in execution order."
         },
         "outputs": {
           "type": "array",
@@ -160,7 +173,8 @@
               "entry": {
                 "type": "object",
                 "additionalProperties": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Description of the named list-entry field."
                 },
                 "description": "List-entry fields under `#### entry` with `#####` field headings; mutually exclusive with `components`."
               },
@@ -199,7 +213,8 @@
               "values": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Allowed output value."
                 },
                 "minItems": 1,
                 "description": "Complete set of allowed output values, authored under `#### values`."
@@ -209,9 +224,11 @@
                 "additionalProperties": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Allowed value for the named field."
                   },
-                  "minItems": 1
+                  "minItems": 1,
+                  "description": "Nonempty set of allowed values for the named field."
                 },
                 "description": "Field names mapped to allowed value sets, authored as `#####` headings under `#### values`."
               },
@@ -223,7 +240,8 @@
             "required": [
               "id"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Named output with its structure, allowed values, and optional artifact."
           },
           "description": "Named outputs with optional descriptions and either components or list-entry fields."
         },
@@ -251,7 +269,8 @@
         "version",
         "capability"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Capability with its inputs, protocol, rules, and outputs."
     }
   }
 }

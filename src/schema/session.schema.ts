@@ -15,50 +15,29 @@ import {
  * navigation metadata when the embedded `state` is absent or summarised.
  */
 export interface EmbeddedSessionRef {
-  /** Child's workflow id (e.g. "work-package"). */
   workflowId: string;
-  /** Child's 6-char base32 session_index. */
   sessionIndex: string;
-  /** ISO-8601 timestamp at dispatch. */
   triggeredAt: string;
-  /** Where in the parent's flow the child was dispatched. */
   triggeredFrom: { activityId: string; stepIndex?: number };
   status: 'running' | 'completed' | 'aborted' | 'error';
-  /** ISO-8601 timestamp when the child reached its terminal activity. */
   completedAt?: string;
-  /**
-   * Full child SessionFile, embedded recursively. The single `session.json`
-   * at the top of the planning folder carries every descendant's state.
-   */
   state?: SessionFile;
 }
 
-/**
- * Active checkpoint state — replaces the `bcp` field embedded in the legacy
- * HMAC session token. When set, all authenticated tools (except
- * `respond_checkpoint`) are gated until the orchestrator resolves the
- * checkpoint via `respond_checkpoint`.
- */
 export const ActiveCheckpointSchema = z.object({
-  checkpointId: z.string().min(1),
-  activityId: z.string().min(1),
-  yieldedAt: z.string().datetime(),
-  /**
-   * The decision itself, for a gate the activity does not declare (#477). Work
-   * admitted part-way through a run needs somewhere to be decided, and its
-   * identifier says what it decides rather than borrowing one that describes
-   * something else. Present and respond read the decision from here; a gate the
-   * activity declares carries none of this and reads from the definition.
-   */
+  checkpointId: z.string().min(1).describe('Nonempty identifier of the outstanding checkpoint.'),
+  activityId: z.string().min(1).describe('Nonempty identifier of the activity containing the checkpoint.'),
+  yieldedAt: z.string().datetime().describe('ISO 8601 timestamp when the checkpoint became outstanding.'),
+
   adhoc: z.object({
-    message: z.string().min(1),
+    message: z.string().min(1).describe('Nonempty question or decision prompt.'),
     options: z.array(z.object({
-      id: z.string().min(1),
-      label: z.string().min(1),
-      description: z.string().optional(),
-    })).min(2),
-  }).optional(),
-});
+      id: z.string().min(1).describe('Nonempty option identifier.'),
+      label: z.string().min(1).describe('Nonempty label for the choice.'),
+      description: z.string().optional().describe('Explanation of the choice.'),
+    }).describe('Named choice for the ad hoc decision.')).min(2).describe('At least two choices for the ad hoc decision.'),
+  }).optional().describe('Decision details for a checkpoint absent from the activity definition.'),
+}).describe('Outstanding checkpoint and any ad hoc decision details.');
 export type ActiveCheckpoint = z.infer<typeof ActiveCheckpointSchema>;
 
 /**
@@ -67,143 +46,56 @@ export type ActiveCheckpoint = z.infer<typeof ActiveCheckpointSchema>;
  * via `z.lazy()` so the type can refer back to itself.
  */
 const SessionFileBaseSchema = z.object({
-  /** Schema-format version. Bump on breaking layout changes. */
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(1).describe('Session file format version.'),
 
-  /** Six-character base32 session index derived from the planning folder path. */
-  sessionIndex: z.string().regex(/^[A-Z2-7]{6}$/, 'sessionIndex must be a 6-character RFC 4648 base32 string'),
+  sessionIndex: z.string().regex(/^[A-Z2-7]{6}$/, 'sessionIndex must be a 6-character RFC 4648 base32 string').describe('Six-character RFC 4648 base32 session identifier.'),
 
-  /** Workflow identity. */
-  workflowId: z.string().min(1),
-  workflowVersion: z.string().regex(/^\d+\.\d+\.\d+$/),
+  workflowId: z.string().min(1).describe('Nonempty workflow identifier.'),
+  workflowVersion: z.string().regex(/^\d+\.\d+\.\d+$/).describe('Workflow version in numeric `major.minor.patch` form.'),
 
-  /** Agent identity (e.g. "orchestrator", "worker"). */
-  agentId: z.string().min(1),
+  agentId: z.string().min(1).describe('Nonempty identifier of the agent associated with this session.'),
 
-  /**
-   * Monotonically-increasing per-session sequence number. Increments on every
-   * authenticated tool call that mutates state.
-   */
-  seq: z.number().int().nonnegative(),
+  seq: z.number().int().nonnegative().describe('Nonnegative integer revision number for the session state.'),
 
-  /** Unix epoch seconds of the most recent state write. */
-  ts: z.number().int().nonnegative(),
+  ts: z.number().int().nonnegative().describe('Time of the latest state revision, in Unix epoch seconds.'),
 
-  /** ISO-8601 timestamp captured at session creation. */
-  startedAt: z.string().datetime(),
+  startedAt: z.string().datetime().describe('ISO 8601 timestamp when the session began.'),
 
-  /**
-   * The activities in flight. One entry on an ordinary walk; one per branch while a graph fan runs.
-   * A destination the graph fans is entered once, after the last of its branches returns, so this
-   * holds either a single activity or the branches of exactly one fan — every exit of a branch binds
-   * to its fan's join, so a branch cannot open a fan of its own. Empty between the last branch
-   * retiring and the join being entered, and after the run completes.
-   *
-   * An entry for one instance of a fanned activity is `<activityId>#<instance>`, the spelling a
-   * loop-body checkpoint already uses: the entries are distinct strings, so a call naming the bare
-   * activity of a three-instance fan matches nothing and a call naming an instance matches one.
-   */
-  frontier: z.array(z.string()).default([]),
-  currentTechnique: z.string().default(''),
-  /** Exit the last completed activity took, as its orchestrator reported it. */
-  exit: z.string().default(''),
+  frontier: z.array(z.string().describe('Activity identifier, optionally qualified by an instance number.')).default([]).describe('Activities currently in progress, with parallel instances named `<activityId>#<instance>`.'),
+  currentTechnique: z.string().default('').describe('Current technique reference, or an empty string when none is selected.'),
 
-  /** Outstanding checkpoint, if one is active. */
+  exit: z.string().default('').describe('Most recent activity exit, or an empty string when none is recorded.'),
+
   activeCheckpoint: ActiveCheckpointSchema.optional(),
 
-  /** Workflow variables (arbitrary key/value bag). */
-  variables: z.record(z.unknown()).default({}),
+  variables: z.record(z.unknown().describe('Current value of the named variable.')).default({}).describe('Current values keyed by variable name.'),
 
-  /** Activity bookkeeping. */
-  completedActivities: z.array(z.string()).default([]),
+  completedActivities: z.array(z.string().describe('Identifier of a completed activity.')).default([]).describe('Identifiers of completed activities.'),
 
-  /**
-   * Map of "activityId-checkpointId" → resolution record. Mirrors the
-   * `checkpointResponses` field on the existing workflow state schema.
-   */
-  checkpointResponses: z.record(CheckpointResponseSchema).default({}),
+  checkpointResponses: z.record(CheckpointResponseSchema).default({}).describe('Checkpoint decisions keyed by `activityId-checkpointId`.'),
 
-  /** Append-only event log for the session. */
-  history: z.array(HistoryEntrySchema).default([]),
+  history: z.array(HistoryEntrySchema).default([]).describe('Chronological record of session progress.'),
 
-  /**
-   * Session lifecycle status. `running` while the workflow has not reached
-   * its terminal activity; `completed` after the terminal activity runs;
-   * `aborted` if it was explicitly cancelled. Optional and defaults to
-   * `running` so existing sessions parse without migration.
-   */
-  status: z.enum(['running', 'completed', 'aborted']).default('running'),
+  status: z.enum(['running', 'completed', 'aborted']).default('running').describe('Session status, defaulting to `running`.'),
 
-  /**
-   * Child workflows dispatched from this session. Each entry's `state` field
-   * is a full embedded `SessionFile` — the whole work-package tree lives
-   * inside the top-level `session.json`. See `EmbeddedSessionRefSchema`.
-   */
-  triggeredWorkflows: z.array(z.lazy(() => EmbeddedSessionRefSchema)).default([]),
+  triggeredWorkflows: z.array(z.lazy(() => EmbeddedSessionRefSchema).describe('Child workflow reference with optional nested state.')).default([]).describe('Child workflows and their optional nested session state.'),
 
-  /**
-   * Absolute path of the planning folder that owns this session.json at the
-   * time of the most recent `start_session`. Recorded for diagnostics and
-   * agent-side bookkeeping (workflows can reference it without re-deriving
-   * paths from their own context). On resume, if `start_session` is called
-   * with a `planning_folder_path` that differs from the recorded value, the
-   * server silently overwrites it with the new path — the folder is mobile,
-   * the stored path tracks wherever it currently lives. Server resolution
-   * itself is by stored `sessionIndex`, not by this path; the field exists
-   * to expose the canonical location, not to drive lookups. Optional for
-   * back-compat with older session files.
-   */
-  planningFolderPath: z.string().optional(),
+  planningFolderPath: z.string().optional().describe('Absolute path of the planning folder containing the session file.'),
 
-  /**
-   * Target repository as `owner/repo`. Single source of truth for promotion
-   * and planning path resolution. Agents always bind this via start_session
-   * / dispatch_child (bind-if-missing); they do not special-case server
-   * topology. Optional only for back-compat with older session files.
-   */
-  repo: z.string().min(1).optional(),
+  repo: z.string().min(1).optional().describe('Target repository in `owner/repo` form.'),
 
-  /**
-   * Declared context model for payload delivery. `persistent` opts the
-   * session into reference-not-repeat delivery: composed bundle content and
-   * technique payloads already delivered to this session+agent are replaced
-   * by short content-hash references on subsequent calls. Absent or `fresh`
-   * means every call receives full content — the default, and the correct
-   * mode for disposable-worker topologies where each call lands in a fresh
-   * agent context that has not seen the earlier deliveries.
-   */
-  contextMode: z.enum(['persistent', 'fresh']).optional(),
+  contextMode: z.enum(['persistent', 'fresh']).optional().describe('Context lifetime: `persistent` across calls, or `fresh` for each call by default.'),
 
-  /**
-   * Which execution path drove this session. `agent` — a caller walks the
-   * definition. `runner` — the server walks it. Absent on a file written
-   * before the field existed: that session is agent-driven.
-   */
-  executionPath: z.enum(['agent', 'runner']).optional(),
+  executionPath: z.enum(['agent', 'runner']).optional().describe('Execution mode: `agent` by default, or `runner`.'),
 
-  /**
-   * Delivery ledger for reference-not-repeat payloads: agentId → content
-   * key → hash of the content most recently delivered in full. Content keys
-   * are namespaced by channel — see `src/utils/delivery.ts` for the full list
-   * (`bundle:…`, `bundle:rules:…`, `activity_rules:…`, `technique:…`,
-   * `note:…`, `workflow_bundle:…`, `resource:…`). Each names a whole item.
-   * Always recorded so a per-call reference opt-in can follow full deliveries;
-   * consulted only when reference delivery is active (session
-   * `contextMode: 'persistent'` or a per-call opt-in).
-   */
-  deliveredContent: z.record(z.record(z.string())).optional(),
+  deliveredContent: z.record(z.record(z.string().describe('Fingerprint of the content associated with this key.')).describe('Content keys mapped to fingerprints for one agent.')).optional().describe('Content fingerprints grouped by agent identifier and content key.'),
 
-  /**
-   * Declared artifacts accumulated across activities for this session.
-   * Each entry is `{ id, name, path? }` joined on **id** at `next_activity`
-   * when reconciling the planning folder (warn-only undeclared files).
-   */
   declaredArtifacts: z.array(z.object({
-    id: z.string().min(1),
-    name: z.string().min(1),
-    path: z.string().optional(),
-  })).optional(),
-});
+    id: z.string().min(1).describe('Nonempty artifact identifier.'),
+    name: z.string().min(1).describe('Nonempty artifact filename.'),
+    path: z.string().optional().describe('Location of the artifact file.'),
+  }).describe('Artifact identifier, filename, and optional path.')).optional().describe('Artifacts declared during the session.'),
+}).describe('Session identity, progress, variables, decisions, and child sessions.');
 
 export const EXECUTION_PATHS = ['agent', 'runner'] as const;
 export type ExecutionPath = (typeof EXECUTION_PATHS)[number];
@@ -257,17 +149,17 @@ export const SessionFileSchema: z.ZodType<SessionFile> = SessionFileBaseSchema a
  * The `state` field embeds the child's full `SessionFile` recursively.
  */
 export const EmbeddedSessionRefSchema: z.ZodType<EmbeddedSessionRef> = z.object({
-  workflowId: z.string().min(1),
-  sessionIndex: z.string().regex(/^[A-Z2-7]{6}$/),
-  triggeredAt: z.string().datetime(),
+  workflowId: z.string().min(1).describe('Nonempty identifier of the child workflow.'),
+  sessionIndex: z.string().regex(/^[A-Z2-7]{6}$/).describe('Six-character RFC 4648 base32 identifier of the child session.'),
+  triggeredAt: z.string().datetime().describe('ISO 8601 timestamp when the child workflow began.'),
   triggeredFrom: z.object({
-    activityId: z.string(),
-    stepIndex: z.number().int().min(1).optional(),
-  }),
-  status: z.enum(['running', 'completed', 'aborted', 'error']),
-  completedAt: z.string().datetime().optional(),
-  state: z.lazy(() => SessionFileSchema).optional(),
-}) as z.ZodType<EmbeddedSessionRef>;
+    activityId: z.string().describe('Identifier of the parent activity.'),
+    stepIndex: z.number().int().min(1).optional().describe('One-based index of the parent step.'),
+  }).describe('Activity and optional step where the child workflow began.'),
+  status: z.enum(['running', 'completed', 'aborted', 'error']).describe('Current status of the child workflow.'),
+  completedAt: z.string().datetime().optional().describe('ISO 8601 timestamp when the child workflow completed.'),
+  state: z.lazy(() => SessionFileSchema).optional().describe('Full nested state of the child session.'),
+}).describe('Child workflow identity, status, and optional nested session state.') as z.ZodType<EmbeddedSessionRef>;
 
 /** Strict parse — throws on validation failure. */
 export function validateSessionFile(data: unknown): SessionFile {

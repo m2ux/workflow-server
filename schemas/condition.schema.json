@@ -11,10 +11,12 @@
           "properties": {
             "type": {
               "type": "string",
-              "const": "simple"
+              "const": "simple",
+              "description": "Identifies a variable comparison or presence test."
             },
             "variable": {
-              "type": "string"
+              "type": "string",
+              "description": "Variable name or dot-separated path to the value to test."
             },
             "operator": {
               "type": "string",
@@ -27,7 +29,8 @@
                 "<=",
                 "exists",
                 "notExists"
-              ]
+              ],
+              "description": "Comparison or presence test applied to a variable."
             },
             "value": {
               "type": [
@@ -35,7 +38,8 @@
                 "number",
                 "boolean",
                 "null"
-              ]
+              ],
+              "description": "Comparison value; unnecessary for `exists` and `notExists` tests."
             }
           },
           "required": [
@@ -43,68 +47,79 @@
             "variable",
             "operator"
           ],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "Comparison of a variable with a value, or a test of its presence."
         },
         {
           "type": "object",
           "properties": {
             "type": {
               "type": "string",
-              "const": "and"
+              "const": "and",
+              "description": "Identifies an all-members condition."
             },
             "conditions": {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/condition"
               },
-              "minItems": 2
+              "minItems": 2,
+              "description": "At least two conditions that must all be true."
             }
           },
           "required": [
             "type",
             "conditions"
           ],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "Condition requiring every member to be true."
         },
         {
           "type": "object",
           "properties": {
             "type": {
               "type": "string",
-              "const": "or"
+              "const": "or",
+              "description": "Identifies an any-member condition."
             },
             "conditions": {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/condition"
               },
-              "minItems": 2
+              "minItems": 2,
+              "description": "At least two conditions, one or more of which must be true."
             }
           },
           "required": [
             "type",
             "conditions"
           ],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "Condition requiring at least one member to be true."
         },
         {
           "type": "object",
           "properties": {
             "type": {
               "type": "string",
-              "const": "not"
+              "const": "not",
+              "description": "Identifies a negated condition."
             },
             "condition": {
-              "$ref": "#/definitions/condition"
+              "$ref": "#/definitions/condition",
+              "description": "Condition that must be false."
             }
           },
           "required": [
             "type",
             "condition"
           ],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "description": "Condition requiring its member to be false."
         }
-      ]
+      ],
+      "description": "Variable test or combination of conditions using `and`, `or`, or `not`."
     }
   }
 }

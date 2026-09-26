@@ -33,6 +33,33 @@ function findEmptySubschemas(node: unknown, path: string, out: string[]): void {
   }
 }
 
+/** Visit schema positions, excluding instance data such as defaults and examples. */
+function findUndescribedSchemas(node: unknown, path: string, out: string[]): void {
+  if (node === null || typeof node !== 'object' || Array.isArray(node)) return;
+  const schema = node as Record<string, unknown>;
+  if (typeof schema['$ref'] !== 'string'
+    && (typeof schema['description'] !== 'string' || !schema['description'].trim())) {
+    out.push(path);
+  }
+  for (const key of ['properties', 'definitions', '$defs']) {
+    const children = schema[key];
+    if (children && typeof children === 'object' && !Array.isArray(children)) {
+      for (const [name, child] of Object.entries(children)) {
+        findUndescribedSchemas(child, `${path}.${key}.${name}`, out);
+      }
+    }
+  }
+  for (const key of ['items', 'additionalProperties']) {
+    findUndescribedSchemas(schema[key], `${path}.${key}`, out);
+  }
+  for (const key of ['anyOf', 'oneOf', 'allOf']) {
+    const children = schema[key];
+    if (Array.isArray(children)) {
+      children.forEach((child, i) => findUndescribedSchemas(child, `${path}.${key}[${i}]`, out));
+    }
+  }
+}
+
 describe('generated-schemas', () => {
   const schemaFiles = readdirSync(SCHEMAS_DIR).filter(f => f.endsWith('.schema.json'));
 
@@ -46,6 +73,13 @@ describe('generated-schemas', () => {
     const empties: string[] = [];
     findEmptySubschemas(schema, '$', empties);
     expect(empties, `empty subschemas (lost recursion) in ${file}`).toEqual([]);
+  });
+
+  it.each(schemaFiles)('%s describes every schema item or references a described definition', (file) => {
+    const schema: unknown = JSON.parse(readFileSync(join(SCHEMAS_DIR, file), 'utf-8'));
+    const missing: string[] = [];
+    findUndescribedSchemas(schema, '$', missing);
+    expect(missing, `schema items without descriptions in ${file}`).toEqual([]);
   });
 
   it('condition combinators reference the condition definition', () => {

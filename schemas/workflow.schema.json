@@ -8,7 +8,8 @@
       "type": "object",
       "properties": {
         "$schema": {
-          "type": "string"
+          "type": "string",
+          "description": "URI of the JSON Schema for this workflow definition."
         },
         "id": {
           "type": "string",
@@ -34,8 +35,10 @@
         "tags": {
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "description": "Workflow classification label."
+          },
+          "description": "Labels for classifying the workflow."
         },
         "rules": {
           "type": "object",
@@ -43,21 +46,24 @@
             "workflow": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Rule for the workflow orchestrator."
               },
               "description": "Rules for the workflow orchestrator."
             },
             "activity": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Rule for every activity worker."
               },
               "description": "Rules for the workers executing each activity."
             },
             "universal": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Rule for both the orchestrator and activity workers."
               },
               "description": "Rules for both the orchestrator and activity workers."
             }
@@ -74,7 +80,8 @@
                 "anyOf": [
                   {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$"
+                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+                    "description": "Snake_case noun phrase containing at least two words."
                   },
                   {
                     "type": "string",
@@ -136,7 +143,8 @@
                       "type",
                       "mode",
                       "kind"
-                    ]
+                    ],
+                    "description": "Permitted single-word variable name."
                   }
                 ],
                 "description": "Snake_case noun phrase of at least two words, or a listed single-word exemption."
@@ -153,12 +161,14 @@
                 "description": "Declared variable type."
               },
               "description": {
-                "type": "string"
+                "type": "string",
+                "description": "Meaning and intended use of the variable."
               },
               "values": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Allowed string value for the variable."
                 },
                 "minItems": 1,
                 "description": "Nonempty set of distinct allowed string values, including the default when one is declared."
@@ -176,7 +186,8 @@
               "name",
               "type"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Variable declaration with type, allowed values, and an optional initial value."
           },
           "description": "Declarations of session facts and policy shared across activities; activity-produced variables belong in that activity's `variables.writes`."
         },
@@ -186,14 +197,16 @@
             "workflow": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Technique reference for workflow orchestration."
               },
               "description": "Technique references for workflow orchestration, using `::`-separated paths."
             },
             "activity": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Technique reference shared by every activity."
               },
               "description": "Technique references that apply to every activity."
             }
@@ -212,14 +225,16 @@
             "additionalProperties": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Destination activity identifier, or `__terminal__` to end the workflow."
                 },
                 {
                   "type": "array",
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Identifier of an activity to run once."
                       },
                       {
                         "type": "object",
@@ -254,17 +269,22 @@
                           "over",
                           "variable"
                         ],
-                        "additionalProperties": false
+                        "additionalProperties": false,
+                        "description": "Activity repeated in parallel for each element of a collection."
                       }
-                    ]
+                    ],
+                    "description": "One parallel activity or an activity repeated over a collection."
                   },
-                  "minItems": 2
+                  "minItems": 2,
+                  "description": "At least two parallel activities or collection instances with a common next activity."
                 },
                 {
                   "$ref": "#/definitions/workflow/properties/graph/additionalProperties/additionalProperties/anyOf/1/items/anyOf/1"
                 }
-              ]
-            }
+              ],
+              "description": "Next activity, terminal outcome, or parallel group of activities or collection instances."
+            },
+            "description": "Exit identifiers mapped to destinations for one activity."
           },
           "description": "Activity identifiers mapped to exit identifiers and their destinations: an activity, `__terminal__`, or parallel activities or collection instances. Required when activities declare exits."
         },
@@ -314,7 +334,8 @@
               "techniques": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Technique reference using a `::`-separated path."
                 },
                 "description": "Activity-wide technique references, using `::`-separated paths."
               },
@@ -352,7 +373,8 @@
                         "technique": {
                           "anyOf": [
                             {
-                              "type": "string"
+                              "type": "string",
+                              "description": "Technique reference using a `::`-separated path."
                             },
                             {
                               "type": "object",
@@ -368,14 +390,16 @@
                                       "string",
                                       "number",
                                       "boolean"
-                                    ]
+                                    ],
+                                    "description": "Variable name, literal value, or template expression for an input."
                                   },
                                   "description": "Input identifiers mapped to variable names, literals, or `{template}` expressions where the binding differs from the input name or default."
                                 },
                                 "outputs": {
                                   "type": "object",
                                   "additionalProperties": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "description": "Workflow variable name for the output."
                                   },
                                   "description": "Output identifiers mapped to workflow variable names where the names differ."
                                 }
@@ -383,7 +407,8 @@
                               "required": [
                                 "name"
                               ],
-                              "additionalProperties": false
+                              "additionalProperties": false,
+                              "description": "Technique reference with input and output bindings."
                             }
                           ],
                           "description": "Technique reference, or an object with `name` and optional `inputs` and `outputs` bindings."
@@ -405,12 +430,16 @@
                                 "description": "Action to perform."
                               },
                               "target": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Variable name or other target of the action."
                               },
                               "message": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Message associated with the action."
                               },
-                              "value": {},
+                              "value": {
+                                "description": "Value assigned or supplied by the action."
+                              },
                               "description": {
                                 "type": "string",
                                 "description": "Human-readable description of what this action does"
@@ -422,10 +451,12 @@
                                     "properties": {
                                       "type": {
                                         "type": "string",
-                                        "const": "simple"
+                                        "const": "simple",
+                                        "description": "Identifies a variable comparison or presence test."
                                       },
                                       "variable": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "Variable name or dot-separated path to the value to test."
                                       },
                                       "operator": {
                                         "type": "string",
@@ -438,7 +469,8 @@
                                           "<=",
                                           "exists",
                                           "notExists"
-                                        ]
+                                        ],
+                                        "description": "Comparison or presence test applied to a variable."
                                       },
                                       "value": {
                                         "type": [
@@ -446,7 +478,8 @@
                                           "number",
                                           "boolean",
                                           "null"
-                                        ]
+                                        ],
+                                        "description": "Comparison value; unnecessary for `exists` and `notExists` tests."
                                       }
                                     },
                                     "required": [
@@ -454,66 +487,76 @@
                                       "variable",
                                       "operator"
                                     ],
-                                    "additionalProperties": false
+                                    "additionalProperties": false,
+                                    "description": "Comparison of a variable with a value, or a test of its presence."
                                   },
                                   {
                                     "type": "object",
                                     "properties": {
                                       "type": {
                                         "type": "string",
-                                        "const": "and"
+                                        "const": "and",
+                                        "description": "Identifies an all-members condition."
                                       },
                                       "conditions": {
                                         "type": "array",
                                         "items": {
                                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                                         },
-                                        "minItems": 2
+                                        "minItems": 2,
+                                        "description": "At least two conditions that must all be true."
                                       }
                                     },
                                     "required": [
                                       "type",
                                       "conditions"
                                     ],
-                                    "additionalProperties": false
+                                    "additionalProperties": false,
+                                    "description": "Condition requiring every member to be true."
                                   },
                                   {
                                     "type": "object",
                                     "properties": {
                                       "type": {
                                         "type": "string",
-                                        "const": "or"
+                                        "const": "or",
+                                        "description": "Identifies an any-member condition."
                                       },
                                       "conditions": {
                                         "type": "array",
                                         "items": {
                                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                                         },
-                                        "minItems": 2
+                                        "minItems": 2,
+                                        "description": "At least two conditions, one or more of which must be true."
                                       }
                                     },
                                     "required": [
                                       "type",
                                       "conditions"
                                     ],
-                                    "additionalProperties": false
+                                    "additionalProperties": false,
+                                    "description": "Condition requiring at least one member to be true."
                                   },
                                   {
                                     "type": "object",
                                     "properties": {
                                       "type": {
                                         "type": "string",
-                                        "const": "not"
+                                        "const": "not",
+                                        "description": "Identifies a negated condition."
                                       },
                                       "condition": {
-                                        "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                        "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                                        "description": "Condition that must be false."
                                       }
                                     },
                                     "required": [
                                       "type",
                                       "condition"
                                     ],
-                                    "additionalProperties": false
+                                    "additionalProperties": false,
+                                    "description": "Condition requiring its member to be false."
                                   }
                                 ],
                                 "description": "Condition that must be true for this action to execute"
@@ -522,8 +565,10 @@
                             "required": [
                               "action"
                             ],
-                            "additionalProperties": false
-                          }
+                            "additionalProperties": false,
+                            "description": "Action with an optional target, value, message, and condition."
+                          },
+                          "description": "Actions associated with the technique step."
                         },
                         "when": {
                           "type": "string",
@@ -543,7 +588,8 @@
                         "kind",
                         "technique"
                       ],
-                      "additionalProperties": false
+                      "additionalProperties": false,
+                      "description": "Step that invokes a technique with optional actions and entry conditions."
                     },
                     {
                       "type": "object",
@@ -578,7 +624,8 @@
                         "kind",
                         "id"
                       ],
-                      "additionalProperties": false
+                      "additionalProperties": false,
+                      "description": "Control step with optional actions and entry conditions."
                     },
                     {
                       "type": "object",
@@ -602,20 +649,25 @@
                             "type": "object",
                             "properties": {
                               "id": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Option identifier within the checkpoint."
                               },
                               "label": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Short label for the choice."
                               },
                               "description": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Explanation of the choice."
                               },
                               "effect": {
                                 "type": "object",
                                 "properties": {
                                   "setVariable": {
                                     "type": "object",
-                                    "additionalProperties": {},
+                                    "additionalProperties": {
+                                      "description": "Value assigned to the named variable."
+                                    },
                                     "description": "Variable assignments associated with selecting this option."
                                   },
                                   "exit": {
@@ -623,14 +675,16 @@
                                     "description": "Name from the owning activity's `exits`, omitted for an ad hoc checkpoint."
                                   }
                                 },
-                                "additionalProperties": false
+                                "additionalProperties": false,
+                                "description": "Variable assignments and activity exit associated with the choice."
                               }
                             },
                             "required": [
                               "id",
                               "label"
                             ],
-                            "additionalProperties": false
+                            "additionalProperties": false,
+                            "description": "Checkpoint choice and its associated effects."
                           },
                           "minItems": 1,
                           "description": "Decision options with effects."
@@ -660,7 +714,8 @@
                         "message",
                         "options"
                       ],
-                      "additionalProperties": false
+                      "additionalProperties": false,
+                      "description": "User decision at a defined position in the activity steps."
                     },
                     {
                       "type": "object",
@@ -711,7 +766,8 @@
                         "steps": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items"
+                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items",
+                            "description": "Step within the loop body."
                           },
                           "description": "The loop body, a nested ordered list of steps."
                         },
@@ -754,14 +810,16 @@
                               "string",
                               "number",
                               "boolean"
-                            ]
+                            ],
+                            "description": "Literal argument or braced host-variable reference."
                           },
                           "description": "Routine input identifiers mapped to literal values or `{host_variable}` references; omitted arguments use declared defaults, then same-name host variables."
                         },
                         "outputs": {
                           "type": "object",
                           "additionalProperties": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Session variable name for the routine output."
                           },
                           "description": "Routine output identifiers mapped to session variable names; only outputs declared optional may be left unbound."
                         },
@@ -816,7 +874,8 @@
                   "required": [
                     "id"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Named activity outcome with optional selection and completion conditions."
                 },
                 "description": "Named outcomes, each bound to a destination in the workflow graph; omission makes the activity terminal."
               },
@@ -836,7 +895,8 @@
                     "passContext": {
                       "type": "array",
                       "items": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Name of a context variable to pass to the child workflow."
                       },
                       "description": "Context variable names to pass to the child workflow."
                     }
@@ -844,14 +904,16 @@
                   "required": [
                     "workflow"
                   ],
-                  "additionalProperties": false
+                  "additionalProperties": false,
+                  "description": "Child workflow reference and context to pass to it."
                 },
                 "description": "Child workflows to start from this activity."
               },
               "outcome": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Expected result of successful activity completion."
                 },
                 "description": "Expected outcomes of successful activity completion."
               },
@@ -863,7 +925,8 @@
               "rules": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Rule or constraint for this activity."
                 },
                 "description": "Activity-level rules and constraints that agents must follow"
               },
@@ -890,7 +953,8 @@
         "title",
         "initialActivity"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Workflow identity, shared declarations, activities, and exit destinations."
     }
   }
 }

@@ -1296,19 +1296,16 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(dispatch).not.toMatch(/arrives on the\s+`next_activity` that EXITS/);
     });
 
-    it('PR366-TC-07: delivery-ledger namespace comment matches delivery.ts keys', async () => {
+    it('delivery content keys identify whole items', async () => {
       const { readFileSync } = await import('node:fs');
       const { resolve } = await import('node:path');
-      const schema = readFileSync(resolve(import.meta.dirname, '../src/schema/session.schema.ts'), 'utf8');
       const delivery = readFileSync(resolve(import.meta.dirname, '../src/utils/delivery.ts'), 'utf8');
-      for (const source of [schema, delivery]) {
-        expect(source).toMatch(/bundle:/);
-        expect(source).toMatch(/technique:/);
-        expect(source).toMatch(/note:/);
-        expect(source).toMatch(/resource:/);
-        // Every key names a whole item, so no key names a field of a technique body.
-        expect(source).not.toMatch(/technique:(inherited_inputs|inherited_outputs|rules|provenance_note)[.:]/);
-      }
+      expect(delivery).toMatch(/bundle:/);
+      expect(delivery).toMatch(/technique:/);
+      expect(delivery).toMatch(/note:/);
+      expect(delivery).toMatch(/resource:/);
+      // Every key names a whole item, so no key names a field of a technique body.
+      expect(delivery).not.toMatch(/technique:(inherited_inputs|inherited_outputs|rules|provenance_note)[.:]/);
     });
   });
 

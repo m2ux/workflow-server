@@ -6,14 +6,14 @@ import { VariableNameSchema } from './variable.schema.js';
 export const RoutineIdSchema = z.string().regex(
   /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/,
   'a routine id is kebab-case (`assumption-interview`) and carries no `::` — a routine name has no group grammar',
-);
+).describe('Kebab-case routine identifier without `::`.');
 
 export const RoutineInputSchema = z.object({
   id: VariableNameSchema.describe('Parameter name within the routine body.'),
   description: z.string().describe('What the parameter is for, in the routine\'s own vocabulary.'),
   kind: z.literal('technique').optional().describe('Marks a technique-reference parameter, requiring a literal technique reference at each use or a declared default.'),
-  default: z.union([z.string(), z.number(), z.boolean()]).optional().describe('Value for an unbound argument; without a default, a value parameter uses the host variable of the same name.'),
-}).strict();
+  default: z.union([z.string().describe('Default text value or technique reference.'), z.number().describe('Default numeric value.'), z.boolean().describe('Default boolean value.')]).optional().describe('Value for an unbound argument; without a default, a value parameter uses the host variable of the same name.'),
+}).strict().describe('Routine parameter with an optional technique-reference kind and default.');
 export type RoutineInput = z.infer<typeof RoutineInputSchema>;
 
 /** Whether a parameter's argument is a technique reference rather than a value. */
@@ -25,15 +25,15 @@ export const RoutineOutputSchema = z.object({
   id: VariableNameSchema.describe('Output name within the routine body, bound to a session variable at each use.'),
   type: z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Type of the output and its bound session variable.'),
   description: z.string().describe('What the value is.'),
-  values: z.array(z.string()).min(1).optional().describe('Complete set of allowed values for a string output.'),
+  values: z.array(z.string().describe('Allowed string output value.')).min(1).optional().describe('Complete set of allowed values for a string output.'),
   optional: z.literal(true).optional().describe('Declare `true` to allow this output to remain unbound; omission requires an output binding.'),
-}).strict();
+}).strict().describe('Produced value with its type, allowed values, and binding requirement.');
 export type RoutineOutput = z.infer<typeof RoutineOutputSchema>;
 
 export const RoutineInternalSchema = z.object({
   id: VariableNameSchema.describe('Name local to the routine body at each use, outside the workflow variable set.'),
   description: z.string().describe('What the value is, and which steps pass it.'),
-}).strict();
+}).strict().describe('Named value shared by steps within one use of a routine.');
 export type RoutineInternal = z.infer<typeof RoutineInternalSchema>;
 
 export const RoutineSchema = z.object({

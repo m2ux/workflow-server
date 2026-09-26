@@ -7,16 +7,16 @@ import { VariableDefinitionSchema, VariableNameSchema } from './variable.schema.
 export { VariableNameSchema, VariableDefinitionSchema, type VariableDefinition } from './variable.schema.js';
 
 export const WorkflowTechniquesSchema = z.object({
-  workflow: enforcement(z.array(z.string()).optional().describe('Technique references for workflow orchestration, using `::`-separated paths.'), { owner: 'Engine', strictness: 'enforced' }),
-  activity: enforcement(z.array(z.string()).optional().describe('Technique references that apply to every activity.'), { owner: 'Engine', strictness: 'enforced' }),
-}).strict();
+  workflow: enforcement(z.array(z.string().describe('Technique reference for workflow orchestration.')).optional().describe('Technique references for workflow orchestration, using `::`-separated paths.'), { owner: 'Engine', strictness: 'enforced' }),
+  activity: enforcement(z.array(z.string().describe('Technique reference shared by every activity.')).optional().describe('Technique references that apply to every activity.'), { owner: 'Engine', strictness: 'enforced' }),
+}).strict().describe('Technique references grouped by orchestration or activity scope.');
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
 
 export const WorkflowRulesSchema = z.object({
-  workflow: enforcement(z.array(z.string()).optional().describe('Rules for the workflow orchestrator.'), { owner: 'Engine', strictness: 'advisory' }),
-  activity: enforcement(z.array(z.string()).optional().describe('Rules for the workers executing each activity.'), { owner: 'Engine', strictness: 'advisory' }),
-  universal: enforcement(z.array(z.string()).optional().describe('Rules for both the orchestrator and activity workers.'), { owner: 'Engine', strictness: 'advisory' }),
-}).strict();
+  workflow: enforcement(z.array(z.string().describe('Rule for the workflow orchestrator.')).optional().describe('Rules for the workflow orchestrator.'), { owner: 'Engine', strictness: 'advisory' }),
+  activity: enforcement(z.array(z.string().describe('Rule for every activity worker.')).optional().describe('Rules for the workers executing each activity.'), { owner: 'Engine', strictness: 'advisory' }),
+  universal: enforcement(z.array(z.string().describe('Rule for both the orchestrator and activity workers.')).optional().describe('Rules for both the orchestrator and activity workers.'), { owner: 'Engine', strictness: 'advisory' }),
+}).strict().describe('Rules grouped by the roles they apply to.');
 export type WorkflowRules = z.infer<typeof WorkflowRulesSchema>;
 
 export const InstanceFanSchema = z.object({
@@ -27,19 +27,19 @@ export const InstanceFanSchema = z.object({
     2,
     'a fan admits at least two instances; an exit that leads to one run of one activity names that activity',
   ).optional().describe('Maximum number of parallel instances for this destination, at least two.'),
-}).strict();
+}).strict().describe('Activity repeated in parallel for each element of a collection.');
 export type InstanceFan = z.infer<typeof InstanceFanSchema>;
 
-export const FanMemberSchema = z.union([z.string(), InstanceFanSchema]);
+export const FanMemberSchema = z.union([z.string().describe('Identifier of an activity to run once.'), InstanceFanSchema]).describe('One parallel activity or an activity repeated over a collection.');
 export type FanMember = z.infer<typeof FanMemberSchema>;
 
 export const DestinationSchema = z.union(
   [
-    z.string(),
+    z.string().describe('Destination activity identifier, or `__terminal__` to end the workflow.'),
     z.array(FanMemberSchema).min(
       2,
       'a fan names at least two members; an exit that leads to one activity names that activity, and an exit that runs one activity over a collection names the activity with that collection',
-    ),
+    ).describe('At least two parallel activities or collection instances with a common next activity.'),
     InstanceFanSchema,
   ],
   {
@@ -48,10 +48,10 @@ export const DestinationSchema = z.union(
         'a destination is an activity id, `__terminal__`, a list of at least two members — each an activity id or an instance fan — or a single instance fan: an object naming `activity`, the `over` collection it runs once per element of, and the `variable` each instance reads its element at, optionally with `maxInstances`',
     }),
   },
-);
+).describe('Next activity, terminal outcome, or parallel group of activities or collection instances.');
 export type Destination = z.infer<typeof DestinationSchema>;
 
-export const GraphSchema = z.record(z.record(DestinationSchema));
+export const GraphSchema = z.record(z.record(DestinationSchema).describe('Exit identifiers mapped to destinations for one activity.')).describe('Activity identifiers mapped to exit destinations.');
 export type Graph = z.infer<typeof GraphSchema>;
 
 /** The activity one list member runs. */
@@ -102,13 +102,13 @@ export const destinationPhrase = (destination: Destination): string =>
     : `'${destination}'`;
 
 export const WorkflowSchema = z.object({
-  $schema: z.string().optional(),
+  $schema: z.string().optional().describe('URI of the JSON Schema for this workflow definition.'),
   id: enforcement(z.string().describe('Unique workflow identifier'), { owner: 'Engine', strictness: 'enforced' }),
   version: enforcement(SemanticVersionSchema.describe('Semantic version'), { owner: 'Engine', strictness: 'advisory' }),
   title: enforcement(z.string().describe('Human-readable workflow title'), { owner: 'Engine', strictness: 'advisory' }),
   description: enforcement(z.string().optional().describe('Detailed workflow description'), { owner: 'Engine', strictness: 'advisory' }),
   author: enforcement(z.string().optional().describe('Workflow author.'), { owner: 'Agent', strictness: 'advisory' }),
-  tags: enforcement(z.array(z.string()).optional(), { owner: 'Engine', strictness: 'advisory' }),
+  tags: enforcement(z.array(z.string().describe('Workflow classification label.')).optional().describe('Labels for classifying the workflow.'), { owner: 'Engine', strictness: 'advisory' }),
   rules: WorkflowRulesSchema.optional().describe('Rules grouped by audience: workflow orchestrator, activity workers, or both.'),
   variables: enforcement(z.array(VariableDefinitionSchema).optional().describe('Declarations of session facts and policy shared across activities; activity-produced variables belong in that activity\'s `variables.writes`.'), { owner: 'Engine', strictness: 'advisory' }),
   techniques: WorkflowTechniquesSchema.optional().describe('Technique references grouped by scope: workflow orchestration or every activity.'),
@@ -116,7 +116,7 @@ export const WorkflowSchema = z.object({
   graph: GraphSchema.optional().describe('Activity identifiers mapped to exit identifiers and their destinations: an activity, `__terminal__`, or parallel activities or collection instances. Required when activities declare exits.'),
   // Zod includes assembled activities; definition files may keep them separate.
   activities: enforcement(z.array(ActivitySchema).min(1).optional().describe('Activities in this workflow; omitted when activities are defined in separate files.'), { owner: 'Engine', strictness: 'enforced' }),
-}).strict();
+}).strict().describe('Workflow identity, shared declarations, activities, and exit destinations.');
 export type Workflow = z.infer<typeof WorkflowSchema>;
 
 export function validateWorkflow(data: unknown): Workflow { return WorkflowSchema.parse(data); }

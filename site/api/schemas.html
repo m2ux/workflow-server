@@ -153,49 +153,49 @@
         <table>
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>schemaVersion</code></td><td><code>1</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>sessionIndex</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>workflowId</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>workflowVersion</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>agentId</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>seq</code></td><td><code>integer</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>ts</code></td><td><code>integer</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>startedAt</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>frontier</code></td><td><code>string[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
-          <tr><td><code>currentTechnique</code></td><td><code>string</code></td><td>no</td><td>Default: <code>&quot;&quot;</code></td></tr>
+          <tr><td><code>schemaVersion</code></td><td><code>1</code></td><td>yes</td><td>Session file format version.</td></tr>
+          <tr><td><code>sessionIndex</code></td><td><code>string</code></td><td>yes</td><td>Six-character RFC 4648 base32 session identifier.</td></tr>
+          <tr><td><code>workflowId</code></td><td><code>string</code></td><td>yes</td><td>Nonempty workflow identifier.</td></tr>
+          <tr><td><code>workflowVersion</code></td><td><code>string</code></td><td>yes</td><td>Workflow version in numeric <code>major.minor.patch</code> form.</td></tr>
+          <tr><td><code>agentId</code></td><td><code>string</code></td><td>yes</td><td>Nonempty identifier of the agent associated with this session.</td></tr>
+          <tr><td><code>seq</code></td><td><code>integer</code></td><td>yes</td><td>Nonnegative integer revision number for the session state.</td></tr>
+          <tr><td><code>ts</code></td><td><code>integer</code></td><td>yes</td><td>Time of the latest state revision, in Unix epoch seconds.</td></tr>
+          <tr><td><code>startedAt</code></td><td><code>string</code></td><td>yes</td><td>ISO 8601 timestamp when the session began.</td></tr>
+          <tr><td><code>frontier</code></td><td><code>string[]</code></td><td>no</td><td>Activities currently in progress, with parallel instances named <code>&lt;activityId&gt;#&lt;instance&gt;</code>. Default: <code>[]</code></td></tr>
+          <tr><td><code>currentTechnique</code></td><td><code>string</code></td><td>no</td><td>Current technique reference, or an empty string when none is selected. Default: <code>&quot;&quot;</code></td></tr>
           <tr><td><code>exit</code></td><td><code>string</code></td><td>no</td><td>Name of the exit the previous activity took. Default: <code>&quot;&quot;</code></td></tr>
-          <tr><td><code>activeCheckpoint</code></td><td><code>object</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>variables</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
-          <tr><td><code>completedActivities</code></td><td><code>string[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
-          <tr><td><code>checkpointResponses</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
-          <tr><td><code>history</code></td><td><code>object[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
-          <tr><td><code>history[].timestamp</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>history[].type</code></td><td><code>&quot;workflow_started&quot; | &quot;workflow_completed&quot; | &quot;workflow_aborted&quot; | &quot;workflow_triggered&quot; | &quot;workflow_returned&quot; | &quot;workflow_suspended&quot; | &quot;activity_entered&quot; | &quot;activity_exited&quot; | &quot;activity_skipped&quot; | &quot;step_started&quot; | &quot;step_completed&quot; | &quot;checkpoint_reached&quot; | &quot;checkpoint_response&quot; | &quot;checkpoint_replayed&quot; | &quot;decision_reached&quot; | &quot;decision_branch_taken&quot; | &quot;loop_started&quot; | &quot;loop_iteration&quot; | &quot;loop_completed&quot; | &quot;loop_break&quot; | &quot;variable_set&quot; | &quot;error&quot; | &quot;technique_fetched&quot; | &quot;resource_fetched&quot; | &quot;technique_bundled&quot; | &quot;variables_seeded&quot; | &quot;activity_usage&quot; | &quot;activity_dispatched&quot; | &quot;activity_redelivered&quot; | &quot;batch_refused&quot; | &quot;activity_outcome&quot; | &quot;progress_published&quot; | &quot;activity_delivered&quot;</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>history[].activity</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>history[].step</code></td><td><code>integer</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>history[].checkpoint</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>history[].decision</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>history[].loop</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>history[].data</code></td><td><code>object</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>history[].error</code></td><td><code>object</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>status</code></td><td><code>&quot;running&quot; | &quot;completed&quot; | &quot;aborted&quot;</code></td><td>no</td><td>Default: <code>&quot;running&quot;</code></td></tr>
-          <tr><td><code>triggeredWorkflows</code></td><td><code>object[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
-          <tr><td><code>triggeredWorkflows[].workflowId</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>triggeredWorkflows[].sessionIndex</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>triggeredWorkflows[].triggeredAt</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>triggeredWorkflows[].triggeredFrom</code></td><td><code>object</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>triggeredWorkflows[].status</code></td><td><code>&quot;running&quot; | &quot;completed&quot; | &quot;aborted&quot; | &quot;error&quot;</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>triggeredWorkflows[].completedAt</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>triggeredWorkflows[].state</code></td><td><code>session-file</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>planningFolderPath</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>contextMode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>executionPath</code></td><td><code>&quot;agent&quot; | &quot;runner&quot;</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>deliveredContent</code></td><td><code>object</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>declaredArtifacts</code></td><td><code>object[]</code></td><td>no</td><td>-</td></tr>
-          <tr><td><code>declaredArtifacts[].id</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>declaredArtifacts[].name</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>declaredArtifacts[].path</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>activeCheckpoint</code></td><td><code>object</code></td><td>no</td><td>Outstanding checkpoint and any ad hoc decision details.</td></tr>
+          <tr><td><code>variables</code></td><td><code>object</code></td><td>no</td><td>Current values keyed by variable name. Default: <code>{}</code></td></tr>
+          <tr><td><code>completedActivities</code></td><td><code>string[]</code></td><td>no</td><td>Identifiers of completed activities. Default: <code>[]</code></td></tr>
+          <tr><td><code>checkpointResponses</code></td><td><code>object</code></td><td>no</td><td>Checkpoint decisions keyed by <code>activityId-checkpointId</code>. Default: <code>{}</code></td></tr>
+          <tr><td><code>history</code></td><td><code>object[]</code></td><td>no</td><td>Chronological record of session progress. Default: <code>[]</code></td></tr>
+          <tr><td><code>history[].timestamp</code></td><td><code>string</code></td><td>yes</td><td>ISO 8601 timestamp of the event.</td></tr>
+          <tr><td><code>history[].type</code></td><td><code>&quot;workflow_started&quot; | &quot;workflow_completed&quot; | &quot;workflow_aborted&quot; | &quot;workflow_triggered&quot; | &quot;workflow_returned&quot; | &quot;workflow_suspended&quot; | &quot;activity_entered&quot; | &quot;activity_exited&quot; | &quot;activity_skipped&quot; | &quot;step_started&quot; | &quot;step_completed&quot; | &quot;checkpoint_reached&quot; | &quot;checkpoint_response&quot; | &quot;checkpoint_replayed&quot; | &quot;decision_reached&quot; | &quot;decision_branch_taken&quot; | &quot;loop_started&quot; | &quot;loop_iteration&quot; | &quot;loop_completed&quot; | &quot;loop_break&quot; | &quot;variable_set&quot; | &quot;error&quot; | &quot;technique_fetched&quot; | &quot;resource_fetched&quot; | &quot;technique_bundled&quot; | &quot;variables_seeded&quot; | &quot;activity_usage&quot; | &quot;activity_dispatched&quot; | &quot;activity_redelivered&quot; | &quot;batch_refused&quot; | &quot;activity_outcome&quot; | &quot;progress_published&quot; | &quot;activity_delivered&quot;</code></td><td>yes</td><td>Category of the recorded session event.</td></tr>
+          <tr><td><code>history[].activity</code></td><td><code>string</code></td><td>no</td><td>Activity identifier associated with the event.</td></tr>
+          <tr><td><code>history[].step</code></td><td><code>integer</code></td><td>no</td><td>One-based integer step index.</td></tr>
+          <tr><td><code>history[].checkpoint</code></td><td><code>string</code></td><td>no</td><td>Checkpoint identifier associated with the event.</td></tr>
+          <tr><td><code>history[].decision</code></td><td><code>string</code></td><td>no</td><td>Decision identifier associated with the event.</td></tr>
+          <tr><td><code>history[].loop</code></td><td><code>string</code></td><td>no</td><td>Loop identifier associated with the event.</td></tr>
+          <tr><td><code>history[].data</code></td><td><code>object</code></td><td>no</td><td>Additional values describing the event.</td></tr>
+          <tr><td><code>history[].error</code></td><td><code>object</code></td><td>no</td><td>Error message and optional code.</td></tr>
+          <tr><td><code>status</code></td><td><code>&quot;running&quot; | &quot;completed&quot; | &quot;aborted&quot;</code></td><td>no</td><td>Session status, defaulting to <code>running</code>. Default: <code>&quot;running&quot;</code></td></tr>
+          <tr><td><code>triggeredWorkflows</code></td><td><code>object[]</code></td><td>no</td><td>Child workflows and their optional nested session state. Default: <code>[]</code></td></tr>
+          <tr><td><code>triggeredWorkflows[].workflowId</code></td><td><code>string</code></td><td>yes</td><td>Nonempty identifier of the child workflow.</td></tr>
+          <tr><td><code>triggeredWorkflows[].sessionIndex</code></td><td><code>string</code></td><td>yes</td><td>Six-character RFC 4648 base32 identifier of the child session.</td></tr>
+          <tr><td><code>triggeredWorkflows[].triggeredAt</code></td><td><code>string</code></td><td>yes</td><td>ISO 8601 timestamp when the child workflow began.</td></tr>
+          <tr><td><code>triggeredWorkflows[].triggeredFrom</code></td><td><code>object</code></td><td>yes</td><td>Activity and optional step where the child workflow began.</td></tr>
+          <tr><td><code>triggeredWorkflows[].status</code></td><td><code>&quot;running&quot; | &quot;completed&quot; | &quot;aborted&quot; | &quot;error&quot;</code></td><td>yes</td><td>Current status of the child workflow.</td></tr>
+          <tr><td><code>triggeredWorkflows[].completedAt</code></td><td><code>string</code></td><td>no</td><td>ISO 8601 timestamp when the child workflow completed.</td></tr>
+          <tr><td><code>triggeredWorkflows[].state</code></td><td><code>session-file</code></td><td>no</td><td>Full nested state of the child session.</td></tr>
+          <tr><td><code>planningFolderPath</code></td><td><code>string</code></td><td>no</td><td>Absolute path of the planning folder containing the session file.</td></tr>
+          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Target repository in <code>owner/repo</code> form.</td></tr>
+          <tr><td><code>contextMode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>Context lifetime: <code>persistent</code> across calls, or <code>fresh</code> for each call by default.</td></tr>
+          <tr><td><code>executionPath</code></td><td><code>&quot;agent&quot; | &quot;runner&quot;</code></td><td>no</td><td>Execution mode: <code>agent</code> by default, or <code>runner</code>.</td></tr>
+          <tr><td><code>deliveredContent</code></td><td><code>object</code></td><td>no</td><td>Content fingerprints grouped by agent identifier and content key.</td></tr>
+          <tr><td><code>declaredArtifacts</code></td><td><code>object[]</code></td><td>no</td><td>Artifacts declared during the session.</td></tr>
+          <tr><td><code>declaredArtifacts[].id</code></td><td><code>string</code></td><td>yes</td><td>Nonempty artifact identifier.</td></tr>
+          <tr><td><code>declaredArtifacts[].name</code></td><td><code>string</code></td><td>yes</td><td>Nonempty artifact filename.</td></tr>
+          <tr><td><code>declaredArtifacts[].path</code></td><td><code>string</code></td><td>no</td><td>Location of the artifact file.</td></tr>
           </tbody>
         </table>
         </div>
@@ -209,11 +209,11 @@
         <table>
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>capability</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
+          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Unique technique identifier.</td></tr>
+          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>Version in numeric <code>major.minor.patch</code> form.</td></tr>
+          <tr><td><code>capability</code></td><td><code>string</code></td><td>yes</td><td>Capability or result the technique provides.</td></tr>
           <tr><td><code>provenance_note</code></td><td><code>string</code></td><td>no</td><td>Input and output provenance annotation; omitted from authored technique files.</td></tr>
-          <tr><td><code>rules</code></td><td><code>object</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>rules</code></td><td><code>object</code></td><td>no</td><td>Rule names mapped to a directive or related directives.</td></tr>
           <tr><td><code>inputs</code></td><td><code>object[]</code></td><td>no</td><td>Named inputs accepted by the technique.</td></tr>
           <tr><td><code>inputs[].id</code></td><td><code>string</code></td><td>yes</td><td>Stable input identifier with words separated by hyphens.</td></tr>
           <tr><td><code>inputs[].description</code></td><td><code>string</code></td><td>no</td><td>Input description, beginning with <code>(optional)</code> when the input is optional.</td></tr>
@@ -221,7 +221,7 @@
           <tr><td><code>inputs[].components</code></td><td><code>object</code></td><td>no</td><td>Named parts of a composite input, authored as <code>####</code> headings.</td></tr>
           <tr><td><code>inputs[].source</code></td><td><code>string</code></td><td>no</td><td>Input value source annotation; omitted from authored technique files.</td></tr>
           <tr><td><code>inherited_inputs</code></td><td><code>object</code></td><td>no</td><td>Shared inputs from the workflow or group contract; omitted from authored technique files.</td></tr>
-          <tr><td><code>protocol</code></td><td><code>object[]</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>protocol</code></td><td><code>object[]</code></td><td>no</td><td>Protocol blocks in execution order.</td></tr>
           <tr><td><code>protocol[].title</code></td><td><code>string</code></td><td>no</td><td>Block label, authored as a <code>###</code> heading.</td></tr>
           <tr><td><code>protocol[].steps</code></td><td><code>string[]</code></td><td>yes</td><td>Ordered imperative step bullets for this block.</td></tr>
           <tr><td><code>outputs</code></td><td><code>object[]</code></td><td>no</td><td>Named outputs with optional descriptions and either components or list-entry fields.</td></tr>
@@ -248,18 +248,18 @@
         <table>
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>$schema</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>$schema</code></td><td><code>string</code></td><td>no</td><td>URI of the JSON Schema for this workflow definition.</td></tr>
           <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Unique workflow identifier</td></tr>
           <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>Semantic version</td></tr>
           <tr><td><code>title</code></td><td><code>string</code></td><td>yes</td><td>Human-readable workflow title</td></tr>
           <tr><td><code>description</code></td><td><code>string</code></td><td>no</td><td>Detailed workflow description</td></tr>
           <tr><td><code>author</code></td><td><code>string</code></td><td>no</td><td>Workflow author.</td></tr>
-          <tr><td><code>tags</code></td><td><code>string[]</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>tags</code></td><td><code>string[]</code></td><td>no</td><td>Labels for classifying the workflow.</td></tr>
           <tr><td><code>rules</code></td><td><code>object</code></td><td>no</td><td>Rules grouped by audience: workflow orchestrator, activity workers, or both.</td></tr>
           <tr><td><code>variables</code></td><td><code>object[]</code></td><td>no</td><td>Declarations of session facts and policy shared across activities; activity-produced variables belong in that activity's <code>variables.writes</code>.</td></tr>
           <tr><td><code>variables[].name</code></td><td><code>string | &quot;requirements&quot; | &quot;features&quot; | &quot;exclusions&quot; | &quot;dimensions&quot; | &quot;tasks&quot; | &quot;results&quot; | &quot;submodules&quot; | &quot;paths&quot; | &quot;fields&quot; | &quot;filters&quot; | &quot;stats&quot; | &quot;effects&quot; | &quot;substitutions&quot; | &quot;findings&quot; | &quot;assumptions&quot; | &quot;subsystems&quot; | &quot;transitions&quot; | &quot;options&quot; | &quot;branches&quot; | &quot;agents&quot; | &quot;changes&quot; | &quot;failures&quot; | &quot;items&quot; | &quot;files&quot; | &quot;gaps&quot; | &quot;outcomes&quot; | &quot;body&quot; | &quot;query&quot; | &quot;repo&quot; | &quot;owner&quot; | &quot;number&quot; | &quot;title&quot; | &quot;branch&quot; | &quot;diff&quot; | &quot;limit&quot; | &quot;name&quot; | &quot;sha&quot; | &quot;url&quot; | &quot;head&quot; | &quot;base&quot; | &quot;ref&quot; | &quot;labels&quot; | &quot;path&quot; | &quot;cursor&quot; | &quot;cql&quot; | &quot;jql&quot; | &quot;description&quot; | &quot;assignee&quot; | &quot;depth&quot; | &quot;direction&quot; | &quot;summary&quot; | &quot;state&quot; | &quot;target&quot; | &quot;adr&quot; | &quot;type&quot; | &quot;mode&quot; | &quot;kind&quot;</code></td><td>yes</td><td>Snake_case noun phrase of at least two words, or a listed single-word exemption.</td></tr>
           <tr><td><code>variables[].type</code></td><td><code>&quot;string&quot; | &quot;number&quot; | &quot;boolean&quot; | &quot;array&quot; | &quot;object&quot;</code></td><td>yes</td><td>Declared variable type.</td></tr>
-          <tr><td><code>variables[].description</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
+          <tr><td><code>variables[].description</code></td><td><code>string</code></td><td>no</td><td>Meaning and intended use of the variable.</td></tr>
           <tr><td><code>variables[].values</code></td><td><code>string[]</code></td><td>no</td><td>Nonempty set of distinct allowed string values, including the default when one is declared.</td></tr>
           <tr><td><code>variables[].defaultValue</code></td><td><code>any</code></td><td>no</td><td>Initial variable value; a defaulted variable is already present at the start of a session.</td></tr>
           <tr><td><code>variables[].required</code></td><td><code>boolean</code></td><td>no</td><td>Whether the workflow requires a value for this variable. Default: <code>false</code></td></tr>
