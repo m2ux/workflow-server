@@ -199,7 +199,7 @@ PY
 
   python3 "${CHECKOUT_DIR}/scripts/render-harnesses.py" --workspace "$CHECKOUT_DIR" --mcp-stdin <<< "$mcp_json"
 
-  python3 "${CHECKOUT_DIR}/.codex/config/trust.py" "$CHECKOUT_DIR"
+  python3 "${CHECKOUT_DIR}/.codex/scripts/trust.py" "$CHECKOUT_DIR"
 }
 
 if [[ $# -eq 0 ]]; then

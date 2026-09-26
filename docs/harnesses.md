@@ -17,18 +17,19 @@ and the existing Linux bubblewrap launcher are required.
 | `config/curl-allow.json`, `config/webfetch-allow.json` | URL host and path grants |
 | `hooks/policy.py` | Decision precedence and classifier composition |
 | `hooks/protocol.py`, `hooks/runtime.py` | Reusable event protocol and policy execution |
-| `config/rendering.py` | Shared rule-text and configuration rendering helpers |
+| `scripts/rendering.py` | Shared rule-text and configuration rendering helpers |
 | `.claude/hooks/adapter.py` | Claude event translation and local settings lookup; Cursor uses its native Claude import |
 | `.codex/hooks/adapter.py` | Codex event translation and native approval delegation |
-| `.claude/config/render.py`, `.codex/config/render.py` | Harness-specific configuration formats |
-| `.codex/config/trust.py` | Codex project trust during deployment |
+| `.claude/scripts/render.py`, `.codex/scripts/render.py` | Harness-specific configuration formats |
+| `.codex/scripts/trust.py` | Codex project trust during deployment |
 | `scripts/render-harnesses.py` | Discover and run harness configuration renderers |
 | `scripts/sbx` | Filesystem and network containment |
 
-Each harness owns real `hooks/` and `config/` directories. Their `shared` links
-point to `../../hooks` and `../../config`. Rules and skills use their existing
+Each harness owns real `hooks/` and `scripts/` directories. Their `shared` links
+point to `../../hooks` and `../../scripts`. Rules and skills use their existing
 links to the root sources. Root implementations contain shared policy and
 utilities; harness formats and settings lookup belong to their harness directory.
+The root `config/` directory contains configuration data only.
 
 The shell list contains command patterns without harness tool wrappers. A
 trailing ` *` permits arguments, interior wildcards match full command text,
@@ -105,7 +106,7 @@ bash -n scripts/deploy-workspace.sh
 ```
 
 Shared tests live alongside reusable code; adapter tests live in each harness's
-`hooks/` and `config/` directories. The runner discovers these suites and runs
+`hooks/` and `scripts/` directories. The runner discovers these suites and runs
 each in a separate interpreter. The tests cover decision precedence, exact and wildcard command grants,
 sandbox redirection, URL scope, native approval delegation, imported Cursor
 events, malformed input, and generated configuration drift. Classifier scripts

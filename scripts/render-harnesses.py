@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def render(workspace: Path, home: Path, mcp: dict | None = None) -> dict[str, str]:
     outputs = {}
-    for path in sorted(ROOT.glob(".*/config/render.py")):
+    for path in sorted(ROOT.glob(".*/scripts/render.py")):
         spec = importlib.util.spec_from_file_location(path.parent.parent.name + "_renderer", path)
         adapter = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(adapter)

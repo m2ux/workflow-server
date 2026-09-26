@@ -15,7 +15,7 @@ Claude Code, Cursor, and Codex use common rules, skills, and command policy. Har
 ├── .codex/                        # Codex adapters and generated local configuration
 ├── rules/                         # Agent rules source
 ├── skills/                        # Agent skills source
-├── config/                        # Common permissions and URL policy
+├── config/                        # Configuration data: permissions and URL policy
 ├── hooks/                         # Shared classifiers, event protocol, and policy runtime
 ├── docs/                          # Workspace documentation
 ├── scripts/

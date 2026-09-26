@@ -16,7 +16,7 @@ spec.loader.exec_module(renderer)
 
 class RendererTests(unittest.TestCase):
     def test_shared_links_resolve_from_real_harness_directories(self):
-        for area in ("config", "hooks"):
+        for area in ("scripts", "hooks"):
             for directory in ROOT.glob(f".*/{area}"):
                 shared = directory / "shared"
                 with self.subTest(directory=directory):

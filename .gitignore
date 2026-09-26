@@ -5,5 +5,5 @@
 /.claude/settings.json
 /.codex/*
 !/.codex/hooks/
-!/.codex/config/
+!/.codex/scripts/
 __pycache__/

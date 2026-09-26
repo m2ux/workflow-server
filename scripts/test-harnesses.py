@@ -8,9 +8,9 @@ import sys
 
 def main() -> None:
     root = Path(__file__).resolve().parent.parent
-    directories = [root / area for area in ("hooks", "config", "scripts")]
+    directories = [root / area for area in ("hooks", "scripts")]
     directories.extend(sorted(root.glob(".*/hooks")))
-    directories.extend(sorted(root.glob(".*/config")))
+    directories.extend(sorted(root.glob(".*/scripts")))
     for directory in directories:
         if any(directory.glob("test_*.py")):
             subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", str(directory),
