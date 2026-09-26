@@ -4,3 +4,4 @@
 /.worktrees/
 /.claude/settings.json
 /.codex/
+__pycache__/

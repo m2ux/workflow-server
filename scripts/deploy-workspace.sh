@@ -25,7 +25,7 @@ usage() {
   cat <<EOF
 Check out branch workspace as ./<name> in the current directory.
 The workspace file stays cursor.code-workspace.
-Render machine-local Claude settings and Codex config into the checkout.
+Render machine-local Claude, Cursor, and Codex configuration into the checkout.
 Leave the committed kickoff links in place. Add component worktrees with
 scripts/add-component.sh. Run scripts/deploy-engineering.sh from
 this checkout to create the .engineering worktree. This script creates
@@ -105,53 +105,9 @@ ensure_symlink() {
 # Committed kickoff links stay. These files hold this machine's home directory
 # and MCP command paths.
 render_machine_local() {
-  local template="${CHECKOUT_DIR}/.claude/settings.template.json"
-  local settings="${CHECKOUT_DIR}/.claude/settings.json"
   local mcp="${CHECKOUT_DIR}/.mcp.json"
-  local rules="${CHECKOUT_DIR}/rules"
   local mcp_json
-
-  [[ -n "${HOME:-}" ]] || die "HOME is unset"
-  if [[ ! -f "$template" ]]; then
-    template="${CHECKOUT_DIR}/.claude/settings.example.json"
-  fi
-  [[ -f "$template" ]] || die "Claude settings template missing under ${CHECKOUT_DIR}/.claude"
   [[ -f "$mcp" ]] || die "MCP document missing: ${mcp}"
-
-  echo "Rendering Claude settings → ${settings}"
-  HOME_DIR="$HOME" DEST_DIR="$CHECKOUT_DIR" TEMPLATE_PATH="$template" python3 - <<'PY' >"$settings"
-import json, os, re, sys
-
-home = os.environ["HOME_DIR"].rstrip("/")
-workspace = os.environ["DEST_DIR"].rstrip("/")
-path = os.environ["TEMPLATE_PATH"]
-raw = open(path, encoding="utf-8").read()
-try:
-    doc = json.loads(raw)
-except json.JSONDecodeError as exc:
-    print(f"error: invalid Claude settings template: {path}: {exc}", file=sys.stderr)
-    sys.exit(1)
-
-def expand(value):
-    if not isinstance(value, str):
-        return value
-    value = value.replace("__WORKSPACE__", workspace)
-    value = value.replace("__HOME__", home)
-    value = value.replace("${HOME}", home)
-    return re.sub(r"\$HOME(?![A-Za-z0-9_])", home, value)
-
-def expand_obj(obj):
-    if isinstance(obj, dict):
-        return {k: expand_obj(v) for k, v in obj.items() if k != "_comment"}
-    if isinstance(obj, list):
-        return [expand_obj(v) for v in obj]
-    if isinstance(obj, str):
-        return expand(obj)
-    return obj
-
-json.dump(expand_obj(doc), sys.stdout, indent=2, ensure_ascii=False)
-sys.stdout.write("\n")
-PY
 
   local concept_entry concept_index gitnexus_bin node_bin
   concept_entry="${CONCEPT_RAG_ENTRY:-${HOME}/projects/main/concept-rag/dist/conceptual_index.js}"
@@ -241,97 +197,7 @@ json.dump(doc, sys.stdout, ensure_ascii=False)
 PY
   )"
 
-  mkdir -p "${CHECKOUT_DIR}/.codex"
-  MCP_JSON="$mcp_json" RULES_DIR="$rules" \
-    DEST_DIR="$CHECKOUT_DIR" HOME_DIR="$HOME" python3 - <<'PY' >"${CHECKOUT_DIR}/.codex/config.toml"
-import json, os, re, sys
-
-mcp = json.loads(os.environ["MCP_JSON"])
-rules_dir = os.environ.get("RULES_DIR") or ""
-workspace = os.environ.get("DEST_DIR", "").rstrip("/")
-home = os.environ.get("HOME_DIR", "").rstrip("/")
-
-def toml_str(value):
-    escaped = (
-        value.replace("\\", "\\\\")
-        .replace('"', '\\"')
-        .replace("\n", "\\n")
-        .replace("\r", "\\r")
-        .replace("\t", "\\t")
-    )
-    return f'"{escaped}"'
-
-def rule_body(text):
-    if not text.startswith("---"):
-        return ""
-    end = text.find("\n---", 3)
-    if end < 0:
-        return ""
-    front = text[3:end]
-    if not re.search(r"(?m)^alwaysApply:\s*true\s*$", front):
-        return ""
-    lines = text[end + 4 :].strip().splitlines()
-    while lines and (not lines[0].strip() or lines[0].startswith("# ")):
-        lines.pop(0)
-    return "\n".join(lines).strip()
-
-bodies = []
-if os.path.isdir(rules_dir):
-    names = sorted(n for n in os.listdir(rules_dir) if n.endswith(".md"))
-    if "workflow-server.md" in names:
-        names.remove("workflow-server.md")
-        names.insert(0, "workflow-server.md")
-    for name in names:
-        with open(os.path.join(rules_dir, name), encoding="utf-8") as handle:
-            body = rule_body(handle.read())
-        if body:
-            if workspace:
-                body = body.replace("__WORKSPACE__", workspace)
-            if home:
-                body = body.replace("__HOME__", home)
-            bodies.append(body)
-
-parts = [
-    "# Codex project config.",
-    "# Skills load from .agents/skills.",
-    "# MCP servers are the set written to mcp.json.",
-    "# Always-apply rule text is included here.",
-    "",
-]
-if bodies:
-    joined = "\n\n".join(bodies).replace('"""', '\\"\\"\\"')
-    parts.append('developer_instructions = """')
-    parts.append(joined)
-    parts.append('"""')
-    parts.append("")
-parts.append("[sandbox_workspace_write]")
-parts.append("writable_roots = [")
-parts.append(f"  {toml_str(workspace)},")
-parts.append("]")
-parts.append("")
-
-servers = mcp.get("mcpServers") or {}
-for name, spec in servers.items():
-    if not isinstance(spec, dict):
-        continue
-    parts.append(f"[mcp_servers.{name}]")
-    if isinstance(spec.get("command"), str):
-        parts.append(f"command = {toml_str(spec['command'])}")
-    args = spec.get("args")
-    if isinstance(args, list):
-        rendered = ",\n  ".join(toml_str(str(item)) for item in args)
-        parts.append(f"args = [\n  {rendered},\n]")
-    if isinstance(spec.get("url"), str):
-        parts.append(f"url = {toml_str(spec['url'])}")
-    env = spec.get("env")
-    if isinstance(env, dict) and env:
-        parts.append(f"[mcp_servers.{name}.env]")
-        for key, value in env.items():
-            parts.append(f"{key} = {toml_str(str(value))}")
-    parts.append("")
-
-sys.stdout.write("\n".join(parts).rstrip() + "\n")
-PY
+  python3 "${CHECKOUT_DIR}/scripts/render-harnesses.py" --workspace "$CHECKOUT_DIR" --mcp-stdin <<< "$mcp_json"
 
   HOME_DIR="$HOME" DEST_DIR="$CHECKOUT_DIR" python3 - <<'PY'
 import os, pathlib
@@ -431,7 +297,7 @@ echo "  Workspace    : ${CHECKOUT_DIR}/cursor.code-workspace"
 echo "  Worktrees    : ${CHECKOUT_DIR}/.worktrees/"
 echo
 echo "Kickoff files and tool links come from the workspace branch."
-echo "Machine-local files are .claude/settings.json and .codex/config.toml in the checkout."
+echo "Machine-local harness files are rendered by scripts/render-harnesses.py."
 echo
 echo "Add a component worktree with:"
 echo "  ${CHECKOUT_DIR}/scripts/add-component.sh <repo> <branch> [name]"
