@@ -16,9 +16,19 @@ and the existing Linux bubblewrap launcher are required.
 | `config/compound-bash.json` | Additional commands allowed within compound commands |
 | `config/curl-allow.json`, `config/webfetch-allow.json` | URL host and path grants |
 | `hooks/policy.py` | Decision precedence and classifier composition |
-| `hooks/adapters.py` | Claude and Codex event translation |
-| `hooks/dispatch.py` | JSON input/output entry point |
+| `hooks/protocol.py`, `hooks/runtime.py` | Reusable event protocol and policy execution |
+| `config/rendering.py` | Shared rule-text and configuration rendering helpers |
+| `.claude/hooks/adapter.py` | Claude event translation and local settings lookup; Cursor uses its native Claude import |
+| `.codex/hooks/adapter.py` | Codex event translation and native approval delegation |
+| `.claude/config/render.py`, `.codex/config/render.py` | Harness-specific configuration formats |
+| `.codex/config/trust.py` | Codex project trust during deployment |
+| `scripts/render-harnesses.py` | Discover and run harness configuration renderers |
 | `scripts/sbx` | Filesystem and network containment |
+
+Each harness owns real `hooks/` and `config/` directories. Their `shared` links
+point to `../../hooks` and `../../config`. Rules and skills use their existing
+links to the root sources. Root implementations contain shared policy and
+utilities; harness formats and settings lookup belong to their harness directory.
 
 The shell list contains command patterns without harness tool wrappers. A
 trailing ` *` permits arguments, interior wildcards match full command text,
@@ -47,12 +57,13 @@ Codex MCP server configuration; a fresh rendering reads `.mcp.json`. Deployment
 supplies its resolved MCP configuration through stdin.
 Generated files are overwritten on rendering and are gitignored.
 
-Claude registers one shared pre-tool dispatcher. Cursor uses its built-in
+Claude registers `.claude/hooks/adapter.py` as its pre-tool handler. Cursor uses its built-in
 Claude import; **Include Third-Party Plugins, Skills, and Other Configs** must
 be enabled in Cursor Settings → Agents → Third-Party Imports. Its `Shell`
 input is accepted by the same adapter. [Cursor compatibility reference](https://prod.cursor.com/docs/reference/third-party-hooks)
 
-Codex discovers the project hooks beside its configuration. Start a new session
+Codex registers `.codex/hooks/adapter.py` for both hook events and discovers the
+registrations beside its configuration. Start a new session
 in the trusted workspace, open `/hooks`, and review and trust both registrations.
 Codex tracks trust against each hook definition and skips untrusted hooks.
 This applies to clients using the Codex runtime, including CLI and IDE sessions.
@@ -89,11 +100,13 @@ decisions where a harness exposes a supported event.
 ## Validation
 
 ```bash
-python3 -m unittest discover -s hooks -p 'test_*.py' -v
+python3 scripts/test-harnesses.py
 bash -n scripts/deploy-workspace.sh
 ```
 
-The tests cover decision precedence, exact and wildcard command grants,
+Shared tests live alongside reusable code; adapter tests live in each harness's
+`hooks/` and `config/` directories. The runner discovers these suites and runs
+each in a separate interpreter. The tests cover decision precedence, exact and wildcard command grants,
 sandbox redirection, URL scope, native approval delegation, imported Cursor
 events, malformed input, and generated configuration drift. Classifier scripts
 also accept `--test`; for example, pass command text on stdin to

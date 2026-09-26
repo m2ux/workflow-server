@@ -125,7 +125,7 @@ render_machine_local() {
     node_bin="node"
   fi
 
-  echo "Rendering Codex config → ${CHECKOUT_DIR}/.codex/config.toml"
+  echo "Resolving workspace MCP configuration"
   mcp_json="$(
     MCP_URL="${WORKFLOW_SERVER_MCP_URL:-http://127.0.0.1:3000/mcp}" \
     EXISTING_PATH="$mcp" \
@@ -199,25 +199,7 @@ PY
 
   python3 "${CHECKOUT_DIR}/scripts/render-harnesses.py" --workspace "$CHECKOUT_DIR" --mcp-stdin <<< "$mcp_json"
 
-  HOME_DIR="$HOME" DEST_DIR="$CHECKOUT_DIR" python3 - <<'PY'
-import os, pathlib
-
-home = pathlib.Path(os.environ["HOME_DIR"])
-paths = [os.environ["DEST_DIR"]]
-cfg = home / ".codex" / "config.toml"
-cfg.parent.mkdir(parents=True, exist_ok=True)
-text = cfg.read_text(encoding="utf-8") if cfg.exists() else ""
-for path in paths:
-    header = f'[projects."{path}"]'
-    if header in text:
-        continue
-    block = f'{header}\ntrust_level = "trusted"\n'
-    text = (text.rstrip() + "\n\n" + block) if text.strip() else block
-if not text.endswith("\n"):
-    text += "\n"
-cfg.write_text(text, encoding="utf-8")
-print(f"  trusted Codex projects in {cfg}")
-PY
+  python3 "${CHECKOUT_DIR}/.codex/config/trust.py" "$CHECKOUT_DIR"
 }
 
 if [[ $# -eq 0 ]]; then

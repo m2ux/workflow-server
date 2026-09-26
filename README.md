@@ -10,17 +10,18 @@ Claude Code, Cursor, and Codex use common rules, skills, and command policy. Har
 ├── CLAUDE.md                      # workspace instructions for agents (Claude shaped)
 ├── .mcp.json                      # MCP servers (Claude shaped)
 ├── .cursor/                       # Cursor project configuration
-├── .claude/                       # Claude project configuration
+├── .claude/                       # Claude hooks, configuration adapters, and shared-source links
 ├── .agents/                       # Shared skill discovery for Codex
-├── .codex/                        # Generated Codex instructions, MCP config, and hooks
+├── .codex/                        # Codex adapters and generated local configuration
 ├── rules/                         # Agent rules source
 ├── skills/                        # Agent skills source
 ├── config/                        # Common permissions and URL policy
-├── hooks/                         # Shared classifiers and harness event adapters
+├── hooks/                         # Shared classifiers, event protocol, and policy runtime
 ├── docs/                          # Workspace documentation
 ├── scripts/
 │   ├── deploy-workspace.sh        # checkout the template workspace
 │   ├── render-harnesses.py        # Render local harness configuration
+│   ├── test-harnesses.py          # Run shared and harness-owned test suites
 │   ├── fork-workspace.sh          # Create a fork from this checkout
 │   ├── deploy-engineering.sh      # Deploy engineering worktree
 │   ├── add-component.sh           # Add a project component from an external repo
