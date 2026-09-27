@@ -34,26 +34,20 @@ Python 3.11 or later and the existing Linux bubblewrap launcher are required.
 | `scripts/render-harnesses.py` | Discover and run harness configuration renderers |
 | `scripts/sbx` | Filesystem and network containment |
 
-Each harness owns real `hooks/` and `scripts/` directories. Their `shared` links
-point to `../../hooks` and `../../scripts`. Rules and skills use their existing
-links to the root sources. Root implementations contain shared policy and
-utilities; harness formats and settings lookup belong to their harness directory.
+Each harness owns a `hooks/` and `scripts/` directory as well as pointing to common policy at these location at the root. Rules and skills use their existing
+links to the root sources. Root implementations contain shared policy and utilities; harness formats and settings lookup belong to their harness directory.
 The root `config/` directory contains configuration data only.
 
-The shell list contains command patterns without harness tool wrappers. A
-trailing ` *` permits arguments, interior wildcards match full command text,
-and a pattern without wildcards requires an exact match. The shared matcher
-also handles command chains, recognized wrappers, and project-local scripts.
+The shell list contains command patterns without harness tool wrappers. A trailing ` *` permits arguments, interior wildcards match full command text,
+and a pattern without wildcards requires an exact match. The shared matcher also handles command chains, recognized wrappers, and project-local scripts.
 Blocking rules run before confirmation rules, which run before approval grants.
 
-Claude user and local settings can extend command grants through the Claude
-adapter. Workspace-wide grants belong in `config/permissions.json` so every
+Claude user and local settings can extend command grants through the Claude adapter. Workspace-wide grants belong in `config/permissions.json` so every
 harness receives them.
 
 ## Render and activate
 
-Workspace deployment calls the renderer. After editing common configuration or
-rules in an existing workspace, run:
+Workspace deployment calls the renderer. After editing common configuration or rules in an existing workspace, run:
 
 ```bash
 python3 scripts/render-harnesses.py
