@@ -315,8 +315,16 @@ Mapping every row to a criterion found four gaps:
 | E01 W11 (`enforcement.json`) delivered no criterion | E01 AC21: severity stated once, in the registry |
 | E05 AC11 (ships meeting the thresholds) was delivered by no E05 task, and duplicated E06 AC6 | Removed; E05's Non-goals name E06 as the owner |
 
-The initiative's AC9 (no rule's only home is prose) is delivered jointly by E01, E02 and E05, and
-AC8 (thresholds met) by E05 and E06.
+The initiative's first ten criteria restated its epics' criteria almost word for word. They are
+replaced by five at the level of the goal, which the epics' criteria together make true:
+
+| Criterion | Delivered by |
+| --- | --- |
+| AC1. Agents working from the skill meet the conformance, quality and fitness thresholds | E05, E06 |
+| AC2. Every rule has one formal statement bound to its enforcer; the build fails on disagreement, and nothing is enforced that no rule states | E01, E03 |
+| AC3. A draft can be checked against every rule, walked and costed before it merges | E03, E04 |
+| AC4. Everything a designer needs is reachable from the one skill, from its single source, and restated nowhere else | E02, E05 |
+| AC5. The language is versioned apart from the server, and a deployed server enforces the version it declares | E00 |
 
 ## Tables as the statement of order
 
