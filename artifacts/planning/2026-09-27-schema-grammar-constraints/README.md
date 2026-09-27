@@ -49,10 +49,19 @@ generated from both.
 | Concern | Notation | Covers |
 | --- | --- | --- |
 | Structure | JSON Schema, generated from Zod (existing) | Fields, types, closed objects |
-| Syntax inside values | Executable grammar (EBNF family) | `when`, technique and routine references, identifiers, `{token}` interpolation, bag paths, instance ids, keys, filenames, semver, session index |
-| Document outline | Grammar over heading tokens | Technique markdown: sections, `####` members, `#####` fields, protocol blocks |
-| Static semantics | Alloy (relational first-order logic) | Uniqueness, reference resolution, graph and exit binding, fans (today's L1–L16), variable provenance, loop shape, routine signature closure, value sets |
-| Runtime semantics | Alloy 6 temporal, or TLA+ | Session transitions: checkpoint gating, frontier and fan join, status |
+| Syntax inside values | W3C EBNF, `.ebnf` | `when`, technique and routine references, identifiers, `{token}` interpolation, bag paths, instance ids, keys, filenames, semver, session index |
+| Document outline | W3C EBNF over heading tokens, `.ebnf` | Technique markdown: sections, `####` members, `#####` fields, protocol blocks |
+| Static semantics | Alloy, `.als` | Uniqueness, reference resolution, graph and exit binding, fans (today's L1–L16), variable provenance, loop shape, routine signature closure, value sets |
+| Runtime semantics | Alloy 6 temporal, `.als` | Session transitions: checkpoint gating, frontier and fan join, status |
+
+The formats are the ones the 2026-02-10 experiment used, `grammar/*.ebnf` and `constraints/*.als`.
+None of its content carries over: it specified a superseded model.
+
+- **EBNF is executable.** The `ebnf` package (MIT, no dependencies, TypeScript types) builds a parser
+  from a W3C EBNF grammar at runtime. The `.ebnf` file is therefore both the readable spec and the
+  reference parser. Its last release is 2023, a maintenance risk weighed in open question 2.
+- **Alloy covers both semantics.** Alloy 6 adds mutable state and temporal operators, so static and
+  runtime semantics share one notation and one analyzer.
 
 - **Every production and every fact carries a rule id** and a one-line statement in its own comment.
   The ids are semantic slugs such as `loop.repeat-with-break` and `when.mixed-chain`. Numbered ids
@@ -82,8 +91,7 @@ rule('loop.repeat-with-break', {
   error rule, fails. This replaces the unchecked `enforcement.json` owner/strictness metadata.
 - **Grammar conformance.** Sentences are generated from each production, together with near-miss
   negatives. Every registered implementation of that grammar must accept and reject exactly as the
-  reference parser does. Where the grammar notation is executable, the reference parser is the
-  grammar. Hand-written parsers and regexes remain only while this differential test keeps them
+  reference parser does, which is the `.ebnf` file run by the `ebnf` package. Hand-written parsers and regexes remain only while this differential test keeps them
   honest, and are retired in favour of the generated one.
 - **Constraint conformance.** The Analyzer enumerates small instances that satisfy every fact but one.
   Each is rendered as a fixture corpus and run through the real loader and guards. The run must be
@@ -119,17 +127,14 @@ Each layer works end to end before the next begins.
 
 Each has a recommendation for discussion.
 
-1. **Location.** Restore root `grammar/` and `constraints/`, or use one `spec/` root holding both? *Rec:
-   `spec/grammar/` and `spec/constraints/`, one root with one owner.*
-2. **Grammar notation.** Options:
-   - Ohm, where the grammar file holds no actions and is executable;
-   - ISO/W3C EBNF plus a separate generator;
-   - Peggy, a PEG with inline actions.
-
-   *Rec: Ohm. The grammar stays readable as a spec and is also the reference parser. This adds one
-   dependency, since nothing existing parses grammars.*
-3. **Runtime semantics notation.** Alloy 6 temporal for everything, or TLA+ for runtime? *Rec: Alloy
-   6, one language and one analyzer.*
+1. **Location.** Restore root `grammar/` and `constraints/`, or nest both under one `spec/` root? *Rec:
+   restore the root folders, the layout the experiment established.*
+2. **EBNF runtime.** Depend on the `ebnf` package, or keep a small W3C EBNF interpreter in-tree? *Rec:
+   the package. It has no dependencies, and the conformance tests pin its behaviour, so a later swap
+   is contained.*
+3. **EBNF dialect.** W3C EBNF (`::=`, `?`, `*`, `+`, character classes), or ISO/IEC 14977 (`=`, `;`,
+   `[ ]`, `{ }`)? *Rec: W3C. The experiment's files were written in it, although its README cited ISO,
+   and it is the dialect the `ebnf` package runs.*
 4. **Constraint conformance.** Analyzer-generated fixtures (needs a JVM in CI), or hand-written
    fixtures per rule? *Rec: generated. Hand-written fixtures are the coverage gap already observed.*
 5. **Zod.** Keep it hand-written as a registered implementation, or generate it from the spec? *Rec:
