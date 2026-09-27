@@ -2,9 +2,8 @@
 
 Records delivered work on an initiative, its epics and their task issues: links each delivered
 task to its pull request, ticks the criteria that now hold, closes what is complete, and brings the
-initiative's project board up to date. The Work
-Breakdown guide (`work-breakdown.md`) states how pull requests name tasks and how delivery is
-recorded.
+initiative's project board up to date. The Work Breakdown guide (`work-breakdown.md`) states how
+pull requests name tasks and how delivery is recorded.
 
 ## Procedure
 
@@ -56,11 +55,10 @@ recorded.
    `--tick AC1,AC3`. Put each criterion that names no automated test to the user, who confirms it
    and ticks it. Close the initiative when it reports every criterion ticked.
 12. **Update the board**, once every issue is patched and closed. Fetch the issues again first.
-    - **Find it.** List the owner's open boards: `gh api --paginate "users/{owner}/projectsV2?per_page=100"
-      --jq '.[] | select(.closed | not) | .number'`, under `orgs/{owner}` when
-      `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`. Fetch each board's items and
-      run `scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json`. The one board
-      holding the initiative is its board. When none or several do, ask the user which board, or
+    - **Find it.** List the owner's open boards, as the commands below show; they sit under
+      `orgs/{owner}` in place of `users/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type`
+      is `Organization`. Fetch each board's items and run `scripts/board.py --find issue-936.json
+      2=items-2.json 7=items-7.json`. The one board holding the initiative is its board. When none or several do, ask the user which board, or
       none; the first update puts the initiative on the board chosen, so the next search finds it.
     - **Plan.** Fetch the board's fields, then its items with the Status field id, and run
       `scripts/board.py issue-936.json --epics … --tasks … --prs prs.json --board
@@ -82,9 +80,11 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | .number'
 gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100" > items-2.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json
 gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" > fields.json
+gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
 gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=411749936" > items.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/
 ```

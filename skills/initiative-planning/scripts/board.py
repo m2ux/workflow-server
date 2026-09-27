@@ -42,7 +42,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import LINK, cells, split_sections
+from format import LINK, split_sections
 from update import PR_REF, ISSUE_URL, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -224,11 +224,11 @@ def main() -> int:
             if not tid:
                 continue
             task_issue = linked_issue(tr[0])
+            if task_issue is not None and task_issue not in tasks:
+                unresolved.append(f'E{epic_key}:{tid}: task issue #{task_issue} is not given with --tasks')
+                continue
             delivered_any |= board.row_delivered(number, tid, f'E{epic_key}:{tid}')
             if task_issue is None:
-                continue
-            if task_issue not in tasks:
-                unresolved.append(f'E{epic_key}:{tid}: task issue #{task_issue} is not given with --tasks')
                 continue
             t = tasks[task_issue]
             if t['state'] == 'closed':
@@ -267,7 +267,7 @@ def main() -> int:
     missing = [s for s in STATUSES if s not in options]
     if missing:
         sys.exit(f"the board's Status field lacks {', '.join(missing)}")
-    out = Path(args.out)
+    out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     for name, option in options.items():
         body = {'fields': [{'id': field['id'], 'value': option}]}
