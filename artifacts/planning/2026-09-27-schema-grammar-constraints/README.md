@@ -151,19 +151,19 @@ found and each is now owned. Owners use the epic numbering in the next section.
 
 | # | Gap | Owner |
 | --- | --- | --- |
-| 1 | Published schemas carry server-built fields; rules differ between authored and materialised forms | E01 W07 (#937) |
-| 2 | Ten convention guards fail changes against rules no stated set contains | E01 W08 |
-| 3 | Resource files and cross-references have no grammar | E01 W09 |
+| 1 | Published schemas carry server-built fields; rules differ between authored and materialised forms | E01 W03 (#937) |
+| 2 | Ten convention guards fail changes against rules no stated set contains | E01 W06 |
+| 3 | Resource files and cross-references have no grammar | E01 W08 |
 | 4 | The execution model and delivery limits are absent from the set | E03 (#939) |
-| 5 | No catalogue of existing reusable parts | E05 W07 (#938) |
+| 5 | No catalogue of existing reusable parts | E05 W02 (#938) |
 | 6 | Nothing proves the spec complete; the loader skips misnamed files silently | E01 W10 |
 | 7 | The canon contradicts itself and the code; citations drifted | E02 (#940) |
 | 8 | Every check is static, and none runs on a draft | E04 (#941) |
 | 9 | Rule entries carry no fix | E01, every rule and reference entry |
-| 10 | Principles and anti-patterns are not indexed by construct | E02 W04 |
+| 10 | Principles and anti-patterns are not indexed by construct | E02 W03 |
 | 11 | "Reliable" has no definition, target or quality measure | E06 (#942) |
-| 12 | Whether the skill needs a design method | E06 W06, then E05 W08 |
-| 13 | Skill, reference, server and corpus can disagree on version | E00 W05, E01 AC17, E05 W03 |
+| 12 | Whether the skill needs a design method | E06 W06, which adds the method to the skill |
+| 13 | Skill, reference, server and corpus can disagree on version | E00 W02, E01 AC17, E05 W05 |
 | 14 | In-flight language changes (#709, #750, I00 E07, I06) | Initiative sequencing: spec-first, with the server's declared version |
 | 15 | The `ebnf` package does not generate sentences | E01 W01 |
 
@@ -236,15 +236,15 @@ the issues.
 
 | # | Problem | Resolution |
 | --- | --- | --- |
-| 1 | Deployed image copies `schemas/` from `main`; hosts refresh only `workflows`, so deletion strips deployed servers | E00 W03: the image build checks out the declared language tag; originals deleted only after it ships (W04) |
+| 1 | Deployed image copies `schemas/` from `main`; hosts refresh only `workflows`, so deletion strips deployed servers | E00 W03: the image build checks out the declared language tag; originals deleted only after it ships (W05) |
 | 2 | `workspace` consumers (the `workflow-canon` skill) name moved canon paths | E00 W02: a sweep of every branch repoints each reference |
-| 3 | `main` would turn red between the rewire and the declared version | The declared tag arrives with the rewire (E00 W02); W06 adds per-rule pending reports |
+| 3 | `main` would turn red between the rewire and the declared version | The declared tag arrives with the rewire (E00 W02); E01 W02 adds per-rule pending reports |
 | 4 | "Spec version" was undefined | A `language/vX.Y.Z` tag, checked out by CI, provisioning and the image; the head is read only for pending rules |
 | 5 | A release adding several rules blocks the server's bump | Each release adds one rule family |
 | 6 | "Serves the same resources" had no baseline | Snapshot at `main/v0.29.0` and `workflows/v0.33.0`, reproduced exactly (E00 AC3) |
 | 7 | E01 AC2 contradicted AC15 | AC2: an Alloy fact or a registered convention rule |
-| 8 | Binding resolution owned by E01 W03 and E03 W02 | E01 W03 owns binding and provenance; E03 keeps visibility, audience, inheritance and size |
-| 9 | Specifying `condition` ahead of its retirement | E01 W01 covers `when` only; #750 before E01 W03 (AC18) |
+| 8 | Binding resolution owned by E01 W03 and E03 W02 | E01 W05 owns binding and provenance; E03 keeps visibility, audience, inheritance and size |
+| 9 | Specifying `condition` ahead of its retirement | E01 W01 covers `when` only; #750 before E01 W05 (AC18) |
 | 10 | Skill links to worktree paths fail on a deployed setup | The skill links MCP resources served at the declared tag (E05 AC7) |
 | 11 | E06 baseline measures homes the migration deletes | Baseline at the pre-migration tags (E06 W04) |
 | 12 | Quality audit instrument unnamed and uncalibrated | Named, calibrated on seeded faults, independent of the skill (E06 AC7) |
@@ -258,6 +258,42 @@ Decisions taken with the review:
 - **Deployment:** the image includes the declared language tag.
 - **Version:** a `language/vX.Y.Z` tag, one rule family per release.
 - **Skill links:** MCP resources.
+
+## Ordering review
+
+A third pass checked every task's dependencies as a graph. It confirmed there are no cycles and
+that every dependency names a real task. It then renumbered so that epics run in number order,
+and so that tasks within each epic are numbered in the order they can start.
+
+**Moved or removed.**
+
+- **Pending-rules report:** moves from E00 to E01 W02. It needs the rule catalogue, and it made E00
+  depend on a later epic.
+- **E05's design-method task:** removed. It duplicated E06 W06, which adds the method, and made
+  E05 depend on a later epic.
+- **E02's contradiction list:** narrows to the canon itself. Non-canon homes are E05 W03's to repoint
+  or delete.
+
+**Dependencies corrected.**
+
+- **E01 W01:** also waits on the language branch CI (E00 W04), which it extends.
+- **E01 W03 (definition-file schemas):** comes before the rule families, so each rule is written
+  against authored fields with its form tag.
+- **E01 W10 (completeness):** waits on every rule family, and W11 (`enforcement.json`) waits on W10.
+- **E02 W04 (mechanical anti-patterns):** waits on E01 W10. It needs every family, not just the first
+  slice.
+- **E03 W03 (contract inheritance):** also waits on the technique outline (E01 W07).
+- **E05 W03 (prose homes):** needs the moved canon and the first reference, not the skill, so it runs
+  earlier.
+- **E06 W03 (harness):** waits on the draft walker (E04 W02), because fitness is measured by walking
+  a draft.
+- **E06 skill runs:** wait on the distributed skill and the complete validator.
+
+**Longest chains.** Two tie at nine steps. Both pass through E01 W05 (static semantics, behind #750)
+and W09 (runtime semantics):
+
+- E00 W01 → W02 → E01 W01 → W03 → W05 → W09 → W10 → E02 W04 → W05
+- E00 W01 → W02 → E01 W01 → W03 → W05 → W09 → E04 W04 → E06 W05 → W06
 
 ## Rollout
 
