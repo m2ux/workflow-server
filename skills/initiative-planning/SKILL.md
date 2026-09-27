@@ -39,15 +39,18 @@ columns, numbering, references and delivery.
 | --- | --- | --- |
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
 | Epic | `[I07:E00] Name: Subtitle` | `type:epic`, a `theme:*` |
-| Task | `[I07:E00:W01] Name: subtitle` | `type:task` |
+| Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
   epic. Initiatives and epics count from `00`, and tasks from `W01`.
 - **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
-  colon, and a subtitle stating the outcome. Match the capitalisation of recent titles in the same
-  initiative.
+  colon, and a subtitle stating the outcome. An epic's or task's name is two or three words and
+  its subtitle a succinct summary of at most ten, both in title case: `[I07:E06] Reliability
+  Evaluation: Briefs, Measures and the Thresholds That Define Reliable`. Match the capitalisation of recent
+  titles in the same initiative.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
-  `task.md`. Keep the section order and the table columns. Fill each `{{…}}` and delete a section
+  `task.md`. A task issue has an epic's structure without the Work Breakdown table. Keep the
+  section order and the table columns. Fill each `{{…}}` and delete a section
   the template marks as optional when it has nothing to say. What a body leaves out is in the Work
   Breakdown guide.
 - **Check current practice.** Before relying on the scheme, read one recent initiative and one epic.

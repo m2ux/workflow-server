@@ -11,7 +11,7 @@ optional ("delete the section", in any case), and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
   - a section alias renamed: Acceptance criteria to Acceptance Criteria, and Solution to Proposal
-    on an open initiative or epic (a closed one keeps Solution)
+    on an open issue (a closed one keeps Solution)
   - a progress section removed (Where it stands, Progress, Outcome): the tables and criteria show
     where the work stands
   - template sections put in template order, each extra section moving with the one before it
@@ -59,8 +59,9 @@ Left to decide, since each needs new content or a judgement:
   - a Description cell over eight words or holding a semicolon, whose detail belongs in
     criteria or goals
   - acceptance criteria or references partly labelled or numbered out of sequence
-  - no theme:* label on an initiative or epic, a title without "Name: Subtitle", or an epic
-    title whose name runs past eight words
+  - no theme:* label on an initiative or epic, a title without "Name: Subtitle", or an epic or
+    task title whose name is not two or three words or whose subtitle runs past ten
+  - an issue several row ids link, which backs several tasks and so belongs under References
   - an unfilled {{...}} field or #E00 placeholder
   - a Work Breakdown reference to an epic that cannot be linked: one of another initiative, one the
     initiative's table does not list, or any at all when an epic is checked without --initiative
@@ -81,6 +82,8 @@ ALIASES = {'Acceptance criteria': 'Acceptance Criteria'}
 PROGRESS = ('Where it stands', 'Where this stands', 'Progress', 'Outcome')
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
+EPIC_NAME = (2, 3)
+MAX_SUBTITLE = 10
 REFERENCE = re.compile(r'github\.com/[^)\s]*/(?:issues|pull)/\d+|#\d+\b|\bI\d\d(?:[: ]E\d\d(?:[: ]W\d\d)?)?\b|'
                        r'(?<![\w:])E\d\d(?:[: ]W\d\d)?\b|(?<![\w:])W\d\d\b')
 COUNT = re.compile(r'\d[\d,.]*|\b(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|dozen|twenty|'
@@ -214,9 +217,13 @@ class Review:
         if ': ' not in title[m.end():]:
             self.decide.append('title has no "Name: Subtitle" after the prefix')
         name = epic_name(title)
-        if self.kind == 'epic' and len(name.split()) > MAX_DESCRIPTION:
-            self.decide.append(f'title name runs to {len(name.split())} words; the initiative row carries it, '
-                               f'so it keeps to {MAX_DESCRIPTION}')
+        subtitle = PREFIX.sub('', title).partition(': ')[2]
+        if self.kind != 'initiative' and not EPIC_NAME[0] <= len(name.split()) <= EPIC_NAME[1]:
+            self.decide.append(f'title name runs to {len(name.split())} words; an epic or task name is '
+                               f'{EPIC_NAME[0]} or {EPIC_NAME[1]}')
+        if self.kind != 'initiative' and len(subtitle.split()) > MAX_SUBTITLE:
+            self.decide.append(f'title subtitle runs to {len(subtitle.split())} words; it is a succinct summary '
+                               f'of at most {MAX_SUBTITLE}')
         if self.kind == 'epic' and self.initiative:
             for line in initiative_rows(self.initiative['body'] or ''):
                 epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
@@ -237,16 +244,14 @@ class Review:
         body = (self.issue.get('body') or '').replace('\r\n', '\n')
         preamble, sections = split_sections(body)
         template = Template(self.kind)
-        closed = self.kind != 'task' and self.issue.get('state') == 'closed'
+        closed = self.issue.get('state') == 'closed'
         progress = [h for h, _ in sections if h in PROGRESS]
         if progress:
             sections = [s for s in sections if s[0] not in PROGRESS]
             self.fixed.append(f'section "{progress[0]}" removed: the tables and criteria show where the '
                               'work stands')
 
-        aliases = dict(ALIASES)
-        if self.kind != 'task':
-            aliases['Solution'] = 'Proposal'
+        aliases = dict(ALIASES, Solution='Proposal')
         names = [aliases.get(h, h) for h, _ in sections]
         as_own = ['Goals' if self.kind == 'initiative' and h.lower() == 'acceptance criteria' else h
                   for h in names]
@@ -297,6 +302,7 @@ class Review:
                 lines = self.strip_prose(section[1])
                 section[1] = self.fix_names(self.fix_references(self.fix_table(lines, template.columns)))
                 self.check_dependencies(section[1])
+                self.check_shared(section[1])
             elif h == 'Non-goals':
                 section[1] = self.fix_bullets(section[1], h)
                 self.check_non_goals(section[1])
@@ -516,6 +522,18 @@ class Review:
         if named:
             self.fixed.append("Description set to the epic's title name: " + ', '.join(named))
         return out
+
+    def check_shared(self, lines: list[str]) -> None:
+        """An issue several row ids link backs several tasks, so it is a reference, not a task's own."""
+        linked: dict[str, list[str]] = {}
+        for line in [l for l in lines if l.startswith('|')][2:]:
+            m = re.fullmatch(r'\[([EW]\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
+            if m:
+                linked.setdefault(m[2], []).append(m[1])
+        for issue, rows in linked.items():
+            if len(rows) > 1:
+                self.decide.append(f'{", ".join(rows)} all link #{issue}: an issue backing several tasks is a '
+                                   'reference, cited under References with the ids unlinked')
 
     def fix_references(self, lines: list[str]) -> list[str]:
         """Give table references colons, and link each epic reference to its issue."""

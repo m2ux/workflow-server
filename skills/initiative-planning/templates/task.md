@@ -1,34 +1,22 @@
-## Summary
+## Overview
 
-{{Two or three sentences: the defect or capability, and why it is worth doing now.}}
+{{One paragraph: what this task delivers and why it exists within the epic.}}
 
-## What happens today
+## Problem
 
-{{The concrete behaviour, with an example a reader can reproduce.}}
+{{The current state with measured evidence: counts, paths, file:line. Bullets for distinct facets.}}
 
-## The evidence
+## Proposal
 
-{{Measurements, walks or audit results that establish the problem.}}
-
-## The fix
-
-{{What changes, and the rule the change holds to.}}
-
-## Why now is cheap
-
-{{What already exists that this builds on. Delete the section when nothing does.}}
-
-## Scope
-
-{{Files, constructs or components touched.}}
+{{The design, in bolded paragraphs or bullets.}}
 
 ## Acceptance Criteria
 
-- [ ] **AC1.** {{A checkable statement.}}
+- [ ] **AC1.** {{A checkable end-state statement of one invariant.}}
 
-## Investigation detail
+## Open questions
 
-{{Supporting analysis a reviewer may want but the fix does not depend on. Delete the section when there is none.}}
+- {{An undecided point the task cannot start without. Resolve every one before the task starts, then delete the section.}}
 
 ## References
 
