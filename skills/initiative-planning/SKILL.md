@@ -5,10 +5,12 @@ description: >-
   and [Ixx:Eyy:Wzz] tasks, written from the house body templates, with a planning record on the
   engineering branch. Plan mode raises or restructures an initiative, runs review passes against its
   goal, for consistency and for dependency order, and renumbers epics and tasks so numbers follow
-  run order. Review mode checks existing issues against the templates and fixes them. Use when the
-  user asks to raise, plan or restructure an initiative or epic, to review an initiative, to check an
-  issue's format or bring it into the house layout, to check or fix dependencies or ordering, to
-  renumber epics or tasks, or to fold review findings into issues.
+  run order. Review mode checks existing issues against the templates and fixes them. Update mode
+  records delivered work: links each delivered task to its pull request, ticks the criteria that
+  now hold, and closes what is complete. Use when the user asks to raise, plan or restructure an
+  initiative or epic, to review an initiative, to check an issue's format or bring it into the house
+  layout, to check or fix dependencies or ordering, to renumber epics or tasks, to fold review
+  findings into issues, or to update an initiative or epic with completed work.
 ---
 
 # Initiative Planning
@@ -25,6 +27,8 @@ Read the file for the mode the request calls for:
   check dependencies; renumber; fold findings in: `references/plan-mode.md`.
 - **Review mode** — check existing issues against the templates and fix them:
   `references/review-mode.md`.
+- **Update mode** — record delivered work: link tasks to their pull requests, tick criteria that
+  hold, and close complete epics and initiatives: `references/update-mode.md`.
 
 ## House scheme
 
@@ -48,6 +52,10 @@ Read the file for the mode the request calls for:
   acceptance criteria it delivers: `… → AC2, AC5`. An epic's rows cite the epic's criteria, and an
   initiative's rows the initiative's. Every criterion is delivered by at least one row, so an agent
   working a task knows which criteria it must meet.
+- **Delivery.** A pull request's title starts with the task it delivers, `[I07:E00:W01] Subject`,
+  or the tasks it delivers together, `[I07:E00:(W01,W02)] Subject`. A delivered task's id in its
+  epic's table links that pull request: `[W01](https://…/pull/950)`. An undelivered task's id is
+  plain. A task's **With** cell lists the tasks that can land in the same pull request.
 - **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx:Eyy:Wzz]` issue only
   when it needs discussion or evidence of its own; its row then links that issue.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,

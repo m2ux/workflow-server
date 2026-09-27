@@ -15,6 +15,9 @@ Fixed in the body written to --fix, keeping the issue's wording:
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
+  - the Can Accompany column renamed With
+  - a PR column folded into the task ids: each row's single PR or commit link moves onto its id,
+    and an empty or "in flight" cell is dropped
   - table rows padded to the header's width
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
@@ -25,8 +28,8 @@ Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - a fixed template sentence missing or reworded
-  - a Work Breakdown column the template lacks, such as Work in place of Outcomes, or a row id of
-    the wrong form
+  - a Work Breakdown column the template lacks, such as Work in place of Outcomes, a PR cell
+    holding anything but one link, or a row id of the wrong form
   - an Outcomes cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
     cites one that does not exist, and a criterion no row delivers; a row marked "moved to" is
     exempt
@@ -52,6 +55,8 @@ ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
 OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
+LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
+COLUMN_ALIASES = {'Can Accompany': 'With'}
 
 
 def split_sections(text: str) -> tuple[list[str], list[list]]:
@@ -246,6 +251,14 @@ class Review:
         return [s for g in ordered for s in g]
 
     def fix_table(self, lines: list[str], columns: list[str]) -> list[str]:
+        """Rewrite the table, or leave it whole and report no table fix when a finding stops it."""
+        mark = len(self.fixed)
+        out = self.rewrite_table(lines, columns)
+        if out is lines:
+            del self.fixed[mark:]
+        return out
+
+    def rewrite_table(self, lines: list[str], columns: list[str]) -> list[str]:
         start = next((i for i, l in enumerate(lines) if l.startswith('|')), None)
         if start is None:
             self.decide.append('Work Breakdown has no table')
@@ -254,6 +267,15 @@ class Review:
         while end < len(lines) and lines[end].startswith('|'):
             end += 1
         header, rows = cells(lines[start]), [cells(l) for l in lines[start + 2:end]]
+        renamed = [c for c in header if COLUMN_ALIASES.get(c) in columns]
+        for c in renamed:
+            self.fixed.append(f'Work Breakdown column "{c}" renamed "{COLUMN_ALIASES[c]}"')
+        header = [COLUMN_ALIASES[c] if c in renamed else c for c in header]
+        folded = 'PR' in header and 'PR' not in columns
+        if folded:
+            header, rows = self.fold_pr_column(header, rows)
+            if header is None:
+                return lines
         unknown = [c for c in header if c not in columns]
         if 'Work' in unknown and 'Outcomes' in columns:
             self.decide.append('Work Breakdown has Work, not Outcomes: rename it and end each cell with '
@@ -283,9 +305,26 @@ class Review:
             if not pattern.fullmatch(re.sub(r'\[([^\]]*)\]\([^)]*\)', r'\1', r[0])):
                 self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: {r[0]}')
         table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
-        if header == columns and padded == rows:
+        if header == columns and padded == rows and not folded and not renamed:
             return lines
         return lines[:start] + table + lines[end:]
+
+    def fold_pr_column(self, header: list[str], rows: list[list[str]]):
+        """Move each row's PR link onto its task id, and drop the PR column."""
+        at = header.index('PR')
+        out = []
+        for r in rows:
+            cell = r[at] if at < len(r) else ''
+            link = LINK.fullmatch(cell)
+            task = r[0]
+            if link and not LINK.fullmatch(task):
+                task = f'[{task}]({link[2]})'
+            elif cell not in ('', 'in flight'):
+                self.decide.append(f'{r[0]}: PR cell "{cell}" is not one link a task id can carry')
+                return None, None
+            out.append([task] + [c for i, c in enumerate(r[1:], 1) if i != at])
+        self.fixed.append('PR column folded into task-id links')
+        return [c for c in header if c != 'PR'], out
 
     def fix_list(self, lines: list[str], tag: str, checkbox: bool) -> list[str]:
         items = [i for i, l in enumerate(lines) if l.startswith('- ')]

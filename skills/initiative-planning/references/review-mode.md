@@ -23,6 +23,8 @@ Checks existing initiative, epic and task issues against the templates, and fixe
    - an extra section: keep it, fold it into a template section, or remove it;
    - a body that follows another kind's template: rewrite it in its own kind's layout, or relabel
      the issue;
+   - a PR cell holding text or several links: move the one pull request that delivered the task
+     onto its id, and put anything else worth keeping in Where it stands;
    - a Work column, or an Outcomes cell without criteria: map each row to the criteria it delivers,
      from the row's text and each criterion's wording; a criterion no row delivers needs a row, or
      belongs in another epic;

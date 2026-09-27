@@ -29,7 +29,7 @@ from pathlib import Path
 EPIC_REF = re.compile(r'\bE(\d\d)\b')
 TASK_REF = re.compile(r'\bE(\d\d) W(\d\d)\b')
 BARE_TASK = re.compile(r'(?<!E\d\d )\bW(\d\d)\b')
-TABLE_ROW = re.compile(r'^\| W(\d\d) \|', re.MULTILINE)
+TABLE_ROW = re.compile(r'^\| \[?W(\d\d)(?:\]\([^)]*\))? \|', re.MULTILINE)
 RANGE = re.compile(r'W\d\d[–-]W\d\d')
 INITIATIVE = re.compile(r'I(\d\d) $')
 

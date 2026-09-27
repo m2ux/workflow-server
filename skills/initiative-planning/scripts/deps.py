@@ -4,7 +4,8 @@ Usage:
   python3 deps.py E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the house Work Breakdown table:
-  | Task | Outcomes | Depends on | Can Accompany | PR |
+  | Task | Outcomes | Depends on | With |
+A delivered task's id links its pull request: | [W01](https://…/pull/950) |.
 Cells are read by column name, so the column order does not matter.
 
 A dependency is one of:
@@ -25,7 +26,7 @@ import re
 import sys
 from pathlib import Path
 
-ROW = re.compile(r'^\| W\d\d \|')
+ROW = re.compile(r'^\| (?:W\d\d|\[W\d\d\]\([^)]*\)) \|')
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d W\d\d')
@@ -49,7 +50,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
                 row = dict(zip(header, cells(line)))
                 wid = row.get('Task', '')
                 rows[f'{epic} {wid}'] = (row.get('Outcomes', ''), row.get('Depends on', ''),
-                                         row.get('Can Accompany', ''))
+                                         row.get('With', ''))
 
     problems = []
     tasks = {}
@@ -101,7 +102,7 @@ def main(argv: list[str]) -> int:
                 problems.append(f'{key}: depends on later epic {d}')
         for a in acc:
             if a not in tasks:
-                problems.append(f'{key}: unknown accompany {a}')
+                problems.append(f'{key}: With names unknown task {a}')
 
     graph = {k: [d for d in v[1] if d in tasks] for k, v in tasks.items()}
     state: dict[str, int] = {}

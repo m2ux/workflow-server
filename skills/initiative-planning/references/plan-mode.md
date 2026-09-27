@@ -38,14 +38,8 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 8. **Keep in step.** After each round, patch every changed issue, update the planning record and the
    discussion PR body, then commit and push. Titles change with renumbering, and Outcomes cells
    change when criteria are renumbered.
-9. **Deliver.** As work lands, keep each epic current:
-   - **PR column:** the pull request or commit link, or `in flight` while it is open.
-   - **Outcomes cell:** append `— **done**` after the criteria when the task lands, or
-     `— **moved to [#nnn](…) Wzz**` when another issue takes it.
-   - **Criteria:** tick each acceptance criterion when its outcome is observable.
-   - **Where it stands:** record what landed and any figure that came out differently from the plan.
-   - **Closing:** close an epic when every criterion is ticked, and the initiative when every epic is
-     closed.
+9. **Deliver.** As work lands, run update mode (`update-mode.md`). When another issue takes a
+   task, append `— **moved to [#nnn](…) Wzz**` to its Outcomes cell.
 
 ## Commands
 
