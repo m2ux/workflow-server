@@ -50,9 +50,9 @@ recorded.
    `gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed`.
 11. **Update the initiative**: `scripts/update.py issue-936.json --epics issue-943.json
    issue-937.json …`, with the epic JSON fetched after closing. An epic row is delivered when its
-   issue is closed as completed. A goal is met through its epics' criteria, so tick each goal it
-   reports ready to tick with `--tick G1,G3 --fix fixed-936.md`, without further verification,
-   patch, and close the initiative when it reports closable.
+   issue is closed as completed. The user qualifies and ticks each goal; the update lists the
+   goals whose epics are all delivered as awaiting the user. Close the initiative when it reports
+   every goal ticked.
 12. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
     and what was closed.
 
@@ -63,5 +63,5 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-637.json --prs prs.json --pr 950 --tick AC1 --fix fixed-637.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json --tick G1 --fix fixed-936.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
 ```

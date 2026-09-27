@@ -269,7 +269,7 @@ class Review:
         return fixed
 
     def fix_goals(self, lines: list[str]) -> list[str]:
-        """Goals are checkboxes labelled Gn, ticked once every epic citing them is delivered."""
+        """Goals are checkboxes labelled Gn, which the user ticks once satisfied."""
         return self.fix_list(lines, 'G', checkbox=True)
 
     def check_outcomes(self, sections: list[list], canonical) -> None:

@@ -23,17 +23,16 @@ pull requests naming the epic that no row links yet, open ones as in flight, a r
 request naming another epic, rows sharing a pull request that do not Join each other, and work
 started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
-completed. A goal is met through the criteria of the epics that cite it, so it is ready to tick,
-with no further verification, once every epic citing it is delivered.
+completed. The user qualifies each goal and ticks it; a goal whose citing epics are all delivered is
+reported as awaiting the user. The initiative is closable once every goal is ticked.
 A row whose Outcomes says "moved to" counts as delivered.
 
-Reported for each acceptance criterion of a task or epic, and each goal of an initiative:
-  - ready to verify (a criterion) or ready to tick (a goal): unticked, and every row citing it is
-    delivered (for a task issue, the task);
+Reported for each acceptance criterion of a task or epic:
+  - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
   - ticked early: ticked while a row citing it is undelivered.
---tick ticks the named criteria or goals in the body written to --fix, and refuses one not ready.
-Tick a criterion only once it is confirmed to hold. The issue is closable when every criterion or
-goal is ticked and every row is delivered.
+--tick ticks the named criteria in the body written to --fix, and refuses one not ready to verify.
+Tick a criterion only once it is confirmed to hold. A task or epic is closable when every criterion
+is ticked and every row is delivered.
 """
 import argparse
 import json
@@ -153,6 +152,8 @@ def main() -> int:
         sys.exit(f"title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix: {issue['title']}")
     initiative, epic, task = m[1], m[2], m[3] and f'W{m[3]}'
     kind = 'task' if task else 'epic' if epic else 'initiative'
+    if kind == 'initiative' and args.tick:
+        sys.exit("the user qualifies and ticks an initiative's goals")
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else []
@@ -161,8 +162,8 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'ready to verify',
-                              'ready to tick', 'ticked early', 'ticked', 'open questions', 'note')}
-    tag, heading, label, ready_key = (('G', 'Goals', GOAL, 'ready to tick') if kind == 'initiative' else
+                              'awaiting the user', 'ticked early', 'ticked', 'open questions', 'note')}
+    tag, heading, label, ready_key = (('G', 'Goals', GOAL, 'awaiting the user') if kind == 'initiative' else
                                       ('AC', 'Acceptance Criteria', AC, 'ready to verify'))
 
     lines, start, end, grid = table(sections)
@@ -210,7 +211,7 @@ def main() -> int:
         if not is_ticked and done:
             ready.add(n)
             report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
-        if is_ticked and not done:
+        if is_ticked and not done and kind != 'initiative':
             pending = [t for t in rows_for if not delivered.get(t)] or ['no row cites it']
             report['ticked early'].append(f"{tag}{n} ({', '.join(pending)} undelivered)")
 
@@ -230,7 +231,7 @@ def main() -> int:
     for name, items in report.items():
         for item in items:
             print(f'  {name}: {item}')
-    open_rows = [t for t, d in delivered.items() if not d]
+    open_rows = [t for t, d in delivered.items() if not d] if kind != 'initiative' else []
     open_criteria = [f'{tag}{n}' for n, t in ticked.items() if not t]
     reasons = [f"undelivered {', '.join(open_rows)}" if open_rows else '',
                f"unticked {', '.join(open_criteria)}" if open_criteria else '']
