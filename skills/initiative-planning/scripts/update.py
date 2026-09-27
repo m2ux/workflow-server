@@ -23,8 +23,9 @@ pull requests naming the epic that no row links yet, open ones as in flight, a r
 request naming another epic, rows sharing a pull request that do not Join each other, and work
 started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
-completed. The user qualifies each goal and ticks it; a goal whose citing epics are all delivered is
-reported as awaiting the user. The initiative is closable once every goal is ticked.
+completed. The user qualifies each of the initiative's acceptance criteria and ticks it; a criterion
+whose citing epics are all delivered is reported as awaiting the user. The initiative is closable once
+every criterion is ticked.
 
 Reported for each acceptance criterion of a task or epic:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
@@ -39,7 +40,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, GOAL, LINK, OUTCOMES, cells, join_sections, row, split_sections
+from format import AC, LINK, OUTCOMES, cells, join_sections, row, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -152,7 +153,7 @@ def main() -> int:
     initiative, epic, task = m[1], m[2], m[3] and f'W{m[3]}'
     kind = 'task' if task else 'epic' if epic else 'initiative'
     if kind == 'initiative' and args.tick:
-        sys.exit("the user qualifies and ticks an initiative's goals")
+        sys.exit("the user qualifies and ticks an initiative's acceptance criteria")
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else []
@@ -162,7 +163,7 @@ def main() -> int:
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'ready to verify',
                               'awaiting the user', 'ticked early', 'ticked', 'open questions', 'note')}
-    tag, heading, label, ready_key = (('G', 'Goals', GOAL, 'awaiting the user') if kind == 'initiative' else
+    tag, heading, label, ready_key = (('AC', 'Acceptance Criteria', AC, 'awaiting the user') if kind == 'initiative' else
                                       ('AC', 'Acceptance Criteria', AC, 'ready to verify'))
 
     lines, start, end, grid = table(sections)

@@ -20,10 +20,10 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Open a draft PR against `engineering` for discussion. The user merges it.
 4. **Draft bodies** from the templates, into local files. Those files are the source for every later
    edit. Write the acceptance criteria before the Work Breakdown, so each row's Description can cite
-   them. The initiative states Goals, drawn from the goal's clauses, as its template and the goal
-   pass in `review-passes.md` define them; the epics' criteria carry the detail that makes them
-   true. The user qualifies each goal and ticks it, and the initiative closes once every goal is
-   ticked. Rows, their Descriptions and task grain follow the Work Breakdown guide.
+   them. The initiative's acceptance criteria are drawn from the goal's clauses, as its template
+   and the goal pass in `review-passes.md` define them; the epics' criteria carry the detail that
+   makes them true. The user qualifies and ticks each initiative criterion, and the initiative
+   closes once every one is ticked. Rows, their Descriptions and task grain follow the Work Breakdown guide.
 5. **Review the drafts.** Run the goal pass in `review-passes.md`, and `deps.py I=… E00=…` over
    the drafts. Fold every gap and problem in and run both again. No issue is created while either
    reports one.

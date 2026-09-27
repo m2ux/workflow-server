@@ -23,7 +23,6 @@ Fixed in the body written to --fix, keeping the issue's wording:
   - an initiative row's Description set to its epic's title name, the part before the colon,
     for each epic given with --epic
   - prose Non-goals made a bulleted list, one sentence per bullet
-  - goals made checkboxes, labelled **Gn.** when none is labelled
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -38,19 +37,18 @@ Left to decide, since each needs new content or a judgement:
     splitting (a criterion several tasks deliver is shared, and does not count towards any one)
   - wording that narrates how the plan changed (moved to, was W06, renumbered, formerly,
     previously, no longer, discharged, superseded, subsumed, used to)
-  - a goal that may state several invariants (a colon or semicolon in its statement), that names
-    an initiative, epic, task or issue, or that carries a count (a figure or a number word) that is not the goal's own target
-  - an acceptance criterion that may state several invariants (a semicolon in its statement)
+  - an initiative's acceptance criterion that may state several invariants (a colon or semicolon in
+    its statement), that names an initiative, epic, task or issue, or that carries a count (a figure
+    or a number word) that is not its own target
+  - any other acceptance criterion that may state several invariants (a semicolon in its statement)
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
     Non-goals section in an epic or task, since non-goals belong to the initiative, or in a
     standalone issue, whose Proposal states its boundary
   - a Work Breakdown column the template lacks, or a row id of the wrong form
-  - a Description cell that does not end with what it delivers (an epic's → AC2, AC5; an
-    initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
-    delivers
-  - a Description cell over eight words or holding a semicolon, whose detail belongs in
-    criteria or goals
+  - a Description cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
+    cites one that does not exist, and a criterion no row delivers
+  - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, a title without "Name: Subtitle" (after the prefix,
     or whole for a standalone issue), or a title whose name is not two or three words or whose
@@ -85,9 +83,8 @@ HISTORY = re.compile(r'\bmoved to\b|\(was [EW]?\d|\bwas W\d\d|\brenumbered\b|\bf
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
-GOAL = re.compile(r'^- \[[ xX]\] \*\*G(\d+)\.\*\*')
 SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
-OUTCOMES = re.compile(r'→ ((?:AC|G)\d+(?:, (?:AC|G)\d+)*)')
+OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 DEPENDENCY = {
@@ -163,7 +160,7 @@ def epic_name(title: str) -> str:
 
 
 def description(line: str) -> str:
-    """A row's Description phrase, without the goals or criteria it cites."""
+    """A row's Description phrase, without the criteria it cites."""
     return cells(line)[1].split(' →', 1)[0].strip()
 
 
@@ -280,11 +277,12 @@ class Review:
             elif h == 'Non-goals':
                 section[1] = self.fix_bullets(section[1], h)
                 self.check_non_goals(section[1])
-            elif h == 'Goals':
-                section[1] = self.fix_goals(section[1])
             elif h == 'Acceptance Criteria':
                 section[1] = self.fix_list(section[1], 'AC', checkbox=True)
-                self.check_criteria(section[1])
+                if self.kind == 'initiative':
+                    self.check_initiative_criteria(section[1])
+                else:
+                    self.check_criteria(section[1])
             elif h == 'References':
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
 
@@ -297,24 +295,25 @@ class Review:
             self.decide.append('unreplaced #Exx placeholder')
         return fixed
 
-    def fix_goals(self, lines: list[str]) -> list[str]:
-        """Goals are checkboxes labelled Gn, which the user ticks once satisfied."""
-        lines = self.fix_list(lines, 'G', checkbox=True)
+    def check_initiative_criteria(self, lines: list[str]) -> None:
+        """An initiative's criteria are SMART, local, one invariant each, and carry no stale counts."""
         for line in lines:
-            goal = GOAL.match(line)
-            statement = re.split(r',? (?:when|by|once) ', line[goal.end():], maxsplit=1)[0] if goal else ''
-            if goal and (';' in statement or ': ' in statement):
-                self.decide.append(f'G{goal[1]} may state several invariants; state one per goal')
-            plain = LINK.sub(r'\1', line[goal.end():]) if goal else ''
-            figures = COUNT.findall(re.sub(r'\b(?:AC|G|R|E|W|I)\d+\b|\bv\d+(?:\.\d+)*\b', '', plain))
+            criterion = AC.match(line)
+            if not criterion:
+                continue
+            text = line[criterion.end():]
+            statement = re.split(r',? (?:when|by|once) ', text, maxsplit=1)[0]
+            if ';' in statement or ': ' in statement:
+                self.decide.append(f'AC{criterion[1]} may state several invariants; state one per criterion')
+            figures = COUNT.findall(re.sub(r'\b(?:AC|R|E|W|I)\d+\b|\bv\d+(?:\.\d+)*\b|#\d+\b', '', LINK.sub(r'\1', text)))
             if figures:
-                self.decide.append(f'G{goal[1]} carries a count ({", ".join(figures)}); counts go stale, so a goal '
-                                   'measures against a named baseline or check, unless the figure is its own target')
-            named = sorted(set(REFERENCE.findall(line[goal.end():]))) if goal else []
+                self.decide.append(f'AC{criterion[1]} carries a count ({", ".join(figures)}); counts go stale, so an '
+                                   "initiative's criterion measures against a named baseline or check, unless the "
+                                   'figure is its own target')
+            named = sorted(set(REFERENCE.findall(text)))
             if named:
-                self.decide.append(f'G{goal[1]} names {", ".join(named)}; a goal names no initiative, epic, task '
-                                   'or issue, and is local to this initiative')
-        return lines
+                self.decide.append(f'AC{criterion[1]} names {", ".join(named)}; an initiative\'s criterion names no '
+                                   'initiative, epic, task or issue, and is local to this initiative')
 
     def check_history(self, sections: list[list]) -> None:
         """A body states the plan as it is: report wording that narrates how it changed."""
@@ -339,10 +338,8 @@ class Review:
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
         if len(table) < 3 or 'Description' not in cells(table[0]):
             return
-        tag, noun, nouns, heading, label = (('G', 'goal', 'goals', 'Goals', GOAL) if self.kind == 'initiative'
-                                            else ('AC', 'criterion', 'criteria', 'Acceptance Criteria', AC))
         column = cells(table[0]).index('Description')
-        wanted = {int(m[1]) for l in by_name.get(heading, []) if (m := label.match(l))}
+        wanted = {int(m[1]) for l in by_name.get('Acceptance Criteria', []) if (m := AC.match(l))}
         delivered: set[int] = set()
         cited: list[tuple[str, set[int]]] = []
         for line in table[2:]:
@@ -351,19 +348,16 @@ class Review:
             cell = r[column] if column < len(r) else ''
             listed = OUTCOMES.search(cell)
             if not listed:
-                self.decide.append(f'{name}: Description does not end with the {nouns} it delivers')
+                self.decide.append(f'{name}: Description does not end with the criteria it delivers')
                 continue
             phrase = LINK.sub(r'\1', cell[:listed.start()]).strip()
             if len(phrase.split()) > MAX_DESCRIPTION or ';' in phrase:
                 self.decide.append(f'{name}: Description runs to {len(phrase.split())} words; shorten it to a '
-                                   f'phrase of at most {MAX_DESCRIPTION}, and state its detail as {nouns} of '
+                                   f'phrase of at most {MAX_DESCRIPTION}, and state its detail as criteria of '
                                    'one invariant each')
-            numbers = {int(n) for n in re.findall(rf'\b{tag}(\d+)', listed[1])}
-            other = re.findall(r'\b(?:AC|G)\d+', listed[1])
-            if len(other) != len(numbers):
-                self.decide.append(f'{name}: Description cites {", ".join(other)}; an {self.kind} cites {tag}n')
+            numbers = {int(n) for n in re.findall(r'\bAC(\d+)', listed[1])}
             for n in sorted(numbers - wanted):
-                self.decide.append(f'{name}: Description cites {tag}{n}, which is not a {noun}')
+                self.decide.append(f'{name}: Description cites AC{n}, which is not a criterion')
             delivered |= numbers
             cited.append((name, numbers))
         if self.kind != 'initiative':
@@ -374,7 +368,7 @@ class Review:
                     self.decide.append(f'{name}: delivers {len(own)} criteria no other task delivers; split it into '
                                        'tasks one pull request each can deliver')
         for n in sorted(wanted - delivered):
-            self.decide.append(f'{tag}{n} is delivered by no Work Breakdown row')
+            self.decide.append(f'AC{n} is delivered by no Work Breakdown row')
 
     def reorder(self, sections: list[list], template: Template) -> list[list]:
         groups: list[list[list]] = []
@@ -555,7 +549,7 @@ class Review:
                                    f'task or issue: "{words}…"')
 
     def fix_list(self, lines: list[str], tag: str, checkbox: bool) -> list[str]:
-        """Checkbox and label a list's items; tag is AC, G or R."""
+        """Checkbox and label a list's items; tag is AC or R."""
         items = [i for i, l in enumerate(lines) if l.startswith('- ')]
         if not items:
             return lines
@@ -566,7 +560,7 @@ class Review:
                 lines[i] = '- [ ] ' + lines[i][2:]
             if plain:
                 self.fixed.append(f'{len(plain)} {tag} items made checkboxes')
-        label = {'AC': AC, 'G': GOAL, 'R': REF}[tag]
+        label = {'AC': AC, 'R': REF}[tag]
         numbers = [label.match(lines[i]) for i in items]
         if not any(numbers):
             for n, i in enumerate(items, 1):
