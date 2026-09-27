@@ -43,6 +43,12 @@ changes.
      solution-agnostic: Description cells link epics to criteria, never the reverse. One that holds
      only through another initiative's work is not local: restate what this initiative achieves,
      or drop it.
+   - **Verified.** An initiative criterion ends by naming its instrument, automated where one can
+     exist: an end-to-end walk through the real server, a smoke run of an agent against a live
+     server, or a live check on a deployed host. Where no automated test can exist, it names how
+     the user confirms it. A named test that does not exist yet is work the plan holds: a task in
+     the epic whose subject it tests, or a discrete test-infrastructure epic when the tests serve
+     several criteria. That epic's row cites the criteria its tests verify.
    - **Whole.** An initiative criterion states what the initiative achieves as a whole. One that restates a single
      epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to
      the epic.

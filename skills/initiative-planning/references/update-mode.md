@@ -50,9 +50,10 @@ recorded.
    `gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed`.
 11. **Update the initiative**: `scripts/update.py issue-936.json --epics issue-943.json
    issue-937.json …`, with the epic JSON fetched after closing. An epic row is delivered when its
-   issue is closed as completed. The user qualifies and ticks each of the initiative's criteria;
-   the update lists those whose epics are all delivered as awaiting the user. Close the initiative
-   when it reports every criterion ticked.
+   issue is closed as completed. It lists each criterion whose citing epics are all delivered as
+   ready to verify. Run the e2e, smoke or live test each names, and tick those that pass with
+   `--tick AC1,AC3`. Put each criterion that names no automated test to the user, who confirms it
+   and ticks it. Close the initiative when it reports every criterion ticked.
 12. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
     and what was closed.
 
@@ -64,4 +65,5 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
 ```

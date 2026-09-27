@@ -38,6 +38,9 @@ issues in place.
    - an initiative criterion or non-goal naming an initiative, epic, task or issue: restate it
      locally, or drop a criterion that holds only through another initiative's work;
    - an initiative criterion that carries a count: measure it against a named baseline or check;
+   - an initiative criterion that names no instrument: name the e2e, smoke or live test that
+     verifies it, or how the user confirms it where none can exist, and recommend any missing test
+     as a task or a test-infrastructure epic;
    - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming
      what the row delivers, and restate any detail no cited criterion carries as a new criterion of
      one invariant, cited by the row;
