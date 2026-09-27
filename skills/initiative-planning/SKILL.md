@@ -28,7 +28,9 @@ decisions and each review.
   that must land before the first real task.
 - **Titles.** A short name, a colon, and a subtitle stating the outcome. Match the capitalisation
   of recent titles in the same initiative.
-- **Order.** Epics are numbered in the order they run, and tasks in the order they can start.
+- **Order.** Epics are numbered in the order they run, and tasks in the order they can start. This
+  holds for every plan this skill writes. `deps.py` reports it as advisory, because older
+  initiatives predate it.
 - **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx Eyy Wzz]` issue only
   when it needs discussion or evidence of its own; its row then links that issue.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
@@ -45,7 +47,8 @@ decisions and each review.
    option, until the goal and scope are clear.
 2. **Gather evidence.** Measure the current state: counts, paths, file:line. Delegate broad sweeps to
    parallel sub-agents, and spot-check what they return before recording it.
-3. **Planning record.**
+3. **Planning record**, for a new initiative or for a change whose decisions need a record. A
+   one-epic addition with no open decision goes straight to step 4.
    - Branch a worktree from `origin/engineering` and add
      `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
    - `README.md` holds the problem, goals, design, decisions, reviews and open questions.
@@ -58,7 +61,7 @@ decisions and each review.
    2. the epics in dependency order, each citing the initiative and the epics created before it,
       with placeholders for any it cites that do not exist yet;
    3. patches replacing every remaining placeholder, in the initiative and in any epic that holds
-      one. Grep the local files for `#E0` until none is left.
+      one. Grep the local files for `#E[0-9]` until none is left.
 6. **Review.** Run the passes in `references/reviews.md`:
    - the goal pass, after drafting;
    - the consistency pass, after every round of edits;
@@ -86,6 +89,7 @@ the repository that holds the issues:
 unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues -f title='[I07 E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
 unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
+unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed --jq .state
 ```
 
 Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the
@@ -95,7 +99,11 @@ path of the workspace checkout's `scripts/sbx`. `<workspace>` below stands for t
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py E00=live-943.md E01=live-937.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --map 6:0,0:1 live-*.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
 ```
+
+The first renumbers epics. The second renumbers E01's tasks: `E01 Wxx` everywhere, and bare `Wxx`
+inside E01's own body. Both rewrite files in place and refuse a map that collides.
 
 ## Rules
 

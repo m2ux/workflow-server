@@ -35,6 +35,8 @@ Runs after every round of edits.
 
 - **Stale references.** Task and epic numbers, issue links, and wording from a superseded
   decision.
+- **Titles.** Every issue's `[Ixx Eyy]` prefix matches its row in the initiative's Work Breakdown
+  table.
 - **Contradictions.** Between acceptance criteria in one epic, and between an epic and its
   initiative.
 - **Ownership overlaps.** Two epics or tasks claiming one piece of work. Assign one owner and state
@@ -61,8 +63,9 @@ Checks dependencies as a graph, then renumbers.
 3. Fix a backward reference by moving the task to the epic that owns its inputs. When the task
    duplicates work the later epic already does, remove it instead.
 4. Renumber so that epics run in number order and tasks are numbered in the order they can start.
-   Use `scripts/renumber.py --initiative NN --map old:new,...` for epic numbers. Rewrite task tables
-   by hand, then grep the prose for every task reference.
+   Use `scripts/renumber.py --initiative NN --map old:new,...` for epic numbers, and
+   `--epic N --own <body> --tasks old:new,...` for one epic's tasks. Then re-sort each table,
+   check every range the script prints, and grep the prose for references it cannot see.
 5. Re-run `deps.py` until it reports no problems. State the longest chains from its output.
 6. Update the initiative's Work Breakdown table. **Depends on** is what must be true before the epic
    starts. An epic whose first task can start at once, but whose main task waits, says so in the
