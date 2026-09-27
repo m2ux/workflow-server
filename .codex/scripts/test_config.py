@@ -8,11 +8,22 @@ import tempfile
 import tomllib
 import unittest
 
-from render import render
+from render import codex_config, render
 from permissions import ROOT, load_policy
 
 
 class ConfigTests(unittest.TestCase):
+    def test_unicode_and_quoted_paths_round_trip(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'workspace "🧪"'
+            (root / 'rules').mkdir(parents=True)
+            (root / 'rules/example.md').write_text('---\nalwaysApply: true\n---\nRule 🧪')
+            config = tomllib.loads(codex_config(root, Path.home(), {'directories': [str(root)]},
+                                               {'mcpServers': {'test': {'command': 'tool 🧪', 'args': ['a "quote"']}}}))
+            self.assertEqual(config['developer_instructions'], 'Rule 🧪')
+            self.assertEqual(config['mcp_servers']['test']['command'], 'tool 🧪')
+            self.assertEqual(config['sandbox_workspace_write']['writable_roots'], [str(root)])
+
     def test_generated_configuration_and_registered_adapter(self):
         rendered = render(ROOT, Path.home(), {"mcpServers": {
             "example-server": {"command": "node", "args": ["a path/entry.js"], "env": {"TEST": "value"}},

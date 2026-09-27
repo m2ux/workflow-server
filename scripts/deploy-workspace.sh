@@ -153,7 +153,7 @@ def expand(value):
     value = value.replace("$USER_HOME", home_dir)
     value = value.replace("${HOME}", home_dir)
     value = re.sub(r"\$HOME(?![A-Za-z0-9_])", home_dir, value)
-    value = re.sub(r"/home/[^/]+/", home_dir + "/", value)
+    value = re.sub(r"^/home/[^/]+/", home_dir + "/", value)
     return value
 
 def expand_obj(obj):
