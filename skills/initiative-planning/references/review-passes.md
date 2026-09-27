@@ -1,7 +1,7 @@
 # Review passes
 
-Each pass reads the issues as they stand on GitHub, not the local drafts. Fetch every body first,
-with full host permissions:
+Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which
+reads the local drafts. Fetch every body first, with full host permissions:
 `unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
 
 Report findings split by area, one problem/solution pair per finding, each with a severity. Verify
@@ -11,13 +11,23 @@ each with a recommended option.
 
 ## Goal pass
 
-Tests the plan against the end state the initiative promises.
+Tests the acceptance criteria against the goal the user stated. It runs on the drafts before any
+issue is created, and again whenever the goal, a criterion or an epic changes.
 
-1. Restate the goal as one checkable sentence built from clauses, each an outcome someone could
-   observe.
-2. For each clause, name the epic and acceptance criterion that make it true. A clause with no
-   owner is a gap.
-3. Look past the clauses for what defeats the goal from outside:
+1. **Clauses.** Take the goal the user stated and confirmed in the interview, as clauses, each an
+   outcome someone could observe.
+2. **Trace down.** Build a trace table: goal clause, the initiative criteria that make it true, the
+   epics whose Outcomes cite those criteria, and the epic criteria that deliver them.
+   - A clause with no initiative criterion is a gap.
+   - An initiative criterion no epic delivers, or that its epics' criteria only partly make true, is
+     a gap.
+   - An epic criterion no task row delivers is a gap; `format.py` finds these.
+3. **Trace up.** Every criterion traces to a clause. A criterion that traces to none is scope the
+   user did not ask for: remove it, or put it to the user.
+4. **Each criterion** states an end state, not an activity; names or implies the instrument that
+   observes it: a test, a guard, a command or a measure; and is unambiguous, so two readers agree on
+   whether it holds.
+5. Look past the clauses for what defeats the goal from outside:
    - **Consumers.** Anything outside the plan that reads, builds or ships what the plan changes or
      removes.
    - **Silent failures.** Skips, fallbacks and fail-closed paths that hide a violation.
@@ -27,7 +37,8 @@ Tests the plan against the end state the initiative promises.
    - **Version skew.** Between the artifacts the plan produces and the implementations that read
      them.
    - **In-flight work.** Changes elsewhere that alter the ground the plan stands on.
-4. Rank the gaps, and flag the few that most threaten the goal.
+6. Rank the gaps, and flag the few that most threaten the goal. Record the trace table in the
+   planning record, or give it to the user when the change has none.
 
 ## Consistency pass
 

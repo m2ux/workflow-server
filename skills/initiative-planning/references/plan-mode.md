@@ -5,35 +5,40 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 ## Procedure
 
 1. **Understand the request.** Interview the user one question at a time, each with a recommended
-   option, until the goal and scope are clear.
+   option, until the goal and scope are clear. State the goal back as clauses, each an outcome
+   someone could observe, and have the user confirm them. Every later review tests against these
+   clauses.
 2. **Gather evidence.** Measure the current state: counts, paths, file:line. Delegate broad sweeps to
    parallel sub-agents, and spot-check what they return before recording it.
 3. **Planning record**, for a new initiative or for a change whose decisions need a record. A
    one-epic addition with no open decision goes straight to step 4.
    - Branch a worktree from `origin/engineering` and add
      `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
-   - `README.md` holds the problem, goals, design, decisions, reviews and open questions.
+   - `README.md` holds the problem, the goal's clauses and their trace to the criteria, design,
+     decisions, reviews and open questions.
      `inventory.md` holds the evidence.
    - Open a draft PR against `engineering` for discussion. The user merges it.
 4. **Draft bodies** from the templates, into local files. Those files are the source for every later
    edit. Write the acceptance criteria before the Work Breakdown, so each row's Outcomes can cite
    them.
-5. **Create issues** so that every number exists before it is cited:
+5. **Review the criteria.** Run the goal pass in `review-passes.md` on the drafts. Fold every gap
+   in and run it again. No issue is created while a gap remains.
+6. **Create issues** so that every number exists before it is cited:
    1. the initiative, with placeholders such as `#E00` for its epics;
    2. the epics in dependency order, each citing the initiative and the epics created before it,
       with placeholders for any it cites that do not exist yet;
    3. patches replacing every remaining placeholder, in the initiative and in any epic that holds
       one. Grep the local files for `#E[0-9]` until none is left.
-6. **Review.** Run the passes in `review-passes.md`:
-   - the goal pass, after drafting;
+7. **Review.** Run the passes in `review-passes.md`:
+   - the goal pass, whenever the goal, a criterion or an epic changes;
    - the consistency pass, after every round of edits;
    - the ordering pass, whenever tasks or dependencies change.
 
    Fold each finding in and record it in the planning record.
-7. **Keep in step.** After each round, patch every changed issue, update the planning record and the
+8. **Keep in step.** After each round, patch every changed issue, update the planning record and the
    discussion PR body, then commit and push. Titles change with renumbering, and Outcomes cells
    change when criteria are renumbered.
-8. **Deliver.** As work lands, keep each epic current:
+9. **Deliver.** As work lands, keep each epic current:
    - **PR column:** the pull request or commit link, or `in flight` while it is open.
    - **Outcomes cell:** append `— **done**` after the criteria when the task lands, or
      `— **moved to [#nnn](…) Wzz**` when another issue takes it.

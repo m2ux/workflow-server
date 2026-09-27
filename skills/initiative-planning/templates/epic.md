@@ -18,7 +18,7 @@ The work is split into tasks. Each task is a feature or a fix that can be delive
 | --- | --- | --- | --- | --- |
 | W01 | {{What the task does}} → AC{{n}}, AC{{m}} | {{Earlier task in this epic, Exx Wyy or Exx in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | {{Pull request or commit link once it lands; `in flight` while open}} |
 
-## Acceptance criteria
+## Acceptance Criteria
 
 - [ ] **AC1.** {{A checkable end-state statement, one per outcome.}}
 

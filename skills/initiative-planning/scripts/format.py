@@ -9,8 +9,9 @@ from templates/<kind>.md beside this script: its sections and their order, the s
 optional ("Delete the section"), its fixed sentences, and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
-  - a section alias renamed: Progress, Outcome or Where this stands to Where it stands, and
-    Solution to Proposal on an open epic (a closed epic keeps Solution)
+  - a section alias renamed: Progress, Outcome or Where this stands to Where it stands,
+    Acceptance criteria to Acceptance Criteria, and Solution to Proposal on an open epic (a closed
+    epic keeps Solution)
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
@@ -46,7 +47,7 @@ TEMPLATES = Path(__file__).resolve().parent.parent / 'templates'
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 ALIASES = {'Progress': 'Where it stands', 'Outcome': 'Where it stands',
-           'Where this stands': 'Where it stands'}
+           'Where this stands': 'Where it stands', 'Acceptance criteria': 'Acceptance Criteria'}
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
@@ -190,7 +191,7 @@ class Review:
                     self.decide.append(f'{h}: fixed sentence missing or reworded: "{sentence[:70]}…"')
             if h == 'Work Breakdown' and template.columns:
                 section[1] = self.fix_table(section[1], template.columns)
-            elif h == 'Acceptance criteria':
+            elif h == 'Acceptance Criteria':
                 section[1] = self.fix_list(section[1], 'AC', checkbox=True)
             elif h == 'References':
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
@@ -209,7 +210,7 @@ class Review:
         if len(table) < 3 or 'Outcomes' not in cells(table[0]):
             return
         column = cells(table[0]).index('Outcomes')
-        criteria = {int(m[1]) for l in by_name.get('Acceptance criteria', []) if (m := AC.match(l))}
+        criteria = {int(m[1]) for l in by_name.get('Acceptance Criteria', []) if (m := AC.match(l))}
         delivered: set[int] = set()
         for line in table[2:]:
             r = cells(line)

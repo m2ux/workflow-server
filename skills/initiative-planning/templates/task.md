@@ -22,7 +22,7 @@
 
 {{Files, constructs or components touched.}}
 
-## Acceptance criteria
+## Acceptance Criteria
 
 - [ ] **AC1.** {{A checkable statement.}}
 

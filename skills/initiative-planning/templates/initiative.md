@@ -26,7 +26,7 @@ Epics are numbered in the order they run, and within each epic tasks are numbere
 
 {{What runs first and why; how in-flight work elsewhere interacts with this initiative. Delete the section when there is nothing to say.}}
 
-## Acceptance criteria
+## Acceptance Criteria
 
 - [ ] **AC1.** {{A checkable end-state statement.}}
 
