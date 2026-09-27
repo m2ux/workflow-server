@@ -1,6 +1,6 @@
 # Harness configuration
 
-Claude Code, Cursor, and Codex use one workspace command policy. Policy functions
+Every supported harness uses a single command policy. Policy functions
 accept a request and return `deny`, `ask`, `allow`, or `abstain`. Adapters own
 event names, JSON payloads, and native approval behavior. Python 3.11 or later
 and the existing Linux bubblewrap launcher are required.
