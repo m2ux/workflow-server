@@ -34,7 +34,7 @@ recorded.
    - **unmatched:** merged pull requests still linked from no row. Match them as in step 4; one
      that delivered a task issue stays unmatched here, since its issue records it;
    - **open questions:** work on the epic has started while its Open questions section remains.
-     Stop and resolve them in plan mode, since their answers may reshape the epic;
+     Stop and ready the epic in plan mode, since the answers may reshape it;
    - **in flight:** open pull requests naming the epic;
    - **ready to verify:** criteria whose delivering rows are all delivered;
    - **ticked early:** criteria ticked while a delivering row is not delivered. Untick them, or

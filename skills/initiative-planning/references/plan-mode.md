@@ -47,12 +47,17 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 8. **Keep in step.** After each round, patch every changed issue, update the planning record and the
    discussion PR body, then commit and push. Titles change with renumbering, and Description cells
    change when criteria are renumbered.
-9. **Resolve open questions** before an epic starts. An open question is unfinished planning, so
-   no task of the epic starts while one remains. Put each to the user with its recommendation, record
-   the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and
-   dependencies may all change. Run the goal pass, and the ordering pass when tasks or dependencies
-   change, then delete the question. The epic is ready to start when its Open questions section is
-   gone.
+9. **Ready the epic** before it starts. No task of the epic starts until both hold:
+   - **Open questions resolved.** An open question is unfinished planning. Put each to the user with
+     its recommendation, record the answer in the planning record, and fold it into the epic: its
+     Proposal, tasks, criteria and dependencies may all change. Then delete the question; the
+     section goes with the last one.
+   - **One condition per criterion.** Read each criterion for conditions joined by "and" or a list
+     of clauses that different tasks make true. Split each such criterion, adding the new ones at
+     the end of the list, and cite each from the rows that deliver it. A condition over a list of
+     subjects ("every reader reads `when` alone: the validator, the guards …") is one condition.
+
+   Run the goal pass, and the ordering pass when tasks or dependencies change.
 10. **Deliver.** As work lands, run update mode (`update-mode.md`).
 
 ## Commands
