@@ -142,6 +142,39 @@ own.
   the skill under three conditions: formal files alone, with the reference entries, and with the
   validator.
 
+## Reliability review
+
+The initiative ([#936](https://github.com/m2ux/workflow-server/issues/936)) was reviewed against
+its goal: an agent working from the workflow-design skill produces a workflow that loads, passes
+every check, fits what can be delivered, runs correctly, and is well designed. Fifteen gaps were
+found and each is now owned:
+
+| # | Gap | Owner |
+| --- | --- | --- |
+| 1 | Published schemas carry server-built fields; rules differ between authored and materialised forms | E00 W07 (#937) |
+| 2 | Ten convention guards fail changes against rules no stated set contains | E00 W08 |
+| 3 | Resource files and cross-references have no grammar | E00 W09 |
+| 4 | The execution model and delivery limits are absent from the set | E02 (#939) |
+| 5 | No catalogue of existing reusable parts | E01 W07 (#938) |
+| 6 | Nothing proves the spec complete; the loader skips misnamed files silently | E00 W10 |
+| 7 | The canon contradicts itself and the code; citations drifted | E03 (#940) |
+| 8 | Every check is static, and none runs on a draft | E04 (#941) |
+| 9 | Rule entries carry no fix | E00, every rule and reference entry |
+| 10 | Principles and anti-patterns are not indexed by construct | E03 W04 |
+| 11 | "Reliable" has no definition, target or quality measure | E05 (#942) |
+| 12 | Whether the skill needs a design method | E05 W06, then E01 W08 |
+| 13 | Skill, reference, server and corpus can disagree on version | E00 AC17, E01 W03 |
+| 14 | In-flight language changes (#709, #750, I00 E07, I06) | Initiative sequencing: the spec moves with the language |
+| 15 | The `ebnf` package does not generate sentences | E00 W01 |
+
+Decisions taken with the review:
+
+- Convention rules join the registry.
+- The execution model is a sixth member of the set.
+- A design method enters the skill only on E05's evidence.
+- The spec describes the language as it stands, and each language change updates it in the same
+  change.
+
 ## Rollout
 
 Each layer works end to end before the next begins.
