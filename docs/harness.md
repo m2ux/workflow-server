@@ -1,9 +1,17 @@
 # Harness configuration
 
-Every supported harness uses a single command policy. Policy functions
-accept a request and return `deny`, `ask`, `allow`, or `abstain`. Adapters own
-event names, JSON payloads, and native approval behavior. Python 3.11 or later
-and the existing Linux bubblewrap launcher are required.
+Every supported harness uses a single command policy. This is the workspace's
+set of rules for deciding whether an agent's requested operation can run
+automatically, requires a confirmation decision, must be blocked, or should be
+left to the harness's native permissions. It combines an allowlist with checks
+on shell commands, sandbox use, web requests, and GitHub operations. Shared
+policy code lets each harness apply these rules through its own hooks and
+approval system.
+
+Policy functions accept a request and return `deny`, `ask`, `allow`, or `abstain`.
+Adapters translate event names, JSON payloads, and decisions into each harness's
+native format; Codex delegates confirmation decisions to native approvals.
+Python 3.11 or later and the existing Linux bubblewrap launcher are required.
 
 ## Shared sources
 
