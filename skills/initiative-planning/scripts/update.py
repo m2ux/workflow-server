@@ -23,10 +23,10 @@ pull requests naming the epic that no row links yet, open ones as in flight, a r
 request naming another epic, rows sharing a pull request that do not Join each other, and work
 started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
-completed. The user qualifies each goal and ticks it; a goal whose citing epics are all delivered is
-reported as awaiting the user. The initiative is closable once every goal is ticked.
+completed. A criterion is verified by the automated test it names, or confirmed by the user where it
+names none. The initiative is closable once every criterion is ticked.
 
-Reported for each acceptance criterion of a task or epic:
+Reported for each acceptance criterion of a task, epic or initiative:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
   - ticked early: ticked while a row citing it is undelivered.
 --tick ticks the named criteria in the body written to --fix, and refuses one not ready to verify.
@@ -39,7 +39,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, GOAL, LINK, OUTCOMES, cells, join_sections, row, split_sections
+from format import AC, LINK, OUTCOMES, cells, join_sections, row, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -151,8 +151,6 @@ def main() -> int:
         sys.exit(f"title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix: {issue['title']}")
     initiative, epic, task = m[1], m[2], m[3] and f'W{m[3]}'
     kind = 'task' if task else 'epic' if epic else 'initiative'
-    if kind == 'initiative' and args.tick:
-        sys.exit("the user qualifies and ticks an initiative's goals")
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else []
@@ -161,9 +159,8 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'ready to verify',
-                              'awaiting the user', 'ticked early', 'ticked', 'open questions', 'note')}
-    tag, heading, label, ready_key = (('G', 'Goals', GOAL, 'awaiting the user') if kind == 'initiative' else
-                                      ('AC', 'Acceptance Criteria', AC, 'ready to verify'))
+                              'ticked early', 'ticked', 'open questions', 'note')}
+    tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)
     delivered: dict[str, bool] = {}
@@ -208,7 +205,7 @@ def main() -> int:
         if not is_ticked and done:
             ready.add(n)
             report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
-        if is_ticked and not done and kind != 'initiative':
+        if is_ticked and not done:
             pending = [t for t in rows_for if not delivered.get(t)] or ['no row cites it']
             report['ticked early'].append(f"{tag}{n} ({', '.join(pending)} undelivered)")
 

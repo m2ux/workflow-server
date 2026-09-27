@@ -35,13 +35,15 @@ issues in place.
    - wording that narrates how the plan changed: restate it as the plan is;
    - a task delivering more than three criteria no other task delivers: split it into tasks one
      pull request each can deliver, drafting the rows and their criteria;
-   - a goal or non-goal naming an initiative, epic, task or issue: restate it locally, or drop a
-     goal that holds only through another initiative's work;
-   - a goal that may state several invariants, or that carries a count: split it into one goal
-     each, or measure it against a named baseline or check;
+   - an initiative criterion or non-goal naming an initiative, epic, task or issue: restate it
+     locally, or drop a criterion that holds only through another initiative's work;
+   - an initiative criterion that carries a count: measure it against a named baseline or check;
+   - an initiative criterion that names no instrument: name the automated test that verifies it,
+     or how the user confirms it where none can exist, as the goal pass's Verified rule defines,
+     and recommend any missing test as a task or a test-infrastructure epic;
    - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming
-     what the row delivers, and restate any detail no cited criterion or goal carries as a new
-     criterion or goal of one invariant, cited by the row;
+     what the row delivers, and restate any detail no cited criterion carries as a new criterion of
+     one invariant, cited by the row;
    - a Description cell without criteria: map the row to the criteria it delivers, from its text
      and each criterion's wording; a criterion no row delivers needs a row, or belongs in another
      epic;

@@ -15,14 +15,14 @@ nothing about them: the conventions live here.
   real task. A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion
   or evidence of its own.
 - **Description.** A short phrase naming what the row delivers, at most eight words, with no
-  list, semicolon or detail, ending with what the row delivers. Every criterion and goal is
-  delivered by at least one row.
+  list, semicolon or detail, ending with the acceptance criteria the row delivers. Every criterion
+  is delivered by at least one row.
   - In an epic: the row cites the epic's acceptance criteria (`… → AC2, AC5`), so an agent working
     the task knows which criteria it must meet. Each detail is a criterion stating one invariant.
   - In an initiative: the phrase is the epic's title name, the part before the colon
-    (`[I07:E01] Formal Specification: …` gives `Formal Specification → G4, G5`), so the table and
-    the epic name the work alike. The row cites the goals the epic serves, so each goal traces to
-    its epics.
+    (`[I07:E01] Formal Specification: …` gives `Formal Specification → AC4, AC5`), so the table and
+    the epic name the work alike. The row cites the initiative's criteria the epic serves, so each
+    traces to its epics.
 - **Depends on.** References only, with no prose, and only what no other entry in the cell already
   implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`,

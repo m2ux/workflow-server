@@ -50,7 +50,7 @@ written.
    folder it links, then the open initiatives and epics a placement can name.
 3. **Triage** each orphan. Read it whole, with its comments
    (`gh api --paginate repos/{owner}/{repo}/issues/874/comments`), and the bodies of the
-   initiatives and epics whose themes and goals it touches, and note any planning folder it
+   initiatives and epics whose themes and criteria it touches, and note any planning folder it
    references, in its body or its comments. For each orphan, draft:
    - the placements that fit, best first, each naming its target and whether the orphan is kept or
      subsumed;
@@ -70,7 +70,7 @@ written.
    - **New task:** draft the row and its criteria in the epic. Number it where it can start, with
      `scripts/renumber.py` when undelivered tasks must move. Keep or subsume the orphan.
    - **New epic:** draft the epic from `templates/epic.md` and its row in the initiative, with the
-     goals it serves; follow plan mode's steps for creating and linking an epic. Keep or subsume.
+     initiative criteria it serves; follow plan mode's steps for creating and linking an epic. Keep or subsume.
    - **New initiative:** run plan mode with the orphan as its input. Keep or subsume.
    - **Kept:** retitle the orphan with its house prefix and a title of the house form, label it
      with its `type:*` (and a `theme:*` for an initiative or epic), and rewrite its body from its
