@@ -16,11 +16,11 @@
 
 | Epic | Outcomes | Depends on |
 | --- | --- | --- |
-| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{Short name}} → AC{{n}}, AC{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} |
+| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{Short name}} → G{{n}}, G{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} |
 
-## Acceptance Criteria
+## Goals
 
-- [ ] **AC1.** {{An end state of the initiative as a whole, at the level of its goal, that its epics' criteria together make true. It restates no single epic's criterion.}}
+- **G1.** {{A SMART goal: specific, measurable by a named threshold or check, achievable by the epics, relevant to the Problem, and bounded by a milestone: a release tag, or an epic or task landing. The epics' criteria together make it true; it restates none of them.}}
 
 ## Non-goals
 

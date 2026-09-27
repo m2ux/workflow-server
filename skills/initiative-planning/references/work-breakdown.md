@@ -14,10 +14,10 @@ nothing about them: the conventions live here.
   epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first
   real task. A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion
   or evidence of its own.
-- **Outcomes.** What the row does, ending with the acceptance criteria it delivers: `… → AC2, AC5`.
-  An epic's rows cite the epic's criteria, and an initiative's rows the initiative's. Every
-  criterion is delivered by at least one row, so an agent working a task knows which criteria it
-  must meet.
+- **Outcomes.** What the row does, ending with what it delivers. An epic's rows cite the epic's
+  acceptance criteria (`… → AC2, AC5`), so an agent working a task knows which criteria it must
+  meet. An initiative's rows cite the initiative's goals (`… → G1, G3`), so each goal traces to the
+  epics that serve it. Every criterion and goal is delivered by at least one row.
 - **Depends on.** References only, with no prose, and only what no other entry in the cell already
   implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`,

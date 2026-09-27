@@ -20,7 +20,8 @@ request names gets its id linked to it, the latest merged when several name it; 
 linked elsewhere is reported, not changed. Open pull requests are reported as in flight, and a
 grouped title naming tasks that do not Join each other is reported.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
-completed.
+completed. Its goals are met through its epics' criteria and are not ticked, so the initiative is
+closable once every epic is delivered.
 A row whose Outcomes says "moved to" counts as delivered.
 
 Reported for each acceptance criterion:
@@ -150,6 +151,8 @@ def main() -> int:
         sys.exit(f"title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix: {issue['title']}")
     initiative, epic, task = m[1], m[2], m[3] and f'W{m[3]}'
     kind = 'task' if task else 'epic' if epic else 'initiative'
+    if kind == 'initiative' and args.tick:
+        sys.exit("an initiative's goals are met through its epics and are not ticked")
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else []

@@ -12,26 +12,28 @@ each with a recommended option.
 
 ## Goal pass
 
-Tests the acceptance criteria against the goal the user stated. It runs on the drafts before any
-issue is created, and again whenever the goal, a criterion or an epic changes.
+Tests the initiative's goals and the epics' acceptance criteria against the goal the user stated. It
+runs on the drafts before any issue is created, and again whenever the goal, a criterion or an epic
+changes.
 
 1. **Clauses.** Take the goal the user stated and confirmed in the interview, as clauses, each an
    outcome someone could observe.
-2. **Trace down.** Build a trace table: goal clause, the initiative criteria that make it true, the
-   epics whose Outcomes cite those criteria, and the epic criteria that deliver them.
-   - A clause with no initiative criterion is a gap.
-   - An initiative criterion no epic delivers, or that its epics' criteria only partly make true, is
-     a gap.
+2. **Trace down.** Build a trace table: goal clause, the initiative goals that make it true, the
+   epics whose Outcomes cite those goals, and the epic criteria that deliver them.
+   - A clause with no initiative goal is a gap.
+   - A goal no epic delivers, or that its epics' criteria only partly make true, is a gap.
    - An epic criterion no task row delivers is a gap; `format.py` finds these.
-3. **Trace up.** Every criterion traces to a clause. A criterion that traces to none is scope the
+3. **Trace up.** Every goal and criterion traces to a clause. One that traces to none is scope the
    user did not ask for: remove it, or put it to the user.
 4. **Each criterion** states an end state, not an activity; names or implies the instrument that
    observes it: a test, a guard, a command or a measure; and is unambiguous, so two readers agree on
    whether it holds.
-   - An initiative criterion is stated at the level of the goal: what the initiative achieves as a
-     whole, made true by several epic criteria together. One that restates a single epic's
-     criterion is a duplicate: raise it to what the epics achieve together, or leave it to the
-     epic.
+   - Each initiative goal is SMART: **specific** about what holds; **measurable** by a named
+     threshold or check; **achievable** by the epics that cite it; **relevant**, tracing to a clause
+     and to the Problem; and **time-bound** by a milestone, a release tag or an epic or task
+     landing. It states what the initiative achieves as a whole. A goal that restates a single
+     epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to
+     the epic.
 5. Look past the clauses for what defeats the goal from outside:
    - **Consumers.** Anything outside the plan that reads, builds or ships what the plan changes or
      removes.
@@ -54,7 +56,8 @@ Runs after every round of edits.
 - **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown
   table.
 - **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed. It
-  confirms that each Outcomes cell cites criteria that exist and that every criterion has a row.
+  confirms that each Outcomes cell cites criteria or goals that exist, and that every one has a
+  row.
 - **Outcomes.** Each row's criteria are the ones its work makes true: a row does not claim a
   criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet
   it. The check confirms coverage, not fit.
@@ -62,8 +65,8 @@ Runs after every round of edits.
   initiative.
 - **Ownership overlaps.** Two epics or tasks claiming one piece of work. Assign one owner and state
   the boundary in both.
-- **Duplicates.** The same outcome as a task in two epics, or an initiative criterion that
-  restates an epic's. Remove one, or raise the initiative's to the goal level.
+- **Duplicates.** The same outcome as a task in two epics, or an initiative goal that restates an
+  epic's criterion. Remove one, or raise the goal.
 - **Links.** A link to an unmerged planning branch breaks when the branch merges; list those to
   repoint.
 - **Cross-initiative overlap.** Record it in Non-goals and References. Editing another initiative's

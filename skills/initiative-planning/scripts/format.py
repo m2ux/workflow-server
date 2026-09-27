@@ -25,6 +25,8 @@ Fixed in the body written to --fix, keeping the issue's wording:
     from the row-id links of the initiative's table: the issue's own, or --initiative's when the
     issue is an epic
   - prose Non-goals made a bulleted list, one sentence per bullet
+  - an initiative's Acceptance Criteria renamed Goals, its items labelled **Gn.** without
+    checkboxes, and its Outcomes citing Gn
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -38,9 +40,9 @@ Left to decide, since each needs new content or a judgement:
   - a Work Breakdown column the template lacks, such as Work in place of Outcomes; a PR or Issue
     cell holding anything but one link, or a link other than the one its row id already carries,
     such as a task's own issue; or a row id of the wrong form
-  - an Outcomes cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
-    cites one that does not exist, and a criterion no row delivers; a row marked "moved to" is
-    exempt
+  - an Outcomes cell that does not end with what it delivers (an epic's → AC2, AC5; an
+    initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
+    delivers; a row marked "moved to" is exempt
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, or a title without "Name: Subtitle"
   - an unfilled {{...}} field or #E00 placeholder
@@ -64,7 +66,8 @@ ALIASES = {'Progress': 'Where it stands', 'Outcome': 'Where it stands',
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
-OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
+GOAL = re.compile(r'^- \*\*G(\d+)\.\*\*')
+OUTCOMES = re.compile(r'→ ((?:AC|G)\d+(?:, (?:AC|G)\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 COLUMN_ALIASES = {'Can Accompany': 'Join'}
@@ -186,6 +189,8 @@ class Review:
         aliases = dict(ALIASES)
         if self.kind != 'task':
             aliases['Solution'] = 'Proposal'
+        if self.kind == 'initiative':
+            aliases['Acceptance criteria'] = aliases['Acceptance Criteria'] = 'Goals'
         names = [aliases.get(h, h) for h, _ in sections]
         own = sum(h in template.headings for h in names)
         for other in KINDS.values():
@@ -226,11 +231,15 @@ class Review:
                 self.check_dependencies(section[1])
             elif h == 'Non-goals':
                 section[1] = self.fix_bullets(section[1], h)
+            elif h == 'Goals':
+                section[1] = self.fix_goals(section[1])
             elif h == 'Acceptance Criteria':
                 section[1] = self.fix_list(section[1], 'AC', checkbox=True)
             elif h == 'References':
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
 
+        if self.kind == 'initiative':
+            self.cite_goals(sections)
         self.check_outcomes(sections, canonical)
         fixed = join_sections(preamble, sections) if self.fixed else body
         if '{{' in fixed:
@@ -239,29 +248,56 @@ class Review:
             self.decide.append('unreplaced #Exx placeholder')
         return fixed
 
+    def fix_goals(self, lines: list[str]) -> list[str]:
+        """Give an initiative's goals G labels, as plain bullets."""
+        out, changed = [], False
+        for line in lines:
+            new = re.sub(r'^- \[[ xX]\] ', '- ', line)
+            new = re.sub(r'^- \*\*AC(\d+)\.\*\*', r'- **G\1.**', new)
+            changed |= new != line
+            out.append(new)
+        if changed:
+            self.fixed.append('goals given G labels, without checkboxes')
+            self.relabelled = True
+        return self.fix_list(out, 'G', checkbox=False)
+
+    def cite_goals(self, sections: list[list]) -> None:
+        """After goals are relabelled, the initiative's Outcomes cite them as G."""
+        if not getattr(self, 'relabelled', False):
+            return
+        for section in sections:
+            if section[0] == 'Work Breakdown':
+                section[1] = [OUTCOMES.sub(lambda m: m[0].replace('AC', 'G'), l) if l.startswith('|') else l
+                              for l in section[1]]
+
     def check_outcomes(self, sections: list[list], canonical) -> None:
         by_name = {canonical(h): lines for h, lines in sections}
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
         if len(table) < 3 or 'Outcomes' not in cells(table[0]):
             return
+        tag, noun, heading, label = (('G', 'goal', 'Goals', GOAL) if self.kind == 'initiative' else
+                                     ('AC', 'criterion', 'Acceptance Criteria', AC))
         column = cells(table[0]).index('Outcomes')
-        criteria = {int(m[1]) for l in by_name.get('Acceptance Criteria', []) if (m := AC.match(l))}
+        wanted = {int(m[1]) for l in by_name.get(heading, []) if (m := label.match(l))}
         delivered: set[int] = set()
         for line in table[2:]:
             r = cells(line)
+            name = LINK.sub(r'\1', r[0])
             cell = r[column] if column < len(r) else ''
             listed = OUTCOMES.search(cell)
             if not listed:
                 if 'moved to' not in cell:
-                    self.decide.append(f'{r[0]}: Outcomes does not end with the acceptance criteria '
-                                       'it delivers')
+                    self.decide.append(f'{name}: Outcomes does not end with the {noun}s it delivers')
                 continue
-            numbers = {int(n) for n in re.findall(r'AC(\d+)', listed[1])}
-            for n in sorted(numbers - criteria):
-                self.decide.append(f'{r[0]}: Outcomes cites AC{n}, which is not a criterion')
+            numbers = {int(n) for n in re.findall(rf'\b{tag}(\d+)', listed[1])}
+            other = re.findall(r'\b(?:AC|G)\d+', listed[1])
+            if len(other) != len(numbers):
+                self.decide.append(f'{name}: Outcomes cites {", ".join(other)}; an {self.kind} cites {tag}n')
+            for n in sorted(numbers - wanted):
+                self.decide.append(f'{name}: Outcomes cites {tag}{n}, which is not a {noun}')
             delivered |= numbers
-        for n in sorted(criteria - delivered):
-            self.decide.append(f'AC{n} is delivered by no Work Breakdown row')
+        for n in sorted(wanted - delivered):
+            self.decide.append(f'{tag}{n} is delivered by no Work Breakdown row')
 
     def reorder(self, sections: list[list], template: Template, canonical) -> list[list]:
         groups: list[list[list]] = []
@@ -447,6 +483,7 @@ class Review:
         return bullets
 
     def fix_list(self, lines: list[str], tag: str, checkbox: bool) -> list[str]:
+        """Checkbox and label a list's items; tag is AC, G or R."""
         items = [i for i, l in enumerate(lines) if l.startswith('- ')]
         if not items:
             return lines
@@ -457,7 +494,7 @@ class Review:
                 lines[i] = '- [ ] ' + lines[i][2:]
             if plain:
                 self.fixed.append(f'{len(plain)} acceptance criteria made checkboxes')
-        label = AC if tag == 'AC' else REF
+        label = {'AC': AC, 'G': GOAL, 'R': REF}[tag]
         numbers = [label.match(lines[i]) for i in items]
         if not any(numbers):
             for n, i in enumerate(items, 1):
