@@ -15,15 +15,22 @@ import {
  * navigation metadata when the embedded `state` is absent or summarised.
  */
 export interface EmbeddedSessionRef {
+  /** Child's workflow id (e.g. "work-package"). */
   workflowId: string;
+  /** Child's 6-char base32 session_index. */
   sessionIndex: string;
+  /** ISO-8601 timestamp at dispatch. */
   triggeredAt: string;
+  /** Where in the parent's flow the child was dispatched. */
   triggeredFrom: { activityId: string; stepIndex?: number };
   status: 'running' | 'completed' | 'aborted' | 'error';
+  /** ISO-8601 timestamp when the child reached its terminal activity. */
   completedAt?: string;
+  /** Full child SessionFile, embedded recursively. */
   state?: SessionFile;
 }
 
+/** While set, every authenticated tool except `respond_checkpoint` is blocked. */
 export const ActiveCheckpointSchema = z.object({
   checkpointId: z.string().min(1).describe('Nonempty identifier of the outstanding checkpoint.'),
   activityId: z.string().min(1).describe('Nonempty identifier of the activity containing the checkpoint.'),
@@ -61,6 +68,8 @@ const SessionFileBaseSchema = z.object({
 
   startedAt: z.string().datetime().describe('ISO 8601 timestamp when the session began.'),
 
+  // Holds one activity or the branches of exactly one fan: every branch exit binds to its fan's join,
+  // so a branch cannot open a fan of its own.
   frontier: z.array(z.string().describe('Activity identifier, optionally qualified by an instance number.')).default([]).describe('Activities currently in progress, with parallel instances named `<activityId>#<instance>`.'),
   currentTechnique: z.string().default('').describe('Current technique reference, or an empty string when none is selected.'),
 
@@ -84,7 +93,7 @@ const SessionFileBaseSchema = z.object({
 
   repo: z.string().min(1).optional().describe('Target repository in `owner/repo` form.'),
 
-  contextMode: z.enum(['persistent', 'fresh']).optional().describe('Context lifetime: `persistent` across calls, or `fresh` for each call by default.'),
+  contextMode: z.enum(['persistent', 'fresh']).optional().describe('Agent context model: `persistent` receives content already delivered as hash references; `fresh`, the default, receives full content on every call.'),
 
   executionPath: z.enum(['agent', 'runner']).optional().describe('Execution mode: `agent` by default, or `runner`.'),
 

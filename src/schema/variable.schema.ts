@@ -13,7 +13,7 @@ export const VariableDefinitionSchema = z.object({
   description: z.string().optional().describe('Meaning and intended use of the variable.'),
   values: enforcement(z.array(z.string().describe('Allowed string value for the variable.')).min(1).optional().describe('Nonempty set of distinct allowed string values, including the default when one is declared.'), { owner: 'Engine', strictness: 'advisory' }),
   defaultValue: enforcement(z.unknown().optional().describe('Initial variable value; a defaulted variable is already present at the start of a session.'), { owner: 'Engine', strictness: 'enforced' }),
-  required: enforcement(z.boolean().default(false).describe('Whether the workflow requires a value for this variable.'), { owner: 'Agent', strictness: 'advisory' }),
+  required: enforcement(z.boolean().default(false).describe('Marks the variable as expected to be set; no check reads it.'), { owner: 'Agent', strictness: 'advisory' }),
 }).superRefine((variable, ctx) => {
   if (variable.values === undefined) return;
   if (variable.type !== 'string') {

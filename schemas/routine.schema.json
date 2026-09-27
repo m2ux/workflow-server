@@ -184,7 +184,7 @@
             "additionalProperties": false,
             "description": "Produced value with its type, allowed values, and binding requirement."
           },
-          "description": "Produced values with variable declarations and bindings to session variables, without `defaultValue`."
+          "description": "Produced values, each declared with the type its bound session variable takes."
         },
         "internals": {
           "type": "array",
@@ -289,7 +289,7 @@
                             "emit",
                             "message"
                           ],
-                          "description": "Action to perform."
+                          "description": "Action for the executing agent to perform; a `set` value reaches the session when the agent reports it."
                         },
                         "target": {
                           "type": "string",
@@ -499,7 +499,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this checkpoint within the activity."
+                    "description": "Identifier for this checkpoint within the activity, and the key its recorded responses replay under on resume."
                   },
                   "message": {
                     "type": "string",
@@ -647,7 +647,7 @@
                   "steps"
                 ],
                 "additionalProperties": false,
-                "description": "Loop with a `when` entry expression and a separate continuation test, without a `condition` field."
+                "description": "Loop over a collection or until a continuation test fails, entered when its `when` expression holds."
               },
               {
                 "type": "object",
@@ -698,10 +698,10 @@
                   "routine"
                 ],
                 "additionalProperties": false,
-                "description": "Routine invocation with an optional `when` entry expression and no `condition` field."
+                "description": "Routine invocation with argument and output bindings, entered when its `when` expression holds."
               }
             ],
-            "description": "Step selected by `kind`, with guidance in its technique and no step-level `description` field."
+            "description": "Step selected by `kind`; its guidance lives in the bound technique."
           },
           "minItems": 1,
           "description": "Nonempty ordered list of steps."
@@ -714,7 +714,7 @@
         "steps"
       ],
       "additionalProperties": false,
-      "description": "Reusable steps with declared inputs, outputs, and internals; activity fields such as exits, outcome, rules, triggers, and activity-wide techniques are absent."
+      "description": "Reusable steps with declared inputs, outputs, and internals."
     }
   }
 }

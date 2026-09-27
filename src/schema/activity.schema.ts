@@ -13,7 +13,7 @@ export const BundleTechniquesSchema = enforcement(z.object({
 export type BundleTechniques = z.infer<typeof BundleTechniquesSchema>;
 
 export const ActionSchema = z.object({
-  action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action to perform.'),
+  action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action for the executing agent to perform; a `set` value reaches the session when the agent reports it.'),
   target: z.string().optional().describe('Variable name or other target of the action.'),
   message: z.string().optional().describe('Message associated with the action.'),
   value: z.unknown().optional().describe('Value assigned or supplied by the action.'),
@@ -77,7 +77,7 @@ export type ActionStep = z.infer<typeof ActionStepSchema>;
 
 export const CheckpointStepSchema = z.object({
   kind: enforcement(z.literal('checkpoint').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Identifier for this checkpoint within the activity.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Identifier for this checkpoint within the activity, and the key its recorded responses replay under on resume.'), { owner: 'Engine', strictness: 'enforced' }),
   message: z.string().describe('Message presented to the user.'),
   options: enforcement(z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'), { owner: 'Engine', strictness: 'enforced' }),
   defaultOption: enforcement(z.string().optional().describe('Option identifier to use when no person answers the checkpoint.'), { owner: 'Engine', strictness: 'enforced' }),
@@ -100,9 +100,10 @@ export const LoopStepSchema = z.object({
   maxIterations: enforcement(z.number().int().positive().optional().describe('Maximum number of iterations.'), { owner: 'Agent', strictness: 'advisory' }),
   steps: enforcement(z.array(z.lazy((): z.ZodTypeAny => StepSchema).describe('Step within the loop body.')).describe('The loop body, a nested ordered list of steps.'), { owner: 'Engine', strictness: 'enforced' }),
   ...stepCommonFields,
-}).strict().describe('Loop with a `when` entry expression and a separate continuation test, without a `condition` field.');
+}).strict().describe('Loop over a collection or until a continuation test fails, entered when its `when` expression holds.');
 export type LoopStep = z.infer<typeof LoopStepSchema>;
 
+// A routine step's gate is `when` alone: a `condition` reaching the body would make every checkpoint in it dismissible.
 export const RoutineStepSchema = z.object({
   kind: enforcement(z.literal('routine').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
   id: enforcement(z.string().describe('Routine step identifier and prefix for identifiers within its body.'), { owner: 'Engine', strictness: 'enforced' }),
@@ -110,7 +111,7 @@ export const RoutineStepSchema = z.object({
   with: z.record(z.union([z.string().describe('Text literal or braced host-variable reference.'), z.number().describe('Numeric routine argument.'), z.boolean().describe('Boolean routine argument.')]).describe('Literal argument or braced host-variable reference.')).optional().describe('Routine input identifiers mapped to literal values or `{host_variable}` references; omitted arguments use declared defaults, then same-name host variables.'),
   outputs: z.record(z.string().describe('Session variable name for the routine output.')).optional().describe('Routine output identifiers mapped to session variable names; only outputs declared optional may be left unbound.'),
   ...stepCommonFields,
-}).strict().describe('Routine invocation with an optional `when` entry expression and no `condition` field.');
+}).strict().describe('Routine invocation with argument and output bindings, entered when its `when` expression holds.');
 export type RoutineStep = z.infer<typeof RoutineStepSchema>;
 
 export const StepSchema = z.discriminatedUnion('kind', [
@@ -119,7 +120,7 @@ export const StepSchema = z.discriminatedUnion('kind', [
   CheckpointStepSchema,
   LoopStepSchema,
   RoutineStepSchema,
-]).describe('Step selected by `kind`, with guidance in its technique and no step-level `description` field.');
+]).describe('Step selected by `kind`; its guidance lives in the bound technique.');
 export type Step = z.infer<typeof StepSchema>;
 
 /** Every step kind the union admits, as one closed list. */
@@ -256,7 +257,7 @@ export const ActivitySchema = z.object({
 
   bundleTechniques: BundleTechniquesSchema.optional().describe('Optional character limit for inline step techniques.'),
 
-  steps: z.array(StepSchema).optional().describe('Ordered steps, including checkpoints and loops inline; separate `checkpoints[]` and `loops[]` fields are not accepted.'),
+  steps: z.array(StepSchema).optional().describe('Ordered steps, with checkpoints and loops at their positions in the sequence.'),
 
   exits: enforcement(z.array(ExitSchema).optional().describe('Named outcomes, each bound to a destination in the workflow graph; omission makes the activity terminal.'), { owner: 'Engine', strictness: 'advisory' }),
   triggers: enforcement(z.array(WorkflowTriggerSchema).optional().describe('Child workflows to start from this activity.'), { owner: 'Agent', strictness: 'advisory' }),
@@ -265,7 +266,7 @@ export const ActivitySchema = z.object({
   required: enforcement(z.boolean().default(true).describe('Whether this activity is required in the workflow'), { owner: 'Engine', strictness: 'advisory' }),
   rules: enforcement(z.array(z.string().describe('Rule or constraint for this activity.')).optional().describe('Activity-level rules and constraints that agents must follow'), { owner: 'Engine', strictness: 'advisory' }),
   artifactPrefix: enforcement(z.string().optional().describe('Numeric artifact filename prefix, such as `02`; omitted from authored activity definitions.'), { owner: 'Engine', strictness: 'enforced' }),
-}).strict().describe('Activity with ordered steps; artifact contracts belong to the bound techniques, with no activity-level artifact-contract field.');
+}).strict().describe('Activity with ordered steps; its artifacts are declared by the techniques its steps bind.');
 
 export type Activity = z.infer<typeof ActivitySchema>;
 

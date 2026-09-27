@@ -402,7 +402,7 @@
             "persistent",
             "fresh"
           ],
-          "description": "Context lifetime: `persistent` across calls, or `fresh` for each call by default."
+          "description": "Agent context model: `persistent` receives content already delivered as hash references; `fresh`, the default, receives full content on every call."
         },
         "executionPath": {
           "type": "string",

@@ -1,3 +1,11 @@
+/**
+ * Routine definitions — a named run of steps, spliced into each referring activity at load.
+ *
+ * Every name a routine body reads or writes is a declared input, output or internal, so its contract
+ * derives, its walk starts from its inputs, and its artifact check runs once per routine. A routine
+ * with a `kind: technique` input names a parameter where a technique reference belongs, so each of
+ * those three happens once per reference site, against the technique that site supplies.
+ */
 import { z } from 'zod';
 import { StepSchema } from './activity.schema.js';
 import { SemanticVersionSchema } from './common.js';
@@ -43,11 +51,11 @@ export const RoutineSchema = z.object({
   description: z.string().optional().describe('What the run does, and when to refer to it'),
 
   inputs: z.array(RoutineInputSchema).optional().describe('Parameters for every value the body reads without producing itself.'),
-  outputs: z.array(RoutineOutputSchema).optional().describe('Produced values with variable declarations and bindings to session variables, without `defaultValue`.'),
+  outputs: z.array(RoutineOutputSchema).optional().describe('Produced values, each declared with the type its bound session variable takes.'),
   internals: z.array(RoutineInternalSchema).optional().describe('Names for values shared between the routine\'s steps, local to each use.'),
 
   steps: z.array(StepSchema).min(1).describe('Nonempty ordered list of steps.'),
-}).strict().describe('Reusable steps with declared inputs, outputs, and internals; activity fields such as exits, outcome, rules, triggers, and activity-wide techniques are absent.').superRefine((routine, ctx) => {
+}).strict().describe('Reusable steps with declared inputs, outputs, and internals.').superRefine((routine, ctx) => {
   // A technique step may omit its id, in which case it is derived from the technique reference's
   // last segment. Where that reference is a parameter, the derived id would be the parameter's own
   // name — one identifier for every site, naming the placeholder rather than the technique.
