@@ -1,9 +1,9 @@
 # Update mode
 
 Records delivered work on an initiative, its epics and their task issues: links each delivered
-task to its pull request, ticks the criteria that now hold, and closes what is complete. The Work
-Breakdown guide (`work-breakdown.md`) states how pull requests name tasks and how delivery is
-recorded.
+task to its pull request, ticks the criteria that now hold, closes what is complete, and brings the
+initiative's project board up to date. The Work Breakdown guide (`work-breakdown.md`) states how
+pull requests name tasks and how delivery is recorded.
 
 ## Procedure
 
@@ -54,8 +54,22 @@ recorded.
    ready to verify. Run the automated test each names, and tick those that pass with
    `--tick AC1,AC3`. Put each criterion that names no automated test to the user, who confirms it
    and ticks it. Close the initiative when it reports every criterion ticked.
-12. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
-    and what was closed.
+12. **Update the board**, once every issue is patched and closed. Fetch the issues again first.
+    - **Find it.** List the owner's open boards, as the commands below show; they sit under
+      `orgs/{owner}` in place of `users/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type`
+      is `Organization`. Fetch each board's items and run `scripts/board.py --find issue-936.json
+      2=items-2.json 7=items-7.json`. The one board holding the initiative is its board. When none or several do, ask the user which board, or
+      none; the first update puts the initiative on the board chosen, so the next search finds it.
+    - **Plan.** Fetch the board's fields, then its items with the Status field id, and run
+      `scripts/board.py issue-936.json --epics … --tasks … --prs prs.json --board
+      users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/`. It derives
+      each issue's Status and prints the call for each issue to add, item to remove and Status to
+      set. Give an issue it reports unresolved with `--others`.
+    - **Write.** Run each call it prints. Fetch the items again and re-run: that re-read confirms
+      every write, and the board is current when it reports nothing to do. An issue added in one
+      pass gets its Status in the next.
+13. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
+    what was closed, and each board change.
 
 ## Commands
 
@@ -66,4 +80,11 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | .number'
+gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100" > items-2.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json
+gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" > fields.json
+gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
+gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=411749936" > items.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/
 ```
