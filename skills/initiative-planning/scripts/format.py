@@ -39,8 +39,8 @@ Left to decide, since each needs new content or a judgement:
   - an epic's task delivering more than three criteria, a candidate for splitting
   - wording that narrates how the plan changed (moved to, was W06, renumbered, formerly,
     previously, no longer, discharged, superseded, subsumed, used to)
-  - a goal that may state several invariants (a colon or semicolon in its statement), or that names
-    an epic or task of the initiative
+  - a goal that may state several invariants (a colon or semicolon in its statement), that names
+    an epic or task of the initiative, or that carries a count (a figure or a number word) that is not the goal's own target
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - an initiative with acceptance criteria in place of Goals, which are rewritten as SMART goals
   - a non-goal of more than one sentence, or one naming an epic or task of this initiative; a
@@ -72,6 +72,8 @@ KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 ALIASES = {'Acceptance criteria': 'Acceptance Criteria'}
 PROGRESS = ('Where it stands', 'Where this stands', 'Progress', 'Outcome')
 MAX_CRITERIA = 3
+COUNT = re.compile(r'\d[\d,.]*|\b(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|dozen|twenty|'
+                   r'thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand)(?:-\w+)?\b', re.I)
 HISTORY = re.compile(r'\bmoved to\b|\(was [EW]?\d|\bwas W\d\d|\brenumbered\b|\bformerly\b|\bpreviously\b|'
                      r'\bno longer\b|\bdischarged\b|\bsuperseded\b|\bsubsumed\b|\bused to\b', re.I)
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
@@ -283,6 +285,11 @@ class Review:
             statement = re.split(r',? (?:when|by|once) ', line[goal.end():], maxsplit=1)[0] if goal else ''
             if goal and (';' in statement or ': ' in statement):
                 self.decide.append(f'G{goal[1]} may state several invariants; state one per goal')
+            plain = LINK.sub(r'\1', line[goal.end():]) if goal else ''
+            figures = COUNT.findall(re.sub(r'\b(?:AC|G|R|E|W|I)\d+\b|\bv\d+(?:\.\d+)*\b', '', plain))
+            if figures:
+                self.decide.append(f'G{goal[1]} carries a count ({", ".join(figures)}); counts go stale, so a goal '
+                                   'measures against a named baseline or check, unless the figure is its own target')
             named = re.findall(r'(?<![\w:])(?:E\d\d(?::W\d\d)?|W\d\d)\b', LINK.sub(r'\1', line)) if goal else []
             if named:
                 self.decide.append(f'G{goal[1]} names {", ".join(named)}; a goal names no epic or task, since '

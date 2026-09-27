@@ -30,8 +30,10 @@ changes.
    whether it holds.
    - Each initiative goal states one invariant, a single condition that holds or does not; a goal
      joining several is split into one goal each, and the Outcomes cells cite the new goals.
+   - Each initiative goal carries no counts or figures, which go stale: it measures against a
+     named baseline or check ("against the baseline", "as the budget test measures it"). A figure stays only where it is the goal's own target, such as a bound the goal holds to.
    - Each initiative goal is SMART: **specific** about what holds; **measurable** by a named
-     threshold or check; **achievable** by the epics that cite it; **relevant**, tracing to a clause
+     check or baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause
      and to the Problem; and **time-bound** by a release tag or another named milestone outside the
      initiative's own work, where one exists, and otherwise by the epics whose Outcomes cite it. A goal
      names no epic or task: Outcomes cells link epics to goals, never the reverse. It states what
