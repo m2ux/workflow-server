@@ -29,6 +29,8 @@ recorded.
      what, from their changes, and put it to the user;
    - **task issue:** a task with its own issue that a merged pull request names, while the issue
      is still open. Update it as in step 4;
+   - **open questions:** work on the epic has started while its Open questions section remains.
+     Stop and resolve them in plan mode, since their answers may reshape the epic;
    - **in flight:** open pull requests, which are left unlinked;
    - **ready to verify:** criteria whose delivering rows are all delivered;
    - **ticked early:** criteria ticked while a delivering row is not delivered. Untick them, or

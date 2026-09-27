@@ -67,6 +67,9 @@ Runs after every round of edits.
   the boundary in both.
 - **Duplicates.** The same outcome as a task in two epics, or an initiative goal that restates an
   epic's criterion. Remove one, or raise the goal.
+- **Open questions.** Each has a recommendation in the planning record, and holds only what is
+  undecided; a settled point moves to the planning record. An epic whose first task is next has
+  none.
 - **Links.** A link to an unmerged planning branch breaks when the branch merges; list those to
   repoint.
 - **Non-goals.** Only the initiative has them: one succinct sentence each, naming no epic or task

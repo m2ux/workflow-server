@@ -26,7 +26,7 @@
 
 ## Open questions
 
-{{Undecided points, each with a recommendation in the planning record. Delete the section when there are none.}}
+- {{An undecided point the epic cannot start without, with a recommendation in the planning record. Resolve every one before the first task starts, then delete the section.}}
 
 ## References
 

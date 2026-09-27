@@ -18,7 +18,8 @@ as completed; a merged pull request naming it is reported, since the task issue 
 other row is delivered when its id links a pull request or commit. A task that a merged pull
 request names gets its id linked to it, the latest merged when several name it; a row already
 linked elsewhere is reported, not changed. Open pull requests are reported as in flight, and a
-grouped title naming tasks that do not Join each other is reported.
+grouped title naming tasks that do not Join each other is reported. An epic whose work has started
+while its Open questions section remains is reported.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed. Its goals are met through its epics' criteria and are not ticked, so the initiative is
 closable once every epic is delivered.
@@ -159,7 +160,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'task issue', 'conflict', 'in flight', 'ready to verify',
-                              'ticked early', 'ticked', 'note')}
+                              'ticked early', 'ticked', 'open questions', 'note')}
 
     lines, start, end, grid = table(sections)
     delivered: dict[str, bool] = {}
@@ -183,6 +184,11 @@ def main() -> int:
                     joins[LINK.sub(r'\1', r[0])] = set(re.findall(r'W\d\d', r[at] if at < len(r) else ''))
             merged = merged_for(prs, initiative, epic, report, joins)
             delivered = epic_delivery(rows, header, merged, completed(args.tasks), report)
+            questions = next((l for h, l in sections if h == 'Open questions'), [])
+            started = any(delivered.values()) or report['in flight']
+            if started and any(l.strip() for l in questions):
+                report['open questions'].append('work has started while questions remain; resolve them '
+                                                'in plan mode, since their answers may reshape the epic')
         else:
             delivered = initiative_delivery(rows, completed(args.epics), report)
         for r in rows:
