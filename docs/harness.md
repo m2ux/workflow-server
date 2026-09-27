@@ -30,6 +30,7 @@ Python 3.11 or later and the existing Linux bubblewrap launcher are required.
 | `.codex/hooks/adapter.py` | Codex event translation and native approval delegation |
 | `.claude/scripts/render.py`, `.codex/scripts/render.py` | Harness-specific configuration formats |
 | `.codex/scripts/trust.py` | Codex project trust during deployment |
+| `.codex/scripts/check_runtime.py` | Inspect native hook discovery, trust, and loaded instructions |
 | `scripts/render-harnesses.py` | Discover and run harness configuration renderers |
 | `scripts/sbx` | Filesystem and network containment |
 
@@ -111,12 +112,28 @@ decisions where a harness exposes a supported event.
 ```bash
 python3 scripts/test-harnesses.py
 bash -n scripts/deploy-workspace.sh
+python3 scripts/render-harnesses.py --check
+python3 .codex/scripts/check_runtime.py
 ```
 
-Shared tests live alongside reusable code; adapter tests live in each harness's
-`hooks/` and `scripts/` directories. The runner discovers these suites and runs
-each in a separate interpreter. The tests cover decision precedence, exact and wildcard command grants,
-sandbox redirection, URL scope, native approval delegation, imported Cursor
-events, malformed input, and generated configuration drift. Classifier scripts
-also accept `--test`; for example, pass command text on stdin to
-`hooks/block_dynamic_shell.py --test`.
+Run the suite from a host shell: the containment test launches its own bubblewrap
+sandbox. Shared tests live alongside reusable code; adapter tests live in each
+harness's `hooks/` and `scripts/` directories. The runner discovers these suites
+and runs each in a separate interpreter.
+
+Tests exercise generated hook commands with shell, web, and approval requests;
+all permission categories; malformed input; linked worktrees and symlink escapes;
+rule rendering and Unicode; deployment in a temporary checkout; and project
+trust registration. Command fixtures are evaluated as data. The containment
+test verifies filesystem and network restrictions using disposable files and a
+local listener. Classifier scripts also accept `--test`; for example, pass
+command text on stdin to `hooks/block_dynamic_shell.py --test`.
+
+The Codex runtime check starts a local app-server without a model turn and reads
+its hook inventory and effective configuration. It exits unsuccessfully if the
+workspace hooks are missing, disabled, or untrusted, or the loaded instructions
+and skill link do not match the workspace. Use `--codex /path/to/codex` to check
+a particular installation. This requires normal access to Codex's runtime cache.
+It neither changes trust nor proves hook execution in an existing conversation.
+Live validation requires a session opened in the rendered workspace, trusted
+hook registrations, and observed hook decisions on that session's tool calls.
