@@ -37,6 +37,7 @@ Runs after every round of edits.
   decision.
 - **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown
   table.
+- **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed.
 - **Contradictions.** Between acceptance criteria in one epic, and between an epic and its
   initiative.
 - **Ownership overlaps.** Two epics or tasks claiming one piece of work. Assign one owner and state

@@ -4,9 +4,11 @@ description: >-
   Plans and maintains a house initiative on GitHub: an [Ixx] initiative issue, its [Ixx:Eyy] epics
   and [Ixx:Eyy:Wzz] tasks, written from the house body templates, with a planning record on the
   engineering branch. Runs review passes against the initiative's goal, for consistency, and for
-  dependency order, and renumbers epics and tasks so numbers follow run order. Use when the user asks
-  to raise, plan or restructure an initiative or epic, to review an initiative, to check or fix
-  dependencies or ordering, to renumber epics or tasks, or to fold review findings into issues.
+  dependency order, and renumbers epics and tasks so numbers follow run order. Review mode checks
+  existing issues against the templates and fixes them. Use when the user asks to raise, plan or
+  restructure an initiative or epic, to review an initiative, to check an issue's format or bring it
+  into the house layout, to check or fix dependencies or ordering, to renumber epics or tasks, or to
+  fold review findings into issues.
 ---
 
 # Initiative Planning
@@ -15,12 +17,15 @@ An initiative is one issue that states a goal and lists its epics. Each epic is 
 tasks. Issues are the plan. A planning record on the `engineering` branch holds the evidence, the
 decisions and each review.
 
+The skill has two modes. **Plan mode** raises or restructures an initiative. **Review mode** brings
+existing issues into the house format.
+
 ## House scheme
 
 | Level | Title | Labels |
 | --- | --- | --- |
-| Initiative | `[I07] Name: Subtitle` | `type:initiative`, `enhancement`, a `theme:*` |
-| Epic | `[I07:E00] Name: Subtitle` | `type:epic`, `enhancement`, a `theme:*` |
+| Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
+| Epic | `[I07:E00] Name: Subtitle` | `type:epic`, a `theme:*` |
 | Task | `[I07:E00:W01] Name: subtitle` | `type:task` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
@@ -41,9 +46,11 @@ decisions and each review.
 - **Check current practice.** Before relying on the scheme, read one recent initiative and one epic.
   Find the next initiative number by listing titles:
   `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
-- **Labels.** Only labels that exist: `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
+- **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a
+  `priority: *` as they apply. Only labels that exist:
+  `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
 
-## Procedure
+## Plan mode
 
 1. **Understand the request.** Interview the user one question at a time, each with a recommended
    option, until the goal and scope are clear.
@@ -81,6 +88,33 @@ decisions and each review.
    - **Closing:** close an epic when every criterion is ticked, and the initiative when every epic is
      closed.
 
+## Review mode
+
+1. **Select.** Review the issues the user names, or an initiative with its open epics.
+   - Review covers open issues only. A closed issue is reviewed only when named, and a closed epic
+     keeps its `Solution` heading.
+   - Naming another initiative's issue approves format edits to it.
+2. **Fetch** each issue whole, into a working directory outside the repository:
+   `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
+3. **Check** with `scripts/format.py issue-943.json --fix fixed-943.md`. It reads the format from
+   `templates/`, and reports three kinds of finding:
+   - **fixed:** structural changes that keep the wording, already made in `fixed-943.md`, with the
+     body diff printed;
+   - **apply:** a title or label change to make on the issue;
+   - **decide:** anything needing new content or a judgement.
+4. **Apply the mechanical fixes** without asking. Read the diff to confirm it changes structure only,
+   then patch the body from `fixed-943.md`, along with the title and labels the check names.
+5. **Decide the rest** with the user, one finding at a time, each with a recommended option and the
+   content drafted:
+   - a missing section: draft it from the issue and its epics;
+   - an extra section: keep it, fold it into a template section, or remove it;
+   - a body that follows another kind's template: rewrite it in its own kind's layout, or relabel
+     the issue;
+   - a missing fixed sentence that makes a claim, such as the initiative's numbering order: run
+     `deps.py` first, and recommend the sentence only when it reports no numbering advisories.
+6. **Re-run** the check until it exits 0, or until every remaining finding is one the user chose to
+   keep. Report what changed on each issue.
+
 ## Commands
 
 GitHub goes through REST only, with full host permissions and token variables unset. `gh` resolves
@@ -92,6 +126,9 @@ unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues -f
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
 unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed --jq .state
+unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f title='[I07:E00] Name: Subtitle' --jq .title
+unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues/943/labels -f 'labels[]=type:epic' --jq '.[].name'
+unset GH_TOKEN GITHUB_TOKEN; gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --jq '.[].name'
 ```
 
 Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the
@@ -104,7 +141,13 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
 ```
 
-The first renumbers epics. The second renumbers E01's tasks: `E01 Wxx` everywhere, and bare `Wxx`
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --fix fixed-943.md
+```
+
+`format.py` checks one issue against its template and writes the mechanically fixed body.
+
+Of the `renumber.py` commands, the first renumbers epics. The second renumbers E01's tasks: `E01 Wxx` everywhere, and bare `Wxx`
 inside E01's own body. Both rewrite files in place and refuse a map that collides.
 
 ## Rules
