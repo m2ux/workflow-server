@@ -9,6 +9,7 @@ issues in place.
 1. **Select.** Review the issues the user names, or an initiative with its open epics.
    - Review covers open issues only. A closed issue is reviewed only when named.
    - Naming another initiative's issue approves format edits to it.
+   - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
 2. **Fetch** each issue whole, with its initiative when it is an epic, and its epics when it is an
    initiative: `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
 3. **Check** with `scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md`,
