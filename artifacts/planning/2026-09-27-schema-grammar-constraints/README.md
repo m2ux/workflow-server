@@ -289,11 +289,15 @@ and so that tasks within each epic are numbered in the order they can start.
   a draft.
 - **E06 skill runs:** wait on the distributed skill and the complete validator.
 
-**Longest chains.** Two tie at nine steps. Both pass through E01 W05 (static semantics, behind #750)
-and W09 (runtime semantics):
+**Longest chains.** A full enumeration by the dependency checker finds twelve chains tied at nine
+steps. A hand count first reported two, running through E01 W05 and W09. All twelve start with the
+language move (E00 W01), and ten pass through E01's vertical slice (W01), so those two set the pace.
+The chains end in the canon guard (E02 W05) or the design-method verdict (E06 W06). Three show the
+range:
 
-- E00 W01 → W02 → E01 W01 → W03 → W05 → W09 → W10 → E02 W04 → W05
-- E00 W01 → W02 → E01 W01 → W03 → W05 → W09 → E04 W04 → E06 W05 → W06
+- E00 W01 → W02 → E01 W01 → W03 → W04 → W07 → W10 → E02 W04 → W05
+- E00 W01 → W02 → E01 W01 → E04 W01 → W02 → E06 W03 → W04 → W05 → W06
+- E00 W01 → W02 → W05 → E02 W01 → W03 → E05 W04 → W05 → E06 W05 → W06
 
 ## Rollout
 
