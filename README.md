@@ -2,7 +2,7 @@
 
 An exemplar agentic workspace layer on top of any project. It aggregates all workspace-level config, hooks, rules, scripts etc such that multiple working environments for agentic and standard engineering can be supported simultaneously without cluttering the root of any given project. It includes helper scripts to check-out, fork and setup individual project component(s) held in external repos for the agents to work on. It is designed to be forked so that the workspace shape and config can be re-used and easily updated from upstream as it evolves.
 
-Claude Code, Cursor, and Codex use common rules, skills, and command policy. Harness adapters and generated configuration connect these sources to each environment. See [harness setup and behavior](docs/harnesses.md).
+Claude Code, Cursor, and Codex use common rules, skills, and command policy. Harness adapters and generated configuration connect these sources to each environment. See [harness setup and behavior](docs/harness.md).
 
 ```text
 ./
@@ -11,61 +11,17 @@ Claude Code, Cursor, and Codex use common rules, skills, and command policy. Har
 ├── .mcp.json                      # MCP servers (Claude shaped)
 ├── .cursor/                       # Cursor project configuration
 ├── .claude/                       # Claude hooks, configuration adapters, and shared-source links
-│   ├── hooks/
-│   │   ├── adapter.py             # Claude and imported Cursor events; local settings lookup
-│   │   ├── shared -> ../../hooks
-│   │   └── test_adapter.py        # Claude and Cursor event tests
-│   ├── scripts/
-│   │   ├── render.py              # Render Claude settings and hook registration
-│   │   ├── shared -> ../../scripts
-│   │   └── test_config.py         # Settings and registered hook tests
-│   ├── settings.template.json     # Claude-specific settings
-│   └── settings.json              # Generated local settings (gitignored)
 ├── .agents/                       # Shared skill discovery for Codex
-│   └── skills -> ../skills
 ├── .codex/                        # Codex adapters and generated local configuration
-│   ├── hooks/
-│   │   ├── adapter.py             # Codex events and native approval delegation
-│   │   ├── shared -> ../../hooks
-│   │   └── test_adapter.py        # Codex event and approval tests
-│   ├── scripts/
-│   │   ├── render.py              # Render Codex configuration and hook registration
-│   │   ├── shared -> ../../scripts
-│   │   ├── test_config.py         # Configuration and registered hook tests
-│   │   └── trust.py               # Register project trust during deployment
-│   ├── config.toml                # Generated local configuration (gitignored)
-│   └── hooks.json                 # Generated hook registration (gitignored)
 ├── rules/                         # Agent rules source
 ├── skills/                        # Agent skills source
 ├── config/                        # Configuration data: permissions and URL policy
-│   ├── compound-bash.json         # Additional grants for compound commands
-│   ├── curl-allow.json            # Curl host and path grants
-│   ├── permissions.json           # Shared command, file, web, MCP, and skill grants
-│   └── webfetch-allow.json        # WebFetch host and path grants
 ├── hooks/                         # Shared classifiers, event protocol, and policy runtime
-│   ├── block_dynamic_shell.py     # Detect dynamic shell constructs
-│   ├── compound_bash_allow.py     # Evaluate compound command grants
-│   ├── contracts.py               # Request and decision types
-│   ├── curl_read_allow.py         # Evaluate read-only curl requests
-│   ├── gate_gh_api_hazards.py      # Identify GitHub operations requiring confirmation
-│   ├── permissions.py             # Load and expand shared permission data
-│   ├── policy.py                  # Compose classifiers and decision precedence
-│   ├── project_scripts.py         # Resolve project scripts and sandbox roots
-│   ├── protocol.py                # Decode events and encode hook responses
-│   ├── redirect_fs_mutation.py    # Check filesystem mutation sandboxing
-│   ├── redirect_inline_eval.py    # Check interpreter sandboxing
-│   ├── runtime.py                 # Run the hook request and decision pipeline
-│   ├── test_policy.py             # Shared policy tests
-│   └── webfetch_allow.py          # Evaluate web URL grants
 ├── docs/                          # Workspace documentation
-│   └── harnesses.md               # Harness setup, behavior, and validation
 ├── scripts/
 │   ├── deploy-workspace.sh        # checkout the template workspace
 │   ├── render-harnesses.py        # Render local harness configuration
-│   ├── rendering.py              # Shared rule-text and configuration rendering helpers
-│   ├── sbx                       # Filesystem and network sandbox launcher
 │   ├── test-harnesses.py          # Run shared and harness-owned test suites
-│   ├── test_render_harnesses.py   # Rendering drift and shared-link tests
 │   ├── fork-workspace.sh          # Create a fork from this checkout
 │   ├── deploy-engineering.sh      # Deploy engineering worktree
 │   ├── add-component.sh           # Add a project component from an external repo

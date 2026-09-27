@@ -5,9 +5,31 @@ accept a request and return `deny`, `ask`, `allow`, or `abstain`. Adapters own
 event names, JSON payloads, and native approval behavior. Python 3.11 or later
 and the existing Linux bubblewrap launcher are required.
 
-See the [README](../README.md) for the workspace layout.
+## Shared sources
 
-## Command policy
+| Source | Responsibility |
+| --- | --- |
+| `AGENTS.md` | Workspace instructions; Claude and Cursor use existing links |
+| `rules/*.md` | Common rule text; Claude and Cursor use links, Codex receives rendered instructions |
+| `skills/` | Skills; `.claude/skills`, `.cursor/skills`, and `.agents/skills` link here |
+| `config/permissions.json` | Command patterns, file grants, web domains, MCP servers, and skill grants |
+| `config/compound-bash.json` | Additional commands allowed within compound commands |
+| `config/curl-allow.json`, `config/webfetch-allow.json` | URL host and path grants |
+| `hooks/policy.py` | Decision precedence and classifier composition |
+| `hooks/protocol.py`, `hooks/runtime.py` | Reusable event protocol and policy execution |
+| `scripts/rendering.py` | Shared rule-text and configuration rendering helpers |
+| `.claude/hooks/adapter.py` | Claude event translation and local settings lookup; Cursor uses its native Claude import |
+| `.codex/hooks/adapter.py` | Codex event translation and native approval delegation |
+| `.claude/scripts/render.py`, `.codex/scripts/render.py` | Harness-specific configuration formats |
+| `.codex/scripts/trust.py` | Codex project trust during deployment |
+| `scripts/render-harnesses.py` | Discover and run harness configuration renderers |
+| `scripts/sbx` | Filesystem and network containment |
+
+Each harness owns real `hooks/` and `scripts/` directories. Their `shared` links
+point to `../../hooks` and `../../scripts`. Rules and skills use their existing
+links to the root sources. Root implementations contain shared policy and
+utilities; harness formats and settings lookup belong to their harness directory.
+The root `config/` directory contains configuration data only.
 
 The shell list contains command patterns without harness tool wrappers. A
 trailing ` *` permits arguments, interior wildcards match full command text,
