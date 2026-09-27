@@ -14,14 +14,15 @@ nothing about them: the conventions live here.
   epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first
   real task. A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion
   or evidence of its own.
-- **Description.** A short phrase naming what the row delivers, at most eight words, ending with
-  the criteria or goals it delivers. It holds no list, semicolon or detail: each detail is an
-  acceptance criterion (in an epic) or a goal (in an initiative) stating one invariant, and the row
-  cites it. An epic's rows cite the epic's acceptance criteria (`… → AC2, AC5`), so an agent
-  working a task knows which criteria it must meet. An initiative row's Description is its epic's
-  title name, the part before the colon (`[I07:E01] Formal Specification: …` gives
-  `Formal Specification → G4, G5`), so the table and the epic name the work alike. An initiative's rows cite the initiative's goals (`… → G1, G3`), so each goal traces to the
-  epics that serve it. Every criterion and goal is delivered by at least one row.
+- **Description.** A short phrase naming what the row delivers, at most eight words, with no
+  list, semicolon or detail, ending with what the row delivers. Every criterion and goal is
+  delivered by at least one row.
+  - In an epic: the row cites the epic's acceptance criteria (`… → AC2, AC5`), so an agent working
+    the task knows which criteria it must meet. Each detail is a criterion stating one invariant.
+  - In an initiative: the phrase is the epic's title name, the part before the colon
+    (`[I07:E01] Formal Specification: …` gives `Formal Specification → G4, G5`), so the table and
+    the epic name the work alike. The row cites the goals the epic serves, so each goal traces to
+    its epics.
 - **Depends on.** References only, with no prose, and only what no other entry in the cell already
   implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`,
@@ -55,8 +56,7 @@ every epic reference to its epic's issue: `[E01:W03](…/issues/937)`. Prose use
 
 ## Delivery
 
-- **One pull request per task,** or per set of tasks that Join each other. A task too large for one
-  pull request is split into tasks.
+- **One pull request per task,** or per set of tasks that Join each other.
 - **Pull request titles** start with the epic they work on: `[I07:E00] Purpose`. Update mode
   finds an epic's pull requests by this prefix, and matches each merged one to the tasks it
   delivered from its changes and the tasks' Descriptions.

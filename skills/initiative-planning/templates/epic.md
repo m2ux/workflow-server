@@ -18,7 +18,7 @@
 
 ## Acceptance Criteria
 
-- [ ] **AC1.** {{A checkable end-state statement, one per outcome.}}
+- [ ] **AC1.** {{A checkable end-state statement of one invariant.}}
 
 ## Open questions
 

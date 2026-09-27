@@ -5,8 +5,8 @@ Checks existing initiative, epic and task issues against the templates, and fixe
 ## Procedure
 
 1. **Select.** Review the issues the user names, or an initiative with its open epics.
-   - Review covers open issues only. A closed issue is reviewed only when named, and a closed
-     initiative or epic keeps its `Solution` heading.
+   - Review covers open issues only. A closed issue is reviewed only when named, and keeps its
+     `Solution` heading.
    - Naming another initiative's issue approves format edits to it.
 2. **Fetch** each issue whole, with its initiative when it is an epic, and its epics when it is an
    initiative: `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
@@ -45,7 +45,11 @@ Checks existing initiative, epic and task issues against the templates, and fixe
    - prose in the Work Breakdown outside its table, or a Sequencing section: move any design
      content into the Proposal, and drop narration of order and its reasons;
    - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics
-     `deps.py` derives with `I=`.
+     `deps.py` derives with `I=`;
+   - a title whose name is not two or three words or whose subtitle runs past ten: draft a title of
+     the house form, and give the initiative row the new name;
+   - an issue several row ids link: unlink the ids and cite the issue under References, since it
+     backs several tasks, or give each task its own issue.
 6. **Check dependencies** whenever an initiative or epic is reviewed: fetch the initiative's and
    every epic's body, and run `scripts/deps.py I=live-936.md E00=live-943.md …`. Put each problem it
    reports to the user as in step 5; an initiative Depends on cell takes the epics it derives.

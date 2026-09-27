@@ -28,18 +28,20 @@ changes.
 4. **Each criterion** states an end state, not an activity; names or implies the instrument that
    observes it: a test, a guard, a command or a measure; and is unambiguous, so two readers agree on
    whether it holds.
-   - Each initiative goal states one invariant, a single condition that holds or does not; a goal
-     joining several is split into one goal each, and the Description cells cite the new goals.
-   - Each initiative goal carries no counts or figures, which go stale: it measures against a
-     named baseline or check ("against the baseline", "as the budget test measures it"). A figure stays only where it is the goal's own target, such as a bound the goal holds to.
-   - Each initiative goal is SMART: **specific** about what holds; **measurable** by a named
-     check or baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause
-     and to the Problem; and **time-bound** by a release tag or another named milestone outside the
-     initiative's own work, where one exists, and otherwise by the epics whose Description cells cite it. A goal
-     names no initiative, epic, task or issue: Description cells link epics to goals, never
-     the reverse, and a goal is solution-agnostic. A goal that holds only through another
-     initiative's work is not a local goal: restate what this initiative achieves, or drop it. It states what
-     the initiative achieves as a whole. A goal that restates a single
+   - **One invariant.** Each goal and criterion states a single condition that holds or does not.
+     One joining several is split, and the Description cells cite the new ones.
+   - **No counts.** A goal carries no counts or figures, which go stale: it measures against a
+     named baseline or check ("against the baseline", "as the budget test measures it"). A figure
+     stays only where it is the goal's own target, such as a bound the goal holds to.
+   - **SMART.** Each goal is **specific** about what holds; **measurable** by a named check or
+     baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause and to
+     the Problem; and **time-bound** by a release tag or another named milestone outside the
+     initiative's own work, where one exists, and otherwise by the epics that cite it.
+   - **Local.** A goal names no initiative, epic, task or issue, and is solution-agnostic:
+     Description cells link epics to goals, never the reverse. A goal that holds only through
+     another initiative's work is not a local goal: restate what this initiative achieves, or drop
+     it.
+   - **Whole.** A goal states what the initiative achieves as a whole. One that restates a single
      epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to
      the epic.
 5. Look past the clauses for what defeats the goal from outside:
@@ -62,7 +64,7 @@ Runs after every round of edits.
 - **Stale references.** Task and epic numbers, issue links, and wording from a superseded
   decision.
 - **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown
-  table.
+  table, its title has the house form, and the initiative row carries the epic's title name.
 - **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed. It
   confirms that each Description cell cites criteria or goals that exist, and that every one has a
   row.
@@ -84,12 +86,11 @@ Runs after every round of edits.
   none.
 - **Links.** A link to an unmerged planning branch breaks when the branch merges; list those to
   repoint.
-- **Non-goals.** Only the initiative has them: one succinct sentence each, naming no epic or task
-  or issue of any initiative, and no owner. A boundary between sibling epics belongs in
-  their Proposals.
-- **Cross-initiative overlap.** Record it in References. A non-goal states what this
-  initiative does not do, never who does it. Editing
-  another initiative's issue needs the user's explicit approval, and the edit stays minimal.
+- **Non-goals.** Only the initiative has them: one succinct sentence each on what the initiative
+  does not do, naming no initiative, epic, task or issue, and no owner. A boundary between sibling
+  epics belongs in their Proposals.
+- **Cross-initiative overlap.** Record it in References. Editing another initiative's issue needs
+  the user's explicit approval, and the edit stays minimal.
 
 ## Ordering pass
 
@@ -102,7 +103,8 @@ Checks dependencies as a graph, then renumbers.
      later epic;
    - cycles;
    - dependencies listed twice, or already implied by another in the same cell;
-   - Join pairs that are one-way, or that depend on each other through a task outside the pair;
+   - Join pairs that are one-way, or where one task depends on the other, directly or through a
+     task outside the pair;
    - initiative Depends on cells that name a task, or differ from the epics the epics' tasks depend
      on;
    - as advisory, numbering that does not follow start order;
@@ -114,8 +116,8 @@ Checks dependencies as a graph, then renumbers.
 4. Renumber so that epics run in number order and tasks are numbered in the order they can start,
    touching only work not yet delivered. Use `scripts/renumber.py --initiative NN --prs prs.json
    --map old:new,...` for epic numbers, and `--epic N --own <body> --tasks old:new,...` for one
-   epic's tasks, with other initiatives' bodies after `--outside`. Then re-sort each table, check every range the script prints, and grep the
-   prose for references it cannot see.
+   epic's tasks, with other initiatives' bodies after `--outside`. Then re-sort each table, check
+   every range the script prints, and grep the prose for references it cannot see.
 5. Update each initiative Depends on cell to the list `deps.py` gives, and re-run it until it
    reports no problems.
 6. Record the longest chains from its output in the planning record. Issue bodies do not narrate

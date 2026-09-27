@@ -25,7 +25,7 @@ in --prs names ([I07:E00] Purpose), since that is how its delivery is found. prs
 requests as JSON lines, as update.py takes them.
 
 After running: re-sort the renumbered table, update each affected issue title, check every range
-the script prints (W04–W09 may no longer be contiguous), and grep the prose for references it
+the script prints (a renumbered W04–W09 may not be contiguous), and grep the prose for references it
 cannot see.
 """
 import argparse

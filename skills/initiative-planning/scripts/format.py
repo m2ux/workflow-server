@@ -214,21 +214,25 @@ class Review:
         if ' ' in m[2]:
             fixed = '[' + ':'.join([m[1], *parts]) + ']' + title[m.end():]
             self.apply.append(f'title: {fixed}')
+        name = epic_name(title)
         if ': ' not in title[m.end():]:
             self.decide.append('title has no "Name: Subtitle" after the prefix')
-        name = epic_name(title)
-        subtitle = PREFIX.sub('', title).partition(': ')[2]
+        else:
+            self.check_title_shape(name, PREFIX.sub('', title).partition(': ')[2])
+        if self.kind == 'epic' and self.initiative:
+            for line in initiative_rows(self.initiative['body'] or ''):
+                epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
+                if epic and int(epic[2]) == self.issue.get('number') and description(line) != name:
+                    self.apply.append(f"initiative row {epic[1]}: Description {name}, the epic's title name")
+
+    def check_title_shape(self, name: str, subtitle: str) -> None:
+        """A title's name is two or three words, and its subtitle a succinct summary."""
         if not TITLE_NAME[0] <= len(name.split()) <= TITLE_NAME[1]:
             self.decide.append(f'title name runs to {len(name.split())} words; a name is '
                                f'{TITLE_NAME[0]} or {TITLE_NAME[1]}')
         if len(subtitle.split()) > MAX_SUBTITLE:
             self.decide.append(f'title subtitle runs to {len(subtitle.split())} words; it is a succinct summary '
                                f'of at most {MAX_SUBTITLE}')
-        if self.kind == 'epic' and self.initiative:
-            for line in initiative_rows(self.initiative['body'] or ''):
-                epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
-                if epic and int(epic[2]) == self.issue.get('number') and description(line) != name:
-                    self.apply.append(f"initiative row {epic[1]}: Description {name}, the epic's title name")
 
     def check_labels(self) -> None:
         labels = [l['name'] if isinstance(l, dict) else l for l in self.issue.get('labels', [])]

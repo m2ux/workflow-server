@@ -27,11 +27,10 @@ how rows, criteria and references are written.
   issue's References cite that folder beside the orphan, and the orphan closes. Otherwise keep the
   orphan when its work needs discussion or evidence of its own, as a task with its own issue does,
   and subsume it when its detail fits in rows, criteria and a reference.
-- **Bodies state the result.** Every body a hoist writes states the plan as it now is. None says
-  that work was hoisted, migrated, subsumed or moved, or names where it came from. A reference to
-  the orphan says what detail it holds: `The evidence walks and the carve-outs.`, never
-  `Subsumed into W04.` A kept orphan's rewritten body reads as if it had always been its task, epic
-  or initiative.
+- **Bodies state the result,** as every body does: none says work was hoisted, migrated or
+  subsumed, or names where it came from. A reference to the orphan says what detail it holds
+  (`The evidence walks and the carve-outs.`), and a kept orphan's body reads as if it had always
+  been its task, epic or initiative.
 
 ## Procedure
 

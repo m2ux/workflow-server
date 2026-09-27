@@ -20,13 +20,10 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Open a draft PR against `engineering` for discussion. The user merges it.
 4. **Draft bodies** from the templates, into local files. Those files are the source for every later
    edit. Write the acceptance criteria before the Work Breakdown, so each row's Description can cite
-   them. A Description is a phrase of at most eight words; its detail lives in the criteria it
-   cites. The initiative states Goals, not acceptance criteria: SMART goals drawn from the goal's
-   clauses, each stating one invariant of what the initiative achieves as a whole, carrying no counts
-   or figures unless the figure is its own target, and naming no initiative, epic, task or issue: the epics' Description cells cite the goals they serve. The epics'
-   criteria carry the detail that makes them true; the user qualifies each goal and ticks it, and
-   the initiative closes once every goal is ticked. Size each task to one pull request: a task delivering more than three criteria is
-   split; a criterion several tasks deliver is shared and counts towards none.
+   them. The initiative states Goals, drawn from the goal's clauses, as its template and the goal
+   pass in `review-passes.md` define them; the epics' criteria carry the detail that makes them
+   true. The user qualifies each goal and ticks it, and the initiative closes once every goal is
+   ticked. Rows, their Descriptions and task grain follow the Work Breakdown guide.
 5. **Review the drafts.** Run the goal pass in `review-passes.md`, and `deps.py I=… E00=…` over
    the drafts. Fold every gap and problem in and run both again. No issue is created while either
    reports one.
@@ -77,7 +74,8 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
   whose id links its pull request, or an epic a pull request in `--prs` names.
 - `format.py` checks one issue against its template, including that every criterion is delivered by
   a Work Breakdown row. An epic's check takes its initiative's JSON, which lists the epic issues its
-  references link to.
+  references link to; an initiative's takes each epic's JSON with `--epic`, whose title names its
+  row.
 
 ## Rules
 
