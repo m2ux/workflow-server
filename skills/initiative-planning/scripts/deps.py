@@ -12,6 +12,7 @@ A dependency is one of:
   E01 W02         a task in another epic
   E01             every task in another epic
   #750            an external issue, not checked
+  I05 E00 W02     another initiative's epic or task, not checked
 Markdown links are read by their text, so [E00](https://…/issues/704) is E00.
 
 Problems (exit status 1): unknown references, a task depending on itself or a later task in its epic,
@@ -28,6 +29,7 @@ LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d W\d\d')
 EPIC = re.compile(r'E\d\d')
+EXTERNAL = re.compile(r'#\d+|I\d\d E\d\d( W\d\d)?')
 MAX_CHAINS = 10
 
 
@@ -53,7 +55,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
             rng = RANGE.fullmatch(d)
             if rng:
                 dep_list += [f'{epic} W{i:02d}' for i in range(int(rng[1]), int(rng[2]) + 1)]
-            elif d.startswith('#'):
+            elif EXTERNAL.fullmatch(d):
                 continue
             elif TASK.fullmatch(d):
                 dep_list.append(d)

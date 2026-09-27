@@ -1,69 +1,143 @@
-"""Renumber an initiative's epics across its issue bodies.
+"""Renumber an initiative's epics, or one epic's tasks, across its issue bodies.
 
-Usage:
+Epics:
   python3 renumber.py --initiative 07 --map 6:0,0:1,3:2,2:3 FILE...
 
-Rewrites every epic reference (E06, E06 W02, I07 E06) in each file in place, following the map of
-old to new epic numbers. A reference to another initiative's epic (I03 E00, I00 E07) is left as it
-is. Epics absent from the map keep their number. Prints the count of references rewritten per file.
-Refuses, writing nothing, a map that sends two epics to one number or onto an epic it leaves out.
+  Rewrites every epic reference (E06, E06 W02, I07 E06) in each file, following the map of old to
+  new epic numbers.
 
-After running: re-sort the initiative's Work Breakdown table by epic number, update each issue
-title's [Ixx Eyy] prefix, and grep the prose for references a human wording carries (E00 W01–W05).
+Tasks:
+  python3 renumber.py --initiative 07 --epic 1 --own E01.md --tasks 7:3,2:4 FILE...
+
+  Rewrites every reference to the epic's tasks (E01 W07, I07 E01 W07) in each file, and bare task
+  references (W07) in the epic's own body, --own, where a bare number is unambiguous. --own is
+  rewritten whether or not it is also listed among FILE.
+
+In both modes a reference to another initiative (I03 E00) is left as it is, and numbers absent from
+the map keep theirs. Files are rewritten in place. A map that sends two numbers to one, or onto a
+number it leaves out, is refused and nothing is written.
+
+After running: re-sort the renumbered table, update each affected issue title, check every range
+the script prints (W04–W09 may no longer be contiguous), and grep the prose for references it
+cannot see.
 """
 import argparse
 import re
 import sys
 from pathlib import Path
 
-REF = re.compile(r'\bE(\d\d)\b')
-OTHER = re.compile(r'I(\d\d) $')
+EPIC_REF = re.compile(r'\bE(\d\d)\b')
+TASK_REF = re.compile(r'\bE(\d\d) W(\d\d)\b')
+BARE_TASK = re.compile(r'(?<!E\d\d )\bW(\d\d)\b')
+TABLE_ROW = re.compile(r'^\| W(\d\d) \|', re.MULTILINE)
+RANGE = re.compile(r'W\d\d[–-]W\d\d')
+INITIATIVE = re.compile(r'I(\d\d) $')
+
+
+def parse_map(text: str) -> dict[int, int]:
+    mapping = {}
+    for pair in text.split(','):
+        old, new = pair.split(':')
+        mapping[int(old)] = int(new)
+    return mapping
+
+
+def refuse_clashes(mapping: dict[int, int], present: set[int], what: str) -> None:
+    targets = list(mapping.values())
+    clashes = {t for t in targets if targets.count(t) > 1}
+    clashes |= {t for t in targets if t in present and t not in mapping}
+    if clashes:
+        sys.exit(f'map sends {what} onto {sorted(clashes)}: each target must be unique and must not '
+                 'be a number the map leaves out. Nothing was written.')
+
+
+def other_initiative(text: str, start: int, initiative: str) -> bool:
+    before = INITIATIVE.search(text[max(0, start - 4):start])
+    return bool(before) and before.group(1) != initiative
+
+
+def renumber_epics(texts: dict[str, str], initiative: str, mapping: dict[int, int]) -> dict[str, str]:
+    present = {int(m[1]) for t in texts.values() for m in EPIC_REF.finditer(t)
+               if not other_initiative(t, m.start(), initiative)}
+    refuse_clashes(mapping, present, 'epics')
+    out = {}
+    for name, text in texts.items():
+        count = 0
+
+        def repl(m: re.Match) -> str:
+            nonlocal count
+            old = int(m[1])
+            if other_initiative(text, m.start(), initiative) or old not in mapping:
+                return m[0]
+            count += 1
+            return f'E{mapping[old]:02d}'
+
+        out[name] = EPIC_REF.sub(repl, text)
+        print(f'{name}: {count} references rewritten')
+    return out
+
+
+def renumber_tasks(texts: dict[str, str], initiative: str, epic: int, own: str,
+                   mapping: dict[int, int]) -> dict[str, str]:
+    present = {int(n) for n in TABLE_ROW.findall(texts[own])}
+    refuse_clashes(mapping, present, 'tasks')
+    out = {}
+    for name, text in texts.items():
+        count = 0
+
+        def qualified(m: re.Match) -> str:
+            nonlocal count
+            if other_initiative(text, m.start(), initiative) or int(m[1]) != epic:
+                return m[0]
+            old = int(m[2])
+            if old not in mapping:
+                return m[0]
+            count += 1
+            return f'E{epic:02d} W{mapping[old]:02d}'
+
+        def bare(m: re.Match) -> str:
+            nonlocal count
+            old = int(m[1])
+            if old not in mapping:
+                return m[0]
+            count += 1
+            return f'W{mapping[old]:02d}'
+
+        text = TASK_REF.sub(qualified, text)
+        if name == own:
+            text = BARE_TASK.sub(bare, text)
+        out[name] = text
+        print(f'{name}: {count} references rewritten')
+        for line in text.splitlines():
+            if RANGE.search(line) and (name == own or f'E{epic:02d} W' in line):
+                print(f'  check range: {line.strip()[:110]}')
+    return out
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--initiative', required=True, help='two-digit initiative number, e.g. 07')
-    parser.add_argument('--map', required=True, help='old:new epic numbers, e.g. 6:0,0:1')
-    parser.add_argument('files', nargs='+')
+    parser.add_argument('--map', help='epic mode: old:new epic numbers, e.g. 6:0,0:1')
+    parser.add_argument('--epic', type=int, help='task mode: the epic whose tasks are renumbered')
+    parser.add_argument('--own', help="task mode: the epic's own body file")
+    parser.add_argument('--tasks', help='task mode: old:new task numbers, e.g. 7:3,2:4')
+    parser.add_argument('files', nargs='*')
     args = parser.parse_args()
 
-    mapping = {}
-    for pair in args.map.split(','):
-        old, new = pair.split(':')
-        mapping[int(old)] = int(new)
+    task_mode = args.tasks is not None
+    if task_mode == (args.map is not None):
+        sys.exit('give either --map (epics) or --epic, --own and --tasks (tasks)')
+    if task_mode and (args.epic is None or not args.own):
+        sys.exit('task mode needs --epic and --own')
 
-    texts = {name: Path(name).read_text() for name in args.files}
-    present = set()
-    for text in texts.values():
-        for m in REF.finditer(text):
-            before = OTHER.search(text[max(0, m.start() - 4):m.start()])
-            if not before or before.group(1) == args.initiative:
-                present.add(int(m.group(1)))
-    targets = list(mapping.values())
-    clashes = sorted(t for t in set(targets) if targets.count(t) > 1)
-    clashes += sorted(t for t in set(targets) if t in present and t not in mapping)
-    if clashes:
-        sys.exit(f'map sends epics onto {sorted(set(clashes))}: each target must be unique and '
-                 'must not be an epic left out of the map. Nothing was written.')
-
-    for name, text in texts.items():
-        path = Path(name)
-        count = 0
-
-        def repl(m: re.Match) -> str:
-            nonlocal count
-            before = OTHER.search(text[max(0, m.start() - 4):m.start()])
-            if before and before.group(1) != args.initiative:
-                return m.group(0)
-            old = int(m.group(1))
-            if old not in mapping:
-                return m.group(0)
-            count += 1
-            return f'E{mapping[old]:02d}'
-
-        out = REF.sub(repl, text)
-        path.write_text(out)
-        print(f'{name}: {count} references rewritten')
+    names = list(dict.fromkeys(args.files + ([args.own] if task_mode else [])))
+    texts = {name: Path(name).read_text() for name in names}
+    if task_mode:
+        out = renumber_tasks(texts, args.initiative, args.epic, args.own, parse_map(args.tasks))
+    else:
+        out = renumber_epics(texts, args.initiative, parse_map(args.map))
+    for name, text in out.items():
+        Path(name).write_text(text)
 
 
 if __name__ == '__main__':
