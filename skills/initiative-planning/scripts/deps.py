@@ -22,9 +22,9 @@ an epic depending on a later epic, cycles, a dependency listed twice, and a depe
 in the same cell already implies. A whole-epic dependency (E01) states intent, so its tasks are not
 reported as implied. Join problems: a task joining one that does not join it back, and two joined
 tasks that one of them reaches the other through a task outside the pair.
-With I=, the initiative's Depends on cells are checked: each epic's cell lists exactly the tasks in
-other epics that its tasks depend on, less those another listed task already implies, and holds
-nothing else.
+With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
+epics its tasks depend on, less those another named epic already depends on, and names no task.
+Another initiative's epic (I05:E00) or an issue (#750) may also be named.
 Advisory: task numbers that do not follow the order tasks can start.
 Also printed: each task's level (0 = can start now) and the longest chains.
 """
@@ -38,6 +38,7 @@ RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d:W\d\d')
 EPIC = re.compile(r'E\d\d')
 EXTERNAL = re.compile(r'#\d+|I\d\d:E\d\d(?::W\d\d)?')
+INITIATIVE_EPIC = re.compile(r'#\d+|I\d\d:E\d\d')
 MAX_CHAINS = 10
 
 
@@ -90,8 +91,20 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
     return tasks, problems, whole
 
 
-def check_initiative(path: Path, tasks: dict, ancestors) -> list[str]:
-    """Compare each epic's Depends on cell with what its tasks depend on in other epics."""
+def check_initiative(path: Path, tasks: dict) -> list[str]:
+    """Compare each epic's Depends on cell with the other epics its tasks depend on."""
+    needs: dict[str, set[str]] = {}
+    for k, (_, deps, _) in tasks.items():
+        epic = k.split(':')[0]
+        needs.setdefault(epic, set()).update(d.split(':')[0] for d in deps if d.split(':')[0] != epic)
+
+    def reaches(epic: str, seen=None) -> set[str]:
+        seen = set() if seen is None else seen
+        for e in needs.get(epic, set()) - seen:
+            seen.add(e)
+            reaches(e, seen)
+        return seen
+
     problems, header = [], []
     for line in path.read_text().splitlines():
         if line.startswith('| Epic |'):
@@ -102,14 +115,13 @@ def check_initiative(path: Path, tasks: dict, ancestors) -> list[str]:
         r = dict(zip(header, cells(line)))
         epic = r.get('Epic', '')
         written = [x.strip() for x in r.get('Depends on', '').split(',') if x.strip()]
-        prose = [x for x in written if not (TASK.fullmatch(x) or EPIC.fullmatch(x) or EXTERNAL.fullmatch(x))]
-        if prose:
-            problems.append(f'initiative {epic}: Depends on holds more than references: {", ".join(prose)}')
-            continue
-        needed = {d for k, (_, deps, _) in tasks.items() if k.startswith(epic + ':')
-                  for d in deps if not d.startswith(epic + ':')}
-        needed = {d for d in needed if not any(d in ancestors(o) for o in needed if o != d)}
-        if set(written) != needed:
+        other = [x for x in written if not (EPIC.fullmatch(x) or INITIATIVE_EPIC.fullmatch(x))]
+        direct = needs.get(epic, set())
+        needed = {d for d in direct if not any(d in reaches(o) for o in direct if o != d)}
+        if other:
+            problems.append(f'initiative {epic}: Depends on names more than epics ({", ".join(other)}); '
+                            f'it should be {", ".join(sorted(needed)) or "empty"}')
+        elif {x for x in written if EPIC.fullmatch(x)} != needed:
             problems.append(f'initiative {epic}: Depends on should be {", ".join(sorted(needed)) or "empty"}, '
                             f'not {", ".join(written) or "empty"}')
     return problems
@@ -188,7 +200,7 @@ def main(argv: list[str]) -> int:
                 if via:
                     problems.append(f'{key}: joins {a}, but needs {via}, which needs {a}')
         if initiative:
-            problems += check_initiative(initiative, tasks, ancestors)
+            problems += check_initiative(initiative, tasks)
     print('--- problems')
     print('\n'.join(problems) if problems else 'none')
     if cyclic:

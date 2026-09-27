@@ -76,7 +76,8 @@ Checks dependencies as a graph, then renumbers.
    - cycles;
    - dependencies listed twice, or already implied by another in the same cell;
    - Join pairs that are one-way, or that depend on each other through a task outside the pair;
-   - initiative Depends on cells that differ from what the epics' tasks depend on;
+   - initiative Depends on cells that name a task, or differ from the epics the epics' tasks depend
+     on;
    - as advisory, numbering that does not follow start order;
    - the longest chains, and the tasks every one of them shares.
 2. Read each task for dependencies the table omits. A task that measures, extends or consumes

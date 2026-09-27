@@ -34,7 +34,7 @@ Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
-  - a Depends on cell holding anything but references
+  - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - a Work Breakdown column the template lacks, such as Work in place of Outcomes; a PR or Issue
     cell holding anything but one link, or a link other than the one its row id already carries,
     such as a task's own issue; or a row id of the wrong form
@@ -70,7 +70,10 @@ EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 COLUMN_ALIASES = {'Can Accompany': 'Join'}
 FOLDED = ('PR', 'Issue')
 HOUSE_PROSE = ('The work is split into ', 'Epics are numbered in the order they run')
-DEPENDENCY = re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d(?::W\d\d)?|I\d\d:E\d\d(?::W\d\d)?|#\d+')
+DEPENDENCY = {
+    'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d(?::W\d\d)?|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
+    'initiative': re.compile(r'E\d\d|I\d\d:E\d\d|#\d+'),
+}
 
 
 def split_sections(text: str) -> tuple[list[str], list[list]]:
@@ -362,10 +365,11 @@ class Review:
         for line in table[2:]:
             r = cells(line)
             items = [LINK.sub(r'\1', x).strip() for x in (r[at] if at < len(r) else '').split(',')]
-            prose = [x for x in items if x and not DEPENDENCY.fullmatch(x)]
+            prose = [x for x in items if x and not DEPENDENCY[self.kind].fullmatch(x)]
             if prose:
+                what = 'epics' if self.kind == 'initiative' else 'references'
                 self.decide.append(f'{LINK.sub(chr(92) + "1", r[0])}: Depends on holds more than '
-                                   f'references: {", ".join(prose)}')
+                                   f'{what}: {", ".join(prose)}')
 
     def fix_references(self, lines: list[str]) -> list[str]:
         """Give table references colons, and link each epic reference to its issue."""

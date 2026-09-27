@@ -23,8 +23,9 @@ nothing about them: the conventions live here.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`,
     `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something
     outside the initiative (`#750`, `[I05:E00:W02](…)`).
-  - In an initiative: the tasks in other epics that the epic's tasks depend on. `deps.py` derives
-    it from the epic tables.
+  - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less
+    those another named epic already depends on (`[E02](…), [E04](…)`). `deps.py` derives it from
+    the epic tables.
 - **Join.** The tasks that can land in the same pull request as this one. Each lists the other, and
   neither depends on the other through a task outside the pair.
 

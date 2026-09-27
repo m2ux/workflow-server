@@ -32,7 +32,7 @@ Checks existing initiative, epic and task issues against the templates, and fixe
      belongs in another epic;
    - prose in the Work Breakdown outside its table, or a Sequencing section: move any design
      content into the Proposal, and drop narration of order and its reasons;
-   - a Depends on cell holding prose: reduce it to references; for an initiative, to the list
+   - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics
      `deps.py` derives with `I=`.
 6. **Re-run** the check until it exits 0, or until every remaining finding is one the user chose to
    keep. Report what changed on each issue.

@@ -16,7 +16,7 @@
 
 | Epic | Outcomes | Depends on |
 | --- | --- | --- |
-| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{Short name}} → AC{{n}}, AC{{m}} | {{[Exx:Wyy](…) in other epics that this epic's tasks depend on}} |
+| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{Short name}} → AC{{n}}, AC{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} |
 
 ## Acceptance Criteria
 
