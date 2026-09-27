@@ -1,11 +1,12 @@
 # Review passes
 
-Each pass reads the issues as they stand on GitHub, not the local drafts. Fetch every body first:
-`gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
+Each pass reads the issues as they stand on GitHub, not the local drafts. Fetch every body first,
+with full host permissions:
+`unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
 
 Report findings split by area, one problem/solution pair per finding, each with a severity. Verify
-every finding against the code or the corpus before stating it, and quote the file:line that
-establishes it. Findings that need a decision go to the user as interview questions, one at a time,
+every finding against the source or artifacts it concerns before stating it, and quote the
+file:line that establishes it. Findings that need a decision go to the user as interview questions, one at a time,
 each with a recommended option.
 
 ## Goal pass
@@ -53,8 +54,8 @@ Checks dependencies as a graph, then renumbers.
    - backward references: a task depending on a later task in its epic, or an epic depending on a
      later epic;
    - cycles;
-   - numbering that does not follow start order;
-   - every longest chain.
+   - as advisory, numbering that does not follow start order;
+   - the longest chains, and the tasks every one of them shares.
 2. Read each task for dependencies the table omits. A task that measures, extends or consumes
    another task's output depends on it, even when the text never says so.
 3. Fix a backward reference by moving the task to the epic that owns its inputs. When the task
@@ -62,8 +63,7 @@ Checks dependencies as a graph, then renumbers.
 4. Renumber so that epics run in number order and tasks are numbered in the order they can start.
    Use `scripts/renumber.py --initiative NN --map old:new,...` for epic numbers. Rewrite task tables
    by hand, then grep the prose for every task reference.
-5. Re-run `deps.py` until it reports no problems. State the longest chains from its output, never
-   from a hand count.
+5. Re-run `deps.py` until it reports no problems. State the longest chains from its output.
 6. Update the initiative's Work Breakdown table. **Depends on** is what must be true before the epic
    starts. An epic whose first task can start at once, but whose main task waits, says so in the
    cell.

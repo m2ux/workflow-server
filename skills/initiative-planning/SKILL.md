@@ -19,13 +19,18 @@ decisions and each review.
 
 | Level | Title | Labels |
 | --- | --- | --- |
-| Initiative | `[I07] Name: Subtitle in Title Case` | `type:initiative`, `enhancement`, a `theme:*` |
-| Epic | `[I07 E00] Name: Subtitle in Title Case` | `type:epic`, `enhancement`, a `theme:*` |
+| Initiative | `[I07] Name: Subtitle` | `type:initiative`, `enhancement`, a `theme:*` |
+| Epic | `[I07 E00] Name: Subtitle` | `type:epic`, `enhancement`, a `theme:*` |
 | Task | `[I07 E00 W01] Name: subtitle` | `type:task` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
-  epic. Each counts from `00` (`W` from `01`).
+  epic. Initiatives and epics count from `00`. Tasks count from `W01`; `W00` holds preparatory work
+  that must land before the first real task.
+- **Titles.** A short name, a colon, and a subtitle stating the outcome. Match the capitalisation
+  of recent titles in the same initiative.
 - **Order.** Epics are numbered in the order they run, and tasks in the order they can start.
+- **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx Eyy Wzz]` issue only
+  when it needs discussion or evidence of its own; its row then links that issue.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
   `task.md`. Keep the section order and the fixed sentences. Fill each `{{…}}` and delete a section
   the template marks as optional when it has nothing to say.
@@ -39,19 +44,21 @@ decisions and each review.
 1. **Understand the request.** Interview the user one question at a time, each with a recommended
    option, until the goal and scope are clear.
 2. **Gather evidence.** Measure the current state: counts, paths, file:line. Delegate broad sweeps to
-   parallel Explore agents, and spot-check what they return before recording it.
+   parallel sub-agents, and spot-check what they return before recording it.
 3. **Planning record.**
    - Branch a worktree from `origin/engineering` and add
      `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
    - `README.md` holds the problem, goals, design, decisions, reviews and open questions.
      `inventory.md` holds the evidence.
    - Open a draft PR against `engineering` for discussion. The user merges it.
-4. **Draft bodies** from the templates, into local files in the scratchpad. Those files are the
-   source for every later edit.
-5. **Create issues** in this order, so every number exists before it is cited:
-   1. the initiative, with placeholders such as `#E00` in its Work Breakdown table;
-   2. each epic, citing the initiative number and substituting epic numbers as they are assigned;
-   3. a patch to the initiative with the real epic numbers.
+4. **Draft bodies** from the templates, into local files in a working directory outside the
+   repository. Those files are the source for every later edit.
+5. **Create issues** so that every number exists before it is cited:
+   1. the initiative, with placeholders such as `#E00` for its epics;
+   2. the epics in dependency order, each citing the initiative and the epics created before it,
+      with placeholders for any it cites that do not exist yet;
+   3. patches replacing every remaining placeholder, in the initiative and in any epic that holds
+      one. Grep the local files for `#E0` until none is left.
 6. **Review.** Run the passes in `references/reviews.md`:
    - the goal pass, after drafting;
    - the consistency pass, after every round of edits;
@@ -60,10 +67,20 @@ decisions and each review.
    Fold each finding in and record it in the planning record.
 7. **Keep in step.** After each round, patch every changed issue, update the planning record and the
    discussion PR body, then commit and push. Titles change with renumbering.
+8. **Deliver.** As work lands, keep each epic current:
+   - **PR column:** the pull request or commit link, or `in flight` while it is open.
+   - **Work cell:** append `— **done**` when the task lands, or `— **moved to [#nnn](…) Wzz**` when
+     another issue takes it.
+   - **Criteria:** tick each acceptance criterion when its outcome is observable.
+   - **Where it stands:** record what landed and any figure that came out differently from the plan.
+   - **Closing:** close an epic when every criterion is ticked, and the initiative when every epic is
+     closed.
 
 ## Commands
 
-GitHub goes through REST only, with full host permissions and token variables unset:
+GitHub goes through REST only, with full host permissions and token variables unset. `gh` resolves
+`{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of
+the repository that holds the issues:
 
 ```bash
 unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues -f title='[I07 E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
