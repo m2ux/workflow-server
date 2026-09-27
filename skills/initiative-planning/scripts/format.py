@@ -10,8 +10,8 @@ optional ("Delete the section"), and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
   - a section alias renamed: Progress, Outcome or Where this stands to Where it stands,
-    Acceptance criteria to Acceptance Criteria, and Solution to Proposal on an open epic (a closed
-    epic keeps Solution)
+    Acceptance criteria to Acceptance Criteria, and Solution to Proposal on an open initiative or
+    epic (a closed one keeps Solution)
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
@@ -178,10 +178,10 @@ class Review:
         body = (self.issue.get('body') or '').replace('\r\n', '\n')
         preamble, sections = split_sections(body)
         template = Template(self.kind)
-        closed_epic = self.kind == 'epic' and self.issue.get('state') == 'closed'
+        closed = self.kind != 'task' and self.issue.get('state') == 'closed'
 
         aliases = dict(ALIASES)
-        if self.kind == 'epic':
+        if self.kind != 'task':
             aliases['Solution'] = 'Proposal'
         names = [aliases.get(h, h) for h, _ in sections]
         own = sum(h in template.headings for h in names)
@@ -194,14 +194,14 @@ class Review:
         for section in sections:
             target = aliases.get(section[0])
             if target and target in template.headings and target not in present:
-                if section[0] == 'Solution' and closed_epic:
+                if section[0] == 'Solution' and closed:
                     continue
                 self.fixed.append(f'section "{section[0]}" renamed "{target}"')
                 present.add(target)
                 section[0] = target
 
         def canonical(h: str) -> str:
-            return 'Proposal' if closed_epic and h == 'Solution' else h
+            return 'Proposal' if closed and h == 'Solution' else h
 
         names = [canonical(h) for h, _ in sections]
 

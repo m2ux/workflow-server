@@ -5,8 +5,8 @@ Checks existing initiative, epic and task issues against the templates, and fixe
 ## Procedure
 
 1. **Select.** Review the issues the user names, or an initiative with its open epics.
-   - Review covers open issues only. A closed issue is reviewed only when named, and a closed epic
-     keeps its `Solution` heading.
+   - Review covers open issues only. A closed issue is reviewed only when named, and a closed
+     initiative or epic keeps its `Solution` heading.
    - Naming another initiative's issue approves format edits to it.
 2. **Fetch** each issue whole, with its initiative when it is an epic:
    `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
@@ -31,7 +31,7 @@ Checks existing initiative, epic and task issues against the templates, and fixe
      from the row's text and each criterion's wording; a criterion no row delivers needs a row, or
      belongs in another epic;
    - prose in the Work Breakdown outside its table, or a Sequencing section: move any design
-     content into the Proposal or Solution, and drop narration of order and its reasons;
+     content into the Proposal, and drop narration of order and its reasons;
    - a Depends on cell holding prose: reduce it to references; for an initiative, to the list
      `deps.py` derives with `I=`.
 6. **Re-run** the check until it exits 0, or until every remaining finding is one the user chose to

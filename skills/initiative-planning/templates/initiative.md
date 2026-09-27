@@ -8,7 +8,7 @@
 
 - **{{Facet}}.** {{Evidence and consequence.}}
 
-## Solution
+## Proposal
 
 - **{{Move}}.** {{What is done, in one or two sentences.}}
 
