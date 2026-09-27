@@ -39,7 +39,8 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    4. a task issue from `templates/task.md` for each task that needs one, citing its epic, with the
       row id then linking the issue;
    5. `format.py --initiative issue-<initiative>.json --fix` on each epic, which links its epic
-      references to their issues, and a patch from each fixed body.
+      references to their issues, and `format.py --epic … --fix` on the initiative, which gives
+      each row its epic's title name; a patch from each fixed body.
 7. **Review.** Run the passes in `review-passes.md`:
    - the goal pass, whenever the goal, a criterion or an epic changes;
    - the consistency pass, after every round of edits;

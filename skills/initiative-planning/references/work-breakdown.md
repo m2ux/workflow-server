@@ -18,7 +18,9 @@ nothing about them: the conventions live here.
   the criteria or goals it delivers. It holds no list, semicolon or detail: each detail is an
   acceptance criterion (in an epic) or a goal (in an initiative) stating one invariant, and the row
   cites it. An epic's rows cite the epic's acceptance criteria (`… → AC2, AC5`), so an agent
-  working a task knows which criteria it must meet. An initiative's rows cite the initiative's goals (`… → G1, G3`), so each goal traces to the
+  working a task knows which criteria it must meet. An initiative row's Description is its epic's
+  title name, the part before the colon (`[I07:E01] Formal Specification: …` gives
+  `Formal Specification → G4, G5`), so the table and the epic name the work alike. An initiative's rows cite the initiative's goals (`… → G1, G3`), so each goal traces to the
   epics that serve it. Every criterion and goal is delivered by at least one row.
 - **Depends on.** References only, with no prose, and only what no other entry in the cell already
   implies.

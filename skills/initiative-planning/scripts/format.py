@@ -2,6 +2,7 @@
 
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
+  python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. The format is read
@@ -25,6 +26,8 @@ Fixed in the body written to --fix, keeping the issue's wording:
     reference to an epic of the same initiative linked to that epic's issue. The epic issues come
     from the row-id links of the initiative's table: the issue's own, or --initiative's when the
     issue is an epic
+  - an initiative row's Description set to its epic's title name, the part before the colon,
+    for each epic given with --epic
   - an initiative's prose Non-goals made a bulleted list, one sentence per bullet
   - goals made checkboxes, labelled **Gn.** when none is labelled
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
@@ -32,6 +35,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
   - a type:* label that does not match the title's level
+  - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
@@ -55,7 +59,8 @@ Left to decide, since each needs new content or a judgement:
   - a Description cell over eight words or holding a semicolon, whose detail belongs in
     criteria or goals
   - acceptance criteria or references partly labelled or numbered out of sequence
-  - no theme:* label on an initiative or epic, or a title without "Name: Subtitle"
+  - no theme:* label on an initiative or epic, a title without "Name: Subtitle", or an epic
+    title whose name runs past eight words
   - an unfilled {{...}} field or #E00 placeholder
   - a Work Breakdown reference to an epic that cannot be linked: one of another initiative, one the
     initiative's table does not list, or any at all when an epic is checked without --initiative
@@ -152,6 +157,24 @@ def epic_issues(body: str) -> dict[str, int]:
     return found
 
 
+def initiative_rows(body: str) -> list[str]:
+    """The rows of an initiative's Work Breakdown table."""
+    _, sections = split_sections(body.replace('\r\n', '\n'))
+    lines = next((l for h, l in sections if h == 'Work Breakdown'), [])
+    return [l for l in lines if l.startswith('|')][2:]
+
+
+def epic_name(title: str) -> str:
+    """The name an epic's title gives it: the text between the prefix and the first colon."""
+    rest = PREFIX.sub('', title).strip()
+    return rest.split(': ', 1)[0].strip()
+
+
+def description(line: str) -> str:
+    """A row's Description phrase, without the goals or criteria it cites."""
+    return cells(line)[1].split(' →', 1)[0].strip()
+
+
 def colon_refs(text: str) -> str:
     text = re.sub(r'\bI(\d\d) E(\d\d)(?: W(\d\d))?\b',
                   lambda m: f'I{m[1]}:E{m[2]}' + (f':W{m[3]}' if m[3] else ''), text)
@@ -159,9 +182,10 @@ def colon_refs(text: str) -> str:
 
 
 class Review:
-    def __init__(self, issue: dict, initiative: dict | None = None):
+    def __init__(self, issue: dict, initiative: dict | None = None, epics: list[dict] | None = None):
         self.issue = issue
         self.initiative = initiative
+        self.epics = {e['number']: epic_name(e['title']) for e in epics or []}
         self.fixed: list[str] = []
         self.apply: list[str] = []
         self.decide: list[str] = []
@@ -189,6 +213,15 @@ class Review:
             self.apply.append(f'title: {fixed}')
         if ': ' not in title[m.end():]:
             self.decide.append('title has no "Name: Subtitle" after the prefix')
+        name = epic_name(title)
+        if self.kind == 'epic' and len(name.split()) > MAX_DESCRIPTION:
+            self.decide.append(f'title name runs to {len(name.split())} words; the initiative row carries it, '
+                               f'so it keeps to {MAX_DESCRIPTION}')
+        if self.kind == 'epic' and self.initiative:
+            for line in initiative_rows(self.initiative['body'] or ''):
+                epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
+                if epic and int(epic[2]) == self.issue.get('number') and description(line) != name:
+                    self.apply.append(f"initiative row {epic[1]}: Description {name}, the epic's title name")
 
     def check_labels(self) -> None:
         labels = [l['name'] if isinstance(l, dict) else l for l in self.issue.get('labels', [])]
@@ -262,7 +295,7 @@ class Review:
             h = canonical(section[0])
             if h == 'Work Breakdown' and template.columns:
                 lines = self.strip_prose(section[1])
-                section[1] = self.fix_references(self.fix_table(lines, template.columns))
+                section[1] = self.fix_names(self.fix_references(self.fix_table(lines, template.columns)))
                 self.check_dependencies(section[1])
             elif h == 'Non-goals':
                 section[1] = self.fix_bullets(section[1], h)
@@ -464,6 +497,26 @@ class Review:
                 self.decide.append(f'{LINK.sub(chr(92) + "1", r[0])}: Depends on holds more than '
                                    f'{what}: {", ".join(prose)}')
 
+    def fix_names(self, lines: list[str]) -> list[str]:
+        """Give each initiative row whose epic was given the Description its epic's title names."""
+        if self.kind != 'initiative' or not self.epics:
+            return lines
+        out, named = list(lines), []
+        rows = [i for i, l in enumerate(lines) if l.startswith('|')][2:]
+        for i in rows:
+            r = cells(lines[i])
+            epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', r[0])
+            name = self.epics.get(int(epic[2])) if epic else None
+            if name is None or description(lines[i]) == name:
+                continue
+            cites = r[1].split(' →', 1)
+            r[1] = name + (' →' + cites[1] if len(cites) > 1 else '')
+            out[i] = row(r)
+            named.append(epic[1])
+        if named:
+            self.fixed.append("Description set to the epic's title name: " + ', '.join(named))
+        return out
+
     def fix_references(self, lines: list[str]) -> list[str]:
         """Give table references colons, and link each epic reference to its issue."""
         if self.kind == 'initiative':
@@ -581,12 +634,15 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('issue', help='issue JSON as the REST API returns it')
     parser.add_argument('--initiative', help="epic: its initiative's issue JSON, for epic links")
+    parser.add_argument('--epic', action='append', help="initiative: an epic's issue JSON, whose title "
+                        'names its row; repeat for each epic')
     parser.add_argument('--fix', help='write the mechanically fixed body here')
     args = parser.parse_args()
 
     issue = json.loads(Path(args.issue).read_text())
     initiative = json.loads(Path(args.initiative).read_text()) if args.initiative else None
-    review = Review(issue, initiative)
+    epics = [json.loads(Path(e).read_text()) for e in args.epic or []]
+    review = Review(issue, initiative, epics)
     fixed = review.run()
     kind = getattr(review, 'kind', None) or 'unknown kind'
     print(f"#{issue.get('number')} {kind} ({issue.get('state')}): {len(review.fixed)} fixed, "

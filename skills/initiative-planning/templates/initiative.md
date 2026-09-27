@@ -16,7 +16,7 @@
 
 | Epic | Description | Depends on |
 | --- | --- | --- |
-| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{What the epic delivers, at most eight words}} → G{{n}}, G{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} |
+| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{The epic's title name, the part before the colon}} → G{{n}}, G{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} |
 
 ## Goals
 
