@@ -6,12 +6,14 @@ Usage:
 Rewrites every epic reference (E06, E06 W02, I07 E06) in each file in place, following the map of
 old to new epic numbers. A reference to another initiative's epic (I03 E00, I00 E07) is left as it
 is. Epics absent from the map keep their number. Prints the count of references rewritten per file.
+Refuses, writing nothing, a map that sends two epics to one number or onto an epic it leaves out.
 
 After running: re-sort the initiative's Work Breakdown table by epic number, update each issue
 title's [Ixx Eyy] prefix, and grep the prose for references a human wording carries (E00 W01–W05).
 """
 import argparse
 import re
+import sys
 from pathlib import Path
 
 REF = re.compile(r'\bE(\d\d)\b')
@@ -30,9 +32,22 @@ def main() -> None:
         old, new = pair.split(':')
         mapping[int(old)] = int(new)
 
-    for name in args.files:
+    texts = {name: Path(name).read_text() for name in args.files}
+    present = set()
+    for text in texts.values():
+        for m in REF.finditer(text):
+            before = OTHER.search(text[max(0, m.start() - 4):m.start()])
+            if not before or before.group(1) == args.initiative:
+                present.add(int(m.group(1)))
+    targets = list(mapping.values())
+    clashes = sorted(t for t in set(targets) if targets.count(t) > 1)
+    clashes += sorted(t for t in set(targets) if t in present and t not in mapping)
+    if clashes:
+        sys.exit(f'map sends epics onto {sorted(set(clashes))}: each target must be unique and '
+                 'must not be an epic left out of the map. Nothing was written.')
+
+    for name, text in texts.items():
         path = Path(name)
-        text = path.read_text()
         count = 0
 
         def repl(m: re.Match) -> str:
