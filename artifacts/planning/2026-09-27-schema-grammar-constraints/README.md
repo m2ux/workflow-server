@@ -229,6 +229,36 @@ originals are deleted, so the structure can be tested before any spec is written
 - provisioning and sandbox roots;
 - a small Node project on the branch.
 
+## Second review
+
+A second review of the initiative and its seven epics found sixteen problems. All are folded into
+the issues.
+
+| # | Problem | Resolution |
+| --- | --- | --- |
+| 1 | Deployed image copies `schemas/` from `main`; hosts refresh only `workflows`, so deletion strips deployed servers | E00 W03: the image build checks out the declared language tag; originals deleted only after it ships (W04) |
+| 2 | `workspace` consumers (the `workflow-canon` skill) name moved canon paths | E00 W02: a sweep of every branch repoints each reference |
+| 3 | `main` would turn red between the rewire and the declared version | The declared tag arrives with the rewire (E00 W02); W06 adds per-rule pending reports |
+| 4 | "Spec version" was undefined | A `language/vX.Y.Z` tag, checked out by CI, provisioning and the image; the head is read only for pending rules |
+| 5 | A release adding several rules blocks the server's bump | Each release adds one rule family |
+| 6 | "Serves the same resources" had no baseline | Snapshot at `main/v0.29.0` and `workflows/v0.33.0`, reproduced exactly (E00 AC3) |
+| 7 | E01 AC2 contradicted AC15 | AC2: an Alloy fact or a registered convention rule |
+| 8 | Binding resolution owned by E01 W03 and E03 W02 | E01 W03 owns binding and provenance; E03 keeps visibility, audience, inheritance and size |
+| 9 | Specifying `condition` ahead of its retirement | E01 W01 covers `when` only; #750 before E01 W03 (AC18) |
+| 10 | Skill links to worktree paths fail on a deployed setup | The skill links MCP resources served at the declared tag (E05 AC7) |
+| 11 | E06 baseline measures homes the migration deletes | Baseline at the pre-migration tags (E06 W04) |
+| 12 | Quality audit instrument unnamed and uncalibrated | Named, calibrated on seeded faults, independent of the skill (E06 AC7) |
+| 13 | Brief outcomes not checkable by a walk | Outcomes written as walk assertions (E06 W01) |
+| 14 | I03 E00 W09 overlaps E01 | #535 W09 starts from I07 E01 |
+| 15 | "Corpus design principles" after the canon moves | Wording corrected in #936 |
+| 16 | Issue links point at this unmerged planning branch | Repointed to `engineering` once #935 merges |
+
+Decisions taken with the review:
+
+- **Deployment:** the image includes the declared language tag.
+- **Version:** a `language/vX.Y.Z` tag, one rule family per release.
+- **Skill links:** MCP resources.
+
 ## Rollout
 
 Each layer works end to end before the next begins.
