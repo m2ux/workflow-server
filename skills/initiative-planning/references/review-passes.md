@@ -19,7 +19,7 @@ changes.
 1. **Clauses.** Take the goal the user stated and confirmed in the interview, as clauses, each an
    outcome someone could observe.
 2. **Trace down.** Build a trace table: goal clause, the initiative goals that make it true, the
-   epics whose Outcomes cite those goals, and the epic criteria that deliver them.
+   epics whose Description cells cite those goals, and the epic criteria that deliver them.
    - A clause with no initiative goal is a gap.
    - A goal no epic delivers, or that its epics' criteria only partly make true, is a gap.
    - An epic criterion no task row delivers is a gap; `format.py` finds these.
@@ -29,14 +29,14 @@ changes.
    observes it: a test, a guard, a command or a measure; and is unambiguous, so two readers agree on
    whether it holds.
    - Each initiative goal states one invariant, a single condition that holds or does not; a goal
-     joining several is split into one goal each, and the Outcomes cells cite the new goals.
+     joining several is split into one goal each, and the Description cells cite the new goals.
    - Each initiative goal carries no counts or figures, which go stale: it measures against a
      named baseline or check ("against the baseline", "as the budget test measures it"). A figure stays only where it is the goal's own target, such as a bound the goal holds to.
    - Each initiative goal is SMART: **specific** about what holds; **measurable** by a named
      check or baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause
      and to the Problem; and **time-bound** by a release tag or another named milestone outside the
-     initiative's own work, where one exists, and otherwise by the epics whose Outcomes cite it. A goal
-     names no epic or task: Outcomes cells link epics to goals, never the reverse. It states what
+     initiative's own work, where one exists, and otherwise by the epics whose Description cells cite it. A goal
+     names no epic or task: Description cells link epics to goals, never the reverse. It states what
      the initiative achieves as a whole. A goal that restates a single
      epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to
      the epic.
@@ -62,11 +62,11 @@ Runs after every round of edits.
 - **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown
   table.
 - **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed. It
-  confirms that each Outcomes cell cites criteria or goals that exist, and that every one has a
+  confirms that each Description cell cites criteria or goals that exist, and that every one has a
   row.
 - **Task grain.** A task delivering more than three criteria is reviewed for splitting: its
   criteria are distinct deliverables, each a pull request's worth, or facets of one deliverable.
-- **Outcomes.** Each row's criteria are the ones its work makes true: a row does not claim a
+- **Description.** Each row's criteria are the ones its work makes true: a row does not claim a
   criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet
   it. The check confirms coverage, not fit.
 - **Contradictions.** Between acceptance criteria in one epic, and between an epic and its
@@ -119,7 +119,7 @@ Checks dependencies as a graph, then renumbers.
 ## Folding findings
 
 - **Small finding:** edit the owning epic's Proposal, Work Breakdown and acceptance criteria, and
-  cite any new or renumbered criterion in the Outcomes of the row that delivers it.
+  cite any new or renumbered criterion in the Description of the row that delivers it.
 - **Distinct concern:** a new epic. Create it, link it from the initiative table, and renumber if
   run order requires.
 - **Record:** in the planning record, add a table of findings and where each is resolved, plus the

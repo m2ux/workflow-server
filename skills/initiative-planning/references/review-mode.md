@@ -34,7 +34,7 @@ Checks existing initiative, epic and task issues against the templates, and fixe
    - a task delivering more than three criteria: split it into tasks one pull request each can
      deliver, drafting the rows and their criteria, or keep it where the criteria are facets of one
      deliverable;
-   - a Work column, or an Outcomes cell without criteria: map each row to the criteria it delivers,
+   - a Work column, or an Description cell without criteria: map each row to the criteria it delivers,
      from the row's text and each criterion's wording; a criterion no row delivers needs a row, or
      belongs in another epic;
    - prose in the Work Breakdown outside its table, or a Sequencing section: move any design

@@ -14,13 +14,13 @@
 
 ## Work Breakdown
 
-| Epic | Outcomes | Depends on |
+| Epic | Description | Depends on |
 | --- | --- | --- |
 | [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{Short name}} → G{{n}}, G{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} |
 
 ## Goals
 
-- [ ] **G1.** {{A SMART goal stating one invariant, a single condition that holds or does not: specific, measurable by a named check or against a named baseline, achievable, and relevant to the Problem. It carries no counts or figures, which go stale, unless the figure is the goal's own target, such as a bound it holds to. It names no epic or task: the Outcomes column says which epics serve it. Where a release tag or another named milestone outside this work bounds it, it ends with that. The epics' criteria together make it true; it restates none of them. The user ticks it once satisfied it holds.}}
+- [ ] **G1.** {{A SMART goal stating one invariant, a single condition that holds or does not: specific, measurable by a named check or against a named baseline, achievable, and relevant to the Problem. It carries no counts or figures, which go stale, unless the figure is the goal's own target, such as a bound it holds to. It names no epic or task: the Description column says which epics serve it. Where a release tag or another named milestone outside this work bounds it, it ends with that. The epics' criteria together make it true; it restates none of them. The user ticks it once satisfied it holds.}}
 
 ## Non-goals
 

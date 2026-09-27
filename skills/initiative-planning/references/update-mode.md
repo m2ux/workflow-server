@@ -19,7 +19,7 @@ recorded.
    `prs.json` again.
 4. **Match pull requests to tasks.** Run `scripts/update.py issue-943.json --prs prs.json` for each
    epic. Each merged pull request it reports as **unmatched** names the epic but no row links it
-   yet. Read its changes and description against the tasks' Outcomes, and name the tasks it
+   yet. Read its changes and description against the tasks' Descriptions, and name the tasks it
    delivered: one task, or tasks that Join each other. Put any match that is not clear to the user.
    A pull request that delivered a task with its own issue belongs to that issue, in step 5.
 5. **Update each task issue** with `scripts/update.py issue-637.json --prs prs.json --pr 950`,

@@ -16,7 +16,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
-  - a Can Accompany column renamed Join
+  - a Can Accompany column renamed Join, and an Outcomes column renamed Description
   - the house's old explanatory sentences above a Work Breakdown table removed
   - a PR or Issue column folded into the row ids: each row's single link, or #n, moves onto its
     id, and an empty or "in flight" cell is dropped
@@ -45,10 +45,10 @@ Left to decide, since each needs new content or a judgement:
   - an initiative with acceptance criteria in place of Goals, which are rewritten as SMART goals
   - a non-goal of more than one sentence, or one naming an epic or task of this initiative; a
     Non-goals section in an epic or task, since non-goals belong to the initiative
-  - a Work Breakdown column the template lacks, such as Work in place of Outcomes; a PR or Issue
+  - a Work Breakdown column the template lacks, such as Work in place of Description; a PR or Issue
     cell holding anything but one link, or a link other than the one its row id already carries,
     such as a task's own issue; or a row id of the wrong form
-  - an Outcomes cell that does not end with what it delivers (an epic's → AC2, AC5; an
+  - an Description cell that does not end with what it delivers (an epic's → AC2, AC5; an
     initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
     delivers
   - acceptance criteria or references partly labelled or numbered out of sequence
@@ -84,7 +84,7 @@ SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ ((?:AC|G)\d+(?:, (?:AC|G)\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
-COLUMN_ALIASES = {'Can Accompany': 'Join'}
+COLUMN_ALIASES = {'Can Accompany': 'Join', 'Outcomes': 'Description'}
 FOLDED = ('PR', 'Issue')
 HOUSE_PROSE = ('The work is split into ', 'Epics are numbered in the order they run')
 DEPENDENCY = {
@@ -293,7 +293,7 @@ class Review:
             named = re.findall(r'(?<![\w:])(?:E\d\d(?::W\d\d)?|W\d\d)\b', LINK.sub(r'\1', line)) if goal else []
             if named:
                 self.decide.append(f'G{goal[1]} names {", ".join(named)}; a goal names no epic or task, since '
-                                   'Outcomes cells cite goals')
+                                   'Description cells cite goals')
         return lines
 
     def check_history(self, sections: list[list]) -> None:
@@ -310,11 +310,11 @@ class Review:
     def check_outcomes(self, sections: list[list], canonical) -> None:
         by_name = {canonical(h): lines for h, lines in sections}
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
-        if len(table) < 3 or 'Outcomes' not in cells(table[0]):
+        if len(table) < 3 or 'Description' not in cells(table[0]):
             return
         tag, noun, nouns, heading, label = (('G', 'goal', 'goals', 'Goals', GOAL) if self.kind == 'initiative'
                                             else ('AC', 'criterion', 'criteria', 'Acceptance Criteria', AC))
-        column = cells(table[0]).index('Outcomes')
+        column = cells(table[0]).index('Description')
         wanted = {int(m[1]) for l in by_name.get(heading, []) if (m := label.match(l))}
         delivered: set[int] = set()
         for line in table[2:]:
@@ -323,14 +323,14 @@ class Review:
             cell = r[column] if column < len(r) else ''
             listed = OUTCOMES.search(cell)
             if not listed:
-                self.decide.append(f'{name}: Outcomes does not end with the {nouns} it delivers')
+                self.decide.append(f'{name}: Description does not end with the {nouns} it delivers')
                 continue
             numbers = {int(n) for n in re.findall(rf'\b{tag}(\d+)', listed[1])}
             other = re.findall(r'\b(?:AC|G)\d+', listed[1])
             if len(other) != len(numbers):
-                self.decide.append(f'{name}: Outcomes cites {", ".join(other)}; an {self.kind} cites {tag}n')
+                self.decide.append(f'{name}: Description cites {", ".join(other)}; an {self.kind} cites {tag}n')
             for n in sorted(numbers - wanted):
-                self.decide.append(f'{name}: Outcomes cites {tag}{n}, which is not a {noun}')
+                self.decide.append(f'{name}: Description cites {tag}{n}, which is not a {noun}')
             delivered |= numbers
             if self.kind != 'initiative' and len(numbers) > MAX_CRITERIA:
                 self.decide.append(f'{name}: delivers {len(numbers)} criteria; split it into tasks one pull '
@@ -382,8 +382,8 @@ class Review:
             if header is None:
                 return lines
         unknown = [c for c in header if c not in columns]
-        if 'Work' in unknown and 'Outcomes' in columns:
-            self.decide.append('Work Breakdown has Work, not Outcomes: rename it and end each cell with '
+        if 'Work' in unknown and 'Description' in columns:
+            self.decide.append('Work Breakdown has Work, not Description: rename it and end each cell with '
                                'the acceptance criteria the row delivers')
             return lines
         if unknown:

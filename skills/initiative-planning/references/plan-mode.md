@@ -19,10 +19,10 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
      `inventory.md` holds the evidence.
    - Open a draft PR against `engineering` for discussion. The user merges it.
 4. **Draft bodies** from the templates, into local files. Those files are the source for every later
-   edit. Write the acceptance criteria before the Work Breakdown, so each row's Outcomes can cite
+   edit. Write the acceptance criteria before the Work Breakdown, so each row's Description can cite
    them. The initiative states Goals, not acceptance criteria: SMART goals drawn from the goal's
    clauses, each stating one invariant of what the initiative achieves as a whole, carrying no counts
-   or figures unless the figure is its own target, and naming no epic or task: the epics' Outcomes cells cite the goals they serve. The epics'
+   or figures unless the figure is its own target, and naming no epic or task: the epics' Description cells cite the goals they serve. The epics'
    criteria carry the detail that makes them true; the user qualifies each goal and ticks it, and
    the initiative closes once every goal is ticked. Size each task to one pull request: a task delivering more than three criteria is
    split unless they are facets of one deliverable.
@@ -46,7 +46,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 
    Fold each finding in and record it in the planning record.
 8. **Keep in step.** After each round, patch every changed issue, update the planning record and the
-   discussion PR body, then commit and push. Titles change with renumbering, and Outcomes cells
+   discussion PR body, then commit and push. Titles change with renumbering, and Description cells
    change when criteria are renumbered.
 9. **Resolve open questions** before an epic starts. An open question is unfinished planning, so
    no task of the epic starts while one remains. Put each to the user with its recommendation, record

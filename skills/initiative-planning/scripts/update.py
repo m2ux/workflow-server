@@ -10,7 +10,7 @@ pull requests as JSON lines, as the REST API returns them:
   gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07:"))' > prs.json
 
 A pull request's title names the epic it works on: [I07:E00] Purpose. Which of the epic's tasks it
-delivers is read from its changes against the tasks' Outcomes, and recorded by linking each task's
+delivers is read from its changes against the tasks' Descriptions, and recorded by linking each task's
 id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
@@ -177,10 +177,10 @@ def main() -> int:
             report['linked'].append(f"{task} delivered by #{pr['number']}")
         delivered[task] = bool(pr)
     else:
-        if grid is None or 'Outcomes' not in grid[0]:
-            sys.exit('Work Breakdown has no Outcomes column; run format.py first')
+        if grid is None or 'Description' not in grid[0]:
+            sys.exit('Work Breakdown has no Description column; run format.py first')
         header, rows = grid[0], grid[2:]
-        outcomes = header.index('Outcomes')
+        described = header.index('Description')
         if kind == 'epic':
             delivered = epic_delivery(rows, header, named, links, completed(args.tasks), report)
             questions = next((l for h, l in sections if h == 'Open questions'), [])
@@ -192,7 +192,7 @@ def main() -> int:
             delivered = initiative_delivery(rows, completed(args.epics), report)
         for r in rows:
             name = LINK.sub(r'\1', r[0])
-            listed = OUTCOMES.search(r[outcomes])
+            listed = OUTCOMES.search(r[described])
             for n in re.findall(rf'\b{tag}(\d+)', listed[1]) if listed else []:
                 citing.setdefault(int(n), []).append(name)
 

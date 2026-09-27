@@ -7,14 +7,14 @@ nothing about them: the conventions live here.
 
 | Level | Columns |
 | --- | --- |
-| Initiative | `Epic \| Outcomes \| Depends on` |
-| Epic | `Task \| Outcomes \| Depends on \| Join` |
+| Initiative | `Epic \| Description \| Depends on` |
+| Epic | `Task \| Description \| Depends on \| Join` |
 
 - **Row id.** An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`. An
   epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first
   real task. A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion
   or evidence of its own.
-- **Outcomes.** What the row does, ending with what it delivers. An epic's rows cite the epic's
+- **Description.** What the row does, ending with what it delivers. An epic's rows cite the epic's
   acceptance criteria (`… → AC2, AC5`), so an agent working a task knows which criteria it must
   meet. An initiative's rows cite the initiative's goals (`… → G1, G3`), so each goal traces to the
   epics that serve it. Every criterion and goal is delivered by at least one row.
@@ -53,7 +53,7 @@ every epic reference to its epic's issue: `[E01:W03](…/issues/937)`. Prose use
   pull request is split into tasks.
 - **Pull request titles** start with the epic they work on: `[I07:E00] Purpose`. Update mode
   finds an epic's pull requests by this prefix, and matches each merged one to the tasks it
-  delivered from its changes and the tasks' Outcomes.
+  delivered from its changes and the tasks' Descriptions.
 - **A delivered task's id** links its pull request: `[W01](…/pull/950)`. An undelivered task's id is
   plain.
 - **A task with its own issue** keeps its id linked to that issue. The issue records the pull

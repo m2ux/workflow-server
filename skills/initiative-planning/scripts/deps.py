@@ -4,7 +4,7 @@ Usage:
   python3 deps.py [I=bodies/initiative.md] E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the house Work Breakdown table:
-  | Task | Outcomes | Depends on | Join |
+  | Task | Description | Depends on | Join |
 A delivered task's id links its pull request: | [W01](https://…/pull/950) |.
 Cells are read by column name, so the column order does not matter.
 
@@ -56,13 +56,13 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
             elif ROW.match(line):
                 row = dict(zip(header, cells(line)))
                 wid = row.get('Task', '')
-                rows[f'{epic}:{wid}'] = (row.get('Outcomes', ''), row.get('Depends on', ''),
+                rows[f'{epic}:{wid}'] = (row.get('Description', ''), row.get('Depends on', ''),
                                          row.get('Join', ''))
 
     problems = []
     tasks = {}
     whole: dict[str, set[str]] = {}
-    for key, (outcomes, deps, accompany) in rows.items():
+    for key, (description, deps, accompany) in rows.items():
         epic = key.split(':')[0]
         dep_list = []
         whole[key] = set()
@@ -87,7 +87,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
         acc = []
         for a in (x.strip() for x in accompany.split(',') if x.strip()):
             acc.append(a if a.startswith('E') else f'{epic}:{a}')
-        tasks[key] = (outcomes, dep_list, acc)
+        tasks[key] = (description, dep_list, acc)
     return tasks, problems, whole
 
 
