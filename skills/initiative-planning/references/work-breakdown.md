@@ -58,12 +58,12 @@ every epic reference to its epic's issue: `[E01:W03](…/issues/937)`. Prose use
   plain.
 - **A task with its own issue** keeps its id linked to that issue. The issue records the pull
   request that delivers it, and the task is delivered when the issue is closed as completed.
-- **Moved work:** when another issue takes a task, its Outcomes cell ends
-  `— **moved to [#nnn](…) Wzz**` in place of its criteria. The criteria move with the task, or go
-  to another row that delivers them.
+- **Work another issue takes** leaves the table. Its criteria go with it, or to another row that
+  delivers them.
 
 ## What bodies leave out
 
-An initiative or epic body does not narrate the order work runs in, why it runs in that order, or
-how the tables work. The tables state order through Depends on, and this guide states the rest.
+An initiative or epic body does not narrate the order work runs in, why it runs in that order, how
+the tables work, or how the plan changed: no row or sentence says what moved, was renumbered, was
+replaced or used to be. The tables state order through Depends on, and this guide states the rest.
 Longest chains, ordering reviews and the reasons behind them go in the planning record.

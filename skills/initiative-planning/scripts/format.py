@@ -37,6 +37,8 @@ Left to decide, since each needs new content or a judgement:
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
   - an epic's task delivering more than three criteria, a candidate for splitting
+  - wording that narrates how the plan changed (moved to, was W06, renumbered, formerly,
+    previously, no longer, discharged, superseded, subsumed, used to)
   - a goal that may state several invariants (a colon or semicolon in its statement), or that names
     an epic or task of the initiative
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
@@ -48,7 +50,7 @@ Left to decide, since each needs new content or a judgement:
     such as a task's own issue; or a row id of the wrong form
   - an Outcomes cell that does not end with what it delivers (an epic's → AC2, AC5; an
     initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
-    delivers; a row marked "moved to" cites none
+    delivers
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, or a title without "Name: Subtitle"
   - an unfilled {{...}} field or #E00 placeholder
@@ -70,6 +72,8 @@ KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 ALIASES = {'Acceptance criteria': 'Acceptance Criteria'}
 PROGRESS = ('Where it stands', 'Where this stands', 'Progress', 'Outcome')
 MAX_CRITERIA = 3
+HISTORY = re.compile(r'\bmoved to\b|\(was [EW]?\d|\bwas W\d\d|\brenumbered\b|\bformerly\b|\bpreviously\b|'
+                     r'\bno longer\b|\bdischarged\b|\bsuperseded\b|\bsubsumed\b|\bused to\b', re.I)
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
@@ -263,6 +267,7 @@ class Review:
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
 
         self.check_outcomes(sections, canonical)
+        self.check_history(sections)
         fixed = join_sections(preamble, sections) if self.fixed else body
         if '{{' in fixed:
             self.decide.append('unfilled {{…}} field')
@@ -284,6 +289,17 @@ class Review:
                                    'Outcomes cells cite goals')
         return lines
 
+    def check_history(self, sections: list[list]) -> None:
+        """A body states the plan as it is: report wording that narrates how it changed."""
+        for heading, lines in sections:
+            for line in lines:
+                text = LINK.sub(r'\1', line)
+                hit = HISTORY.search(text)
+                if hit:
+                    start = max(0, hit.start() - 40)
+                    self.decide.append(f'{heading}: change narrative "{text[start:hit.end() + 30].strip()}"; '
+                                       'state the plan as it is')
+
     def check_outcomes(self, sections: list[list], canonical) -> None:
         by_name = {canonical(h): lines for h, lines in sections}
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
@@ -299,11 +315,6 @@ class Review:
             name = LINK.sub(r'\1', r[0])
             cell = r[column] if column < len(r) else ''
             listed = OUTCOMES.search(cell)
-            if 'moved to' in cell:
-                if listed:
-                    self.decide.append(f'{name}: moved, but still cites {listed[1]}; its {nouns} move with it '
-                                       'or go to another row')
-                continue
             if not listed:
                 self.decide.append(f'{name}: Outcomes does not end with the {nouns} it delivers')
                 continue

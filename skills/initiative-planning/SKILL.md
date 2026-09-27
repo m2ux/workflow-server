@@ -88,6 +88,7 @@ checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checko
 - **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in
   the affected issues and, when there is one, the planning record.
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
-- **Bodies may carry history.** Issue and PR bodies may state the before-state. The planning record
-  records how the plan evolved.
+- **Bodies state the plan as it is.** An initiative or epic body carries no change narrative:
+  nothing moved, renumbered, replaced, discharged or formerly anything. How the plan evolved goes in
+  the planning record and in commit and pull request bodies.
 - **Other initiatives.** Editing another initiative's issue needs the user's explicit approval.

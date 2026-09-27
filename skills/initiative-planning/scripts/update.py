@@ -25,7 +25,6 @@ started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed. The user qualifies each goal and ticks it; a goal whose citing epics are all delivered is
 reported as awaiting the user. The initiative is closable once every goal is ticked.
-A row whose Outcomes says "moved to" counts as delivered.
 
 Reported for each acceptance criterion of a task or epic:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
@@ -193,8 +192,6 @@ def main() -> int:
             delivered = initiative_delivery(rows, completed(args.epics), report)
         for r in rows:
             name = LINK.sub(r'\1', r[0])
-            if 'moved to' in r[outcomes]:
-                delivered[name] = True
             listed = OUTCOMES.search(r[outcomes])
             for n in re.findall(rf'\b{tag}(\d+)', listed[1]) if listed else []:
                 citing.setdefault(int(n), []).append(name)
