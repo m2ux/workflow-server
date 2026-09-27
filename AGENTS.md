@@ -5,7 +5,8 @@
 
 ## Project Instructions
 
-- You must read any target: PROJECT.md, AGENTS.md or CLAUDE.md file(s) in each of the first-level sub-folders of /.project (ie .project/<name>/<target>). Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.
+- You must read any target: PROJECT.md, AGENTS.md or CLAUDE.md file(s) in each of the first-level sub-folders of /.project (ie .project//). Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.
+- Follow the folder naming pattern at: /.engineering/artifacts/planning/<plan> and use to store *all* planning artifacts
 
 ## Design principles
 
