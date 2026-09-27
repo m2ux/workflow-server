@@ -9,9 +9,10 @@ from templates/<kind>.md beside this script: its sections and their order, the s
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
-  - a section alias renamed: Progress, Outcome or Where this stands to Where it stands,
-    Acceptance criteria to Acceptance Criteria, and Solution to Proposal on an open initiative or
-    epic (a closed one keeps Solution)
+  - a section alias renamed: Acceptance criteria to Acceptance Criteria, and Solution to Proposal
+    on an open initiative or epic (a closed one keeps Solution)
+  - a progress section removed (Where it stands, Progress, Outcome): the tables and criteria show
+    where the work stands
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
@@ -25,7 +26,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
     from the row-id links of the initiative's table: the issue's own, or --initiative's when the
     issue is an epic
   - an initiative's prose Non-goals made a bulleted list, one sentence per bullet
-  - goals as plain bullets labelled **Gn.**, without checkboxes
+  - goals made checkboxes, labelled **Gn.** when none is labelled
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -35,6 +36,7 @@ Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
+  - an epic's task delivering more than three criteria, a candidate for splitting
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - an initiative with acceptance criteria in place of Goals, which are rewritten as SMART goals
   - a non-goal of more than one sentence, or one naming an epic or task of this initiative; a
@@ -63,12 +65,13 @@ from pathlib import Path
 TEMPLATES = Path(__file__).resolve().parent.parent / 'templates'
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
-ALIASES = {'Progress': 'Where it stands', 'Outcome': 'Where it stands',
-           'Where this stands': 'Where it stands', 'Acceptance criteria': 'Acceptance Criteria'}
+ALIASES = {'Acceptance criteria': 'Acceptance Criteria'}
+PROGRESS = ('Where it stands', 'Where this stands', 'Progress', 'Outcome')
+MAX_CRITERIA = 3
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
-GOAL = re.compile(r'^- \*\*G(\d+)\.\*\*')
+GOAL = re.compile(r'^- \[[ xX]\] \*\*G(\d+)\.\*\*')
 SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ ((?:AC|G)\d+(?:, (?:AC|G)\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
@@ -188,6 +191,11 @@ class Review:
         preamble, sections = split_sections(body)
         template = Template(self.kind)
         closed = self.kind != 'task' and self.issue.get('state') == 'closed'
+        progress = [h for h, _ in sections if h in PROGRESS]
+        if progress:
+            sections = [s for s in sections if s[0] not in PROGRESS]
+            self.fixed.append(f'section "{progress[0]}" removed: the tables and criteria show where the '
+                              'work stands')
 
         aliases = dict(ALIASES)
         if self.kind != 'task':
@@ -261,11 +269,8 @@ class Review:
         return fixed
 
     def fix_goals(self, lines: list[str]) -> list[str]:
-        """Goals are plain bullets labelled Gn: they are met through the epics, not ticked."""
-        out = [re.sub(r'^- \[[ xX]\] ', '- ', l) for l in lines]
-        if out != lines:
-            self.fixed.append('goal checkboxes removed')
-        return self.fix_list(out, 'G', checkbox=False)
+        """Goals are checkboxes labelled Gn, ticked once every epic citing them is delivered."""
+        return self.fix_list(lines, 'G', checkbox=True)
 
     def check_outcomes(self, sections: list[list], canonical) -> None:
         by_name = {canonical(h): lines for h, lines in sections}
@@ -297,6 +302,9 @@ class Review:
             for n in sorted(numbers - wanted):
                 self.decide.append(f'{name}: Outcomes cites {tag}{n}, which is not a {noun}')
             delivered |= numbers
+            if self.kind != 'initiative' and len(numbers) > MAX_CRITERIA:
+                self.decide.append(f'{name}: delivers {len(numbers)} criteria; split it into tasks one pull '
+                                   'request each can deliver, or keep it if they are facets of one deliverable')
         for n in sorted(wanted - delivered):
             self.decide.append(f'{tag}{n} is delivered by no Work Breakdown row')
 
@@ -509,7 +517,7 @@ class Review:
             for i in plain:
                 lines[i] = '- [ ] ' + lines[i][2:]
             if plain:
-                self.fixed.append(f'{len(plain)} acceptance criteria made checkboxes')
+                self.fixed.append(f'{len(plain)} {tag} items made checkboxes')
         label = {'AC': AC, 'G': GOAL, 'R': REF}[tag]
         numbers = [label.match(lines[i]) for i in items]
         if not any(numbers):

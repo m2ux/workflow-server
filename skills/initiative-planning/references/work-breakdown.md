@@ -26,6 +26,9 @@ nothing about them: the conventions live here.
   - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less
     those another named epic already depends on (`[E02](…), [E04](…)`). `deps.py` derives it from
     the epic tables.
+- **Task grain.** A task is one pull request's worth of work. A task delivering more than three
+  criteria is a candidate for splitting: split it where its criteria are distinct deliverables,
+  and keep it where they are facets of one.
 - **Join.** The tasks that can land in the same pull request as this one. Each lists the other, and
   neither depends on the other through a task outside the pair.
 

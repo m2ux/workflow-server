@@ -22,7 +22,9 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    edit. Write the acceptance criteria before the Work Breakdown, so each row's Outcomes can cite
    them. The initiative states Goals, not acceptance criteria: SMART goals drawn from the goal's
    clauses, each bounded by a milestone, stating what the initiative achieves as a whole. The epics'
-   criteria carry the detail that makes them true, so goals are not ticked.
+   criteria carry the detail that makes them true, so a goal is ticked once every epic citing it is
+   delivered. Size each task to one pull request: a task delivering more than three criteria is
+   split unless they are facets of one deliverable.
 5. **Review the drafts.** Run the goal pass in `review-passes.md`, and `deps.py I=… E00=…` over
    the drafts. Fold every gap and problem in and run both again. No issue is created while either
    reports one.

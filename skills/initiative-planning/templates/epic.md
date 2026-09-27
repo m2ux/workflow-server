@@ -20,10 +20,6 @@
 
 - [ ] **AC1.** {{A checkable end-state statement, one per outcome.}}
 
-## Where it stands
-
-{{Progress once work has started: what landed, what is in flight, and any figure that came out differently from the plan. Delete the section until then.}}
-
 ## Open questions
 
 - {{An undecided point the epic cannot start without, with a recommendation in the planning record. Resolve every one before the first task starts, then delete the section.}}
