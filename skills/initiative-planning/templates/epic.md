@@ -26,7 +26,7 @@
 
 ## Non-goals
 
-- {{What this epic does not do, and the epic or issue that owns it.}}
+- {{One succinct sentence on what this epic does not do; name no epic or task of this initiative, and an owner only outside it.}}
 
 ## Open questions
 

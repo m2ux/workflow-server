@@ -24,7 +24,7 @@
 
 ## Non-goals
 
-- {{What this initiative does not do, and the issue or initiative that owns it.}}
+- {{One succinct sentence on what this initiative does not do; name an owner only outside this initiative.}}
 
 ## References
 

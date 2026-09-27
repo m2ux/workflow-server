@@ -69,6 +69,9 @@ Runs after every round of edits.
   epic's criterion. Remove one, or raise the goal.
 - **Links.** A link to an unmerged planning branch breaks when the branch merges; list those to
   repoint.
+- **Non-goals.** One succinct sentence each, naming no epic or task of this initiative; a
+  boundary with a sibling epic belongs in the Proposal. An owner is named only outside the
+  initiative.
 - **Cross-initiative overlap.** Record it in Non-goals and References. Editing another initiative's
   issue needs the user's explicit approval, and the edit stays minimal.
 

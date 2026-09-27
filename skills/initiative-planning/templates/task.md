@@ -28,7 +28,7 @@
 
 ## Non-goals
 
-- {{What this task does not do.}}
+- {{One succinct sentence on what this task does not do; name no epic or task of this initiative.}}
 
 ## Investigation detail
 

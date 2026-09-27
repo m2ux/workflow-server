@@ -37,6 +37,7 @@ Left to decide, since each needs new content or a judgement:
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
+  - a non-goal of more than one sentence, or one naming an epic or task of this initiative
   - a Work Breakdown column the template lacks, such as Work in place of Outcomes; a PR or Issue
     cell holding anything but one link, or a link other than the one its row id already carries,
     such as a task's own issue; or a row id of the wrong form
@@ -67,6 +68,7 @@ ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
 GOAL = re.compile(r'^- \*\*G(\d+)\.\*\*')
+SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ ((?:AC|G)\d+(?:, (?:AC|G)\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
@@ -231,6 +233,7 @@ class Review:
                 self.check_dependencies(section[1])
             elif h == 'Non-goals':
                 section[1] = self.fix_bullets(section[1], h)
+                self.check_non_goals(section[1])
             elif h == 'Goals':
                 section[1] = self.fix_goals(section[1])
             elif h == 'Acceptance Criteria':
@@ -478,9 +481,23 @@ class Review:
         if not prose:
             return lines
         bullets = [l for l in lines if l.startswith('- ')]
-        bullets += [f'- {s}' for s in re.split(r'(?<=[.!?])\s+(?=[A-Z\[`#])', prose)]
+        bullets += [f'- {s}' for s in SENTENCE.split(prose)]
         self.fixed.append(f'{heading} made a bulleted list, one sentence per bullet')
         return bullets
+
+    def check_non_goals(self, lines: list[str]) -> None:
+        """Each non-goal is one sentence and names no epic or task of this initiative."""
+        own = re.compile(rf'(?<![\w:])(?:I{self.number}[: ])?E\d\d(?:[: ]W\d\d)?(?![\w:])|(?<![\w:])W\d\d\b')
+        for line in lines:
+            if not line.startswith('- '):
+                continue
+            text = LINK.sub(r'\1', line[2:])
+            words = ' '.join(text.split()[:6])
+            if len(SENTENCE.split(text.strip())) > 1:
+                self.decide.append(f'Non-goals: not one sentence: "{words}…"')
+            named = [m[0] for m in own.finditer(re.sub(r'\bI(?!' + self.number + r')\d\d[: ]E\d\d(?:[: ]W\d\d)?', '', text))]
+            if named:
+                self.decide.append(f'Non-goals: names this initiative\'s {", ".join(named)}: "{words}…"')
 
     def fix_list(self, lines: list[str], tag: str, checkbox: bool) -> list[str]:
         """Checkbox and label a list's items; tag is AC, G or R."""
