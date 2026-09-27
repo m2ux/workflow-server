@@ -318,6 +318,21 @@ Mapping every row to a criterion found four gaps:
 The initiative's AC9 (no rule's only home is prose) is delivered jointly by E01, E02 and E05, and
 AC8 (thresholds met) by E05 and E06.
 
+## Tables as the statement of order
+
+The issue bodies no longer narrate order or its reasons: #936's Sequencing section and its
+paragraphs after the table are gone, and its one design rule (spec-first language changes) is a
+Solution bullet. The chains above stay here.
+
+- **Initiative Depends on** lists the tasks in other epics that each epic's tasks depend on, as
+  derived by the dependency checker, in place of prose such as "W01 at once; the skill (W04) on …".
+  E02 gains E01:W10; E03 becomes E01:W05, E01:W07; E04 becomes E01:W09, E03:W02; E05 becomes
+  E02:W03, E04:W01; E06 becomes E04:W02, E04:W04, E05:W05.
+- **Implied dependencies removed:** E01 W10 waits on W06–W09 (W04 and W05 are implied), E05 W04
+  drops E01:W01 (implied by E04:W01), and E05 W05 drops E00:W02 (implied by W04).
+- **Join made two-way** in E00 (W01–W04), E02 (W02–W03) and E04 (W03–W04).
+- The longest chains are unchanged: twelve, nine steps each, all starting at E00 W01.
+
 ## Rollout
 
 Each layer works end to end before the next begins.
