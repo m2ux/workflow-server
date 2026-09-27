@@ -3,4 +3,7 @@
 /.gitmodules
 /.worktrees/
 /.claude/settings.json
-/.codex/
+/.codex/*
+!/.codex/hooks/
+!/.codex/scripts/
+__pycache__/

@@ -1,21 +1,8 @@
 #!/usr/bin/env python3
-"""Shared judgement: does a Bash command *segment* execute a script that lives
-inside the current project/worktree?
+"""Resolve interpreter targets within the enclosing project root.
 
-This is the single home for the "safe by filesystem LOCATION" authorization
-basis. Both hooks import it so the decision exists in exactly one place:
-
-  * allow-project-scripts.py — bare single commands (bails on any metachar,
-    then delegates the decision here);
-  * compound-bash-allow.py   — one segment of a compound, with the effective
-    base cwd resolved by the caller (a leading `cd <dir>` changes it).
-
-The interpreter/npx-tsx allow-list and the path-resolution rules are described
-inline. A segment is considered project-local iff its TARGET script resolves to
-a real file under the git root enclosing `base_cwd`, and that root is itself
-under PROJECTS_BASE (a safety belt). `python3 -c '...'`, `python3 /tmp/x.py`,
-or a script outside the project all fail the check.
-"""
+The compound command classifier uses this location check for both single and
+compound commands. Symlink targets must remain within the project root."""
 
 import os
 import shlex
