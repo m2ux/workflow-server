@@ -59,19 +59,21 @@ columns, numbering, references and delivery.
 
 ## Commands
 
-GitHub goes through REST only, with full host permissions and token variables unset. `gh` resolves
+GitHub goes through REST only, with full host permissions. Once per session, before the first `gh`
+call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not
+persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves
 `{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of
 the repository that holds the issues:
 
 ```bash
-unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
-unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
-unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
-unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 > issue-943.json
-unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f title='[I07:E00] Name: Subtitle' --jq .title
-unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues/943/labels -f 'labels[]=type:epic' --jq '.[].name'
-unset GH_TOKEN GITHUB_TOKEN; gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --jq '.[].name'
-unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
+gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
+gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
+gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
+gh api repos/{owner}/{repo}/issues/943 > issue-943.json
+gh api --method PATCH repos/{owner}/{repo}/issues/943 -f title='[I07:E00] Name: Subtitle' --jq .title
+gh api --method POST repos/{owner}/{repo}/issues/943/labels -f 'labels[]=type:epic' --jq '.[].name'
+gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --jq '.[].name'
+gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
 ```
 
 Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the

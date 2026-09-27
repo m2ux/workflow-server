@@ -3,7 +3,7 @@
 Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which
 reads the local drafts. Fetch every issue first, with full host permissions, as JSON for `format.py`
 and as a body for `deps.py` and `renumber.py`:
-`unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/<n> > issue-<n>.json; gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
+`gh api repos/{owner}/{repo}/issues/<n> > issue-<n>.json; gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
 
 Report findings split by area, one problem/solution pair per finding, each with a severity. Verify
 every finding against the source or artifacts it concerns before stating it, and quote the
