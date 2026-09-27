@@ -20,9 +20,9 @@ an epic row links. An item already on the board for an issue those bodies cite, 
 completed (an issue a task subsumed), is removed. Each issue's Status, first match wins:
   Done         closed as completed
   (removed)    closed any other way
-  In Review    an open pull request names it: its title names the epic, and for a task issue its
-               title or body also cites the issue
-  In Progress  an epic with a delivered row
+  In Review    an open pull request ready for review names it: its title names the epic, and for a
+               task issue its title or body also cites the issue
+  In Progress  an open draft pull request names it, or it is an epic with a delivered row
   Ready        every dependency in its row is delivered and it has no Open questions
   Backlog      otherwise
 An open initiative is In Progress when any epic is Done, In Review or In Progress, Ready when any
@@ -202,15 +202,18 @@ def main() -> int:
         column = header.index('Depends on') if 'Depends on' in header else None
         return r[column] if column is not None and column < len(r) else ''
 
-    def in_review(epic_key: str, cite: int | None = None) -> bool:
+    def pr_status(epic_key: str, cite: int | None = None) -> str | None:
+        """In Review for an open pull request ready for review naming the issue, In Progress for an
+        open draft, None for neither."""
+        found = set()
         for p in prs:
             ref = PR_REF.match(p['title'])
             if p.get('state') != 'open' or not ref or ref.groups() != (tag, epic_key):
                 continue
             text = f"{p['title']}\n{p.get('body') or ''}"
             if cite is None or re.search(rf'#{cite}\b|/issues/{cite}\b', text):
-                return True
-        return False
+                found.add('In Progress' if p.get('draft') else 'In Review')
+        return 'In Review' if 'In Review' in found else 'In Progress' if found else None
 
     for r in epic_rows:
         number = linked_issue(r[0])
@@ -232,17 +235,17 @@ def main() -> int:
             t = tasks[task_issue]
             if t['state'] == 'closed':
                 status[task_issue] = 'Done' if completed(t) else None
-            elif in_review(epic_key, task_issue):
-                status[task_issue] = 'In Review'
+            elif found := pr_status(epic_key, task_issue):
+                status[task_issue] = found
             elif not open_questions(t) and board.met(depends(task_header, tr), number, epic_ids, f'E{epic_key}:{tid}'):
                 status[task_issue] = 'Ready'
             else:
                 status[task_issue] = 'Backlog'
         if epic['state'] == 'closed':
             status[number] = 'Done' if completed(epic) else None
-        elif in_review(epic_key):
+        elif (found := pr_status(epic_key)) == 'In Review':
             status[number] = 'In Review'
-        elif delivered_any:
+        elif found or delivered_any:
             status[number] = 'In Progress'
         elif not open_questions(epic) and board.met(depends(header, r), initiative['number'], epic_ids, f'E{epic_key}'):
             status[number] = 'Ready'
