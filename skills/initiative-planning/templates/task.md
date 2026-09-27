@@ -29,3 +29,7 @@
 ## Non-goals
 
 {{What this task does not do.}}
+
+## Investigation detail
+
+{{Supporting analysis a reviewer may want but the fix does not depend on. Delete the section when there is none.}}

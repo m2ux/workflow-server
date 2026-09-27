@@ -16,11 +16,15 @@ The work is split into tasks. Each task is a feature or a fix that can be delive
 
 | Task | Work | PR | Depends on | Can Accompany |
 | --- | --- | --- | --- | --- |
-| W01 | {{Task}} | | {{Earlier task in this epic, or Exx Wyy in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} |
+| W01 | {{Task}} | {{Pull request or commit link once it lands; `in flight` while open}} | {{Earlier task in this epic, Exx Wyy or Exx in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} |
 
 ## Acceptance criteria
 
 - [ ] **AC1.** {{A checkable end-state statement, one per outcome.}}
+
+## Where it stands
+
+{{Progress once work has started: what landed, what is in flight, and any figure that came out differently from the plan. Delete the section until then.}}
 
 ## Non-goals
 
