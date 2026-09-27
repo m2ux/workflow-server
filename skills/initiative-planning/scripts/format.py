@@ -1,26 +1,20 @@
-"""Check an initiative, epic or task issue against its house template, and fix what is mechanical.
+"""Check an initiative, epic, task or standalone issue against its house template, and fix what is
+mechanical.
 
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
   python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
-from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. The format is read
+from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task, and no prefix a
+standalone issue, which belongs to no initiative and takes templates/issue.md. The format is read
 from templates/<kind>.md beside this script: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
-  - a section alias renamed: Acceptance criteria to Acceptance Criteria, and Solution to Proposal
-    on an open issue (a closed one keeps Solution)
-  - a progress section removed (Where it stands, Progress, Outcome): the tables and criteria show
-    where the work stands
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
-  - a Can Accompany column renamed Join, and an Outcomes column renamed Description
-  - the house's old explanatory sentences above a Work Breakdown table removed
-  - a PR or Issue column folded into the row ids: each row's single link, or #n, moves onto its
-    id, and an empty or "in flight" cell is dropped
   - table rows padded to the header's width
   - Work Breakdown references given colons (E01 W02 to E01:W02, I05 E00 to I05:E00), and each
     reference to an epic of the same initiative linked to that epic's issue. The epic issues come
@@ -28,13 +22,13 @@ Fixed in the body written to --fix, keeping the issue's wording:
     issue is an epic
   - an initiative row's Description set to its epic's title name, the part before the colon,
     for each epic given with --epic
-  - an initiative's prose Non-goals made a bulleted list, one sentence per bullet
+  - prose Non-goals made a bulleted list, one sentence per bullet
   - goals made checkboxes, labelled **Gn.** when none is labelled
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
-  - a type:* label that does not match the title's level
+  - a type:* label that does not match the title's level, or any type:* label on a standalone issue
   - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
@@ -46,13 +40,11 @@ Left to decide, since each needs new content or a judgement:
     previously, no longer, discharged, superseded, subsumed, used to)
   - a goal that may state several invariants (a colon or semicolon in its statement), that names
     an initiative, epic, task or issue, or that carries a count (a figure or a number word) that is not the goal's own target
+  - an acceptance criterion that may state several invariants (a semicolon in its statement)
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
-  - an initiative with acceptance criteria in place of Goals, which are rewritten as SMART goals
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
     Non-goals section in an epic or task, since non-goals belong to the initiative
-  - a Work Breakdown column the template lacks, such as Work in place of Description; a PR or Issue
-    cell holding anything but one link, or a link other than the one its row id already carries,
-    such as a task's own issue; or a row id of the wrong form
+  - a Work Breakdown column the template lacks, or a row id of the wrong form
   - a Description cell that does not end with what it delivers (an epic's → AC2, AC5; an
     initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
     delivers
@@ -78,8 +70,6 @@ from pathlib import Path
 TEMPLATES = Path(__file__).resolve().parent.parent / 'templates'
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
-ALIASES = {'Acceptance criteria': 'Acceptance Criteria'}
-PROGRESS = ('Where it stands', 'Where this stands', 'Progress', 'Outcome')
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
 TITLE_NAME = (2, 3)
@@ -98,9 +88,6 @@ SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ ((?:AC|G)\d+(?:, (?:AC|G)\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
-COLUMN_ALIASES = {'Can Accompany': 'Join', 'Outcomes': 'Description'}
-FOLDED = ('PR', 'Issue')
-HOUSE_PROSE = ('The work is split into ', 'Epics are numbered in the order they run')
 DEPENDENCY = {
     'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d(?::W\d\d)?|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
     'initiative': re.compile(r'E\d\d|I\d\d:E\d\d|#\d+'),
@@ -197,8 +184,11 @@ class Review:
         title = self.issue['title']
         m = PREFIX.match(title)
         if not m:
-            self.decide.append(f'title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix: {title}')
-            return None
+            self.kind, self.number = 'issue', None
+            typed = [l for l in self.labels() if l.startswith('type:')]
+            if typed:
+                self.apply.append('labels: ' + ', '.join(f'remove {l}' for l in typed))
+            return self.check_body()
         parts = re.findall(r'[EW]\d\d', m[2])
         self.number = m[1][1:]
         self.kind = KINDS.get(len(parts))
@@ -234,8 +224,11 @@ class Review:
             self.decide.append(f'title subtitle runs to {len(subtitle.split())} words; it is a succinct summary '
                                f'of at most {MAX_SUBTITLE}')
 
+    def labels(self) -> list[str]:
+        return [l['name'] if isinstance(l, dict) else l for l in self.issue.get('labels', [])]
+
     def check_labels(self) -> None:
-        labels = [l['name'] if isinstance(l, dict) else l for l in self.issue.get('labels', [])]
+        labels = self.labels()
         want = f'type:{self.kind}'
         wrong = [l for l in labels if l.startswith('type:') and l != want]
         if wrong or want not in labels:
@@ -248,63 +241,31 @@ class Review:
         body = (self.issue.get('body') or '').replace('\r\n', '\n')
         preamble, sections = split_sections(body)
         template = Template(self.kind)
-        closed = self.issue.get('state') == 'closed'
-        progress = [h for h, _ in sections if h in PROGRESS]
-        if progress:
-            sections = [s for s in sections if s[0] not in PROGRESS]
-            self.fixed.append(f'section "{progress[0]}" removed: the tables and criteria show where the '
-                              'work stands')
-
-        aliases = dict(ALIASES, Solution='Proposal')
-        names = [aliases.get(h, h) for h, _ in sections]
-        as_own = ['Goals' if self.kind == 'initiative' and h.lower() == 'acceptance criteria' else h
-                  for h in names]
-        own = sum(h in template.headings for h in as_own)
-        for other in KINDS.values():
+        names = [h for h, _ in sections]
+        own = sum(h in template.headings for h in names)
+        for other in KINDS.values() if self.kind != 'issue' else ():
             if other != self.kind and sum(h in Template(other).headings for h in names) > own:
                 self.decide.append(f'body follows the {other} template, not the {self.kind} one')
                 return body
 
-        present = {h for h, _ in sections}
-        for section in sections:
-            target = aliases.get(section[0])
-            if target and target in template.headings and target not in present:
-                if section[0] == 'Solution' and closed:
-                    continue
-                self.fixed.append(f'section "{section[0]}" renamed "{target}"')
-                present.add(target)
-                section[0] = target
-
-        def canonical(h: str) -> str:
-            return 'Proposal' if closed and h == 'Solution' else h
-
-        names = [canonical(h) for h, _ in sections]
-
         if '\n'.join(preamble).strip():
             self.decide.append('text before the first section')
-        criteria = self.kind == 'initiative' and 'Goals' not in names and \
-            any(h.lower() == 'acceptance criteria' for h in names)
-        if criteria:
-            self.decide.append('acceptance criteria, not Goals: rewrite them as SMART goals the epics make '
-                               'true, naming no epic or task, then head the section Goals')
         for h in template.headings:
-            if h not in names and h not in template.optional and not (criteria and h == 'Goals'):
+            if h not in names and h not in template.optional:
                 self.decide.append(f'required section missing: {h}')
         for h in names:
-            if criteria and h.lower() == 'acceptance criteria':
-                continue
             if h == 'Non-goals' and self.kind != 'initiative':
                 self.decide.append('Non-goals belong to the initiative: lift any that bound it into the '
                                    "initiative's Non-goals, then remove the section")
             elif h not in template.headings:
                 self.decide.append(f'extra section: {h}')
 
-        sections = self.reorder(sections, template, canonical)
+        sections = self.reorder(sections, template)
         for section in sections:
-            h = canonical(section[0])
+            h = section[0]
             if h == 'Work Breakdown' and template.columns:
-                lines = self.strip_prose(section[1])
-                section[1] = self.fix_names(self.fix_references(self.fix_table(lines, template.columns)))
+                self.check_prose(section[1])
+                section[1] = self.fix_names(self.fix_references(self.fix_table(section[1], template.columns)))
                 self.check_dependencies(section[1])
                 self.check_shared(section[1])
             elif h == 'Non-goals':
@@ -314,10 +275,11 @@ class Review:
                 section[1] = self.fix_goals(section[1])
             elif h == 'Acceptance Criteria':
                 section[1] = self.fix_list(section[1], 'AC', checkbox=True)
+                self.check_criteria(section[1])
             elif h == 'References':
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
 
-        self.check_outcomes(sections, canonical)
+        self.check_outcomes(sections)
         self.check_history(sections)
         fixed = join_sections(preamble, sections) if self.fixed else body
         if '{{' in fixed:
@@ -356,8 +318,15 @@ class Review:
                     self.decide.append(f'{heading}: change narrative "{text[start:hit.end() + 30].strip()}"; '
                                        'state the plan as it is')
 
-    def check_outcomes(self, sections: list[list], canonical) -> None:
-        by_name = {canonical(h): lines for h, lines in sections}
+    def check_criteria(self, lines: list[str]) -> None:
+        """Each acceptance criterion states one invariant."""
+        for line in lines:
+            criterion = AC.match(line)
+            if criterion and ';' in LINK.sub(r'\1', line[criterion.end():]):
+                self.decide.append(f'AC{criterion[1]} may state several invariants; state one per criterion')
+
+    def check_outcomes(self, sections: list[list]) -> None:
+        by_name = {h: lines for h, lines in sections}
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
         if len(table) < 3 or 'Description' not in cells(table[0]):
             return
@@ -398,16 +367,16 @@ class Review:
         for n in sorted(wanted - delivered):
             self.decide.append(f'{tag}{n} is delivered by no Work Breakdown row')
 
-    def reorder(self, sections: list[list], template: Template, canonical) -> list[list]:
+    def reorder(self, sections: list[list], template: Template) -> list[list]:
         groups: list[list[list]] = []
         for section in sections:
-            if canonical(section[0]) in template.headings or not groups:
+            if section[0] in template.headings or not groups:
                 groups.append([section])
             else:
                 groups[-1].append(section)
 
         def rank(group: list[list]) -> int:
-            h = canonical(group[0][0])
+            h = group[0][0]
             return template.headings.index(h) if h in template.headings else -1
 
         ordered = sorted(groups, key=rank)
@@ -432,20 +401,7 @@ class Review:
         while end < len(lines) and lines[end].startswith('|'):
             end += 1
         header, rows = cells(lines[start]), [cells(l) for l in lines[start + 2:end]]
-        renamed = [c for c in header if COLUMN_ALIASES.get(c) in columns]
-        for c in renamed:
-            self.fixed.append(f'Work Breakdown column "{c}" renamed "{COLUMN_ALIASES[c]}"')
-        header = [COLUMN_ALIASES[c] if c in renamed else c for c in header]
-        folded = any(c in header and c not in columns for c in FOLDED)
-        if folded:
-            header, rows = self.fold_columns(header, rows, columns)
-            if header is None:
-                return lines
         unknown = [c for c in header if c not in columns]
-        if 'Work' in unknown and 'Description' in columns:
-            self.decide.append('Work Breakdown has Work, not Description: rename it and end each cell with '
-                               'the acceptance criteria the row delivers')
-            return lines
         if unknown:
             self.decide.append(f'Work Breakdown column not in the template: {", ".join(unknown)}')
             return lines
@@ -471,27 +427,15 @@ class Review:
                 self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: '
                                    f'{LINK.sub(chr(92) + "1", r[0])}')
         table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
-        if header == columns and padded == rows and not folded and not renamed:
+        if header == columns and padded == rows:
             return lines
         return lines[:start] + table + lines[end:]
 
-    def strip_prose(self, lines: list[str]) -> list[str]:
-        """Keep the Work Breakdown to its table: drop the house's old explanatory sentences."""
-        out, dropped, other = [], 0, []
-        for line in lines:
-            if line.startswith(HOUSE_PROSE):
-                dropped += 1
-            else:
-                out.append(line)
-                if line.strip() and not line.startswith('|'):
-                    other.append(line.strip()[:60])
-        if dropped:
-            self.fixed.append(f'Work Breakdown explanatory sentences removed: {dropped}')
+    def check_prose(self, lines: list[str]) -> None:
+        """The Work Breakdown holds its table and nothing else."""
+        other = [l.strip()[:60] for l in lines if l.strip() and not l.startswith('|')]
         if other:
             self.decide.append('Work Breakdown holds prose outside its table: ' + ' / '.join(other))
-        while out and not out[0].strip():
-            out.pop(0)
-        return out
 
     def check_dependencies(self, lines: list[str]) -> None:
         table = [l for l in lines if l.startswith('|')]
@@ -576,33 +520,6 @@ class Review:
             self.decide.append(f'Work Breakdown epic references unlinked ({why}): ' +
                                ', '.join(dict.fromkeys(unlinked)))
         return out
-
-    def fold_columns(self, header: list[str], rows: list[list[str]], columns: list[str]):
-        """Move a PR or Issue column's link onto each row id, and drop the column."""
-        base = self.issue.get('html_url', '').rsplit('/issues/', 1)[0]
-        for name in FOLDED:
-            if name not in header or name in columns:
-                continue
-            at = header.index(name)
-            out = []
-            for r in rows:
-                cell = r[at] if at < len(r) else ''
-                link, number = LINK.fullmatch(cell), re.fullmatch(r'#(\d+)', cell)
-                url = link[2] if link else f'{base}/issues/{number[1]}' if number else None
-                current, ident = LINK.fullmatch(r[0]), r[0]
-                plain = LINK.sub(r'\1', ident)
-                if url and not current:
-                    ident = f'[{plain}]({url})'
-                elif url and current[2] != url:
-                    self.decide.append(f'{plain}: id links {current[2]}, but its {name} cell holds {cell}')
-                    return None, None
-                elif not url and cell not in ('', 'in flight'):
-                    self.decide.append(f'{plain}: {name} cell "{cell}" is not one link a row id can carry')
-                    return None, None
-                out.append([ident] + [c for i, c in enumerate(r[1:], 1) if i != at])
-            self.fixed.append(f'{name} column folded into row-id links')
-            header, rows = [c for c in header if c != name], out
-        return header, rows
 
     def fix_bullets(self, lines: list[str], heading: str) -> list[str]:
         """Make a prose section a bulleted list, one sentence per bullet."""

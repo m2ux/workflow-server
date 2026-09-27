@@ -1,12 +1,13 @@
 # Review mode
 
-Checks existing initiative, epic and task issues against the templates, and fixes them.
+Checks existing initiative, epic, task and standalone issues against the templates, and fixes
+them. A standalone issue has no house prefix and belongs to no initiative; hoist mode leaves such
+issues in place.
 
 ## Procedure
 
 1. **Select.** Review the issues the user names, or an initiative with its open epics.
-   - Review covers open issues only. A closed issue is reviewed only when named, and keeps its
-     `Solution` heading.
+   - Review covers open issues only. A closed issue is reviewed only when named.
    - Naming another initiative's issue approves format edits to it.
 2. **Fetch** each issue whole, with its initiative when it is an epic, and its epics when it is an
    initiative: `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
@@ -28,10 +29,6 @@ Checks existing initiative, epic and task issues against the templates, and fixe
    - an extra section: keep it, fold it into a template section, or remove it;
    - a body that follows another kind's template: rewrite it in its own kind's layout, or relabel
      the issue;
-   - a PR cell holding text or several links: move the one pull request that delivered the task
-     onto its id, and drop the rest;
-   - a task id linking its own issue while its PR cell holds the pull request: comment the pull
-     request on the task issue, which records it, then drop the cell;
    - a task delivering more than three criteria no other task delivers: split it into tasks one
      pull request each can deliver, drafting the rows and their criteria;
    - a goal or non-goal naming an initiative, epic, task or issue: restate it locally, or drop a
@@ -39,11 +36,13 @@ Checks existing initiative, epic and task issues against the templates, and fixe
    - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming
      what the row delivers, and restate any detail no cited criterion or goal carries as a new
      criterion or goal of one invariant, cited by the row;
-   - a Work column, or a Description cell without criteria: map each row to the criteria it delivers,
-     from the row's text and each criterion's wording; a criterion no row delivers needs a row, or
-     belongs in another epic;
-   - prose in the Work Breakdown outside its table, or a Sequencing section: move any design
-     content into the Proposal, and drop narration of order and its reasons;
+   - a Description cell without criteria: map the row to the criteria it delivers, from its text
+     and each criterion's wording; a criterion no row delivers needs a row, or belongs in another
+     epic;
+   - a criterion that may state several invariants: split it, adding each new criterion at the end
+     of the list, and cite it from the rows that deliver it;
+   - prose in the Work Breakdown outside its table: move any design content into the Proposal, and
+     drop narration of order and its reasons;
    - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics
      `deps.py` derives with `I=`;
    - a title whose name is not two or three words or whose subtitle runs past ten: draft a title of

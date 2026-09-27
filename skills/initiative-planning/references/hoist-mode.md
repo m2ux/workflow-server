@@ -13,7 +13,7 @@ how rows, criteria and references are written.
 | **New task** | a row in an existing epic, with its criteria | kept as the task's issue, or subsumed |
 | **New epic** | an epic in an existing initiative | kept as the epic's issue, or subsumed |
 | **New initiative** | an initiative, raised in plan mode | kept as the initiative's issue, or subsumed |
-| **Leave** | nothing; the orphan is not initiative work | stays open as it is |
+| **Leave** | nothing; the orphan is not initiative work | stays open, in the standalone layout |
 
 - **Kept.** The orphan becomes the new task, epic or initiative issue. It is retitled with its house
   prefix, labelled, and rewritten from its template, and the issue that lists it links it: a task's
@@ -27,6 +27,8 @@ how rows, criteria and references are written.
   issue's References cite that folder beside the orphan, and the orphan closes. Otherwise keep the
   orphan when its work needs discussion or evidence of its own, as a task with its own issue does,
   and subsume it when its detail fits in rows, criteria and a reference.
+- **Left.** An orphan left in place keeps no house prefix, and its body takes the standalone
+  layout, `templates/issue.md`, when it does not already follow it.
 - **Bodies state the result,** as every body does: none says work was hoisted, migrated or
   subsumed, or names where it came from. A reference to the orphan says what detail it holds
   (`The evidence walks and the carve-outs.`), and a kept orphan's body reads as if it had always
@@ -65,6 +67,8 @@ how rows, criteria and references are written.
    - **Kept:** retitle the orphan with its house prefix and a title of the house form, relabel it
      (`type:*`, a `theme:*`), and rewrite its body from its template, carrying its evidence into
      Problem and its design into Proposal.
+   - **Leave:** run review mode's check (`format.py`) on the orphan and bring its body into the
+     standalone layout, carrying its content into the template's sections.
    - **Subsumed:** cite the orphan under the taking issue's References
      (`- **Rn.** [Element Shape](…/issues/874) — The operations surveyed and their prose entries.`),
      and any planning it references as its own entry, then close it:

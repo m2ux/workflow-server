@@ -53,7 +53,8 @@ columns, numbering, references and delivery.
   succinct summary of at most ten, both in title case: `[I07:E06] Reliability Evaluation: Briefs,
   Measures and the Thresholds That Define Reliable`.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
-  `task.md`. A task issue has an epic's structure without the Work Breakdown table. Keep the
+  `task.md`, and `issue.md` for a standalone issue outside any initiative. A task or standalone
+  issue has an epic's structure without the Work Breakdown table. Keep the
   section order and the table columns. Fill each `{{…}}` and delete a section
   the template marks as optional when it has nothing to say. What a body leaves out is in the Work
   Breakdown guide.
