@@ -109,7 +109,7 @@ Checks dependencies as a graph, then renumbers.
 4. Renumber so that epics run in number order and tasks are numbered in the order they can start,
    touching only work not yet delivered. Use `scripts/renumber.py --initiative NN --prs prs.json
    --map old:new,...` for epic numbers, and `--epic N --own <body> --tasks old:new,...` for one
-   epic's tasks. Then re-sort each table, check every range the script prints, and grep the
+   epic's tasks, with other initiatives' bodies after `--outside`. Then re-sort each table, check every range the script prints, and grep the
    prose for references it cannot see.
 5. Update each initiative Depends on cell to the list `deps.py` gives, and re-run it until it
    reports no problems.

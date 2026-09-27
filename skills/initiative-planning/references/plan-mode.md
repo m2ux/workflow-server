@@ -70,7 +70,8 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
   cells against the epics.
 - The first `renumber.py` renumbers epics. The second renumbers E01's tasks: `E01 Wxx` and
   `E01:Wxx` everywhere, and bare `Wxx` inside E01's own body. Links keep their targets. Both
-  rewrite files in place, and refuse a map that collides or that renumbers delivered work: a task
+  rewrite files in place, rewrite only this initiative's prefixed references in the bodies given
+  after `--outside` (other initiatives' issues), and refuse a map that collides or that renumbers delivered work: a task
   whose id links its pull request, or an epic a pull request in `--prs` names.
 - `format.py` checks one issue against its template, including that every criterion is delivered by
   a Work Breakdown row. An epic's check takes its initiative's JSON, which lists the epic issues its

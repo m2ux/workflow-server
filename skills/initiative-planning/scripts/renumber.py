@@ -15,7 +15,10 @@ Tasks:
   --own is rewritten whether or not it is also listed among FILE.
 
 In both modes a reference to another initiative (I03 E00, I03:E00) is left as it is, and numbers
-absent from the map keep theirs. Files are rewritten in place. A map that sends two numbers to one,
+absent from the map keep theirs. Files of other initiatives go after --outside: in them only a
+reference carrying this initiative's prefix (I07 E01 W03, I07:E01:W03) is rewritten, since an
+unprefixed one means their own initiative. A bare task number right after a link ([I00 E01](…) W05)
+belongs to the linked epic and is left as it is. Files are rewritten in place. A map that sends two numbers to one,
 or onto a number it leaves out, is refused and nothing is written. So is a map that renumbers
 delivered work: a task whose id in --own links a pull request or commit, or an epic a pull request
 in --prs names ([I07:E00] Purpose), since that is how its delivery is found. prs.json holds pull
@@ -35,7 +38,7 @@ EPIC_REF = re.compile(r'\bE(\d\d)\b')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 DELIVERED_ROW = re.compile(r'^\| \[W(\d\d)\]\([^)]*/(?:pull|commit)/[^)]*\) \|', re.MULTILINE)
 TASK_REF = re.compile(r'\bE(\d\d)([ :])W(\d\d)\b')
-BARE_TASK = re.compile(r'(?<!E\d\d )(?<!E\d\d:)\bW(\d\d)\b')
+BARE_TASK = re.compile(r'(?<!E\d\d )(?<!E\d\d:)(?<!\) )\bW(\d\d)\b')
 TABLE_ROW = re.compile(r'^\| \[?W(\d\d)(?:\]\([^)]*\))? \|', re.MULTILINE)
 RANGE = re.compile(r'W\d\d[–-]W\d\d')
 INITIATIVE = re.compile(r'I(\d\d)[ :]$')
@@ -58,14 +61,18 @@ def refuse_clashes(mapping: dict[int, int], present: set[int], what: str) -> Non
                  'be a number the map leaves out. Nothing was written.')
 
 
-def other_initiative(text: str, start: int, initiative: str) -> bool:
+def other_initiative(text: str, start: int, initiative: str, outside: bool = False) -> bool:
+    """Whether a reference at start belongs to another initiative than this one."""
     before = INITIATIVE.search(text[max(0, start - 4):start])
+    if outside:
+        return not before or before.group(1) != initiative
     return bool(before) and before.group(1) != initiative
 
 
-def renumber_epics(texts: dict[str, str], initiative: str, mapping: dict[int, int]) -> dict[str, str]:
-    present = {int(m[1]) for t in texts.values() for m in EPIC_REF.finditer(t)
-               if not other_initiative(t, m.start(), initiative)}
+def renumber_epics(texts: dict[str, str], initiative: str, mapping: dict[int, int],
+                    outside: set[str]) -> dict[str, str]:
+    present = {int(m[1]) for name, t in texts.items() for m in EPIC_REF.finditer(t)
+               if not other_initiative(t, m.start(), initiative, name in outside)}
     refuse_clashes(mapping, present, 'epics')
     out = {}
     for name, text in texts.items():
@@ -74,7 +81,7 @@ def renumber_epics(texts: dict[str, str], initiative: str, mapping: dict[int, in
         def repl(m: re.Match) -> str:
             nonlocal count
             old = int(m[1])
-            if other_initiative(text, m.start(), initiative) or old not in mapping:
+            if other_initiative(text, m.start(), initiative, name in outside) or old not in mapping:
                 return m[0]
             count += 1
             return f'E{mapping[old]:02d}'
@@ -85,7 +92,7 @@ def renumber_epics(texts: dict[str, str], initiative: str, mapping: dict[int, in
 
 
 def renumber_tasks(texts: dict[str, str], initiative: str, epic: int, own: str,
-                   mapping: dict[int, int]) -> dict[str, str]:
+                   mapping: dict[int, int], outside: set[str]) -> dict[str, str]:
     present = {int(n) for n in TABLE_ROW.findall(texts[own])}
     refuse_clashes(mapping, present, 'tasks')
     out = {}
@@ -94,7 +101,7 @@ def renumber_tasks(texts: dict[str, str], initiative: str, epic: int, own: str,
 
         def qualified(m: re.Match) -> str:
             nonlocal count
-            if other_initiative(text, m.start(), initiative) or int(m[1]) != epic:
+            if other_initiative(text, m.start(), initiative, name in outside) or int(m[1]) != epic:
                 return m[0]
             old = int(m[3])
             if old not in mapping:
@@ -140,6 +147,7 @@ def main() -> None:
     parser.add_argument('--tasks', help='task mode: old:new task numbers, e.g. 7:3,2:4')
     parser.add_argument('--prs', help='epic mode: pull requests as JSON lines; an epic they name keeps its number')
     parser.add_argument('files', nargs='*')
+    parser.add_argument('--outside', nargs='*', default=[], help="other initiatives' issue bodies")
     args = parser.parse_args()
 
     task_mode = args.tasks is not None
@@ -159,11 +167,13 @@ def main() -> None:
         sys.exit(f'delivered work keeps its number: {", ".join(held)}. Nothing was written.')
 
     names = list(dict.fromkeys(args.files + ([args.own] if task_mode else [])))
+    names += [n for n in args.outside if n not in names]
     texts = {name: Path(name).read_text() for name in names}
+    outside = set(args.outside)
     if task_mode:
-        out = renumber_tasks(texts, args.initiative, args.epic, args.own, parse_map(args.tasks))
+        out = renumber_tasks(texts, args.initiative, args.epic, args.own, parse_map(args.tasks), outside)
     else:
-        out = renumber_epics(texts, args.initiative, parse_map(args.map))
+        out = renumber_epics(texts, args.initiative, parse_map(args.map), outside)
     for name, text in out.items():
         Path(name).write_text(text)
 
