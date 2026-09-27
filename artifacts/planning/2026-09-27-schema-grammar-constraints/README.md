@@ -147,33 +147,87 @@ own.
 The initiative ([#936](https://github.com/m2ux/workflow-server/issues/936)) was reviewed against
 its goal: an agent working from the workflow-design skill produces a workflow that loads, passes
 every check, fits what can be delivered, runs correctly, and is well designed. Fifteen gaps were
-found and each is now owned:
+found and each is now owned. Owners use the epic numbering in the next section.
 
 | # | Gap | Owner |
 | --- | --- | --- |
-| 1 | Published schemas carry server-built fields; rules differ between authored and materialised forms | E00 W07 (#937) |
-| 2 | Ten convention guards fail changes against rules no stated set contains | E00 W08 |
-| 3 | Resource files and cross-references have no grammar | E00 W09 |
-| 4 | The execution model and delivery limits are absent from the set | E02 (#939) |
-| 5 | No catalogue of existing reusable parts | E01 W07 (#938) |
-| 6 | Nothing proves the spec complete; the loader skips misnamed files silently | E00 W10 |
-| 7 | The canon contradicts itself and the code; citations drifted | E03 (#940) |
+| 1 | Published schemas carry server-built fields; rules differ between authored and materialised forms | E01 W07 (#937) |
+| 2 | Ten convention guards fail changes against rules no stated set contains | E01 W08 |
+| 3 | Resource files and cross-references have no grammar | E01 W09 |
+| 4 | The execution model and delivery limits are absent from the set | E03 (#939) |
+| 5 | No catalogue of existing reusable parts | E05 W07 (#938) |
+| 6 | Nothing proves the spec complete; the loader skips misnamed files silently | E01 W10 |
+| 7 | The canon contradicts itself and the code; citations drifted | E02 (#940) |
 | 8 | Every check is static, and none runs on a draft | E04 (#941) |
-| 9 | Rule entries carry no fix | E00, every rule and reference entry |
-| 10 | Principles and anti-patterns are not indexed by construct | E03 W04 |
-| 11 | "Reliable" has no definition, target or quality measure | E05 (#942) |
-| 12 | Whether the skill needs a design method | E05 W06, then E01 W08 |
-| 13 | Skill, reference, server and corpus can disagree on version | E00 AC17, E01 W03 |
-| 14 | In-flight language changes (#709, #750, I00 E07, I06) | Initiative sequencing: the spec moves with the language |
-| 15 | The `ebnf` package does not generate sentences | E00 W01 |
+| 9 | Rule entries carry no fix | E01, every rule and reference entry |
+| 10 | Principles and anti-patterns are not indexed by construct | E02 W04 |
+| 11 | "Reliable" has no definition, target or quality measure | E06 (#942) |
+| 12 | Whether the skill needs a design method | E06 W06, then E05 W08 |
+| 13 | Skill, reference, server and corpus can disagree on version | E00 W05, E01 AC17, E05 W03 |
+| 14 | In-flight language changes (#709, #750, I00 E07, I06) | Initiative sequencing: spec-first, with the server's declared version |
+| 15 | The `ebnf` package does not generate sentences | E01 W01 |
 
 Decisions taken with the review:
 
 - Convention rules join the registry.
 - The execution model is a sixth member of the set.
-- A design method enters the skill only on E05's evidence.
-- The spec describes the language as it stands, and each language change updates it in the same
-  change.
+- A design method enters the skill only on E06's evidence.
+- The spec describes the language as it stands, and moves spec-first (see Home).
+
+## Home
+
+The language moves to its own orphan `language` branch
+([#943](https://github.com/m2ux/workflow-server/issues/943)), separate from the server and the
+corpus. `workflows` and `engineering` already set this pattern, provisioned as worktrees.
+
+**Why.** The language is a contract:
+
+- it has several implementers: the loader and guards, the walker, the I00 runner and the I03 typed
+  language;
+- it has several consumers: corpus authors and the workflow-design skill;
+- a registry that checks an implementation against a spec needs the spec upstream of every
+  implementation.
+
+**Split.**
+
+| Home | Holds |
+| --- | --- |
+| `language` | `grammar/*.ebnf`, `constraints/*.als`, the rule catalogue, the definition-file JSON Schemas, the canon (principles, anti-patterns, convention conformance, construct inventory), notation primers, the generated reference, its own CI |
+| `main` | Zod as the implementation; the rule-to-enforcer map; conformance tests; draft verification; the assembled-object and session-file schemas |
+| `workflows` | Workflows only |
+| `workspace` | The workflow-design skill, linking into the language worktree |
+
+**Decisions.**
+
+- **Canon:** moves to the language branch.
+- **Skill:** stays on `workspace`.
+- **Change flow:** the server declares the spec version it implements. Conformance runs at that
+  version and reports newer rules as pending, so a language change never reddens `main`. This
+  replaces "update the spec in the same change", which two branches cannot honour.
+
+**Order.** The move comes first. Existing artifacts move unchanged, consumers are rewired, and the
+originals are deleted, so the structure can be tested before any spec is written into it.
+
+**Epic numbering.** Epics are numbered in the order they run:
+
+| Epic | Work | Issue |
+| --- | --- | --- |
+| E00 | Language branch | #943 |
+| E01 | Formal specification | #937 |
+| E02 | Canon | #940 |
+| E03 | Execution model | #939 |
+| E04 | Draft verification | #941 |
+| E05 | Workflow-design skill | #938 |
+| E06 | Reliability evaluation | #942 |
+
+**Cost.** The rewiring costs:
+
+- a second namespace root for `canon` in the server;
+- `SCHEMAS_DIR` pointed at the language worktree;
+- `check:schemas` comparing against the language copy;
+- a CI checkout beside `workflows`;
+- provisioning and sandbox roots;
+- a small Node project on the branch.
 
 ## Rollout
 
@@ -194,8 +248,8 @@ Each layer works end to end before the next begins.
 
 Each has a recommendation for discussion.
 
-1. **Location.** Restore root `grammar/` and `constraints/`, or nest both under one `spec/` root? *Rec:
-   restore the root folders, the layout the experiment established.*
+1. **Location.** *Settled:* `grammar/` and `constraints/` at the root of the `language` branch (see
+   Home).
 2. **EBNF runtime.** Depend on the `ebnf` package, or keep a small W3C EBNF interpreter in-tree? *Rec:
    the package. It has no dependencies, and the conformance tests pin its behaviour, so a later swap
    is contained.*
@@ -204,8 +258,8 @@ Each has a recommendation for discussion.
    and it is the dialect the `ebnf` package runs.*
 4. **Constraint conformance.** Analyzer-generated fixtures (needs a JVM in CI), or hand-written
    fixtures per rule? *Rec: generated. Hand-written fixtures are the coverage gap already observed.*
-5. **Zod.** Keep it hand-written as a registered implementation, or generate it from the spec? *Rec:
-   keep it. Zod is the implementation, and the registry checks it.*
+5. **Zod.** *Settled:* hand-written on `main` as the implementation. The registry checks its rendering
+   against the language branch's definition-file schemas.
 6. **Gate languages.** Specify both `when` and `condition`, or retire `condition` and give checkpoints
    an explicit dismissibility marker (evaluation CON-07)? *Rec: retire it, and specify one gate
    language.*
