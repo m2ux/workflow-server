@@ -1,33 +1,37 @@
 """Renumber an initiative's epics, or one epic's tasks, across its issue bodies.
 
 Epics:
-  python3 renumber.py --initiative 07 --map 6:0,0:1,3:2,2:3 FILE...
+  python3 renumber.py --initiative 07 [--prs prs.json] --map 6:0,0:1,3:2,2:3 FILE...
 
   Rewrites every epic reference (E06, E06 W02, E06:W02, I07 E06, I07:E06) in each file, following
   the map of old to new epic numbers. A link keeps its target: an epic's issue does not change when
   its number does.
 
 Tasks:
-  python3 renumber.py --initiative 07 --epic 1 --own E01.md --tasks 7:3,2:4 FILE...
+  python3 renumber.py --initiative 07 [--prs prs.json] --epic 1 --own E01.md --tasks 7:3,2:4 FILE...
 
-  Rewrites every reference to the epic's tasks (E01 W07, E01:W07, I07:E01:W07) in each file, and bare task
-  references (W07) in the epic's own body, --own, where a bare number is unambiguous. --own is
-  rewritten whether or not it is also listed among FILE.
+  Rewrites every reference to the epic's tasks (E01 W07, E01:W07, I07:E01:W07) in each file, and
+  bare task references (W07) in the epic's own body, --own, where a bare number is unambiguous.
+  --own is rewritten whether or not it is also listed among FILE.
 
-In both modes a reference to another initiative (I03 E00, I03:E00) is left as it is, and numbers absent from
-the map keep theirs. Files are rewritten in place. A map that sends two numbers to one, or onto a
-number it leaves out, is refused and nothing is written.
+In both modes a reference to another initiative (I03 E00, I03:E00) is left as it is, and numbers
+absent from the map keep theirs. Files are rewritten in place. A map that sends two numbers to one,
+or onto a number it leaves out, is refused and nothing is written. So is a map that renumbers an
+epic or task a pull request in --prs names, since its title is how its delivery is found; prs.json
+holds pull requests as JSON lines, as update.py takes them.
 
 After running: re-sort the renumbered table, update each affected issue title, check every range
 the script prints (W04–W09 may no longer be contiguous), and grep the prose for references it
 cannot see.
 """
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
 
 EPIC_REF = re.compile(r'\bE(\d\d)\b')
+PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)(?::(?:W(\d\d)|\(((?:W\d\d, ?)*W\d\d)\)))?\]')
 TASK_REF = re.compile(r'\bE(\d\d)([ :])W(\d\d)\b')
 BARE_TASK = re.compile(r'(?<!E\d\d )(?<!E\d\d:)\bW(\d\d)\b')
 TABLE_ROW = re.compile(r'^\| \[?W(\d\d)(?:\]\([^)]*\))? \|', re.MULTILINE)
@@ -115,6 +119,21 @@ def renumber_tasks(texts: dict[str, str], initiative: str, epic: int, own: str,
     return out
 
 
+def named(path: str, initiative: str) -> tuple[set[int], set[tuple[int, int]]]:
+    """The epics and tasks of the initiative that pull request titles name."""
+    epics, tasks = set(), set()
+    for line in Path(path).read_text().splitlines():
+        if not line.strip():
+            continue
+        m = PR_REF.match(json.loads(line)['title'])
+        if not m or m[1] != initiative:
+            continue
+        epics.add(int(m[2]))
+        for w in [m[3]] if m[3] else re.findall(r'W(\d\d)', m[4] or ''):
+            tasks.add((int(m[2]), int(w)))
+    return epics, tasks
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--initiative', required=True, help='two-digit initiative number, e.g. 07')
@@ -122,6 +141,7 @@ def main() -> None:
     parser.add_argument('--epic', type=int, help='task mode: the epic whose tasks are renumbered')
     parser.add_argument('--own', help="task mode: the epic's own body file")
     parser.add_argument('--tasks', help='task mode: old:new task numbers, e.g. 7:3,2:4')
+    parser.add_argument('--prs', help='pull requests as JSON lines; work they name keeps its number')
     parser.add_argument('files', nargs='*')
     args = parser.parse_args()
 
@@ -130,6 +150,15 @@ def main() -> None:
         sys.exit('give either --map (epics) or --epic, --own and --tasks (tasks)')
     if task_mode and (args.epic is None or not args.own):
         sys.exit('task mode needs --epic and --own')
+
+    if args.prs:
+        epics, tasks = named(args.prs, args.initiative)
+        moved = {o for o, n in parse_map(args.tasks or args.map).items() if o != n}
+        held = sorted(f'E{args.epic:02d}:W{o:02d}' for o in moved if (args.epic, o) in tasks) if task_mode \
+            else sorted(f'E{o:02d}' for o in moved if o in epics)
+        if held:
+            sys.exit(f'pull requests name {", ".join(held)}, and work a pull request names keeps its '
+                     'number. Nothing was written.')
 
     names = list(dict.fromkeys(args.files + ([args.own] if task_mode else [])))
     texts = {name: Path(name).read_text() for name in names}

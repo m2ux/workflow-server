@@ -29,6 +29,8 @@ Checks existing initiative, epic and task issues against the templates, and fixe
      the issue;
    - a PR cell holding text or several links: move the one pull request that delivered the task
      onto its id, and put anything else worth keeping in Where it stands;
+   - a task id linking its own issue while its PR cell holds the pull request: comment the pull
+     request on the task issue, which records it, then drop the cell;
    - a Work column, or an Outcomes cell without criteria: map each row to the criteria it delivers,
      from the row's text and each criterion's wording; a criterion no row delivers needs a row, or
      belongs in another epic;
@@ -36,11 +38,15 @@ Checks existing initiative, epic and task issues against the templates, and fixe
      content into the Proposal, and drop narration of order and its reasons;
    - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics
      `deps.py` derives with `I=`.
-6. **Re-run** the check until it exits 0, or until every remaining finding is one the user chose to
-   keep. Report what changed on each issue.
+6. **Check dependencies** whenever an initiative or epic is reviewed: fetch the initiative's and
+   every epic's body, and run `scripts/deps.py I=live-936.md E00=live-943.md …`. Put each problem it
+   reports to the user as in step 5; an initiative Depends on cell takes the epics it derives.
+7. **Re-run** both checks until they report nothing, or until every remaining finding is one the
+   user chose to keep. Report what changed on each issue.
 
 ## Commands
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py I=live-936.md E00=live-943.md E01=live-937.md
 ```

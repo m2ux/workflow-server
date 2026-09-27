@@ -35,6 +35,9 @@ Epics are numbered in the order they run, and tasks in the order they can start,
 dependency points to an earlier epic or an earlier task. `deps.py` reports numbering that does not
 follow start order as advisory, because older initiatives predate the rule.
 
+A task or epic keeps its number once a pull request names it, since the title is how its delivery
+is found. Renumbering touches only work no pull request names yet.
+
 ## References
 
 Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scripts read, and link
@@ -52,7 +55,8 @@ every epic reference to its epic's issue: `[E01:W03](…/issues/937)`. Prose use
 - **A task with its own issue** keeps its id linked to that issue. The issue records the pull
   request that delivers it, and the task is delivered when the issue is closed as completed.
 - **Moved work:** when another issue takes a task, its Outcomes cell ends
-  `— **moved to [#nnn](…) Wzz**`.
+  `— **moved to [#nnn](…) Wzz**` in place of its criteria. The criteria move with the task, or go
+  to another row that delivers them.
 
 ## What bodies leave out
 

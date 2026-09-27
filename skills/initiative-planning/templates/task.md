@@ -29,3 +29,7 @@
 ## Investigation detail
 
 {{Supporting analysis a reviewer may want but the fix does not depend on. Delete the section when there is none.}}
+
+## References
+
+- **R1.** [{{Epic title}}](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) — I{{NN}} E{{NN}}, the epic this task belongs to.

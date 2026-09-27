@@ -44,7 +44,7 @@ Left to decide, since each needs new content or a judgement:
     such as a task's own issue; or a row id of the wrong form
   - an Outcomes cell that does not end with what it delivers (an epic's → AC2, AC5; an
     initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
-    delivers; a row marked "moved to" is exempt
+    delivers; a row marked "moved to" cites none
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, or a title without "Name: Subtitle"
   - an unfilled {{...}} field or #E00 placeholder
@@ -282,8 +282,8 @@ class Review:
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
         if len(table) < 3 or 'Outcomes' not in cells(table[0]):
             return
-        tag, noun, heading, label = (('G', 'goal', 'Goals', GOAL) if self.kind == 'initiative' else
-                                     ('AC', 'criterion', 'Acceptance Criteria', AC))
+        tag, noun, nouns, heading, label = (('G', 'goal', 'goals', 'Goals', GOAL) if self.kind == 'initiative'
+                                            else ('AC', 'criterion', 'criteria', 'Acceptance Criteria', AC))
         column = cells(table[0]).index('Outcomes')
         wanted = {int(m[1]) for l in by_name.get(heading, []) if (m := label.match(l))}
         delivered: set[int] = set()
@@ -292,9 +292,13 @@ class Review:
             name = LINK.sub(r'\1', r[0])
             cell = r[column] if column < len(r) else ''
             listed = OUTCOMES.search(cell)
+            if 'moved to' in cell:
+                if listed:
+                    self.decide.append(f'{name}: moved, but still cites {listed[1]}; its {nouns} move with it '
+                                       'or go to another row')
+                continue
             if not listed:
-                if 'moved to' not in cell:
-                    self.decide.append(f'{name}: Outcomes does not end with the {noun}s it delivers')
+                self.decide.append(f'{name}: Outcomes does not end with the {nouns} it delivers')
                 continue
             numbers = {int(n) for n in re.findall(rf'\b{tag}(\d+)', listed[1])}
             other = re.findall(r'\b(?:AC|G)\d+', listed[1])
@@ -376,7 +380,8 @@ class Review:
         pattern = ROW_ID[self.kind]
         for r in padded:
             if not pattern.fullmatch(re.sub(r'\[([^\]]*)\]\([^)]*\)', r'\1', r[0])):
-                self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: {r[0]}')
+                self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: '
+                                   f'{LINK.sub(chr(92) + "1", r[0])}')
         table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
         if header == columns and padded == rows and not folded and not renamed:
             return lines

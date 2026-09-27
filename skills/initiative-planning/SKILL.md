@@ -48,8 +48,8 @@ columns, numbering, references and delivery.
   initiative.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
   `task.md`. Keep the section order and the table columns. Fill each `{{…}}` and delete a section
-  the template marks as optional when it has nothing to say. A body does not narrate the order work
-  runs in, the reasons for it, or how the tables work; the Work Breakdown guide holds those.
+  the template marks as optional when it has nothing to say. What a body leaves out is in the Work
+  Breakdown guide.
 - **Check current practice.** Before relying on the scheme, read one recent initiative and one epic.
   Find the next initiative number by listing titles:
   `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.

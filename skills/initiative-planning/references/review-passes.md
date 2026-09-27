@@ -7,8 +7,8 @@ and as a body for `deps.py` and `renumber.py`:
 
 Report findings split by area, one problem/solution pair per finding, each with a severity. Verify
 every finding against the source or artifacts it concerns before stating it, and quote the
-file:line that establishes it. Findings that need a decision go to the user as interview questions, one at a time,
-each with a recommended option.
+file:line that establishes it. Findings that need a decision go to the user as interview
+questions, one at a time, each with a recommended option.
 
 ## Goal pass
 
@@ -95,10 +95,11 @@ Checks dependencies as a graph, then renumbers.
    another task's output depends on it, even when the text never says so.
 3. Fix a backward reference by moving the task to the epic that owns its inputs. When the task
    duplicates work the later epic already does, remove it instead.
-4. Renumber so that epics run in number order and tasks are numbered in the order they can start.
-   Use `scripts/renumber.py --initiative NN --map old:new,...` for epic numbers, and
-   `--epic N --own <body> --tasks old:new,...` for one epic's tasks. Then re-sort each table,
-   check every range the script prints, and grep the prose for references it cannot see.
+4. Renumber so that epics run in number order and tasks are numbered in the order they can start,
+   touching only work no pull request names yet. Use `scripts/renumber.py --initiative NN --prs
+   prs.json --map old:new,...` for epic numbers, and `--epic N --own <body> --tasks old:new,...`
+   for one epic's tasks. Then re-sort each table, check every range the script prints, and grep the
+   prose for references it cannot see.
 5. Update each initiative Depends on cell to the list `deps.py` gives, and re-run it until it
    reports no problems.
 6. Record the longest chains from its output in the planning record. Issue bodies do not narrate

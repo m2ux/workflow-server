@@ -23,14 +23,19 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    them. The initiative states Goals, not acceptance criteria: SMART goals drawn from the goal's
    clauses, each bounded by a milestone, stating what the initiative achieves as a whole. The epics'
    criteria carry the detail that makes them true, so goals are not ticked.
-5. **Review the criteria.** Run the goal pass in `review-passes.md` on the drafts. Fold every gap
-   in and run it again. No issue is created while a gap remains.
+5. **Review the drafts.** Run the goal pass in `review-passes.md`, and `deps.py I=… E00=…` over
+   the drafts. Fold every gap and problem in and run both again. No issue is created while either
+   reports one.
 6. **Create issues** so that every number exists before it is cited:
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
    2. the epics in dependency order, each citing the initiative and the epics created before it,
       with placeholders for any it cites that do not exist yet;
    3. patches replacing every remaining placeholder, in the initiative and in any epic that holds
-      one. Grep the local files for `#E[0-9]` until none is left.
+      one. Grep the local files for `#E[0-9]` until none is left;
+   4. a task issue from `templates/task.md` for each task that needs one, citing its epic, with the
+      row id then linking the issue;
+   5. `format.py --initiative issue-<initiative>.json --fix` on each epic, which links its epic
+      references to their issues, and a patch from each fixed body.
 7. **Review.** Run the passes in `review-passes.md`:
    - the goal pass, whenever the goal, a criterion or an epic changes;
    - the consistency pass, after every round of edits;
@@ -46,8 +51,8 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py I=live-936.md E00=live-943.md E01=live-937.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --map 6:0,0:1 live-*.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-*.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --prs prs.json --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --initiative issue-936.json
 ```
 
@@ -55,15 +60,14 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
   listed twice or already implied, and Join pairs. With `I=` it checks the initiative's Depends on
   cells against the epics.
 - The first `renumber.py` renumbers epics. The second renumbers E01's tasks: `E01 Wxx` and
-  `E01:Wxx` everywhere, and bare `Wxx` inside E01's own body. Links keep their targets. Both rewrite files in place and refuse a map that collides.
+  `E01:Wxx` everywhere, and bare `Wxx` inside E01's own body. Links keep their targets. Both
+  rewrite files in place, refuse a map that collides, and, given `--prs prs.json`, refuse to
+  renumber work a pull request names.
 - `format.py` checks one issue against its template, including that every criterion is delivered by
   a Work Breakdown row. An epic's check takes its initiative's JSON, which lists the epic issues its
   references link to.
 
 ## Rules
 
-- **Dependencies.** Every dependency points to an earlier epic or an earlier task. **Depends on** is
-  what must be true before the work starts, and lists only what no other entry in the cell already
-  implies.
 - **The discussion PR.** Merging it is the user's call. After it merges, repoint the issue links to
   `engineering`.
