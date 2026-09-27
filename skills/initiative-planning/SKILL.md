@@ -45,6 +45,7 @@ columns, numbering, references and delivery.
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
 | Epic | `[I07:E00] Name: Subtitle` | `type:epic`, a `theme:*` |
 | Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
+| Standalone issue | no house prefix | no `type:*` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
   epic. Initiatives and epics count from `00`, and tasks from `W01`.
@@ -54,12 +55,10 @@ columns, numbering, references and delivery.
   Measures and the Thresholds That Define Reliable`.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
   `task.md`, and `issue.md` for a standalone issue outside any initiative. A task or standalone
-  issue has an epic's structure without the Work Breakdown table. Keep the
-  section order and the table columns. Fill each `{{…}}` and delete a section
-  the template marks as optional when it has nothing to say. What a body leaves out is in the Work
-  Breakdown guide.
-- **Check current practice.** Before relying on the scheme, read one recent initiative and one epic.
-  Find the next initiative number by listing titles:
+  issue has an epic's structure without the Work Breakdown table. Keep the section order and the
+  table columns. Fill each `{{…}}` and delete a section the template marks as optional when it has
+  nothing to say. What a body leaves out is in the Work Breakdown guide.
+- **Next number.** Find the next initiative number by listing titles:
   `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
 - **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a
   `priority: *` as they apply. Only labels that exist:
@@ -96,7 +95,7 @@ checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checko
 - **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in
   the affected issues and, when there is one, the planning record.
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
-- **Bodies state the plan as it is.** An initiative or epic body carries no change narrative:
+- **Bodies state the plan as it is.** No body carries change narrative:
   nothing moved, renumbered, replaced, discharged or formerly anything. How the plan evolved goes in
   the planning record and in commit and pull request bodies.
 - **Other initiatives.** Editing another initiative's issue needs the user's explicit approval.

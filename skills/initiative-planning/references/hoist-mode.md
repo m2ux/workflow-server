@@ -64,8 +64,9 @@ how rows, criteria and references are written.
    - **New epic:** draft the epic from `templates/epic.md` and its row in the initiative, with the
      goals it serves; follow plan mode's steps for creating and linking an epic. Keep or subsume.
    - **New initiative:** run plan mode with the orphan as its input. Keep or subsume.
-   - **Kept:** retitle the orphan with its house prefix and a title of the house form, relabel it
-     (`type:*`, a `theme:*`), and rewrite its body from its template, carrying its evidence into
+   - **Kept:** retitle the orphan with its house prefix and a title of the house form, label it
+     with its `type:*` (and a `theme:*` for an initiative or epic), and rewrite its body from its
+     template, carrying its evidence into
      Problem and its design into Proposal.
    - **Leave:** run review mode's check (`format.py`) on the orphan and bring its body into the
      standalone layout, carrying its content into the template's sections.
@@ -74,8 +75,7 @@ how rows, criteria and references are written.
      and any planning it references as its own entry, then close it:
      comment `Tracked in [I07:E01](…/issues/937) W04.` and
      `gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_reason=not_planned`.
-     The work stays planned in the taking issue; the orphan closes because it is no longer where
-     that work is tracked.
+     The work stays planned in the taking issue, which is where that work is tracked.
 6. **Review.** Run review mode's check (`format.py`) on every issue the hoist changed or created,
    and `deps.py` on each initiative that gained a task or epic. Fold every finding in.
 7. **Report** each orphan's placement, the issues changed, created or closed, and the orphans left.

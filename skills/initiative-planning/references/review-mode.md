@@ -10,8 +10,9 @@ issues in place.
    - Review covers open issues only. A closed issue is reviewed only when named.
    - Naming another initiative's issue approves format edits to it.
    - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
-2. **Fetch** each issue whole, with its initiative when it is an epic, and its epics when it is an
-   initiative: `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
+2. **Fetch** each issue whole, with its initiative when it is an epic, its epics when it is an
+   initiative, and the standalone issues it cites:
+   `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
 3. **Check** with `scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md`,
    and an initiative with `--epic issue-943.json` for each of its epics. The initiative's table
    lists the epic issues that the epic's references link to, and each epic's title names its row. The check
@@ -26,14 +27,18 @@ issues in place.
    content drafted:
    - a missing section: draft it from the issue and its epics;
    - Non-goals in an epic or task: lift any that bound the initiative into the initiative's
-     Non-goals, then remove the section;
+     Non-goals, then remove the section; in a standalone issue, fold them into the Proposal as a
+     closing boundary;
    - an extra section: keep it, fold it into a template section, or remove it;
-   - a body that follows another kind's template: rewrite it in its own kind's layout, or relabel
-     the issue;
+   - a body that follows another kind's template: rewrite it in its own kind's layout, or retitle
+     the issue to the kind it follows;
+   - wording that narrates how the plan changed: restate it as the plan is;
    - a task delivering more than three criteria no other task delivers: split it into tasks one
      pull request each can deliver, drafting the rows and their criteria;
    - a goal or non-goal naming an initiative, epic, task or issue: restate it locally, or drop a
      goal that holds only through another initiative's work;
+   - a goal that may state several invariants, or that carries a count: split it into one goal
+     each, or measure it against a named baseline or check;
    - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming
      what the row delivers, and restate any detail no cited criterion or goal carries as a new
      criterion or goal of one invariant, cited by the row;

@@ -43,7 +43,8 @@ Left to decide, since each needs new content or a judgement:
   - an acceptance criterion that may state several invariants (a semicolon in its statement)
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
-    Non-goals section in an epic or task, since non-goals belong to the initiative
+    Non-goals section in an epic or task, since non-goals belong to the initiative, or in a
+    standalone issue, whose Proposal states its boundary
   - a Work Breakdown column the template lacks, or a row id of the wrong form
   - a Description cell that does not end with what it delivers (an epic's → AC2, AC5; an
     initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
@@ -254,7 +255,9 @@ class Review:
             if h not in names and h not in template.optional:
                 self.decide.append(f'required section missing: {h}')
         for h in names:
-            if h == 'Non-goals' and self.kind != 'initiative':
+            if h == 'Non-goals' and self.kind == 'issue':
+                self.decide.append('Non-goals: a standalone issue states its boundary in the Proposal')
+            elif h == 'Non-goals' and self.kind != 'initiative':
                 self.decide.append('Non-goals belong to the initiative: lift any that bound it into the '
                                    "initiative's Non-goals, then remove the section")
             elif h not in template.headings:
