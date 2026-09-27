@@ -299,6 +299,25 @@ range:
 - E00 W01 → W02 → E01 W01 → E04 W01 → W02 → E06 W03 → W04 → W05 → W06
 - E00 W01 → W02 → W05 → E02 W01 → W03 → E05 W04 → W05 → E06 W05 → W06
 
+## Outcomes mapping
+
+Every Work Breakdown row now ends with the acceptance criteria it delivers: each epic's tasks cite
+the epic's criteria, and the initiative's epics cite the initiative's. A criterion that binds
+several tasks, such as E01's EBNF conventions (AC11) on every grammar task, is cited on each. Epic
+tables put the PR column last.
+
+Mapping every row to a criterion found four gaps:
+
+| Gap | Resolution |
+| --- | --- |
+| E00 W04 (language branch CI) delivered no criterion | E00 AC10: the branch runs its own verify job on every change |
+| E01 W09 (session transitions) delivered no criterion | E01 AC20: transitions stated in Alloy 6 temporal logic, checked by the Analyzer |
+| E01 W11 (`enforcement.json`) delivered no criterion | E01 AC21: severity stated once, in the registry |
+| E05 AC11 (ships meeting the thresholds) was delivered by no E05 task, and duplicated E06 AC6 | Removed; E05's Non-goals name E06 as the owner |
+
+The initiative's AC9 (no rule's only home is prose) is delivered jointly by E01, E02 and E05, and
+AC8 (thresholds met) by E05 and E06.
+
 ## Rollout
 
 Each layer works end to end before the next begins.
