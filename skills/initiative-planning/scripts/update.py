@@ -1,31 +1,33 @@
 """Bring a task, an epic or an initiative up to date with delivered work.
 
 Usage:
-  python3 update.py issue-637.json --prs prs.json [--tick AC1 --fix fixed-637.md]
-  python3 update.py issue-943.json --prs prs.json [--tasks issue-637.json ...] [--tick AC1,AC3 --fix fixed-943.md]
-  python3 update.py issue-936.json --epics issue-943.json issue-937.json ... [--tick AC10 --fix fixed-936.md]
+  python3 update.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
+  python3 update.py issue-943.json --prs prs.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
+  python3 update.py issue-936.json --epics issue-943.json issue-937.json ...
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
   gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07:"))' > prs.json
 
-A pull request delivers the tasks its title names: [I07:E00:W01], or [I07:E00:(W01,W02)] for tasks
-that Join each other.
+A pull request's title names the epic it works on: [I07:E00] Purpose. Which of the epic's tasks it
+delivers is read from its changes against the tasks' Outcomes, and recorded by linking each task's
+id to it with --link.
 
-Task issue ([I07:E00:W01]): delivered when a merged pull request names it.
-Epic: a row whose id links a task issue is delivered when that issue, given by --tasks, is closed
-as completed; a merged pull request naming it is reported, since the task issue records it. Any
-other row is delivered when its id links a pull request or commit. A task that a merged pull
-request names gets its id linked to it, the latest merged when several name it; a row already
-linked elsewhere is reported, not changed. Open pull requests are reported as in flight, and a
-grouped title naming tasks that do not Join each other is reported. An epic whose work has started
-while its Open questions section remains is reported.
+Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
+task's epic.
+Epic: --link links each named task's id to a merged pull request naming the epic, and refuses a
+pull request that is unmerged or names another epic, a row linking a task issue, or a row already
+linked elsewhere. A row whose id links a task issue is delivered when that issue, given by --tasks,
+is closed as completed; any other row when its id links a pull request or commit. Reported: merged
+pull requests naming the epic that no row links yet, open ones as in flight, a row linked to a pull
+request naming another epic, rows sharing a pull request that do not Join each other, and work
+started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed. Its goals are met through its epics' criteria and are not ticked, so the initiative is
 closable once every epic is delivered.
 A row whose Outcomes says "moved to" counts as delivered.
 
-Reported for each acceptance criterion:
+Reported for each acceptance criterion of a task or epic:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
   - ticked early: ticked while a row citing it is undelivered.
 --tick ticks the named criteria in the body written to --fix, and refuses one not ready to verify.
@@ -41,16 +43,10 @@ from pathlib import Path
 from format import AC, LINK, OUTCOMES, cells, join_sections, row, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-PR_REF = re.compile(r'^\[I(\d\d):E(\d\d):(?:(W\d\d)|\((W\d\d(?:, ?W\d\d)*)\))\]')
+PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
-
-
-def pr_tasks(title: str) -> tuple[str, str, list[str]] | None:
-    m = PR_REF.match(title)
-    if not m:
-        return None
-    return m[1], m[2], [m[3]] if m[3] else re.findall(r'W\d\d', m[4])
+PULL_URL = re.compile(r'/pull/(\d+)$')
 
 
 def completed(paths: list[str]) -> dict[int, bool]:
@@ -61,51 +57,53 @@ def completed(paths: list[str]) -> dict[int, bool]:
     return states
 
 
-def merged_for(prs, initiative, epic, report, joins=None, only=None):
-    """Merged pull requests per task of one epic; open ones and ungrouped groups are reported."""
-    merged: dict[str, list] = {}
-    for pr in prs:
-        ref = pr_tasks(pr['title'])
-        if not ref or ref[:2] != (initiative, epic):
-            continue
-        group = ref[2]
-        if joins is not None and len(group) > 1:
-            apart = [f'{a}+{b}' for a in group for b in group if a < b and b not in joins.get(a, set())]
-            if apart:
-                report['conflict'].append(f"#{pr['number']} groups tasks that do not Join: {', '.join(apart)}")
-        for task in group:
-            if only and task != only:
-                continue
-            if pr.get('merged_at'):
-                merged.setdefault(task, []).append(pr)
-            elif pr.get('state') == 'open':
-                report['in flight'].append(f"{task}: #{pr['number']}")
-    return {t: sorted(p, key=lambda x: x['merged_at']) for t, p in merged.items()}
+def for_epic(prs: list[dict], initiative: str, epic: str) -> dict[int, dict]:
+    """The pull requests whose titles name this epic, by number."""
+    return {p['number']: p for p in prs if (m := PR_REF.match(p['title'])) and m.groups() == (initiative, epic)}
 
 
-def epic_delivery(rows, header, merged, tasks, report):
+def epic_delivery(rows, header, named, links, tasks, report):
     join = header.index('Join') if 'Join' in header else None
-    delivered = {}
+    delivered, by_pr = {}, {}
     for r in rows:
         task = LINK.sub(r'\1', r[0])
-        found = merged.get(task, [])
         existing = LINK.fullmatch(r[0])
         issue = ISSUE_URL.search(existing[2]) if existing else None
+        if task in links:
+            pr = named.get(links[task])
+            if issue:
+                sys.exit(f'{task} links its task issue #{issue[1]}; that issue records its pull request')
+            if not pr or not pr.get('merged_at'):
+                sys.exit(f'--link {task}={links[task]}: no merged pull request naming this epic')
+            if existing and existing[2] != pr['html_url']:
+                sys.exit(f'--link {task}={links[task]}: {task} already links {existing[2]}')
+            if not existing:
+                r[0] = f"[{task}]({pr['html_url']})"
+                report['linked'].append(f"{task} → #{pr['number']}")
+            existing = LINK.fullmatch(r[0])
         if issue:
             number = int(issue[1])
             if number not in tasks:
                 report['note'].append(f'{task}: no --tasks issue for #{number}')
-            if found and not tasks.get(number):
-                report['task issue'].append(f"{task}: #{number} delivered by #{found[-1]['number']}; "
-                                            'update and close the task issue')
             delivered[task] = bool(tasks.get(number))
             continue
-        if found and not existing:
-            r[0] = f"[{task}]({found[-1]['html_url']})"
-            report['linked'].append(f"{task} → #{found[-1]['number']}")
-        elif found and existing[2] not in {p['html_url'] for p in found}:
-            report['conflict'].append(f"{task} links {existing[2]}, but #{found[-1]['number']} names it")
-        delivered[task] = bool(LINK.fullmatch(r[0]))
+        pull = PULL_URL.search(existing[2]) if existing else None
+        if pull:
+            number = int(pull[1])
+            joins = set(re.findall(r'W\d\d', r[join])) if join is not None and join < len(r) else set()
+            by_pr.setdefault(number, []).append((task, joins))
+            if number not in named:
+                report['conflict'].append(f'{task} links #{number}, whose title does not name this epic')
+        delivered[task] = bool(existing)
+    for number, group in by_pr.items():
+        apart = [f'{a}+{b}' for a, ja in group for b, _ in group if a < b and b not in ja]
+        if apart:
+            report['conflict'].append(f"#{number} delivers tasks that do not Join: {', '.join(apart)}")
+    for number, pr in sorted(named.items()):
+        if pr.get('merged_at') and number not in by_pr:
+            report['unmatched'].append(f"#{number} {pr['title']}")
+        elif pr.get('state') == 'open':
+            report['in flight'].append(f"#{number} {pr['title']}")
     return delivered
 
 
@@ -138,13 +136,15 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('issue')
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
+    parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
+    parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, e.g. W01=950,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
     parser.add_argument('--fix', help='write the updated body here')
     args = parser.parse_args()
-    if args.tick and not args.fix:
-        sys.exit('--tick needs --fix, which holds the ticked body')
+    if (args.tick or args.link) and not args.fix:
+        sys.exit('--tick and --link need --fix, which holds the updated body')
 
     issue = json.loads(Path(args.issue).read_text())
     m = PREFIX.match(issue['title'])
@@ -157,9 +157,11 @@ def main() -> int:
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else []
+    named = for_epic(prs, initiative, epic) if epic else {}
+    links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
-    report = {k: [] for k in ('linked', 'task issue', 'conflict', 'in flight', 'ready to verify',
+    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'ready to verify',
                               'ticked early', 'ticked', 'open questions', 'note')}
 
     lines, start, end, grid = table(sections)
@@ -167,25 +169,21 @@ def main() -> int:
     citing: dict[int, list[str]] = {}
     rows = []
     if kind == 'task':
-        found = merged_for(prs, initiative, epic, report, only=task).get(task, [])
-        if found:
-            report['linked'].append(f"{task} delivered by #{found[-1]['number']}")
-        delivered[task] = bool(found)
+        pr = named.get(args.pr) if args.pr else None
+        if args.pr and not (pr and pr.get('merged_at')):
+            sys.exit(f'--pr {args.pr}: no merged pull request naming I{initiative}:E{epic}')
+        if pr:
+            report['linked'].append(f"{task} delivered by #{pr['number']}")
+        delivered[task] = bool(pr)
     else:
         if grid is None or 'Outcomes' not in grid[0]:
             sys.exit('Work Breakdown has no Outcomes column; run format.py first')
         header, rows = grid[0], grid[2:]
         outcomes = header.index('Outcomes')
         if kind == 'epic':
-            joins = {}
-            if 'Join' in header:
-                at = header.index('Join')
-                for r in rows:
-                    joins[LINK.sub(r'\1', r[0])] = set(re.findall(r'W\d\d', r[at] if at < len(r) else ''))
-            merged = merged_for(prs, initiative, epic, report, joins)
-            delivered = epic_delivery(rows, header, merged, completed(args.tasks), report)
+            delivered = epic_delivery(rows, header, named, links, completed(args.tasks), report)
             questions = next((l for h, l in sections if h == 'Open questions'), [])
-            started = any(delivered.values()) or report['in flight']
+            started = any(delivered.values()) or report['in flight'] or report['unmatched']
             if started and any(l.strip() for l in questions):
                 report['open questions'].append('work has started while questions remain; resolve them '
                                                 'in plan mode, since their answers may reshape the epic')
@@ -237,10 +235,10 @@ def main() -> int:
     print('  closable: ' + ('no (' + ', '.join(filter(None, reasons)) + ')' if any(reasons) else 'yes'))
 
     if args.fix:
-        if report['linked'] and kind != 'task':
+        linked = report['linked'] and kind != 'task'
+        if linked:
             lines[start + 2:end] = [row(r) for r in rows]
-        changed = (report['linked'] and kind != 'task') or report['ticked']
-        Path(args.fix).write_text(join_sections(preamble, sections) if changed else body)
+        Path(args.fix).write_text(join_sections(preamble, sections) if linked or report['ticked'] else body)
     return 0
 
 

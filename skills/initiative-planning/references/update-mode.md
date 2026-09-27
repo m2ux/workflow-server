@@ -13,51 +13,56 @@ recorded.
    requests that name the initiative:
    `gh api repos/{owner}/{repo}/issues/943 > issue-943.json` and
    `gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07:"))' > prs.json`.
-3. **Unnamed deliveries.** When the user says a task has landed but no merged pull request names
-   it, find the pull request, confirm it with the user, and retitle it with the task's reference:
-   `gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f title='[I07:E00:W01] Subject'`. Fetch
+3. **Unnamed deliveries.** When the user says work has landed but no pull request names its epic,
+   find the pull request, confirm it with the user, and retitle it with the epic's reference:
+   `gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f title='[I07:E00] Purpose'`. Fetch
    `prs.json` again.
-4. **Update each task issue** with `scripts/update.py issue-637.json --prs prs.json`. Once a merged
-   pull request names the task, verify and tick its criteria as in steps 6–7, comment the pull
-   request on it (`gh api --method POST repos/{owner}/{repo}/issues/637/comments -f body='Delivered
-   by #950.'`), and close it as completed when it reports closable.
-5. **Update each epic** with `scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json
-   --fix fixed-943.md`, with the task issues fetched after closing. It links each task that a merged
-   pull request names, and reports:
-   - **conflict:** a task already linked to a pull request other than the one that names it, or a
-     pull request grouping tasks that do not Join each other. Find which pull request delivered
-     what, from their changes, and put it to the user;
-   - **task issue:** a task with its own issue that a merged pull request names, while the issue
-     is still open. Update it as in step 4;
+4. **Match pull requests to tasks.** Run `scripts/update.py issue-943.json --prs prs.json` for each
+   epic. Each merged pull request it reports as **unmatched** names the epic but no row links it
+   yet. Read its changes and description against the tasks' Outcomes, and name the tasks it
+   delivered: one task, or tasks that Join each other. Put any match that is not clear to the user.
+   A pull request that delivered a task with its own issue belongs to that issue, in step 5.
+5. **Update each task issue** with `scripts/update.py issue-637.json --prs prs.json --pr 950`,
+   naming the pull request that delivered it. Verify and tick its criteria as in steps 7–8, comment
+   the pull request on it (`gh api --method POST repos/{owner}/{repo}/issues/637/comments -f
+   body='Delivered by #950.'`), and close it as completed when it reports closable.
+6. **Update each epic** with `scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json
+   --link W01=950,W02=950 --fix fixed-943.md`, linking the matches from step 4, with the task issues
+   fetched after closing. It reports:
+   - **conflict:** a row linked to a pull request whose title names another epic, or tasks sharing
+     a pull request that do not Join each other. Put it to the user;
+   - **unmatched:** merged pull requests still linked from no row. Match them as in step 4; one
+     that delivered a task issue stays unmatched here, since its issue records it;
    - **open questions:** work on the epic has started while its Open questions section remains.
      Stop and resolve them in plan mode, since their answers may reshape the epic;
-   - **in flight:** open pull requests, which are left unlinked;
+   - **in flight:** open pull requests naming the epic;
    - **ready to verify:** criteria whose delivering rows are all delivered;
    - **ticked early:** criteria ticked while a delivering row is not delivered. Untick them, or
      link the missing delivery.
-6. **Verify** each criterion ready to verify on the branch the pull requests merged into, with the
+7. **Verify** each criterion ready to verify on the branch the pull requests merged into, with the
    instrument the criterion names or implies: run the test, guard or command, or read the code at
    the file and line it concerns. A criterion that cannot be confirmed stays unticked and is
    reported with what is missing.
-7. **Tick** the confirmed criteria: re-run with `--tick AC1,AC3`. It refuses a criterion that is not
+8. **Tick** the confirmed criteria: re-run with `--tick AC1,AC3`. It refuses a criterion that is not
    ready to verify.
-8. **Where it stands.** Record what landed and any figure that came out differently from the plan.
-9. **Patch** each changed body from its `--fix` file.
-10. **Close** each epic the re-run reports closable, with
+9. **Where it stands.** Record what landed and any figure that came out differently from the plan.
+10. **Patch** each changed body from its `--fix` file.
+11. **Close** each epic the re-run reports closable, with
    `gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed`.
-11. **Close the initiative** once its epics are done:
+12. **Close the initiative** once its epics are done:
    `scripts/update.py issue-936.json --epics issue-943.json issue-937.json …`, with the epic JSON
    fetched after closing. An epic row is delivered when its issue is closed as completed. Goals are
    met through the epics' criteria and are not ticked, so close the initiative when it reports
    closable.
-12. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
+13. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
     and what was closed.
 
 ## Commands
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-637.json --prs prs.json --tick AC1 --fix fixed-637.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-637.json --prs prs.json --pr 950 --tick AC1 --fix fixed-637.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
 ```

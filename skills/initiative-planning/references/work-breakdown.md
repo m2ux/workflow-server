@@ -35,8 +35,8 @@ Epics are numbered in the order they run, and tasks in the order they can start,
 dependency points to an earlier epic or an earlier task. `deps.py` reports numbering that does not
 follow start order as advisory, because older initiatives predate the rule.
 
-A task or epic keeps its number once a pull request names it, since the title is how its delivery
-is found. Renumbering touches only work no pull request names yet.
+Delivered work keeps its number: an epic once a pull request names it, and a task once its id links
+the pull request that delivered it. Renumbering touches only work that is not delivered yet.
 
 ## References
 
@@ -48,8 +48,9 @@ every epic reference to its epic's issue: `[E01:W03](…/issues/937)`. Prose use
 
 - **One pull request per task,** or per set of tasks that Join each other. A task too large for one
   pull request is split into tasks.
-- **Pull request titles** start with the tasks they deliver: `[I07:E00:W01] Subject`, or
-  `[I07:E00:(W01,W02)] Subject`. Update mode finds delivered work by these titles.
+- **Pull request titles** start with the epic they work on: `[I07:E00] Purpose`. Update mode
+  finds an epic's pull requests by this prefix, and matches each merged one to the tasks it
+  delivered from its changes and the tasks' Outcomes.
 - **A delivered task's id** links its pull request: `[W01](…/pull/950)`. An undelivered task's id is
   plain.
 - **A task with its own issue** keeps its id linked to that issue. The issue records the pull

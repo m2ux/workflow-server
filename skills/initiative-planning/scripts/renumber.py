@@ -8,7 +8,7 @@ Epics:
   its number does.
 
 Tasks:
-  python3 renumber.py --initiative 07 [--prs prs.json] --epic 1 --own E01.md --tasks 7:3,2:4 FILE...
+  python3 renumber.py --initiative 07 --epic 1 --own E01.md --tasks 7:3,2:4 FILE...
 
   Rewrites every reference to the epic's tasks (E01 W07, E01:W07, I07:E01:W07) in each file, and
   bare task references (W07) in the epic's own body, --own, where a bare number is unambiguous.
@@ -16,9 +16,10 @@ Tasks:
 
 In both modes a reference to another initiative (I03 E00, I03:E00) is left as it is, and numbers
 absent from the map keep theirs. Files are rewritten in place. A map that sends two numbers to one,
-or onto a number it leaves out, is refused and nothing is written. So is a map that renumbers an
-epic or task a pull request in --prs names, since its title is how its delivery is found; prs.json
-holds pull requests as JSON lines, as update.py takes them.
+or onto a number it leaves out, is refused and nothing is written. So is a map that renumbers
+delivered work: a task whose id in --own links a pull request or commit, or an epic a pull request
+in --prs names ([I07:E00] Purpose), since that is how its delivery is found. prs.json holds pull
+requests as JSON lines, as update.py takes them.
 
 After running: re-sort the renumbered table, update each affected issue title, check every range
 the script prints (W04–W09 may no longer be contiguous), and grep the prose for references it
@@ -31,7 +32,8 @@ import sys
 from pathlib import Path
 
 EPIC_REF = re.compile(r'\bE(\d\d)\b')
-PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)(?::(?:W(\d\d)|\(((?:W\d\d, ?)*W\d\d)\)))?\]')
+PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
+DELIVERED_ROW = re.compile(r'^\| \[W(\d\d)\]\([^)]*/(?:pull|commit)/[^)]*\) \|', re.MULTILINE)
 TASK_REF = re.compile(r'\bE(\d\d)([ :])W(\d\d)\b')
 BARE_TASK = re.compile(r'(?<!E\d\d )(?<!E\d\d:)\bW(\d\d)\b')
 TABLE_ROW = re.compile(r'^\| \[?W(\d\d)(?:\]\([^)]*\))? \|', re.MULTILINE)
@@ -119,19 +121,14 @@ def renumber_tasks(texts: dict[str, str], initiative: str, epic: int, own: str,
     return out
 
 
-def named(path: str, initiative: str) -> tuple[set[int], set[tuple[int, int]]]:
-    """The epics and tasks of the initiative that pull request titles name."""
-    epics, tasks = set(), set()
+def named_epics(path: str, initiative: str) -> set[int]:
+    """The epics of the initiative that pull request titles name."""
+    epics = set()
     for line in Path(path).read_text().splitlines():
-        if not line.strip():
-            continue
-        m = PR_REF.match(json.loads(line)['title'])
-        if not m or m[1] != initiative:
-            continue
-        epics.add(int(m[2]))
-        for w in [m[3]] if m[3] else re.findall(r'W(\d\d)', m[4] or ''):
-            tasks.add((int(m[2]), int(w)))
-    return epics, tasks
+        m = PR_REF.match(json.loads(line)['title']) if line.strip() else None
+        if m and m[1] == initiative:
+            epics.add(int(m[2]))
+    return epics
 
 
 def main() -> None:
@@ -141,7 +138,7 @@ def main() -> None:
     parser.add_argument('--epic', type=int, help='task mode: the epic whose tasks are renumbered')
     parser.add_argument('--own', help="task mode: the epic's own body file")
     parser.add_argument('--tasks', help='task mode: old:new task numbers, e.g. 7:3,2:4')
-    parser.add_argument('--prs', help='pull requests as JSON lines; work they name keeps its number')
+    parser.add_argument('--prs', help='epic mode: pull requests as JSON lines; an epic they name keeps its number')
     parser.add_argument('files', nargs='*')
     args = parser.parse_args()
 
@@ -151,14 +148,15 @@ def main() -> None:
     if task_mode and (args.epic is None or not args.own):
         sys.exit('task mode needs --epic and --own')
 
-    if args.prs:
-        epics, tasks = named(args.prs, args.initiative)
-        moved = {o for o, n in parse_map(args.tasks or args.map).items() if o != n}
-        held = sorted(f'E{args.epic:02d}:W{o:02d}' for o in moved if (args.epic, o) in tasks) if task_mode \
-            else sorted(f'E{o:02d}' for o in moved if o in epics)
-        if held:
-            sys.exit(f'pull requests name {", ".join(held)}, and work a pull request names keeps its '
-                     'number. Nothing was written.')
+    moved = {o for o, n in parse_map(args.tasks or args.map).items() if o != n}
+    if task_mode:
+        delivered = {int(w) for w in DELIVERED_ROW.findall(Path(args.own).read_text())}
+        held = sorted(f'E{args.epic:02d}:W{o:02d}' for o in moved if o in delivered)
+    else:
+        epics = named_epics(args.prs, args.initiative) if args.prs else set()
+        held = sorted(f'E{o:02d}' for o in moved if o in epics)
+    if held:
+        sys.exit(f'delivered work keeps its number: {", ".join(held)}. Nothing was written.')
 
     names = list(dict.fromkeys(args.files + ([args.own] if task_mode else [])))
     texts = {name: Path(name).read_text() for name in names}

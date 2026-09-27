@@ -58,7 +58,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py I=live-936.md E00=live-943.md E01=live-937.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-*.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --prs prs.json --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --initiative issue-936.json
 ```
 
@@ -67,8 +67,8 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
   cells against the epics.
 - The first `renumber.py` renumbers epics. The second renumbers E01's tasks: `E01 Wxx` and
   `E01:Wxx` everywhere, and bare `Wxx` inside E01's own body. Links keep their targets. Both
-  rewrite files in place, refuse a map that collides, and, given `--prs prs.json`, refuse to
-  renumber work a pull request names.
+  rewrite files in place, and refuse a map that collides or that renumbers delivered work: a task
+  whose id links its pull request, or an epic a pull request in `--prs` names.
 - `format.py` checks one issue against its template, including that every criterion is delivered by
   a Work Breakdown row. An epic's check takes its initiative's JSON, which lists the epic issues its
   references link to.
