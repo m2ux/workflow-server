@@ -12,16 +12,17 @@ each with a recommended option.
 
 Tests the plan against the end state the initiative promises.
 
-1. Restate the goal as a checkable sentence, for example: "an agent produces a workflow that loads,
-   passes every check, fits what can be delivered, runs correctly, and is well designed".
+1. Restate the goal as one checkable sentence built from clauses, each an outcome someone could
+   observe.
 2. For each clause, name the epic and acceptance criterion that make it true. A clause with no
    owner is a gap.
 3. Look past the clauses for what defeats the goal from outside:
-   - **Consumers.** Deployment, other branches, host scripts, and skills that read what the plan
-     moves or deletes.
+   - **Consumers.** Anything outside the plan that reads, builds or ships what the plan changes or
+     removes.
    - **Silent failures.** Skips, fallbacks and fail-closed paths that hide a violation.
    - **Measurement.** Whether "done" has a threshold, a baseline, and an instrument that is
-     independent of the thing measured.
+     independent of the thing measured. A baseline is fixed before the plan changes what it
+     measures.
    - **Version skew.** Between the artifacts the plan produces and the implementations that read
      them.
    - **In-flight work.** Changes elsewhere that alter the ground the plan stands on.

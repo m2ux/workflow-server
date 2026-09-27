@@ -92,13 +92,3 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scr
 - **Other initiatives.** Editing another initiative's issue needs the user's explicit approval.
 - **The discussion PR.** Merging it is the user's call. After it merges, repoint the issue links to
   `engineering`.
-
-## Reference points
-
-Before a structural change the plan makes, such as moving artifacts to another branch, tag each
-affected branch that has changed since its last tag. That gives a baseline the plan can measure
-against and roll back to.
-
-- **Tag form.** Annotated `<branch>/vX.Y.Z` tags, bumping the minor version.
-- **Message.** The tag name as the subject, then one line per theme with issue numbers, then the
-  reason for the tag.

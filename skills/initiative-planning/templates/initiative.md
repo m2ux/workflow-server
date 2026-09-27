@@ -22,8 +22,6 @@ The work is split into epics. Each epic is a feature or a fix that can be delive
 
 Epics are numbered in the order they run, and within each epic tasks are numbered in the order they can start. Every dependency points to an earlier epic or an earlier task.
 
-{{Longest dependency chain(s), and the tasks that set the initiative's pace.}}
-
 ## Sequencing
 
 {{What runs first and why; how in-flight work elsewhere interacts with this initiative. Delete the section when there is nothing to say.}}
