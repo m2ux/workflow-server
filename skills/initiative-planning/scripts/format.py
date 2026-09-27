@@ -59,8 +59,8 @@ Left to decide, since each needs new content or a judgement:
   - a Description cell over eight words or holding a semicolon, whose detail belongs in
     criteria or goals
   - acceptance criteria or references partly labelled or numbered out of sequence
-  - no theme:* label on an initiative or epic, a title without "Name: Subtitle", or an epic or
-    task title whose name is not two or three words or whose subtitle runs past ten
+  - no theme:* label on an initiative or epic, a title without "Name: Subtitle", or a title
+    whose name is not two or three words or whose subtitle runs past ten
   - an issue several row ids link, which backs several tasks and so belongs under References
   - an unfilled {{...}} field or #E00 placeholder
   - a Work Breakdown reference to an epic that cannot be linked: one of another initiative, one the
@@ -82,7 +82,7 @@ ALIASES = {'Acceptance criteria': 'Acceptance Criteria'}
 PROGRESS = ('Where it stands', 'Where this stands', 'Progress', 'Outcome')
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
-EPIC_NAME = (2, 3)
+TITLE_NAME = (2, 3)
 MAX_SUBTITLE = 10
 REFERENCE = re.compile(r'github\.com/[^)\s]*/(?:issues|pull)/\d+|#\d+\b|\bI\d\d(?:[: ]E\d\d(?:[: ]W\d\d)?)?\b|'
                        r'(?<![\w:])E\d\d(?:[: ]W\d\d)?\b|(?<![\w:])W\d\d\b')
@@ -218,10 +218,10 @@ class Review:
             self.decide.append('title has no "Name: Subtitle" after the prefix')
         name = epic_name(title)
         subtitle = PREFIX.sub('', title).partition(': ')[2]
-        if self.kind != 'initiative' and not EPIC_NAME[0] <= len(name.split()) <= EPIC_NAME[1]:
-            self.decide.append(f'title name runs to {len(name.split())} words; an epic or task name is '
-                               f'{EPIC_NAME[0]} or {EPIC_NAME[1]}')
-        if self.kind != 'initiative' and len(subtitle.split()) > MAX_SUBTITLE:
+        if not TITLE_NAME[0] <= len(name.split()) <= TITLE_NAME[1]:
+            self.decide.append(f'title name runs to {len(name.split())} words; a name is '
+                               f'{TITLE_NAME[0]} or {TITLE_NAME[1]}')
+        if len(subtitle.split()) > MAX_SUBTITLE:
             self.decide.append(f'title subtitle runs to {len(subtitle.split())} words; it is a succinct summary '
                                f'of at most {MAX_SUBTITLE}')
         if self.kind == 'epic' and self.initiative:

@@ -21,7 +21,7 @@ Problems (exit status 1): unknown references, a task depending on itself or a la
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
 in the same cell already implies. A whole-epic dependency (E01) states intent, so its tasks are not
 reported as implied. Join problems: a task joining one that does not join it back, and two joined
-tasks that one of them reaches the other through a task outside the pair.
+tasks where one depends on the other, directly or through a task outside the pair.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
 epics its tasks depend on, less those another named epic already depends on, and names no task.
 Another initiative's epic (I05:E00) or an issue (#750) may also be named.
@@ -196,6 +196,9 @@ def main(argv: list[str]) -> int:
                     continue
                 if key not in tasks[a][2]:
                     problems.append(f'{key}: joins {a}, which does not join it back')
+                if a in tasks[key][1]:
+                    problems.append(f'{key}: joins {a} and depends on it; the shared pull request holds '
+                                    'their order, so drop the dependency')
                 via = next((x for x in ancestors(key) if x != a and a in ancestors(x)), None)
                 if via:
                     problems.append(f'{key}: joins {a}, but needs {via}, which needs {a}')

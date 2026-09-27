@@ -44,8 +44,8 @@ columns, numbering, references and delivery.
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
   epic. Initiatives and epics count from `00`, and tasks from `W01`.
 - **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
-  colon, and a subtitle stating the outcome. An epic's or task's name is two or three words and
-  its subtitle a succinct summary of at most ten, both in title case: `[I07:E06] Reliability
+  colon, and a subtitle stating the outcome. The name is two or three words and the subtitle a
+  succinct summary of at most ten, both in title case: `[I07:E06] Reliability
   Evaluation: Briefs, Measures and the Thresholds That Define Reliable`. Match the capitalisation of recent
   titles in the same initiative.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,

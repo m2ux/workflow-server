@@ -35,7 +35,8 @@ nothing about them: the conventions live here.
   criterion several tasks deliver, such as a convention every grammar task follows, is shared and
   counts towards none of them.
 - **Join.** The tasks that can land in the same pull request as this one. Each lists the other, and
-  neither depends on the other through a task outside the pair.
+  neither depends on the other, directly or through a task outside the pair: the pull request
+  holds their order.
 
 ## Numbering
 
