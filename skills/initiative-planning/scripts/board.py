@@ -16,7 +16,8 @@ An organization's board is under orgs/{owner} in place of users/{owner}.
 unless exactly one does.
 
 Otherwise the board covers the initiative, every epic its Work Breakdown links, and every task issue
-an epic row links. Each issue's Status, first match wins:
+an epic row links. An item already on the board for an issue those bodies cite, closed other than as
+completed (an issue a task subsumed), is removed. Each issue's Status, first match wins:
   Done         closed as completed
   (removed)    closed any other way
   In Review    an open pull request names it: its title names the epic, and for a task issue its
@@ -92,17 +93,17 @@ class Board:
     def __init__(self, issues: dict[int, dict], unresolved: list[str]):
         self.issues = issues
         self.unresolved = unresolved
-        self.tables: dict[int, dict[str, list[str]]] = {}
+        self.tables: dict[int, tuple[list[str], dict[str, list[str]]]] = {}
 
-    def table(self, number: int) -> dict[str, list[str]]:
-        """An issue's Work Breakdown rows by id, with the header under ''."""
+    def table(self, number: int) -> tuple[list[str], dict[str, list[str]]]:
+        """An issue's Work Breakdown header, and its rows by id."""
         if number not in self.tables:
             header, body = rows(self.issues[number])
-            self.tables[number] = {'': header, **{LINK.sub(r'\1', r[0]): r for r in body}}
+            self.tables[number] = header, {i: r for r in body if (i := LINK.sub(r'\1', r[0]))}
         return self.tables[number]
 
     def row_delivered(self, number: int, task: str, why: str) -> bool:
-        r = self.table(number).get(task)
+        r = self.table(number)[1].get(task)
         if r is None:
             self.unresolved.append(f'{why}: #{number} has no row {task}')
             return False
@@ -218,11 +219,9 @@ def main() -> int:
             continue
         epic = epics[number]
         epic_key = PREFIX.match(epic['title'])[2]
-        task_header = board.table(number)['']
+        task_header, task_rows = board.table(number)
         delivered_any = False
-        for tid, tr in board.table(number).items():
-            if not tid:
-                continue
+        for tid, tr in task_rows.items():
             task_issue = linked_issue(tr[0])
             if task_issue is not None and task_issue not in tasks:
                 unresolved.append(f'E{epic_key}:{tid}: task issue #{task_issue} is not given with --tasks')
@@ -280,6 +279,11 @@ def main() -> int:
             value = next((f.get('value') for f in item.get('fields', []) if f.get('id') == field['id']), None)
             name = value and value.get('name')
             on_board[content['number']] = (item['id'], name['raw'] if isinstance(name, dict) else name)
+            if content['number'] not in status and content['state'] == 'closed' and not completed(content):
+                issues.setdefault(content['number'], content)
+                cited = re.compile(rf"{re.escape(initiative['html_url'].rsplit('/', 1)[0])}/{content['number']}\b")
+                if any(cited.search(i.get('body') or '') for i in (initiative, *epics.values(), *tasks.values())):
+                    status[content['number']] = None
 
     print(f"{args.board}: Status field {field['id']}")
     current, todo = 0, 0
