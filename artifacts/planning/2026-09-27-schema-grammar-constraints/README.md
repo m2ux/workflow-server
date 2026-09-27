@@ -343,6 +343,29 @@ Solution bullet. The chains above stay here.
 - **Join made two-way** in E00 (W01–W04), E02 (W02–W03) and E04 (W03–W04).
 - The longest chains are unchanged: twelve, nine steps each, all starting at E00 W01.
 
+## Overlap with other initiatives
+
+A review of every open initiative against I07 found 27 overlaps. The user approved every
+recommended change and three calls.
+
+- **Spec-first changers.** I00 E01–E04 also change the language, so they join I07's spec-first
+  list beside #709, #750, I00 E07 and I06; I00 (#527) and I04 (#706) state that their language
+  changes land spec-first on the `language` branch.
+- **Dependencies.** E01 W01 on I00 E01 W01; W03 on #709; W04 on I00 E03 W01 and E04 W03; W05 on
+  I00 E01 W05 and E04 W02; E05 W05 on I06 E00 W05. Outside I07: I00 E07 W01 on E00 W02, and I03
+  E00 W03 on E02 W04.
+- **Criteria migrated into I07.** I00 E01's failing-artifact and description-only criteria become
+  E01 AC22 and AC23 on W01; I00 E04's second-token-grammar criterion becomes E01 AC24 on W04;
+  I03 E00's corpus self-check becomes E04 W05 (corpus CI validation) with AC7.
+- **Structured condition.** #750 retires the step `condition`; I00 E01 W05 retires the loop and
+  action conditions; E01's AC18 and #936's non-goal say so.
+- **Resolved tree.** I00 E07's resolved tree is language, written and versioned on the `language`
+  branch, not an assembled object kept on `main`.
+- **Calls.** The legacy `workflow-design` workflow is deleted in E00 W05 (AC11) rather than
+  repointed. The I06 worker skill carries today's gate-dialect text until E01 W01 generates it, and
+  I07's regeneration guard then replaces I06's drift guard. `yaml-style.md` joins E05 W03's prose
+  homes.
+
 ## Rollout
 
 Each layer works end to end before the next begins.
