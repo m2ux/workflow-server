@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "7.0.1",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "7A5W6A",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-09-24-meta",
+  "frontier": [],
+  "currentTechnique": "",
+  "exit": "",
+  "seq": 1,
+  "ts": 1790254320,
+  "startedAt": "2026-09-24T12:52:00.214Z",
+  "completedActivities": [],
+  "variables": {
+    "client_initial_activity": "scope-setup",
+    "client_session_index": "CMZKAX",
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "resume_intent_requested": false,
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "cicd-pipeline-security-audit",
+    "user_request": "plan the following epic: https://github.com/m2ux/workflow-server/issues/879",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-09-24T12:52:00.214Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+          "is_monorepo": false,
+          "target_repo": "m2ux/workflow-server",
+          "user_request": "plan the following epic: https://github.com/m2ux/workflow-server/issues/879"
+        }
+      },
+      "timestamp": "2026-09-24T12:52:00.214Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "start_session",
+      "data": {
+        "sessionIndex": "CMZKAX",
+        "workflowId": "cicd-pipeline-security-audit"
+      },
+      "timestamp": "2026-09-24T12:52:00.224Z",
+      "type": "workflow_triggered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "CMZKAX",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {},
+        "completedActivities": [],
+        "currentTechnique": "",
+        "executionPath": "agent",
+        "exit": "",
+        "frontier": [],
+        "history": [
+          {
+            "timestamp": "2026-09-24T12:52:00.224Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "component_path": ".",
+                "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+                "is_monorepo": false,
+                "merge_complete": false,
+                "target_repo": "m2ux/workflow-server",
+                "user_request": "plan the following epic: https://github.com/m2ux/workflow-server/issues/879",
+                "verification_complete": false
+              }
+            },
+            "timestamp": "2026-09-24T12:52:00.224Z",
+            "type": "variables_seeded"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 1,
+        "sessionIndex": "CMZKAX",
+        "startedAt": "2026-09-24T12:52:00.224Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1790254329,
+        "variables": {
+          "component_path": ".",
+          "host_repo_path": "/var/lib/workflow-server/projects/workflow-server",
+          "is_monorepo": false,
+          "merge_complete": false,
+          "target_repo": "m2ux/workflow-server",
+          "user_request": "plan the following epic: https://github.com/m2ux/workflow-server/issues/879",
+          "verification_complete": false
+        },
+        "workflowId": "cicd-pipeline-security-audit",
+        "workflowVersion": "3.0.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-09-24T12:52:00.224Z",
+      "triggeredFrom": {
+        "activityId": "start_session"
+      },
+      "workflowId": "cicd-pipeline-security-audit"
+    }
+  ],
+  "repo": "m2ux/workflow-server"
+}
