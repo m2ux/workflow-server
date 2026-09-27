@@ -104,9 +104,43 @@ rule('loop.repeat-with-break', {
 
 - **Construct reference.** Each construct gets one page listing its structure, value syntax
   productions and rules. It is served as an MCP resource beside the schemas and rendered on the site.
+  Each rule entry holds its id, a plain statement, a link to its formal source, and a minimal
+  passing and failing example. The failing examples are the Analyzer-generated conformance fixtures,
+  so every published example has been checked against the real loader and guards.
+- **Validation entry point.** A draft definition, including one outside the corpus, runs through the
+  loader and every registered check, with findings by rule id. It is exposed as an MCP tool and an
+  npm script.
 - **Pointers, not restatements.** Schema descriptions and prose homes cite rule ids and stop
   restating rules. The canon's mechanical anti-patterns become rule ids in the spec, and the catalog
   keeps the judgment-only entries.
+
+### 4. Agent interpretation
+
+The formal files are read by designing agents through a workflow-design skill
+([#938](https://github.com/m2ux/workflow-server/issues/938)). Neither format is reliable on its
+own.
+
+- **EBNF.** Models read EBNF well, and the failures sit at the edges:
+  - **Dialect:** W3C, ISO and ANTLR spellings get confused. Each `.ebnf` file opens with a header
+    naming its dialect.
+  - **Whitespace:** whether space is allowed between tokens. The header states the rule.
+  - **Choice:** ordered or unordered alternatives. The header states which.
+  - **Meaning:** a grammar says what parses, not what it means. Every production that carries meaning
+    has a one-line meaning comment, a valid example and an invalid example. A rule that can be
+    syntactic is a production.
+- **Alloy.** Models are much less fluent here:
+  - **Operators:** join direction, closure and multiplicities are misread. The `.als` files keep to a
+    restricted subset, with named helper functions in place of long operator chains, and a one-page
+    primer covers it.
+  - **Facts versus checks:** whether a declaration constrains instances or asserts a property is not
+    obvious. The primer states which is which.
+  - **Mapping to files:** a signature does not name a file or field. A generated table maps each
+    signature field to its schema path.
+- **Reading order.** The skill sends an agent to the per-rule reference entry first, the formal file
+  second as the authority, and the validation entry point last to confirm a draft.
+- **Measured sufficiency.** An evaluation records the rule-violation rate of agents authoring from
+  the skill under three conditions: formal files alone, with the reference entries, and with the
+  validator.
 
 ## Rollout
 
