@@ -6,7 +6,7 @@ Usage:
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. The format is read
 from templates/<kind>.md beside this script: its sections and their order, the sections it marks
-optional ("Delete the section"), and its Work Breakdown columns.
+optional ("delete the section", in any case), and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
   - a section alias renamed: Progress, Outcome or Where this stands to Where it stands,
@@ -25,8 +25,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
     from the row-id links of the initiative's table: the issue's own, or --initiative's when the
     issue is an epic
   - an initiative's prose Non-goals made a bulleted list, one sentence per bullet
-  - an initiative's Acceptance Criteria renamed Goals, its items labelled **Gn.** without
-    checkboxes, and its Outcomes citing Gn
+  - goals as plain bullets labelled **Gn.**, without checkboxes
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -37,6 +36,7 @@ Left to decide, since each needs new content or a judgement:
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
+  - an initiative with acceptance criteria in place of Goals, which are rewritten as SMART goals
   - a non-goal of more than one sentence, or one naming an epic or task of this initiative; a
     Non-goals section in an epic or task, since non-goals belong to the initiative
   - a Work Breakdown column the template lacks, such as Work in place of Outcomes; a PR or Issue
@@ -118,7 +118,7 @@ class Template:
     def __init__(self, kind: str):
         _, sections = split_sections((TEMPLATES / f'{kind}.md').read_text())
         self.headings = [h for h, _ in sections]
-        self.optional = {h for h, lines in sections if 'Delete the section' in '\n'.join(lines)}
+        self.optional = {h for h, lines in sections if 'delete the section' in '\n'.join(lines).lower()}
         self.columns = next((cells(l) for h, lines in sections for l in lines
                              if h == 'Work Breakdown' and l.startswith('|')), None)
 
@@ -192,10 +192,10 @@ class Review:
         aliases = dict(ALIASES)
         if self.kind != 'task':
             aliases['Solution'] = 'Proposal'
-        if self.kind == 'initiative':
-            aliases['Acceptance criteria'] = aliases['Acceptance Criteria'] = 'Goals'
         names = [aliases.get(h, h) for h, _ in sections]
-        own = sum(h in template.headings for h in names)
+        as_own = ['Goals' if self.kind == 'initiative' and h.lower() == 'acceptance criteria' else h
+                  for h in names]
+        own = sum(h in template.headings for h in as_own)
         for other in KINDS.values():
             if other != self.kind and sum(h in Template(other).headings for h in names) > own:
                 self.decide.append(f'body follows the {other} template, not the {self.kind} one')
@@ -218,10 +218,17 @@ class Review:
 
         if '\n'.join(preamble).strip():
             self.decide.append('text before the first section')
+        criteria = self.kind == 'initiative' and 'Goals' not in names and \
+            any(h.lower() == 'acceptance criteria' for h in names)
+        if criteria:
+            self.decide.append('acceptance criteria, not Goals: rewrite them as SMART goals the epics make '
+                               'true, each bounded by a milestone, then head the section Goals')
         for h in template.headings:
-            if h not in names and h not in template.optional:
+            if h not in names and h not in template.optional and not (criteria and h == 'Goals'):
                 self.decide.append(f'required section missing: {h}')
         for h in names:
+            if criteria and h.lower() == 'acceptance criteria':
+                continue
             if h == 'Non-goals' and self.kind != 'initiative':
                 self.decide.append('Non-goals belong to the initiative: lift any that bound it into the '
                                    "initiative's Non-goals, then remove the section")
@@ -245,8 +252,6 @@ class Review:
             elif h == 'References':
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
 
-        if self.kind == 'initiative':
-            self.cite_goals(sections)
         self.check_outcomes(sections, canonical)
         fixed = join_sections(preamble, sections) if self.fixed else body
         if '{{' in fixed:
@@ -256,26 +261,11 @@ class Review:
         return fixed
 
     def fix_goals(self, lines: list[str]) -> list[str]:
-        """Give an initiative's goals G labels, as plain bullets."""
-        out, changed = [], False
-        for line in lines:
-            new = re.sub(r'^- \[[ xX]\] ', '- ', line)
-            new = re.sub(r'^- \*\*AC(\d+)\.\*\*', r'- **G\1.**', new)
-            changed |= new != line
-            out.append(new)
-        if changed:
-            self.fixed.append('goals given G labels, without checkboxes')
-            self.relabelled = True
+        """Goals are plain bullets labelled Gn: they are met through the epics, not ticked."""
+        out = [re.sub(r'^- \[[ xX]\] ', '- ', l) for l in lines]
+        if out != lines:
+            self.fixed.append('goal checkboxes removed')
         return self.fix_list(out, 'G', checkbox=False)
-
-    def cite_goals(self, sections: list[list]) -> None:
-        """After goals are relabelled, the initiative's Outcomes cite them as G."""
-        if not getattr(self, 'relabelled', False):
-            return
-        for section in sections:
-            if section[0] == 'Work Breakdown':
-                section[1] = [OUTCOMES.sub(lambda m: m[0].replace('AC', 'G'), l) if l.startswith('|') else l
-                              for l in section[1]]
 
     def check_outcomes(self, sections: list[list], canonical) -> None:
         by_name = {canonical(h): lines for h, lines in sections}
