@@ -20,7 +20,7 @@
 
 ## Goals
 
-- [ ] **G1.** {{A SMART goal: specific, measurable by a named threshold or check, achievable by the epics, relevant to the Problem, and bounded by a milestone: a release tag, or an epic or task landing. The epics' criteria together make it true; it restates none of them. The user ticks it once satisfied it holds.}}
+- [ ] **G1.** {{A SMART goal stating one invariant, a single condition that holds or does not: specific, measurable by a named threshold or check, achievable by the epics, relevant to the Problem, and bounded by a milestone: a release tag, or an epic or task landing. The epics' criteria together make it true; it restates none of them. The user ticks it once satisfied it holds.}}
 
 ## Non-goals
 

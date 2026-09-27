@@ -37,6 +37,7 @@ Left to decide, since each needs new content or a judgement:
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
   - an epic's task delivering more than three criteria, a candidate for splitting
+  - a goal that may state several invariants (a colon or semicolon in its statement)
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - an initiative with acceptance criteria in place of Goals, which are rewritten as SMART goals
   - a non-goal of more than one sentence, or one naming an epic or task of this initiative; a
@@ -270,7 +271,13 @@ class Review:
 
     def fix_goals(self, lines: list[str]) -> list[str]:
         """Goals are checkboxes labelled Gn, which the user ticks once satisfied."""
-        return self.fix_list(lines, 'G', checkbox=True)
+        lines = self.fix_list(lines, 'G', checkbox=True)
+        for line in lines:
+            goal = GOAL.match(line)
+            statement = re.split(r',? (?:when|by|once) ', line[goal.end():], maxsplit=1)[0] if goal else ''
+            if goal and (';' in statement or ': ' in statement):
+                self.decide.append(f'G{goal[1]} may state several invariants; state one per goal')
+        return lines
 
     def check_outcomes(self, sections: list[list], canonical) -> None:
         by_name = {canonical(h): lines for h, lines in sections}

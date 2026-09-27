@@ -28,6 +28,8 @@ changes.
 4. **Each criterion** states an end state, not an activity; names or implies the instrument that
    observes it: a test, a guard, a command or a measure; and is unambiguous, so two readers agree on
    whether it holds.
+   - Each initiative goal states one invariant, a single condition that holds or does not; a goal
+     joining several is split into one goal each, and the Outcomes cells cite the new goals.
    - Each initiative goal is SMART: **specific** about what holds; **measurable** by a named
      threshold or check; **achievable** by the epics that cite it; **relevant**, tracing to a clause
      and to the Problem; and **time-bound** by a milestone, a release tag or an epic or task
