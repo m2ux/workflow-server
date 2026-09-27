@@ -43,15 +43,17 @@ changes.
      solution-agnostic: Description cells link epics to criteria, never the reverse. One that holds
      only through another initiative's work is not local: restate what this initiative achieves,
      or drop it.
-   - **Verified.** An initiative criterion ends by naming its instrument, automated where one can
-     exist: an end-to-end walk through the real server, a smoke run of an agent against a live
-     server, or a live check on a deployed host. Where no automated test can exist, it names how
-     the user confirms it. A named test that does not exist yet is work the plan holds: a task in
-     the epic whose subject it tests, or a discrete test-infrastructure epic when the tests serve
-     several criteria. That epic's row cites the criteria its tests verify.
-   - **Whole.** An initiative criterion states what the initiative achieves as a whole. One that restates a single
-     epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to
-     the epic.
+   - **Verified.** An initiative criterion ends by naming its instrument: an automated test where
+     one can exist, otherwise how the user confirms it. An automated test is an end-to-end walk
+     through the real server, a smoke run of an agent against a live server, a live check on a
+     deployed host, or a guard, fixture suite or check that continuous integration runs. The walk,
+     smoke run or live check is preferred where the criterion is about what a run does. A named
+     test that does not exist yet is work the plan holds: a task in the epic whose subject it
+     tests, or a discrete test-infrastructure epic when the tests serve several criteria. That
+     epic's row cites the criteria its tests verify.
+   - **Whole.** An initiative criterion states what the initiative achieves as a whole. One that
+     restates a single epic's criterion is a duplicate: raise it to what the epics achieve
+     together, or leave it to the epic.
 5. Look past the clauses for what defeats the goal from outside:
    - **Consumers.** Anything outside the plan that reads, builds or ships what the plan changes or
      removes.

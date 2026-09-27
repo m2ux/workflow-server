@@ -23,8 +23,8 @@ pull requests naming the epic that no row links yet, open ones as in flight, a r
 request naming another epic, rows sharing a pull request that do not Join each other, and work
 started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
-completed. A criterion is verified by the e2e, smoke or live test it names, or confirmed by the user
-where it names none. The initiative is closable once every criterion is ticked.
+completed. A criterion is verified by the automated test it names, or confirmed by the user where it
+names none. The initiative is closable once every criterion is ticked.
 
 Reported for each acceptance criterion of a task, epic or initiative:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);

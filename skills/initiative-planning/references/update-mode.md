@@ -51,7 +51,7 @@ recorded.
 11. **Update the initiative**: `scripts/update.py issue-936.json --epics issue-943.json
    issue-937.json …`, with the epic JSON fetched after closing. An epic row is delivered when its
    issue is closed as completed. It lists each criterion whose citing epics are all delivered as
-   ready to verify. Run the e2e, smoke or live test each names, and tick those that pass with
+   ready to verify. Run the automated test each names, and tick those that pass with
    `--tick AC1,AC3`. Put each criterion that names no automated test to the user, who confirms it
    and ticks it. Close the initiative when it reports every criterion ticked.
 12. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
