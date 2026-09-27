@@ -72,6 +72,7 @@ Checks dependencies as a graph, then renumbers.
    - backward references: a task depending on a later task in its epic, or an epic depending on a
      later epic;
    - cycles;
+   - dependencies listed twice, or already implied by another in the same cell;
    - as advisory, numbering that does not follow start order;
    - the longest chains, and the tasks every one of them shares.
 2. Read each task for dependencies the table omits. A task that measures, extends or consumes

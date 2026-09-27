@@ -14,7 +14,8 @@ delivered together.
 An epic's row is delivered when its task id links a pull request or commit. A task that a merged
 pull request names gets its id linked to that pull request, the latest merged when several name it.
 A row already linked elsewhere is reported, not changed, and open pull requests are reported as in
-flight. An initiative's row is delivered when its epic issue, given by --epics, is closed. A row
+flight. An initiative's row is delivered when its epic issue, given by --epics, is closed as
+completed. A row
 whose Outcomes says "moved to" counts as delivered here.
 
 Reported for each acceptance criterion:
@@ -73,9 +74,10 @@ def initiative_delivery(rows, header, epics, report):
     for r in rows:
         number = re.search(r'#(\d+)', r[at] if at < len(r) else '')
         state = epics.get(int(number[1])) if number else None
+        epic = LINK.sub(r'\1', r[0])
         if state is None:
-            report['note'].append(f'{r[0]}: no --epics issue for {r[at] if at < len(r) else "(no issue)"}')
-        delivered[r[0]] = state == 'closed'
+            report['note'].append(f'{epic}: no --epics issue for {r[at] if at < len(r) else "(no issue)"}')
+        delivered[epic] = state == 'completed'
     return delivered
 
 
@@ -119,7 +121,8 @@ def main() -> int:
         epics = {}
         for path in args.epics:
             e = json.loads(Path(path).read_text())
-            epics[e['number']] = e['state']
+            completed = e['state'] == 'closed' and e.get('state_reason') == 'completed'
+            epics[e['number']] = 'completed' if completed else e['state']
         delivered = initiative_delivery(rows, header, epics, report)
     for r in rows:
         if 'moved to' in r[outcomes]:

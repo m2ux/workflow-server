@@ -4,21 +4,23 @@ Usage:
   python3 deps.py E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the house Work Breakdown table:
-  | Task | Outcomes | Depends on | With |
+  | Task | Outcomes | Depends on | Join |
 A delivered task's id links its pull request: | [W01](https://…/pull/950) |.
 Cells are read by column name, so the column order does not matter.
 
 A dependency is one of:
   W03             a task in the same epic
   W04–W09         a range of tasks in the same epic
-  E01 W02         a task in another epic
+  E01:W02         a task in another epic
   E01             every task in another epic
   #750            an external issue, not checked
-  I05 E00 W02     another initiative's epic or task, not checked
-Markdown links are read by their text, so [E00](https://…/issues/704) is E00.
+  I05:E00:W02     another initiative's epic or task, not checked
+Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E01:W02.
 
 Problems (exit status 1): unknown references, a task depending on itself or a later task in its epic,
-an epic depending on a later epic, and cycles.
+an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
+in the same cell already implies. A whole-epic dependency (E01) states intent, so its tasks are not
+reported as implied.
 Advisory: task numbers that do not follow the order tasks can start.
 Also printed: each task's level (0 = can start now) and the longest chains.
 """
@@ -29,9 +31,9 @@ from pathlib import Path
 ROW = re.compile(r'^\| (?:W\d\d|\[W\d\d\]\([^)]*\)) \|')
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
-TASK = re.compile(r'E\d\d W\d\d')
+TASK = re.compile(r'E\d\d:W\d\d')
 EPIC = re.compile(r'E\d\d')
-EXTERNAL = re.compile(r'#\d+|I\d\d E\d\d( W\d\d)?')
+EXTERNAL = re.compile(r'#\d+|I\d\d:E\d\d(?::W\d\d)?')
 MAX_CHAINS = 10
 
 
@@ -49,36 +51,39 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
             elif ROW.match(line):
                 row = dict(zip(header, cells(line)))
                 wid = row.get('Task', '')
-                rows[f'{epic} {wid}'] = (row.get('Outcomes', ''), row.get('Depends on', ''),
-                                         row.get('With', ''))
+                rows[f'{epic}:{wid}'] = (row.get('Outcomes', ''), row.get('Depends on', ''),
+                                         row.get('Join', ''))
 
     problems = []
     tasks = {}
+    whole: dict[str, set[str]] = {}
     for key, (outcomes, deps, accompany) in rows.items():
-        epic = key.split()[0]
+        epic = key.split(':')[0]
         dep_list = []
+        whole[key] = set()
         for d in (x.strip() for x in deps.split(',') if x.strip()):
             rng = RANGE.fullmatch(d)
             if rng:
-                dep_list += [f'{epic} W{i:02d}' for i in range(int(rng[1]), int(rng[2]) + 1)]
+                dep_list += [f'{epic}:W{i:02d}' for i in range(int(rng[1]), int(rng[2]) + 1)]
             elif EXTERNAL.fullmatch(d):
                 continue
             elif TASK.fullmatch(d):
                 dep_list.append(d)
             elif EPIC.fullmatch(d):
-                own = [k for k in rows if k.startswith(d + ' ')]
+                own = [k for k in rows if k.startswith(d + ':')]
                 if not own:
                     problems.append(f'{key}: depends on epic {d}, which was not given or has no tasks')
                 dep_list += own
+                whole[key] |= set(own)
             elif re.fullmatch(r'W\d\d', d):
-                dep_list.append(f'{epic} {d}')
+                dep_list.append(f'{epic}:{d}')
             else:
                 problems.append(f'{key}: unreadable dependency {d!r}')
         acc = []
         for a in (x.strip() for x in accompany.split(',') if x.strip()):
-            acc.append(a if a.startswith('E') else f'{epic} {a}')
+            acc.append(a if a.startswith('E') else f'{epic}:{a}')
         tasks[key] = (outcomes, dep_list, acc)
-    return tasks, problems
+    return tasks, problems, whole
 
 
 def main(argv: list[str]) -> int:
@@ -86,23 +91,23 @@ def main(argv: list[str]) -> int:
     for arg in argv:
         name, _, path = arg.partition('=')
         epics[name] = Path(path)
-    tasks, problems = parse(epics)
+    tasks, problems, whole = parse(epics)
     advisory = []
 
     for key, (_, deps, acc) in tasks.items():
-        epic, wid = key.split()
+        epic, wid = key.split(':')
         for d in deps:
             if d not in tasks:
                 problems.append(f'{key}: unknown dependency {d}')
                 continue
-            de, dw = d.split()
+            de, dw = d.split(':')
             if de == epic and dw >= wid:
                 problems.append(f'{key}: depends on {d}, not an earlier task in its epic')
             if de > epic:
                 problems.append(f'{key}: depends on later epic {d}')
         for a in acc:
             if a not in tasks:
-                problems.append(f'{key}: With names unknown task {a}')
+                problems.append(f'{key}: Join names unknown task {a}')
 
     graph = {k: [d for d in v[1] if d in tasks] for k, v in tasks.items()}
     state: dict[str, int] = {}
@@ -123,6 +128,24 @@ def main(argv: list[str]) -> int:
 
     for n in graph:
         visit(n, [])
+    if not cyclic:
+        reach: dict[str, set[str]] = {}
+
+        def ancestors(n: str) -> set[str]:
+            if n not in reach:
+                reach[n] = set()
+                for m in graph[n]:
+                    reach[n] |= {m} | ancestors(m)
+            return reach[n]
+
+        for key, (_, deps, _) in tasks.items():
+            for d in sorted({d for d in deps if deps.count(d) > 1} - whole[key]):
+                problems.append(f'{key}: {d} is listed twice')
+            listed = [d for d in dict.fromkeys(deps) if d in tasks]
+            for d in listed:
+                by = next((o for o in listed if o != d and d in ancestors(o)), None)
+                if by and d not in whole[key]:
+                    problems.append(f'{key}: {d} is already implied by {by}')
     print('--- problems')
     print('\n'.join(problems) if problems else 'none')
     if cyclic:

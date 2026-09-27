@@ -43,8 +43,10 @@ Read the file for the mode the request calls for:
   that must land before the first real task.
 - **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
   colon, and a subtitle stating the outcome. Match the capitalisation of recent titles in the same
-  initiative. References inside bodies and tables use a space (`E01 W03`, `I05 E00 W02`), which is
-  the form the scripts read.
+  initiative.
+- **References.** Work Breakdown tables write references with colons (`E01:W03`, `I05:E00:W02`),
+  the form the scripts read, and link every epic reference to its epic's issue:
+  `[E01:W03](https://…/issues/937)`. Prose uses a space (`E01 W03`).
 - **Order.** Epics are numbered in the order they run, and tasks in the order they can start. This
   holds for every plan this skill writes. `deps.py` reports it as advisory, because older
   initiatives predate it.
@@ -55,7 +57,7 @@ Read the file for the mode the request calls for:
 - **Delivery.** A pull request's title starts with the task it delivers, `[I07:E00:W01] Subject`,
   or the tasks it delivers together, `[I07:E00:(W01,W02)] Subject`. A delivered task's id in its
   epic's table links that pull request: `[W01](https://…/pull/950)`. An undelivered task's id is
-  plain. A task's **With** cell lists the tasks that can land in the same pull request.
+  plain. A task's **Join** cell lists the tasks that can land in the same pull request.
 - **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx:Eyy:Wzz]` issue only
   when it needs discussion or evidence of its own; its row then links that issue.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,

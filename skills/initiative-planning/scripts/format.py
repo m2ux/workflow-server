@@ -1,7 +1,7 @@
 """Check an initiative, epic or task issue against its house template, and fix what is mechanical.
 
 Usage:
-  python3 format.py issue-943.json [--fix fixed-943.md]
+  python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. The format is read
@@ -15,10 +15,13 @@ Fixed in the body written to --fix, keeping the issue's wording:
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
-  - the Can Accompany column renamed With
+  - a Can Accompany column renamed Join
   - a PR column folded into the task ids: each row's single PR or commit link moves onto its id,
     and an empty or "in flight" cell is dropped
   - table rows padded to the header's width
+  - Work Breakdown references given colons (E01 W02 to E01:W02, I05 E00 to I05:E00), and each
+    reference to an epic of the same initiative linked to that epic's issue. The epic issues come
+    from the initiative's table: the issue's own, or --initiative's when the issue is an epic
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -36,6 +39,8 @@ Left to decide, since each needs new content or a judgement:
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, or a title without "Name: Subtitle"
   - an unfilled {{...}} field or #E00 placeholder
+  - a Work Breakdown reference to an epic that cannot be linked: one of another initiative, one the
+    initiative's table does not list, or any at all when an epic is checked without --initiative
 
 With --fix, a diff of the body changes is printed. Exit status 1 when anything is left to decide.
 """
@@ -56,7 +61,8 @@ AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
 OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
-COLUMN_ALIASES = {'Can Accompany': 'With'}
+EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
+COLUMN_ALIASES = {'Can Accompany': 'Join'}
 
 
 def split_sections(text: str) -> tuple[list[str], list[list]]:
@@ -107,9 +113,33 @@ class Template:
                              if h == 'Work Breakdown' and l.startswith('|')), None)
 
 
+def epic_issues(body: str) -> dict[str, int]:
+    """Map each epic number in an initiative's Work Breakdown to its issue number."""
+    _, sections = split_sections(body.replace('\r\n', '\n'))
+    lines = next((l for h, l in sections if h == 'Work Breakdown'), [])
+    table = [cells(LINK.sub(r'\1', l)) for l in lines if l.startswith('|')]
+    if len(table) < 3 or 'Issue' not in table[0]:
+        return {}
+    at = table[0].index('Issue')
+    found = {}
+    for r in table[2:]:
+        number = re.search(r'#(\d+)', r[at] if at < len(r) else '')
+        epic = re.fullmatch(r'E(\d\d)', r[0])
+        if number and epic:
+            found[epic[1]] = int(number[1])
+    return found
+
+
+def colon_refs(text: str) -> str:
+    text = re.sub(r'\bI(\d\d) E(\d\d)(?: W(\d\d))?\b',
+                  lambda m: f'I{m[1]}:E{m[2]}' + (f':W{m[3]}' if m[3] else ''), text)
+    return re.sub(r'\bE(\d\d) W(\d\d)\b', r'E\1:W\2', text)
+
+
 class Review:
-    def __init__(self, issue: dict):
+    def __init__(self, issue: dict, initiative: dict | None = None):
         self.issue = issue
+        self.initiative = initiative
         self.fixed: list[str] = []
         self.apply: list[str] = []
         self.decide: list[str] = []
@@ -121,6 +151,7 @@ class Review:
             self.decide.append(f'title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix: {title}')
             return None
         parts = re.findall(r'[EW]\d\d', m[2])
+        self.number = m[1][1:]
         self.kind = KINDS.get(len(parts))
         if self.kind is None:
             self.decide.append(f'title prefix has too many levels: {m[0]}')
@@ -195,7 +226,7 @@ class Review:
                 if sentence not in text:
                     self.decide.append(f'{h}: fixed sentence missing or reworded: "{sentence[:70]}…"')
             if h == 'Work Breakdown' and template.columns:
-                section[1] = self.fix_table(section[1], template.columns)
+                section[1] = self.fix_references(self.fix_table(section[1], template.columns))
             elif h == 'Acceptance Criteria':
                 section[1] = self.fix_list(section[1], 'AC', checkbox=True)
             elif h == 'References':
@@ -309,6 +340,44 @@ class Review:
             return lines
         return lines[:start] + table + lines[end:]
 
+    def fix_references(self, lines: list[str]) -> list[str]:
+        """Give table references colons, and link each epic reference to its issue."""
+        if self.kind == 'initiative':
+            issues = epic_issues('\n'.join(['## Work Breakdown', *lines]))
+        else:
+            issues = epic_issues(self.initiative['body'] or '') if self.initiative else None
+        base = self.issue.get('html_url', '').rsplit('/issues/', 1)[0]
+        colons, linked, unlinked = False, [], []
+
+        def link(m: re.Match) -> str:
+            same = m[1] is None or m[1] == self.number
+            if not same or issues is None or m[2] not in issues:
+                unlinked.append(m[0])
+                return m[0]
+            linked.append(m[0])
+            return f'[{m[0]}]({base}/issues/{issues[m[2]]})'
+
+        out = list(lines)
+        rows = [i for i, l in enumerate(lines) if l.startswith('|')][2:]
+        for i in rows:
+            parts = re.split(r'(\[[^\]]*\]\([^)]*\))', lines[i])
+            for j, part in enumerate(parts):
+                converted = colon_refs(part) if not LINK.fullmatch(part) else \
+                    LINK.sub(lambda m: f'[{colon_refs(m[1])}]({m[2]})', part)
+                colons |= converted != part
+                parts[j] = converted if LINK.fullmatch(part) else EPIC_REF.sub(link, converted)
+            out[i] = ''.join(parts)
+        if colons:
+            self.fixed.append('Work Breakdown references given colons')
+        if linked:
+            self.fixed.append('Work Breakdown epic references linked: ' + ', '.join(dict.fromkeys(linked)))
+        if unlinked:
+            why = 'give --initiative to link them' if issues is None else \
+                'another initiative, or not in the initiative table'
+            self.decide.append(f'Work Breakdown epic references unlinked ({why}): ' +
+                               ', '.join(dict.fromkeys(unlinked)))
+        return out
+
     def fold_pr_column(self, header: list[str], rows: list[list[str]]):
         """Move each row's PR link onto its task id, and drop the PR column."""
         at = header.index('PR')
@@ -352,11 +421,13 @@ class Review:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('issue', help='issue JSON as the REST API returns it')
+    parser.add_argument('--initiative', help="epic: its initiative's issue JSON, for epic links")
     parser.add_argument('--fix', help='write the mechanically fixed body here')
     args = parser.parse_args()
 
     issue = json.loads(Path(args.issue).read_text())
-    review = Review(issue)
+    initiative = json.loads(Path(args.initiative).read_text()) if args.initiative else None
+    review = Review(issue, initiative)
     fixed = review.run()
     kind = getattr(review, 'kind', None) or 'unknown kind'
     print(f"#{issue.get('number')} {kind} ({issue.get('state')}): {len(review.fixed)} fixed, "

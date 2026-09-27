@@ -3,17 +3,18 @@
 Epics:
   python3 renumber.py --initiative 07 --map 6:0,0:1,3:2,2:3 FILE...
 
-  Rewrites every epic reference (E06, E06 W02, I07 E06) in each file, following the map of old to
-  new epic numbers.
+  Rewrites every epic reference (E06, E06 W02, E06:W02, I07 E06, I07:E06) in each file, following
+  the map of old to new epic numbers. A link keeps its target: an epic's issue does not change when
+  its number does.
 
 Tasks:
   python3 renumber.py --initiative 07 --epic 1 --own E01.md --tasks 7:3,2:4 FILE...
 
-  Rewrites every reference to the epic's tasks (E01 W07, I07 E01 W07) in each file, and bare task
+  Rewrites every reference to the epic's tasks (E01 W07, E01:W07, I07:E01:W07) in each file, and bare task
   references (W07) in the epic's own body, --own, where a bare number is unambiguous. --own is
   rewritten whether or not it is also listed among FILE.
 
-In both modes a reference to another initiative (I03 E00) is left as it is, and numbers absent from
+In both modes a reference to another initiative (I03 E00, I03:E00) is left as it is, and numbers absent from
 the map keep theirs. Files are rewritten in place. A map that sends two numbers to one, or onto a
 number it leaves out, is refused and nothing is written.
 
@@ -27,11 +28,11 @@ import sys
 from pathlib import Path
 
 EPIC_REF = re.compile(r'\bE(\d\d)\b')
-TASK_REF = re.compile(r'\bE(\d\d) W(\d\d)\b')
-BARE_TASK = re.compile(r'(?<!E\d\d )\bW(\d\d)\b')
+TASK_REF = re.compile(r'\bE(\d\d)([ :])W(\d\d)\b')
+BARE_TASK = re.compile(r'(?<!E\d\d )(?<!E\d\d:)\bW(\d\d)\b')
 TABLE_ROW = re.compile(r'^\| \[?W(\d\d)(?:\]\([^)]*\))? \|', re.MULTILINE)
 RANGE = re.compile(r'W\d\d[–-]W\d\d')
-INITIATIVE = re.compile(r'I(\d\d) $')
+INITIATIVE = re.compile(r'I(\d\d)[ :]$')
 
 
 def parse_map(text: str) -> dict[int, int]:
@@ -89,11 +90,11 @@ def renumber_tasks(texts: dict[str, str], initiative: str, epic: int, own: str,
             nonlocal count
             if other_initiative(text, m.start(), initiative) or int(m[1]) != epic:
                 return m[0]
-            old = int(m[2])
+            old = int(m[3])
             if old not in mapping:
                 return m[0]
             count += 1
-            return f'E{epic:02d} W{mapping[old]:02d}'
+            return f'E{epic:02d}{m[2]}W{mapping[old]:02d}'
 
         def bare(m: re.Match) -> str:
             nonlocal count
@@ -109,7 +110,7 @@ def renumber_tasks(texts: dict[str, str], initiative: str, epic: int, own: str,
         out[name] = text
         print(f'{name}: {count} references rewritten')
         for line in text.splitlines():
-            if RANGE.search(line) and (name == own or f'E{epic:02d} W' in line):
+            if RANGE.search(line) and (name == own or re.search(rf'E{epic:02d}[ :]W', line)):
                 print(f'  check range: {line.strip()[:110]}')
     return out
 

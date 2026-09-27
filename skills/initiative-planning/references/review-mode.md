@@ -8,9 +8,11 @@ Checks existing initiative, epic and task issues against the templates, and fixe
    - Review covers open issues only. A closed issue is reviewed only when named, and a closed epic
      keeps its `Solution` heading.
    - Naming another initiative's issue approves format edits to it.
-2. **Fetch** each issue whole: `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
-3. **Check** with `scripts/format.py issue-943.json --fix fixed-943.md`. It reads the format from
-   `templates/`, and reports three kinds of finding:
+2. **Fetch** each issue whole, with its initiative when it is an epic:
+   `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
+3. **Check** with `scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md`.
+   The initiative's table lists the epic issues that the epic's references link to. The check
+   reads the format from `templates/`, and reports three kinds of finding:
    - **fixed:** structural changes that keep the wording, already made in `fixed-943.md`, with the
      body diff printed;
    - **apply:** a title or label change to make on the issue;
@@ -36,5 +38,5 @@ Checks existing initiative, epic and task issues against the templates, and fixe
 ## Commands
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md
 ```

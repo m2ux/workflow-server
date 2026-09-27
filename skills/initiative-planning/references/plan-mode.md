@@ -47,18 +47,21 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py E00=live-943.md E01=live-937.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --map 6:0,0:1 live-*.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --initiative issue-936.json
 ```
 
-- `deps.py` checks the task dependency graph across the epics given.
-- The first `renumber.py` renumbers epics. The second renumbers E01's tasks: `E01 Wxx` everywhere,
-  and bare `Wxx` inside E01's own body. Both rewrite files in place and refuse a map that collides.
+- `deps.py` checks the task dependency graph across the epics given, including dependencies
+  listed twice or already implied by another in the same cell.
+- The first `renumber.py` renumbers epics. The second renumbers E01's tasks: `E01 Wxx` and
+  `E01:Wxx` everywhere, and bare `Wxx` inside E01's own body. Links keep their targets. Both rewrite files in place and refuse a map that collides.
 - `format.py` checks one issue against its template, including that every criterion is delivered by
-  a Work Breakdown row.
+  a Work Breakdown row. An epic's check takes its initiative's JSON, which lists the epic issues its
+  references link to.
 
 ## Rules
 
 - **Dependencies.** Every dependency points to an earlier epic or an earlier task. **Depends on** is
-  what must be true before the work starts.
+  what must be true before the work starts, and lists only what no other entry in the cell already
+  implies.
 - **The discussion PR.** Merging it is the user's call. After it merges, repoint the issue links to
   `engineering`.

@@ -14,9 +14,9 @@
 
 The work is split into tasks. Each task is a feature or a fix that can be delivered on its own. **Outcomes** ends with the acceptance criteria the task delivers; **Depends on** is what must be true before that task starts. A delivered task's id links the pull request that delivered it.
 
-| Task | Outcomes | Depends on | With |
+| Task | Outcomes | Depends on | Join |
 | --- | --- | --- | --- |
-| W01 | {{What the task does}} → AC{{n}}, AC{{m}} | {{Earlier task in this epic, Exx Wyy or Exx in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} |
+| W01 | {{What the task does}} → AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](…) or [Exx](…) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} |
 
 ## Acceptance Criteria
 

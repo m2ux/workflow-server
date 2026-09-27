@@ -30,7 +30,8 @@ request, ticks the criteria that now hold, and closes what is complete.
    `gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed`.
 9. **Update the initiative** the same way, once its epics are done:
    `scripts/update.py issue-936.json --epics issue-943.json issue-937.json … --fix fixed-936.md`,
-   with the epic JSON fetched after closing. An epic row is delivered when its issue is closed.
+   with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as
+   completed.
    Verify and tick as in steps 4–5, patch, and close the initiative when it reports closable.
 10. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts,
     and what was closed.
