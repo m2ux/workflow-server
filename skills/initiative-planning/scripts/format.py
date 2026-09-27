@@ -49,9 +49,11 @@ Left to decide, since each needs new content or a judgement:
   - a Work Breakdown column the template lacks, such as Work in place of Description; a PR or Issue
     cell holding anything but one link, or a link other than the one its row id already carries,
     such as a task's own issue; or a row id of the wrong form
-  - an Description cell that does not end with what it delivers (an epic's → AC2, AC5; an
+  - a Description cell that does not end with what it delivers (an epic's → AC2, AC5; an
     initiative's → G1, G3) or cites one that does not exist, and a criterion or goal no row
     delivers
+  - a Description cell over eight words or holding a semicolon, whose detail belongs in
+    criteria or goals
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, or a title without "Name: Subtitle"
   - an unfilled {{...}} field or #E00 placeholder
@@ -73,6 +75,7 @@ KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 ALIASES = {'Acceptance criteria': 'Acceptance Criteria'}
 PROGRESS = ('Where it stands', 'Where this stands', 'Progress', 'Outcome')
 MAX_CRITERIA = 3
+MAX_DESCRIPTION = 8
 REFERENCE = re.compile(r'github\.com/[^)\s]*/(?:issues|pull)/\d+|#\d+\b|\bI\d\d(?:[: ]E\d\d(?:[: ]W\d\d)?)?\b|'
                        r'(?<![\w:])E\d\d(?:[: ]W\d\d)?\b|(?<![\w:])W\d\d\b')
 COUNT = re.compile(r'\d[\d,.]*|\b(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|dozen|twenty|'
@@ -329,6 +332,11 @@ class Review:
             if not listed:
                 self.decide.append(f'{name}: Description does not end with the {nouns} it delivers')
                 continue
+            phrase = LINK.sub(r'\1', cell[:listed.start()]).strip()
+            if len(phrase.split()) > MAX_DESCRIPTION or ';' in phrase:
+                self.decide.append(f'{name}: Description runs to {len(phrase.split())} words; shorten it to a '
+                                   f'phrase of at most {MAX_DESCRIPTION}, and state its detail as {nouns} of '
+                                   'one invariant each')
             numbers = {int(n) for n in re.findall(rf'\b{tag}(\d+)', listed[1])}
             other = re.findall(r'\b(?:AC|G)\d+', listed[1])
             if len(other) != len(numbers):

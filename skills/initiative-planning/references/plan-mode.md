@@ -20,7 +20,8 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Open a draft PR against `engineering` for discussion. The user merges it.
 4. **Draft bodies** from the templates, into local files. Those files are the source for every later
    edit. Write the acceptance criteria before the Work Breakdown, so each row's Description can cite
-   them. The initiative states Goals, not acceptance criteria: SMART goals drawn from the goal's
+   them. A Description is a phrase of at most eight words; its detail lives in the criteria it
+   cites. The initiative states Goals, not acceptance criteria: SMART goals drawn from the goal's
    clauses, each stating one invariant of what the initiative achieves as a whole, carrying no counts
    or figures unless the figure is its own target, and naming no initiative, epic, task or issue: the epics' Description cells cite the goals they serve. The epics'
    criteria carry the detail that makes them true; the user qualifies each goal and ticks it, and

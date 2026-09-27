@@ -35,7 +35,10 @@ Checks existing initiative, epic and task issues against the templates, and fixe
      pull request each can deliver, drafting the rows and their criteria;
    - a goal or non-goal naming an initiative, epic, task or issue: restate it locally, or drop a
      goal that holds only through another initiative's work;
-   - a Work column, or an Description cell without criteria: map each row to the criteria it delivers,
+   - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming
+     what the row delivers, and restate any detail no cited criterion or goal carries as a new
+     criterion or goal of one invariant, cited by the row;
+   - a Work column, or a Description cell without criteria: map each row to the criteria it delivers,
      from the row's text and each criterion's wording; a criterion no row delivers needs a row, or
      belongs in another epic;
    - prose in the Work Breakdown outside its table, or a Sequencing section: move any design

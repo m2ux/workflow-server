@@ -68,7 +68,9 @@ Runs after every round of edits.
   row.
 - **Task grain.** A task delivering more than three criteria that no other task delivers is
   split into tasks one pull request each can deliver.
-- **Description.** Each row's criteria are the ones its work makes true: a row does not claim a
+- **Description.** Each cell is a short phrase of at most eight words. Detail in a longer cell
+  that no cited criterion or goal already states becomes a new criterion or goal of one invariant,
+  cited by the row. Each row's criteria are the ones its work makes true: a row does not claim a
   criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet
   it. The check confirms coverage, not fit.
 - **Contradictions.** Between acceptance criteria in one epic, and between an epic and its
