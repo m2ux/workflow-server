@@ -24,7 +24,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
     reference to an epic of the same initiative linked to that epic's issue. The epic issues come
     from the row-id links of the initiative's table: the issue's own, or --initiative's when the
     issue is an epic
-  - prose Non-goals made a bulleted list, one sentence per bullet
+  - an initiative's prose Non-goals made a bulleted list, one sentence per bullet
   - an initiative's Acceptance Criteria renamed Goals, its items labelled **Gn.** without
     checkboxes, and its Outcomes citing Gn
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
@@ -37,7 +37,8 @@ Left to decide, since each needs new content or a judgement:
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
-  - a non-goal of more than one sentence, or one naming an epic or task of this initiative
+  - a non-goal of more than one sentence, or one naming an epic or task of this initiative; a
+    Non-goals section in an epic or task, since non-goals belong to the initiative
   - a Work Breakdown column the template lacks, such as Work in place of Outcomes; a PR or Issue
     cell holding anything but one link, or a link other than the one its row id already carries,
     such as a task's own issue; or a row id of the wrong form
@@ -221,7 +222,10 @@ class Review:
             if h not in names and h not in template.optional:
                 self.decide.append(f'required section missing: {h}')
         for h in names:
-            if h not in template.headings:
+            if h == 'Non-goals' and self.kind != 'initiative':
+                self.decide.append('Non-goals belong to the initiative: lift any that bound it into the '
+                                   "initiative's Non-goals, then remove the section")
+            elif h not in template.headings:
                 self.decide.append(f'extra section: {h}')
 
         sections = self.reorder(sections, template, canonical)

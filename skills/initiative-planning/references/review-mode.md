@@ -22,6 +22,8 @@ Checks existing initiative, epic and task issues against the templates, and fixe
 5. **Decide the rest** with the user, one finding at a time, each with a recommended option and the
    content drafted:
    - a missing section: draft it from the issue and its epics;
+   - Non-goals in an epic or task: lift any that bound the initiative into the initiative's
+     Non-goals, then remove the section;
    - an extra section: keep it, fold it into a template section, or remove it;
    - a body that follows another kind's template: rewrite it in its own kind's layout, or relabel
      the issue;

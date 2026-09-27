@@ -26,10 +26,6 @@
 
 - [ ] **AC1.** {{A checkable statement.}}
 
-## Non-goals
-
-- {{One succinct sentence on what this task does not do; name no epic or task of this initiative.}}
-
 ## Investigation detail
 
 {{Supporting analysis a reviewer may want but the fix does not depend on. Delete the section when there is none.}}

@@ -24,7 +24,7 @@
 
 ## Non-goals
 
-- {{One succinct sentence on what this initiative does not do; name an owner only outside this initiative.}}
+- {{One succinct sentence on what this initiative does not do; name no epic or task of it, and an owner only outside it.}}
 
 ## References
 
