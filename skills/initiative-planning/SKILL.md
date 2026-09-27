@@ -1,8 +1,8 @@
 ---
 name: initiative-planning
 description: >-
-  Plans and maintains a house initiative on GitHub: an [Ixx] initiative issue, its [Ixx Eyy] epics
-  and [Ixx Eyy Wzz] tasks, written from the house body templates, with a planning record on the
+  Plans and maintains a house initiative on GitHub: an [Ixx] initiative issue, its [Ixx:Eyy] epics
+  and [Ixx:Eyy:Wzz] tasks, written from the house body templates, with a planning record on the
   engineering branch. Runs review passes against the initiative's goal, for consistency, and for
   dependency order, and renumbers epics and tasks so numbers follow run order. Use when the user asks
   to raise, plan or restructure an initiative or epic, to review an initiative, to check or fix
@@ -20,18 +20,20 @@ decisions and each review.
 | Level | Title | Labels |
 | --- | --- | --- |
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, `enhancement`, a `theme:*` |
-| Epic | `[I07 E00] Name: Subtitle` | `type:epic`, `enhancement`, a `theme:*` |
-| Task | `[I07 E00 W01] Name: subtitle` | `type:task` |
+| Epic | `[I07:E00] Name: Subtitle` | `type:epic`, `enhancement`, a `theme:*` |
+| Task | `[I07:E00:W01] Name: subtitle` | `type:task` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
   epic. Initiatives and epics count from `00`. Tasks count from `W01`; `W00` holds preparatory work
   that must land before the first real task.
-- **Titles.** A short name, a colon, and a subtitle stating the outcome. Match the capitalisation
-  of recent titles in the same initiative.
+- **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
+  colon, and a subtitle stating the outcome. Match the capitalisation of recent titles in the same
+  initiative. References inside bodies and tables use a space (`E01 W03`, `I05 E00 W02`), which is
+  the form the scripts read.
 - **Order.** Epics are numbered in the order they run, and tasks in the order they can start. This
   holds for every plan this skill writes. `deps.py` reports it as advisory, because older
   initiatives predate it.
-- **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx Eyy Wzz]` issue only
+- **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx:Eyy:Wzz]` issue only
   when it needs discussion or evidence of its own; its row then links that issue.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
   `task.md`. Keep the section order and the fixed sentences. Fill each `{{…}}` and delete a section
@@ -86,7 +88,7 @@ GitHub goes through REST only, with full host permissions and token variables un
 the repository that holds the issues:
 
 ```bash
-unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues -f title='[I07 E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
+unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
 unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed --jq .state

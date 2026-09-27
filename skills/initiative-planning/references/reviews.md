@@ -35,7 +35,7 @@ Runs after every round of edits.
 
 - **Stale references.** Task and epic numbers, issue links, and wording from a superseded
   decision.
-- **Titles.** Every issue's `[Ixx Eyy]` prefix matches its row in the initiative's Work Breakdown
+- **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown
   table.
 - **Contradictions.** Between acceptance criteria in one epic, and between an epic and its
   initiative.
