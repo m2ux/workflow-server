@@ -54,6 +54,7 @@
 - **A fix belongs in the pull request whose code it fixes.** A defect found while reviewing a branch is corrected on that branch, not carried onto a later one in a stack. Amend, rebase or force-push as needed to put it there — a branch with no other contributors is yours to rewrite.
 - **Commit incrementally while building.** Distinct work lands as its own commit, so the branch records how it was built. That is about not collapsing unrelated changes into one commit; it is never a reason to leave a fix in the wrong place.
 - **Push with plain** `git push`**.** When a push will not fast-forward on a branch someone else may hold, stop and ask rather than rewriting.
+- **A pull request delivering initiative work starts its title with the task reference:** `[I07:E00:W01] Subject`, or `[I07:E00:(W01,W02)] Subject` for tasks delivered together.
 
 
 
