@@ -7,7 +7,7 @@ description: >-
   goal, for consistency and for dependency order, and renumbers epics and tasks so numbers follow
   run order. Review mode checks existing issues against the templates and fixes them. Update mode
   records delivered work: links each delivered task to its pull request, ticks the criteria that
-  now hold, and closes what is complete. Hoist mode finds orphan issues and brings each one the
+  now hold, closes what is complete, and updates the initiative's project board. Hoist mode finds orphan issues and brings each one the
   user chooses into an existing or new initiative, epic or task, closing an orphan whose detail the
   taking issue cites. Use when the user asks to raise, plan or restructure an
   initiative or epic, to review an initiative, to check an issue's format or bring it into the house
@@ -31,7 +31,8 @@ Read the file for the mode the request calls for:
 - **Review mode** — check existing issues against the templates and fix them:
   `references/review-mode.md`.
 - **Update mode** — record delivered work: link tasks to their pull requests, tick criteria that
-  hold, and close complete task issues, epics and initiatives: `references/update-mode.md`.
+  hold, close complete task issues, epics and initiatives, and update the initiative's project
+  board: `references/update-mode.md`.
 - **Hoist mode** — find orphan issues, offer each a placement in an existing or new initiative,
   epic or task, and migrate or subsume the ones the user places: `references/hoist-mode.md`.
 
