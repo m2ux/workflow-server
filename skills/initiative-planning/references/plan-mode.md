@@ -22,10 +22,10 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    edit. Write the acceptance criteria before the Work Breakdown, so each row's Description can cite
    them. The initiative states Goals, not acceptance criteria: SMART goals drawn from the goal's
    clauses, each stating one invariant of what the initiative achieves as a whole, carrying no counts
-   or figures unless the figure is its own target, and naming no epic or task: the epics' Description cells cite the goals they serve. The epics'
+   or figures unless the figure is its own target, and naming no initiative, epic, task or issue: the epics' Description cells cite the goals they serve. The epics'
    criteria carry the detail that makes them true; the user qualifies each goal and ticks it, and
    the initiative closes once every goal is ticked. Size each task to one pull request: a task delivering more than three criteria is
-   split unless they are facets of one deliverable.
+   split; a criterion several tasks deliver is shared and counts towards none.
 5. **Review the drafts.** Run the goal pass in `review-passes.md`, and `deps.py I=… E00=…` over
    the drafts. Fold every gap and problem in and run both again. No issue is created while either
    reports one.

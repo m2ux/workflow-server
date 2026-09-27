@@ -27,8 +27,9 @@ nothing about them: the conventions live here.
     those another named epic already depends on (`[E02](…), [E04](…)`). `deps.py` derives it from
     the epic tables.
 - **Task grain.** A task is one pull request's worth of work. A task delivering more than three
-  criteria is a candidate for splitting: split it where its criteria are distinct deliverables,
-  and keep it where they are facets of one.
+  criteria that no other task delivers is split into tasks one pull request each can deliver. A
+  criterion several tasks deliver, such as a convention every grammar task follows, is shared and
+  counts towards none of them.
 - **Join.** The tasks that can land in the same pull request as this one. Each lists the other, and
   neither depends on the other through a task outside the pair.
 

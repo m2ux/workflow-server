@@ -36,7 +36,9 @@ changes.
      check or baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause
      and to the Problem; and **time-bound** by a release tag or another named milestone outside the
      initiative's own work, where one exists, and otherwise by the epics whose Description cells cite it. A goal
-     names no epic or task: Description cells link epics to goals, never the reverse. It states what
+     names no initiative, epic, task or issue: Description cells link epics to goals, never
+     the reverse, and a goal is solution-agnostic. A goal that holds only through another
+     initiative's work is not a local goal: restate what this initiative achieves, or drop it. It states what
      the initiative achieves as a whole. A goal that restates a single
      epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to
      the epic.
@@ -64,8 +66,8 @@ Runs after every round of edits.
 - **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed. It
   confirms that each Description cell cites criteria or goals that exist, and that every one has a
   row.
-- **Task grain.** A task delivering more than three criteria is reviewed for splitting: its
-  criteria are distinct deliverables, each a pull request's worth, or facets of one deliverable.
+- **Task grain.** A task delivering more than three criteria that no other task delivers is
+  split into tasks one pull request each can deliver.
 - **Description.** Each row's criteria are the ones its work makes true: a row does not claim a
   criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet
   it. The check confirms coverage, not fit.
@@ -81,9 +83,10 @@ Runs after every round of edits.
 - **Links.** A link to an unmerged planning branch breaks when the branch merges; list those to
   repoint.
 - **Non-goals.** Only the initiative has them: one succinct sentence each, naming no epic or task
-  of the initiative, and an owner only outside it. A boundary between sibling epics belongs in
+  or issue of any initiative, and no owner. A boundary between sibling epics belongs in
   their Proposals.
-- **Cross-initiative overlap.** Record it in the initiative's Non-goals and in References. Editing
+- **Cross-initiative overlap.** Record it in References. A non-goal states what this
+  initiative does not do, never who does it. Editing
   another initiative's issue needs the user's explicit approval, and the edit stays minimal.
 
 ## Ordering pass

@@ -31,9 +31,10 @@ Checks existing initiative, epic and task issues against the templates, and fixe
      onto its id, and drop the rest;
    - a task id linking its own issue while its PR cell holds the pull request: comment the pull
      request on the task issue, which records it, then drop the cell;
-   - a task delivering more than three criteria: split it into tasks one pull request each can
-     deliver, drafting the rows and their criteria, or keep it where the criteria are facets of one
-     deliverable;
+   - a task delivering more than three criteria no other task delivers: split it into tasks one
+     pull request each can deliver, drafting the rows and their criteria;
+   - a goal or non-goal naming an initiative, epic, task or issue: restate it locally, or drop a
+     goal that holds only through another initiative's work;
    - a Work column, or an Description cell without criteria: map each row to the criteria it delivers,
      from the row's text and each criterion's wording; a criterion no row delivers needs a row, or
      belongs in another epic;
