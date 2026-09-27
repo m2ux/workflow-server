@@ -3,12 +3,12 @@ name: initiative-planning
 description: >-
   Plans and maintains a house initiative on GitHub: an [Ixx] initiative issue, its [Ixx:Eyy] epics
   and [Ixx:Eyy:Wzz] tasks, written from the house body templates, with a planning record on the
-  engineering branch. Runs review passes against the initiative's goal, for consistency, and for
-  dependency order, and renumbers epics and tasks so numbers follow run order. Review mode checks
-  existing issues against the templates and fixes them. Use when the user asks to raise, plan or
-  restructure an initiative or epic, to review an initiative, to check an issue's format or bring it
-  into the house layout, to check or fix dependencies or ordering, to renumber epics or tasks, or to
-  fold review findings into issues.
+  engineering branch. Plan mode raises or restructures an initiative, runs review passes against its
+  goal, for consistency and for dependency order, and renumbers epics and tasks so numbers follow
+  run order. Review mode checks existing issues against the templates and fixes them. Use when the
+  user asks to raise, plan or restructure an initiative or epic, to review an initiative, to check an
+  issue's format or bring it into the house layout, to check or fix dependencies or ordering, to
+  renumber epics or tasks, or to fold review findings into issues.
 ---
 
 # Initiative Planning
@@ -17,8 +17,14 @@ An initiative is one issue that states a goal and lists its epics. Each epic is 
 tasks. Issues are the plan. A planning record on the `engineering` branch holds the evidence, the
 decisions and each review.
 
-The skill has two modes. **Plan mode** raises or restructures an initiative. **Review mode** brings
-existing issues into the house format.
+## Modes
+
+Read the file for the mode the request calls for:
+
+- **Plan mode** — raise, plan or restructure an initiative or epic; review a plan against its goal;
+  check dependencies; renumber; fold findings in: `references/plan-mode.md`.
+- **Review mode** — check existing issues against the templates and fix them:
+  `references/review-mode.md`.
 
 ## House scheme
 
@@ -38,82 +44,21 @@ existing issues into the house format.
 - **Order.** Epics are numbered in the order they run, and tasks in the order they can start. This
   holds for every plan this skill writes. `deps.py` reports it as advisory, because older
   initiatives predate it.
+- **Outcomes.** A Work Breakdown row's **Outcomes** cell says what the row does and ends with the
+  acceptance criteria it delivers: `… → AC2, AC5`. An epic's rows cite the epic's criteria, and an
+  initiative's rows the initiative's. Every criterion is delivered by at least one row, so an agent
+  working a task knows which criteria it must meet.
 - **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx:Eyy:Wzz]` issue only
   when it needs discussion or evidence of its own; its row then links that issue.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
-  `task.md`. Keep the section order and the fixed sentences. Fill each `{{…}}` and delete a section
-  the template marks as optional when it has nothing to say.
+  `task.md`. Keep the section order, the table columns and the fixed sentences. Fill each `{{…}}`
+  and delete a section the template marks as optional when it has nothing to say.
 - **Check current practice.** Before relying on the scheme, read one recent initiative and one epic.
   Find the next initiative number by listing titles:
   `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
 - **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a
   `priority: *` as they apply. Only labels that exist:
   `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
-
-## Plan mode
-
-1. **Understand the request.** Interview the user one question at a time, each with a recommended
-   option, until the goal and scope are clear.
-2. **Gather evidence.** Measure the current state: counts, paths, file:line. Delegate broad sweeps to
-   parallel sub-agents, and spot-check what they return before recording it.
-3. **Planning record**, for a new initiative or for a change whose decisions need a record. A
-   one-epic addition with no open decision goes straight to step 4.
-   - Branch a worktree from `origin/engineering` and add
-     `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
-   - `README.md` holds the problem, goals, design, decisions, reviews and open questions.
-     `inventory.md` holds the evidence.
-   - Open a draft PR against `engineering` for discussion. The user merges it.
-4. **Draft bodies** from the templates, into local files in a working directory outside the
-   repository. Those files are the source for every later edit.
-5. **Create issues** so that every number exists before it is cited:
-   1. the initiative, with placeholders such as `#E00` for its epics;
-   2. the epics in dependency order, each citing the initiative and the epics created before it,
-      with placeholders for any it cites that do not exist yet;
-   3. patches replacing every remaining placeholder, in the initiative and in any epic that holds
-      one. Grep the local files for `#E[0-9]` until none is left.
-6. **Review.** Run the passes in `references/reviews.md`:
-   - the goal pass, after drafting;
-   - the consistency pass, after every round of edits;
-   - the ordering pass, whenever tasks or dependencies change.
-
-   Fold each finding in and record it in the planning record.
-7. **Keep in step.** After each round, patch every changed issue, update the planning record and the
-   discussion PR body, then commit and push. Titles change with renumbering.
-8. **Deliver.** As work lands, keep each epic current:
-   - **PR column:** the pull request or commit link, or `in flight` while it is open.
-   - **Work cell:** append `— **done**` when the task lands, or `— **moved to [#nnn](…) Wzz**` when
-     another issue takes it.
-   - **Criteria:** tick each acceptance criterion when its outcome is observable.
-   - **Where it stands:** record what landed and any figure that came out differently from the plan.
-   - **Closing:** close an epic when every criterion is ticked, and the initiative when every epic is
-     closed.
-
-## Review mode
-
-1. **Select.** Review the issues the user names, or an initiative with its open epics.
-   - Review covers open issues only. A closed issue is reviewed only when named, and a closed epic
-     keeps its `Solution` heading.
-   - Naming another initiative's issue approves format edits to it.
-2. **Fetch** each issue whole, into a working directory outside the repository:
-   `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
-3. **Check** with `scripts/format.py issue-943.json --fix fixed-943.md`. It reads the format from
-   `templates/`, and reports three kinds of finding:
-   - **fixed:** structural changes that keep the wording, already made in `fixed-943.md`, with the
-     body diff printed;
-   - **apply:** a title or label change to make on the issue;
-   - **decide:** anything needing new content or a judgement.
-4. **Apply the mechanical fixes** without asking. Read the diff to confirm it changes structure only,
-   then patch the body from `fixed-943.md`, along with the title and labels the check names.
-5. **Decide the rest** with the user, one finding at a time, each with a recommended option and the
-   content drafted:
-   - a missing section: draft it from the issue and its epics;
-   - an extra section: keep it, fold it into a template section, or remove it;
-   - a body that follows another kind's template: rewrite it in its own kind's layout, or relabel
-     the issue;
-   - a missing fixed sentence that makes a claim, such as the initiative's numbering order: run
-     `deps.py` first, and recommend the sentence only when it reports no numbering advisories.
-6. **Re-run** the check until it exits 0, or until every remaining finding is one the user chose to
-   keep. Report what changed on each issue.
 
 ## Commands
 
@@ -125,40 +70,25 @@ the repository that holds the issues:
 unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
 unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
-unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed --jq .state
+unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 > issue-943.json
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f title='[I07:E00] Name: Subtitle' --jq .title
 unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues/943/labels -f 'labels[]=type:epic' --jq '.[].name'
 unset GH_TOKEN GITHUB_TOKEN; gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --jq '.[].name'
+unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed --jq .state
 ```
 
 Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the
-workspace's dynamic-shell restrictions. The scripts run under the sandbox, invoked by the absolute
-path of the workspace checkout's `scripts/sbx`. `<workspace>` below stands for that checkout.
+workspace's dynamic-shell restrictions. Keep these files in a working directory outside the
+repository.
 
-```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py E00=live-943.md E01=live-937.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --map 6:0,0:1 live-*.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
-```
-
-```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --fix fixed-943.md
-```
-
-`format.py` checks one issue against its template and writes the mechanically fixed body.
-
-Of the `renumber.py` commands, the first renumbers epics. The second renumbers E01's tasks: `E01 Wxx` everywhere, and bare `Wxx`
-inside E01's own body. Both rewrite files in place and refuse a map that collides.
+The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace
+checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout.
 
 ## Rules
 
-- **Dependencies.** Every dependency points to an earlier epic or an earlier task. **Depends on** is
-  what must be true before the work starts.
+- **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in
+  the planning record and the affected issues.
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
-- **Decisions.** Ask them one at a time, and record each answer in the planning record and the
-  affected issues.
 - **Bodies may carry history.** Issue and PR bodies may state the before-state. The planning record
   records how the plan evolved.
 - **Other initiatives.** Editing another initiative's issue needs the user's explicit approval.
-- **The discussion PR.** Merging it is the user's call. After it merges, repoint the issue links to
-  `engineering`.

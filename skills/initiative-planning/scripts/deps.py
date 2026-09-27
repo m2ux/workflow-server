@@ -4,7 +4,8 @@ Usage:
   python3 deps.py E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the house Work Breakdown table:
-  | Task | Work | PR | Depends on | Can Accompany |
+  | Task | Outcomes | Depends on | Can Accompany | PR |
+Cells are read by column name, so the column order does not matter.
 
 A dependency is one of:
   W03             a task in the same epic
@@ -34,21 +35,25 @@ MAX_CHAINS = 10
 
 
 def cells(line: str) -> list[str]:
-    parts = [c.strip() for c in LINK.sub(r'\1', line).strip().strip('|').split('|')]
-    return (parts + [''] * 5)[:5]
+    return [c.strip() for c in LINK.sub(r'\1', line).strip().strip('|').split('|')]
 
 
 def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
     rows = {}
     for epic, path in epics.items():
+        header: list[str] = []
         for line in path.read_text().splitlines():
-            if ROW.match(line):
-                wid, work, _pr, deps, accompany = cells(line)
-                rows[f'{epic} {wid}'] = (work, deps, accompany)
+            if line.startswith('| Task |'):
+                header = cells(line)
+            elif ROW.match(line):
+                row = dict(zip(header, cells(line)))
+                wid = row.get('Task', '')
+                rows[f'{epic} {wid}'] = (row.get('Outcomes', ''), row.get('Depends on', ''),
+                                         row.get('Can Accompany', ''))
 
     problems = []
     tasks = {}
-    for key, (work, deps, accompany) in rows.items():
+    for key, (outcomes, deps, accompany) in rows.items():
         epic = key.split()[0]
         dep_list = []
         for d in (x.strip() for x in deps.split(',') if x.strip()):
@@ -71,7 +76,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
         acc = []
         for a in (x.strip() for x in accompany.split(',') if x.strip()):
             acc.append(a if a.startswith('E') else f'{epic} {a}')
-        tasks[key] = (work, dep_list, acc)
+        tasks[key] = (outcomes, dep_list, acc)
     return tasks, problems
 
 

@@ -12,7 +12,8 @@ Fixed in the body written to --fix, keeping the issue's wording:
   - a section alias renamed: Progress, Outcome or Where this stands to Where it stands, and
     Solution to Proposal on an open epic (a closed epic keeps Solution)
   - template sections put in template order, each extra section moving with the one before it
-  - missing Work Breakdown columns added, empty, when the present columns are in template order
+  - Work Breakdown columns put in template order, and missing ones added empty, when every column
+    present is a template column
   - table rows padded to the header's width
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
@@ -23,7 +24,11 @@ Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - a fixed template sentence missing or reworded
-  - a Work Breakdown column the template lacks, columns out of order, or a row id of the wrong form
+  - a Work Breakdown column the template lacks, such as Work in place of Outcomes, or a row id of
+    the wrong form
+  - an Outcomes cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
+    cites one that does not exist, and a criterion no row delivers; a row marked "moved to" is
+    exempt
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, or a title without "Name: Subtitle"
   - an unfilled {{...}} field or #E00 placeholder
@@ -45,6 +50,7 @@ ALIASES = {'Progress': 'Where it stands', 'Outcome': 'Where it stands',
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
+OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 
 
 def split_sections(text: str) -> tuple[list[str], list[list]]:
@@ -189,12 +195,37 @@ class Review:
             elif h == 'References':
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
 
+        self.check_outcomes(sections, canonical)
         fixed = join_sections(preamble, sections) if self.fixed else body
         if '{{' in fixed:
             self.decide.append('unfilled {{…}} field')
         if re.search(r'#E\d\d\b', fixed):
             self.decide.append('unreplaced #Exx placeholder')
         return fixed
+
+    def check_outcomes(self, sections: list[list], canonical) -> None:
+        by_name = {canonical(h): lines for h, lines in sections}
+        table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
+        if len(table) < 3 or 'Outcomes' not in cells(table[0]):
+            return
+        column = cells(table[0]).index('Outcomes')
+        criteria = {int(m[1]) for l in by_name.get('Acceptance criteria', []) if (m := AC.match(l))}
+        delivered: set[int] = set()
+        for line in table[2:]:
+            r = cells(line)
+            cell = r[column] if column < len(r) else ''
+            listed = OUTCOMES.search(cell)
+            if not listed:
+                if 'moved to' not in cell:
+                    self.decide.append(f'{r[0]}: Outcomes does not end with the acceptance criteria '
+                                       'it delivers')
+                continue
+            numbers = {int(n) for n in re.findall(r'AC(\d+)', listed[1])}
+            for n in sorted(numbers - criteria):
+                self.decide.append(f'{r[0]}: Outcomes cites AC{n}, which is not a criterion')
+            delivered |= numbers
+        for n in sorted(criteria - delivered):
+            self.decide.append(f'AC{n} is delivered by no Work Breakdown row')
 
     def reorder(self, sections: list[list], template: Template, canonical) -> list[list]:
         groups: list[list[list]] = []
@@ -223,11 +254,12 @@ class Review:
             end += 1
         header, rows = cells(lines[start]), [cells(l) for l in lines[start + 2:end]]
         unknown = [c for c in header if c not in columns]
+        if 'Work' in unknown and 'Outcomes' in columns:
+            self.decide.append('Work Breakdown has Work, not Outcomes: rename it and end each cell with '
+                               'the acceptance criteria the row delivers')
+            return lines
         if unknown:
             self.decide.append(f'Work Breakdown column not in the template: {", ".join(unknown)}')
-            return lines
-        if [c for c in columns if c in header] != header:
-            self.decide.append('Work Breakdown columns out of template order')
             return lines
 
         width = len(header)
@@ -239,8 +271,11 @@ class Review:
         if padded != rows:
             self.fixed.append('Work Breakdown rows padded to the header width')
         if header != columns:
-            self.fixed.append('Work Breakdown columns added: ' +
-                              ', '.join(c for c in columns if c not in header))
+            missing = [c for c in columns if c not in header]
+            if missing:
+                self.fixed.append('Work Breakdown columns added: ' + ', '.join(missing))
+            if [c for c in columns if c in header] != header:
+                self.fixed.append('Work Breakdown columns put in template order')
             padded = [[r[header.index(c)] if c in header else '' for c in columns] for r in padded]
         pattern = ROW_ID[self.kind]
         for r in padded:

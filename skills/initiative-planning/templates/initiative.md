@@ -14,11 +14,11 @@
 
 ## Work Breakdown
 
-The work is split into epics. Each epic is a feature or a fix that can be delivered on its own; **Depends on** is what must be true before that epic starts.
+The work is split into epics. Each epic is a feature or a fix that can be delivered on its own. **Outcomes** ends with the acceptance criteria the epic delivers; **Depends on** is what must be true before that epic starts.
 
-| Epic | Work | Issue | Depends on |
+| Epic | Outcomes | Issue | Depends on |
 | --- | --- | --- | --- |
-| E00 | {{Short name}} | #{{EPIC_ISSUE}} | |
+| E00 | {{Short name}} → AC{{n}}, AC{{m}} | #{{EPIC_ISSUE}} | |
 
 Epics are numbered in the order they run, and within each epic tasks are numbered in the order they can start. Every dependency points to an earlier epic or an earlier task.
 

@@ -37,7 +37,11 @@ Runs after every round of edits.
   decision.
 - **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown
   table.
-- **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed.
+- **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed. It
+  confirms that each Outcomes cell cites criteria that exist and that every criterion has a row.
+- **Outcomes.** Each row's criteria are the ones its work makes true: a row does not claim a
+  criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet
+  it. The check confirms coverage, not fit.
 - **Contradictions.** Between acceptance criteria in one epic, and between an epic and its
   initiative.
 - **Ownership overlaps.** Two epics or tasks claiming one piece of work. Assign one owner and state
@@ -74,7 +78,8 @@ Checks dependencies as a graph, then renumbers.
 
 ## Folding findings
 
-- **Small finding:** edit the owning epic's Proposal, Work Breakdown and acceptance criteria.
+- **Small finding:** edit the owning epic's Proposal, Work Breakdown and acceptance criteria, and
+  cite any new or renumbered criterion in the Outcomes of the row that delivers it.
 - **Distinct concern:** a new epic. Create it, link it from the initiative table, and renumber if
   run order requires.
 - **Record:** in the planning record, add a table of findings and where each is resolved, plus the
