@@ -28,7 +28,10 @@ Read the file for the mode the request calls for:
 - **Review mode** — check existing issues against the templates and fix them:
   `references/review-mode.md`.
 - **Update mode** — record delivered work: link tasks to their pull requests, tick criteria that
-  hold, and close complete epics and initiatives: `references/update-mode.md`.
+  hold, and close complete task issues, epics and initiatives: `references/update-mode.md`.
+
+Every mode also reads `references/work-breakdown.md`, the guide to the Work Breakdown tables: their
+columns, numbering, references and delivery.
 
 ## House scheme
 
@@ -39,30 +42,14 @@ Read the file for the mode the request calls for:
 | Task | `[I07:E00:W01] Name: subtitle` | `type:task` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
-  epic. Initiatives and epics count from `00`. Tasks count from `W01`; `W00` holds preparatory work
-  that must land before the first real task.
+  epic. Initiatives and epics count from `00`, and tasks from `W01`.
 - **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
   colon, and a subtitle stating the outcome. Match the capitalisation of recent titles in the same
   initiative.
-- **References.** Work Breakdown tables write references with colons (`E01:W03`, `I05:E00:W02`),
-  the form the scripts read, and link every epic reference to its epic's issue:
-  `[E01:W03](https://…/issues/937)`. Prose uses a space (`E01 W03`).
-- **Order.** Epics are numbered in the order they run, and tasks in the order they can start. This
-  holds for every plan this skill writes. `deps.py` reports it as advisory, because older
-  initiatives predate it.
-- **Outcomes.** A Work Breakdown row's **Outcomes** cell says what the row does and ends with the
-  acceptance criteria it delivers: `… → AC2, AC5`. An epic's rows cite the epic's criteria, and an
-  initiative's rows the initiative's. Every criterion is delivered by at least one row, so an agent
-  working a task knows which criteria it must meet.
-- **Delivery.** A pull request's title starts with the task it delivers, `[I07:E00:W01] Subject`,
-  or the tasks it delivers together, `[I07:E00:(W01,W02)] Subject`. A delivered task's id in its
-  epic's table links that pull request: `[W01](https://…/pull/950)`. An undelivered task's id is
-  plain. A task's **Join** cell lists the tasks that can land in the same pull request.
-- **Task issues.** A task is a row in its epic's table. It gets its own `[Ixx:Eyy:Wzz]` issue only
-  when it needs discussion or evidence of its own; its row then links that issue.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
-  `task.md`. Keep the section order, the table columns and the fixed sentences. Fill each `{{…}}`
-  and delete a section the template marks as optional when it has nothing to say.
+  `task.md`. Keep the section order and the table columns. Fill each `{{…}}` and delete a section
+  the template marks as optional when it has nothing to say. A body does not narrate the order work
+  runs in, the reasons for it, or how the tables work; the Work Breakdown guide holds those.
 - **Check current practice.** Before relying on the scheme, read one recent initiative and one epic.
   Find the next initiative number by listing titles:
   `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
@@ -84,7 +71,7 @@ unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/943 > issue-943.
 unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f title='[I07:E00] Name: Subtitle' --jq .title
 unset GH_TOKEN GITHUB_TOKEN; gh api --method POST repos/{owner}/{repo}/issues/943/labels -f 'labels[]=type:epic' --jq '.[].name'
 unset GH_TOKEN GITHUB_TOKEN; gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --jq '.[].name'
-unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed --jq .state
+unset GH_TOKEN GITHUB_TOKEN; gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
 ```
 
 Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the
@@ -97,7 +84,7 @@ checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checko
 ## Rules
 
 - **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in
-  the planning record and the affected issues.
+  the affected issues and, when there is one, the planning record.
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
 - **Bodies may carry history.** Issue and PR bodies may state the before-state. The planning record
   records how the plan evolved.

@@ -8,11 +8,9 @@
 
 ## Proposal
 
-{{The design, in bolded paragraphs or bullets. State ownership boundaries with sibling epics where they could overlap, and the order tasks run in when it is not obvious.}}
+{{The design, in bolded paragraphs or bullets. State ownership boundaries with sibling epics where they could overlap.}}
 
 ## Work Breakdown
-
-The work is split into tasks. Each task is a feature or a fix that can be delivered on its own. **Outcomes** ends with the acceptance criteria the task delivers; **Depends on** is what must be true before that task starts. A delivered task's id links the pull request that delivered it.
 
 | Task | Outcomes | Depends on | Join |
 | --- | --- | --- | --- |
@@ -28,7 +26,7 @@ The work is split into tasks. Each task is a feature or a fix that can be delive
 
 ## Non-goals
 
-{{What this epic does not do, naming the epic or issue that owns it.}}
+- {{What this epic does not do, and the epic or issue that owns it.}}
 
 ## Open questions
 

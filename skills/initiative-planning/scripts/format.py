@@ -6,7 +6,7 @@ Usage:
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. The format is read
 from templates/<kind>.md beside this script: its sections and their order, the sections it marks
-optional ("Delete the section"), its fixed sentences, and its Work Breakdown columns.
+optional ("Delete the section"), and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
   - a section alias renamed: Progress, Outcome or Where this stands to Where it stands,
@@ -16,12 +16,15 @@ Fixed in the body written to --fix, keeping the issue's wording:
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
     present is a template column
   - a Can Accompany column renamed Join
-  - a PR column folded into the task ids: each row's single PR or commit link moves onto its id,
-    and an empty or "in flight" cell is dropped
+  - the house's old explanatory sentences above a Work Breakdown table removed
+  - a PR or Issue column folded into the row ids: each row's single link, or #n, moves onto its
+    id, and an empty or "in flight" cell is dropped
   - table rows padded to the header's width
   - Work Breakdown references given colons (E01 W02 to E01:W02, I05 E00 to I05:E00), and each
     reference to an epic of the same initiative linked to that epic's issue. The epic issues come
-    from the initiative's table: the issue's own, or --initiative's when the issue is an epic
+    from the row-id links of the initiative's table: the issue's own, or --initiative's when the
+    issue is an epic
+  - prose Non-goals made a bulleted list, one sentence per bullet
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -30,9 +33,11 @@ Printed as fixes to apply to the issue itself:
 Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
-  - a fixed template sentence missing or reworded
-  - a Work Breakdown column the template lacks, such as Work in place of Outcomes, a PR cell
-    holding anything but one link, or a row id of the wrong form
+  - prose in the Work Breakdown outside its table
+  - a Depends on cell holding anything but references
+  - a Work Breakdown column the template lacks, such as Work in place of Outcomes; a PR or Issue
+    cell holding anything but one link, or a link other than the one its row id already carries,
+    such as a task's own issue; or a row id of the wrong form
   - an Outcomes cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
     cites one that does not exist, and a criterion no row delivers; a row marked "moved to" is
     exempt
@@ -63,6 +68,9 @@ OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 COLUMN_ALIASES = {'Can Accompany': 'Join'}
+FOLDED = ('PR', 'Issue')
+HOUSE_PROSE = ('The work is split into ', 'Epics are numbered in the order they run')
+DEPENDENCY = re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d(?::W\d\d)?|I\d\d:E\d\d(?::W\d\d)?|#\d+')
 
 
 def split_sections(text: str) -> tuple[list[str], list[list]]:
@@ -97,36 +105,24 @@ def row(values: list[str]) -> str:
     return '|' + '|'.join(f' {v} ' if v else ' ' for v in values) + '|'
 
 
-def paragraphs(lines: list[str]) -> list[str]:
-    return [' '.join(p.split()) for p in re.split(r'\n\s*\n', '\n'.join(lines)) if p.strip()]
-
-
 class Template:
     def __init__(self, kind: str):
         _, sections = split_sections((TEMPLATES / f'{kind}.md').read_text())
         self.headings = [h for h, _ in sections]
         self.optional = {h for h, lines in sections if 'Delete the section' in '\n'.join(lines)}
-        self.fixed = {h: [p for p in paragraphs(lines)
-                          if '{{' not in p and not p.startswith(('|', '- '))]
-                      for h, lines in sections}
         self.columns = next((cells(l) for h, lines in sections for l in lines
                              if h == 'Work Breakdown' and l.startswith('|')), None)
 
 
 def epic_issues(body: str) -> dict[str, int]:
-    """Map each epic number in an initiative's Work Breakdown to its issue number."""
+    """Map each epic number in an initiative's Work Breakdown to the issue its row id links."""
     _, sections = split_sections(body.replace('\r\n', '\n'))
     lines = next((l for h, l in sections if h == 'Work Breakdown'), [])
-    table = [cells(LINK.sub(r'\1', l)) for l in lines if l.startswith('|')]
-    if len(table) < 3 or 'Issue' not in table[0]:
-        return {}
-    at = table[0].index('Issue')
     found = {}
-    for r in table[2:]:
-        number = re.search(r'#(\d+)', r[at] if at < len(r) else '')
-        epic = re.fullmatch(r'E(\d\d)', r[0])
-        if number and epic:
-            found[epic[1]] = int(number[1])
+    for line in [l for l in lines if l.startswith('|')][2:]:
+        epic = re.fullmatch(r'\[E(\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
+        if epic:
+            found[epic[1]] = int(epic[2])
     return found
 
 
@@ -221,12 +217,12 @@ class Review:
         sections = self.reorder(sections, template, canonical)
         for section in sections:
             h = canonical(section[0])
-            text = ' '.join(paragraphs(section[1]))
-            for sentence in template.fixed.get(h, []):
-                if sentence not in text:
-                    self.decide.append(f'{h}: fixed sentence missing or reworded: "{sentence[:70]}…"')
             if h == 'Work Breakdown' and template.columns:
-                section[1] = self.fix_references(self.fix_table(section[1], template.columns))
+                lines = self.strip_prose(section[1])
+                section[1] = self.fix_references(self.fix_table(lines, template.columns))
+                self.check_dependencies(section[1])
+            elif h == 'Non-goals':
+                section[1] = self.fix_bullets(section[1], h)
             elif h == 'Acceptance Criteria':
                 section[1] = self.fix_list(section[1], 'AC', checkbox=True)
             elif h == 'References':
@@ -302,9 +298,9 @@ class Review:
         for c in renamed:
             self.fixed.append(f'Work Breakdown column "{c}" renamed "{COLUMN_ALIASES[c]}"')
         header = [COLUMN_ALIASES[c] if c in renamed else c for c in header]
-        folded = 'PR' in header and 'PR' not in columns
+        folded = any(c in header and c not in columns for c in FOLDED)
         if folded:
-            header, rows = self.fold_pr_column(header, rows)
+            header, rows = self.fold_columns(header, rows, columns)
             if header is None:
                 return lines
         unknown = [c for c in header if c not in columns]
@@ -339,6 +335,37 @@ class Review:
         if header == columns and padded == rows and not folded and not renamed:
             return lines
         return lines[:start] + table + lines[end:]
+
+    def strip_prose(self, lines: list[str]) -> list[str]:
+        """Keep the Work Breakdown to its table: drop the house's old explanatory sentences."""
+        out, dropped, other = [], 0, []
+        for line in lines:
+            if line.startswith(HOUSE_PROSE):
+                dropped += 1
+            else:
+                out.append(line)
+                if line.strip() and not line.startswith('|'):
+                    other.append(line.strip()[:60])
+        if dropped:
+            self.fixed.append(f'Work Breakdown explanatory sentences removed: {dropped}')
+        if other:
+            self.decide.append('Work Breakdown holds prose outside its table: ' + ' / '.join(other))
+        while out and not out[0].strip():
+            out.pop(0)
+        return out
+
+    def check_dependencies(self, lines: list[str]) -> None:
+        table = [l for l in lines if l.startswith('|')]
+        if len(table) < 3 or 'Depends on' not in cells(table[0]):
+            return
+        at = cells(table[0]).index('Depends on')
+        for line in table[2:]:
+            r = cells(line)
+            items = [LINK.sub(r'\1', x).strip() for x in (r[at] if at < len(r) else '').split(',')]
+            prose = [x for x in items if x and not DEPENDENCY.fullmatch(x)]
+            if prose:
+                self.decide.append(f'{LINK.sub(chr(92) + "1", r[0])}: Depends on holds more than '
+                                   f'references: {", ".join(prose)}')
 
     def fix_references(self, lines: list[str]) -> list[str]:
         """Give table references colons, and link each epic reference to its issue."""
@@ -378,22 +405,42 @@ class Review:
                                ', '.join(dict.fromkeys(unlinked)))
         return out
 
-    def fold_pr_column(self, header: list[str], rows: list[list[str]]):
-        """Move each row's PR link onto its task id, and drop the PR column."""
-        at = header.index('PR')
-        out = []
-        for r in rows:
-            cell = r[at] if at < len(r) else ''
-            link = LINK.fullmatch(cell)
-            task = r[0]
-            if link and not LINK.fullmatch(task):
-                task = f'[{task}]({link[2]})'
-            elif cell not in ('', 'in flight'):
-                self.decide.append(f'{r[0]}: PR cell "{cell}" is not one link a task id can carry')
-                return None, None
-            out.append([task] + [c for i, c in enumerate(r[1:], 1) if i != at])
-        self.fixed.append('PR column folded into task-id links')
-        return [c for c in header if c != 'PR'], out
+    def fold_columns(self, header: list[str], rows: list[list[str]], columns: list[str]):
+        """Move a PR or Issue column's link onto each row id, and drop the column."""
+        base = self.issue.get('html_url', '').rsplit('/issues/', 1)[0]
+        for name in FOLDED:
+            if name not in header or name in columns:
+                continue
+            at = header.index(name)
+            out = []
+            for r in rows:
+                cell = r[at] if at < len(r) else ''
+                link, number = LINK.fullmatch(cell), re.fullmatch(r'#(\d+)', cell)
+                url = link[2] if link else f'{base}/issues/{number[1]}' if number else None
+                current, ident = LINK.fullmatch(r[0]), r[0]
+                plain = LINK.sub(r'\1', ident)
+                if url and not current:
+                    ident = f'[{plain}]({url})'
+                elif url and current[2] != url:
+                    self.decide.append(f'{plain}: id links {current[2]}, but its {name} cell holds {cell}')
+                    return None, None
+                elif not url and cell not in ('', 'in flight'):
+                    self.decide.append(f'{plain}: {name} cell "{cell}" is not one link a row id can carry')
+                    return None, None
+                out.append([ident] + [c for i, c in enumerate(r[1:], 1) if i != at])
+            self.fixed.append(f'{name} column folded into row-id links')
+            header, rows = [c for c in header if c != name], out
+        return header, rows
+
+    def fix_bullets(self, lines: list[str], heading: str) -> list[str]:
+        """Make a prose section a bulleted list, one sentence per bullet."""
+        prose = ' '.join(l.strip() for l in lines if l.strip() and not l.startswith('- '))
+        if not prose:
+            return lines
+        bullets = [l for l in lines if l.startswith('- ')]
+        bullets += [f'- {s}' for s in re.split(r'(?<=[.!?])\s+(?=[A-Z\[`#])', prose)]
+        self.fixed.append(f'{heading} made a bulleted list, one sentence per bullet')
+        return bullets
 
     def fix_list(self, lines: list[str], tag: str, checkbox: bool) -> list[str]:
         items = [i for i, l in enumerate(lines) if l.startswith('- ')]

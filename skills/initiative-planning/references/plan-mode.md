@@ -24,7 +24,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 5. **Review the criteria.** Run the goal pass in `review-passes.md` on the drafts. Fold every gap
    in and run it again. No issue is created while a gap remains.
 6. **Create issues** so that every number exists before it is cited:
-   1. the initiative, with placeholders such as `#E00` for its epics;
+   1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
    2. the epics in dependency order, each citing the initiative and the epics created before it,
       with placeholders for any it cites that do not exist yet;
    3. patches replacing every remaining placeholder, in the initiative and in any epic that holds
@@ -38,20 +38,20 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 8. **Keep in step.** After each round, patch every changed issue, update the planning record and the
    discussion PR body, then commit and push. Titles change with renumbering, and Outcomes cells
    change when criteria are renumbered.
-9. **Deliver.** As work lands, run update mode (`update-mode.md`). When another issue takes a
-   task, append `— **moved to [#nnn](…) Wzz**` to its Outcomes cell.
+9. **Deliver.** As work lands, run update mode (`update-mode.md`).
 
 ## Commands
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py E00=live-943.md E01=live-937.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py I=live-936.md E00=live-943.md E01=live-937.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --map 6:0,0:1 live-*.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --initiative issue-936.json
 ```
 
 - `deps.py` checks the task dependency graph across the epics given, including dependencies
-  listed twice or already implied by another in the same cell.
+  listed twice or already implied, and Join pairs. With `I=` it checks the initiative's Depends on
+  cells against the epics.
 - The first `renumber.py` renumbers epics. The second renumbers E01's tasks: `E01 Wxx` and
   `E01:Wxx` everywhere, and bare `Wxx` inside E01's own body. Links keep their targets. Both rewrite files in place and refuse a map that collides.
 - `format.py` checks one issue against its template, including that every criterion is delivered by

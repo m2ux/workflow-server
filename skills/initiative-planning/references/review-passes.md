@@ -1,8 +1,9 @@
 # Review passes
 
 Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which
-reads the local drafts. Fetch every body first, with full host permissions:
-`unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
+reads the local drafts. Fetch every issue first, with full host permissions, as JSON for `format.py`
+and as a body for `deps.py` and `renumber.py`:
+`unset GH_TOKEN GITHUB_TOKEN; gh api repos/{owner}/{repo}/issues/<n> > issue-<n>.json; gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
 
 Report findings split by area, one problem/solution pair per finding, each with a severity. Verify
 every finding against the source or artifacts it concerns before stating it, and quote the
@@ -67,12 +68,15 @@ Runs after every round of edits.
 
 Checks dependencies as a graph, then renumbers.
 
-1. Run `scripts/deps.py E00=<body> E01=<body> ...` over the live bodies. It reports:
+1. Run `scripts/deps.py I=<initiative body> E00=<body> E01=<body> ...` over the live bodies. It
+   reports:
    - unknown references;
    - backward references: a task depending on a later task in its epic, or an epic depending on a
      later epic;
    - cycles;
    - dependencies listed twice, or already implied by another in the same cell;
+   - Join pairs that are one-way, or that depend on each other through a task outside the pair;
+   - initiative Depends on cells that differ from what the epics' tasks depend on;
    - as advisory, numbering that does not follow start order;
    - the longest chains, and the tasks every one of them shares.
 2. Read each task for dependencies the table omits. A task that measures, extends or consumes
@@ -83,10 +87,10 @@ Checks dependencies as a graph, then renumbers.
    Use `scripts/renumber.py --initiative NN --map old:new,...` for epic numbers, and
    `--epic N --own <body> --tasks old:new,...` for one epic's tasks. Then re-sort each table,
    check every range the script prints, and grep the prose for references it cannot see.
-5. Re-run `deps.py` until it reports no problems. State the longest chains from its output.
-6. Update the initiative's Work Breakdown table. **Depends on** is what must be true before the epic
-   starts. An epic whose first task can start at once, but whose main task waits, says so in the
-   cell.
+5. Update each initiative Depends on cell to the list `deps.py` gives, and re-run it until it
+   reports no problems.
+6. Record the longest chains from its output in the planning record. Issue bodies do not narrate
+   order or its reasons.
 
 ## Folding findings
 

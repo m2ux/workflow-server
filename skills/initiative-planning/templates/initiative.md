@@ -14,17 +14,9 @@
 
 ## Work Breakdown
 
-The work is split into epics. Each epic is a feature or a fix that can be delivered on its own. **Outcomes** ends with the acceptance criteria the epic delivers; **Depends on** is what must be true before that epic starts.
-
-| Epic | Outcomes | Issue | Depends on |
-| --- | --- | --- | --- |
-| E00 | {{Short name}} → AC{{n}}, AC{{m}} | #{{EPIC_ISSUE}} | |
-
-Epics are numbered in the order they run, and within each epic tasks are numbered in the order they can start. Every dependency points to an earlier epic or an earlier task.
-
-## Sequencing
-
-{{What runs first and why; how in-flight work elsewhere interacts with this initiative. Delete the section when there is nothing to say.}}
+| Epic | Outcomes | Depends on |
+| --- | --- | --- |
+| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{Short name}} → AC{{n}}, AC{{m}} | {{[Exx:Wyy](…) in other epics that this epic's tasks depend on}} |
 
 ## Acceptance Criteria
 
@@ -32,7 +24,7 @@ Epics are numbered in the order they run, and within each epic tasks are numbere
 
 ## Non-goals
 
-{{What this initiative does not do, naming the issue or initiative that owns each adjacent concern.}}
+- {{What this initiative does not do, and the issue or initiative that owns it.}}
 
 ## References
 

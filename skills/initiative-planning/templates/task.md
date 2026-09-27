@@ -28,7 +28,7 @@
 
 ## Non-goals
 
-{{What this task does not do.}}
+- {{What this task does not do.}}
 
 ## Investigation detail
 

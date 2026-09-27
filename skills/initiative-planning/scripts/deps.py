@@ -1,7 +1,7 @@
 """Check the task dependency graph of an initiative's epics.
 
 Usage:
-  python3 deps.py E00=bodies/epic-00.md E01=bodies/epic-01.md ...
+  python3 deps.py [I=bodies/initiative.md] E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the house Work Breakdown table:
   | Task | Outcomes | Depends on | Join |
@@ -20,7 +20,11 @@ Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E
 Problems (exit status 1): unknown references, a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
 in the same cell already implies. A whole-epic dependency (E01) states intent, so its tasks are not
-reported as implied.
+reported as implied. Join problems: a task joining one that does not join it back, and two joined
+tasks that one of them reaches the other through a task outside the pair.
+With I=, the initiative's Depends on cells are checked: each epic's cell lists exactly the tasks in
+other epics that its tasks depend on, less those another listed task already implies, and holds
+nothing else.
 Advisory: task numbers that do not follow the order tasks can start.
 Also printed: each task's level (0 = can start now) and the longest chains.
 """
@@ -86,11 +90,39 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
     return tasks, problems, whole
 
 
+def check_initiative(path: Path, tasks: dict, ancestors) -> list[str]:
+    """Compare each epic's Depends on cell with what its tasks depend on in other epics."""
+    problems, header = [], []
+    for line in path.read_text().splitlines():
+        if line.startswith('| Epic |'):
+            header = cells(line)
+            continue
+        if not header or not re.match(r'^\| \[?E\d\d', line):
+            continue
+        r = dict(zip(header, cells(line)))
+        epic = r.get('Epic', '')
+        written = [x.strip() for x in r.get('Depends on', '').split(',') if x.strip()]
+        prose = [x for x in written if not (TASK.fullmatch(x) or EPIC.fullmatch(x) or EXTERNAL.fullmatch(x))]
+        if prose:
+            problems.append(f'initiative {epic}: Depends on holds more than references: {", ".join(prose)}')
+            continue
+        needed = {d for k, (_, deps, _) in tasks.items() if k.startswith(epic + ':')
+                  for d in deps if not d.startswith(epic + ':')}
+        needed = {d for d in needed if not any(d in ancestors(o) for o in needed if o != d)}
+        if set(written) != needed:
+            problems.append(f'initiative {epic}: Depends on should be {", ".join(sorted(needed)) or "empty"}, '
+                            f'not {", ".join(written) or "empty"}')
+    return problems
+
+
 def main(argv: list[str]) -> int:
-    epics = {}
+    epics, initiative = {}, None
     for arg in argv:
         name, _, path = arg.partition('=')
-        epics[name] = Path(path)
+        if name == 'I':
+            initiative = Path(path)
+        else:
+            epics[name] = Path(path)
     tasks, problems, whole = parse(epics)
     advisory = []
 
@@ -146,6 +178,17 @@ def main(argv: list[str]) -> int:
                 by = next((o for o in listed if o != d and d in ancestors(o)), None)
                 if by and d not in whole[key]:
                     problems.append(f'{key}: {d} is already implied by {by}')
+        for key, (_, _, acc) in tasks.items():
+            for a in acc:
+                if a not in tasks:
+                    continue
+                if key not in tasks[a][2]:
+                    problems.append(f'{key}: joins {a}, which does not join it back')
+                via = next((x for x in ancestors(key) if x != a and a in ancestors(x)), None)
+                if via:
+                    problems.append(f'{key}: joins {a}, but needs {via}, which needs {a}')
+        if initiative:
+            problems += check_initiative(initiative, tasks, ancestors)
     print('--- problems')
     print('\n'.join(problems) if problems else 'none')
     if cyclic:
