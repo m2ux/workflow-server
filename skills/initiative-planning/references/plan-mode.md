@@ -20,7 +20,8 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Open a draft PR against `engineering` for discussion. The user merges it.
 4. **Draft bodies** from the templates, into local files. Those files are the source for every later
    edit. Write the acceptance criteria before the Work Breakdown, so each row's Outcomes can cite
-   them.
+   them. The initiative's criteria come from the goal's clauses and state what the initiative
+   achieves as a whole; the epics' criteria carry the detail that makes them true.
 5. **Review the criteria.** Run the goal pass in `review-passes.md` on the drafts. Fold every gap
    in and run it again. No issue is created while a gap remains.
 6. **Create issues** so that every number exists before it is cited:

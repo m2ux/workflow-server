@@ -28,6 +28,10 @@ issue is created, and again whenever the goal, a criterion or an epic changes.
 4. **Each criterion** states an end state, not an activity; names or implies the instrument that
    observes it: a test, a guard, a command or a measure; and is unambiguous, so two readers agree on
    whether it holds.
+   - An initiative criterion is stated at the level of the goal: what the initiative achieves as a
+     whole, made true by several epic criteria together. One that restates a single epic's
+     criterion is a duplicate: raise it to what the epics achieve together, or leave it to the
+     epic.
 5. Look past the clauses for what defeats the goal from outside:
    - **Consumers.** Anything outside the plan that reads, builds or ships what the plan changes or
      removes.
@@ -58,7 +62,8 @@ Runs after every round of edits.
   initiative.
 - **Ownership overlaps.** Two epics or tasks claiming one piece of work. Assign one owner and state
   the boundary in both.
-- **Duplicates.** The same outcome as a task in two epics. Remove one.
+- **Duplicates.** The same outcome as a task in two epics, or an initiative criterion that
+  restates an epic's. Remove one, or raise the initiative's to the goal level.
 - **Links.** A link to an unmerged planning branch breaks when the branch merges; list those to
   repoint.
 - **Cross-initiative overlap.** Record it in Non-goals and References. Editing another initiative's

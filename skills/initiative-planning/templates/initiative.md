@@ -20,7 +20,7 @@
 
 ## Acceptance Criteria
 
-- [ ] **AC1.** {{A checkable end-state statement.}}
+- [ ] **AC1.** {{An end state of the initiative as a whole, at the level of its goal, that its epics' criteria together make true. It restates no single epic's criterion.}}
 
 ## Non-goals
 
