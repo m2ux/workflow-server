@@ -41,7 +41,7 @@ function findUndescribedSchemas(node: unknown, path: string, out: string[]): voi
     && (typeof schema['description'] !== 'string' || !schema['description'].trim())) {
     out.push(path);
   }
-  for (const key of ['properties', 'definitions', '$defs']) {
+  for (const key of ['properties', 'patternProperties', 'definitions', '$defs']) {
     const children = schema[key];
     if (children && typeof children === 'object' && !Array.isArray(children)) {
       for (const [name, child] of Object.entries(children)) {
@@ -49,10 +49,10 @@ function findUndescribedSchemas(node: unknown, path: string, out: string[]): voi
       }
     }
   }
-  for (const key of ['items', 'additionalProperties']) {
+  for (const key of ['items', 'additionalProperties', 'not', 'if', 'then', 'else']) {
     findUndescribedSchemas(schema[key], `${path}.${key}`, out);
   }
-  for (const key of ['anyOf', 'oneOf', 'allOf']) {
+  for (const key of ['anyOf', 'oneOf', 'allOf', 'prefixItems', 'items']) {
     const children = schema[key];
     if (Array.isArray(children)) {
       children.forEach((child, i) => findUndescribedSchemas(child, `${path}.${key}[${i}]`, out));
