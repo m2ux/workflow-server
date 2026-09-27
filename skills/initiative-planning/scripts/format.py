@@ -52,8 +52,9 @@ Left to decide, since each needs new content or a judgement:
   - a Description cell over eight words or holding a semicolon, whose detail belongs in
     criteria or goals
   - acceptance criteria or references partly labelled or numbered out of sequence
-  - no theme:* label on an initiative or epic, a title without "Name: Subtitle", or a title
-    whose name is not two or three words or whose subtitle runs past ten
+  - no theme:* label on an initiative or epic, a title without "Name: Subtitle" (after the prefix,
+    or whole for a standalone issue), or a title whose name is not two or three words or whose
+    subtitle runs past ten
   - an issue several row ids link, which backs several tasks and so belongs under References
   - an unfilled {{...}} field or #E00 placeholder
   - a Work Breakdown reference to an epic that cannot be linked: one of another initiative, one the
@@ -186,6 +187,11 @@ class Review:
         m = PREFIX.match(title)
         if not m:
             self.kind, self.number = 'issue', None
+            name, colon, subtitle = title.partition(': ')
+            if colon:
+                self.check_title_shape(name, subtitle)
+            else:
+                self.decide.append('title has no "Name: Subtitle"')
             typed = [l for l in self.labels() if l.startswith('type:')]
             if typed:
                 self.apply.append('labels: ' + ', '.join(f'remove {l}' for l in typed))

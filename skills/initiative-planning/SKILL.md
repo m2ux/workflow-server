@@ -45,12 +45,13 @@ columns, numbering, references and delivery.
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
 | Epic | `[I07:E00] Name: Subtitle` | `type:epic`, a `theme:*` |
 | Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
-| Standalone issue | no house prefix | no `type:*` |
+| Standalone issue | `Name: Subtitle`, with no prefix | no `type:*` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
   epic. Initiatives and epics count from `00`, and tasks from `W01`.
 - **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
-  colon, and a subtitle stating the outcome. The name is two or three words and the subtitle a
+  colon, and a subtitle stating the outcome; a standalone issue's title is the same without the
+  prefix. The name is two or three words and the subtitle a
   succinct summary of at most ten, both in title case: `[I07:E06] Reliability Evaluation: Briefs,
   Measures and the Thresholds That Define Reliable`.
 - **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,

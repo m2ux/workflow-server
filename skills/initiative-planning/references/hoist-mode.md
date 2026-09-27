@@ -1,9 +1,16 @@
 # Hoist mode
 
-Finds orphan issues in the tracker and brings each one the user chooses into the house structure:
-an existing initiative, epic or task, or a new one. An orphan is an open issue with no house prefix
-that no open initiative, epic or task links. The Work Breakdown guide (`work-breakdown.md`) states
-how rows, criteria and references are written.
+Brings the tracker's standalone issues into the house structure: each one the user chooses joins
+an existing initiative, epic or task, or a new one. Every open issue with no house prefix is a
+candidate, in two groups:
+
+- **Orphans:** no open initiative, epic or task links them.
+- **Cited standalone issues:** open house issues link them, as a reference or in prose, yet they
+  sit outside the structure. An investigation an epic cites is one. When the citing epic's criteria
+  already carry its work, the investigation is subsumed into that epic.
+
+The Work Breakdown guide (`work-breakdown.md`) states how rows, criteria and references are
+written.
 
 ## Placements
 
@@ -38,9 +45,9 @@ how rows, criteria and references are written.
 
 1. **Fetch** every issue: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" >
    issues.json`.
-2. **List orphans** with `scripts/orphans.py issues.json`. It prints each orphan with its labels,
-   any closed house issue that cites it and any planning folder it links, then the open initiatives
-   and epics a placement can name.
+2. **List candidates** with `scripts/orphans.py issues.json`. It prints the orphans, then the
+   cited standalone issues, each with its labels, the house issues citing it and any planning
+   folder it links, then the open initiatives and epics a placement can name.
 3. **Triage** each orphan. Read it whole, with its comments
    (`gh api --paginate repos/{owner}/{repo}/issues/874/comments`), and the bodies of the
    initiatives and epics whose themes and goals it touches, and note any planning folder it
@@ -50,8 +57,9 @@ how rows, criteria and references are written.
    - for a placement in an existing epic, the row it would add (Description, criteria, Depends on,
      Join), or the existing task that already delivers it;
    - **Leave** when no initiative's goal covers it, or when it is not planned work.
-   An orphan whose work an existing criterion already states is subsumed into the issue holding that
-   criterion, with no new row.
+   A candidate whose work an existing criterion already states is subsumed into the issue holding
+   that criterion, with no new row; for a cited standalone issue, that is usually the issue citing
+   it.
 4. **Offer** each orphan to the user, one at a time: a plain paragraph on what the orphan asks and
    where it fits, then the placements as options with the recommended one first, and Leave last.
    Placing an orphan in another initiative's issue needs that answer as its approval.
