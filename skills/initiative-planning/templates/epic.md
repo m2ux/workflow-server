@@ -6,7 +6,7 @@
 
 {{The current state with measured evidence: counts, paths, file:line. Bullets for distinct facets.}}
 
-## Solution
+## Proposal
 
 {{The design, in bolded paragraphs or bullets. State ownership boundaries with sibling epics where they could overlap, and the order tasks run in when it is not obvious.}}
 

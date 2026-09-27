@@ -73,7 +73,7 @@ Checks dependencies as a graph, then renumbers.
 
 ## Folding findings
 
-- **Small finding:** edit the owning epic's Solution, Work Breakdown and acceptance criteria.
+- **Small finding:** edit the owning epic's Proposal, Work Breakdown and acceptance criteria.
 - **Distinct concern:** a new epic. Create it, link it from the initiative table, and renumber if
   run order requires.
 - **Record:** in the planning record, add a table of findings and where each is resolved, plus the
