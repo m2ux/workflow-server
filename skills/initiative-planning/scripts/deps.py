@@ -214,7 +214,7 @@ def main(argv: list[str]) -> int:
         return level[n]
 
     for epic in epics:
-        own = sorted(k for k in tasks if k.startswith(epic + ' '))
+        own = sorted(k for k in tasks if k.startswith(epic + ':'))
         for a, b in zip(own, own[1:]):
             if lv(b) < lv(a):
                 advisory.append(f'{b} (level {lv(b)}) is numbered after {a} (level {lv(a)})')

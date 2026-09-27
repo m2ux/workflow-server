@@ -37,7 +37,8 @@ Left to decide, since each needs new content or a judgement:
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
   - an epic's task delivering more than three criteria, a candidate for splitting
-  - a goal that may state several invariants (a colon or semicolon in its statement)
+  - a goal that may state several invariants (a colon or semicolon in its statement), or that names
+    an epic or task of the initiative
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - an initiative with acceptance criteria in place of Goals, which are rewritten as SMART goals
   - a non-goal of more than one sentence, or one naming an epic or task of this initiative; a
@@ -231,7 +232,7 @@ class Review:
             any(h.lower() == 'acceptance criteria' for h in names)
         if criteria:
             self.decide.append('acceptance criteria, not Goals: rewrite them as SMART goals the epics make '
-                               'true, each bounded by a milestone, then head the section Goals')
+                               'true, naming no epic or task, then head the section Goals')
         for h in template.headings:
             if h not in names and h not in template.optional and not (criteria and h == 'Goals'):
                 self.decide.append(f'required section missing: {h}')
@@ -277,6 +278,10 @@ class Review:
             statement = re.split(r',? (?:when|by|once) ', line[goal.end():], maxsplit=1)[0] if goal else ''
             if goal and (';' in statement or ': ' in statement):
                 self.decide.append(f'G{goal[1]} may state several invariants; state one per goal')
+            named = re.findall(r'(?<![\w:])(?:E\d\d(?::W\d\d)?|W\d\d)\b', LINK.sub(r'\1', line)) if goal else []
+            if named:
+                self.decide.append(f'G{goal[1]} names {", ".join(named)}; a goal names no epic or task, since '
+                                   'Outcomes cells cite goals')
         return lines
 
     def check_outcomes(self, sections: list[list], canonical) -> None:

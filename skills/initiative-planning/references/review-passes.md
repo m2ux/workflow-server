@@ -32,8 +32,10 @@ changes.
      joining several is split into one goal each, and the Outcomes cells cite the new goals.
    - Each initiative goal is SMART: **specific** about what holds; **measurable** by a named
      threshold or check; **achievable** by the epics that cite it; **relevant**, tracing to a clause
-     and to the Problem; and **time-bound** by a milestone, a release tag or an epic or task
-     landing. It states what the initiative achieves as a whole. A goal that restates a single
+     and to the Problem; and **time-bound** by a release tag or another named milestone outside the
+     initiative's own work, where one exists, and otherwise by the epics whose Outcomes cite it. A goal
+     names no epic or task: Outcomes cells link epics to goals, never the reverse. It states what
+     the initiative achieves as a whole. A goal that restates a single
      epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to
      the epic.
 5. Look past the clauses for what defeats the goal from outside:
