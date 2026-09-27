@@ -316,15 +316,16 @@ Mapping every row to a criterion found four gaps:
 | E05 AC11 (ships meeting the thresholds) was delivered by no E05 task, and duplicated E06 AC6 | Removed; E05's Non-goals name E06 as the owner |
 
 The initiative's first ten criteria restated its epics' criteria almost word for word. They are
-replaced by five at the level of the goal, which the epics' criteria together make true:
+replaced by five SMART Goals, each bounded by a milestone and made true by the epics' criteria
+together, so goals are not ticked and the initiative closes when every epic has:
 
-| Criterion | Delivered by |
-| --- | --- |
-| AC1. Agents working from the skill meet the conformance, quality and fitness thresholds | E05, E06 |
-| AC2. Every rule has one formal statement bound to its enforcer; the build fails on disagreement, and nothing is enforced that no rule states | E01, E03 |
-| AC3. A draft can be checked against every rule, walked and costed before it merges | E03, E04 |
-| AC4. Everything a designer needs is reachable from the one skill, from its single source, and restated nowhere else | E02, E05 |
-| AC5. The language is versioned apart from the server, and a deployed server enforces the version it declares | E00 |
+| Goal | Milestone | Delivered by |
+| --- | --- | --- |
+| G1. Agents working from the skill meet every threshold E06 sets across the held-out briefs | E06 W06 | E05, E06 |
+| G2. Every rule has one formal statement under a rule id, bound to its enforcer; the build fails on disagreement, and nothing lacks a rule id or disposition | E01 W10 | E01, E03 |
+| G3. A draft outside the corpus is checked, walked, costed and model-checked through one MCP tool | E04 W04 | E03, E04 |
+| G4. Every member of the set and the catalogue is reachable from the skill as a resource from its single source, and no prose home restates a rule | E05 W05 | E02, E05 |
+| G5. The language lives only on its branch, versioned by tag, and a deployed server serves the tag it declares | E00 W05 | E00 |
 
 ## Tables as the statement of order
 
