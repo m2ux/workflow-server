@@ -366,6 +366,32 @@ recommended change and three calls.
   I07's regeneration guard then replaces I06's drift guard. `yaml-style.md` joins E05 W03's prose
   homes.
 
+## Goals, task grain and renumbering
+
+- **Goals.** The five goals became fourteen, each one invariant, naming no epic or task and
+  carrying no counts; the Description column links epics to them. The user ticks each goal, and
+  the initiative closes once every goal is ticked.
+- **Task grain.** A task is one pull request's worth. E01 W01 split into the registry, the `when`
+  grammar, the loop-shape constraints and the generated reference; E01 W05 into its three
+  constraint families; E01 W08 into the resource-file grammar and the link constraints; E00's
+  all-branch sweep became its own task before the deletion; E05's link check left the skill task.
+  E01 tasks keep more than three criteria only where the extra ones apply to every grammar or
+  constraint task.
+- **Renumbering.** Nothing was delivered, so every epic's tasks were renumbered into start order,
+  with citations repointed in #534, #698, #708 and #868:
+
+  | Epic | Old → new |
+  | --- | --- |
+  | E00 | W05 → W07; new sweep W05 |
+  | E01 | W01 → W01, W02, W03, W10; W02 → W04; W03 → W05; W04 → W06; W05 → W07, W08, W13; W06 → W09; W07 → W11; W08 → W12, W14; W09 → W15; W10 → W16; W11 → W17 |
+  | E03 | W01 ↔ W02 |
+  | E04 | W04 ↔ W05 |
+  | E05 | new link check W08 |
+
+- **Longest chains.** Thirteen chains of ten steps, all starting at E00 W01.
+- **Bodies.** Order narration and change narrative left every body; how the plan changed lives
+  here.
+
 ## Rollout
 
 Each layer works end to end before the next begins.
