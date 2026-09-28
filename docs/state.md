@@ -6,7 +6,7 @@ A **variable** is a named fact the workflow declares. The **bag** is the set of 
 
 The session lives in the **planning folder**. The **state file** in that folder is the session written down. An agent holds a **session index**, a short name that finds the state file. A **seal** is the mark on the state file, bound to the server's **signing key**. A **read** is the server opening the state file.
 
-**Seeding** writes each declared starting value into the bag when the session opens. A **checkpoint** is a pause for a person. A **worker** carries out one activity. An **orchestrator** tracks the workflow. A **user-facing agent** is the one that can ask a person. After seeding, a checkpoint answer and a worker's outputs are what change the bag.
+**Seeding** writes each declared starting value into the bag when the session opens. A **checkpoint** is a pause for a person. A **worker** carries out one activity. An **orchestrator** tracks the workflow. A **user-facing agent** is the one that can ask a person. After seeding, a checkpoint answer and a worker's outputs are what change the bag, beside two writes the server makes of its own.
 
 ## Where Variables Come From
 
@@ -183,7 +183,7 @@ A declared type is one of `string`, `number`, `boolean`, `array` or `object`, an
 
 ## How State Changes
 
-After seeding, a checkpoint answer and a worker's output are what write the bag, and both go through the same server routine (Figure 11). The bag is the union of what the user decided and what the workers found (Figure 12).
+After seeding, what agents write into the bag is a checkpoint answer or a worker's output, and both go through the same server routine (Figure 11). The bag is the union of what the user decided and what the workers found (Figure 12).
 
 ```mermaid
 stateDiagram-v2
@@ -210,6 +210,8 @@ classDiagram
 ```
 
 *Figure 12. Bag, Checkpoint Answer, and Worker Output.*
+
+The server writes two things of its own: the container a fan fills, when the fan opens, and on resume, the new request and any declared default added since the session opened.
 
 ### An Answer at a Checkpoint
 
@@ -249,7 +251,7 @@ classDiagram
 }
 ```
 
-The user-facing agent passes the update down to the orchestrator, which applies it to its own copy of the state before passing it on to the worker.
+The server writes the chosen option's `setVariable` into the bag when `respond_checkpoint` records the answer, and `resume_checkpoint` hands the worker those values as `variables_changed`.
 
 ### A Worker's Outputs
 
@@ -519,8 +521,9 @@ Not every call returns a session index.
 |----------|------|
 | `client` beside the session | A unique catalog match, with no resume phrasing in the request |
 | A `decision`, and no `session_index` | A durable meta start that cannot uniquely open a client. The decision is `workflow-selection` or `resume-session` |
+| A `decision`, and no `session_index` | A `working_directory` that does not resolve to one repository and component, or a `repo` that disagrees with it. The decision is `unbound-repo`, `binding-mismatch`, `component-choice` or `unmapped-root` |
 
-Every response carries `execution_path`: `agent` where a caller walks the definition, `runner` where the server does.
+Every response that opens a session carries `execution_path`: `agent` where a caller walks the definition, `runner` where the server does.
 
 <a id="persistence"></a>
 
@@ -568,7 +571,7 @@ The `README.md` carries a Progress table. The orchestrator marks a row in progre
 
 ### Session Files
 
-The server writes the state file, then the seal, on every authenticated call (Figure 31). Those two files are the pieces (Figure 32).
+The server writes the state file, then the seal, on every call that changes the session (Figure 31). Those two files are the pieces (Figure 32).
 
 ```mermaid
 sequenceDiagram
@@ -594,10 +597,10 @@ classDiagram
 
 *Figure 32. State File, and the Seal on It.*
 
-The server owns the canonical session state and writes it to disk atomically. Agents hold a six-character session index, derived deterministically from the planning slug, and nothing else. They neither read nor write the state themselves. Each session folder holds two files:
+The server owns the canonical session state and writes it to disk atomically. Agents hold a six-character session index, derived deterministically from the planning folder's path under the server's signing key, and nothing else. They neither read nor write the state themselves. Each session folder holds two files:
 
-* **`session.json`** is the state file, validated against the [schema](../schemas/session-file.schema.json). It holds where the run has got to, what it decided, and what it did — the workflow and version it started against, the variable bag, the activities completed and skipped, the checkpoint responses, the history, any launched children, and for a child, a snapshot of its parent. A person can read it, and it is reproducible from the workflow definition. Read the schema for the field-by-field shape rather than a list here, which would drift from it.
-* **`.session-token`** is the seal, binding those exact bytes to the engineering root and to the server's signing key. The server verifies it on every read, and a disagreement fails the read. What the seal does and does not prove is in [fidelity](fidelity.md#layer-1-session-integrity).
+* **`session.json`** is the state file, validated against the [schema](../schemas/session-file.schema.json). It holds where the run has got to, what it decided, and what it did — the workflow and version it started against, the variable bag, the activities completed, the checkpoint responses, the history, and any launched children, each with its own state embedded. A person can read it, and it is reproducible from the workflow definition. Read the schema for the field-by-field shape rather than a list here, which would drift from it.
+* **`.session-token`** is the seal, binding those exact bytes to the server's signing key. The server verifies it on every read, and a disagreement fails the read. What the seal does and does not prove is in [fidelity](fidelity.md#layer-1-session-integrity).
 
 ### Writes Against One Session
 

@@ -71,7 +71,7 @@ classDiagram
 
 ## State
 
-Ask what to do next, and two runs of the same facts can take different paths. The next place is written down before the run reaches it, so those runs take the same path (Figure 5). Notes from the run stay in the planning folder, apart from the code. Where that folder sits is the workspace [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md), what it holds is [state](state.md#the-planning-folder), and the path itself is [state](state.md) (Figure 6).
+Ask what to do next, and two runs of the same facts can take different paths. The next place is written down before the run reaches it, so those runs take the same path (Figure 5). Notes from the run stay in the planning folder, apart from the code. Where that folder sits is the workspace [project layout](https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md), what it holds is [state](state.md#planning-folder), and the path itself is [state](state.md) (Figure 6).
 
 ```mermaid
 sequenceDiagram
@@ -233,7 +233,7 @@ classDiagram
 
 ## Delivery
 
-The named file has to reach the agent that needs it. It is handed over when it is needed, not all at once (Figure 17). A later need for the same file does not send the whole text again. That handing-over is what [delivery](delivery.md) is, and how a document in the planning folder is [named](delivery.md#how-documents-are-named) is there too (Figure 18).
+The named file has to reach the agent that needs it. It is handed over when it is needed, not all at once (Figure 17). A later need for the same file does not send the whole text again. That handing-over is what [delivery](delivery.md) is, and how a document in the planning folder is [named](delivery.md#document-names) is there too (Figure 18).
 
 ```mermaid
 sequenceDiagram

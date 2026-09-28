@@ -145,9 +145,11 @@ The worker's own role is in that set because every worker is told to apply it, a
 
 
 
+<a id="how-documents-are-named"></a>
+
 ### Document Names
 
-A worker names each document with the activity's prefix, so the folder sorts by activity (Figure 7). That is the activity, that prefix, and the list of expected documents (Figure 8). Where the folder sits is the [planning folder](state.md#the-planning-folder).
+A worker names each document with the activity's prefix, so the folder sorts by activity (Figure 7). That is the activity, that prefix, and the list of expected documents (Figure 8). Where the folder sits is the [planning folder](state.md#planning-folder).
 
 ```mermaid
 sequenceDiagram
@@ -250,7 +252,7 @@ What is held back stays reachable. A worker may raise a decision its activity ne
 | Set          | Covers                                                                                                                                                                                                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Orchestrator | How the engine advances and evaluates a transition, how state is kept and committed, how a child workflow is handled, how a prompt is composed, the Git steps a commit needs, and how a background agent is started and resumed |
-| Worker       | The worker's own role, and finishing an activity                                                                                                                                                                                |
+| Worker       | The worker's own role, finishing an activity, what a gate expression means and how many times a loop body runs, and how a step's technique reads the variable bag                                                               |
 
 
 Conduct is the engine's baseline rather than a workflow's choice, so no workflow declares it. The rules that bind every agent appear in both sets. The rules that specialise one role appear only in that role's set.
@@ -438,7 +440,7 @@ Three carve-outs keep the bound aimed at what it is for:
 
 #### Refusal and Replacement
 
-A refusal is a history event. An older server meeting an event it does not know fails to read the session. Moving back to that server means stripping those events or retiring the session. Reading an older session on this server is unaffected.
+A refusal is a history event. A server reads only the event types it records, so a session holding one it does not know fails to load, on an older server and on this one alike. Moving a session between servers means stripping those events or retiring the session.
 
 The worker reports each activity as it completes, so the session tracks the run. A replacement picks up the current activity, takes a full delivery, and re-crosses gates already answered. Cost is one row per activity a dispatch covered, sharing an identity, rather than one figure per dispatch. Without that, a batch size cannot be calibrated from real runs.
 
@@ -528,7 +530,7 @@ Each technique step whose gate answers true, in document order, until the budget
 | Variables bound before the activity opened, none of them written inside it, and the gate is true | True       | Inlined. The worker certainly reaches this step                           |
 | The same, evaluating false                                                                       | False      | Left to fetch, and nothing is shipped for a step the run will not execute |
 | A variable this activity produces                                                                | Unanswered | Left to fetch                                                             |
-| A variable absent from the bag                                                                   | Unanswered | Left to fetch. An absent read is not the same as a negative one           |
+| A variable the gate compares, absent from the bag                                                | Unanswered | Left to fetch. An absent read is not the same as a negative one           |
 | An expression that does not parse                                                                | Unanswered | Left to fetch                                                             |
 
 
@@ -657,7 +659,7 @@ Saying the context is fresh drops that scope's ledger entries, because the calle
 
 #### Ledger Keys
 
-The server hashes each payload it delivers and records it, in every mode, so a later call that asks for a marker can still refer to content that arrived in full. Keys are namespaced by channel, so a marker only points at content delivered through that same channel.
+The server hashes each payload it delivers and records it, in every mode, so a later call that asks for a marker can still refer to content that arrived in full. Each key names one whole item. A step's technique, a linked resource, and a shared contract keep one key across the activity load and a later fetch, so a delivery through either collapses the other.
 
 The ledger is keyed on the delivery scope: the identity supplied with the call when there is one, otherwise the session's recorded identity. A dispatched worker authenticates against the orchestrator's session, and several workers can hold that session at once. The scope names the context a payload went to, rather than the session they share.
 
@@ -671,7 +673,7 @@ The orchestrator mints one identity per dispatch and reuses it for as long as th
 - A workflow load, in the persistent mode, collapses the technique bundle above the separator to one marker when the agent already holds it. The workflow summary below the separator stays full.
 - The notes that travel with a delivery pass through the same ledger. A context that holds one receives a marker in its place. Forcing the bundle restores them with everything else it restores.
 
-Asking for one technique or one resource collapses under reference delivery or a persistent session. A fresh session and the default session always receive full bodies.
+Asking for one technique or one resource collapses under reference delivery or a persistent session. In a fresh or default session, a call that does not ask for reference delivery receives full bodies.
 
 #### Shared Contracts
 
@@ -691,7 +693,7 @@ A technique placed in the activity response and the same technique asked for lat
 
 ## What Gets Measured
 
-Each dispatch and each fetch is recorded, and the agent reports what a turn cost (Figure 25). That is the history, the ledger, and that report (Figure 26). Coverage of a bundled step counts for [fidelity](fidelity.md#layer-5-the-step-manifest).
+Each dispatch and each fetch is recorded, and the agent reports what a turn cost (Figure 25). That is the history, the ledger, and that report (Figure 26). Coverage of a bundled step counts for [fidelity](fidelity.md#layer-5-step-manifest).
 
 ```mermaid
 sequenceDiagram
@@ -711,7 +713,7 @@ classDiagram
     one record per dispatch
   }
   class Ledger {
-    full size, sent or saved
+    what each context holds
   }
   class UsageReport {
     turn cost, agent reported
@@ -720,7 +722,8 @@ classDiagram
   class Fetch
   class Activity
   History --> Dispatch : counts
-  Ledger --> Fetch : counts
+  History --> Fetch : counts, full size
+  Ledger --> Fetch : full or marker
   UsageReport --> Activity : one row each
 ```
 
@@ -740,7 +743,7 @@ When an activity is delivered whole to a context that has not received it, in a 
 
 #### Payload Size
 
-A technique fetch, a technique placed in the bundle, and a resource fetch each carry the full payload size, on both the full path and the marker path, and which of the two it was. Characters delivered and characters saved are both totals that add up from the ledger.
+A technique fetch, a technique placed in the bundle, and a resource fetch each carry the full payload size, on both the full path and the marker path, and which of the two it was. Characters delivered and characters saved are both totals that add up from the session history.
 
 #### Reported Cost
 

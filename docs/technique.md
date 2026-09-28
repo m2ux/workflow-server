@@ -123,7 +123,7 @@ Each `###` heading under Inputs or Outputs is an entry: a description, and optio
 * `##### <field>` under an output is a field one entry of that component carries, where the component holds a list. A component with fields becomes an object. One without stays the description string. A loop's item name appears in no signature, so without the declaration a step reading a field of that item is a claim nothing can settle.
 * `#### entry` is reserved, for an output that is a list rather than a value with parts. Its `#####` children are the fields one entry carries. Reserving the name keeps `####` meaning a part of the value everywhere else.
 * `#### artifact` is the persistence filename: a literal, or a `{token}` template the worker fills in. One filename per output, one path segment ending in an extension. A technique that writes several files declares one output per file.
-* `#### audience` is who reads the output: `human` or `agent`. Absent means `human`. An agent artifact is JSON on disk. A human artifact is prose.
+* `#### audience` is who reads the output: `human` or `agent`. An output with an artifact declares it. On an output without one, absent means `human`. An agent artifact is JSON on disk, so its filename, or a template's literal suffix, ends in `.json`. A human artifact is prose.
 * `#### values` is the closed set the output admits. Backticked tokens in the body are the output's own set. `#####` children are the set one field admits.
 * `#### default` is an input's default value.
 * An entry whose description opens with `optional` is not required.
@@ -134,7 +134,7 @@ Pick the audience from who reads the artifact.
 
 * **Agent** — written only for the next agent to consume as state: tables that carry ids, routing or index state, anything a later step reads back.
 * **Human** — a person reads it linearly: a design write-up, a summary, a README.
-* **Absent** — human, the case when the declaration omits audience.
+* **Absent** — human, and only on an output with no artifact.
 
 An agent artifact carries no prose narrative and does not restate another artifact. A human artifact states a thing once and links the rest. The declaration says who reads the artifact as it exists. It does not fix the shape of a particular payload. That shape belongs to the artifact's own guide.
 

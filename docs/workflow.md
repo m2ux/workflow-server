@@ -36,7 +36,7 @@ classDiagram
 
 *Figure 2. Definition, Activities, and Graph.*
 
-The file is `workflow.yaml` in the workflow's directory. The directory name is the workflow's id. Activities live in that directory's `activities/` folder, or inline. A filename may begin with a number. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
+The file is `workflow.yaml` in the workflow's directory. The directory name is the workflow's id. Activities live in that directory's `activities/` folder, or inline. An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
 
 #### Sample Definition
 
@@ -132,11 +132,11 @@ A destination is one of these:
 
 * One activity.
 * The terminal sentinel, and the run ends.
-* A list of at least two activities the run opens together.
+* A list of at least two members the run opens together, each an activity or an activity with its collection.
 * One activity, with the collection to run it once per element.
 
-Where the destination the orchestrator moves to disagrees with the exit it reports, the advance warns and is not blocked. Selecting an immediate exit at a checkpoint ends that activity's remaining steps.
+The run enters the destination the graph binds to the exit the orchestrator reports. Where the destination the orchestrator names disagrees, the advance warns. A fan branch that names anything but the fan's meeting point is refused. Selecting an immediate exit at a checkpoint ends that activity's remaining steps.
 
 ## Variables
 
-A variable is declared on the workflow, and the session is seeded from its default when the run opens. After that, a checkpoint option's variable effect is the write the server applies. A variable with no default stays absent. The declaration is what an agent is shown: the name, the type, the values it may take, and the starting value. Prose about what the variable is for rides the activity that produces it and the activity that consumes it, not this roster.
+A variable is declared on the workflow or in the writes of an activity it contains, and the session is seeded from its default when the run opens. After that, the server applies a checkpoint option's variable effect, the values an advance or a checkpoint yield reports, and the per-branch slots a fan opens. A variable with no default stays absent. The declaration is what an agent is shown: the name, the type, the values it may take, and the starting value. Prose about what the variable is for rides the activity that produces it and the activity that consumes it, not this roster.

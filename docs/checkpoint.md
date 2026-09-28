@@ -6,7 +6,7 @@ A **worker** carries out one activity, in the background, and cannot speak to th
 
 A **session** holds the pause and the recorded answer. The worker hands up a **block**, an empty marker, and stops. **Yielded** means the pause is new. **Replayed** means an answer is already there and the worker continues. An **answer key** names the activity and the checkpoint, so a replacement worker can replay. The [calls](api.md#workflow-navigation) record the pause, show it, answer it, and continue.
 
-A **gate** is a checkpoint placed before the steps its answer steers. An answer's **effect** writes a variable or names the activity's outcome. A **routine** declares one gate that several **sites** reuse. A **dispatch** sends a worker an activity, and a checkpoint is never that activity's first step. What a timer cannot prove is in [fidelity](fidelity.md).
+A **gate** is a checkpoint placed before the steps its answer steers. An answer's **effect** writes a variable or names the activity's outcome. A **routine** declares one gate that several **sites** reuse. A **dispatch** sends a worker an activity, and a guard reports a checkpoint placed as that activity's first step. What a timer cannot prove is in [fidelity](fidelity.md).
 
 ## Checkpoint Flow
 
@@ -499,20 +499,20 @@ Requirements come from conjuncts only. An alternative proves nothing about which
 
 ### Never the First Step
 
-A checkpoint is refused as the first step, and the decision sits in one of the other places (Figure 19). The activity and the dispatch would otherwise pay for a pause before any work (Figure 20).
+The checkpoint-entry guard reports a checkpoint placed as the first step, and the decision sits in one of the other places (Figure 19). The activity and the dispatch would otherwise pay for a pause before any work (Figure 20).
 
 ```mermaid
 sequenceDiagram
-  participant Dispatch
+  participant Guard
   participant Activity
-  Dispatch->>Activity: First step is a checkpoint
-  Activity-->>Dispatch: Refused
+  Guard->>Activity: Read the first materialised step
+  Activity-->>Guard: A checkpoint, reported
   Note over Activity: Put the decision at the previous activity's end, or before dispatch
 ```
 
 
 
-*Figure 19. A Checkpoint Is Refused as the First Step.*
+*Figure 19. A Checkpoint as the First Step Is Reported.*
 
 ```mermaid
 classDiagram

@@ -2,7 +2,7 @@
 
 The JSON Schema definitions live in [schemas/](../schemas/). They define the structure for workflow definitions, conditional logic, and the on-disk session record.
 
-The server exposes these schemas as [MCP resources](api.md#mcp-resources).
+The server exposes every one of these schemas except the routine schema as [MCP resources](api.md#mcp-resources).
 
 ## Overview
 
@@ -21,10 +21,10 @@ The workflow server uses six schemas:
 
 ## Enforcement Model
 
-The server enforces structure at load time plus a small runtime core; most schema semantics are carried out by the executing agents. `get_activity` delivers the raw activity YAML verbatim, so every authored field reaches the agent. Each field has an owner and a strictness.
+The server enforces structure at load time plus a runtime core; the executing agents carry out the fields no server path reads. `get_activity` delivers the activity YAML as authored, with each step's resolved id filled in and each routine reference replaced by the routine's steps, so every authored field reaches the agent. Each field has an owner and a strictness.
 
 - **Owner** — `Engine` when server behavior or a check depends on the field. `Agent` when the field is delivered and no server path reads it.
-- **Strictness** — `enforced` when a failed check blocks. `advisory` when the field is rendered or checked warn-only, and compliance does not block.
+- **Strictness** — `enforced` when a check on the field blocks, at load or at run time. `advisory` when every check on it only renders or warns.
 
 ## Generation
 
