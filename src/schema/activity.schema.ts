@@ -59,7 +59,7 @@ const stepEntryCondition = {
 
 export const TechniqueStepSchema = z.object({
   kind: enforcement(z.literal('technique').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().optional().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().optional().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted.'), { owner: 'Engine', strictness: 'enforced' }),
   technique: z.union([TechniqueReferenceSchema, TechniqueBindingSchema]).describe('Technique reference, or an object with `name` and optional `inputs` and `outputs` bindings.'),
   actions: enforcement(z.array(ActionSchema).optional().describe('Actions associated with the technique step.'), { owner: 'Agent', strictness: 'advisory' }),
   ...stepCommonFields,
@@ -69,7 +69,7 @@ export type TechniqueStep = z.infer<typeof TechniqueStepSchema>;
 
 export const ActionStepSchema = z.object({
   kind: enforcement(z.literal('action').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine.'), { owner: 'Engine', strictness: 'enforced' }),
   actions: enforcement(z.array(ActionSchema).optional().describe('Control actions; may be empty for marker steps.'), { owner: 'Agent', strictness: 'advisory' }),
   ...stepCommonFields,
   ...stepEntryCondition,
@@ -78,10 +78,10 @@ export type ActionStep = z.infer<typeof ActionStepSchema>;
 
 export const CheckpointStepSchema = z.object({
   kind: enforcement(z.literal('checkpoint').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. With the activity identifier it forms the key a recorded response replays under on resume.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. With the activity identifier it forms the key a recorded response replays under on resume.'), { owner: 'Engine', strictness: 'enforced' }),
   message: z.string().describe('Message presented to the user.'),
   options: enforcement(z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'), { owner: 'Engine', strictness: 'enforced' }),
-  defaultOption: enforcement(z.string().optional().describe('Identifier of one of this checkpoint\'s options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither. One without the other, or a default naming none of the options, excludes the activity from the load; in a routine file, it fails the load of any workflow that reads that routine.'), { owner: 'Engine', strictness: 'enforced' }),
+  defaultOption: enforcement(z.string().optional().describe('Identifier of one of this checkpoint\'s options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither. One without the other, or a default naming none of the options, excludes the activity from the load; in a routine file, it excludes each activity that refers to that routine.'), { owner: 'Engine', strictness: 'enforced' }),
   autoAdvanceMs: enforcement(z.number().int().positive().optional().describe('Positive waiting interval in milliseconds before `defaultOption` may be selected automatically; declared together with `defaultOption`.'), { owner: 'Engine', strictness: 'enforced' }),
   ...stepCommonFields,
   ...stepEntryCondition,
@@ -91,7 +91,7 @@ export type CheckpointStep = z.infer<typeof CheckpointStepSchema>;
 // Recursion is on the steps field: discriminatedUnion requires object members, so the union cannot be lazy.
 export const LoopStepSchema = z.object({
   kind: enforcement(z.literal('loop').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine.'), { owner: 'Engine', strictness: 'enforced' }),
   name: z.string().optional().describe('Human-readable label for the iteration.'),
   loopType: enforcement(z.enum(['forEach', 'while', 'doWhile']).describe('Iteration over a collection (`forEach`), with a pre-test (`while`), or with a post-test (`doWhile`).'), { owner: 'Agent', strictness: 'advisory' }),
   continueWhile: enforcement(ConditionSchema.optional().describe('Continuation condition required for `while` and `doWhile` loops and absent for `forEach` loops.'), { owner: 'Agent', strictness: 'advisory' }),
@@ -107,7 +107,7 @@ export type LoopStep = z.infer<typeof LoopStepSchema>;
 // A routine step's gate is `when` alone: a `condition` reaching the body would make every checkpoint in it dismissible.
 export const RoutineStepSchema = z.object({
   kind: enforcement(z.literal('routine').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. It is also the prefix every identifier in the routine body carries once spliced in.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. It is also the prefix every identifier in the routine body carries once spliced in.'), { owner: 'Engine', strictness: 'enforced' }),
   routine: z.string().describe('Routine reference in `[namespace::]name` form, with no segment empty. The namespace is a directory name, or the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity\'s source workflow, then `meta`. The last segment is the routine and every segment before it is the namespace, since a routine name has no group grammar.'),
   with: z.record(z.union([z.string().describe('Text literal or braced host-variable reference.'), z.number().describe('Numeric routine argument.'), z.boolean().describe('Boolean routine argument.')]).describe('Literal argument or braced host-variable reference.')).optional().describe('Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default, or an argument naming no declared input, excludes the referring activity from the load. A `kind: technique` input takes a literal technique reference, a string holding no `{`, since the substitution happens when the definitions load and a braced value has no value then; any other argument to it excludes the referring activity from the load.'),
   outputs: z.record(z.string().describe('Session variable name for the routine output.')).optional().describe('Routine output identifiers mapped to session variable names. An output left unbound produces no write; only an output declared `optional: true` may be left unbound. Any other unbound output, or a binding naming no declared output, excludes the referring activity from the load.'),
@@ -271,7 +271,7 @@ export const ExitSchema = z.object({
 export type Exit = z.infer<typeof ExitSchema>;
 
 export const ActivitySchema = z.object({
-  id: enforcement(z.string().describe('Unique identifier for the activity'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Identifier of the activity, unique within a workflow and carried by its filename: `01-gather.yaml` declares `gather`. A file whose id disagrees with its filename is excluded from the load.'), { owner: 'Engine', strictness: 'enforced' }),
   version: SemanticVersionSchema.describe('Semantic version of the activity'),
   name: enforcement(z.string().describe('Human-readable activity name'), { owner: 'Engine', strictness: 'advisory' }),
   

@@ -35,6 +35,19 @@ export interface WorkflowManifestEntry { id: string; title: string; version: str
  */
 export interface DefinitionLoadError { file: string; activity_id?: string | undefined; error: string; }
 
+/** Where a loaded activity's definition sits, and the name a load error gives the file. */
+export interface ActivityFile { path: string; label: string; }
+
+/**
+ * An activity's filename carries its id, and a reference reaches it by the id it declares, so the
+ * two agree; the message names both.
+ */
+function idMismatch(declared: string, filenameId: string): string | undefined {
+  return declared === filenameId
+    ? undefined
+    : `declares id '${declared}' in a file named for '${filenameId}'; an activity's filename carries its id, so the two agree`;
+}
+
 /** A loaded workflow plus the per-file activity-load failures excluded from it. */
 export interface WorkflowWithDiagnostics {
   workflow: Workflow;
@@ -45,6 +58,13 @@ export interface WorkflowWithDiagnostics {
    * unqualified technique and routine references to their source workflow.
    */
   activitySourceWorkflow: Map<string, string>;
+  /**
+   * Activity id → the file the activity was loaded from: its path, and the name a load error
+   * reports it under, the filename for an activity of the workflow's own and the reference for a
+   * borrowed one. Holds only the activities the load kept, so a raw read serves exactly the
+   * activities the workflow contains.
+   */
+  activityFiles: Map<string, ActivityFile>;
   /**
    * Activity id → the activity as authored, still carrying its `kind: routine` steps (#704).
    *
@@ -77,8 +97,9 @@ interface RawWorkflow {
 /**
  * Load activities from a directory
  */
-async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activities: Activity[]; errors: DefinitionLoadError[] }> {
-  if (!existsSync(activitiesPath)) return { activities: [], errors: [] };
+async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activities: Activity[]; errors: DefinitionLoadError[]; files: Map<string, ActivityFile> }> {
+  const loadedFiles = new Map<string, ActivityFile>();
+  if (!existsSync(activitiesPath)) return { activities: [], errors: [], files: loadedFiles };
 
   const files = await readdir(activitiesPath);
   const activities: Activity[] = [];
@@ -99,10 +120,17 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activiti
         continue;
       }
       const activity = validation.data;
+      const mismatch = idMismatch(activity.id, parsed.id);
+      if (mismatch) {
+        logWarn('Skipping activity whose id disagrees with its filename', { file, activityId: activity.id });
+        errors.push({ file, activity_id: activity.id, error: mismatch });
+        continue;
+      }
       populateStepIds(activity);
       assertCheckpointDefaults(activity);
       activity.artifactPrefix = parsed.index;
       activities.push(activity);
+      loadedFiles.set(activity.id, { path: join(activitiesPath, file), label: file });
     } catch (error) {
       logWarn('Failed to load activity', { file, error: error instanceof Error ? error.message : 'Unknown error' });
       errors.push({ file, activity_id: parsed.id, error: error instanceof Error ? error.message : 'Unknown error' });
@@ -112,7 +140,7 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activiti
   activities.sort((a, b) =>
     (a.artifactPrefix ?? '').localeCompare(b.artifactPrefix ?? '')
   );
-  return { activities, errors };
+  return { activities, errors, files: loadedFiles };
 }
 
 /**
@@ -132,7 +160,7 @@ function identityFailure(index: CorpusIndex, workflowId: string): string | null 
 
 /** What a borrowed activity reference resolves to: the activity, a file that failed to load, or no file. */
 type ReferencedActivity =
-  | { kind: 'loaded'; activity: Activity; sourceWorkflowId: string }
+  | { kind: 'loaded'; activity: Activity; sourceWorkflowId: string; path: string }
   | { kind: 'invalid'; error: DefinitionLoadError }
   | { kind: 'missing' };
 
@@ -166,13 +194,15 @@ async function resolveActivityReference(index: CorpusIndex, ref: string): Promis
       return failure(formatZodIssues(validation.error.issues));
     }
     const activity = validation.data;
+    const mismatch = parsed ? idMismatch(activity.id, parsed.id) : undefined;
+    if (mismatch) return { kind: 'invalid', error: { file: ref, activity_id: activity.id, error: mismatch } };
     populateStepIds(activity);
     assertCheckpointDefaults(activity);
     if (parsed) activity.artifactPrefix = parsed.index;
 
     // The source workflow scopes the activity's bare references: a borrowed activity
     // resolves them against the workflow it was authored in, not the borrower.
-    return { kind: 'loaded', activity, sourceWorkflowId: targetWorkflowId };
+    return { kind: 'loaded', activity, sourceWorkflowId: targetWorkflowId, path: activityPath };
   } catch (error) {
     logWarn('Failed to load referenced activity', { ref, error: error instanceof Error ? error.message : 'Unknown error' });
     return failure(error instanceof Error ? error.message : 'Unknown error');
@@ -211,7 +241,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     let resolvedActivities: Activity[] = [];
 
     const activitiesPath = join(dirname(filePath), 'activities');
-    const { activities: localActivities, errors: activityLoadErrors } = await loadActivitiesFromDir(activitiesPath);
+    const { activities: localActivities, errors: activityLoadErrors, files: activityFiles } = await loadActivitiesFromDir(activitiesPath);
     if (localActivities.length > 0) {
       resolvedActivities = [...localActivities];
       logInfo('Loaded local activities from directory', { workflowId, count: localActivities.length });
@@ -252,6 +282,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
         }
         resolvedActivities.push(resolved.activity);
         activitySourceWorkflow.set(resolved.activity.id, resolved.sourceWorkflowId);
+        activityFiles.set(resolved.activity.id, { path: resolved.path, label: ref });
       });
       if (errors.length > 0) return err(new WorkflowValidationError(workflowId, errors));
     }
@@ -295,8 +326,9 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
           // failure carries (#166 B5).
           const message = error instanceof Error ? error.message : String(error);
           logWarn('Excluding activity with unresolvable routines', { workflowId, activityId: activity.id, error: message });
-          activityLoadErrors.push({ file: `${activity.artifactPrefix ?? ''}${activity.artifactPrefix ? '-' : ''}${activity.id}.yaml`, activity_id: activity.id, error: message });
+          activityLoadErrors.push({ file: activityFiles.get(activity.id)?.label ?? activity.id, activity_id: activity.id, error: message });
           authoredActivities.delete(activity.id);
+          activityFiles.delete(activity.id);
         }
       }
       if (workflow.activities) workflow.activities = withRoutines;
@@ -337,7 +369,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     if (bindingErrors.length > 0) return err(new WorkflowValidationError(workflowId, bindingErrors));
 
     logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
-    return ok({ workflow, activityLoadErrors, activitySourceWorkflow, authoredActivities });
+    return ok({ workflow, activityLoadErrors, activitySourceWorkflow, activityFiles, authoredActivities });
   } catch (error) {
     logError('Failed to load workflow', error instanceof Error ? error : undefined, { workflowId });
     return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : 'Unknown error']));
@@ -942,73 +974,25 @@ function instanceFanErrors(
 export const TERMINAL_SENTINEL = '__terminal__';
 
 /**
- * Read raw activity definition (YAML) by ID. Validates but returns the original file content,
- * plus the workflow the file was authored in (`sourceWorkflowId` differs from `workflowId` for a
- * borrowed cross-workflow activity) — the scope the file's bare references resolve against.
+ * The activity file as authored, for delivery. Served from the load, so it holds exactly the
+ * activities the workflow contains: an activity the load excluded, own or borrowed, is not found
+ * here either, and a borrowed one reports the workflow it was authored in.
  */
 export async function readActivityRaw(
   workflowDir: string,
   workflowId: string,
   activityId: string,
 ): Promise<Result<{ content: string; sourceWorkflowId: string }, ActivityNotFoundError>> {
-  const index = indexCorpus(workflowDir);
-  const filePath = resolveWorkflowPath(index, workflowId);
-  if (!filePath) return err(new ActivityNotFoundError(activityId, workflowId));
-
-  // A workflow may hold no activities of its own and borrow every one, so a missing folder falls
-  // through to the references below.
-  const activitiesDir = join(dirname(filePath), 'activities');
+  const loaded = await loadWorkflowWithDiagnostics(workflowDir, workflowId);
+  if (!loaded.success) return err(new ActivityNotFoundError(activityId, workflowId));
+  const file = loaded.value.activityFiles.get(activityId);
+  if (!file) return err(new ActivityNotFoundError(activityId, workflowId));
   try {
-    const files = existsSync(activitiesDir) ? await readdir(activitiesDir) : [];
-    for (const file of files) {
-      const parsed = parseActivityFilename(file);
-      if (!parsed || parsed.id !== activityId) continue;
-
-      const content = await readFile(join(activitiesDir, file), 'utf-8');
-      const decoded = parseDefinition(content);
-      const validation = safeValidateActivity(decoded);
-      if (!validation.success) {
-        logWarn('Activity validation failed (raw read)', { activityId, errors: validation.error.issues });
-        return err(new ActivityNotFoundError(activityId, workflowId));
-      }
-      return ok({ content, sourceWorkflowId: workflowId });
-    }
+    const content = await readFile(file.path, 'utf-8');
+    return ok({ content, sourceWorkflowId: loaded.value.activitySourceWorkflow.get(activityId) ?? workflowId });
   } catch (error) {
     logWarn('Failed to read activity raw', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
+    return err(new ActivityNotFoundError(activityId, workflowId));
   }
-
-  // Fallback: a borrowed cross-workflow activity declared as a string ref in this workflow's
-  // activities[] list (e.g. "work-package/02-design-philosophy.yaml"). The local-dir scan above
-  // covers only the workflow's own activities; resolve the borrowed file so a raw read returns the
-  // same definition loadWorkflow already merges into the activity set — keeping get_activity in
-  // step with the workflow summary and next_activity for workflows that compose another's activities.
-  try {
-    const wfRaw = parseDefinition(await readFile(filePath, 'utf-8')) as RawWorkflow;
-    const refs = (wfRaw['activities'] as unknown[] | undefined) ?? [];
-    for (const ref of refs) {
-      if (typeof ref !== 'string' || !ref.includes('/')) continue;
-      const targetWorkflowId = ref.split('/')[0]!;
-      const filename = ref.split('/').slice(1).join('/');
-      const parsed = parseActivityFilename(filename.split('/').pop() ?? '');
-      if (!parsed || parsed.id !== activityId) continue;
-      const targetDir = workflowLocation(index, targetWorkflowId)?.dir;
-      if (!targetDir) continue;
-      const borrowedPath = filename.startsWith('activities/')
-        ? join(targetDir, filename)
-        : join(targetDir, 'activities', filename);
-      if (!existsSync(borrowedPath)) continue;
-      const content = await readFile(borrowedPath, 'utf-8');
-      const validation = safeValidateActivity(parseDefinition(content));
-      if (!validation.success) {
-        logWarn('Borrowed activity validation failed (raw read)', { activityId, ref, errors: validation.error.issues });
-        return err(new ActivityNotFoundError(activityId, workflowId));
-      }
-      return ok({ content, sourceWorkflowId: targetWorkflowId });
-    }
-  } catch (error) {
-    logWarn('Failed to resolve borrowed activity (raw read)', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
-  }
-
-  return err(new ActivityNotFoundError(activityId, workflowId));
 }
 

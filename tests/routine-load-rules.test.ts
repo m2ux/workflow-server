@@ -257,6 +257,45 @@ describe('a reference that does not resolve drops its activity and reports why',
   });
 });
 
+describe('a routine file that fails to load costs only the references to it', () => {
+  it('leaves a workflow that never refers to it loading clean', async () => {
+    expect(await activityErrors({
+      activities: [host({ routine: 'shared-run' })],
+      routines: [routine('shared-run'), { id: 'broken-run', steps: [] }],
+    })).toEqual([]);
+  });
+
+  it('excludes the activity that refers to it, naming the routine file', async () => {
+    const errors = await activityErrors({ activities: [host({ routine: 'broken-run' })], routines: [{ id: 'broken-run', steps: [] }] });
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toMatch(/routine 'broken-run' failed to load.*routines\/broken-run\.yaml/s);
+  });
+
+  it('does not fall through to a same-named meta routine', async () => {
+    const errors = await activityErrors({
+      activities: [host({ routine: 'shared-run' })],
+      routines: [{ id: 'shared-run', steps: [] }],
+      metaRoutines: [routine('shared-run')],
+    });
+    expect(errors.join(' ')).toContain("routine 'shared-run' failed to load");
+  });
+
+  it('reports a step rule a routine body breaks against the routine, not as an activity', async () => {
+    const { corpus, id } = writeTree({
+      activities: [host({ routine: 'gate-run' })],
+      routines: [routine('gate-run', {
+        steps: [{ kind: 'checkpoint', id: 'confirm', message: 'Proceed?', options: [{ id: 'go', label: 'Go' }], defaultOption: 'go' }],
+      })],
+    });
+    const result = await loadWorkflowWithDiagnostics(corpus, id);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    const [error] = result.value.activityLoadErrors.map((e) => e.error);
+    expect(error).toContain(`Routine '${id}::gate-run' (routines/gate-run.yaml): checkpoint 'confirm' declares defaultOption without autoAdvanceMs`);
+    expect(error).not.toContain("Activity 'gate-run'");
+  });
+});
+
 describe('a routine body carrying a loop and a nested reference', () => {
   it('loads clean and prefixes through every level', async () => {
     const { corpus, id } = writeTree({

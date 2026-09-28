@@ -1829,7 +1829,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       });
       expect(result.isError).toBe(true);
       const errorText = rawText(result);
-      expect(errorText).toContain('missing defaultOption or autoAdvanceMs');
+      expect(errorText).toContain('it is a hard checkpoint');
     });
 
     it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {

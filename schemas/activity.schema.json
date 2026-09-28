@@ -9,7 +9,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the activity"
+          "description": "Identifier of the activity, unique within a workflow and carried by its filename: `01-gather.yaml` declares `gather`. A file whose id disagrees with its filename is excluded from the load."
         },
         "version": {
           "type": "string",
@@ -194,7 +194,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted."
                   },
                   "technique": {
                     "anyOf": [
@@ -312,7 +312,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine."
                   },
                   "actions": {
                     "type": "array",
@@ -348,7 +348,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. With the activity identifier it forms the key a recorded response replays under on resume."
+                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. With the activity identifier it forms the key a recorded response replays under on resume."
                   },
                   "message": {
                     "type": "string",
@@ -402,7 +402,7 @@
                   },
                   "defaultOption": {
                     "type": "string",
-                    "description": "Identifier of one of this checkpoint's options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither. One without the other, or a default naming none of the options, excludes the activity from the load; in a routine file, it fails the load of any workflow that reads that routine."
+                    "description": "Identifier of one of this checkpoint's options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither. One without the other, or a default naming none of the options, excludes the activity from the load; in a routine file, it excludes each activity that refers to that routine."
                   },
                   "autoAdvanceMs": {
                     "type": "integer",
@@ -438,7 +438,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine."
                   },
                   "name": {
                     "type": "string",
@@ -508,7 +508,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. It is also the prefix every identifier in the routine body carries once spliced in."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. It is also the prefix every identifier in the routine body carries once spliced in."
                   },
                   "routine": {
                     "type": "string",

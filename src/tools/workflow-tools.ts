@@ -2775,7 +2775,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       } else if (auto_advance) {
         if (!checkpoint.defaultOption || !checkpoint.autoAdvanceMs) {
           throw new Error(
-            `Cannot auto-advance checkpoint '${checkpoint_id}': missing defaultOption or autoAdvanceMs.`
+            `Cannot auto-advance checkpoint '${checkpoint_id}': it is a hard checkpoint, declaring no defaultOption and autoAdvanceMs, so a person answers it.`
           );
         }
         const requiredSeconds = Math.ceil(checkpoint.autoAdvanceMs / 1000);
@@ -2785,10 +2785,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             `(${elapsed}s < ${requiredSeconds}s). Wait for the full autoAdvanceMs (${checkpoint.autoAdvanceMs}ms) before auto-advancing.`
           );
         }
-        const defaultOpt = checkpoint.options.find(o => o.id === checkpoint.defaultOption);
-        if (!defaultOpt) {
-          throw new Error(`Default option '${checkpoint.defaultOption}' not found in checkpoint '${checkpoint_id}'.`);
-        }
+        // The load refuses a default naming none of the checkpoint's options, so this always matches.
+        const defaultOpt = checkpoint.options.find(o => o.id === checkpoint.defaultOption)!;
         resolvedOptionId = checkpoint.defaultOption;
         effect = defaultOpt.effect as Record<string, unknown> | undefined;
       } else if (condition_not_met) {

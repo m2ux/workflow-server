@@ -274,6 +274,11 @@ describe('workflow-loader', () => {
         gate('stray-default', '    defaultOption: no\n    autoAdvanceMs: 5000'));
       writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '04-soft.yaml'),
         gate('soft', '    defaultOption: yes\n    autoAdvanceMs: 5000'));
+      // A declared id the filename disagrees with, own and borrowed.
+      workflow('id-mismatch-wf', 'ok', ['source-wf/04-labelled.yaml']);
+      writeFileSync(join(fixtureDir, 'id-mismatch-wf', 'activities', '01-ok.yaml'), 'id: ok\nversion: 1.0.0\nname: Ok\n');
+      writeFileSync(join(fixtureDir, 'id-mismatch-wf', 'activities', '02-named.yaml'), 'id: other\nversion: 1.0.0\nname: Other\n');
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', '04-labelled.yaml'), 'id: relabelled\nversion: 1.0.0\nname: Relabelled\n');
       workflow('no-entry-wf', 'absent', []);
       writeFileSync(join(fixtureDir, 'no-entry-wf', 'activities', '01-only.yaml'), 'id: only\nversion: 1.0.0\nname: Only\n');
     });
@@ -336,6 +341,21 @@ describe('workflow-loader', () => {
       const errors = Object.fromEntries(result.value.activityLoadErrors.map((e) => [e.activity_id, e.error]));
       expect(errors['lone-default']).toContain('defaultOption without autoAdvanceMs');
       expect(errors['stray-default']).toContain('not one of its options');
+      // The raw read serves what the load kept, so an excluded activity is not delivered either.
+      expect((await readActivityRaw(fixtureDir, 'soft-gate-wf', 'lone-default')).success).toBe(false);
+      expect((await readActivityRaw(fixtureDir, 'soft-gate-wf', 'soft')).success).toBe(true);
+    });
+
+    it('excludes an activity whose declared id disagrees with its filename, own or borrowed', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'id-mismatch-wf');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.workflow.activities?.map((a) => a.id)).toEqual(['ok']);
+      expect(result.value.activityLoadErrors).toEqual(expect.arrayContaining([
+        expect.objectContaining({ file: '02-named.yaml', activity_id: 'other', error: expect.stringContaining("in a file named for 'named'") }),
+        expect.objectContaining({ file: 'source-wf/04-labelled.yaml', activity_id: 'relabelled' }),
+      ]));
+      expect((await readActivityRaw(fixtureDir, 'id-mismatch-wf', 'other')).success).toBe(false);
     });
 
     it('fails the load when initialActivity names no activity', async () => {
