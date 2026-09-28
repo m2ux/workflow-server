@@ -67,13 +67,13 @@
 
 <main id="main">
   <h1>State management and deterministic transitions</h1>
-  <p class="lede">The workflow never asks the model to guess what happens next. A schema-validated variable bag holds the state; transitions are evaluated against it in declaration order; the first condition that matches wins. Conversational context plays no part in routing. Transitions, artifact contracts, binding provenance, and delivery payloads are all computed from definitions and state — same inputs, same path, with model judgment reserved for the work itself.</p>
+  <p class="lede">The workflow never asks the model to guess what happens next. A schema-validated variable bag holds the state; an activity's exits are tested against it in declaration order; the first condition that holds wins. Conversational context plays no part in routing. Exits, artifact contracts, binding provenance, and delivery payloads are all computed from definitions and state — same inputs, same path, with model judgment reserved for the work itself.</p>
   <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/state.md">docs/state.md</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 330" role="img" aria-labelledby="st-title st-desc">
-      <title id="st-title">Transition evaluation</title>
-      <desc id="st-desc">When an activity completes, the orchestrator reads the variable bag and evaluates the activity's transitions in order. The first condition that evaluates to true selects the next activity, and next underscore activity is called with that identifier. The variable bag is mutated by checkpoint effects and worker outputs, and persisted by the server in session dot json with a sealed token file.</desc>
+      <title id="st-title">Exit evaluation</title>
+      <desc id="st-desc">When an activity completes, the worker reads the variable bag and tests the activity's exits in order. The first exit whose condition holds, or else the default exit, is taken; the worker reads its destination from exit destinations, and the orchestrator calls next underscore activity with that identifier and the exit. The variable bag is mutated by checkpoint effects and worker outputs, and persisted by the server in session dot json with a sealed token file.</desc>
       <defs>
         <marker id="arrows" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -83,11 +83,11 @@
         <rect x="15" y="40" width="180" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="105" y="75" fill="var(--diagram-label)">activity completes</text>
         <rect x="250" y="40" width="200" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="350" y="66" fill="var(--diagram-label)">evaluate transitions</text>
+        <text x="350" y="66" fill="var(--diagram-label)">worker tests exits</text>
         <text x="350" y="86" fill="var(--diagram-note)" font-size="13" font-weight="400">in declaration order</text>
         <rect x="505" y="40" width="200" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="605" y="66" fill="var(--diagram-label)">first true condition</text>
-        <text x="605" y="86" fill="var(--diagram-note)" font-size="13" font-weight="400">or the default transition</text>
+        <text x="605" y="86" fill="var(--diagram-note)" font-size="13" font-weight="400">or the default exit</text>
         <rect x="760" y="40" width="185" height="60" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
         <text x="852" y="75" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">next_activity(id)</text>
         <rect x="250" y="185" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
@@ -113,16 +113,16 @@
         <path d="M 130 285 C 200 285, 230 250, 262 258" marker-end="url(#arrows)"/>
       </g>
     </svg>
-    <figcaption>Transition evaluation. The variable bag is read when an activity completes; transitions are checked in declaration order and the first matching condition (or the default) names the next activity. Checkpoint effects and worker outputs are the only mutation paths, and the server persists every change atomically.</figcaption>
+    <figcaption>Exit evaluation. The worker reads the variable bag when an activity completes, tests the exits in declaration order, and takes the first whose condition holds (or the default); the graph names the next activity. Checkpoint effects and worker outputs are what agents write; the server also writes a fan's container, and on resume the new request and missing defaults. The server persists every change atomically.</figcaption>
   </figure>
 
   <h2 id="variables">The variable bag</h2>
-  <p>Every workflow declares its variables in <code>workflow.yaml</code> — name, type (<code>string</code>, <code>number</code>, <code>boolean</code>, <code>array</code>, <code>object</code>), and optionally a default. The session's state dictionary is initialized from these definitions at bootstrap.</p>
-  <p>Two things mutate it during a run: <strong>checkpoint effects</strong> (your choice at a checkpoint carries a declared <code>setVariable</code> effect) and <strong>worker outputs</strong> (an activity worker returns variables it determined from its domain work, like <code>has_critical_bugs: true</code> after a failing test run).</p>
+  <p>A workflow declares the facts a session starts with in <code>workflow.yaml</code> — name, type (<code>string</code>, <code>number</code>, <code>boolean</code>, <code>array</code>, <code>object</code>), and optionally a default — and each activity declares the variables it writes under <code>variables.writes</code>. The session's state dictionary is seeded from these declarations when the session opens, together with <code>user_request</code> when one is passed and, from a working directory, the repository facts <code>host_repo_path</code>, <code>target_repo</code>, <code>component_path</code> and <code>is_monorepo</code>.</p>
+  <p>Agents write it in two ways during a run: <strong>checkpoint effects</strong> (your choice at a checkpoint carries a declared <code>setVariable</code> effect) and <strong>worker outputs</strong> (an activity worker returns variables it determined from its domain work, like <code>has_critical_bugs: true</code> after a failing test run). The server writes two things of its own: the container a fan fills, when the fan opens, and on resume the new request and any declared default the bag lacks.</p>
 
   <h2 id="transitions">The rule of determinism</h2>
-  <p>When an activity completes, the orchestrator consults the activity's <code>transitions</code> array. Conditions are structured objects — <code>simple</code> comparisons (<code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>exists</code>, <code>notExists</code>) composable with <code>and</code>, <code>or</code>, and <code>not</code>. The orchestrator must not ask you or the model what to do next: it evaluates conditions in array order against the current variables, and the first <code>true</code> names the next activity. Transitions can also come from decision branches and checkpoint-option effects.</p>
-  <p>Path variation works through ordinary state: an <em>activation variable</em> set early (by a detection step or a checkpoint) marks a variant — review mode, monorepo handling — and conditional transitions and step gates branch on it for the rest of the run.</p>
+  <p>An activity declares its outcomes as <code>exits</code>, and the workflow's <code>graph</code> binds each exit to a destination. When the activity completes, the worker tests its exits in order against the current variables, takes the first whose <code>when</code> holds, and otherwise takes the one marked <code>isDefault</code>. An exit's <code>when</code> is the inline gate expression a step uses: comparisons with <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code> and <code>&lt;=</code>, bare identifier truthiness, unary <code>!</code>, and <code>&amp;&amp;</code> / <code>||</code> with parentheses. Nobody asks you or the model what to do next: the worker reads the destination from its <code>exit_destinations</code>, and the orchestrator calls <code>next_activity</code> with that id and the <code>exit</code> taken. A checkpoint option's <code>exit</code> effect names an exit outright.</p>
+  <p>Path variation works through ordinary state: an <em>activation variable</em> set early (by a detection step or a checkpoint) marks a variant — review mode, monorepo handling — and exit conditions and step gates branch on it for the rest of the run.</p>
 
   <h2 id="manifest">Step completion manifest</h2>
   <p>When an activity ends, the orchestrator passes a <code>step_manifest</code> to <code>next_activity</code> — a structured summary of completed steps from the activity just finished. Each entry names a <code>step_id</code> and an <code>output</code>: a JSON object keyed by the output id the bound operation declares, one output included (e.g. <code>{"repo_root": "lib/x", "component_name": "x"}</code>). The server validates warn-only: every ungated top-level step present, declaration order preserved, non-empty outputs, and every reported key an id the step's operation declares. Steps gated by <code>when</code> or <code>condition</code> may be omitted; loop-body step ids are accepted but never required.</p>
@@ -132,15 +132,15 @@
   <p>Where each technique input comes from and where each output lands is computed statically from the workflow definition — no session-state reads, byte-identical refetches stay byte-identical. A step-bound <code>get_technique</code> fetch annotates each of the technique's own inputs with a <code>source:</code> line (step-binding value, workflow variable, prior step output, declared default, or <code>UNRESOLVED</code>) and remapped outputs with a <code>destination:</code> line. Contract-inherited inputs are annotated only when the resolution says something the block note does not. For borrowed activities, producer scans resolve bound ops against the activity's source workflow. The same convention is enforced offline by <code>check-binding-fidelity</code>.</p>
 
   <h2 id="persistence">Server-managed persistence</h2>
-  <p>The server owns the canonical state and writes it on every call that changes the session — agents only ever pass their 6-character <code>session_index</code>. Two files live in the planning folder under the engineering root: <code>session.json</code>, the human-inspectable, schema-validated state (see the <a href="../api/schemas.html#session-file">session-file schema</a>), and <code>.session-token</code>, an HMAC-signed seal binding that state to the server key. Writes are atomic (write-temp, then rename) and ordered; reads verify the seal and any mismatch is a hard <code>SealMismatchError</code>.</p>
-  <p>Because state lives on disk rather than in the agent, a session can be paused, killed, or resumed at any point: resume is one <code>start_session</code> call with the planning slug, and server restarts are transparent.</p>
+  <p>The server owns the canonical state and writes it on every call that changes the session — agents only ever pass their 6-character <code>session_index</code>. Two files live in the planning folder under the engineering root: <code>session.json</code>, the human-inspectable, schema-validated state (see the <a href="../api/schemas.html#session-file">session-file schema</a>), and <code>.session-token</code>, an HMAC-signed seal binding that state to the server key. Writes are atomic (write-temp, then rename) and ordered; reads verify the seal and any mismatch is a hard <code>SessionStoreError</code> with code <code>SEAL_MISMATCH</code>.</p>
+  <p>Because state lives on disk rather than in the agent, a session can be paused, killed, or resumed at any point: resume is one <code>start_session</code> call with the planning folder's absolute path, and server restarts are transparent.</p>
 
   <h2 id="planning-folder">The planning folder</h2>
   <p>A session opens one planning folder under the engineering root. The code change stays in the workspace. The notes of the run — the progress README, the session files, and the documents an activity produces — stay in that folder. Where the folder sits is the workspace <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/layout.md#a-sessions-notes">project layout</a>.</p>
   <p>The README carries a Progress table. The orchestrator marks a row in progress before it hands the activity to a worker, and complete once that activity's work is committed. The worker reports the documents it produced and does not edit the table. The table still advances when a worker is lost and replaced. How each document is named is in <a href="https://github.com/m2ux/workflow-server/blob/main/docs/delivery.md#how-documents-are-named">the worker bundle</a>.</p>
 
   <h2 id="related">Related</h2>
-  <p>Checkpoint effects are defined in the <a href="./checkpoints.html">checkpoints</a>. The enforcement that keeps reported transitions honest is <a href="./workflow-fidelity.html">fidelity</a>.</p>
+  <p>Checkpoint effects are defined in the <a href="./checkpoints.html">checkpoints</a>. The enforcement that keeps reported exits honest is <a href="./workflow-fidelity.html">fidelity</a>.</p>
 </main>
 
 

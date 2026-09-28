@@ -127,7 +127,7 @@
   <figure class="diagram">
     <svg viewBox="0 0 960 400" role="img" aria-labelledby="bub-title bub-desc">
       <title id="bub-title">Checkpoint bubble-up and resume</title>
-      <desc id="bub-desc">The worker yields a checkpoint to the server and passes a handle up to the orchestrator, which relays it to the meta orchestrator. The meta orchestrator fetches the checkpoint details, presents the decision to you, and submits your choice to the server. The resolution then travels back down: the orchestrator wakes the worker, which calls resume underscore checkpoint and continues.</desc>
+      <desc id="bub-desc">The worker yields a checkpoint to the server, which records it as the session's active checkpoint, and emits an empty checkpoint yield block to the orchestrator, which relays it to the meta orchestrator. The meta orchestrator reads the open checkpoint from the session, presents the decision to you, and submits your choice to the server. The resolution then travels back down: the orchestrator wakes the worker, which calls resume underscore checkpoint and continues.</desc>
       <defs>
         <marker id="arrowb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -159,7 +159,7 @@
         <path d="M 355 250 C 355 310, 115 310, 115 250" marker-end="url(#arrowb)"/>
       </g>
       <g font-size="12.5" fill="var(--diagram-note)" text-anchor="middle">
-        <text x="235" y="82">2. checkpoint_yield + handle</text>
+        <text x="235" y="82">2. empty checkpoint_yield</text>
         <text x="475" y="82">3. relayed unchanged</text>
         <text x="720" y="82">presents options</text>
         <text x="720" y="332">your choice</text>
@@ -168,11 +168,11 @@
       </g>
       <text x="480" y="385" font-size="13" text-anchor="middle" fill="var(--diagram-note)">top arrows: the pause bubbles up · bottom arrows: the resolution travels back down</text>
     </svg>
-    <figcaption>Bubble-up and resume. The worker yields (1) and passes an opaque handle up through the orchestrator (2–3); the meta orchestrator fetches the details (4), you decide (5), and it submits your choice (6); effects travel back down (7) and the worker clears the gate with <code>resume_checkpoint</code> (8) before continuing.</figcaption>
+    <figcaption>Bubble-up and resume. The worker yields (1) and emits an empty <code>&lt;checkpoint_yield&gt;</code> block that travels up through the orchestrator (2–3); the meta orchestrator reads the open checkpoint from the session (4), you decide (5), and it submits your choice (6); effects travel back down (7) and the worker calls <code>resume_checkpoint</code> (8) before continuing.</figcaption>
   </figure>
 
   <h2 id="yield">Yielding</h2>
-  <p>When a worker reaches a checkpoint step it calls <a href="../api/tools.html#yield_checkpoint"><code>yield_checkpoint</code></a>. The server records the checkpoint as <code>activeCheckpoint</code> in <code>session.json</code> and mints a one-shot, HMAC-signed <code>checkpoint_handle</code>. The worker emits the handle in a <code>&lt;checkpoint_yield&gt;</code> block in its final output and stops; the orchestrator relays the block upward without interpreting it. A new checkpoint cannot be yielded while one is already active — nested yields are a hard error.</p>
+  <p>When a worker reaches a checkpoint step it calls <a href="../api/tools.html#yield_checkpoint"><code>yield_checkpoint</code></a>. The server records the checkpoint as <code>activeCheckpoint</code> in <code>session.json</code>. The worker emits an empty <code>&lt;checkpoint_yield&gt;</code> block in its final output and stops; the orchestrator relays the block upward, and the user-facing agent reads the open checkpoint from the session with <code>present_checkpoint</code>. A new checkpoint cannot be yielded while one is already active — nested yields are a hard error.</p>
 
   <h2 id="resolve">Resolving</h2>
   <p>The meta orchestrator calls <a href="../api/tools.html#present_checkpoint"><code>present_checkpoint</code></a> to fetch the human-readable message, options, and effects, presents the decision through the host UI, then finalizes with <a href="../api/tools.html#respond_checkpoint"><code>respond_checkpoint</code></a> in exactly one of three modes:</p>
@@ -189,7 +189,7 @@
   <p>The server clears <code>activeCheckpoint</code>, records the decision and any variable <code>effects</code> (e.g. <code>setVariable: { is_monorepo: true }</code>) in the session state, and returns the effects to the caller.</p>
 
   <h2 id="resume">Resuming</h2>
-  <p>Agents wake in reverse order using the host's resume mechanism, with effects passed down as plain instructions. Before the worker can touch regular tools again it must call <a href="../api/tools.html#resume_checkpoint"><code>resume_checkpoint</code></a> — a hard gate that verifies the checkpoint really was resolved and hands back the recorded variable updates. In inline (single-agent) execution the wake is a no-op persona switch; the server-side gates are identical.</p>
+  <p>Agents wake in reverse order using the host's resume mechanism, with effects passed down as plain instructions. The worker then calls <a href="../api/tools.html#resume_checkpoint"><code>resume_checkpoint</code></a>, which verifies the checkpoint was resolved and returns the checkpoint answered, the option chosen, and the variables that option set; called while the checkpoint is still active, it is a hard error. In inline (single-agent) execution the wake is a no-op persona switch; the server-side gates are identical.</p>
 
   <h2 id="routines">A checkpoint used at several sites</h2>
   <p class="prose">A checkpoint reused at several sites is a <strong>routine</strong>: the gate is declared once under the owning workflow's <code>routines/</code>, and each site is a <code>kind:routine</code> step that refers to it. A gate that is not part of a larger run is a one-step routine. The routine declares what it takes and what it produces, and its body is held against that signature; the reference prefixes every identifier the run contributes, so two sites cannot collide on a step id or a replay key. The loader materializes the reference before delivery, so yield, present, respond and every downstream consumer see an ordinary full checkpoint. The <code>check:duplicate-bodies</code> guard reports a checkpoint body authored inline at two sites.</p>
@@ -198,7 +198,7 @@
   <ul>
     <li><strong>Pause and presentation are separate</strong> — the worker records the pause with <code>yield_checkpoint</code> and steps aside; the user-facing agent later presents and responds. Nothing advances past an unresolved checkpoint, wherever it was raised.</li>
     <li><strong>Clean UI boundaries</strong> — hidden background agents never prompt you directly, so nothing freezes waiting on an invisible question.</li>
-    <li><strong>Stateless hand-offs</strong> — the signed handle carries the linkage; intermediate agents relay it without parsing or storing checkpoint details.</li>
+    <li><strong>Stateless hand-offs</strong> — the session's <code>activeCheckpoint</code> links the pause to its answer; intermediate agents relay an empty block and hold no checkpoint details.</li>
     <li><strong>Timing enforcement</strong> — minimum response times and server-enforced auto-advance timers prevent an agent from "answering" its own checkpoint instantly.</li>
     <li><strong>Effects as data</strong> — your choice mutates workflow variables through declared effects, which is what makes <a href="./state-management.html">deterministic transitions</a> possible.</li>
   </ul>

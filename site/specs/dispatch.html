@@ -86,7 +86,7 @@
         <text x="50" y="72" fill="var(--diagram-note)" font-size="13" font-weight="400">discovers workflows, presents checkpoints to you, never does domain work</text>
         <rect x="30" y="144" width="560" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="50" y="172" fill="var(--diagram-label)">L1 · Workflow orchestrator — background, persistent</text>
-        <text x="50" y="196" fill="var(--diagram-note)" font-size="13" font-weight="400">evaluates transitions, dispatches workers, relays checkpoints upward</text>
+        <text x="50" y="196" fill="var(--diagram-note)" font-size="13" font-weight="400">relays exits, dispatches workers, relays checkpoints up</text>
         <rect x="30" y="268" width="560" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="50" y="296" fill="var(--diagram-label)">L2 · Activity worker — background, ephemeral</text>
         <text x="50" y="320" fill="var(--diagram-note)" font-size="13" font-weight="400">executes one activity's steps with domain tools, yields at checkpoints</text>
@@ -117,7 +117,7 @@
       <tbody>
         <tr><td><strong>L0 Meta orchestrator</strong></td><td>the conversation</td><td><code>discover</code>, <code>list_workflows</code>, <code>start_session</code>, <code>present_checkpoint</code>, <code>respond_checkpoint</code>, <code>get_workflow_status</code></td><td>domain work; detailed state tracking</td></tr>
         <tr><td><strong>L1 Workflow orchestrator</strong></td><td>one workflow run</td><td><code>get_workflow</code>, <code>next_activity</code>, <code>get_workflow_status</code>, <code>dispatch_child</code></td><td>prompting the user directly</td></tr>
-        <tr><td><strong>L2 Activity worker</strong></td><td>one activity</td><td><code>get_activity</code>, <code>get_technique</code>, <code>get_resource</code>, <code>yield_checkpoint</code>, <code>resume_checkpoint</code></td><td>choosing the next activity</td></tr>
+        <tr><td><strong>L2 Activity worker</strong></td><td>one activity</td><td><code>get_activity</code>, <code>get_technique</code>, <code>get_resource</code>, <code>yield_checkpoint</code>, <code>resume_checkpoint</code></td><td>presenting checkpoints; advancing the session</td></tr>
       </tbody>
     </table>
   </div>

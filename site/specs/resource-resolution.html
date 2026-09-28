@@ -73,7 +73,7 @@
   <figure class="diagram">
     <svg viewBox="0 0 960 340" role="img" aria-labelledby="res-title res-desc">
       <title id="res-title">Reference resolution</title>
-      <desc id="res-desc">A technique reference is resolved by first looking in the current workflow's techniques folder, then falling back to the shared meta layer. The resolved technique's body is delivered with its rules auto-included, grouped into a bundle of techniques, rules, and unresolved references. Resources linked from a technique are rewritten to get-resource references and fetched lazily.</desc>
+      <desc id="res-desc">A technique reference is resolved by first looking in the current workflow's techniques folder, then falling back to the shared meta layer. The resolved technique's body is delivered with its rules auto-included, grouped into a bundle of techniques, contracts, rules, and unresolved references. Resources linked from a technique are rewritten to get-resource references and fetched lazily.</desc>
       <defs>
         <marker id="arrowz" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -94,7 +94,7 @@
         <text x="790" y="106" fill="var(--diagram-note)" font-size="13" font-weight="400">remaining rules auto-included</text>
         <rect x="640" y="190" width="300" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="790" y="214" fill="var(--diagram-label)">delivery bundle</text>
-        <text x="790" y="234" fill="var(--diagram-note)" font-size="13" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">techniques · rules · unresolved</text>
+        <text x="790" y="234" fill="var(--diagram-note)" font-size="11" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">techniques · contracts · rules · unresolved</text>
         <rect x="310" y="250" width="240" height="60" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
         <text x="430" y="274" fill="var(--diagram-label)">resources</text>
         <text x="430" y="294" fill="var(--diagram-note)" font-size="13" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">get_resource — lazy, on demand</text>
@@ -114,7 +114,7 @@
         <text x="648" y="330" text-anchor="middle">links rewritten into fetchable refs</text>
       </g>
     </svg>
-    <figcaption>Reference resolution. A reference tries the current workflow's techniques first, then the shared <code>meta</code> layer (a same-named local technique shadows the meta one). The resolved body arrives with its rules auto-included, grouped into a <code>techniques</code> / <code>rules</code> / <code>unresolved</code> bundle; resource links inside it are rewritten into <code>get_resource</code> refs and fetched lazily.</figcaption>
+    <figcaption>Reference resolution. A reference tries the current workflow's techniques first, then the shared <code>meta</code> layer (a same-named local technique shadows the meta one). The resolved body arrives with its rules auto-included, grouped into a <code>techniques</code> / <code>contracts</code> / <code>rules</code> / <code>unresolved</code> bundle; resource links inside it are rewritten into <code>get_resource</code> refs and fetched lazily.</figcaption>
   </figure>
 
   <h2 id="techniques">One kind of technique</h2>
@@ -139,10 +139,10 @@
         <rect x="540" y="30" width="360" height="150" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="720" y="58" fill="var(--diagram-label)">grouped</text>
         <rect x="570" y="72" width="300" height="32" rx="6" fill="var(--bg)" stroke="var(--border)"/>
-        <text x="720" y="93" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">review-assumptions/TECHNIQUE.md</text>
+        <text x="720" y="93" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">review-engine/TECHNIQUE.md</text>
         <rect x="570" y="112" width="300" height="32" rx="6" fill="var(--bg)" stroke="var(--border)"/>
-        <text x="720" y="133" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">review-assumptions/collect.md</text>
-        <text x="720" y="168" fill="var(--diagram-note)" font-size="12.5" font-weight="400">nested ref: review-assumptions::collect</text>
+        <text x="720" y="133" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">review-engine/collect.md</text>
+        <text x="720" y="168" fill="var(--diagram-note)" font-size="12.5" font-weight="400">nested ref: review-engine::collect</text>
       </g>
     </svg>
     <figcaption>Two on-disk layouts, one delivery model. A nested <code>{sub}.md</code> is a full technique in its own right — not a fragment of the parent file.</figcaption>
@@ -155,7 +155,7 @@
     <li><strong>Technique</strong> — standalone slug or group folder name</li>
     <li><strong>Nested segment</strong> (optional) — sub-technique inside a group, or a rule name if no sub-technique matches</li>
   </ul>
-  <p class="prose">A group prefix like <code>agent-conduct</code> can expand to every <code>agent-conduct-*</code> rule. Anything that matches nothing lands in the <code>unresolved</code> bucket — never silently dropped.</p>
+  <p class="prose">A group is a rule-name prefix on a technique: <code>checklist::tidy</code> expands to every <code>tidy-*</code> rule of <code>checklist</code>. Anything that matches nothing lands in the <code>unresolved</code> bucket — never silently dropped.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 110" role="img" aria-labelledby="ref-anatomy-title ref-anatomy-desc">
@@ -186,9 +186,9 @@
         <rect x="60" y="28" width="260" height="40" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="190" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">plan</text>
         <rect x="350" y="28" width="260" height="40" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">review-assumptions::collect</text>
+        <text x="480" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">review-engine::collect</text>
         <rect x="640" y="28" width="260" height="40" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="770" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">meta::agent-conduct::file-sensitivity</text>
+        <text x="770" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">meta::conduct::file-care</text>
         <text x="190" y="88" font-size="12" fill="var(--diagram-note)" font-weight="400">same workflow</text>
         <text x="480" y="88" font-size="12" fill="var(--diagram-note)" font-weight="400">nested sub-technique</text>
         <text x="770" y="88" font-size="12" fill="var(--diagram-note)" font-weight="400">explicit workflow prefix</text>
@@ -199,7 +199,7 @@
   </figure>
 
   <h3 id="borrowed">Borrowed activities and source-workflow scoping</h3>
-  <p class="prose">A workflow may reuse an activity file authored in another workflow — a <strong>borrowed</strong> cross-workflow activity. Bare technique refs inside that activity (including activity-group shorthand like <code>activity-id::op</code>) resolve against the <strong>source workflow</strong> the activity file was authored in, not the borrowing session's workflow. Explicit <code>workflow::</code> prefixes still reach named workflows directly. The same scoping applies to routine references and to binding-provenance producer scans on step-bound <code>get_technique</code> fetches. Non-borrowed activities keep source scope equal to the session workflow, so behaviour is unchanged outside the borrowed-activity case.</p>
+  <p class="prose">A workflow may reuse an activity file authored in another workflow — a <strong>borrowed</strong> cross-workflow activity. Bare technique refs inside that activity (including activity-group shorthand like <code>activity-id::op</code>) resolve against the <strong>source workflow</strong> the activity file was authored in, not the borrowing session's workflow. Explicit <code>workflow::</code> prefixes still reach named workflows directly. The same scoping applies to routine references and to binding-provenance producer scans on step-bound <code>get_technique</code> fetches. A workflow's own activities take the session workflow as their source.</p>
 
   <h2 id="routines">Routines</h2>
   <p class="prose">Beyond technique refs, a workflow can declare a run of steps once under <code>routines/</code> and refer to it from an activity with a <code>kind:routine</code> step. A routine declares what it takes, what it produces and what its own steps pass between themselves, so its body is checked against that signature with no host activity involved. A gate shared on its own is a one-step routine.</p>
@@ -208,39 +208,43 @@
   <h2 id="delivery">Delivery at workflow and activity granularity</h2>
   <p class="prose">Agents never chain resolution calls at runtime. The server pre-resolves reference lists into bundles when you call:</p>
   <ul class="prose">
-    <li><code>get_workflow</code> — orchestrator bundle: workflow-declared refs plus core orchestrator techniques (engine traversal, checkpoints, dispatch, discipline)</li>
-    <li><code>get_activity</code> — worker bundle: activity refs, inherited <code>techniques.activity</code> from the workflow, plus core worker techniques (yield/resume, finalize, conduct rules)</li>
+    <li><code>get_workflow</code> — orchestrator bundle: workflow-declared refs plus core orchestrator techniques (engine traversal, state and commits, child workflows, prompt composition, background-agent dispatch, conduct rules)</li>
+    <li><code>get_activity</code> — worker bundle: activity refs, inherited <code>techniques.activity</code> from the workflow, plus core worker techniques (the worker role, finishing an activity, gate expressions, reading the variable bag, conduct rules)</li>
   </ul>
-  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, each ancestor container merges its inputs, outputs and rules into it and its protocol arrives as authored. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>{ delivery: "unchanged", content_hash }</code> markers; fetch recording warns when a manifested step was never loaded.</p>
+  <p class="prose">Some techniques ride only when the loaded definitions show the workflow needs them: the checkpoint pairs for presenting, answering, pausing and continuing when an activity of the workflow declares a checkpoint, the loop rules when one has a loop step, and the fan techniques and rules when the graph fans an exit. Held-back techniques stay reachable by name.</p>
+  <p class="prose">Each bundle groups resolved content into four buckets. Each ancestor container's rules and shared inputs and outputs arrive once under <code>contracts</code>, a technique names those scopes in <code>inherits</code>, and its protocol arrives as authored. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>{ delivery: "unchanged", content_hash }</code> markers; fetch recording warns when a manifested step was never loaded.</p>
 
   <h3 id="bundling">Eager step-technique bundling</h3>
   <p class="prose">The lazy per-step model above is complemented by automatic eager bundling on every <code>get_activity</code> call. The worker passes <code>context_tokens</code> — its context window size in tokens — and the server derives a cumulative per-activity character budget:</p>
-  <p class="prose"><code>context_tokens × headroomFraction × charsPerToken</code> (defaults 0.80 × 4; env-overridable). Step-bound techniques with no gate, or a gate that answers true, are inlined in document order under <code>step_techniques</code> until the budget would overflow; a step whose gate answers false or has no answer at delivery, and a technique over the per-activity <code>bundleTechniques.maxChars</code> cap, stay lazy. <code>maxChars: 0</code> opts the activity out entirely. Each inlined entry is byte-identical to a step-bound <code>get_technique</code> fetch, including provenance annotations; under reference delivery the bodies of resources the inlined techniques link ride a <code>resources</code> map, and otherwise their ids ride <code>resource_refs</code> for <code>get_resource</code>. Bundled steps are recorded as <code>technique_bundled</code> events and satisfy manifest fidelity checks. Protocol details are in <a href="../design/protocol.html#bundling">Protocol</a>.</p>
+  <p class="prose"><code>context_tokens × headroomFraction × charsPerToken</code> (defaults 0.80 × 4; env-overridable). The worker bundle — role rules, contract techniques and their markers — is counted first, and step techniques spend what remains. Step-bound techniques with no gate, or a gate that answers true, are inlined in document order under <code>step_techniques</code> until what remains would overflow; a step whose gate answers false or has no answer at delivery, and a technique over the per-activity <code>bundleTechniques.maxChars</code> cap, stay lazy. <code>maxChars: 0</code> opts the activity out entirely. Each inlined entry is byte-identical to a step-bound <code>get_technique</code> fetch, including provenance annotations; under reference delivery the bodies of resources the inlined techniques link ride a <code>resources</code> map, and otherwise their ids ride <code>resource_refs</code> for <code>get_resource</code>. Bundled steps are recorded as <code>technique_bundled</code> events and satisfy manifest fidelity checks. Protocol details are in <a href="../design/protocol.html#bundling">Protocol</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 170" role="img" aria-labelledby="bundle-title bundle-desc">
       <title id="bundle-title">Delivery bundle buckets</title>
-      <desc id="bundle-desc">Resolved references are grouped into techniques, rules, and unresolved buckets.</desc>
+      <desc id="bundle-desc">Resolved references are grouped into techniques, contracts, rules, and unresolved buckets.</desc>
       <g font-size="14.5" font-weight="600" text-anchor="middle">
-        <rect x="80" y="40" width="240" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="200" y="68" fill="var(--diagram-label)">techniques</text>
-        <text x="200" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">path → composed body</text>
-        <rect x="360" y="40" width="240" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="68" fill="var(--diagram-label)">rules</text>
-        <text x="480" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">auto-included invariants</text>
-        <rect x="640" y="40" width="240" height="72" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="760" y="68" fill="var(--diagram-label)">unresolved</text>
-        <text x="760" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">explicit misses</text>
+        <rect x="60" y="40" width="190" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="155" y="68" fill="var(--diagram-label)">techniques</text>
+        <text x="155" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">path → technique body</text>
+        <rect x="280" y="40" width="190" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="375" y="68" fill="var(--diagram-label)">contracts</text>
+        <text x="375" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">scope → shared block</text>
+        <rect x="500" y="40" width="190" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="595" y="68" fill="var(--diagram-label)">rules</text>
+        <text x="595" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">role-wide invariants</text>
+        <rect x="720" y="40" width="190" height="72" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="815" y="68" fill="var(--diagram-label)">unresolved</text>
+        <text x="815" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">explicit misses</text>
       </g>
       <text x="480" y="140" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">Empty buckets are omitted from the wire response</text>
     </svg>
-    <figcaption>What a resolved bundle contains. Technique bodies arrive composed; remaining rules ride along; unresolved refs are surfaced plainly.</figcaption>
+    <figcaption>What a resolved bundle contains. Technique bodies carry their own fields and name their ancestors in <code>inherits</code>; each ancestor's rules and shared inputs and outputs arrive once under <code>contracts</code>; rules that govern the role rather than one technique arrive under <code>rules</code>; unresolved refs are surfaced plainly.</figcaption>
   </figure>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 240" role="img" aria-labelledby="del-src-title del-src-desc">
       <title id="del-src-title">Where each bundle comes from</title>
-      <desc id="del-src-desc">get_workflow and get_activity each union declared references with a core auto-included set, then resolve into the same three buckets.</desc>
+      <desc id="del-src-desc">get_workflow and get_activity each union declared references with a core auto-included set, then resolve into the same four buckets.</desc>
       <defs>
         <marker id="arrowdel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -262,8 +266,9 @@
         <rect x="650" y="196" width="240" height="44" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="770" y="224" fill="var(--diagram-label)" font-size="12.5">core worker set</text>
         <rect x="360" y="108" width="240" height="64" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="136" fill="var(--diagram-label)">resolved bundle</text>
-        <text x="480" y="158" fill="var(--diagram-note)" font-size="12" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">techniques · rules · unresolved</text>
+        <text x="480" y="132" fill="var(--diagram-label)">resolved bundle</text>
+        <text x="480" y="150" fill="var(--diagram-note)" font-size="11.5" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">techniques · contracts</text>
+        <text x="480" y="165" fill="var(--diagram-note)" font-size="11.5" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">rules · unresolved</text>
       </g>
       <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
         <line x1="190" y1="68" x2="190" y2="84" marker-end="url(#arrowdel)"/>
@@ -279,14 +284,14 @@
   </figure>
 
   <h2 id="resources">Resources: lazy by design</h2>
-  <p class="prose">Large reference material — CLI guides, templates, API notes — never rides along in technique bundles. At delivery time the server rewrites markdown hyperlinks inside a technique into fetchable <code>get_resource</code> refs. The agent calls <code>get_resource</code> only when the running technique actually needs the linked material.</p>
+  <p class="prose">Large reference material — CLI guides, templates, API notes — stays out of technique bodies. At delivery time the server rewrites markdown hyperlinks inside a technique into fetchable <code>get_resource</code> refs. Under reference delivery, the bodies of resources that eagerly bundled steps link ride a sibling <code>resources</code> map on <code>get_activity</code>, within the window budget; otherwise their ids ride <code>resource_refs</code>, and the agent calls <code>get_resource</code> only when the running technique needs the linked material.</p>
   <p class="prose">Resource ids support:</p>
   <ul class="prose">
     <li><strong>Bare slug</strong> — resolved in the session's current workflow</li>
-    <li><strong>Workflow prefix</strong> — <code>meta/activity-worker-prompt</code> pulls from another workflow's <code>resources/</code> folder</li>
+    <li><strong>Workflow prefix</strong> — <code>meta/style-guide</code> pulls from another workflow's <code>resources/</code> folder</li>
     <li><strong>Section anchor</strong> — <code>#heading-slug</code> returns one heading block, not the whole file</li>
   </ul>
-  <p class="prose">In <code>persistent</code> context mode, a byte-identical refetch of the same exact <code>resource_id</code> (bare or sectioned) collapses to an unchanged marker — see <a href="../design/protocol.html#delivery">reference delivery</a>. Pass <code>full: true</code> to force the full body. Fresh sessions always receive the full body.</p>
+  <p class="prose">In <code>persistent</code> context mode, or with <code>bundle: "reference"</code> in any session, a byte-identical refetch of the same exact <code>resource_id</code> (bare or sectioned) collapses to an unchanged marker — see <a href="../design/protocol.html#delivery">reference delivery</a>. Pass <code>full: true</code> to force the full body. A fresh session that does not ask for reference delivery receives the full body.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 200" role="img" aria-labelledby="res-link-title res-link-desc">
@@ -321,7 +326,7 @@
       </g>
       <text x="480" y="128" font-size="12" text-anchor="middle" fill="var(--diagram-note)">on demand</text>
     </svg>
-    <figcaption>Resources stay out of bundles. The technique carries a ref; the agent fetches the markdown file when execution reaches the link.</figcaption>
+    <figcaption>Resources stay out of technique bodies. The technique carries a ref; the agent fetches the markdown file when execution reaches the link.</figcaption>
   </figure>
 
   <figure class="diagram">
@@ -330,9 +335,9 @@
       <desc id="res-fetch-desc">A cross-workflow resource id with an optional section anchor.</desc>
       <g font-size="13" font-weight="600" text-anchor="middle">
         <rect x="140" y="24" width="680" height="44" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="52" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">meta/activity-worker-prompt#worker-brief</text>
+        <text x="480" y="52" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">meta/style-guide#headings</text>
       </g>
-      <text x="480" y="88" font-size="12" text-anchor="middle" fill="var(--diagram-note)">Loads from meta/resources/ and returns only the worker-brief section</text>
+      <text x="480" y="88" font-size="12" text-anchor="middle" fill="var(--diagram-note)">Loads from meta/resources/ and returns only the headings section</text>
     </svg>
     <figcaption><strong>Example:</strong> prefixed ids reach shared libraries; <code>#section</code> narrows a large resource to the template the technique actually needs.</figcaption>
   </figure>

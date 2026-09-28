@@ -77,7 +77,7 @@
       <g font-size="15" font-weight="600">
         <rect x="60" y="12" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
         <text x="80" y="34" fill="var(--diagram-label)">L1 · Cryptographic integrity (HMAC)</text>
-        <text x="80" y="54" fill="var(--diagram-note)" font-size="13" font-weight="400">session seal, checkpoint handles, trace tokens — fabrication and tampering rejected</text>
+        <text x="80" y="54" fill="var(--diagram-note)" font-size="13" font-weight="400">session seal, trace tokens — fabrication and tampering rejected</text>
         <rect x="60" y="74" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
         <text x="80" y="96" fill="var(--diagram-label)">L2 · Checkpoint gate</text>
         <text x="80" y="116" fill="var(--diagram-note)" font-size="13" font-weight="400">active checkpoint blocks transition tools until resolved; response timing enforced</text>
@@ -92,7 +92,7 @@
         <text x="80" y="302" fill="var(--diagram-note)" font-size="13" font-weight="400">per-step summary checked for presence, order, and non-empty outputs</text>
         <rect x="60" y="322" width="660" height="52" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2" stroke-dasharray="7 4"/>
         <text x="80" y="344" fill="var(--diagram-label)">L6 · Activity manifest</text>
-        <text x="80" y="364" fill="var(--diagram-note)" font-size="13" font-weight="400">workflow-journey summary checked against definition and conditions</text>
+        <text x="80" y="364" fill="var(--diagram-note)" font-size="13" font-weight="400">workflow-journey summary: ids, outcomes and declared exits checked</text>
         <rect x="60" y="384" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
         <text x="80" y="406" fill="var(--diagram-label)">L7 · Execution trace</text>
         <text x="80" y="426" fill="var(--diagram-note)" font-size="13" font-weight="400">session calls recorded; signed trace tokens resolvable via get_trace</text>
@@ -111,8 +111,8 @@
   </figure>
 
   <h2 id="hard">The hard gates</h2>
-  <p><strong>Integrity (L1).</strong> Everything the server hands out or persists is HMAC-signed with a server-held key: the <code>.session-token</code> seal on session state, one-shot checkpoint handles, and trace tokens. An agent cannot fabricate or tamper with any of them — a mismatch between <code>session.json</code> and its seal is a hard error on read.</p>
-  <p><strong>Checkpoint gate (L2).</strong> While a checkpoint is active, transition tools hard-fail; only <code>present_checkpoint</code> and <code>respond_checkpoint</code> are exempt. Responses are validated against the checkpoint definition, and timing is enforced — a minimum response delay for user-answered checkpoints, the full <code>autoAdvanceMs</code> timer for auto-advanced ones — so an agent cannot instantly answer its own question. Details in the <a href="./checkpoints.html">checkpoints</a>.</p>
+  <p><strong>Integrity (L1).</strong> Everything the server hands out or persists is HMAC-signed with a server-held key: the <code>.session-token</code> seal on session state, and trace tokens. An agent cannot fabricate or tamper with any of them — a mismatch between <code>session.json</code> and its seal is a hard error on read.</p>
+  <p><strong>Checkpoint gate (L2).</strong> While a checkpoint is active, transition and content tools hard-fail. The calls that stay open are <code>present_checkpoint</code> and <code>respond_checkpoint</code>, which resolve it; <code>inspect_session</code> and <code>get_workflow_status</code>, which diagnose a stopped run; <code>record_usage</code>, which accounts for work already done; and <code>dispatch_child</code>, which opens a child workflow. Responses are validated against the checkpoint definition, and timing is enforced — a minimum response delay for user-answered checkpoints, the full <code>autoAdvanceMs</code> timer for auto-advanced ones — so an agent cannot instantly answer its own question. Details in the <a href="./checkpoints.html">checkpoints</a>.</p>
 
   <h2 id="advisory">The advisory layers</h2>
   <p class="prose" id="why-detection">Layers 3–6 warn rather than block. Only checks that are cheap and certain hard-stop execution; manifest completeness, version drift, and fetch coverage surface warnings in <code>_meta.validation</code> and the trace because the server can verify observable consistency, not that work was done well. See <a href="../design/protocol.html">Protocol</a> for how to read them.</p>
@@ -132,7 +132,7 @@
   <p>The server mechanically records each call that carries a <code>session_index</code>, apart from the read-only diagnostics <code>get_trace</code>, <code>get_workflow_status</code> and <code>inspect_session</code> — name, timing, status, workflow/activity/agent attribution, errors, and any validation warnings. At each activity transition the events are packaged into a compact, HMAC-signed trace token returned in <code>_meta.trace_token</code>; the agent accumulates these opaque strings and can resolve them at any time with <a href="../api/tools.html#get_trace"><code>get_trace</code></a>. Agents additionally write a semantic trace (step outputs, decisions, variable changes) to the planning folder; together the two give complete post-hoc visibility.</p>
 
   <h2 id="context">Context-pressure mitigation</h2>
-  <p>Enforcement is half the story; the server also keeps agents' context windows small so instructions stay in effective attention: lightweight <code>get_workflow</code> metadata instead of full definitions, transitions delivered with each activity, pre-resolved technique bundles, lazy resources, a self-describing bootstrap, and compressed trace tokens (see <a href="./resource-resolution.html">resolution</a>).</p>
+  <p>Enforcement is half the story; the server also keeps agents' context windows small so instructions stay in effective attention: lightweight <code>get_workflow</code> metadata instead of full definitions, exit destinations delivered with each activity, pre-resolved technique bundles, lazy resources, a self-describing bootstrap, and compressed trace tokens (see <a href="./resource-resolution.html">resolution</a>).</p>
 
   <h2 id="limits">Honest limitations</h2>
   <p>The enforcement is detection-oriented, not proof-oriented. The server verifies that steps were <em>reported</em>, not that the work was done; that a reported exit is bound to the target, not that the activity reached it; that a checkpoint was <em>answered</em> after a plausible delay, not that a human saw it. The mechanical trace corroborates what tool calls actually happened, and post-hoc audit can cross-reference claims against checkpoint logs — the full list of limitations is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/fidelity.md">canonical document</a>.</p>
