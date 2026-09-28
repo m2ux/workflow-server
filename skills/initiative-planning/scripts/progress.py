@@ -51,8 +51,8 @@ with the choices. An epic summarised whose Work Breakdown the scripts cannot rea
 is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the
---summary paragraph, when given, and the board's link beneath, *bold* sections, each issue or pull
-request by its bare URL, and a key to the reference letters and marks last. Initiatives are
+--summary paragraph, when given, set off by blank lines, and the board's link beneath, *bold*
+sections, each issue or pull request by its bare URL, and a key to the reference letters and marks last. Initiatives are
 bulleted; under Completed, In progress and Next each issue or pull request opens with the mark of
 its state. A group's heading under Completed is done when its issue is Done, else partly done; under
 In progress it is in review when its issue is In Review, else in progress. Its lines are done;
@@ -391,7 +391,7 @@ def main() -> int:
     heading = f"*Progress since {since:%a} {since.day} {since:%b}*" + (f' — {scope_label}' if scope_label else '')
     paragraph = ' '.join(Path(args.summary).read_text().split()) if args.summary else ''
     link = board_link(items)
-    print('\n'.join([heading, *([paragraph] if paragraph else []), *([f'Board: {link}'] if link else []),
+    print('\n'.join([heading, *(['', paragraph, ''] if paragraph else []), *([f'Board: {link}'] if link else []),
                      '', '*Initiatives*', *(context or ['• Nothing']),
                      '', '*Completed*', *completed.render(),
                      '', '*In progress*', *progress.render(),

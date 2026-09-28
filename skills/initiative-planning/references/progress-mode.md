@@ -21,8 +21,8 @@ next. The board's Status is the source, so the summary is as current as the boar
    that number names initiatives in several repositories. Each repository numbers its own
    initiatives, and an initiative's epics and task issues may live in other repositories, so each
    item's place follows the Work Breakdown links, and a pull request counts towards the epic of its
-   reference in the epic's repository or its initiative's. It prints the `--summary` paragraph and
-   the board's link beneath the heading, then:
+   reference in the epic's repository or its initiative's. It prints the `--summary` paragraph, set
+   off by blank lines, and the board's link beneath the heading, then:
    - **Initiatives:** one line for each initiative with work under Completed or In progress, its
      title's name and subtitle, for context. An item works for the initiative whose table links
      its epic and for the one its epic's title names;
