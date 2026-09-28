@@ -73,7 +73,7 @@
   <figure class="diagram">
     <svg viewBox="0 0 960 340" role="img" aria-labelledby="res-title res-desc">
       <title id="res-title">Reference resolution</title>
-      <desc id="res-desc">A technique reference is resolved by first looking in the current workflow's techniques folder, then falling back to the shared meta layer. The resolved technique's body is delivered with its rules auto-included, grouped into a bundle of techniques, contracts, rules, and unresolved references. Resources linked from a technique are rewritten to get-resource references and fetched lazily.</desc>
+      <desc id="res-desc">A technique reference is resolved by first looking in the current workflow's techniques folder, then falling back to the shared meta layer. The resolved technique's body is delivered with its own rules, its ancestors' rules riding contracts, grouped into a bundle of techniques, contracts, rules, and unresolved references. Resources linked from a technique are rewritten to get-resource references and fetched lazily.</desc>
       <defs>
         <marker id="arrowz" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -90,8 +90,8 @@
         <text x="430" y="132" fill="var(--diagram-label)">meta shared layer</text>
         <text x="430" y="152" fill="var(--diagram-note)" font-size="13" font-weight="400">corpus/meta/techniques/</text>
         <rect x="640" y="60" width="300" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="790" y="86" fill="var(--diagram-label)">technique body + rules</text>
-        <text x="790" y="106" fill="var(--diagram-note)" font-size="13" font-weight="400">remaining rules auto-included</text>
+        <text x="790" y="86" fill="var(--diagram-label)">technique body, own rules</text>
+        <text x="790" y="106" fill="var(--diagram-note)" font-size="13" font-weight="400">ancestor rules ride contracts</text>
         <rect x="640" y="190" width="300" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="790" y="214" fill="var(--diagram-label)">delivery bundle</text>
         <text x="790" y="234" fill="var(--diagram-note)" font-size="11" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">techniques · contracts · rules · unresolved</text>
@@ -114,7 +114,7 @@
         <text x="648" y="330" text-anchor="middle">links rewritten into fetchable refs</text>
       </g>
     </svg>
-    <figcaption>Reference resolution. A reference tries the current workflow's techniques first, then the shared <code>meta</code> layer (a same-named local technique shadows the meta one). The resolved body arrives with its rules auto-included, grouped into a <code>techniques</code> / <code>contracts</code> / <code>rules</code> / <code>unresolved</code> bundle; resource links inside it are rewritten into <code>get_resource</code> refs and fetched lazily.</figcaption>
+    <figcaption>Reference resolution. A reference tries the current workflow's techniques first, then the shared <code>meta</code> layer (a same-named local technique shadows the meta one). The resolved body arrives with its own rules, its ancestors' rules riding <code>contracts</code>, grouped into a <code>techniques</code> / <code>contracts</code> / <code>rules</code> / <code>unresolved</code> bundle; resource links inside it are rewritten into <code>get_resource</code> refs and fetched lazily.</figcaption>
   </figure>
 
   <h2 id="techniques">One kind of technique</h2>

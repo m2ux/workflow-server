@@ -124,7 +124,7 @@
     <li><strong>Graph</strong> — each activity's exits, bound to the destination each leads to</li>
     <li><strong>Borrowed activities</strong> — an <code>activities</code> list naming activity files borrowed from other workflows; the workflow's own activities are the files in its <code>activities/</code> folder</li>
     <li><strong>Initial activity</strong> — where a new session begins</li>
-    <li><strong>Rules and techniques</strong> — grouped by audience: <code>techniques.workflow</code> for the orchestrator, <code>techniques.activity</code> for every worker</li>
+    <li><strong>Rules and techniques</strong> — grouped by audience: <code>techniques.workflow</code> and <code>rules.workflow</code> for the orchestrator, <code>techniques.activity</code> and <code>rules.activity</code> for every worker, and <code>rules.universal</code> for both</li>
   </ul>
   <p class="prose">A run of steps shared between activities is not in the manifest: it is a file of its own under <code>routines/</code>, beside <code>activities/</code> (<a href="#routines">see below</a>).</p>
   <p class="prose">When a session starts, the server reads this manifest. The first <a href="../api/tools.html#get_workflow"><code>get_workflow</code></a> call returns:</p>
@@ -162,7 +162,7 @@
         <text x="355" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">exit → destination</text>
         <rect x="480" y="110" width="200" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="580" y="134" fill="var(--diagram-label)">rules</text>
-        <text x="580" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">workflow + activity</text>
+        <text x="580" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">per audience</text>
         <rect x="705" y="110" width="225" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="817" y="134" fill="var(--diagram-label)">techniques</text>
         <text x="817" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">workflow + activity</text>

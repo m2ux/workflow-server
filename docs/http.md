@@ -42,7 +42,7 @@ Compose alternative: [`docker-compose.yml` on the `docker` branch](https://githu
 ~/.local/share/workflow-server/stop.sh --name=workflow-server-trial
 ```
 
-The sidecar uses the same install binds (projects root, HMAC state) as the first instance. `--workflows-dir` selects the corpus for that container. Cursor's MCP URL is whatever `.mcp.json` names; point it at the printed URL to talk to the sidecar.
+The sidecar uses the same install binds (projects root, HMAC state) as the first instance. `--workflows-dir` selects the corpus for that container. Cursor reads its MCP URL from `.cursor/mcp.json`, which the workspace links to `.mcp.json`; point it at the printed URL to talk to the sidecar.
 
 ### Reload an experiment sidecar on a stable port
 
