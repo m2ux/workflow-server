@@ -10,6 +10,7 @@ import {
   exitDestinations,
   validateExitBindings,
   validateInitialActivity,
+  readActivityRaw,
   TERMINAL_SENTINEL,
   baseId,
   instanceIndex,
@@ -228,10 +229,41 @@ describe('workflow-loader', () => {
         '    version: 1.0.0',
         '    name: Good Activity',
       ].join('\n'));
+
+      // A source workflow holding one activity at the top of its folder and one in a subfolder,
+      // and a borrower that references both.
+      mkdirSync(join(fixtureDir, 'source-wf', 'activities', 'patterns'), { recursive: true });
+      writeFileSync(join(fixtureDir, 'source-wf', 'workflow.yaml'),
+        'id: source-wf\nversion: 1.0.0\ntitle: Source\ninitialActivity: shared\n');
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', '01-shared.yaml'),
+        'id: shared\nversion: 1.0.0\nname: Shared\n');
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', 'patterns', '02-pattern.yaml'),
+        'id: pattern\nversion: 1.0.0\nname: Pattern\n');
+      mkdirSync(join(fixtureDir, 'borrower-wf'));
+      writeFileSync(join(fixtureDir, 'borrower-wf', 'workflow.yaml'), [
+        'id: borrower-wf',
+        'version: 1.0.0',
+        'title: Borrower',
+        'initialActivity: shared',
+        'activities:',
+        '  - source-wf/01-shared.yaml',
+        '  - source-wf/patterns/02-pattern.yaml',
+      ].join('\n'));
     });
 
     afterAll(() => {
       rmSync(fixtureDir, { recursive: true, force: true });
+    });
+
+    it('borrows activities from another workflow, a subfolder of its activities included', async () => {
+      const result = await loadWorkflow(fixtureDir, 'borrower-wf');
+      expect(result.success).toBe(true);
+      if (result.success) expect(result.value.activities?.map((a) => a.id).sort()).toEqual(['pattern', 'shared']);
+      for (const id of ['shared', 'pattern']) {
+        const raw = await readActivityRaw(fixtureDir, 'borrower-wf', id);
+        expect(raw.success, id).toBe(true);
+        if (raw.success) expect(raw.value.sourceWorkflowId).toBe('source-wf');
+      }
     });
 
     it('refuses a workflow file that declares an activity inline', async () => {

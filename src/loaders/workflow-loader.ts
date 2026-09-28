@@ -949,11 +949,11 @@ export async function readActivityRaw(
   const filePath = resolveWorkflowPath(index, workflowId);
   if (!filePath) return err(new ActivityNotFoundError(activityId, workflowId));
 
+  // A workflow may hold no activities of its own and borrow every one, so a missing folder falls
+  // through to the references below.
   const activitiesDir = join(dirname(filePath), 'activities');
-  if (!existsSync(activitiesDir)) return err(new ActivityNotFoundError(activityId, workflowId));
-
   try {
-    const files = await readdir(activitiesDir);
+    const files = existsSync(activitiesDir) ? await readdir(activitiesDir) : [];
     for (const file of files) {
       const parsed = parseActivityFilename(file);
       if (!parsed || parsed.id !== activityId) continue;
