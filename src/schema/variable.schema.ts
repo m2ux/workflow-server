@@ -9,9 +9,9 @@ export const VariableNameSchema = z.union([
 
 export const VariableDefinitionSchema = z.object({
   name: VariableNameSchema,
-  type: enforcement(z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared variable type. A value written through a checkpoint `setVariable` effect is checked against it, and a mismatch is stored as written with a warning.'), { owner: 'Engine', strictness: 'advisory' }),
+  type: enforcement(z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared variable type. A value written to the session, through a checkpoint `setVariable` effect or a reported variable change, is checked against it; a mismatch is stored as written with a warning, and a `{name}` template value is exempt.'), { owner: 'Engine', strictness: 'advisory' }),
   description: z.string().optional().describe('Meaning and intended use of the variable.'),
-  values: enforcement(z.array(z.string().describe('Allowed string value for the variable.')).min(1).optional().describe('Complete set of values the variable admits: nonempty, without repeats, and declared only on a `string` variable. A declared `defaultValue` must be one of them. A value written outside the set is stored with a warning.'), { owner: 'Engine', strictness: 'advisory' }),
+  values: enforcement(z.array(z.string().describe('Allowed string value for the variable.')).min(1).optional().describe('Complete set of values the variable admits: nonempty, without repeats, and declared only on a `string` variable. A declared `defaultValue` must be one of them. A value written outside the set is stored as written with a warning, and a `{name}` template value is exempt.'), { owner: 'Engine', strictness: 'advisory' }),
   defaultValue: enforcement(z.unknown().optional().describe('Initial value, present from the start of every session and child session. Do not gate a defaulted variable with `exists` or `notExists`: the variable is always present, so the gate is constant, and `check:variable-model` rejects it.'), { owner: 'Engine', strictness: 'enforced' }),
   required: enforcement(z.boolean().default(false).describe('Marks the variable as expected to be set; no check reads it.'), { owner: 'Agent', strictness: 'advisory' }),
 }).superRefine((variable, ctx) => {

@@ -6,7 +6,7 @@
   "definitions": {
     "whenExpression": {
       "type": "string",
-      "description": "Inline boolean expression in the `when` dialect, evaluated against the current session variables. Grammar: `orExpr := andExpr ('||' andExpr)*`; `andExpr := unary ('&&' unary)*`; `unary := '!' unary | primary`; `primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'`; `comparison := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal`. Precedence, tightest first: `()`, `!`, comparisons, `&&`, `||`. Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, `is_review_mode != true && (problem_complexity == \"moderate\" || problem_complexity == \"complex\")`."
+      "description": "Inline boolean expression in the `when` dialect, evaluated against the current session variables. Grammar: `orExpr := andExpr ('||' andExpr)*`; `andExpr := unary ('&&' unary)*`; `unary := '!' unary | primary`; `primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'`; `comparison := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal`. Precedence, tightest first: `()`, comparisons, `!`, `&&`, `||`; so `!a == b` reads as `!(a == b)`, and a negated left side of a comparison is not expressible. Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, `is_review_mode != true && (problem_complexity == \"moderate\" || problem_complexity == \"complex\")`."
     },
     "routine": {
       "type": "object",
@@ -538,7 +538,7 @@
                             },
                             "exit": {
                               "type": "string",
-                              "description": "Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. Omitted for an ad hoc checkpoint, which has no declared exits."
+                              "description": "Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. An option naming an exit its activity does not declare fails the load. Omitted for an ad hoc checkpoint, which has no declared exits."
                             }
                           },
                           "additionalProperties": false,
@@ -679,7 +679,7 @@
                       ],
                       "description": "Literal argument or braced host-variable reference."
                     },
-                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default fails the load."
+                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default fails the load, as does an argument naming no declared input."
                   },
                   "outputs": {
                     "type": "object",
@@ -687,7 +687,7 @@
                       "type": "string",
                       "description": "Session variable name for the routine output."
                     },
-                    "description": "Routine output identifiers mapped to session variable names. An output left unbound produces no write; only an output declared `optional: true` may be left unbound, and any other unbound output fails the load."
+                    "description": "Routine output identifiers mapped to session variable names. An output left unbound produces no write; only an output declared `optional: true` may be left unbound, and any other unbound output fails the load, as does a binding naming no declared output."
                   },
                   "when": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"

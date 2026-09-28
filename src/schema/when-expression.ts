@@ -1,7 +1,7 @@
 /**
  * Reference `when` expression dialect — parse, evaluate, and authoring checks.
  *
- * Grammar (C-style precedence, tightest first):
+ * Grammar (a comparison sits in `primary`, so it binds tighter than `!`):
  *   primary     := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'
  *   unary       := '!' unary | primary
  *   comparison  := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal
@@ -25,7 +25,7 @@ export const WhenExpressionSchema = z.string().describe(
   + 'Grammar: `orExpr := andExpr (\'||\' andExpr)*`; `andExpr := unary (\'&&\' unary)*`; `unary := \'!\' unary | primary`; '
   + '`primary := IDENT | comparison | \'true\' | \'false\' | \'(\' orExpr \')\'`; '
   + '`comparison := IDENT (\'==\' | \'!=\' | \'>\' | \'<\' | \'>=\' | \'<=\') literal`. '
-  + 'Precedence, tightest first: `()`, `!`, comparisons, `&&`, `||`. '
+  + 'Precedence, tightest first: `()`, comparisons, `!`, `&&`, `||`; so `!a == b` reads as `!(a == b)`, and a negated left side of a comparison is not expressible. '
   + 'Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. '
   + 'An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. '
   + 'A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, '
