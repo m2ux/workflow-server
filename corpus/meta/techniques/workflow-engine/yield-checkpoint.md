@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -28,14 +28,14 @@ ID of the checkpoint being yielded — the activity YAML `id`, or `<baseId>#<ins
 ### 2. Pause Or Continue
 
 - Branch on the response `status`
-  - **`yielded`** — the gate is recorded as the session's active checkpoint. Emit the `{yielded_checkpoint}` `<checkpoint_yield>` block (no payload required — the active checkpoint is server-resident and is read by the orchestrator via `present_checkpoint`). STOP — make no further tool calls until the orchestrator resumes you.
-  - **`replayed`** — a response for this exact `checkpoint_id` is already recorded. Apply any returned `effect` / `resolved_option` to local state and CONTINUE with the next step. Do not emit `<checkpoint_yield>`, do not call `present_checkpoint`, and do not re-yield the same id.
+  - **`yielded`** — the gate is recorded as the session's active checkpoint. Emit the `{yielded_checkpoint}` `<checkpoint_yield>` block (no payload — the active checkpoint is server-resident and is read with `present_checkpoint` by the agent that presents it). STOP — make no further tool calls until the orchestrator resumes you.
+  - **`replayed`** — a response for this exact `checkpoint_id` is already recorded. Apply any returned `effect` / `resolved_option` to local state. Where the reply carries `exit.ends_activity`, the stored answer ended the activity at this gate: run none of the remaining steps, and finalize the activity with the steps you ran and `exit.id` as its `selected_exit`. Otherwise CONTINUE with the next step. Do not emit `<checkpoint_yield>`, do not call `present_checkpoint`, and do not re-yield the same id.
 
 ## Rules
 
 ### replay-is-continue-not-error
 
-`status: "replayed"` means continue under the stored decision. It is not a fault, not a missing active checkpoint, and not a reason to stop the activity.
+`status: "replayed"` means continue under the stored decision; where that decision selected an exit that ends the activity, continuing is finalizing the activity at this gate. It is not a fault, not a missing active checkpoint, and not a reason to yield again.
 
 ### base-id-matches-full-string-keys-response
 

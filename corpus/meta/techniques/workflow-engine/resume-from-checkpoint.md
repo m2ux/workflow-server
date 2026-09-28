@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -22,9 +22,11 @@ Variable updates carried by the resolved checkpoint.
 ### 1. Confirm Gate Cleared
 
 - Call `resume_checkpoint { session_index }`; it confirms the orchestrator's `respond_checkpoint` has cleared the active checkpoint before the paused worker proceeds.
-  > When `resume_checkpoint` returns `no active checkpoint` or `checkpoint is still active`, the checkpoint is not yet resolved: wait for the resume prompt to arrive before calling again.
+  > When `resume_checkpoint` refuses because the checkpoint is still active, it is not yet resolved: wait for the resume prompt to arrive before calling again.
 
 ### 2. Apply Effects
 
-- Apply `{effects}` to local state and continue from the paused step.
+- Apply `{effects}`, and the `variables_changed` the response returns, to local state.
+- Where the response carries `exit`, hold `exit.id` as the activity's `selected_exit`. Where `exit.ends_activity` is true, the answer ended the activity at this checkpoint: run none of the remaining steps, and finalize the activity with the steps you ran and that exit.
+- Otherwise continue from the paused step.
 
