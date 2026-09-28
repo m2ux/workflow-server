@@ -10,7 +10,8 @@ description: >-
   now hold, closes what is complete, and updates the initiative's project board. Hoist mode finds
   orphan issues and brings each one the user chooses into an existing or new initiative, epic or
   task, closing an orphan whose detail the taking issue cites. Progress mode summarises the project
-  board as a standup in Slack markup: what completed, what is in progress and what is next. Use
+  board as a standup in Slack markup: a paragraph for management on what the window accomplished,
+  then what completed, what is in progress and what is next. Use
   when the user asks to raise, plan or restructure an initiative or epic, to review an initiative,
   to check an issue's format or bring it into the house layout, to check or fix dependencies or
   ordering, to renumber epics or tasks, to fold review findings into issues, to update an
@@ -37,8 +38,9 @@ Read the file for the mode the request calls for:
   board: `references/update-mode.md`.
 - **Hoist mode** — find orphan issues, offer each a placement in an existing or new initiative,
   epic or task, and migrate or subsume the ones the user places: `references/hoist-mode.md`.
-- **Progress mode** — summarise the project board as a standup for a Slack channel: what completed,
-  what is in progress and what is next: `references/progress-mode.md`.
+- **Progress mode** — summarise the project board as a standup for a Slack channel: a paragraph
+  for management on what the window accomplished, then what completed, what is in progress and
+  what is next: `references/progress-mode.md`.
 
 Every mode also reads `references/work-breakdown.md`, the guide to the Work Breakdown tables: their
 columns, numbering, references and delivery.

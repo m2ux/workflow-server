@@ -3,8 +3,10 @@
 Run from the skill directory: python3 -m unittest discover -s test
 """
 import sys
+import tempfile
 import unittest
 from datetime import date, datetime, timezone
+from pathlib import Path
 
 from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, pr, progress, section, url
 
@@ -200,6 +202,13 @@ class Window(unittest.TestCase):
     def test_board_is_linked_under_the_heading(self):
         out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
         self.assertEqual(out.splitlines()[1], 'Board: https://github.com/orgs/o/projects/7')
+
+    def test_summary_paragraph_sits_between_the_heading_and_the_board_link(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp, 'summary.txt')
+            path.write_text('We shipped\n  the  release.\n')
+            out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')], (), '--summary', str(path))
+        self.assertEqual(out.splitlines()[1:3], ['We shipped the release.', 'Board: https://github.com/orgs/o/projects/7'])
 
     def test_heading_names_the_window_and_initiative(self):
         out = summary([item(issue(1, '[I08] Libraries: All'), 'In Progress')], (), '--initiative', 'I08')

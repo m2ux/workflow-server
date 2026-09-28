@@ -2,7 +2,7 @@
 
 Usage:
   python3 progress.py --items items.json --prs prs.json [--since 2026-09-25] [--initiative [owner/repo:]I08]
-      [--initiatives issue-946.json ...]
+      [--initiatives issue-946.json ...] [--summary summary.txt]
 
 items.json is the board's items with the Status field, as board.py reads them; each item carries
 its issue whole, body included, and the script exits when no item carries Status. prs.json holds
@@ -10,6 +10,8 @@ pull requests as JSON lines, as update.py reads them, from as many repositories 
 a pull request is known by its URL, and cites an issue as board.py reads a citation. --initiatives
 gives initiative issues off the board, as `gh api repos/{owner}/{repo}/issues/946` returns them:
 they place their epics and describe their work as a board initiative does, and hold no Status.
+--summary gives a plain-language paragraph of what the window accomplished, for management; its
+whitespace runs collapse to single spaces, so it prints as one line.
 
 The board's Status is the source. Each repository numbers its own initiatives, and an initiative's
 epics and task issues may live in other repositories, so an item's place follows the links, the
@@ -47,8 +49,8 @@ initiatives in several repositories it takes the repository too, and where it na
 with the choices. An epic summarised whose Work Breakdown the scripts cannot read, or that has none,
 is summarised without its tasks.
 
-Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the board's
-link beneath, *bold* sections, bullets, and each issue or pull request by its bare URL. Unresolved
+Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the
+--summary paragraph, when given, and the board's link beneath, *bold* sections, bullets, and each issue or pull request by its bare URL. Unresolved
 dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
 print to stderr.
 """
@@ -160,6 +162,7 @@ def main() -> int:
     parser.add_argument('--since', help='the first day of the window, YYYY-MM-DD')
     parser.add_argument('--initiative', help='only this initiative, e.g. I08 or owner/repo:I08')
     parser.add_argument('--initiatives', nargs='*', default=[], help='initiative issues off the board, as JSON')
+    parser.add_argument('--summary', help="a plain-language paragraph of the window's accomplishments")
     args = parser.parse_args()
     since = date.fromisoformat(args.since) if args.since else week_before(date.today())
     after = datetime.combine(since, time()).astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -373,8 +376,9 @@ def main() -> int:
 
     scope_label = f'{only_repo}:I{only}' if only_repo else f'I{only}' if only else ''
     heading = f"*Progress since {since:%a} {since.day} {since:%b}*" + (f' — {scope_label}' if scope_label else '')
+    paragraph = ' '.join(Path(args.summary).read_text().split()) if args.summary else ''
     link = board_link(items)
-    print('\n'.join([heading, *([f'Board: {link}'] if link else []),
+    print('\n'.join([heading, *([paragraph] if paragraph else []), *([f'Board: {link}'] if link else []),
                      '', '*Initiatives*', *(context or ['• Nothing']),
                      '', '*Completed*', *completed.render(),
                      '', '*In progress*', *progress.render(),
