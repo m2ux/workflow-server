@@ -51,8 +51,10 @@ with the choices. An epic summarised whose Work Breakdown the scripts cannot rea
 is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the
---summary paragraph, when given, and the board's link beneath, *bold* sections, bullets, each
-issue or pull request by its bare URL, and a key to the reference letters last. Unresolved
+--summary paragraph, when given, and the board's link beneath, *bold* sections, each issue or pull
+request by its bare URL, and a key to the reference letters and marks last. Under Completed, In
+progress and Next each line opens with the mark of its state: done, or for an initiative or epic
+still open, partly done; in progress, in review, draft, next task, or ready. Unresolved
 dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
 print to stderr.
 """
@@ -72,7 +74,11 @@ PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
             'priority: low': 4, 'priority: lowest': 5}
 UNRANKED = 2
 SHOWN = 5
-KEY = 'Key: I=Initiative, E=Epic, W=Work Item'
+DONE, PARTLY, WORKING, REVIEW, DRAFT, NEXT, READY = '✅', '🔶', '🔄', '👀', '📝', '➡️', '🔜'
+MARK = {'In Progress': WORKING, 'In Review': REVIEW}
+KEY = ['Key: I=Initiative, E=Epic, W=Work Item',
+       f'{DONE} done · {PARTLY} partly done · {WORKING} in progress · {REVIEW} in review · '
+       f'{DRAFT} draft · {NEXT} next task · {READY} ready']
 ACTIVE = ('In Progress', 'In Review')
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
 Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
@@ -138,23 +144,24 @@ class Summary(Board):
 
 class Section:
     """Lines grouped under the epic, or initiative, they belong to. A group is (initiative, epic,
-    repository, issue number), the number 0 for a group whose epic is not on the board."""
+    repository, issue number), the number 0 for a group whose epic is not on the board. Its heading
+    carries the section's mark unless the group's own state sets another."""
 
-    def __init__(self, issues: dict[Key, dict]):
+    def __init__(self, issues: dict[Key, dict], mark: str):
         self.issues = issues
+        self.mark = mark
         self.groups: dict[tuple[str, str, str, int], dict] = {}
 
     def group(self, g: tuple[str, str, str, int]) -> dict:
-        return self.groups.setdefault(g, {'note': '', 'lines': []})
+        return self.groups.setdefault(g, {'mark': self.mark, 'lines': []})
 
     def render(self) -> list[str]:
         out = []
         for (i, e, repo, number), g in sorted(self.groups.items(), key=lambda kv: (*kv[0][:2], kv[0][2].lower())):
             issue = self.issues.get((repo, number))
             head = f"*{reference(i, e)} {epic_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
-            note = f", {g['note']}" if g['note'] else ''
-            out.append(f"• {head}{note}" + (f" — {issue['html_url']}" if issue else ''))
-            out.extend(f'    ◦ {line}' for line in g['lines'])
+            out.append(f"{g['mark']} {head}" + (f" — {issue['html_url']}" if issue else ''))
+            out.extend(f'    {line}' for line in g['lines'])
         return out or ['• Nothing']
 
 
@@ -292,29 +299,29 @@ def main() -> int:
                 return {t for t in (backing, owned.get(ek, {}).get(tid)) if t}, f'{tid} {task_name(r, header)}'
         return None
 
-    completed, progress, ready = Section(issues), Section(issues), []
+    completed, progress, ready = Section(issues, PARTLY), Section(issues, WORKING), []
     worked: set[Scope] = set()
     named_next: set[Key] = set()
 
-    def add(section: Section, k: Key, line: str | None = None, note: str | None = None) -> None:
+    def add(section: Section, k: Key, line: str | None = None, mark: str | None = None) -> None:
         group = section.group(group_of(k))
         if line:
             group['lines'].append(line)
-        if note is not None:
-            group['note'] = note
+        if mark:
+            group['mark'] = mark
         worked.update(scopes_of(k))
 
     for k in tagged:
         if k in initiatives and done(k):
-            add(completed, k)
+            add(completed, k, mark=DONE)
     for k in tagged:
         if k not in tasks:
             continue
         line = f"W{tasks[k][2]} {epic_name(issues[k]['title'])} — {issues[k]['html_url']}"
         if done(k):
-            add(completed, k, line)
+            add(completed, k, f'{DONE} {line}')
         elif status.get(k) in ACTIVE:
-            add(progress, k, f"{status[k]}: {line}")
+            add(progress, k, f'{MARK[status[k]]} {line}')
         elif status.get(k) == 'Ready':
             ready.append((k, ''))
     for ek in sorted((k for k in tagged if k in epics), key=group_of):
@@ -333,23 +340,23 @@ def main() -> int:
             if pr:
                 linked.add(pr['html_url'])
                 if within(pr.get('merged_at')):
-                    add(completed, ek, f"{tid} {task_name(r, header)} — {pr['html_url']}")
+                    add(completed, ek, f"{DONE} {tid} {task_name(r, header)} — {pr['html_url']}")
         for pr in named:
             if within(pr.get('merged_at')) and pr['html_url'] not in linked and not listed(pr, done):
-                add(completed, ek, f"{pr_title(pr)} — {pr['html_url']}")
+                add(completed, ek, f"{DONE} {pr_title(pr)} — {pr['html_url']}")
         if done(ek):
-            add(completed, ek)
+            add(completed, ek, mark=DONE)
 
         if status.get(ek) in ACTIVE:
-            add(progress, ek, note='in review' if status[ek] == 'In Review' else '')
+            add(progress, ek, mark=MARK[status[ek]])
             group = progress.group(group_of(ek))
             for pr in named:
                 if pr.get('state') == 'open' and not listed(pr, lambda n: status.get(n) in ACTIVE):
-                    state = 'Draft' if pr.get('draft') else 'In Review'
-                    group['lines'].append(f"{state}: {pr_title(pr)} — {pr['html_url']}")
+                    state = DRAFT if pr.get('draft') else REVIEW
+                    group['lines'].append(f"{state} {pr_title(pr)} — {pr['html_url']}")
             if not group['lines'] and (task := next_task(ek, header, rows)):
                 named_next |= task[0]
-                group['lines'].append(f'Next: {task[1]}')
+                group['lines'].append(f'{NEXT} {task[1]}')
         elif status.get(ek) == 'Ready':
             task = next_task(ek, header, rows)
             if task:
@@ -372,7 +379,7 @@ def main() -> int:
         return min(levels, default=UNRANKED), tagged[k], k[0].lower()
 
     ready = sorted((e for e in ready if e[0] not in named_next), key=rank)
-    upcoming = [f"• *{reference(*tagged[k])} {epic_name(issues[k]['title'])}*" + (f', {task}' if task else '')
+    upcoming = [f"{READY} *{reference(*tagged[k])} {epic_name(issues[k]['title'])}*" + (f', {task}' if task else '')
                 + f" — {issues[k]['html_url']}" for k, task in ready[:SHOWN]]
     if len(ready) > SHOWN:
         upcoming.append(f'…and {len(ready) - SHOWN} more ready')
@@ -386,7 +393,7 @@ def main() -> int:
                      '', '*Completed*', *completed.render(),
                      '', '*In progress*', *progress.render(),
                      '', '*Next*', *(upcoming or ['• Nothing']),
-                     '', KEY]))
+                     '', *KEY]))
     for note in dict.fromkeys(unresolved):
         print(f'unresolved: {note}', file=sys.stderr)
     return 0
