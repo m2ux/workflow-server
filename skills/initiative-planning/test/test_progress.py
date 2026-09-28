@@ -73,6 +73,18 @@ class Completed(unittest.TestCase):
                       [pr(53, '[I01:E00] Part of it', IN, body='Part of #3')])
         self.assertIn(f"    ◦ Part of it — {url('pull', 53)}", section(out, 'Completed'))
 
+    def test_task_issue_on_the_board_is_listed_once(self):
+        # Row W01 links a pull request; the board also holds W01's task issue, and a merged pull
+        # request cites W02's task issue, which no row links.
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 50)})", 'Work', ''),
+                                                                 ('W02', 'More', '')))
+        prs = [pr(50, '[I01:E00] Work', IN), pr(51, '[I01:E00] More', IN, body='Closes #4')]
+        out = summary([item(epic, 'In Progress'), item(issue(3, '[I01:E00:W01] Work: Task', 'closed', IN), 'Done'),
+                       item(issue(4, '[I01:E00:W02] More: Task', 'closed', IN), 'Done')], prs)
+        self.assertEqual(section(out, 'Completed')[1:], [
+            f"    ◦ W01 Work — {url('issues', 3)}",
+            f"    ◦ W02 More — {url('issues', 4)}"])
+
     def test_pull_requests_are_known_by_url_across_repositories(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 40)})", 'Here', '')))
         prs = [pr(40, '[I01:E00] In r', IN), pr(40, '[I01:E00] In s', IN, repo='o/s')]
@@ -89,7 +101,7 @@ class InProgress(unittest.TestCase):
         out = summary([item(epic, 'In Progress')], prs)
         self.assertEqual(section(out, 'In progress'), [
             f"• *I01:E00 First* — {url('issues', 2)}",
-            f"    ◦ In review: Ready one — {url('pull', 54)}",
+            f"    ◦ In Review: Ready one — {url('pull', 54)}",
             f"    ◦ Draft: Drafted — {url('pull', 55)}"])
 
     def test_epic_in_review_is_noted(self):
@@ -111,7 +123,7 @@ class InProgress(unittest.TestCase):
         task = issue(3, '[I01:E00:W01] Task Issue: Open')
         out = summary([item(epic, 'In Progress'), item(task, 'In Progress')],
                       [pr(41, '[I01:E00] Elsewhere', body='See #3', repo='o/s')])
-        self.assertIn(f"    ◦ In review: Elsewhere — {url('pull', 41, 'o/s')}", section(out, 'In progress'))
+        self.assertIn(f"    ◦ In Review: Elsewhere — {url('pull', 41, 'o/s')}", section(out, 'In progress'))
 
     def test_epic_with_nothing_open_names_its_next_task(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
@@ -128,6 +140,12 @@ class InProgress(unittest.TestCase):
         out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W02] Active: Task'), 'In Progress')],
                       [pr(60, '[I01:E00] Done', BEFORE)])
         self.assertEqual(section(out, 'Next'), [f"• *I01:E00 First*, next W04 Free — {url('issues', 2)}"])
+
+    def test_next_task_skips_a_task_issue_off_the_board(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
+            (f"[W01]({url('issues', 3)})", 'Dropped', ''), ('W02', 'Free', '')))
+        out = summary([item(epic, 'Ready')])
+        self.assertEqual(section(out, 'Next'), [f"• *I01:E00 First*, next W02 Free — {url('issues', 2)}"])
 
 
 class Next(unittest.TestCase):

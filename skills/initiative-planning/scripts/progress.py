@@ -8,20 +8,22 @@ its issue whole, body included, and the script exits when no item carries Status
 pull requests as JSON lines, as update.py reads them, from as many repositories as the board spans:
 a pull request is known by its URL, and cites an issue as board.py reads a citation.
 
-The board's Status is the source. Lines group under the epic they belong to, and a task issue on
-the board stands for the pull requests that cite it:
+The board's Status is the source. Lines group under the epic they belong to. A row's task issue is
+the one its id links, or else the one on the board titled with its reference. A task issue listed
+stands for its row and for the pull requests that cite it:
   Completed    items Done whose issue closed in the window: an initiative, an epic, or a task issue
                under its epic. Under each epic, the tasks whose row id links a pull request merged
                in the window, and each such pull request naming the epic that no row links and
                that cites no task issue listed.
   In progress  epics and task issues In Progress or In Review, each epic with the open pull
-               requests naming it that cite no task issue listed, or else its next task.
+               requests naming it that cite no task issue listed, ready for review (In Review) or
+               draft, or else its next task.
   Next         epics and task issues Ready, ranked by priority label (highest, high, medium or
                none, low, lowest), then by reference; the first five, and a count of the rest. An
                epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose task
-issue, if it has one, is not In Progress or In Review. A task issue an epic names as its next task
-is not listed again.
+issue, if it has one, is on the board and not In Progress or In Review. A task issue an epic names
+as its next task is not listed again.
 
 The window opens at the start of --since in local time, by default the previous working day.
 --initiative limits the summary to one initiative. An epic whose Work Breakdown the scripts cannot
@@ -31,16 +33,14 @@ Printed: the summary as Slack markup, for pasting into a channel: *bold* heading
 issue or pull request by its bare URL. Unresolved dependencies and unreadable epics print to stderr.
 """
 import argparse
-import json
 import re
 import sys
 from collections import Counter
 from datetime import date, datetime, time, timedelta, timezone
-from pathlib import Path
 
-from board import Board, Key, PREFIX, cell, cites, depends, key_of, label, linked_issue, pages, status_of
+from board import Board, Key, PREFIX, cell, cites, key_of, label, linked_issue, pages, status_of
 from format import LINK, epic_name, phrase
-from update import PR_REF, PULL_URL, Unreadable
+from update import PR_REF, PULL_URL, Unreadable, pull_requests
 
 PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
             'priority: low': 4, 'priority: lowest': 5}
@@ -99,8 +99,8 @@ class Section:
         out = []
         for (i, e), g in sorted(self.groups.items()):
             issue = headers.get((i, e))
-            label = reference((i, e, ''))
-            head = f"*{label} {epic_name(issue['title'])}*" if issue else f'*{label}*'
+            ref = reference((i, e, ''))
+            head = f"*{ref} {epic_name(issue['title'])}*" if issue else f'*{ref}*'
             note = f", {g['note']}" if g['note'] else ''
             out.append(f"• {head}{note}" + (f" — {issue['html_url']}" if issue else ''))
             out.extend(f'    ◦ {line}' for line in g['lines'])
@@ -129,7 +129,7 @@ def main() -> int:
         sys.exit("the items carry no Status field; fetch them with fields=<the board's Status field id>")
     issues = {key_of(i['content']): i['content'] for i in items}
     status = {key_of(i['content']): status_of(i) for i in items}
-    prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()]
+    prs = pull_requests(args.prs)
     by_url = {p['html_url']: p for p in prs}
     by_epic: dict[tuple[str, str], list[dict]] = {}
     for p in prs:
@@ -139,12 +139,14 @@ def main() -> int:
     home = Counter(k[0] for k in issues).most_common(1)[0][0] if issues else ''
     board = Summary(issues, unresolved, home)
 
-    tagged, epic_ids = {}, {}
+    tagged, epic_ids, task_keys = {}, {}, {}
     for k, issue in issues.items():
         if not (t := tags(issue['title'])):
             continue
         if t[1] and not t[2]:
             epic_ids.setdefault(t[0], {})[f'E{t[1]}'] = k
+        if t[2]:
+            task_keys.setdefault(t[:2], {})[f'W{t[2]}'] = k
         if only is None or t[0] == only:
             tagged[k] = t
     headers = {(t[0], t[1]): issues[k] for k, t in tagged.items() if not t[2]}
@@ -155,14 +157,19 @@ def main() -> int:
     def done(k) -> bool:
         return status.get(k) == 'Done' and within(issues[k].get('closed_at'))
 
+    def task_issue(t, tid: str, r: list[str]) -> Key | None:
+        """The task issue a row stands for: the one its id links, or the one on the board titled
+        with its reference."""
+        return linked_issue(r[0]) or task_keys.get(t[:2], {}).get(tid)
+
     def next_task(k, t, header: list[str], rows: dict[str, list[str]]) -> tuple[str, str] | None:
         """The epic's next task: its id and the line naming it."""
         for tid, r in rows.items():
-            task_issue = linked_issue(r[0])
-            if task_issue and status.get(task_issue) in ACTIVE:
+            backing = task_issue(t, tid, r)
+            if backing and (backing not in issues or status.get(backing) in ACTIVE):
                 continue
             if not board.row_delivered(k, tid, reference(t)) and board.met(
-                    depends(header, r), k, epic_ids.get(t[0], {}), f'{reference(t)}:{tid}'):
+                    cell(header, r, 'Depends on'), k, epic_ids.get(t[0], {}), f'{reference(t)}:{tid}'):
                 return tid, f'{tid} {task_name(r, header)}'
         return None
 
@@ -188,7 +195,8 @@ def main() -> int:
 
         header, rows = board.table(k)
         named = by_epic.get((i, e), [])
-        task_issues = [n for r in rows.values() if (n := linked_issue(r[0]))]
+        task_issues = {n for tid, r in rows.items() if (n := task_issue(t, tid, r))}
+        task_issues |= set(task_keys.get((i, e), {}).values())
 
         def listed(pr: dict, shown) -> bool:
             return any(shown(n) and cites(pr, n) for n in task_issues)
@@ -199,7 +207,8 @@ def main() -> int:
             pr = by_url.get(link[2]) if link and PULL_URL.search(link[2]) else None
             if pr:
                 linked.add(pr['html_url'])
-                if within(pr.get('merged_at')):
+                backing = task_issue(t, tid, r)
+                if within(pr.get('merged_at')) and not (backing and done(backing)):
                     completed.group(i, e)['lines'].append(f"{tid} {task_name(r, header)} — {pr['html_url']}")
         for pr in named:
             if within(pr.get('merged_at')) and pr['html_url'] not in linked and not listed(pr, done):
@@ -212,7 +221,7 @@ def main() -> int:
             group['note'] = 'in review' if status[k] == 'In Review' else ''
             for pr in named:
                 if pr.get('state') == 'open' and not listed(pr, lambda n: status.get(n) in ACTIVE):
-                    state = 'Draft' if pr.get('draft') else 'In review'
+                    state = 'Draft' if pr.get('draft') else 'In Review'
                     group['lines'].append(f"{state}: {pr_title(pr)} — {pr['html_url']}")
             if not group['lines'] and (task := next_task(k, t, header, rows)):
                 named_next.add((i, e, task[0][1:]))
@@ -234,7 +243,7 @@ def main() -> int:
     if len(ready) > SHOWN:
         upcoming.append(f'…and {len(ready) - SHOWN} more ready')
 
-    heading = f"*Progress since {since.strftime('%a %-d %b')}*" + (f' — I{only}' if only else '')
+    heading = f"*Progress since {since:%a} {since.day} {since:%b}*" + (f' — I{only}' if only else '')
     print('\n'.join([heading, '', '*Completed*', *completed.render(headers), '', '*In progress*',
                      *progress.render(headers), '', '*Next*', *(upcoming or ['• Nothing'])]))
     for note in dict.fromkeys(unresolved):

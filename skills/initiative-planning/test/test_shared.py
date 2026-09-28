@@ -37,6 +37,15 @@ class Cites(unittest.TestCase):
     def test_longer_number_cites_nothing(self):
         self.assertFalse(cites(pr(1, 'T', body='Closes #120'), self.key))
 
+    def test_repository_whose_name_ends_the_same_cites_nothing(self):
+        self.assertFalse(cites(pr(1, 'T', body='See xo/r#12'), self.key))
+        self.assertFalse(cites(pr(1, 'T', body='See https://github.com/xo/r/issues/12'), self.key))
+
+    def test_pull_request_url_of_another_shape_still_reads(self):
+        record = {**pr(1, 'T', body='Closes #12'), 'html_url': 'https://github.com/o/r/pull/1/'}
+        self.assertTrue(cites(record, self.key))
+        self.assertFalse(cites({**record, 'html_url': 'not a url'}, self.key))
+
 
 class Cells(unittest.TestCase):
     def test_cell_by_column_name(self):

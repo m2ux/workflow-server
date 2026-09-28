@@ -118,6 +118,11 @@ def initiative_delivery(rows, epics, report):
     return delivered
 
 
+def pull_requests(path: str) -> list[dict]:
+    """Pull requests written as JSON lines, as `gh api --paginate ... --jq '.[] | ...'` writes them."""
+    return [json.loads(l) for l in Path(path).read_text().splitlines() if l.strip()]
+
+
 class Unreadable(ValueError):
     """A body whose Work Breakdown the scripts cannot read."""
 
@@ -157,7 +162,7 @@ def main() -> int:
     kind = 'task' if task else 'epic' if epic else 'initiative'
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
-    prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else []
+    prs = pull_requests(args.prs) if args.prs else []
     named = for_epic(prs, initiative, epic) if epic else {}
     links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
     body = (issue.get('body') or '').replace('\r\n', '\n')
