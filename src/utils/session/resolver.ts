@@ -228,8 +228,9 @@ export interface LoadedSession {
  *
  * Errors:
  *   - `INVALID_INDEX` / `NOT_FOUND` / `COLLISION` from `resolveSessionLocation`.
- *   - `SEAL_MISMATCH` from `verifySeal`.
- *   - Schema-validation failure on the top file.
+ *   - `SEAL_MISMATCH` from `verifySeal`; `SESSION_INVALID` for a file that is not JSON.
+ *   - `SESSION_INVALID` for a top file the SessionFile schema rejects.
+ *   - `SESSION_OUTDATED` for a record that predates the frontier.
  *   - `NOT_FOUND` if `jsonPath` cannot be navigated on the parsed top state.
  */
 export async function loadSessionForTool(
@@ -244,7 +245,7 @@ export async function loadSessionForTool(
     const issues = parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
     throw new SessionStoreError(
       `session.json in ${folder} does not match the SessionFile schema: ${issues}`,
-      'SEAL_MISMATCH',
+      'SESSION_INVALID',
       { folder },
     );
   }
@@ -272,7 +273,7 @@ function assertNotPreFrontier(raw: unknown, folder: string): void {
     + 'where the run\'s position is now the list of activities in flight. Such a record has no '
     + 'position to resume from — reading it would look like a session that has not started, and the '
     + 'next transition would retire nothing. Start a fresh session.',
-    'SEAL_MISMATCH',
+    'SESSION_OUTDATED',
     { folder },
   );
 }
@@ -349,13 +350,17 @@ export function describeSessionStoreError(err: unknown): string {
     case 'COLLISION':
       return `${err.message}. Two planning folders hashed to the same session_index — recreate the colliding session(s) or remove a stale folder under the active planning root (legacy: .engineering/artifacts/planning/; repo mode: artifacts/planning/ under the engineering checkout).`;
     case 'SEAL_MISMATCH':
-      return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — a rotated signing key is the likely cause. Restore the folder from the most recent commit before retrying. Nothing was written.`;
+      return `${err.message}. The session.json does not match the seal recorded in .session-token: it was changed outside the server, or a rotated signing key no longer verifies it. Restore the folder from its most recent commit, or restart the server with the key that sealed it, before retrying. Nothing was written.`;
+    case 'SESSION_INVALID':
+      return `${err.message}. The file cannot be read as a session, so the run cannot resume from it. Restore the folder from its most recent commit, or start a fresh session. Nothing was written.`;
+    case 'SESSION_OUTDATED':
+      return `${err.message} Nothing was written.`;
     case 'FOLDER_OCCUPIED': {
       const occupiedIndex = err.details?.['session_index'];
       const continueHint =
         typeof occupiedIndex === 'string'
-          ? `Pass session_index ${occupiedIndex} to continue that run, or pass a distinct planning_folder to open another.`
-          : 'Pass that session_index to continue it, or pass a distinct planning_folder to open another.';
+          ? `Pass session_index ${occupiedIndex} to continue that run, or name another folder to open a new one: planning_folder on start_session, planning_slug on dispatch_child.`
+          : 'Pass that session_index to continue it, or name another folder to open a new one: planning_folder on start_session, planning_slug on dispatch_child.';
       return `${err.message}. The folder already holds a run; nothing was written. ${continueHint}`;
     }
     case 'STALE_WRITE':

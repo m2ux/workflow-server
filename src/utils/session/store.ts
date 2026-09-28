@@ -92,6 +92,8 @@ export class SessionStoreError extends Error {
       | 'NOT_FOUND'
       | 'COLLISION'
       | 'SEAL_MISMATCH'
+      | 'SESSION_INVALID'
+      | 'SESSION_OUTDATED'
       | 'FOLDER_OCCUPIED'
       | 'INVALID_INDEX'
       | 'STALE_WRITE'
@@ -347,7 +349,7 @@ export async function readSessionFile(
     const msg = err instanceof Error ? err.message : String(err);
     throw new SessionStoreError(
       `session.json in ${folderAbsPath} is not valid JSON: ${msg}`,
-      'SEAL_MISMATCH',
+      'SESSION_INVALID',
       { folder: folderAbsPath },
     );
   }
