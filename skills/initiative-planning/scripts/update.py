@@ -118,13 +118,17 @@ def initiative_delivery(rows, epics, report):
     return delivered
 
 
+class Unreadable(ValueError):
+    """A body whose Work Breakdown the scripts cannot read."""
+
+
 def table(sections):
     lines = next((l for h, l in sections if h == 'Work Breakdown'), None)
     if lines is None:
         return None, None, None, None
     start = next((i for i, l in enumerate(lines) if l.startswith('|')), None)
     if start is None:
-        sys.exit('Work Breakdown has no table')
+        raise Unreadable('Work Breakdown has no table')
     end = start
     while end < len(lines) and lines[end].startswith('|'):
         end += 1
@@ -240,4 +244,7 @@ def main() -> int:
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Unreadable as unreadable:
+        sys.exit(str(unreadable))

@@ -52,9 +52,10 @@ import sys
 from pathlib import Path
 
 from format import LINK, split_sections
-from update import PR_REF, table
+from update import PR_REF, Unreadable, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+$')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
@@ -115,15 +116,24 @@ def linked_issue(cell: str) -> Key | None:
     return issue_url(link[2]) if link else None
 
 
+def cell(header: list[str], r: list[str], column: str) -> str:
+    """A Work Breakdown row's cell in the named column, empty where the table has none."""
+    at = header.index(column) if column in header else None
+    return r[at] if at is not None and at < len(r) else ''
+
+
 def depends(header: list[str], r: list[str]) -> str:
-    """A Work Breakdown row's Depends on cell, empty where the table has none."""
-    column = header.index('Depends on') if 'Depends on' in header else None
-    return r[column] if column is not None and column < len(r) else ''
+    return cell(header, r, 'Depends on')
 
 
-def cites(pr: dict, number: int) -> bool:
-    """Whether a pull request's title or body cites the issue."""
-    return bool(re.search(rf'#{number}\b|/issues/{number}\b', f"{pr['title']}\n{pr.get('body') or ''}"))
+def cites(pr: dict, key: Key) -> bool:
+    """Whether a pull request's title or body cites the issue: by its URL or owner/repo#number, or
+    as a bare #number from the issue's own repository."""
+    repo, number = key
+    text = f"{pr['title']}\n{pr.get('body') or ''}"
+    if re.search(rf'{re.escape(repo)}(?:/issues/|#){number}\b', text):
+        return True
+    return PULL_REF.search(pr['html_url'])[1] == repo and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
 
 
 def option_name(name) -> str | None:
@@ -250,7 +260,7 @@ def main() -> int:
     epic_ids = {LINK.sub(r'\1', r[0]): n for r in epic_rows if (n := linked_issue(r[0]))}
     status: dict[Key, str | None] = {}
 
-    def pr_status(epic_key: str, cite: int | None = None) -> str | None:
+    def pr_status(epic_key: str, cite: Key | None = None) -> str | None:
         """In Review for an open pull request ready for review naming the issue, In Progress for an
         open draft, None for neither."""
         found = set()
@@ -282,7 +292,7 @@ def main() -> int:
             t = tasks[task_issue]
             if t['state'] == 'closed':
                 status[task_issue] = 'Done' if completed(t) else None
-            elif found := pr_status(epic_key, task_issue[1]):
+            elif found := pr_status(epic_key, task_issue):
                 status[task_issue] = found
             elif not open_questions(t) and board.met(depends(task_header, tr), number, epic_ids, f'E{epic_key}:{tid}'):
                 status[task_issue] = 'Ready'
@@ -363,4 +373,7 @@ def main() -> int:
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Unreadable as unreadable:
+        sys.exit(str(unreadable))

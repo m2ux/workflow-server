@@ -4,7 +4,9 @@ Usage:
   python3 progress.py --items items.json --prs prs.json [--since 2026-09-25] [--initiative I08]
 
 items.json is the board's items with the Status field, as board.py reads them; each item carries
-its issue whole, body included. prs.json holds pull requests as JSON lines, as update.py reads them.
+its issue whole, body included, and the script exits when no item carries Status. prs.json holds
+pull requests as JSON lines, as update.py reads them, from as many repositories as the board spans:
+a pull request is known by its URL, and cites an issue as board.py reads a citation.
 
 The board's Status is the source. Lines group under the epic they belong to, and a task issue on
 the board stands for the pull requests that cite it:
@@ -16,9 +18,10 @@ the board stands for the pull requests that cite it:
                requests naming it that cite no task issue listed, or else its next task.
   Next         epics and task issues Ready, ranked by priority label (highest, high, medium or
                none, low, lowest), then by reference; the first five, and a count of the rest. An
-               epic names its next task, and a task issue its epic names is not listed again.
+               epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose task
-issue, if it has one, is not In Progress or In Review.
+issue, if it has one, is not In Progress or In Review. A task issue an epic names as its next task
+is not listed again.
 
 The window opens at the start of --since in local time, by default the previous working day.
 --initiative limits the summary to one initiative. An epic whose Work Breakdown the scripts cannot
@@ -35,9 +38,9 @@ from collections import Counter
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
-from board import Board, PREFIX, cites, depends, key_of, linked_issue, pages, status_of
-from format import LINK, epic_name
-from update import PR_REF, PULL_URL, for_epic
+from board import Board, Key, PREFIX, cell, cites, depends, key_of, label, linked_issue, pages, status_of
+from format import LINK, epic_name, phrase
+from update import PR_REF, PULL_URL, Unreadable
 
 PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
             'priority: low': 4, 'priority: lowest': 5}
@@ -63,13 +66,24 @@ def reference(t: tuple[str, str, str]) -> str:
 
 
 def task_name(r: list[str], header: list[str]) -> str:
-    column = header.index('Description') if 'Description' in header else None
-    text = r[column] if column is not None and column < len(r) else ''
-    return re.sub(r'\s*→.*$', '', LINK.sub(r'\1', text)).strip()
+    return phrase(LINK.sub(r'\1', cell(header, r, 'Description')))
 
 
 def pr_title(pr: dict) -> str:
     return PR_REF.sub('', pr['title']).strip()
+
+
+class Summary(Board):
+    """A board whose epics are read as far as their bodies allow: an epic whose Work Breakdown
+    cannot be read has no rows, and is reported unresolved."""
+
+    def table(self, key: Key) -> tuple[list[str], dict[str, list[str]]]:
+        try:
+            return super().table(key)
+        except Unreadable as unreadable:
+            self.unresolved.append(f"{label(key, self.home)} {self.issues[key]['title']}: {unreadable}")
+            self.tables[key] = [], {}
+            return self.tables[key]
 
 
 class Section:
@@ -111,28 +125,29 @@ def main() -> int:
 
     items = [i for i in pages(args.items)
              if i.get('content_type') == 'Issue' and (i.get('content') or {}).get('repository_url')]
+    if items and not any(f.get('name') == 'Status' for i in items for f in i.get('fields', [])):
+        sys.exit("the items carry no Status field; fetch them with fields=<the board's Status field id>")
     issues = {key_of(i['content']): i['content'] for i in items}
     status = {key_of(i['content']): status_of(i) for i in items}
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()]
     by_url = {p['html_url']: p for p in prs}
+    by_epic: dict[tuple[str, str], list[dict]] = {}
+    for p in prs:
+        if m := PR_REF.match(p['title']):
+            by_epic.setdefault(m.groups(), []).append(p)
     unresolved: list[str] = []
     home = Counter(k[0] for k in issues).most_common(1)[0][0] if issues else ''
-    board = Board(issues, unresolved, home)
+    board = Summary(issues, unresolved, home)
 
-    every = {k: t for k, issue in issues.items() if (t := tags(issue['title']))}
-    for k, t in every.items():
-        if t[1] and not t[2]:
-            try:
-                board.table(k)
-            except SystemExit as unreadable:
-                unresolved.append(f'{reference(t)}: {unreadable}')
-                board.tables[k] = [], {}
-    tagged = {k: t for k, t in every.items() if only is None or t[0] == only}
-    headers = {(t[0], t[1]): issues[k] for k, t in tagged.items() if not t[2]}
-    epic_ids: dict[str, dict] = {}
-    for k, t in every.items():
+    tagged, epic_ids = {}, {}
+    for k, issue in issues.items():
+        if not (t := tags(issue['title'])):
+            continue
         if t[1] and not t[2]:
             epic_ids.setdefault(t[0], {})[f'E{t[1]}'] = k
+        if only is None or t[0] == only:
+            tagged[k] = t
+    headers = {(t[0], t[1]): issues[k] for k, t in tagged.items() if not t[2]}
 
     def within(stamp: str | None) -> bool:
         return (stamp or '') >= after
@@ -172,22 +187,22 @@ def main() -> int:
             continue
 
         header, rows = board.table(k)
-        named = for_epic(prs, i, e).values()
+        named = by_epic.get((i, e), [])
         task_issues = [n for r in rows.values() if (n := linked_issue(r[0]))]
 
         def listed(pr: dict, shown) -> bool:
-            return any(shown(n) and cites(pr, n[1]) for n in task_issues)
+            return any(shown(n) and cites(pr, n) for n in task_issues)
 
         linked = set()
         for tid, r in rows.items():
             link = LINK.fullmatch(r[0])
             pr = by_url.get(link[2]) if link and PULL_URL.search(link[2]) else None
             if pr:
-                linked.add(pr['number'])
+                linked.add(pr['html_url'])
                 if within(pr.get('merged_at')):
                     completed.group(i, e)['lines'].append(f"{tid} {task_name(r, header)} — {pr['html_url']}")
         for pr in named:
-            if within(pr.get('merged_at')) and pr['number'] not in linked and not listed(pr, done):
+            if within(pr.get('merged_at')) and pr['html_url'] not in linked and not listed(pr, done):
                 completed.group(i, e)['lines'].append(f"{pr_title(pr)} — {pr['html_url']}")
         if done(k):
             completed.group(i, e)['note'] = 'epic complete'
@@ -200,6 +215,7 @@ def main() -> int:
                     state = 'Draft' if pr.get('draft') else 'In review'
                     group['lines'].append(f"{state}: {pr_title(pr)} — {pr['html_url']}")
             if not group['lines'] and (task := next_task(k, t, header, rows)):
+                named_next.add((i, e, task[0][1:]))
                 group['lines'].append(f'Next: {task[1]}')
         elif status.get(k) == 'Ready':
             task = next_task(k, t, header, rows)

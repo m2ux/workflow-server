@@ -161,7 +161,12 @@ def epic_name(title: str) -> str:
 
 def description(line: str) -> str:
     """A row's Description phrase, without the criteria it cites."""
-    return cells(line)[1].split(' →', 1)[0].strip()
+    return phrase(cells(line)[1])
+
+
+def phrase(text: str) -> str:
+    """A Description cell's phrase, without the criteria it cites."""
+    return text.split(' →', 1)[0].strip()
 
 
 def colon_refs(text: str) -> str:
