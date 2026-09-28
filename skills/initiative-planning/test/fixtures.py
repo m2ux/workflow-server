@@ -23,15 +23,25 @@ def issue(number: int, title: str, state: str = 'open', closed: str | None = Non
             'body': body, 'labels': [{'name': l} for l in labels]}
 
 
+BOARD = 'https://api.github.com/orgs/o/projectsV2/7'
+
+
 def item(content: dict | None, status: str | None) -> dict:
     fields = [{'id': 1, 'name': 'Status', 'value': {'name': {'raw': status, 'html': status}}}] if status else []
-    return {'content_type': 'Issue', 'fields': fields, 'content': content}
+    return {'content_type': 'Issue', 'fields': fields, 'content': content, 'project_url': BOARD}
 
 
 def epic_body(*rows: tuple[str, str, str]) -> str:
     """An epic body whose Work Breakdown holds rows of (task id, description, depends on)."""
     lines = ['## Work Breakdown', '', '| Task | Description | Depends on | Join |', '| --- | --- | --- | --- |']
     lines += [f'| {task} | {description} → AC1 | {depends} | |' for task, description, depends in rows]
+    return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
+
+
+def initiative_body(*rows: tuple[str, str]) -> str:
+    """An initiative body whose Work Breakdown holds rows of (epic id, depends on)."""
+    lines = ['## Work Breakdown', '', '| Epic | Description | Depends on |', '| --- | --- | --- |']
+    lines += [f'| {epic} | Work → AC1 | {depends} |' for epic, depends in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 
 

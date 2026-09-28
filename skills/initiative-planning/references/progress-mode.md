@@ -17,9 +17,12 @@ current as the board.
    field id; substitute the chosen board's.
 4. **Summarise** with `scripts/progress.py --items items.json --prs prs.json`. The window opens a
    week before today. Give `--since` for another, such as the previous working day for a daily
-   standup, and `--initiative I08` when the user names one initiative. Each repository numbers its
-   own initiatives, so a board spanning repositories keeps their items apart, and a pull request
-   counts towards the epic of its reference in its own repository. It prints:
+   standup, and `--initiative I08` when the user names one initiative, or `owner/repo:I08` where
+   that number names initiatives in several repositories. Each repository numbers its own
+   initiatives, and an initiative's epics and task issues may live in other repositories, so each
+   item's place follows the Work Breakdown links, and a pull request counts towards the epic of its
+   reference in the epic's repository or its initiative's. It prints the board's link beneath the
+   heading, then:
    - **Completed:** items Done whose issue closed in the window, grouped under their epic, and
      the tasks whose pull requests merged in it. Closing is when an issue became Done, so one the
      board caught up with later still falls on its closing date;

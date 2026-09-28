@@ -6,7 +6,7 @@ import sys
 import unittest
 from datetime import date, datetime, timezone
 
-from fixtures import SCRIPTS, epic_body, issue, item, pr, progress, section, url
+from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, pr, progress, section, url
 
 sys.path.insert(0, str(SCRIPTS))
 from progress import week_before  # noqa: E402
@@ -191,9 +191,15 @@ class Window(unittest.TestCase):
     def test_default_window_opens_a_week_before_today(self):
         self.assertEqual(week_before(date(2026, 9, 28)), date(2026, 9, 21))
         self.assertEqual(week_before(date(2026, 10, 1)), date(2026, 9, 24))
+        before = week_before(datetime.now(timezone.utc).date())
         done = progress([item(issue(1, '[I01] Idle: All'), 'Backlog')], [])
-        start = week_before(datetime.now(timezone.utc).date())
-        self.assertEqual(done.stdout.splitlines()[0], f'*Progress since {start:%a} {start.day} {start:%b}*')
+        after = week_before(datetime.now(timezone.utc).date())
+        self.assertIn(done.stdout.splitlines()[0],
+                      {f'*Progress since {d:%a} {d.day} {d:%b}*' for d in (before, after)})
+
+    def test_board_is_linked_under_the_heading(self):
+        out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
+        self.assertEqual(out.splitlines()[1], 'Board: https://github.com/orgs/o/projects/7')
 
     def test_heading_names_the_window_and_initiative(self):
         out = summary([item(issue(1, '[I08] Libraries: All'), 'In Progress')], (), '--initiative', 'I08')
@@ -269,6 +275,59 @@ class Repositories(unittest.TestCase):
         out = summary([item(self.epic(2, 'o/s'), 'In Progress')], [pr(7, '[I01:E00] Elsewhere', IN)])
         self.assertEqual(section(out, 'Completed'), ['• Nothing'])
         self.assertNotIn('Elsewhere', out)
+
+    def cross(self, *extra):
+        """Initiative I01 in o/r whose epic E02 is held in o/s, with task issue W01 back in o/r."""
+        initiative = issue(1, '[I01] Home: Initiative',
+                           body=initiative_body((f"[E01]({url('issues', 5)})", ''),
+                                                (f"[E02]({url('issues', 2, 'o/s')})", '')))
+        first = issue(5, '[I01:E01] First: Epic', body=epic_body(('W01', 'After two', 'E02')))
+        second = issue(2, '[I01:E02] Second: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')),
+                       repo='o/s')
+        return [item(initiative, 'In Progress'), item(first, 'Ready'), *extra, item(second, 'In Progress')]
+
+    def test_pull_request_in_the_initiatives_repository_counts_for_its_epic_elsewhere(self):
+        out = summary(self.cross(), [pr(9, '[I01:E02] Work')])
+        self.assertIn(f"    ◦ In Review: Work — {url('pull', 9)}", section(out, 'In progress'))
+
+    def test_bare_epic_dependency_resolves_through_the_initiative(self):
+        done_second = issue(2, '[I01:E02] Second: Epic', 'closed', IN, body=epic_body(('W01', 'Task', '')),
+                            repo='o/s')
+        items = [*self.cross()[:2], item(done_second, 'Done')]
+        done = progress(items, [], '--since', SINCE)
+        self.assertIn(f"• *I01:E01 First*, next W01 After two — {url('issues', 5)}", section(done.stdout, 'Next'))
+        self.assertNotIn('E02 links no issue', done.stderr)
+
+    def test_task_issue_in_another_repository_groups_under_its_epic(self):
+        out = summary(self.cross(item(issue(3, '[I01:E02:W01] Task: Active'), 'In Progress')))
+        self.assertEqual(section(out, 'In progress'), [
+            f"• *I01:E02 Second* — {url('issues', 2, 'o/s')}",
+            f"    ◦ In Progress: W01 Task — {url('issues', 3)}"])
+
+    def test_task_issue_in_another_repository_named_next_is_not_listed_again(self):
+        items = self.cross(item(issue(3, '[I01:E02:W01] Task: Queued'), 'Ready'))
+        items[-1] = item(items[-1]['content'], 'Ready')
+        out = summary(items)
+        self.assertEqual([l for l in section(out, 'Next') if 'W01 Task' in l or 'E02:W01' in l],
+                         [f"• *I01:E02 Second*, next W01 Task — {url('issues', 2, 'o/s')}"])
+
+    def test_initiative_named_in_two_repositories_needs_its_repository(self):
+        items = [item(self.epic(2, 'o/r'), 'Ready'), item(self.epic(2, 'o/s'), 'Ready')]
+        done = progress(items, [], '--since', SINCE, '--initiative', 'I01')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('o/r:I01', done.stderr)
+        self.assertIn('o/s:I01', done.stderr)
+        out = summary(items, (), '--initiative', 'o/s:I01')
+        self.assertEqual(section(out, 'Next'), [f"• *I01:E00 S Epic*, next W01 Go — {url('issues', 2, 'o/s')}"])
+
+    def test_group_without_its_epic_names_its_repository(self):
+        out = summary([item(issue(3, '[I01:E00:W01] Lone: Task', repo='o/s'), 'In Progress')])
+        self.assertEqual(section(out, 'In progress')[0], '• *o/s I01:E00*')
+
+    def test_pull_request_without_a_repository_url_is_reported(self):
+        stray = {**pr(9, '[I01:E00] Stray'), 'html_url': 'not a url'}
+        done = progress([item(self.epic(2, 'o/r'), 'In Progress')], [stray], '--since', SINCE)
+        self.assertIn('pull request #9 [I01:E00] Stray: no repository in its URL', done.stderr)
 
     def test_next_task_hides_only_its_own_repositorys_task_issue(self):
         epic = self.epic(2, 'o/r', (f"[W01]({url('issues', 3)})", 'Queued', ''))
