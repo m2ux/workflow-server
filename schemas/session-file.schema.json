@@ -242,22 +242,9 @@
                 "type": "string",
                 "description": "Activity identifier associated with the event."
               },
-              "step": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "One-based integer step index."
-              },
               "checkpoint": {
                 "type": "string",
                 "description": "Checkpoint identifier associated with the event."
-              },
-              "decision": {
-                "type": "string",
-                "description": "Decision identifier associated with the event."
-              },
-              "loop": {
-                "type": "string",
-                "description": "Loop identifier associated with the event."
               },
               "data": {
                 "type": "object",
@@ -265,24 +252,6 @@
                   "description": "Value of a named event detail."
                 },
                 "description": "Event-specific values, by `type`. `workflow_triggered` and `workflow_returned`: `{ workflowId, sessionIndex }` of the child. `activity_outcome`: `{ outcome, exit? }`. `progress_published`: `{ published }`. `step_started`: `{ stepId, agentId }`; `step_completed`: `{ stepId, agentId? }`. `checkpoint_response` and `checkpoint_replayed`: `{ optionId }`. `variable_set`: `{ name, value, source }`, with `source` one of `setVariable`, `variables_changed`, `fan_enter` or `yield_checkpoint`; a fan branch's write adds `{ key, instance, member, unit }`, a type mismatch adds `{ declaredType, valueType, typeMismatch: true }`, and a value outside the declared set adds `{ declaredValues, valueOutsideSet: true }`. `variables_seeded`: `{ variables }`, the whole seeded map. `technique_fetched`: `{ techniqueId, stepId?, agentId, chars, delivery }`; `technique_bundled`: `{ techniqueId, stepId, agentId, chars, delivery }`; `resource_fetched`: `{ resourceId, agentId, chars, delivery, bundled? }`, with `delivery` `full` or `unchanged` for all three. `activity_delivered`: `{ agentId, delivery, resolved_techniques, provenance_passes, bundled_steps, spent_chars, eager_budget_chars, response_spent_chars, response_bound_chars, fixed_chars, worker_bundle_chars }`, with `delivery` `full` or `reference`. `activity_dispatched`: `{ agentId, dispatch, chars? }`, with `dispatch` `fresh` or `resume`. `activity_redelivered`: `{ agentId, priorAgentId, chars }`. `activity_usage`: `{ usage, basis, agentId? }`. `batch_refused`: `{ agentId, limit, activities, chars, maxActivities, budgetChars }`, with `limit` `activity_cap` or `delivery_budget`. `workflow_started`, `workflow_completed`, `activity_entered`, `activity_exited` and `checkpoint_reached` carry none."
-              },
-              "error": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "Explanation of the error."
-                  },
-                  "code": {
-                    "type": "string",
-                    "description": "Identifier for the error category."
-                  }
-                },
-                "required": [
-                  "message"
-                ],
-                "additionalProperties": false,
-                "description": "Error message and optional code."
               }
             },
             "required": [
@@ -290,7 +259,7 @@
               "type"
             ],
             "additionalProperties": false,
-            "description": "Timestamped record of session progress or an error."
+            "description": "Timestamped record of session progress."
           },
           "default": [],
           "description": "Chronological record of session progress."
