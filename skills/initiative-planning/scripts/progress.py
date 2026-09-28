@@ -22,9 +22,11 @@ first link read deciding where more than one does. Repository names match in any
     epic's repository or its initiative's, the epic's own first. A row whose id links a pull
     request reads it by URL, whatever its title or repository.
 Sections, lines grouped under the epic they belong to:
-  Initiatives  each initiative with a line under Completed or In progress: its title's name and
-               subtitle, the one-line outcome the house title states. One neither on the board nor
-               given with --initiatives is reported, to be fetched and given.
+  Initiatives  each initiative an item under Completed or In progress works for: its title's name
+               and subtitle, the one-line outcome the house title states. One neither on the board
+               nor given with --initiatives is reported, to be fetched and given.
+An item works for the initiative its epic belongs to and for the one its epic's title names in the
+epic's repository.
   Completed    items Done whose issue closed in the window: an initiative, an epic, or a task issue
                under its epic. Under each epic, the tasks whose row id links a pull request merged
                in the window, and each other pull request counting towards the epic, merged in the
@@ -40,10 +42,10 @@ task issue, if it has one, is on the board and not In Progress or In Review. A t
 belongs to an epic which names its task as next is not listed again.
 
 The window opens at the start of --since in local time, by default a week before today.
---initiative limits the summary to one initiative; where its number names initiatives in several
-repositories it takes the repository too, and where it names none it exits with the choices. An
-epic summarised whose Work Breakdown the scripts cannot read, or that has none, is summarised
-without its tasks.
+--initiative limits the summary to the items working for one initiative; where its number names
+initiatives in several repositories it takes the repository too, and where it names none it exits
+with the choices. An epic summarised whose Work Breakdown the scripts cannot read, or that has none,
+is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the board's
 link beneath, *bold* sections, bullets, and each issue or pull request by its bare URL. Unresolved
@@ -228,21 +230,23 @@ def main() -> int:
         ek = epic_for(k)
         return (*epics[ek][:2], ek[0], ek[1]) if ek else (*tagged[k][:2], k[0], 0)
 
-    def scope_of(k: Key) -> Scope:
+    def scopes_of(k: Key) -> set[Scope]:
+        """The initiatives an item works for: the one its epic belongs to, and the one its epic's
+        title names in the epic's repository."""
         if k in initiatives:
-            return k[0].lower(), tagged[k][0]
+            return {(k[0].lower(), tagged[k][0])}
         ek = epic_for(k)
-        return scope_of_epic[ek] if ek else (k[0].lower(), tagged[k][0])
+        return {scope_of_epic[ek], (ek[0].lower(), epics[ek][0])} if ek else {(k[0].lower(), tagged[k][0])}
 
     if only:
-        scopes = {scope_of(k) for k in tagged}
+        scopes = set().union(*(scopes_of(k) for k in tagged))
         chosen = {s for s in scopes if s[1] == only and (only_repo is None or s[0] == only_repo)}
         choices = ', '.join(f'{r}:I{n}' for r, n in sorted(chosen or scopes))
         if not chosen:
-            sys.exit(f'--initiative {args.initiative} names no initiative on the board; it holds {choices}')
+            sys.exit(f'--initiative {args.initiative} matches no initiative the board works for: {choices}')
         if len(chosen) > 1:
             sys.exit(f'--initiative I{only} names initiatives in several repositories: {choices}')
-        tagged = {k: t for k, t in tagged.items() if scope_of(k) in chosen}
+        tagged = {k: t for k, t in tagged.items() if scopes_of(k) & chosen}
 
     # A pull request counts towards the epic of its reference in its own repository, else in the
     # repository of the initiative holding such an epic.
@@ -292,7 +296,7 @@ def main() -> int:
             group['lines'].append(line)
         if note is not None:
             group['note'] = note
-        worked.add(scope_of(k))
+        worked.update(scopes_of(k))
 
     for k in tagged:
         if k in initiatives and done(k):

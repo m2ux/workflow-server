@@ -285,6 +285,28 @@ class Initiatives(unittest.TestCase):
                          [f"• *I08 Libraries:* One Home for Every Operation — {url('issues', 9)}"])
         self.assertNotIn('not on the board', done.stderr)
 
+    def linked_elsewhere(self):
+        """Initiative I01 in o/r links an epic titled I08:E00 in o/s."""
+        initiative = issue(1, '[I01] Classifier: The Outcome',
+                           body=initiative_body((f"[E02]({url('issues', 2, 'o/s')})", '')))
+        epic = issue(2, '[I08:E00] Library: Epic', body=epic_body(('W01', 'Go', '')), repo='o/s')
+        return [item(initiative, 'In Progress'), item(epic, 'In Progress')]
+
+    def test_epic_works_for_the_initiative_linking_it_and_the_one_its_title_names(self):
+        library = issue(9, '[I08] Libraries: One Home', repo='o/s')
+        done = progress(self.linked_elsewhere(), [], '--since', SINCE, initiatives=(library,))
+        self.assertEqual(section(done.stdout, 'Initiatives'), [
+            f"• *I01 Classifier:* The Outcome — {url('issues', 1)}",
+            f"• *I08 Libraries:* One Home — {url('issues', 9, 'o/s')}"])
+
+    def test_title_initiative_off_the_board_is_named_for_fetching(self):
+        done = progress(self.linked_elsewhere(), [], '--since', SINCE)
+        self.assertIn('I08 in o/s: its initiative is not on the board', done.stderr)
+
+    def test_initiative_named_by_title_selects_the_epic(self):
+        out = summary(self.linked_elsewhere(), (), '--initiative', 'o/s:I08')
+        self.assertIn('I08:E00 Library', out)
+
     def test_nothing_worked_says_nothing(self):
         self.assertEqual(section(summary([item(issue(1, '[I01] Idle: All'), 'Backlog')]), 'Initiatives'),
                          ['• Nothing'])
@@ -393,15 +415,16 @@ class Repositories(unittest.TestCase):
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('o/r:I01, o/s:I01', done.stderr)
 
-    def test_initiative_takes_the_epics_its_table_links(self):
-        # I03 in o/r links an epic titled I01: it is I03's, and --initiative o/r:I03 finds it.
+    def test_initiative_takes_the_epics_its_table_links_and_its_number_titles(self):
+        # I03 in o/r links an epic titled I01: the epic works for both.
         initiative = issue(1, '[I03] Three: Initiative', body=initiative_body((f"[E00]({url('issues', 2)})", '')))
         epic = issue(2, '[I01:E00] Linked: Epic', body=epic_body(('W01', 'Go', '')))
         items = [item(initiative, 'Ready'), item(epic, 'Ready')]
         self.assertIn('Linked', summary(items, (), '--initiative', 'o/r:I03'))
-        done = progress(items, [], '--since', SINCE, '--initiative', 'I01')
+        self.assertIn('Linked', summary(items, (), '--initiative', 'I01'))
+        done = progress(items, [], '--since', SINCE, '--initiative', 'I02')
         self.assertNotEqual(done.returncode, 0)
-        self.assertIn('o/r:I03', done.stderr)
+        self.assertIn('o/r:I01, o/r:I03', done.stderr)
 
     def test_next_task_hides_only_its_own_repositorys_task_issue(self):
         epic = self.epic(2, 'o/r', (f"[W01]({url('issues', 3)})", 'Queued', ''))

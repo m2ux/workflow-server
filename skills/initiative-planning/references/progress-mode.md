@@ -24,7 +24,8 @@ current as the board.
    reference in the epic's repository or its initiative's. It prints the board's link beneath the
    heading, then:
    - **Initiatives:** one line for each initiative with work under Completed or In progress, its
-     title's name and subtitle, for context;
+     title's name and subtitle, for context. An item works for the initiative whose table links
+     its epic and for the one its epic's title names;
    - **Completed:** items Done whose issue closed in the window, grouped under their epic, and
      the tasks whose pull requests merged in it. Closing is when an issue became Done, so one the
      board caught up with later still falls on its closing date;
