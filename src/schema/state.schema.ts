@@ -3,14 +3,12 @@ import { z } from 'zod';
 const StepIndex = z.number().int().min(1).describe('One-based integer step index.');
 
 export const HistoryEventTypeSchema = z.enum([
-  'workflow_started', 'workflow_completed', 'workflow_aborted',
-  'workflow_triggered', 'workflow_returned', 'workflow_suspended',
-  'activity_entered', 'activity_exited', 'activity_skipped',
+  'workflow_started', 'workflow_completed',
+  'workflow_triggered', 'workflow_returned',
+  'activity_entered', 'activity_exited',
   'step_started', 'step_completed',
   'checkpoint_reached', 'checkpoint_response', 'checkpoint_replayed',
-  'decision_reached', 'decision_branch_taken',
-  'loop_started', 'loop_iteration', 'loop_completed', 'loop_break',
-  'variable_set', 'error',
+  'variable_set',
   // Fidelity observability (#166 B8): content-fetch events recorded by
   // get_technique / get_resource. `data` carries { techniqueId, stepId?,
   // agentId } / { resourceId, agentId }; `activity` is the activity current
