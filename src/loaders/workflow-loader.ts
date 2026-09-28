@@ -209,7 +209,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
   try {
     const content = await readFile(filePath, 'utf-8');
     // The file as authored: its own activities are the files in `activities/`, and `activities`
-    // lists only references. An inline activity or an unknown field is refused here.
+    // lists only references.
     const fileValidation = safeValidateWorkflowFile(parseDefinition(content));
     if (!fileValidation.success) {
       return err(new WorkflowValidationError(workflowId, fileValidation.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)));

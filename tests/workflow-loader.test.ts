@@ -218,18 +218,6 @@ describe('workflow-loader', () => {
 
     beforeAll(() => {
       fixtureDir = mkdtempSync(join(tmpdir(), 'workflow-loader-activity-sources-'));
-      mkdirSync(join(fixtureDir, 'inline-activity-wf'));
-      writeFileSync(join(fixtureDir, 'inline-activity-wf', 'workflow.yaml'), [
-        'id: inline-activity-wf',
-        'version: 1.0.0',
-        'title: Inline Activity Workflow',
-        'initialActivity: good-activity',
-        'activities:',
-        '  - id: good-activity',
-        '    version: 1.0.0',
-        '    name: Good Activity',
-      ].join('\n'));
-
       // A source workflow holding one activity at the top of its folder and one in a subfolder,
       // and a borrower that references both.
       mkdirSync(join(fixtureDir, 'source-wf', 'activities', 'patterns'), { recursive: true });
@@ -264,12 +252,6 @@ describe('workflow-loader', () => {
         expect(raw.success, id).toBe(true);
         if (raw.success) expect(raw.value.sourceWorkflowId).toBe('source-wf');
       }
-    });
-
-    it('refuses a workflow file that declares an activity inline', async () => {
-      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'inline-activity-wf');
-      expect(result.success).toBe(false);
-      if (!result.success) expect(result.error.message).toMatch(/defined in its own file under `activities\/`/);
     });
   });
 

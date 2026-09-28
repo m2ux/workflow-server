@@ -124,11 +124,9 @@ export type Workflow = z.infer<typeof WorkflowSchema>;
  * file and the rest is its path under that workflow's `activities/` folder, subfolders included —
  * the leading `activities/` optional.
  */
-export const ActivityReferenceSchema = z.string({
-  invalid_type_error: 'an activity is defined in its own file under `activities/`; list only activity file references here, such as `work-package/02-design-philosophy.yaml`',
-}).regex(
+export const ActivityReferenceSchema = z.string().regex(
   /^(?:[^/]+\/)*\d+-[^/]+\.ya?ml$/,
-  'an activity reference is `<NN>-<id>.yaml` or `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`; an activity is defined in its own file, never inline',
+  'an activity reference is `<NN>-<id>.yaml` or `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`',
 ).describe('Activity file reference. `<NN>-<id>.yaml` names a file in this workflow\'s own `activities/` folder; `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` names a file under that workflow\'s `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`.');
 
 /**
@@ -136,7 +134,7 @@ export const ActivityReferenceSchema = z.string({
  * folder; `activities` lists only references, which is how a workflow borrows another's activity.
  */
 export const WorkflowFileSchema = WorkflowSchema.omit({ activities: true }).extend({
-  activities: enforcement(z.array(ActivityReferenceSchema).min(1).optional().describe('Activities referenced by file, beyond the files in this workflow\'s `activities/` folder; a reference to another workflow\'s activity borrows it. Every activity is defined in its own file; an inline activity is rejected.'), { owner: 'Engine', strictness: 'enforced' }),
+  activities: enforcement(z.array(ActivityReferenceSchema).min(1).optional().describe('Activities referenced by file, beyond the files in this workflow\'s `activities/` folder; a reference to another workflow\'s activity borrows it.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict().describe('Workflow definition file: identity, shared declarations, activity references, and exit destinations.');
 export type WorkflowFile = z.infer<typeof WorkflowFileSchema>;
 

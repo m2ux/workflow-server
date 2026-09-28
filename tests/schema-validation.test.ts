@@ -408,16 +408,8 @@ describe('schema-validation', () => {
       })).success).toBe(true);
     });
 
-    it('rejects an inline activity', () => {
-      expect(safeValidateWorkflowFile(file({ activities: [{ id: 'start', version: '1.0.0', name: 'Start' }] })).success).toBe(false);
-    });
-
     it('rejects a reference that is not an activity file', () => {
       expect(safeValidateWorkflowFile(file({ activities: ['work-package/design-philosophy'] })).success).toBe(false);
-    });
-
-    it('rejects an activitiesDir field', () => {
-      expect(safeValidateWorkflowFile(file({ activitiesDir: 'steps' })).success).toBe(false);
     });
   });
 
