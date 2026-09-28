@@ -150,7 +150,7 @@ class InProgress(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
             (f"[W01]({url('pull', 60)})", 'Delivered', ''), ('W02', 'Next up', 'W01')))
         out = summary([item(epic, 'In Progress')], [pr(60, '[I01:E00] Done', BEFORE)])
-        self.assertEqual(section(out, 'In progress')[1], '    ➡️ W02 Next up')
+        self.assertEqual(section(out, 'In progress')[1], '    ▶️ W02 Next up')
 
     def test_next_task_skips_delivered_blocked_and_active_tasks(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
@@ -160,13 +160,13 @@ class InProgress(unittest.TestCase):
             ('W04', 'Free', '')))
         out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W02] Active: Task'), 'In Progress')],
                       [pr(60, '[I01:E00] Done', BEFORE)])
-        self.assertEqual(section(out, 'Next'), [f"🔜 *I01:E00 First*, next W04 Free — {url('issues', 2)}"])
+        self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 First*, next W04 Free — {url('issues', 2)}"])
 
     def test_next_task_skips_a_task_issue_off_the_board(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
             (f"[W01]({url('issues', 3)})", 'Dropped', ''), ('W02', 'Free', '')))
         out = summary([item(epic, 'Ready')])
-        self.assertEqual(section(out, 'Next'), [f"🔜 *I01:E00 First*, next W02 Free — {url('issues', 2)}"])
+        self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 First*, next W02 Free — {url('issues', 2)}"])
 
 
 class Next(unittest.TestCase):
@@ -188,12 +188,12 @@ class Next(unittest.TestCase):
     def test_task_issue_a_ready_epic_names_next_is_not_listed_again(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Queued', '')))
         out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W01] Queued: Task'), 'Ready')])
-        self.assertEqual(section(out, 'Next'), [f"🔜 *I01:E00 First*, next W01 Queued — {url('issues', 2)}"])
+        self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 First*, next W01 Queued — {url('issues', 2)}"])
 
     def test_task_issue_an_active_epic_names_next_is_not_listed_again(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Queued', '')))
         out = summary([item(epic, 'In Progress'), item(issue(3, '[I01:E00:W01] Queued: Task'), 'Ready')])
-        self.assertEqual(section(out, 'In progress')[1], '    ➡️ W01 Queued')
+        self.assertEqual(section(out, 'In progress')[1], '    ▶️ W01 Queued')
         self.assertEqual(section(out, 'Next'), ['• Nothing'])
 
 
@@ -227,9 +227,9 @@ class Window(unittest.TestCase):
 
     def test_key_to_the_reference_letters_and_marks_ends_the_summary(self):
         out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
-        self.assertEqual(out.splitlines()[-3:], [
-            '', 'Key: I=Initiative, E=Epic, W=Work Item',
-            '✅ done · 🔶 partly done · 🔄 in progress · 👀 in review · 📝 draft · ➡️ next task · 🔜 ready'])
+        self.assertEqual(out.splitlines()[-4:], [
+            '', '*Key*', 'I=Initiative, E=Epic, W=Work Item',
+            '✅ done · 🔶 partly done · 🔄 in progress · 👀 in review · 📝 draft · ▶️ ready'])
 
     def test_heading_names_the_window_and_initiative(self):
         out = summary([item(issue(1, '[I08] Libraries: All'), 'In Progress')], (), '--initiative', 'I08')
@@ -256,13 +256,13 @@ class Options(unittest.TestCase):
         broken = item(issue(4, '[I08:E01] Broken: Epic', body='## Work Breakdown\n\nTBD\n'), 'Ready')
         done = progress([broken], [], '--since', SINCE)
         self.assertEqual(done.returncode, 0)
-        self.assertEqual(section(done.stdout, 'Next'), [f"🔜 *I08:E01 Broken* — {url('issues', 4)}"])
+        self.assertEqual(section(done.stdout, 'Next'), [f"▶️ *I08:E01 Broken* — {url('issues', 4)}"])
         self.assertIn('#4 [I08:E01] Broken: Epic: Work Breakdown has no table', done.stderr)
 
     def test_epic_without_a_work_breakdown_is_reported(self):
         bare = item(issue(4, '[I08:E01] Bare: Epic', body='## Overview\n\nx\n'), 'Ready')
         done = progress([bare], [], '--since', SINCE)
-        self.assertEqual(section(done.stdout, 'Next'), [f"🔜 *I08:E01 Bare* — {url('issues', 4)}"])
+        self.assertEqual(section(done.stdout, 'Next'), [f"▶️ *I08:E01 Bare* — {url('issues', 4)}"])
         self.assertIn('#4 [I08:E01] Bare: Epic: no Work Breakdown', done.stderr)
 
     def test_initiative_reports_no_other_initiative_epics(self):
@@ -368,7 +368,7 @@ class Repositories(unittest.TestCase):
                       [pr(7, '[I01:E00] Only in s', repo='o/s')])
         self.assertEqual(section(out, 'In progress'), [
             f"🔄 *I01:E00 R Epic* — {url('issues', 2)}",
-            '    ➡️ W01 Go',
+            '    ▶️ W01 Go',
             f"🔄 *I01:E00 S Epic* — {url('issues', 2, 'o/s')}",
             f"    👀 Only in s — {url('pull', 7, 'o/s')}"])
 
@@ -396,7 +396,7 @@ class Repositories(unittest.TestCase):
                             repo='o/s')
         items = [*self.cross()[:2], item(done_second, 'Done')]
         done = progress(items, [], '--since', SINCE)
-        self.assertIn(f"🔜 *I01:E01 First*, next W01 After two — {url('issues', 5)}", section(done.stdout, 'Next'))
+        self.assertIn(f"▶️ *I01:E01 First*, next W01 After two — {url('issues', 5)}", section(done.stdout, 'Next'))
         self.assertNotIn('E02 links no issue', done.stderr)
 
     def test_task_issue_in_another_repository_groups_under_its_epic(self):
@@ -410,7 +410,7 @@ class Repositories(unittest.TestCase):
         items[-1] = item(items[-1]['content'], 'Ready')
         out = summary(items)
         self.assertEqual([l for l in section(out, 'Next') if 'W01 Task' in l or 'E02:W01' in l],
-                         [f"🔜 *I01:E02 Second*, next W01 Task — {url('issues', 2, 'o/s')}"])
+                         [f"▶️ *I01:E02 Second*, next W01 Task — {url('issues', 2, 'o/s')}"])
 
     def test_initiative_named_in_two_repositories_needs_its_repository(self):
         items = [item(self.epic(2, 'o/r'), 'Ready'), item(self.epic(2, 'o/s'), 'Ready')]
@@ -419,7 +419,7 @@ class Repositories(unittest.TestCase):
         self.assertIn('o/r:I01', done.stderr)
         self.assertIn('o/s:I01', done.stderr)
         out = summary(items, (), '--initiative', 'o/s:I01')
-        self.assertEqual(section(out, 'Next'), [f"🔜 *I01:E00 S Epic*, next W01 Go — {url('issues', 2, 'o/s')}"])
+        self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 S Epic*, next W01 Go — {url('issues', 2, 'o/s')}"])
 
     def test_group_without_its_epic_names_its_repository(self):
         out = summary([item(issue(3, '[I01:E00:W01] Lone: Task', repo='o/s'), 'In Progress')])
@@ -434,7 +434,7 @@ class Repositories(unittest.TestCase):
         epic = issue(2, '[I01:E00] Upper: Epic', body=epic_body(('W01', 'Go', '')), repo='O/R')
         out = summary([item(epic, 'In Progress')])
         self.assertEqual(section(out, 'In progress'), [
-            f"🔄 *I01:E00 Upper* — {url('issues', 2, 'O/R')}", '    ➡️ W01 Go'])
+            f"🔄 *I01:E00 Upper* — {url('issues', 2, 'O/R')}", '    ▶️ W01 Go'])
 
     def test_row_links_a_pull_request_from_any_repository_by_url(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 40, 'o/t')})", 'There', '')))
@@ -444,7 +444,7 @@ class Repositories(unittest.TestCase):
     def test_task_issue_owned_by_title_and_named_next_is_not_listed_again(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Queued', '')))
         out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W01] Queued: Task'), 'Ready')])
-        self.assertEqual(section(out, 'Next'), [f"🔜 *I01:E00 First*, next W01 Queued — {url('issues', 2)}"])
+        self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 First*, next W01 Queued — {url('issues', 2)}"])
 
     def test_linked_task_issue_groups_under_its_epic_whatever_its_title(self):
         epic = issue(2, '[I01:E02] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
@@ -475,8 +475,8 @@ class Repositories(unittest.TestCase):
         out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W01] Queued: Task'), 'Ready'),
                        item(issue(3, '[I01:E00:W01] Other: Task', repo='o/s'), 'Ready')])
         self.assertEqual(section(out, 'Next'), [
-            f"🔜 *I01:E00 R Epic*, next W01 Queued — {url('issues', 2)}",
-            f"🔜 *I01:E00:W01 Other* — {url('issues', 3, 'o/s')}"])
+            f"▶️ *I01:E00 R Epic*, next W01 Queued — {url('issues', 2)}",
+            f"▶️ *I01:E00:W01 Other* — {url('issues', 3, 'o/s')}"])
 
 
 if __name__ == '__main__':
