@@ -29,7 +29,7 @@ class Completed(unittest.TestCase):
     def test_initiative_closed_in_window_is_complete(self):
         out = summary([item(issue(1, '[I01] Shipped: All', 'closed', IN), 'Done')])
         self.assertEqual(section(out, 'Completed'),
-                         [f"• *I01 Shipped*, initiative complete — {url('issues', 1)}"])
+                         [f"• *I01 Shipped* — {url('issues', 1)}"])
 
     def test_epic_closed_in_window_is_complete(self):
         out = summary([item(issue(2, '[I01:E00] First: Epic', 'closed', IN, epic_body()), 'Done')])
@@ -187,8 +187,9 @@ class Window(unittest.TestCase):
     def test_window_opens_at_local_midnight(self):
         # 15:00 UTC on 24 Sep is 01:00 on 25 Sep in Sydney (UTC+10).
         items = [item(issue(1, '[I01] Shipped: All', 'closed', '2026-09-24T15:00:00Z'), 'Done')]
-        self.assertIn('initiative complete', summary(items, tz='Australia/Sydney'))
-        self.assertNotIn('initiative complete', summary(items, tz='UTC'))
+        self.assertEqual(section(summary(items, tz='Australia/Sydney'), 'Completed'),
+                         [f"• *I01 Shipped* — {url('issues', 1)}"])
+        self.assertEqual(section(summary(items, tz='UTC'), 'Completed'), ['• Nothing'])
 
     def test_default_window_opens_a_week_before_today(self):
         self.assertEqual(week_before(date(2026, 9, 28)), date(2026, 9, 21))

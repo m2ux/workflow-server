@@ -304,7 +304,7 @@ def main() -> int:
 
     for k in tagged:
         if k in initiatives and done(k):
-            add(completed, k, note='initiative complete')
+            add(completed, k)
     for k in tagged:
         if k not in tasks:
             continue
