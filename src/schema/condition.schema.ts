@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ComparisonOperatorSchema = z.enum([
   '==', '!=', '>', '<', '>=', '<=', 'exists', 'notExists',
-]).describe('Comparison or presence test applied to a variable.');
+]).describe('Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null.');
 
 export type ComparisonOperator = z.infer<typeof ComparisonOperatorSchema>;
 
@@ -14,7 +14,7 @@ export type Condition =
 
 export const SimpleConditionSchema = z.object({
   type: z.literal('simple').describe('Identifies a variable comparison or presence test.'),
-  variable: z.string().describe('Variable name or dot-separated path to the value to test.'),
+  variable: z.string().describe('Variable name or dot-separated path to the value to test; a path through a missing or non-object segment reads as absent.'),
   operator: ComparisonOperatorSchema,
   value: z.union([
     z.string().describe('Text value to compare.'),

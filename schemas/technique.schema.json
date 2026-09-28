@@ -184,7 +184,7 @@
                   "name": {
                     "type": "string",
                     "pattern": "^(?:[A-Za-z0-9._-]|\\{[A-Za-z0-9._$-]+\\})+\\.[A-Za-z0-9]+$",
-                    "description": "Single artifact filename with an extension and optional `{variable}` placeholders; declare one output per artifact."
+                    "description": "Single artifact filename: one path segment of letters, digits, `.`, `_`, `-` and `{token}` placeholders (a token is letters, digits, `.`, `_`, `$` and `-`), ending in `.` and an alphanumeric extension, such as `01-audit-report.md` or `{package_name}-plan.md`. A name that is not a filename (prose, several names joined by `/`, a mode selector) is rejected and the technique is dropped with a warning. Declare one output per artifact, and declare the name here rather than in protocol prose."
                   },
                   "action": {
                     "type": "string",
@@ -208,7 +208,7 @@
                   "human",
                   "agent"
                 ],
-                "description": "Intended reader of this output or artifact: `human` by default, or `agent`."
+                "description": "Intended reader of this output or artifact: `human` by default, or `agent`. An output declaring an `artifact` declares its audience, and an `agent` artifact is JSON, so its filename (or a template's literal suffix) ends in `.json`; `check-audience` enforces both."
               },
               "values": {
                 "type": "array",

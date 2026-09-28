@@ -56,7 +56,7 @@ const ARTIFACT_NAME_MESSAGE =
   'an artifact name is a single filename — one path segment ending in an extension, `{token}` placeholders allowed (`01-audit-report.md`, `{package_name}-plan.md`). Declare one output per artifact when a technique writes several files';
 
 export const OutputArtifactSchema = z.object({
-  name: enforcement(z.string().regex(ARTIFACT_NAME_PATTERN, ARTIFACT_NAME_MESSAGE).describe('Single artifact filename with an extension and optional `{variable}` placeholders; declare one output per artifact.'), { owner: 'Engine', strictness: 'enforced' }),
+  name: enforcement(z.string().regex(ARTIFACT_NAME_PATTERN, ARTIFACT_NAME_MESSAGE).describe('Single artifact filename: one path segment of letters, digits, `.`, `_`, `-` and `{token}` placeholders (a token is letters, digits, `.`, `_`, `$` and `-`), ending in `.` and an alphanumeric extension, such as `01-audit-report.md` or `{package_name}-plan.md`. A name that is not a filename (prose, several names joined by `/`, a mode selector) is rejected and the technique is dropped with a warning. Declare one output per artifact, and declare the name here rather than in protocol prose.'), { owner: 'Engine', strictness: 'enforced' }),
   action: z.enum(['create', 'update']).default('create').optional().describe('Whether this output creates a new artifact or updates an existing one'),
 }).describe('Artifact filename and create-or-update action.');
 export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;
@@ -67,7 +67,7 @@ export const OutputItemDefinitionSchema = z.object({
   components: OutputComponentsDefinitionSchema.optional(),
   entry: z.record(z.string().describe('Description of the named list-entry field.')).optional().describe('List-entry fields under `#### entry` with `#####` field headings; mutually exclusive with `components`.'),
   artifact: OutputArtifactSchema.optional().describe('Filename and create-or-update action for a persisted output.'),
-  audience: z.enum(['human', 'agent']).optional().describe('Intended reader of this output or artifact: `human` by default, or `agent`.'),
+  audience: z.enum(['human', 'agent']).optional().describe('Intended reader of this output or artifact: `human` by default, or `agent`. An output declaring an `artifact` declares its audience, and an `agent` artifact is JSON, so its filename (or a template\'s literal suffix) ends in `.json`; `check-audience` enforces both.'),
   values: z.array(z.string().describe('Allowed output value.')).min(1).optional().describe('Complete set of allowed output values, authored under `#### values`.'),
   fieldValues: z.record(z.array(z.string().describe('Allowed value for the named field.')).min(1).describe('Nonempty set of allowed values for the named field.')).optional().describe('Field names mapped to allowed value sets, authored as `#####` headings under `#### values`.'),
   destination: z.string().optional().describe('Output variable name annotation when different from its identifier; omitted from authored technique files.'),

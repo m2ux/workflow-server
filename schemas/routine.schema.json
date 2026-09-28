@@ -114,7 +114,7 @@
               "kind": {
                 "type": "string",
                 "const": "technique",
-                "description": "Marks a technique-reference parameter, requiring a literal technique reference at each use or a declared default."
+                "description": "Marks a technique-reference parameter, requiring a literal technique reference at each use or a declared default. A body technique step binding this parameter declares its own `id`, since a derived one would name the parameter."
               },
               "default": {
                 "type": [
@@ -234,7 +234,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Step identifier, defaulting to the last `::` segment of its technique reference."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted."
                   },
                   "technique": {
                     "anyOf": [
@@ -322,7 +322,7 @@
                                 },
                                 "variable": {
                                   "type": "string",
-                                  "description": "Variable name or dot-separated path to the value to test."
+                                  "description": "Variable name or dot-separated path to the value to test; a path through a missing or non-object segment reads as absent."
                                 },
                                 "operator": {
                                   "type": "string",
@@ -336,7 +336,7 @@
                                     "exists",
                                     "notExists"
                                   ],
-                                  "description": "Comparison or presence test applied to a variable."
+                                  "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
                                 },
                                 "value": {
                                   "type": [
@@ -467,7 +467,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this step within the activity."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load."
                   },
                   "actions": {
                     "type": "array",
@@ -503,7 +503,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this checkpoint within the activity, and the key its recorded responses replay under on resume."
+                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load, and the key its recorded responses replay under on resume."
                   },
                   "message": {
                     "type": "string",
@@ -557,12 +557,12 @@
                   },
                   "defaultOption": {
                     "type": "string",
-                    "description": "Option identifier to use when no person answers the checkpoint."
+                    "description": "Identifier of one of this checkpoint's options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither."
                   },
                   "autoAdvanceMs": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
-                    "description": "Positive waiting interval in milliseconds before the default option may be selected automatically."
+                    "description": "Positive waiting interval in milliseconds before `defaultOption` may be selected automatically; declared together with `defaultOption`."
                   },
                   "when": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"
@@ -593,7 +593,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this step within the activity."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load."
                   },
                   "name": {
                     "type": "string",
@@ -663,7 +663,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Routine step identifier and prefix for identifiers within its body."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load, and the prefix every identifier in the routine body carries once spliced in."
                   },
                   "routine": {
                     "type": "string",

@@ -59,7 +59,7 @@ const stepEntryCondition = {
 
 export const TechniqueStepSchema = z.object({
   kind: enforcement(z.literal('technique').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().optional().describe('Step identifier, defaulting to the last `::` segment of its technique reference.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().optional().describe('Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted.'), { owner: 'Engine', strictness: 'enforced' }),
   technique: z.union([z.string().describe('Technique reference using a `::`-separated path.'), TechniqueBindingSchema]).describe('Technique reference, or an object with `name` and optional `inputs` and `outputs` bindings.'),
   actions: enforcement(z.array(ActionSchema).optional().describe('Actions associated with the technique step.'), { owner: 'Agent', strictness: 'advisory' }),
   ...stepCommonFields,
@@ -69,7 +69,7 @@ export type TechniqueStep = z.infer<typeof TechniqueStepSchema>;
 
 export const ActionStepSchema = z.object({
   kind: enforcement(z.literal('action').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Identifier for this step within the activity.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load.'), { owner: 'Engine', strictness: 'enforced' }),
   actions: enforcement(z.array(ActionSchema).optional().describe('Control actions; may be empty for marker steps.'), { owner: 'Agent', strictness: 'advisory' }),
   ...stepCommonFields,
   ...stepEntryCondition,
@@ -78,11 +78,11 @@ export type ActionStep = z.infer<typeof ActionStepSchema>;
 
 export const CheckpointStepSchema = z.object({
   kind: enforcement(z.literal('checkpoint').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Identifier for this checkpoint within the activity, and the key its recorded responses replay under on resume.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Checkpoint identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load, and the key its recorded responses replay under on resume.'), { owner: 'Engine', strictness: 'enforced' }),
   message: z.string().describe('Message presented to the user.'),
   options: enforcement(z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'), { owner: 'Engine', strictness: 'enforced' }),
-  defaultOption: enforcement(z.string().optional().describe('Option identifier to use when no person answers the checkpoint.'), { owner: 'Engine', strictness: 'enforced' }),
-  autoAdvanceMs: enforcement(z.number().int().positive().optional().describe('Positive waiting interval in milliseconds before the default option may be selected automatically.'), { owner: 'Engine', strictness: 'enforced' }),
+  defaultOption: enforcement(z.string().optional().describe('Identifier of one of this checkpoint\'s options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither.'), { owner: 'Engine', strictness: 'enforced' }),
+  autoAdvanceMs: enforcement(z.number().int().positive().optional().describe('Positive waiting interval in milliseconds before `defaultOption` may be selected automatically; declared together with `defaultOption`.'), { owner: 'Engine', strictness: 'enforced' }),
   ...stepCommonFields,
   ...stepEntryCondition,
 }).strict().describe('User decision at a defined position in the activity steps.');
@@ -91,7 +91,7 @@ export type CheckpointStep = z.infer<typeof CheckpointStepSchema>;
 // Recursion is on the steps field: discriminatedUnion requires object members, so the union cannot be lazy.
 export const LoopStepSchema = z.object({
   kind: enforcement(z.literal('loop').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Identifier for this step within the activity.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load.'), { owner: 'Engine', strictness: 'enforced' }),
   name: z.string().optional().describe('Human-readable label for the iteration.'),
   loopType: enforcement(z.enum(['forEach', 'while', 'doWhile']).describe('Iteration over a collection (`forEach`), with a pre-test (`while`), or with a post-test (`doWhile`).'), { owner: 'Agent', strictness: 'advisory' }),
   continueWhile: enforcement(ConditionSchema.optional().describe('Continuation condition required for `while` and `doWhile` loops and absent for `forEach` loops.'), { owner: 'Agent', strictness: 'advisory' }),
@@ -107,7 +107,7 @@ export type LoopStep = z.infer<typeof LoopStepSchema>;
 // A routine step's gate is `when` alone: a `condition` reaching the body would make every checkpoint in it dismissible.
 export const RoutineStepSchema = z.object({
   kind: enforcement(z.literal('routine').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
-  id: enforcement(z.string().describe('Routine step identifier and prefix for identifiers within its body.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load, and the prefix every identifier in the routine body carries once spliced in.'), { owner: 'Engine', strictness: 'enforced' }),
   routine: z.string().describe('Routine reference in `[namespace::]name` form. The namespace is a directory name, or the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity\'s source workflow, then `meta`. The last segment is the routine and every segment before it is the namespace, since a routine name has no group grammar.'),
   with: z.record(z.union([z.string().describe('Text literal or braced host-variable reference.'), z.number().describe('Numeric routine argument.'), z.boolean().describe('Boolean routine argument.')]).describe('Literal argument or braced host-variable reference.')).optional().describe('Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default fails the load, as does an argument naming no declared input.'),
   outputs: z.record(z.string().describe('Session variable name for the routine output.')).optional().describe('Routine output identifiers mapped to session variable names. An output left unbound produces no write; only an output declared `optional: true` may be left unbound, and any other unbound output fails the load, as does a binding naming no declared output.'),
@@ -266,7 +266,7 @@ export const ActivitySchema = z.object({
   outcome: enforcement(z.array(z.string().describe('Expected result of successful activity completion.')).optional().describe('Expected outcomes of successful activity completion.'), { owner: 'Agent', strictness: 'advisory' }),
   required: enforcement(z.boolean().default(true).describe('Whether this activity is required in the workflow'), { owner: 'Engine', strictness: 'advisory' }),
   rules: enforcement(z.array(z.string().describe('Rule or constraint for this activity.')).optional().describe('Activity-level rules and constraints that agents must follow'), { owner: 'Engine', strictness: 'advisory' }),
-  artifactPrefix: enforcement(z.string().optional().describe('Numeric artifact filename prefix, such as `02`; omitted from authored activity definitions.'), { owner: 'Engine', strictness: 'enforced' }),
+  artifactPrefix: enforcement(z.string().optional().describe('Numeric artifact filename prefix, taken from the activity filename (`02` from `02-design-philosophy.yaml`); omitted from authored activity definitions.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict().describe('Activity with ordered steps; its artifacts are declared by the techniques its steps bind.');
 
 export type Activity = z.infer<typeof ActivitySchema>;

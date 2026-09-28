@@ -16,7 +16,7 @@
             },
             "variable": {
               "type": "string",
-              "description": "Variable name or dot-separated path to the value to test."
+              "description": "Variable name or dot-separated path to the value to test; a path through a missing or non-object segment reads as absent."
             },
             "operator": {
               "type": "string",
@@ -30,7 +30,7 @@
                 "exists",
                 "notExists"
               ],
-              "description": "Comparison or presence test applied to a variable."
+              "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
             },
             "value": {
               "type": [

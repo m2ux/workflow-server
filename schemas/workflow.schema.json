@@ -290,7 +290,7 @@
             },
             "description": "Exit identifiers mapped to destinations for one activity."
           },
-          "description": "Activity identifiers mapped to exit identifiers and their destinations. A destination is one of: an activity identifier, which the run enters next; `__terminal__`, which ends the run; a list of two or more members, each an activity identifier or an instance fan, run together with one worker each; or a single instance fan, which runs one activity once per element of a collection. A fan's width is the number of branches once every member is flattened, an instance fan counting its collection's length when entered; it is bounded by the server's ceiling and by any `maxInstances` an instance fan declares. Every exit of every branch names the fan's join, one single activity, and the load fails otherwise, so a branch cannot open a fan of its own; the run enters the join once, after the last branch returns, and each branch's outputs land in their own slot. Every exit of every activity is bound here: an unbound exit, an unknown exit and an unknown destination each fail the load. Omitted only when no activity declares exits."
+          "description": "Activity identifiers mapped to exit identifiers and their destinations. A destination is one of: an activity identifier, which the run enters next; `__terminal__`, which ends the run; a list of two or more members, each an activity identifier or an instance fan, run together with one worker each; or a single instance fan, which runs one activity once per element of a collection. A fan's width is the number of branches once every member is flattened, an instance fan counting its collection's length when entered; it is bounded by the server's ceiling and by any `maxInstances` an instance fan declares. Every exit of every branch names the fan's join, one single activity, and the load fails otherwise, so a branch cannot open a fan of its own; the run enters the join once, after the last branch returns. Each fanned activity's outputs land in an array variable named for it, its id with `-` replaced by `_` and `_outputs` appended (`review-unit` lands in `review_unit_outputs`), one slot per branch in collection order, each carrying its unit's id and that branch's values. Every exit of every activity is bound here: an unbound exit, an unknown exit and an unknown destination each fail the load. Omitted only when no activity declares exits."
         },
         "activities": {
           "type": "array",
@@ -372,7 +372,7 @@
                         },
                         "id": {
                           "type": "string",
-                          "description": "Step identifier, defaulting to the last `::` segment of its technique reference."
+                          "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted."
                         },
                         "technique": {
                           "anyOf": [
@@ -460,7 +460,7 @@
                                       },
                                       "variable": {
                                         "type": "string",
-                                        "description": "Variable name or dot-separated path to the value to test."
+                                        "description": "Variable name or dot-separated path to the value to test; a path through a missing or non-object segment reads as absent."
                                       },
                                       "operator": {
                                         "type": "string",
@@ -474,7 +474,7 @@
                                           "exists",
                                           "notExists"
                                         ],
-                                        "description": "Comparison or presence test applied to a variable."
+                                        "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
                                       },
                                       "value": {
                                         "type": [
@@ -605,7 +605,7 @@
                         },
                         "id": {
                           "type": "string",
-                          "description": "Identifier for this step within the activity."
+                          "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load."
                         },
                         "actions": {
                           "type": "array",
@@ -641,7 +641,7 @@
                         },
                         "id": {
                           "type": "string",
-                          "description": "Identifier for this checkpoint within the activity, and the key its recorded responses replay under on resume."
+                          "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load, and the key its recorded responses replay under on resume."
                         },
                         "message": {
                           "type": "string",
@@ -695,12 +695,12 @@
                         },
                         "defaultOption": {
                           "type": "string",
-                          "description": "Option identifier to use when no person answers the checkpoint."
+                          "description": "Identifier of one of this checkpoint's options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither."
                         },
                         "autoAdvanceMs": {
                           "type": "integer",
                           "exclusiveMinimum": 0,
-                          "description": "Positive waiting interval in milliseconds before the default option may be selected automatically."
+                          "description": "Positive waiting interval in milliseconds before `defaultOption` may be selected automatically; declared together with `defaultOption`."
                         },
                         "when": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
@@ -731,7 +731,7 @@
                         },
                         "id": {
                           "type": "string",
-                          "description": "Identifier for this step within the activity."
+                          "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load."
                         },
                         "name": {
                           "type": "string",
@@ -801,7 +801,7 @@
                         },
                         "id": {
                           "type": "string",
-                          "description": "Routine step identifier and prefix for identifiers within its body."
+                          "description": "Step identifier, unique within its step list (the top-level steps, or one loop body); a duplicate fails the load, and the prefix every identifier in the routine body carries once spliced in."
                         },
                         "routine": {
                           "type": "string",
@@ -936,7 +936,7 @@
               },
               "artifactPrefix": {
                 "type": "string",
-                "description": "Numeric artifact filename prefix, such as `02`; omitted from authored activity definitions."
+                "description": "Numeric artifact filename prefix, taken from the activity filename (`02` from `02-design-philosophy.yaml`); omitted from authored activity definitions."
               }
             },
             "required": [

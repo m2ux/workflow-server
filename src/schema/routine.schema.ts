@@ -19,7 +19,7 @@ export const RoutineIdSchema = z.string().regex(
 export const RoutineInputSchema = z.object({
   id: VariableNameSchema.describe('Parameter name within the routine body.'),
   description: z.string().describe('What the parameter is for, in the routine\'s own vocabulary.'),
-  kind: z.literal('technique').optional().describe('Marks a technique-reference parameter, requiring a literal technique reference at each use or a declared default.'),
+  kind: z.literal('technique').optional().describe('Marks a technique-reference parameter, requiring a literal technique reference at each use or a declared default. A body technique step binding this parameter declares its own `id`, since a derived one would name the parameter.'),
   default: z.union([z.string().describe('Default text value or technique reference.'), z.number().describe('Default numeric value.'), z.boolean().describe('Default boolean value.')]).optional().describe('Value for an unbound argument; without a default, a value parameter uses the host variable of the same name.'),
 }).strict().describe('Routine parameter with an optional technique-reference kind and default.');
 export type RoutineInput = z.infer<typeof RoutineInputSchema>;
