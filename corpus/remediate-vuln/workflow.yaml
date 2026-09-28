@@ -199,7 +199,6 @@ graph:
     skip-optional-activities: plan-prepare
     comprehension-complete: implementation-analysis
 activities:
-  - 01-start.yaml
   - work-package/02-design-philosophy.yaml
   - work-package/03-requirements-elicitation.yaml
   - work-package/04-research.yaml

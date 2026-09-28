@@ -19,7 +19,7 @@ Operators are `==`, `!=`, `>`, `<`, `>=`, `<=`, unary `!`, `&&`, `||`, parenthes
 - `==` and `!=` are identity: the types match or the test is false, so `"5" == 5` is false.
 - An unquoted word right of a comparison is a string literal — `a == b` tests `a` against the text `b`, never against the variable `b`.
 - A bare name alone holds when its value is truthy.
-- `>`, `<`, `>=`, `<=` read both sides as numbers and are false when either side is not a finite one.
+- `>`, `<`, `>=`, `<=` compare numbers, and strings that read as a finite number, and are false when either side is anything else — a boolean, null, an absent name or a blank string included.
 - An expression that does not parse is false.
 
 ### structured-condition-evaluation
