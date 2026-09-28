@@ -1,0 +1,46 @@
+id: gate-exit
+version: 1.0.0
+name: Gate Exit
+description: Run two gated probes, then stop at a checkpoint whose answer can end the activity before its last step.
+required: true
+variables:
+  reads:
+    - flag_on
+    - unit_count
+  writes:
+    - name: probe_recorded
+      type: boolean
+      description: True once the probe has executed.
+steps:
+  - kind: technique
+    id: numeric-flag
+    technique: hygiene-probe
+    when: flag_on > 0
+  - kind: technique
+    id: numeric-count
+    technique: hygiene-probe
+    when: unit_count > 2
+  - kind: checkpoint
+    id: stop-here
+    message: "End this activity here?"
+    options:
+      - id: halt
+        label: "Halt"
+        effect:
+          exit: halted
+      - id: go-on
+        label: "Go on"
+        effect:
+          exit: finished
+  - kind: action
+    id: after-gate
+    actions:
+      - action: log
+        message: "after-gate ran"
+exits:
+  - id: halted
+    immediate: true
+  - id: finished
+    isDefault: true
+outcome:
+  - The gated probes ran as their gates answered, and the checkpoint chose how the activity ended
