@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { comparableNumber } from './common.js';
 
 export const ComparisonOperatorSchema = z.enum([
   '==', '!=', '>', '<', '>=', '<=', 'exists', 'notExists',
-]).describe('Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null.');
+]).describe('Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and strings that read as a finite number, and are false when either side is anything else, a boolean, null, an absent value and a blank string included. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null.');
 
 export type ComparisonOperator = z.infer<typeof ComparisonOperatorSchema>;
 
@@ -62,12 +63,6 @@ function getVariableValue(path: string, variables: Record<string, unknown>): unk
   return current;
 }
 
-function toNumber(v: unknown): number | undefined {
-  if (typeof v === 'number') return v;
-  if (typeof v === 'string') { const n = Number(v); return Number.isFinite(n) ? n : undefined; }
-  return undefined;
-}
-
 function evaluateSimpleCondition(condition: SimpleCondition, variables: Record<string, unknown>): boolean {
   const value = getVariableValue(condition.variable, variables);
   switch (condition.operator) {
@@ -75,10 +70,10 @@ function evaluateSimpleCondition(condition: SimpleCondition, variables: Record<s
     case 'notExists': return value === undefined || value === null;
     case '==': return value === condition.value;
     case '!=': return value !== condition.value;
-    case '>': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a > b; }
-    case '<': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a < b; }
-    case '>=': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a >= b; }
-    case '<=': { const a = toNumber(value), b = toNumber(condition.value); return a !== undefined && b !== undefined && a <= b; }
+    case '>': { const a = comparableNumber(value), b = comparableNumber(condition.value); return a !== undefined && b !== undefined && a > b; }
+    case '<': { const a = comparableNumber(value), b = comparableNumber(condition.value); return a !== undefined && b !== undefined && a < b; }
+    case '>=': { const a = comparableNumber(value), b = comparableNumber(condition.value); return a !== undefined && b !== undefined && a >= b; }
+    case '<=': { const a = comparableNumber(value), b = comparableNumber(condition.value); return a !== undefined && b !== undefined && a <= b; }
   }
 }
 

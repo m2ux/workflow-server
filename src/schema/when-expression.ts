@@ -10,7 +10,8 @@
  *
  * Identifiers are dotted bag paths (`a.b.c`). Literals: true/false/null, quoted
  * strings, integers, and bare words (strings). Bare identifiers evaluate as
- * truthiness. Numeric comparators coerce both sides with Number() when finite.
+ * truthiness. Numeric comparators compare numbers and strings that read as one,
+ * as structured conditions do.
  *
  * Authoring rule: mixing `&&` and `||` at the same nesting depth requires
  * parentheses so grouping is explicit (precedence is still defined for eval).
@@ -18,6 +19,7 @@
  * Invalid / unparseable input fails closed (evaluate → false).
  */
 import { z } from 'zod';
+import { comparableNumber } from './common.js';
 
 /** The dialect as authors read it: every `when` field shares this one definition. */
 export const WhenExpressionSchema = z.string().describe(
@@ -31,7 +33,7 @@ export const WhenExpressionSchema = z.string().describe(
   + 'A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, '
   + 'or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. '
   + 'A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. '
-  + '`==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` convert both sides to numbers and are false when either side is not a finite number. '
+  + '`==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and strings that read as a finite number, as a structured condition does, and are false when either side is anything else, a boolean, null, an absent variable and a blank string included. '
   + 'An expression that does not parse evaluates to false. '
   + 'Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, '
   + '`is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")`.',
@@ -322,9 +324,9 @@ function evalAst(ast: WhenAst, vars: Record<string, unknown>): boolean {
       const actual = getVar(ast.path, vars);
       if (ast.op === '==') return actual === ast.value;
       if (ast.op === '!=') return actual !== ast.value;
-      const a = typeof actual === 'number' ? actual : Number(actual);
-      const b = typeof ast.value === 'number' ? ast.value : Number(ast.value);
-      if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
+      const a = comparableNumber(actual);
+      const b = comparableNumber(ast.value);
+      if (a === undefined || b === undefined) return false;
       switch (ast.op) {
         case '>':
           return a > b;
@@ -364,24 +366,25 @@ export function assertWhenAuthoring(expr: string): AuthoringResult {
   const parsed = parseWhen(expr);
   if (!parsed.ok) return { ok: false, error: parsed.error };
 
-  // Scan top-level (paren depth 0) for both && and ||.
+  // Each parenthesis opens a group of its own; within any one group, && and || do not mix.
   const toks = tokenize(expr);
   if (typeof toks === 'string') return { ok: false, error: toks };
 
-  let depth = 0;
-  let sawAnd = false;
-  let sawOr = false;
+  const groups: Array<{ and: boolean; or: boolean }> = [{ and: false, or: false }];
   for (const t of toks) {
-    if (t.t === 'op' && t.v === '(') depth++;
-    else if (t.t === 'op' && t.v === ')') depth = Math.max(0, depth - 1);
-    else if (depth === 0 && t.t === 'op' && t.v === '&&') sawAnd = true;
-    else if (depth === 0 && t.t === 'op' && t.v === '||') sawOr = true;
-  }
-  if (sawAnd && sawOr) {
-    return {
-      ok: false,
-      error: 'mixed && and || at the same nesting depth require parentheses',
-    };
+    if (t.t !== 'op') continue;
+    if (t.v === '(') groups.push({ and: false, or: false });
+    else if (t.v === ')') { if (groups.length > 1) groups.pop(); }
+    else if (t.v === '&&' || t.v === '||') {
+      const g = groups[groups.length - 1]!;
+      if (t.v === '&&') g.and = true; else g.or = true;
+      if (g.and && g.or) {
+        return {
+          ok: false,
+          error: 'mixed && and || at the same nesting depth require parentheses',
+        };
+      }
+    }
   }
   return { ok: true };
 }

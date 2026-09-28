@@ -30,7 +30,7 @@
                 "exists",
                 "notExists"
               ],
-              "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
+              "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and strings that read as a finite number, and are false when either side is anything else, a boolean, null, an absent value and a blank string included. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
             },
             "value": {
               "type": [
