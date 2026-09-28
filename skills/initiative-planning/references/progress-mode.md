@@ -15,9 +15,17 @@ current as the board.
    issue whole. Fetch the pull requests that name an initiative, appending those of each further
    repository the board's issues live in with `>>`. The Commands below use board 2 and its Status
    field id; substitute the chosen board's.
-4. **Summarise** with `scripts/progress.py --items items.json --prs prs.json`. The window opens at
-   the start of the previous working day. Give `--since` for another, such as the last standup's
-   date for a weekly update, and `--initiative I08` when the user names one initiative. It prints:
+4. **Summarise** with `scripts/progress.py --items items.json --prs prs.json`. The window opens a
+   week before today. Give `--since` for another, such as the previous working day for a daily
+   standup, and `--initiative I08` when the user names one initiative, or `owner/repo:I08` where
+   that number names initiatives in several repositories. Each repository numbers its own
+   initiatives, and an initiative's epics and task issues may live in other repositories, so each
+   item's place follows the Work Breakdown links, and a pull request counts towards the epic of its
+   reference in the epic's repository or its initiative's. It prints the board's link beneath the
+   heading, then:
+   - **Initiatives:** one line for each initiative with work under Completed or In progress, its
+     title's name and subtitle, for context. An item works for the initiative whose table links
+     its epic and for the one its epic's title names;
    - **Completed:** items Done whose issue closed in the window, grouped under their epic, and
      the tasks whose pull requests merged in it. Closing is when an issue became Done, so one the
      board caught up with later still falls on its closing date;
@@ -25,7 +33,10 @@ current as the board.
      requests, or else its next task;
    - **Next:** the five Ready items ranked by priority label, each epic with its next task, and a
      count of the rest.
-5. **Report** the summary verbatim in a fenced block, so the user copies it unaltered, with any
+5. **Give the initiatives off the board.** For each `unresolved` line naming an initiative not on
+   the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch
+   it, and re-run with `--initiatives issue-946.json …`.
+6. **Report** the summary verbatim in a fenced block, so the user copies it unaltered, with any
    `unresolved` line it prints to stderr beneath: a dependency on an issue off the board, which
    reads as blocked, or an epic whose Work Breakdown cannot be read, summarised without its tasks;
    review mode fixes its body.
@@ -39,5 +50,8 @@ gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=41174993
 gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' > prs.json
 gh api --paginate "repos/{owner}/{other}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' >> prs.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json
+gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("[I08]")) | .number'
+gh api repos/{owner}/{repo}/issues/946 > issue-946.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --initiatives issue-946.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08
 ```
