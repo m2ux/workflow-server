@@ -10,8 +10,7 @@ description: >-
   now hold, closes what is complete, and updates the initiative's project board. Hoist mode finds
   orphan issues and brings each one the user chooses into an existing or new initiative, epic or
   task, closing an orphan whose detail the taking issue cites. Progress mode summarises the project
-  board as a standup in Slack markup: a paragraph for management on what the window accomplished,
-  then what completed, what is in progress and what is next. Use
+  board as a standup in Slack markup: what completed, what is in progress and what is next. Use
   when the user asks to raise, plan or restructure an initiative or epic, to review an initiative,
   to check an issue's format or bring it into the house layout, to check or fix dependencies or
   ordering, to renumber epics or tasks, to fold review findings into issues, to update an
