@@ -23,6 +23,8 @@ Fixed in the body written to --fix, keeping the issue's wording:
   - an initiative row's Description set to its epic's title name, the part before the colon,
     for each epic given with --epic
   - prose Non-goals made a bulleted list, one sentence per bullet
+  - a Problem or Proposal item that opens with a bold statement given its body on the next line,
+    indented under the bullet
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -83,6 +85,7 @@ HISTORY = re.compile(r'\bmoved to\b|\(was [EW]?\d|\bwas W\d\d|\brenumbered\b|\bf
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
+LEAD = re.compile(r'^(\s*)(- )?(\*\*[^*]+?[.:!?]\*\*)[ \t]+(\S.*)$')
 SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
@@ -285,6 +288,8 @@ class Review:
                 section[1] = self.fix_names(self.fix_references(self.fix_table(section[1], template.columns)))
                 self.check_dependencies(section[1])
                 self.check_shared(section[1])
+            elif h in ('Problem', 'Proposal'):
+                section[1] = self.fix_leads(section[1], h)
             elif h == 'Non-goals':
                 section[1] = self.fix_bullets(section[1], h)
                 self.check_non_goals(section[1])
@@ -533,6 +538,23 @@ class Review:
                 'another initiative, or not in the initiative table'
             self.decide.append(f'Work Breakdown epic references unlinked ({why}): ' +
                                ', '.join(dict.fromkeys(unlinked)))
+        return out
+
+    def fix_leads(self, lines: list[str], heading: str) -> list[str]:
+        """Put the body of each item that opens with a bold statement on the line after it."""
+        out, fence, split = [], False, 0
+        for line in lines:
+            if line.lstrip().startswith('```'):
+                fence = not fence
+            m = None if fence else LEAD.match(line)
+            if m:
+                indent, bullet, lead, rest = m.groups()
+                out += [f'{indent}{bullet or ""}{lead}', f'{indent}{"  " if bullet else ""}{rest}']
+                split += 1
+            else:
+                out.append(line)
+        if split:
+            self.fixed.append(f'{heading}: {split} bold leads given their body on the next line')
         return out
 
     def fix_bullets(self, lines: list[str], heading: str) -> list[str]:
