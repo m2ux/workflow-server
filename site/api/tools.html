@@ -328,11 +328,11 @@
       <p>Yield to the orchestrator, present decisions to the user, and resume.</p>
       <section class="tool" id="yield_checkpoint">
         <h3><code>yield_checkpoint</code></h3>
-        <p class="tool-summary">Worker tool: mark a checkpoint active and yield to the orchestrator (emit <code>&lt;checkpoint_yield&gt;</code> with the returned session_index).</p>
+        <p class="tool-summary">Worker tool: mark a checkpoint active and yield to the orchestrator (emit an empty <code>&lt;checkpoint_yield&gt;</code> block: the orchestrator reads the open checkpoint from the server).</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Call when a checkpoint step tells you to stop and hand control to the orchestrator.</p>
-          <p>Records the checkpoint as active and returns the <code>session_index</code> for a <code>&lt;checkpoint_yield&gt;</code> block in your output.</p>
+          <p>Records the checkpoint as active. Emit an empty <code>&lt;checkpoint_yield&gt;</code> block in your output; the orchestrator reads the open checkpoint with <code>present_checkpoint</code>.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">

@@ -2376,7 +2376,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit `<checkpoint_yield>` with the returned session_index). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides — an activity declaring no gate is delivered no gate protocol, so fetch it with get_technique { technique_id: "workflow-engine::yield-checkpoint" } before raising one.',
+  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit an empty `<checkpoint_yield>` block: the orchestrator reads the open checkpoint from the server). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides — an activity declaring no gate is delivered no gate protocol, so fetch it with get_technique { technique_id: "workflow-engine::yield-checkpoint" } before raising one.',
     {
       ...sessionIndexParam,
       checkpoint_id: z.string().describe('Checkpoint id being yielded. Matches a checkpoint the current activity declares, or names a decision the activity did not anticipate — the latter requires `message` and `options`.'),
@@ -2526,7 +2526,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpoint_id,
           session_index,
           ...(publishedNames.length > 0 ? { variables_published: publishedNames } : {}),
-          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this session_index to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
+          message: `Checkpoint '${checkpoint_id}' successfully yielded. Emit an empty <checkpoint_yield> block, which hands control to the orchestrator to read the open checkpoint with present_checkpoint, then STOP execution and wait to be resumed.`
         }, null, 2) }],
         _meta: {
           session_index,

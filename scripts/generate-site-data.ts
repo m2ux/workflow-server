@@ -385,7 +385,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   ],
   yield_checkpoint: [
     'Call when a checkpoint step tells you to stop and hand control to the orchestrator.',
-    'Records the checkpoint as active and returns the `session_index` for a `<checkpoint_yield>` block in your output.',
+    'Records the checkpoint as active. Emit an empty `<checkpoint_yield>` block in your output; the orchestrator reads the open checkpoint with `present_checkpoint`.',
   ],
   resume_checkpoint: [
     'Call after the orchestrator resolves a checkpoint and resumes you.',
