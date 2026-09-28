@@ -228,7 +228,7 @@ class Window(unittest.TestCase):
     def test_key_to_the_reference_letters_and_marks_ends_the_summary(self):
         out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
         self.assertEqual(out.splitlines()[-4:], [
-            '', '*Key:*', 'I=Initiative, E=Epic, W=Work Item',
+            '', '*Key*', 'I=Initiative, E=Epic, W=Work Item',
             '✅ done · 🔶 partly done · 🔄 in progress · 👀 in review · 📝 draft · ▶️ ready'])
 
     def test_heading_names_the_window_and_initiative(self):

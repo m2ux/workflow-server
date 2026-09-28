@@ -82,7 +82,7 @@ SHOWN = 5
 DONE, PARTLY, WORKING, REVIEW, DRAFT, READY = '✅', '🔶', '🔄', '👀', '📝', '▶️'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
 ACTIVE = tuple(MARK)
-KEY = ['*Key:*', 'I=Initiative, E=Epic, W=Work Item',
+KEY = ['*Key*', 'I=Initiative, E=Epic, W=Work Item',
        f'{DONE} done · {PARTLY} partly done · {WORKING} in progress · {REVIEW} in review · '
        f'{DRAFT} draft · {READY} ready']
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
