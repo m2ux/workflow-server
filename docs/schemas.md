@@ -21,9 +21,9 @@ The workflow server uses six schemas:
 
 ## Enforcement Model
 
-The server enforces structure at load time plus a runtime core; the executing agents carry out the fields no server path reads. `get_activity` delivers the activity YAML as authored, with each step's resolved id filled in and each routine reference replaced by the routine's steps, so every authored field reaches the agent. Each field has an owner and a strictness.
+The server enforces structure at load time plus a runtime core; the executing agents carry out the rest. `get_activity` delivers the activity YAML as authored, with each step's resolved id filled in and each routine reference replaced by the routine's steps, so every authored field reaches the agent. Each field has an owner and a strictness.
 
-- **Owner** — `Engine` when server behavior or a check depends on the field. `Agent` when the field is delivered and no server path reads it.
+- **Owner** — who carries out what the field means. `Engine` when the server does: it acts on the value, or a server check decides by it. `Agent` when the executing agent does. The server may still read an `Agent` field, to bundle, annotate or check a report, without doing what the field says.
 - **Strictness** — `enforced` when a check on the field blocks, at load or at run time. `advisory` when every check on it only renders or warns.
 
 ## Generation
