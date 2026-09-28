@@ -1,8 +1,10 @@
 /**
- * check-when-expression — authoring guard for inline `when:` step gates.
+ * check-when-expression — authoring guard for inline `when:` gates.
  *
  * Rejects expressions that fail to parse under the reference dialect, and
  * rejects bare mixed `&&`/`||` at the same nesting depth (parentheses required).
+ * Step gates and exit selections share the dialect, so both are checked, in
+ * `workflow.yaml`, `activities/` and `routines/` alike.
  *
  * Run:
  *   npx tsx guards/check-when-expression.ts
@@ -24,16 +26,17 @@ export interface WhenExpressionViolation {
   detail: string;
 }
 
-function checkStep(step: Record<string, unknown>, file: string, out: WhenExpressionViolation[]): void {
-  const when = step.when;
+/** The members of a list that carry a `when` gate: steps, or an activity's exits. */
+const GATED_LISTS: Record<string, (item: Record<string, unknown>) => string> = {
+  steps: (step) => String(step.id ?? '?'),
+  exits: (exit) => `exit ${String(exit.id ?? '?')}`,
+};
+
+function checkGate(item: Record<string, unknown>, site: string, out: WhenExpressionViolation[]): void {
+  const when = item.when;
   if (typeof when !== 'string' || !when.trim()) return;
   const r = assertWhenAuthoring(when);
-  if (!r.ok) {
-    out.push({
-      site: `${file}[${String(step.id ?? '?')}]`,
-      detail: `when: ${JSON.stringify(when)} — ${r.error}`,
-    });
-  }
+  if (!r.ok) out.push({ site, detail: `when: ${JSON.stringify(when)} — ${r.error}` });
 }
 
 function walk(node: unknown, file: string, out: WhenExpressionViolation[]): void {
@@ -43,10 +46,12 @@ function walk(node: unknown, file: string, out: WhenExpressionViolation[]): void
   }
   if (!node || typeof node !== 'object') return;
   for (const [k, v] of Object.entries(node as Record<string, unknown>)) {
-    if (k === 'steps' && Array.isArray(v)) {
-      for (const step of v) {
-        if (step && typeof step === 'object' && !Array.isArray(step)) {
-          checkStep(step as Record<string, unknown>, file, out);
+    const label = GATED_LISTS[k];
+    if (label && Array.isArray(v)) {
+      for (const item of v) {
+        if (item && typeof item === 'object' && !Array.isArray(item)) {
+          const gated = item as Record<string, unknown>;
+          checkGate(gated, `${file}[${label(gated)}]`, out);
         }
       }
     }
@@ -56,13 +61,16 @@ function walk(node: unknown, file: string, out: WhenExpressionViolation[]): void
 
 export function collectWhenExpressionViolations(root: string = ROOT): WhenExpressionViolation[] {
   const out: WhenExpressionViolation[] = [];
-  const wfs = corpusWorkflows(root).filter(({ dir }) => existsSync(join(dir, 'activities')));
-  for (const { dir } of wfs) {
-    const adir = join(dir, 'activities');
-    for (const { path } of definitionsUnder(adir)) {
-      const rel = relative(root, path);
+  for (const { dir } of corpusWorkflows(root)) {
+    // `workflow.yaml` may carry activities inline, and a routine body carries steps of its own.
+    const files = [join(dir, 'workflow.yaml')].filter((path) => existsSync(path));
+    for (const sub of ['activities', 'routines']) {
+      const owned = join(dir, sub);
+      if (existsSync(owned)) files.push(...definitionsUnder(owned).map(({ path }) => path));
+    }
+    for (const path of files) {
       try {
-        walk(parseDefinition(readFileSync(path, 'utf-8')), rel, out);
+        walk(parseDefinition(readFileSync(path, 'utf-8')), relative(root, path), out);
       } catch {
         /* malformed YAML is validate-workflow-yaml's job */
       }
