@@ -3,10 +3,10 @@ import type { ServerConfig } from '../config.js';
 import { readAllSchemas, readSchema, listSchemaIds } from '../loaders/schema-loader.js';
 
 const SCHEMA_DESCRIPTIONS: Record<string, string> = {
-  workflow: 'Workflow definition schema — orchestrates activities with rules and variables',
-  activity: 'Activity definition schema — an ordered list of kind-tagged steps (technique | action | checkpoint | loop | routine) plus activity-level decisions and transitions',
-  condition: 'Condition schema — conditional expressions for transitions, decisions, and loops',
-  technique: 'Technique definition schema — reusable capabilities with protocol, tools, inputs/outputs, and rules',
+  workflow: 'Workflow definition schema — rules, variables and techniques, and the graph binding each activity exit to a destination',
+  activity: 'Activity definition schema — an ordered list of kind-tagged steps (technique | action | checkpoint | loop | routine), the variables it reads and writes, and its named exits',
+  condition: 'Condition schema — structured variable tests and their and/or/not combinations, gating steps, actions and loops',
+  technique: 'Technique definition schema — reusable capabilities with inputs, protocol, rules, and outputs',
   'session-file': 'Session-file schema — the on-disk session.json record the server seals and loads by session_index',
 };
 
