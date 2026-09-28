@@ -212,6 +212,35 @@ describe('workflow-loader', () => {
     });
   });
 
+  describe('activity sources', () => {
+    let fixtureDir: string;
+
+    beforeAll(() => {
+      fixtureDir = mkdtempSync(join(tmpdir(), 'workflow-loader-activity-sources-'));
+      mkdirSync(join(fixtureDir, 'inline-activity-wf'));
+      writeFileSync(join(fixtureDir, 'inline-activity-wf', 'workflow.yaml'), [
+        'id: inline-activity-wf',
+        'version: 1.0.0',
+        'title: Inline Activity Workflow',
+        'initialActivity: good-activity',
+        'activities:',
+        '  - id: good-activity',
+        '    version: 1.0.0',
+        '    name: Good Activity',
+      ].join('\n'));
+    });
+
+    afterAll(() => {
+      rmSync(fixtureDir, { recursive: true, force: true });
+    });
+
+    it('refuses a workflow file that declares an activity inline', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'inline-activity-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toMatch(/activities/);
+    });
+  });
+
   describe.skipIf(!LIVE_CORPUS)('getActivity', () => {
     it('should find an activity by ID within a loaded workflow', async () => {
       const workflow = await loadMetaWorkflow();

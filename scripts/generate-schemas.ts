@@ -3,7 +3,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { WorkflowSchema } from '../src/schema/workflow.schema.js';
+import { WorkflowFileSchema } from '../src/schema/workflow.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
 import { SessionFileSchema } from '../src/schema/session.schema.js';
 import { ActivitySchema } from '../src/schema/activity.schema.js';
@@ -44,7 +44,7 @@ interface GeneratedSchema {
 const GATE_DEFINITIONS = { whenExpression: WhenExpressionSchema, condition: ConditionSchema };
 
 export const GENERATED_SCHEMAS: GeneratedSchema[] = [
-  { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root', definitions: GATE_DEFINITIONS },
+  { name: 'workflow', schema: WorkflowFileSchema, description: 'Workflow definition file; its activities are the files in its activities/ folder and the files it references.', refStrategy: 'root' },
   { name: 'condition', schema: ConditionSchema, description: 'Condition expression schema', refStrategy: 'root' },
   { name: 'session-file', schema: SessionFileSchema, description: 'Session state recorded in session.json.', refStrategy: 'root' },
   { name: 'activity', schema: ActivitySchema, description: 'Activity definition with ordered steps.', refStrategy: 'root', definitions: GATE_DEFINITIONS },

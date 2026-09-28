@@ -114,13 +114,31 @@ export const WorkflowSchema = z.object({
   techniques: WorkflowTechniquesSchema.optional().describe('Technique references grouped by scope: workflow orchestration or every activity.'),
   initialActivity: enforcement(z.string().describe('Identifier of the first activity to execute: the activity the first `next_activity` names, and the root the variable-reachability analysis walks from. Naming no activity of this workflow fails the load.'), { owner: 'Engine', strictness: 'enforced' }),
   graph: GraphSchema.optional().describe('Activity identifiers mapped to exit identifiers and their destinations. A destination is one of: an activity identifier, which the run enters next; `__terminal__`, which ends the run; a list of two or more members, each an activity identifier or an instance fan, run together with one worker each; or a single instance fan, which runs one activity once per element of a collection. A fan\'s width is the number of branches once every member is flattened, an instance fan counting its collection\'s length when entered; it is bounded by the server\'s ceiling and by any `maxInstances` an instance fan declares. Every exit of every branch names the fan\'s join, one single activity, and the load fails otherwise, so a branch cannot open a fan of its own; the run enters the join once, after the last branch returns. Each fanned activity\'s outputs land in an array variable named for it, its id with `-` replaced by `_` and `_outputs` appended (`review-unit` lands in `review_unit_outputs`), one slot per branch in collection order, each carrying its unit\'s id and that branch\'s values. Every exit of every activity is bound here: an unbound exit, an unknown exit and an unknown destination each fail the load. Omitted only when no activity declares exits.'),
-  // Zod includes assembled activities; definition files may keep them separate.
-  activities: enforcement(z.array(ActivitySchema).min(1).optional().describe('Activities in this workflow; omitted when activities are defined in separate files.'), { owner: 'Engine', strictness: 'enforced' }),
-}).strict().describe('Workflow identity, shared declarations, activities, and exit destinations.');
+  activities: enforcement(z.array(ActivitySchema).min(1).optional().describe('The loaded activities: every file in the workflow\'s `activities/` folder, and every activity its file references.'), { owner: 'Engine', strictness: 'enforced' }),
+}).strict().describe('Loaded workflow: identity, shared declarations, activities, and exit destinations.');
 export type Workflow = z.infer<typeof WorkflowSchema>;
+
+/**
+ * A reference to an activity file: `[<workflow>/][activities/]<NN>-<id>.yaml`. With no workflow
+ * segment it names a file in this workflow's own `activities/` folder.
+ */
+export const ActivityReferenceSchema = z.string().regex(
+  /^(?:[^/]+\/)?(?:activities\/)?\d+-[^/]+\.ya?ml$/,
+  'an activity reference is `[<workflow>/][activities/]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml`; an activity is defined in its own file, never inline',
+).describe('Activity file reference in `[<workflow>/][activities/]<NN>-<id>.yaml` form, such as `work-package/02-design-philosophy.yaml`; without a workflow segment it names a file in this workflow\'s own `activities/` folder.');
+
+/**
+ * A workflow definition file as authored. Its own activities are the files in its `activities/`
+ * folder; `activities` lists only references, which is how a workflow borrows another's activity.
+ */
+export const WorkflowFileSchema = WorkflowSchema.omit({ activities: true }).extend({
+  activities: enforcement(z.array(ActivityReferenceSchema).min(1).optional().describe('Activities referenced by file, beyond the files in this workflow\'s `activities/` folder; a reference to another workflow\'s activity borrows it. Every activity is defined in its own file; an inline activity is rejected.'), { owner: 'Engine', strictness: 'enforced' }),
+}).strict().describe('Workflow definition file: identity, shared declarations, activity references, and exit destinations.');
+export type WorkflowFile = z.infer<typeof WorkflowFileSchema>;
 
 export function validateWorkflow(data: unknown): Workflow { return WorkflowSchema.parse(data); }
 export function safeValidateWorkflow(data: unknown) { return WorkflowSchema.safeParse(data); }
+export function safeValidateWorkflowFile(data: unknown) { return WorkflowFileSchema.safeParse(data); }
 
 // Re-export activity types for convenience
 export { 

@@ -36,7 +36,7 @@ classDiagram
 
 *Figure 2. Definition, Activities, and Graph.*
 
-The file is `workflow.yaml` in the workflow's directory. The directory name is the workflow's id. Activities live in that directory's `activities/` folder, or inline. An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
+The file is `workflow.yaml` in the workflow's directory. The directory name is the workflow's id. Activities live in that directory's `activities/` folder, one file each. A workflow borrows another's activity by listing a reference to its file under `activities` (`work-package/02-design-philosophy.yaml`); an activity is never written inline. An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
 
 #### Sample Definition
 
@@ -45,7 +45,6 @@ id: review
 version: 1.0.0
 title: Review a change
 initialActivity: gather
-activitiesDir: activities
 techniques:
   workflow:
     - workflow-engine::dispatch-activity

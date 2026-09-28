@@ -320,11 +320,8 @@ interface AuthoredActivity {
 }
 
 /**
- * Every activity a workflow authors, read from its files.
- *
- * The directory is the one the manifest names and `activities` otherwise, matching the loader's
- * rule. A manifest may also carry an activity inline, which no file holds, so those are read from
- * the manifest itself. A file that does not parse contributes no reference and is not reported
+ * Every activity a workflow authors, read from the files in its `activities/` folder, where the
+ * loader reads them. A file that does not parse contributes no reference and is not reported
  * here: an unreadable activity is a louder failure than this guard's subject, and the guards that
  * own it name it already.
  *
@@ -336,27 +333,12 @@ interface AuthoredActivity {
  */
 function authoredActivities(workflowId: string, dir: string): AuthoredActivity[] {
   const out: AuthoredActivity[] = [];
-  let manifest: Record<string, unknown> = {};
-  try {
-    manifest = (parseDefinition(readFileSync(join(dir, 'workflow.yaml'), 'utf-8')) ?? {}) as Record<string, unknown>;
-  } catch { /* a manifest that does not parse is the load's finding, not this guard's */ }
-
-  for (const entry of Array.isArray(manifest['activities']) ? manifest['activities'] : []) {
-    // A string entry is a path to a file, read below from whichever workflow directory holds it.
-    if (entry && typeof entry === 'object') {
-      const inline = entry as { id?: unknown; steps?: unknown };
-      const id = typeof inline.id === 'string' ? inline.id : 'inline';
-      out.push({ site: `${workflowId}/workflow.yaml#${id}`, steps: inline.steps as Step[] | undefined });
-    }
-  }
-
-  const activitiesDir = typeof manifest['activitiesDir'] === 'string' ? manifest['activitiesDir'] : 'activities';
-  const dirPath = join(dir, activitiesDir);
+  const dirPath = join(dir, 'activities');
   if (!existsSync(dirPath)) return out;
   for (const { rel, path } of definitionsUnder(dirPath)) {
     try {
       const doc = parseDefinition(readFileSync(path, 'utf-8')) as { steps?: Step[] } | null;
-      out.push({ site: `${workflowId}/${activitiesDir}/${rel}`, steps: doc?.steps });
+      out.push({ site: `${workflowId}/activities/${rel}`, steps: doc?.steps });
     } catch { continue; }
   }
   return out;

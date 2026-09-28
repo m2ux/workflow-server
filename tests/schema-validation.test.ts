@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   WorkflowSchema,
   safeValidateWorkflow,
+  safeValidateWorkflowFile,
 } from '../src/schema/workflow.schema.js';
 import {
   ActivitySchema,
@@ -392,8 +393,30 @@ describe('schema-validation', () => {
     });
   });
 
+  describe('WorkflowFileSchema', () => {
+    const file = (extra: Record<string, unknown>) => ({
+      id: 'test-workflow', version: '1.0.0', title: 'Test Workflow', initialActivity: 'start', ...extra,
+    });
+
+    it('accepts local and cross-workflow activity references', () => {
+      expect(safeValidateWorkflowFile(file({ activities: ['01-start.yaml', 'work-package/02-design-philosophy.yaml'] })).success).toBe(true);
+    });
+
+    it('rejects an inline activity', () => {
+      expect(safeValidateWorkflowFile(file({ activities: [{ id: 'start', version: '1.0.0', name: 'Start' }] })).success).toBe(false);
+    });
+
+    it('rejects a reference that is not an activity file', () => {
+      expect(safeValidateWorkflowFile(file({ activities: ['work-package/design-philosophy'] })).success).toBe(false);
+    });
+
+    it('rejects an activitiesDir field', () => {
+      expect(safeValidateWorkflowFile(file({ activitiesDir: 'steps' })).success).toBe(false);
+    });
+  });
+
   describe('WorkflowSchema', () => {
-    const minimalActivity = { 
+    const minimalActivity = {
       id: 'activity-1', 
       version: '1.0.0',
       name: 'Activity One',

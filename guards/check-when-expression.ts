@@ -4,7 +4,7 @@
  * Rejects expressions that fail to parse under the reference dialect, and
  * rejects bare mixed `&&`/`||` at the same nesting depth (parentheses required).
  * Step gates and exit selections share the dialect, so both are checked, in
- * `workflow.yaml`, `activities/` and `routines/` alike.
+ * `activities/` and `routines/` alike.
  *
  * Run:
  *   npx tsx guards/check-when-expression.ts
@@ -62,8 +62,8 @@ function walk(node: unknown, file: string, out: WhenExpressionViolation[]): void
 export function collectWhenExpressionViolations(root: string = ROOT): WhenExpressionViolation[] {
   const out: WhenExpressionViolation[] = [];
   for (const { dir } of corpusWorkflows(root)) {
-    // `workflow.yaml` may carry activities inline, and a routine body carries steps of its own.
-    const files = [join(dir, 'workflow.yaml')].filter((path) => existsSync(path));
+    // A routine body carries steps of its own, beside the activities.
+    const files: string[] = [];
     for (const sub of ['activities', 'routines']) {
       const owned = join(dir, sub);
       if (existsSync(owned)) files.push(...definitionsUnder(owned).map(({ path }) => path));

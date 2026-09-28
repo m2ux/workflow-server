@@ -10,6 +10,7 @@ import {
   instanceFans,
   isFan,
   safeValidateWorkflow,
+  safeValidateWorkflowFile,
 } from '../schema/workflow.schema.js';
 import { type Activity, type Step, safeValidateActivity, populateStepIds, activityCheckpoints, flattenActivitySteps } from '../schema/activity.schema.js';
 import { collectRoutineRefs, materializeActivityRoutines } from './routine-resolver.js';
@@ -69,7 +70,6 @@ interface RawWorkflow {
   version: string;
   title: string;
   description?: string;
-  activitiesDir?: string;
   initialActivity?: string;
   [key: string]: unknown;
 }
@@ -208,21 +208,22 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
   
   try {
     const content = await readFile(filePath, 'utf-8');
-    const rawWorkflow = parseDefinition(content) as RawWorkflow;
-    
-    // Load activities from directory if not inline or resolve shorthand string refs
-    const existingActivities = rawWorkflow['activities'] as (Activity | string)[] | undefined;
+    // The file as authored: its own activities are the files in `activities/`, and `activities`
+    // lists only references. An inline activity or an unknown field is refused here.
+    const fileValidation = safeValidateWorkflowFile(parseDefinition(content));
+    if (!fileValidation.success) {
+      return err(new WorkflowValidationError(workflowId, fileValidation.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)));
+    }
+    const rawWorkflow = { ...fileValidation.data } as RawWorkflow;
+
+    const existingActivities = rawWorkflow['activities'] as string[] | undefined;
     let resolvedActivities: Activity[] = [];
-    
-    // Always attempt to load from local activities directory first
-    const workflowDirPath = dirname(filePath);
-    const activitiesDirName = rawWorkflow.activitiesDir ?? 'activities';
-    const activitiesPath = join(workflowDirPath, activitiesDirName);
-    
+
+    const activitiesPath = join(dirname(filePath), 'activities');
     const { activities: localActivities, errors: activityLoadErrors } = await loadActivitiesFromDir(activitiesPath);
     if (localActivities.length > 0) {
       resolvedActivities = [...localActivities];
-      logInfo('Loaded local activities from directory', { workflowId, activitiesDir: activitiesDirName, count: localActivities.length });
+      logInfo('Loaded local activities from directory', { workflowId, count: localActivities.length });
     }
 
     // Resolution scope per activity: local activities resolve a bare routine name against this
@@ -230,18 +231,14 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     const activitySourceWorkflow = new Map<string, string>(resolvedActivities.map(a => [a.id, workflowId]));
 
     if (existingActivities && existingActivities.length > 0) {
-      // Resolve any string shorthand references to full Activity objects
       const explicitlyReferencedActivities = await Promise.all(
-        existingActivities.map(async (activityOrRef) => {
-          if (typeof activityOrRef === 'string') {
-            const resolved = await resolveActivityReference(index, workflowId, activityOrRef);
-            if (!resolved) {
-              throw new Error(`Failed to resolve activity reference: ${activityOrRef}`);
-            }
-            activitySourceWorkflow.set(resolved.activity.id, resolved.sourceWorkflowId);
-            return resolved.activity;
+        existingActivities.map(async (ref) => {
+          const resolved = await resolveActivityReference(index, workflowId, ref);
+          if (!resolved) {
+            throw new Error(`Failed to resolve activity reference: ${ref}`);
           }
-          return activityOrRef;
+          activitySourceWorkflow.set(resolved.activity.id, resolved.sourceWorkflowId);
+          return resolved.activity;
         })
       );
 
@@ -255,11 +252,6 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
 
     if (resolvedActivities.length > 0) {
        rawWorkflow['activities'] = resolvedActivities;
-    }
-
-    // Clean up non-schema property
-    if (rawWorkflow.activitiesDir) {
-      delete rawWorkflow.activitiesDir;
     }
 
     const result = safeValidateWorkflow(rawWorkflow);
