@@ -693,6 +693,23 @@ function renderFieldTable(schema: JsonSchemaNode, caption: string): string {
   ].join('\n');
 }
 
+/** Shared definitions the schema's fields reference by name, each with its full description. */
+function renderDefinitionTable(definitions: Array<[string, JsonSchemaNode]>): string {
+  return [
+    '        <p class="table-caption">Shared definitions</p>',
+    '        <div class="table-wrap">',
+    '        <table>',
+    '          <thead><tr><th scope="col">Definition</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>',
+    '          <tbody>',
+    ...definitions.map(([name, node]) =>
+      `          <tr><td><code>${escapeHtml(name)}</code></td><td><code>${escapeHtml(typeLabel(node))}</code></td>` +
+      `<td>${node.description ? richText(node.description) : '-'}</td></tr>`),
+    '          </tbody>',
+    '        </table>',
+    '        </div>',
+  ].join('\n');
+}
+
 export function renderSchemasRegion(): string {
   const files = readdirSync(join(ROOT, 'schemas')).filter(f => f.endsWith('.schema.json')).sort();
   const sections: string[] = [];
@@ -732,6 +749,8 @@ export function renderSchemasRegion(): string {
       });
       lines.push(`        <p>One of ${root.anyOf.length} variants: ${variants.map(v => `<code>${escapeHtml(v)}</code>`).join(', ')}.</p>`);
     }
+    const shared = Object.entries(json.definitions ?? {}).filter(([, node]) => node !== root);
+    if (shared.length > 0) lines.push(renderDefinitionTable(shared));
     lines.push('      </section>');
     sections.push(lines.join('\n'));
   }

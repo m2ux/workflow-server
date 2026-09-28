@@ -105,6 +105,15 @@
           </tbody>
         </table>
         </div>
+        <p class="table-caption">Shared definitions</p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Definition</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>whenExpression</code></td><td><code>string</code></td><td>Inline boolean expression in the <code>when</code> dialect, evaluated against the current session variables. Grammar: <code>orExpr := andExpr ('||' andExpr)*</code>; <code>andExpr := unary ('&amp;&amp;' unary)*</code>; <code>unary := '!' unary | primary</code>; <code>primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'</code>; <code>comparison := IDENT ('==' | '!=' | '&gt;' | '&lt;' | '&gt;=' | '&lt;=') literal</code>. Precedence, tightest first: <code>()</code>, <code>!</code>, comparisons, <code>&amp;&amp;</code>, <code>||</code>. Mixing <code>&amp;&amp;</code> and <code>||</code> at the same nesting depth requires parentheses, so grouping is always explicit: <code>(a &amp;&amp; b) || c</code>, never <code>a &amp;&amp; b || c</code>. An IDENT is a variable name or a dotted path into one (<code>execution_plan.status</code>): a letter or underscore, then letters, digits, underscores and dots. A literal is <code>true</code>, <code>false</code>, <code>null</code>, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading <code>-</code>, or a bare word, which is a string (<code>analysis_type == completion</code>). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, <code>==</code> matches nothing (not even <code>null</code> or <code>false</code>), and <code>!=</code> matches every literal. <code>==</code> and <code>!=</code> compare strictly, without type coercion. <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code> and <code>&lt;=</code> convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: <code>has_saved_state == true</code>, <code>remediation_round &gt; 0</code>, <code>!is_review_mode</code>, <code>a == true &amp;&amp; b != false</code>, <code>(a &amp;&amp; b) || c</code>, <code>is_review_mode != true &amp;&amp; (problem_complexity == &quot;moderate&quot; || problem_complexity == &quot;complex&quot;)</code>.</td></tr>
+          </tbody>
+        </table>
+        </div>
       </section>
       <section class="schema" id="condition">
         <h2><code>condition.schema.json</code></h2>
@@ -140,6 +149,15 @@
           <tr><td><code>internals[].id</code></td><td><code>0 | 1</code></td><td>yes</td><td>Name local to the routine body at each use, outside the workflow variable set.</td></tr>
           <tr><td><code>internals[].description</code></td><td><code>string</code></td><td>yes</td><td>What the value is, and which steps pass it.</td></tr>
           <tr><td><code>steps</code></td><td><code>(technique | action | checkpoint | loop | routine)[]</code></td><td>yes</td><td>Nonempty ordered list of steps.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="table-caption">Shared definitions</p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Definition</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>whenExpression</code></td><td><code>string</code></td><td>Inline boolean expression in the <code>when</code> dialect, evaluated against the current session variables. Grammar: <code>orExpr := andExpr ('||' andExpr)*</code>; <code>andExpr := unary ('&amp;&amp;' unary)*</code>; <code>unary := '!' unary | primary</code>; <code>primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'</code>; <code>comparison := IDENT ('==' | '!=' | '&gt;' | '&lt;' | '&gt;=' | '&lt;=') literal</code>. Precedence, tightest first: <code>()</code>, <code>!</code>, comparisons, <code>&amp;&amp;</code>, <code>||</code>. Mixing <code>&amp;&amp;</code> and <code>||</code> at the same nesting depth requires parentheses, so grouping is always explicit: <code>(a &amp;&amp; b) || c</code>, never <code>a &amp;&amp; b || c</code>. An IDENT is a variable name or a dotted path into one (<code>execution_plan.status</code>): a letter or underscore, then letters, digits, underscores and dots. A literal is <code>true</code>, <code>false</code>, <code>null</code>, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading <code>-</code>, or a bare word, which is a string (<code>analysis_type == completion</code>). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, <code>==</code> matches nothing (not even <code>null</code> or <code>false</code>), and <code>!=</code> matches every literal. <code>==</code> and <code>!=</code> compare strictly, without type coercion. <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code> and <code>&lt;=</code> convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: <code>has_saved_state == true</code>, <code>remediation_round &gt; 0</code>, <code>!is_review_mode</code>, <code>a == true &amp;&amp; b != false</code>, <code>(a &amp;&amp; b) || c</code>, <code>is_review_mode != true &amp;&amp; (problem_complexity == &quot;moderate&quot; || problem_complexity == &quot;complex&quot;)</code>.</td></tr>
           </tbody>
         </table>
         </div>
@@ -289,6 +307,15 @@
           <tr><td><code>activities[].required</code></td><td><code>boolean</code></td><td>no</td><td>Whether this activity is required in the workflow Default: <code>true</code></td></tr>
           <tr><td><code>activities[].rules</code></td><td><code>string[]</code></td><td>no</td><td>Activity-level rules and constraints that agents must follow</td></tr>
           <tr><td><code>activities[].artifactPrefix</code></td><td><code>string</code></td><td>no</td><td>Numeric artifact filename prefix, such as <code>02</code>; omitted from authored activity definitions.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="table-caption">Shared definitions</p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Definition</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>whenExpression</code></td><td><code>string</code></td><td>Inline boolean expression in the <code>when</code> dialect, evaluated against the current session variables. Grammar: <code>orExpr := andExpr ('||' andExpr)*</code>; <code>andExpr := unary ('&amp;&amp;' unary)*</code>; <code>unary := '!' unary | primary</code>; <code>primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'</code>; <code>comparison := IDENT ('==' | '!=' | '&gt;' | '&lt;' | '&gt;=' | '&lt;=') literal</code>. Precedence, tightest first: <code>()</code>, <code>!</code>, comparisons, <code>&amp;&amp;</code>, <code>||</code>. Mixing <code>&amp;&amp;</code> and <code>||</code> at the same nesting depth requires parentheses, so grouping is always explicit: <code>(a &amp;&amp; b) || c</code>, never <code>a &amp;&amp; b || c</code>. An IDENT is a variable name or a dotted path into one (<code>execution_plan.status</code>): a letter or underscore, then letters, digits, underscores and dots. A literal is <code>true</code>, <code>false</code>, <code>null</code>, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading <code>-</code>, or a bare word, which is a string (<code>analysis_type == completion</code>). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, <code>==</code> matches nothing (not even <code>null</code> or <code>false</code>), and <code>!=</code> matches every literal. <code>==</code> and <code>!=</code> compare strictly, without type coercion. <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code> and <code>&lt;=</code> convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: <code>has_saved_state == true</code>, <code>remediation_round &gt; 0</code>, <code>!is_review_mode</code>, <code>a == true &amp;&amp; b != false</code>, <code>(a &amp;&amp; b) || c</code>, <code>is_review_mode != true &amp;&amp; (problem_complexity == &quot;moderate&quot; || problem_complexity == &quot;complex&quot;)</code>.</td></tr>
           </tbody>
         </table>
         </div>
