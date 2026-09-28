@@ -155,15 +155,18 @@ A destination may name several branches, one worker each: a list of activities, 
 ```mermaid
 sequenceDiagram
   participant Orchestrator
-  participant List
+  participant Server
   participant BranchA as Branch
   participant BranchB as Branch
-  Orchestrator->>List: Read the items written earlier
-  Orchestrator->>BranchA: One worker for an item
-  Orchestrator->>BranchB: One worker for an item
+  Orchestrator->>Server: next_activity to the fanning destination
+  Server->>Server: Read the items written earlier, one branch each
+  Server-->>Orchestrator: The branches still outstanding
+  Orchestrator->>BranchA: One worker for a branch
+  Orchestrator->>BranchB: One worker for a branch
   BranchA-->>Orchestrator: Return
   BranchB-->>Orchestrator: Return
-  Orchestrator->>Orchestrator: Meet, once every branch is back
+  Orchestrator->>Server: next_activity from each branch as it returns
+  Server->>Server: Enter the meeting point once the last branch is back
 ```
 
 *Figure 9. One Worker per List Item, Meeting When All Return.*

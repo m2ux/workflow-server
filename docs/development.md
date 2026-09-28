@@ -23,7 +23,7 @@ A linked worktree needs the corpus checkout and a resolvable `node_modules`, and
 
 ```bash
 npm ci                # install from the lockfile
-npm run typecheck     # type check: server source, then guards + tests + scripts
+npm run typecheck     # type check: server source, then guards + tests + scripts + benchmarks
 npm run build         # production build
 npm start             # production, stdio
 npm run start:http    # production HTTP entry point
@@ -36,7 +36,7 @@ npm run check:delta   # guards against the merge-base
 npm run worktree:provision
 ```
 
-`typecheck` is two compilations and fails on either: `tsconfig.json` over `src/` under the full house style, `tsconfig.tools.json` over guards, tests and scripts under the same strictness with `noPropertyAccessFromIndexSignature` relaxed.
+`typecheck` is two compilations and fails on either: `tsconfig.json` over `src/` under the full house style, `tsconfig.tools.json` over guards, tests, scripts and benchmarks under the same strictness with `noPropertyAccessFromIndexSignature` relaxed.
 
 ## Dependencies
 
@@ -64,8 +64,8 @@ The directories, and what each one owns:
 | `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
 | `src/trace.ts` | The trace store and the encoding of trace tokens |
 | `schemas/` | JSON Schemas for editor tooling, generated from their Zod sources by `npm run build:schemas`. `check:schemas` holds each file to that rendering |
-| `scripts/` | Install and container helpers, and schema generation |
-| `benchmark/` | The three headless benchmarks, and the run profiler under `benchmark/scripts/` |
+| `scripts/` | Schema and site generation, the session census, and local environment and worktree setup |
+| `benchmark/` | The headless benchmarks, and the run profiler under `benchmark/scripts/` |
 | `guards/` | Check programs, the guard registry, and corpus-root resolution — documented in [`guards/README.md`](../guards/README.md) |
 | `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` and fixture corpora under `tests/fixtures/` |
 | `.worktrees/workflows/` | A worktree of the `workflows` branch — the corpus the server serves |
@@ -96,7 +96,7 @@ Several corpus guards run as Vitest tests as well as under `check:all`, so a gua
 The walk snapshots under `walks/` of a corpus checkout describe a path through the definitions, so they are only meaningful against the corpus that produced them. They live in that corpus, beside the definitions they record, so the two travel together: a commit that changes a walk re-baselines it in that commit, or the corpus branch's own gate goes red.
 
 ```bash
-npm run test:ci -- -u      # re-baseline the walk, on the workflows branch
+WORKFLOWS_DIR=<corpus-checkout> npm run test:ci -- -u   # re-baseline the walk from the engine checkout
 ```
 
 The same holds for `walks/option-coverage.json`, which records the options no walk is required to reach. It is read against the definitions beside it, so a definition change that moves an option updates it in the commit that moves it.
@@ -105,7 +105,7 @@ How little a definition edit has to change to move a walk is worth knowing. The 
 
 ## Sessions in flight
 
-A definition edit reaches the runs already walking that workflow. Their variable bags were seeded from the declarations on disk when they opened, so a declaration added since is absent until they resume — on resume the server seeds what the bag lacks and re-stamps the recorded version. What that does *not* cover is a run part-way through an activity whose steps changed under it.
+A definition edit reaches the runs already walking that workflow. Their variable bags were seeded from the declarations on disk when they opened, so a declaration added since is absent until they resume — on resume, when the workflow's version differs from the one the session recorded, the server seeds what the bag lacks and re-stamps the recorded version. An edit that leaves the version unchanged seeds nothing. What that does *not* cover is a run part-way through an activity whose steps changed under it.
 
 Count them before landing:
 

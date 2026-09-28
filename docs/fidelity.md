@@ -31,8 +31,8 @@ flowchart TD
     seal["Seal checked"] --> work["Activity carried out"]
     work --> checkpoint{"Checkpoint clear?"}
     checkpoint -->|No| refuse["Call refused"]
-    checkpoint -->|Yes| graph["Claimed path checked"]
-    graph -.-> manifest["Reported work checked"]
+    checkpoint -->|Yes| path["Claimed path checked"]
+    path -.-> manifest["Reported work checked"]
     manifest --> trace["Trace recorded"]
 ```
 
@@ -51,7 +51,8 @@ sequenceDiagram
   participant File as State file
   Agent->>Server: Name the session
   Server->>File: Read the bytes and the seal
-  File-->>Server: Agree, or refuse the read
+  File-->>Server: The bytes and the seal
+  Server->>Server: Verify the seal, or refuse the read
 ```
 
 *Figure 3. The Seal Is Checked on Every Read.*
@@ -87,12 +88,12 @@ While a checkpoint is open, the run cannot advance past it (Figure 5). The calls
 
 ```mermaid
 sequenceDiagram
-  participant Worker
+  participant Orchestrator
   participant Server
-  Worker->>Server: Advance while a checkpoint is open
-  Server-->>Worker: Refused
-  Worker->>Server: Show the question, or record the answer
-  Server-->>Worker: Allowed
+  Orchestrator->>Server: Advance while a checkpoint is open
+  Server-->>Orchestrator: Refused
+  Orchestrator->>Server: Show the question, or record the answer
+  Server-->>Orchestrator: Allowed
 ```
 
 *Figure 5. An Open Checkpoint Refuses the Advance.*
@@ -187,7 +188,7 @@ Each call of `get_workflow`, `next_activity`, `get_activity`, `get_technique`, `
 
 ## Layer 4: Reported Exit
 
-On `next_activity` an agent may name the outcome the activity it is leaving reached, as the `exit` parameter. The server checks that the activity declares an exit by that name, and that the graph binds that exit to the requested target (Figure 9). The exit is then recorded in the sealed state, so the agent cannot revise it afterwards (Figure 10).
+On `next_activity` an agent may name the outcome the activity it is leaving reached, as the `exit` parameter. The server checks that the activity declares an exit by that name, and that the graph binds that exit to the requested target (Figure 9). The session then holds it as the last reported exit, which the next transition replaces (Figure 10). The lasting record of what each activity reached is the outcome an `activity_manifest` entry reports, written once per activity as an `activity_outcome` history event.
 
 ```mermaid
 sequenceDiagram
@@ -195,7 +196,7 @@ sequenceDiagram
   participant Server
   Agent->>Server: Name the exit on leaving the activity
   Server->>Server: The activity declares it, and the graph binds it to the target
-  Server->>Server: Record it, so it cannot be revised
+  Server->>Server: Hold it as the last reported exit
 ```
 
 *Figure 9. A Named Exit Is Checked, Then Recorded.*
@@ -212,11 +213,11 @@ classDiagram
     binds the exit to the target
   }
   class Record {
-    the sealed state
+    the session's last reported exit
   }
   Exit --> Activity : must be declared
   Exit --> Graph : must lead to the target
-  Exit --> Record : written, and not revised
+  Exit --> Record : held until the next transition
 ```
 
 *Figure 10. Exit, the Activity That Declares It, the Graph, and the Record.*
@@ -233,8 +234,7 @@ When an activity is left, the agent reports the steps it completed and the activ
 sequenceDiagram
   participant Agent
   participant Server
-  Agent->>Server: Leave this activity
-  Agent->>Server: Report the steps and the activities so far
+  Agent->>Server: Leave this activity, reporting the steps and the activities so far
   Server->>Server: Warn where the report does not hold
 ```
 
@@ -285,7 +285,7 @@ Each warns rather than blocks:
 
 A step gated by `when` or `condition`, and a loop carrying a `continueWhile` continuation test, may be omitted: the agent evaluated the gate and skipped the step. A loop's continuation test decides whether its body runs at all, which is why a loop carrying one is gated on the same terms as a conditional step.
 
-Those three fields are the only ones the validator reads. `step.required` is a hint for the worker, not a check.
+So may every step after a checkpoint whose recorded answer selected an `immediate` exit, since that answer ended the activity there. `step.required` is a hint for the worker, not a check.
 
 ### What a Loop Body Owes the Manifest
 
@@ -303,7 +303,7 @@ The server records every delivery of technique or resource content into the sess
 |-------|-------------|
 | `technique_fetched` | a `get_technique` call, with the resolved id, the bound `step_id` where supplied, and the agent |
 | `technique_bundled` | each step technique inlined by `get_activity` |
-| `resource_fetched` | a `get_resource` call — observability only |
+| `resource_fetched` | a `get_resource` call, and each resource body `get_activity` places in its response, marked `bundled` — observability only |
 | `activity_delivered` | each `get_activity`, naming what that call resolved and spent |
 
 `technique_fetched`, `technique_bundled` and `resource_fetched` carry `chars`, the full payload size on either path, and `delivery: "full" | "unchanged"`. `activity_delivered` carries `delivery: "full" | "reference"` and no `chars`, since wire size lives on `activity_dispatched`. Characters delivered and characters saved are both summable from the history rather than estimated. An unchanged-reference answer under persistent context mode still counts as a delivery.

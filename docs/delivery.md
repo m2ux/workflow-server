@@ -240,6 +240,7 @@ A technique the core set leaves out rides the delivery when definitions already 
 | The checkpoint techniques an orchestrator uses to show a question and record the answer | Any activity of the run declares a checkpoint |
 | The checkpoint techniques a worker uses to pause and to continue                        | The same reading, over the same roster        |
 | The fan techniques, and the rules that apply only to a fan                              | The graph fans an exit                        |
+| The rules for how many times a loop body runs                                           | Any activity of the run declares a loop step  |
 
 
 Each reading is over the whole workflow, not the activity in hand. A bundle's rules are one set, so a technique set that varied activity by activity would re-deliver the entire rules list at every activity whose set differed.
@@ -252,7 +253,7 @@ What is held back stays reachable. A worker may raise a decision its activity ne
 | Set          | Covers                                                                                                                                                                                                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Orchestrator | How the engine advances and evaluates a transition, how state is kept and committed, how a child workflow is handled, how a prompt is composed, the Git steps a commit needs, and how a background agent is started and resumed |
-| Worker       | The worker's own role, finishing an activity, what a gate expression means and how many times a loop body runs, and how a step's technique reads the variable bag                                                               |
+| Worker       | The worker's own role, finishing an activity, what a gate expression means, and how a step's technique reads the variable bag                                                                                                   |
 
 
 Conduct is the engine's baseline rather than a workflow's choice, so no workflow declares it. The rules that bind every agent appear in both sets. The rules that specialise one role appear only in that role's set.
@@ -348,7 +349,7 @@ window budget = context size × headroom × characters per token
 
 The headroom defaults to four fifths of the window. Both figures are server configuration.
 
-What the activity walks unconditionally — the definition, the role's rules, the techniques of its contract — rides whatever the budget says, because it is not speculative. A marker draws the budget down by nothing: the context it goes to already holds that content.
+What the activity walks unconditionally — the definition, the role's rules, the techniques of its contract — rides whatever the budget says, because it is not speculative. The worker bundle it rides in, role rules and contract techniques with their markers, is counted first, so it draws down what the budget leaves for the stages below. A step or resource marker draws the budget down by nothing: the context it goes to already holds that content.
 
 What the budget is spent on, each stage stopping at the first entry that would overflow what remains:
 
@@ -403,13 +404,13 @@ One dispatch may carry several activities, and the worker walks them under one i
 
 #### Limits
 
-A batch is not declared. It is the run of activities one delivery takes, so the server sees it with no orchestrator cooperation, and a worker that omits a parameter does not escape it. The scope is the caller's identity, which is not authenticated, so this bounds a cooperating chain rather than an adversarial one. Two limits apply, both read off the session history:
+A batch is not declared. It is the run of activities one context takes delivery of, so the server sees it with no orchestrator cooperation, and a worker that omits a parameter does not escape it. The scope is the caller's identity, which is not authenticated, so this bounds a cooperating chain rather than an adversarial one. Two limits apply, both read off the session history:
 
 
 | Limit                           | How it is derived                                                    | Default |
 | ------------------------------- | -------------------------------------------------------------------- | ------- |
 | Cumulative characters delivered | A fraction of the context, its own fraction rather than the window's | `0.35`  |
-| Distinct activities             | A count of activities one delivery may take                          | `3`     |
+| Distinct activities             | A count of activities one context may take delivery of               | `3`     |
 
 
 The fraction is its own rather than the window's, because the two answer different questions. Set this one as high as the window and a whole long workflow would fit in a single context, which is what the activity cap exists to prevent. The cap covers what a character count cannot see: the context the host establishes and the server never delivers, the code the worker reads, the documents it drafts, and the degradation that comes with a long walk.
@@ -522,7 +523,7 @@ Inlining is automatic. There is no per-activity opt-in. What sizes the bundle is
 
 #### Which Steps Are Inlined
 
-Each technique step whose gate answers true, in document order, until the budget runs out. A step with no gate answers true. The server can take that answer when every variable the gate needs a value of is already bound and no step of this activity produces one of them. Otherwise the gate is unanswered, and the step stays for a later fetch.
+Each technique step whose gate answers true, in document order, until the budget runs out. A step with no gate answers true. The server can take that answer when every variable the gate reads is already bound, apart from one a structured condition only tests with `exists` or `notExists`, and no step of this activity produces one of them. Otherwise the gate is unanswered, and the step stays for a later fetch.
 
 
 | Gate reads                                                                                       | Answer     | Delivery                                                                  |
@@ -530,7 +531,7 @@ Each technique step whose gate answers true, in document order, until the budget
 | Variables bound before the activity opened, none of them written inside it, and the gate is true | True       | Inlined. The worker certainly reaches this step                           |
 | The same, evaluating false                                                                       | False      | Left to fetch, and nothing is shipped for a step the run will not execute |
 | A variable this activity produces                                                                | Unanswered | Left to fetch                                                             |
-| A variable the gate needs a value of, absent from the bag: a bare read, or a comparison other than `!=` outside a `!` | Unanswered | Left to fetch. An absent read is not the same as a negative one |
+| A variable the gate reads, absent from the bag, other than one an `exists` or `notExists` test reads | Unanswered | Left to fetch. An absent read is not the same as a negative one |
 | An expression that does not parse                                                                | Unanswered | Left to fetch                                                             |
 
 
@@ -739,7 +740,7 @@ A worker sent outside that load, which never asks for the activity, records the 
 
 #### Second Delivery
 
-When an activity is delivered whole to a context that has not received it, in a session where another context already took it, the server records that second copy: who received it, who had it first, and how many characters. That is either a replaced worker or a resume that arrived under a fresh identity, and it leaves no other trace. A second full delivery reads like a first one at every other instrument.
+When an activity is delivered whole to a context that has not received it, in a session where another context already took it, the server records that second copy: who received it, which context had it most recently before, and how many characters. That is either a replaced worker or a resume that arrived under a fresh identity, and it leaves no other trace. A second full delivery reads like a first one at every other instrument.
 
 #### Payload Size
 

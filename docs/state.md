@@ -79,7 +79,7 @@ variables:
   - name: needs_migration
     type: boolean
     defaultValue: false
-  - name: planning_folder_path
+  - name: review_scope
     type: string
     required: true
 ```
@@ -146,7 +146,7 @@ classDiagram
 
 *Figure 8. Declarations, and the Bag They Seed.*
 
-The server seeds every declared default from the combined set when the session opens: at `start_session` for a top-level session, and at `dispatch_child` for an embedded child, which seeds from the child workflow's own declarations. The seeded map is recorded as a single `variables_seeded` event.
+The server seeds every declared default from the combined set when the session opens: at `start_session` for a top-level session, and for an embedded child at `dispatch_child`, or at the `start_session` that opens a catalog-matched client, each seeding from the child workflow's own declarations. A top-level session also seeds `user_request` when one is passed, and, from a `working_directory`, the repository facts `host_repo_path`, `target_repo`, `component_path` and `is_monorepo`. A child opened by `dispatch_child` also takes the parent's `user_request`, and a client opened by `start_session` takes the repository facts. The seeded map is recorded as a single `variables_seeded` event.
 
 Seeding at creation keeps the orchestrator's copy of the state and the server's bag in agreement from the first call, so `get_workflow_status` returns the seeded values rather than an empty map.
 
@@ -211,7 +211,7 @@ classDiagram
 
 *Figure 12. Bag, Checkpoint Answer, and Worker Output.*
 
-The server writes two things of its own: the container a fan fills, when the fan opens, and on resume, the new request and any declared default added since the session opened.
+The server writes two things of its own: the container a fan fills, when the fan opens, and on resume, the new request and, when the workflow's version differs from the one the session recorded, any declared default the bag lacks.
 
 ### An Answer at a Checkpoint
 
@@ -221,9 +221,11 @@ A worker that reaches a checkpoint pauses, and the question travels up to the us
 sequenceDiagram
   participant Worker
   participant Person as User-facing agent
+  participant Server
   participant Bag
   Worker->>Person: The question travels up
-  Person->>Bag: The chosen option writes a variable
+  Person->>Server: respond_checkpoint with the chosen option
+  Server->>Bag: The option's effect writes a variable
 ```
 
 *Figure 13. A Checkpoint Answer Writes a Variable Into the Bag.*
@@ -261,9 +263,11 @@ A worker that finishes an activity names the variables its work settled, and the
 sequenceDiagram
   participant Worker
   participant Orchestrator
+  participant Server
   participant Bag
   Worker->>Orchestrator: The variables the work settled
-  Orchestrator->>Bag: Relayed on the transition
+  Orchestrator->>Server: next_activity with variables_changed
+  Server->>Bag: Written on the transition
 ```
 
 *Figure 15. A Worker's Outputs Are Written on the Transition.*
@@ -342,17 +346,17 @@ graph:
     standard: analyse-sources
 ```
 
-### How the Orchestrator Decides
+### How the Exit Is Decided
 
-The orchestrator tests the exits in order, takes the first whose condition holds, and otherwise takes the default (Figure 19). A checkpoint option that names an exit wins over that test (Figure 20).
+The worker tests its activity's exits in order, takes the first whose condition holds, and otherwise takes the default (Figure 19). The server evaluates no exit. A checkpoint option that names an exit wins over that test (Figure 20).
 
 ```mermaid
 stateDiagram-v2
   [*] --> Evaluating
   Evaluating --> Chosen: the first condition holds
-  Evaluating --> Default: no condition holds
+  Evaluating --> DefaultExit: no condition holds
   Chosen --> Next: the graph names the destination
-  Default --> Next: the graph names the destination
+  DefaultExit --> Next: the graph names the destination
 ```
 
 *Figure 19. The First Condition That Holds Chooses the Exit. Otherwise the Default.*
@@ -374,7 +378,7 @@ classDiagram
 
 *Figure 20. Condition, Default Exit, and a Checkpoint Option.*
 
-It then reads the destination from the graph and calls `next_activity` with that id, reporting the exit it took as the `exit` parameter. It asks neither the user nor the model, which is what the declared form is for.
+It reads the destination from its `exit_destinations`, and the orchestrator calls `next_activity` with that id, reporting the exit taken as the `exit` parameter. It asks neither the user nor the model, which is what the declared form is for.
 
 An exit's `when` is the same inline expression a step gate uses: comparisons with `==`, `!=`, `>`, `<`, `>=` and `<=`, bare identifier truthiness, unary `!`, and `&&` / `||` with parentheses.
 
@@ -646,18 +650,17 @@ The error text tells the agent to make the same call again, and states that noth
 
 ### Pause, Stop, Resume
 
-A running session can pause or stop, and resume returns it to the same place (Figure 35). The state file, not the agent's memory, holds that place (Figure 36).
+When its agent stops, a session stays `running`: nothing records a pause, and resume returns it to the place the state file holds (Figure 35). The state file, not the agent's memory, holds that place (Figure 36).
 
 ```mermaid
 stateDiagram-v2
   [*] --> Running: the session opens
-  Running --> Paused: the agent stops
-  Running --> Stopped: the agent stops
-  Paused --> Running: resume reads the state file
-  Stopped --> Running: resume reads the state file
+  Running --> Unattended: the agent stops, and the file is unchanged
+  Unattended --> Running: resume reads the state file
+  Running --> [*]: completed or aborted
 ```
 
-*Figure 35. Pause or Stop, Then Resume at the Same Place.*
+*Figure 35. The Agent Stops, the File Holds, and Resume Returns to the Same Place.*
 
 ```mermaid
 classDiagram

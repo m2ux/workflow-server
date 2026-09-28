@@ -326,14 +326,14 @@ classDiagram
 
 Both delivery paths use the same composition. In memory the merge is complete. On the wire:
 
-* Inputs and outputs are merged from every ancestor outward to the executing workflow root. The local entry overrides an ancestor entry of the same id. Own entries ride the body. Ancestor entries ride that ancestor's block under contracts.
+* Inputs and outputs are merged from every ancestor outward to the root of the workflow that holds the technique file. The local entry overrides an ancestor entry of the same id. Own entries ride the body. Ancestor entries ride that ancestor's block under contracts.
 * Rules are merged the same way. Own rules ride the body. Shared rules ride contracts. Role-level rules that govern no one technique remain entries in the bundle's rules list.
 
 A container contributes a contract, never a procedure. Protocol does not inherit. A technique's protocol is delivered as authored.
 
 ### Whose Ancestors Count
 
-Ancestry follows the executing workflow: its root technique file, and each containing group's index along the path. Containers from a different workflow are not included. Only the executing workflow's containers apply.
+Ancestry follows the workflow that holds the technique file, whichever workflow asked for it: that workflow's root technique file, and each containing group's index along the path. A technique fetched across a namespace boundary carries the contract written above it there, never one belonging to the workflow that asked.
 
 ## Delivery
 
@@ -380,7 +380,7 @@ A delivered body carries the capability, the inputs as authored on that techniqu
 | `rules` | The role's own rules, which govern no one technique. |
 | `unresolved` | References that did not resolve. A non-empty list is a definition defect. |
 
-An activity load and a workflow load deliver the activity's technique list through this bundle. Asking for one technique delivers that body and the contracts beside it. Which call does which is in the [catalog](api.md).
+An activity load and a workflow load each deliver their role's technique list through this bundle. Asking for one technique delivers that body and the contracts beside it. Which call does which is in the [catalog](api.md).
 
 ### Binding
 

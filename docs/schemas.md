@@ -6,7 +6,7 @@ The server exposes every one of these schemas except the routine schema as [MCP 
 
 ## Overview
 
-The workflow server uses six schemas:
+The workflow server uses these schemas:
 
 
 | Schema                                                  | Purpose                    |
@@ -28,4 +28,4 @@ The server enforces structure at load time plus a runtime core; the executing ag
 
 ## Generation
 
-A definition the server validates is a Zod schema in [src/schema/](../src/schema/). The generator lists the six and renders each one to JSON Schema. `npm run build:schemas` writes that rendering to the file of the same name in [schemas/](../schemas/), and writes the owner and strictness of each annotated field to [enforcement.json](../schemas/enforcement.json). [check:schemas](../guards/check-generated-schemas.ts#L38) fails when a file on disk differs from that rendering.
+A definition the server validates is a Zod schema in [src/schema/](../src/schema/). The generator lists them and renders each one to JSON Schema. `npm run build:schemas` writes that rendering to the file of the same name in [schemas/](../schemas/), and writes the owner and strictness of each annotated field to [enforcement.json](../schemas/enforcement.json). [check:schemas](../guards/check-generated-schemas.ts#L38) fails when a file on disk differs from that rendering.

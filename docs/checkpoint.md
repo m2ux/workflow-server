@@ -325,7 +325,7 @@ sequenceDiagram
   alt The pause is still active
     Session-->>Worker: Hard error
   else The pause is cleared
-    Session-->>Worker: The recorded effects
+    Session-->>Worker: The answered checkpoint, its option, and the variables it set
   end
 ```
 
@@ -364,7 +364,7 @@ The user-facing agent wakes the orchestrator and passes the variable updates in 
 resume_checkpoint({ session_index })
 ```
 
-The server checks that the pause has been cleared and returns the recorded effects. Calling this while the pause is still active is a hard error: the answer has to exist before the worker moves.
+The server checks that the pause has been cleared and returns the checkpoint it answered, the option chosen, and the variables that option set. Calling this while the pause is still active is a hard error: the answer has to exist before the worker moves.
 
 ## Declaring a Checkpoint
 
@@ -375,10 +375,12 @@ sequenceDiagram
   participant Author
   participant Routine
   participant Site
+  participant Server
   participant Worker
   Author->>Routine: Declare the gate once
   Site->>Routine: Refer to it
-  Routine->>Worker: An ordinary checkpoint
+  Routine->>Server: Spliced into the referring activity at load
+  Server->>Worker: An ordinary checkpoint, in the delivered activity
 ```
 
 

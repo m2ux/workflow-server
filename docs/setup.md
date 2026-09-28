@@ -20,5 +20,5 @@ Follow the [Workspace](https://github.com/m2ux/workflow-server/blob/workspace/RE
 ## 3. Verify
 
 1. Agent calls **`discover`**.
-2. Agent calls **`start_session`** with at least `workflow_id` (default `meta`), `agent_id`, and **`working_directory`** as the absolute path of the checkout under work. The server derives `owner/repo` from that origin.
-3. You get a **`session_index`** back.
+2. Agent calls **`start_session`** with **`working_directory`** as the absolute path of the checkout under work, and optionally `workflow_id` (default `meta`) and `agent_id` (default `orchestrator`). The server derives `owner/repo` from that origin.
+3. You get a **`session_index`** back, or, from a meta start that cannot settle on one client workflow, a `decision` to answer before a session opens.

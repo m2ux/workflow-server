@@ -6,18 +6,21 @@ A **variable** is a name the run holds, with a type and a starting value. A **ru
 
 ## File
 
-The definition is one file, and the loader reads the activities, the graph, and the opening activity from it (Figure 1). The definition, the activities, and the graph are the pieces (Figure 2).
+The definition is one file. The loader reads the graph and the opening activity from it, and the activities from the workflow's `activities/` folder and the files the definition borrows (Figure 1). The definition, the activities, and the graph are the pieces (Figure 2).
 
 ```mermaid
 sequenceDiagram
   participant Author
   participant Definition
+  participant Folder as activities/ folder
   participant Loader
   Author->>Definition: Write the guide
-  Definition->>Loader: Activities, graph, and the opening activity
+  Author->>Folder: Write each activity in its own file
+  Definition->>Loader: Graph, opening activity, and borrowed files
+  Folder->>Loader: The workflow's own activities
 ```
 
-*Figure 1. The Loader Reads the Guide from One File.*
+*Figure 1. The Loader Reads the Definition and the Activities Folder.*
 
 ```mermaid
 classDiagram
@@ -25,18 +28,19 @@ classDiagram
     the workflow file
   }
   class Activities {
-    the ordered phases
+    the phases, one file each
   }
   class Graph {
-    where each exit
+    where each exit leads
   }
-  Definition --> Activities : names
+  Definition --> Graph : holds
+  Definition --> Activities : names the borrowed ones
   Activities --> Graph : exits are bound in
 ```
 
 *Figure 2. Definition, Activities, and Graph.*
 
-The file is `workflow.yaml` in the workflow's directory. The directory name is the workflow's id. Activities live in that directory's `activities/` folder, one file each. A workflow borrows another's activity by listing a reference to its file under `activities` (`work-package/02-design-philosophy.yaml`). An activity identifier appears once in a workflow, so borrowing one the workflow already holds fails the load, and a borrowed file that fails validation is left out of the load, as a file of the workflow's own is. An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
+The file is `workflow.yaml` in the workflow's directory. The directory name is the workflow's id. Activities live in that directory's `activities/` folder, one file each. A workflow borrows another's activity by listing a reference to its file under `activities` (`other-flow/03-survey.yaml`). An activity identifier appears once in a workflow, so borrowing one the workflow already holds fails the load, and a borrowed file that fails validation is left out of the load, as a file of the workflow's own is. An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
 
 #### Sample Definition
 
@@ -47,9 +51,9 @@ title: Review a change
 initialActivity: gather
 techniques:
   workflow:
-    - workflow-engine::dispatch-activity
+    - run-engine::hand-off
   activity:
-    - agent-conduct::checkpoint-discipline
+    - conduct::confirm-before-deleting
 graph:
   gather:
     ready: inspect
