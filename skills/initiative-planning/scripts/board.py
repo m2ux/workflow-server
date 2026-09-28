@@ -31,6 +31,9 @@ Status, first match wins:
 An open initiative is In Progress when any epic is Done, In Review or In Progress, Ready when any
 epic is Ready, and Backlog otherwise.
 
+The board's Status field offers Backlog, Ready, In Progress and Done. In Review is optional: on a
+board whose Status lacks it, an issue In Review is set In Progress.
+
 A dependency is delivered when its task row is, or its issue is closed as completed. A task row is
 delivered when its id links a pull request or commit, or a task issue closed as completed. A bare
 #750 names an issue in the repository of the issue whose row cites it. A dependency on an issue not
@@ -55,7 +58,8 @@ PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
-STATUSES = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done')
+STATUSES = ('Backlog', 'Ready', 'In Progress', 'Done')
+OPTIONAL = {'In Review': 'In Progress'}
 
 
 def pages(path: str) -> list:
@@ -295,6 +299,9 @@ def main() -> int:
     missing = [s for s in STATUSES if s not in options]
     if missing:
         sys.exit(f"the board's Status field lacks {', '.join(missing)}")
+    for wanted, fallback in OPTIONAL.items():
+        if wanted not in options:
+            status = {k: fallback if s == wanted else s for k, s in status.items()}
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     for name, option in options.items():
