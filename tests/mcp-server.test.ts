@@ -520,7 +520,29 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(responded.isError).toBeFalsy();
       const payload = parseToolResponse(responded);
       expect(payload.exit).toEqual({ id: 'abort', next_activity: 'complete', ends_activity: true });
-      expect(payload.message).toContain('do not run the remaining steps');
+      expect(payload.message).toContain('stops rather than running the remaining steps');
+
+      // The worker learns it on resume, and again on a replay of the same gate.
+      const resumed = parseToolResponse(await client.callTool({
+        name: 'resume_checkpoint',
+        arguments: { session_index: nextToken },
+      }));
+      expect(resumed.exit).toEqual({ id: 'abort', next_activity: 'complete', ends_activity: true });
+      expect(resumed.message).toContain('do not run the remaining steps');
+      const status = parseToolResponse(await client.callTool({
+        name: 'get_workflow_status',
+        arguments: { session_index: nextToken },
+      }));
+      expect(status.last_checkpoint).toEqual(expect.objectContaining({
+        activity_id: 'submit-for-review', checkpoint_id: 'body-non-conformant', option_id: 'abort',
+      }));
+      const replayed = parseToolResponse(await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      }));
+      expect(replayed.status).toBe('replayed');
+      expect(replayed.exit).toEqual({ id: 'abort', next_activity: 'complete', ends_activity: true });
+      expect(replayed.message).toContain('do not run the remaining steps');
 
       // The worker reports only what it ran. The steps after the gate are the exit's doing, so the
       // manifest check accounts for them rather than reporting them missing.

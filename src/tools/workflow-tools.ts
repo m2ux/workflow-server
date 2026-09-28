@@ -759,6 +759,27 @@ export function projectSessionView(
 }
 
 
+/** A checkpoint answer's exit as the worker and the user-facing agent read it. */
+interface ExitReport { id: string; next_activity?: string | string[]; ends_activity?: true }
+
+/**
+ * What an answer's exit means for the activity it was raised in: the exit, the destination the
+ * graph binds to it, and whether it ends the activity at the checkpoint. The worker reads it on
+ * resume and on replay, so an immediate exit stops the sequence where it was chosen.
+ */
+function exitReport(workflow: Workflow, activityId: string, exit: string): ExitReport {
+  const binding = getExitBindings(workflow, activityId).find(b => b.exit === exit);
+  return {
+    id: exit,
+    ...(binding ? { next_activity: destinationField(binding.to) } : {}),
+    ...(binding?.immediate ? { ends_activity: true as const } : {}),
+  };
+}
+
+/** The instruction a worker follows when an answer's exit ends its activity. */
+const endsActivityInstruction = (exit: string): string =>
+  `Exit '${exit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator.`;
+
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
   const sessionScope = buildSessionScope(config);
@@ -2463,6 +2484,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const effect: Record<string, unknown> = {};
         if (effects?.variablesSet) effect['setVariable'] = effects.variablesSet;
         if (effects?.exit) effect['exit'] = effects.exit;
+        const replayedExit = effects?.exit ? exitReport(result.value, activity_id, effects.exit) : undefined;
 
         const replayedAt = new Date().toISOString();
         const next = advanceSession(state, (draft) => {
@@ -2481,7 +2503,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpoint_id,
           session_index,
           resolved_option: priorResponse.optionId,
-          message: `Checkpoint '${checkpoint_id}' already has a recorded response (option '${priorResponse.optionId}') from a prior run. The stored response has been replayed; apply any returned effect to your local state and continue execution WITHOUT yielding to the orchestrator.`,
+          ...(replayedExit ? { exit: replayedExit } : {}),
+          message: `Checkpoint '${checkpoint_id}' already has a recorded response (option '${priorResponse.optionId}') from a prior run. The stored response has been replayed; apply any returned effect to your local state`
+            + (replayedExit?.ends_activity
+              ? `, WITHOUT yielding to the orchestrator. ${endsActivityInstruction(replayedExit.id)}`
+              : ' and continue execution WITHOUT yielding to the orchestrator.'),
         };
         if (Object.keys(effect).length > 0) responsePayload['effect'] = effect;
 
@@ -2594,7 +2620,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('resume_checkpoint', 'Worker tool: continue after the orchestrator resolves a checkpoint. Verifies no activeCheckpoint and returns the resolved checkpoint, the option selected, and the `variables_changed` its effect applied — the values the bag gained while the worker was suspended.',
+  server.tool('resume_checkpoint', 'Worker tool: continue after the orchestrator resolves a checkpoint. Verifies no activeCheckpoint and returns the resolved checkpoint, the option selected, the `variables_changed` its effect applied — the values the bag gained while the worker was suspended — and the `exit` it selected, if any; `exit.ends_activity` means stop without running the remaining steps.',
     {
       ...sessionIndexParam,
     },
@@ -2613,25 +2639,35 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // What the orchestrator's decision changed while the worker was suspended. The server applied
       // the selected option's setVariable effect at respond_checkpoint, so the values are already in
-      // the bag and the worker's own copy is behind by exactly this much. Read from the response the
-      // orchestrator just recorded — the most recent one, since the active checkpoint is cleared by
-      // then, leaving no id on the session to key by.
-      const resolved = Object.entries(state.checkpointResponses)
-        .sort(([, a], [, b]) => a.respondedAt.localeCompare(b.respondedAt))
-        .pop();
-      const variablesChanged = resolved?.[1].effects?.variablesSet ?? {};
+      // the bag and the worker's own copy is behind by exactly this much. Read from the answer the
+      // history recorded last, which names the activity and the checkpoint: the active checkpoint is
+      // cleared by then, leaving no id on the session to key by.
+      const answered = [...state.history].reverse().find((e) => e.type === 'checkpoint_response');
+      const answerKey = answered?.activity !== undefined && answered.checkpoint !== undefined
+        ? `${answered.activity}-${answered.checkpoint}` : undefined;
+      const response = answerKey !== undefined ? state.checkpointResponses?.[answerKey] : undefined;
+      const variablesChanged = response?.effects?.variablesSet ?? {};
       const changedNames = Object.keys(variablesChanged);
+      let resumedExit: ExitReport | undefined;
+      if (response?.effects?.exit && answered?.activity !== undefined) {
+        const wf = await loadWorkflow(config.workflowDir, state.workflowId);
+        resumedExit = wf.success ? exitReport(wf.value, baseId(answered.activity), response.effects.exit) : { id: response.effects.exit };
+      }
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'resumed',
           session_index,
-          checkpoint: resolved?.[0],
-          option_id: resolved?.[1].optionId,
+          checkpoint: answered?.checkpoint,
+          option_id: response?.optionId,
           variables_changed: variablesChanged,
-          message: changedNames.length
-            ? `Checkpoint cleared. The selected option set ${changedNames.join(', ')} — the values above are in the session bag; carry them in your own state and proceed to the next step.`
-            : 'Checkpoint cleared. The selected option set no variables. Proceed to the next step.',
+          ...(resumedExit ? { exit: resumedExit } : {}),
+          message: (changedNames.length
+            ? `Checkpoint cleared. The selected option set ${changedNames.join(', ')} — the values above are in the session bag; carry them in your own state`
+            : 'Checkpoint cleared. The selected option set no variables')
+            + (resumedExit?.ends_activity
+              ? `. ${endsActivityInstruction(resumedExit.id)}`
+              : (changedNames.length ? ' and proceed to the next step.' : '. Proceed to the next step.')),
         }, null, 2) }],
         _meta: { session_index, validation },
       };
@@ -2871,14 +2907,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // ends the sequence here, so the worker is told to stop rather than run the remaining steps.
       const chosenExit = (effect as { exit?: string } | undefined)?.exit;
       if (chosenExit !== undefined) {
+        const report = exitReport(result.value, active.activityId, chosenExit);
+        responseData['exit'] = report;
         const binding = getExitBindings(result.value, active.activityId).find(b => b.exit === chosenExit);
-        responseData['exit'] = {
-          id: chosenExit,
-          ...(binding ? { next_activity: destinationField(binding.to) } : {}),
-          ...(binding?.immediate ? { ends_activity: true } : {}),
-        };
-        if (binding?.immediate) {
-          responseData['message'] = `Exit '${chosenExit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator, whose next target is ${destinationPhrase(binding.to)}.`;
+        if (report.ends_activity && binding) {
+          responseData['message'] = `Exit '${chosenExit}' ends the activity at this checkpoint: the worker learns so from resume_checkpoint and stops rather than running the remaining steps, and the orchestrator's next target is ${destinationPhrase(binding.to)}.`;
         }
       }
 
@@ -2956,7 +2989,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered, and the variable bag.',
+    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered (its activity, checkpoint, option and time), and the variable bag.',
     {
       ...sessionIndexParam,
     },
@@ -2973,24 +3006,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // An open checkpoint blocks a running session; otherwise the session file's own status holds.
       const status = clientActive ? 'blocked' : state.status === 'running' ? 'active' : state.status;
 
-      const traceEvents = config.traceStore ? config.traceStore.getEvents(state.sessionIndex) : [];
-
-      // Completed activities come from authoritative session state (the trace
-      // store may be disabled). Fall back to trace-derived only if state is empty.
-      let completedActivities: string[] = Array.isArray(state.completedActivities) ? [...state.completedActivities] : [];
-      if (completedActivities.length === 0 && traceEvents.length > 0) {
-        const activitySet = new Set<string>();
-        for (const event of traceEvents) {
-          if (event.name === 'next_activity' && event.act && event.s === 'ok' && !activitySet.has(event.act)) {
-            activitySet.add(event.act);
-            completedActivities.push(event.act);
-          }
-        }
-      }
-
-      const lastCheckpoint = traceEvents
-        .filter(e => e.name === 'respond_checkpoint' && e.s === 'ok')
-        .pop();
+      // Both read from the session file, which records every completed activity and every answer
+      // whether or not a trace is held.
+      const completedActivities = [...state.completedActivities];
+      const lastAnswer = [...state.history].reverse().find((e) => e.type === 'checkpoint_response');
 
       const response: Record<string, unknown> = {
         status,
@@ -3010,10 +3029,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         } : { id: clientWf },
       };
 
-      if (lastCheckpoint) {
+      if (lastAnswer) {
         response['last_checkpoint'] = {
-          activity_id: lastCheckpoint.act,
-          timestamp: lastCheckpoint.ts,
+          activity_id: lastAnswer.activity,
+          checkpoint_id: lastAnswer.checkpoint,
+          option_id: lastAnswer.data?.['optionId'],
+          timestamp: lastAnswer.timestamp,
         };
       }
 
