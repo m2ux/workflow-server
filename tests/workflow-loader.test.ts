@@ -269,7 +269,7 @@ describe('workflow-loader', () => {
     it('refuses a workflow file that declares an activity inline', async () => {
       const result = await loadWorkflowWithDiagnostics(fixtureDir, 'inline-activity-wf');
       expect(result.success).toBe(false);
-      if (!result.success) expect(result.error.message).toMatch(/activities/);
+      if (!result.success) expect(result.error.message).toMatch(/defined in its own file under `activities\/`/);
     });
   });
 
