@@ -345,7 +345,7 @@ export function describeSessionStoreError(err: unknown): string {
     case 'INVALID_INDEX':
       return `Invalid session_index: ${err.message}. The session_index must be the 6-character base32 string returned by start_session.`;
     case 'NOT_FOUND':
-      return `${err.message}. Call start_session to create or resume a planning folder; the session_index is only valid against folders the server has previously sealed.`;
+      return `${err.message}. Call start_session to create or resume a planning folder. A session_index comes only from a start_session or dispatch_child response and cannot be composed or predicted, and it is valid only against a folder the server has sealed.`;
     case 'COLLISION':
       return `${err.message}. Two planning folders hashed to the same session_index — recreate the colliding session(s) or remove a stale folder under the active planning root (legacy: .engineering/artifacts/planning/; repo mode: artifacts/planning/ under the engineering checkout).`;
     case 'SEAL_MISMATCH':

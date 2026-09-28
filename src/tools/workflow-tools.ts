@@ -1183,7 +1183,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     return { key: branchKey(base), slot: instanceIndex(entry) ?? 0, unit: base };
   }
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Each transition starts from where the previous one left the session, so issue it only once the previous transition has answered. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`.',
     {
       ...sessionIndexParam,
       activity_id: DestinationSchema.describe(

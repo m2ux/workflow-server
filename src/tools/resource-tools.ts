@@ -146,7 +146,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'start_session',
     {
       description:
-        'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. ' +
+        'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
         'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
         'Pass `planning_folder` as an absolute path (basename = slug) to resume or pin a named folder. ' +
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
