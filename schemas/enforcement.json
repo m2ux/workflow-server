@@ -160,7 +160,7 @@
     },
     "steps[].options[].effect.setVariable": {
       "owner": "Engine",
-      "strictness": "enforced"
+      "strictness": "advisory"
     },
     "steps[].over": {
       "owner": "Agent",
@@ -294,7 +294,7 @@
     },
     "steps[].options[].effect.setVariable": {
       "owner": "Engine",
-      "strictness": "enforced"
+      "strictness": "advisory"
     },
     "steps[].over": {
       "owner": "Agent",

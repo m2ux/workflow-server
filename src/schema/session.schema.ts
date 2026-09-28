@@ -74,7 +74,7 @@ const SessionFileBaseSchema = z.object({
 
   // Holds one activity or the branches of exactly one fan: every branch exit binds to its fan's join,
   // so a branch cannot open a fan of its own.
-  frontier: z.array(z.string().describe('Activity identifier, or `<activityId>#<index>` for one instance of an instance fan.')).default([]).describe('Activities currently in progress. An instance fan\'s branches are named `<activityId>#<index>`, the zero-based collection index; a list fan\'s plain members appear under their bare identifier. Entries are distinct strings, so a bare activity identifier matches no instance of an instance fan. Empty between the last branch retiring and the join being entered, and after the run completes.'),
+  frontier: z.array(z.string().describe('Activity identifier, or `<activityId>#<index>` for one instance of an instance fan.')).default([]).describe('Activities currently in progress. An instance fan\'s branches are named `<activityId>#<index>`, the zero-based collection index; a list fan\'s plain members appear under their bare identifier. Entries are distinct strings, so a bare activity identifier matches no instance of an instance fan. Empty before the first `next_activity` and after a transition to `__terminal__`; the call that retires a fan\'s last branch enters the join in the same revision, and a run that ends at an activity named `complete` keeps that activity.'),
   currentTechnique: z.string().default('').describe('Current technique reference, or an empty string when none is selected.'),
 
   exit: z.string().default('').describe('Most recent activity exit, or an empty string when none is recorded.'),

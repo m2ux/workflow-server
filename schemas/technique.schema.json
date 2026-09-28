@@ -52,7 +52,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Stable input identifier with words separated by hyphens."
+                "description": "Stable input identifier: a snake_case noun phrase of at least two words (`planning_folder_path`), or a listed single-word exemption. It binds by name to the session variable of the same name."
               },
               "description": {
                 "type": "string",
@@ -160,7 +160,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "Stable output identifier with words separated by hyphens, distinct from its artifact filename."
+                "description": "Stable output identifier: a snake_case noun phrase of at least two words, or a listed single-word exemption, distinct from its artifact filename."
               },
               "description": {
                 "type": "string",

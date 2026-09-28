@@ -121,7 +121,7 @@
                       "array",
                       "object"
                     ],
-                    "description": "Declared variable type. A value written to the session, through a checkpoint `setVariable` effect or a reported variable change, is checked against it; a mismatch is stored as written with a warning, and a `{name}` template value is exempt."
+                    "description": "Declared variable type. A value written to the session, through a checkpoint `setVariable` effect or a reported variable change, is checked against it; a mismatch is stored as written with a warning, and a `{name}` template value is exempt. Declarations of one name, in the workflow or its activities, that name different types fail the workflow load."
                   },
                   "description": {
                     "type": "string",
@@ -134,10 +134,10 @@
                       "description": "Allowed string value for the variable."
                     },
                     "minItems": 1,
-                    "description": "Complete set of values the variable admits: nonempty, without repeats, and declared only on a `string` variable. A declared `defaultValue` must be one of them. A value written outside the set is stored as written with a warning, and a `{name}` template value is exempt."
+                    "description": "Complete set of values the variable admits: nonempty, without repeats, and declared only on a `string` variable. A declared `defaultValue` must be one of them. A value written outside the set is stored as written with a warning, and a `{name}` template value is exempt. Declarations of one name that each name a value set, and name different ones, fail the workflow load."
                   },
                   "defaultValue": {
-                    "description": "Initial value, present from the start of every session and child session. Do not gate a defaulted variable with `exists` or `notExists`: the variable is always present, so the gate is constant, and `check:variable-model` rejects it."
+                    "description": "Initial value, present from the start of every session and child session. Do not gate a defaulted variable with `exists` or `notExists`: the variable is always present, so the gate is constant, and `check:variable-model` rejects it. Declarations of one name that each name a starting value, and name different ones, fail the workflow load."
                   },
                   "required": {
                     "type": "boolean",
@@ -351,7 +351,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine, and the key its recorded responses replay under on resume."
+                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. With the activity identifier it forms the key a recorded response replays under on resume."
                   },
                   "message": {
                     "type": "string",
@@ -462,11 +462,11 @@
                   },
                   "variable": {
                     "type": "string",
-                    "description": "Current-item variable bound each iteration of a `forEach` loop; absent for `while` and `doWhile` loops."
+                    "description": "Current-item variable bound each iteration of a `forEach` loop: required there, and absent for `while` and `doWhile` loops."
                   },
                   "over": {
                     "type": "string",
-                    "description": "Collection a `forEach` loop iterates: a variable name or a dotted path into one; absent for `while` and `doWhile` loops."
+                    "description": "Collection a `forEach` loop iterates: a variable name or a dotted path into one. Required on a `forEach` loop, and absent for `while` and `doWhile` loops."
                   },
                   "breakCondition": {
                     "$ref": "#/definitions/condition",
@@ -511,11 +511,11 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine, and the prefix every identifier in the routine body carries once spliced in."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. It is also the prefix every identifier in the routine body carries once spliced in."
                   },
                   "routine": {
                     "type": "string",
-                    "description": "Routine reference in `[namespace::]name` form. The namespace is a directory name, or the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity's source workflow, then `meta`. The last segment is the routine and every segment before it is the namespace, since a routine name has no group grammar."
+                    "description": "Routine reference in `[namespace::]name` form, with no segment empty. The namespace is a directory name, or the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity's source workflow, then `meta`. The last segment is the routine and every segment before it is the namespace, since a routine name has no group grammar."
                   },
                   "with": {
                     "type": "object",
@@ -527,7 +527,7 @@
                       ],
                       "description": "Literal argument or braced host-variable reference."
                     },
-                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default, or an argument naming no declared input, excludes the referring activity from the load."
+                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default, or an argument naming no declared input, excludes the referring activity from the load. A `kind: technique` input takes a literal technique reference, a string holding no `{`, since the substitution happens when the definitions load and a braced value has no value then; any other argument to it excludes the referring activity from the load."
                   },
                   "outputs": {
                     "type": "object",

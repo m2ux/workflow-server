@@ -15,7 +15,7 @@ export const OutputComponentsDefinitionSchema = z.record(z.union([
 export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
 
 export const InputItemDefinitionSchema = z.object({
-  id: enforcement(z.string().describe('Stable input identifier with words separated by hyphens.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Stable input identifier: a snake_case noun phrase of at least two words (`planning_folder_path`), or a listed single-word exemption. It binds by name to the session variable of the same name.'), { owner: 'Engine', strictness: 'enforced' }),
   description: z.string().optional().describe('Input description, beginning with `(optional)` when the input is optional.'),
   default: enforcement(z.unknown().optional().describe('Default value when not supplied'), { owner: 'Engine', strictness: 'advisory' }),
   components: OutputComponentsDefinitionSchema.optional().describe('Named parts of a composite input, authored as `####` headings.'),
@@ -62,7 +62,7 @@ export const OutputArtifactSchema = z.object({
 export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;
 
 export const OutputItemDefinitionSchema = z.object({
-  id: enforcement(z.string().describe('Stable output identifier with words separated by hyphens, distinct from its artifact filename.'), { owner: 'Engine', strictness: 'enforced' }),
+  id: enforcement(z.string().describe('Stable output identifier: a snake_case noun phrase of at least two words, or a listed single-word exemption, distinct from its artifact filename.'), { owner: 'Engine', strictness: 'enforced' }),
   description: z.string().optional().describe('Human-readable description of this output'),
   components: OutputComponentsDefinitionSchema.optional(),
   entry: z.record(z.string().describe('Description of the named list-entry field.')).optional().describe('List-entry fields under `#### entry` with `#####` field headings; mutually exclusive with `components`.'),

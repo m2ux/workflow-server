@@ -678,7 +678,7 @@ function operationArgument(
     throw new RoutineResolutionError(
       `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds no argument — `
       + 'bind it to a technique reference under \'with\', or give the declaration a default. A technique parameter takes '
-      + 'no value from the host, a bag holding values rather tha techniques.',
+      + 'no value from the host, a bag holding values rather than techniques.',
     );
   }
   if (typeof argument !== 'string' || argument.includes('{')) {

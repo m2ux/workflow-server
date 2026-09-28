@@ -13,10 +13,10 @@ export const HistoryEventTypeSchema = z.enum([
   // at fetch time (omitted before the first next_activity). Both also carry
   // the delivery MAGNITUDE (#353 §1.3): `chars` is the full payload size and
   // `delivery` is 'full' | 'unchanged', so delivered and saved characters are
-  // both summable from the ledger.
+  // both summable from the session history.
   'technique_fetched', 'resource_fetched',
-  // Hybrid bundling (#166 B11): a step-bound technique delivered inline by
-  // get_activity for an activity that declares `bundleTechniques`. `data`
+  // Hybrid bundling (#166 B11): a step-bound technique get_activity delivered
+  // inline, within the activity's bundling budget. `data`
   // carries { techniqueId, stepId, agentId, chars, delivery }. Distinct from
   // technique_fetched so the fidelity stream still separates agent-initiated
   // fetches from server-pushed bundle deliveries; manifest validation accepts either.
