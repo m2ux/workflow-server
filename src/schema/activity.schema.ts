@@ -54,7 +54,7 @@ const stepCommonFields = {
 };
 
 const stepEntryCondition = {
-  condition: enforcement(ConditionSchema.optional().describe('Structured entry condition. Prefer `when` for a step gate. On a checkpoint step, `condition` is the only gate that makes the checkpoint dismissible: when it is false, the checkpoint may be dismissed as not met, and the activity takes its default exit.'), { owner: 'Agent', strictness: 'advisory' }),
+  condition: enforcement(ConditionSchema.optional().describe('Structured entry condition. Prefer `when` for a step gate. On a checkpoint step, `condition` is the only gate that makes the checkpoint dismissible: when it is false, the checkpoint may be dismissed as not met, selecting no option and no exit.'), { owner: 'Agent', strictness: 'advisory' }),
 };
 
 export const TechniqueStepSchema = z.object({
