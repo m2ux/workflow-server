@@ -23,15 +23,25 @@ def issue(number: int, title: str, state: str = 'open', closed: str | None = Non
             'body': body, 'labels': [{'name': l} for l in labels]}
 
 
+BOARD = 'https://api.github.com/orgs/o/projectsV2/7'
+
+
 def item(content: dict | None, status: str | None) -> dict:
     fields = [{'id': 1, 'name': 'Status', 'value': {'name': {'raw': status, 'html': status}}}] if status else []
-    return {'content_type': 'Issue', 'fields': fields, 'content': content}
+    return {'content_type': 'Issue', 'fields': fields, 'content': content, 'project_url': BOARD}
 
 
 def epic_body(*rows: tuple[str, str, str]) -> str:
     """An epic body whose Work Breakdown holds rows of (task id, description, depends on)."""
     lines = ['## Work Breakdown', '', '| Task | Description | Depends on | Join |', '| --- | --- | --- | --- |']
     lines += [f'| {task} | {description} → AC1 | {depends} | |' for task, description, depends in rows]
+    return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
+
+
+def initiative_body(*rows: tuple[str, str]) -> str:
+    """An initiative body whose Work Breakdown holds rows of (epic id, depends on)."""
+    lines = ['## Work Breakdown', '', '| Epic | Description | Depends on |', '| --- | --- | --- |']
+    lines += [f'| {epic} | Work → AC1 | {depends} |' for epic, depends in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 
 
@@ -46,14 +56,22 @@ def run(script: str, *args: str, tz: str = 'UTC') -> subprocess.CompletedProcess
                           env={**os.environ, 'TZ': tz, 'PYTHONDONTWRITEBYTECODE': '1'})
 
 
-def progress(items: list[dict], prs: list[dict], *args: str, tz: str = 'UTC') -> subprocess.CompletedProcess:
-    """progress.py on the items, as two pages, and the pull requests as JSON lines."""
+def progress(items: list[dict], prs: list[dict], *args: str, tz: str = 'UTC',
+             initiatives: tuple[dict, ...] = ()) -> subprocess.CompletedProcess:
+    """progress.py on the items, as two pages, the pull requests as JSON lines, and each initiative
+    off the board as its own issue file."""
     with tempfile.TemporaryDirectory() as tmp:
         items_path, prs_path = Path(tmp, 'items.json'), Path(tmp, 'prs.json')
         half = len(items) // 2
         items_path.write_text(json.dumps(items[:half]) + '\n' + json.dumps(items[half:]))
         prs_path.write_text('\n'.join(json.dumps(p) for p in prs))
-        return run('progress.py', '--items', str(items_path), '--prs', str(prs_path), *args, tz=tz)
+        extra = []
+        for n, initiative in enumerate(initiatives):
+            path = Path(tmp, f'initiative-{n}.json')
+            path.write_text(json.dumps(initiative))
+            extra.append(str(path))
+        return run('progress.py', '--items', str(items_path), '--prs', str(prs_path), *args,
+                   *(['--initiatives', *extra] if extra else []), tz=tz)
 
 
 def section(output: str, name: str) -> list[str]:

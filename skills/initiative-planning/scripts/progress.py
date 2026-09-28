@@ -1,44 +1,66 @@
 """Summarise a project board as a standup: what completed, what is in progress, and what is next.
 
 Usage:
-  python3 progress.py --items items.json --prs prs.json [--since 2026-09-25] [--initiative I08]
+  python3 progress.py --items items.json --prs prs.json [--since 2026-09-25] [--initiative [owner/repo:]I08]
+      [--initiatives issue-946.json ...]
 
 items.json is the board's items with the Status field, as board.py reads them; each item carries
 its issue whole, body included, and the script exits when no item carries Status. prs.json holds
 pull requests as JSON lines, as update.py reads them, from as many repositories as the board spans:
-a pull request is known by its URL, and cites an issue as board.py reads a citation.
+a pull request is known by its URL, and cites an issue as board.py reads a citation. --initiatives
+gives initiative issues off the board, as `gh api repos/{owner}/{repo}/issues/946` returns them:
+they place their epics and describe their work as a board initiative does, and hold no Status.
 
-The board's Status is the source. Lines group under the epic they belong to. A row's task issue is
-the one its id links. A task issue listed, which is one titled with the epic's reference, stands
-for the pull requests that cite it:
+The board's Status is the source. Each repository numbers its own initiatives, and an initiative's
+epics and task issues may live in other repositories, so an item's place follows the links, the
+first link read deciding where more than one does. Repository names match in any case.
+  - An epic belongs to the initiative whose Work Breakdown links it, or else to the initiative of
+    its number in its own repository.
+  - A task issue belongs to the epic whose row links it, or else to the epic of its reference in
+    its own repository, and stands for the pull requests that cite it.
+  - A pull request titled with an epic's reference counts towards that epic when it lives in the
+    epic's repository or its initiative's, the epic's own first. A row whose id links a pull
+    request reads it by URL, whatever its title or repository.
+Sections, lines grouped under the epic they belong to:
+  Initiatives  each initiative an item under Completed or In progress works for: its title's name
+               and subtitle, the one-line outcome the house title states. One neither on the board
+               nor given with --initiatives is reported, to be fetched and given.
+An item works for the initiative its epic belongs to and for the one its epic's title names in the
+epic's repository.
   Completed    items Done whose issue closed in the window: an initiative, an epic, or a task issue
                under its epic. Under each epic, the tasks whose row id links a pull request merged
-               in the window, and each such pull request naming the epic that no row links and
-               that cites no task issue listed.
-  In progress  epics and task issues In Progress or In Review, each epic with the open pull
-               requests naming it that cite no task issue listed, ready for review (In Review) or
-               draft, or else its next task.
+               in the window, and each other pull request counting towards the epic, merged in the
+               window, that cites none of the epic's task issues listed.
+  In progress  epics and task issues In Progress or In Review, each epic with its open pull
+               requests that cite none of its task issues In Progress or In Review, ready for
+               review (In Review) or draft, or else, with no line under it, its next task.
   Next         epics and task issues Ready, ranked by priority label (highest, high, medium or
                none, low, lowest), then by reference; the first five, and a count of the rest. An
                epic names its next task.
-An epic's next task is its first undelivered task whose dependencies are delivered and whose task
-issue, if it has one, is on the board and not In Progress or In Review. A task issue an epic names
-as its next task is not listed again.
+An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
+task issue, if it has one, is on the board and not In Progress or In Review. A task issue that
+belongs to an epic which names its task as next is not listed again.
 
-The window opens at the start of --since in local time, by default the previous working day.
---initiative limits the summary to one initiative. An epic whose Work Breakdown the scripts cannot
-read, or that has none, is summarised without its tasks.
+The window opens at the start of --since in local time, by default a week before today.
+--initiative limits the summary to the items working for one initiative; where its number names
+initiatives in several repositories it takes the repository too, and where it names none it exits
+with the choices. An epic summarised whose Work Breakdown the scripts cannot read, or that has none,
+is summarised without its tasks.
 
-Printed: the summary as Slack markup, for pasting into a channel: *bold* headings, bullets, and each
-issue or pull request by its bare URL. Unresolved dependencies and unreadable epics print to stderr.
+Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the board's
+link beneath, *bold* sections, bullets, and each issue or pull request by its bare URL. Unresolved
+dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
+print to stderr.
 """
 import argparse
+import json
 import re
 import sys
 from collections import Counter
 from datetime import date, datetime, time, timedelta, timezone
+from pathlib import Path
 
-from board import Board, Key, PREFIX, cites, key_of, label, linked_issue, pages, status_of
+from board import Board, Key, PREFIX, PULL_REF, cites, key_of, label, linked_issue, pages, status_of
 from format import LINK, cell, epic_name, phrase
 from update import PR_REF, PULL_URL, Unreadable, pull_requests
 
@@ -47,13 +69,12 @@ PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
 UNRANKED = 2
 SHOWN = 5
 ACTIVE = ('In Progress', 'In Review')
+BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
+Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
 
 
-def previous_working_day(today: date) -> date:
-    day = today - timedelta(days=1)
-    while day.weekday() >= 5:
-        day -= timedelta(days=1)
-    return day
+def week_before(today: date) -> date:
+    return today - timedelta(days=7)
 
 
 def tags(title: str) -> tuple[str, str, str] | None:
@@ -61,8 +82,14 @@ def tags(title: str) -> tuple[str, str, str] | None:
     return (m[1], m[2] or '', m[3] or '') if m else None
 
 
-def reference(t: tuple[str, str, str]) -> str:
-    return ':'.join(f'{p}{n}' for p, n in zip('IEW', t) if n)
+def reference(i: str, e: str = '', w: str = '') -> str:
+    return ':'.join(f'{p}{n}' for p, n in zip('IEW', (i, e, w)) if n)
+
+
+def subtitle(title: str) -> str:
+    """A house title's subtitle: the outcome after the name's colon."""
+    rest = PREFIX.sub('', title).strip()
+    return rest.split(': ', 1)[1].strip() if ': ' in rest else ''
 
 
 def task_name(r: list[str], header: list[str]) -> str:
@@ -73,40 +100,53 @@ def pr_title(pr: dict) -> str:
     return PR_REF.sub('', pr['title']).strip()
 
 
+def board_link(items: list[dict]) -> str:
+    """The board's web page, from the API address its items carry."""
+    found = next((m for i in items if (m := BOARD_API.search(i.get('project_url') or ''))), None)
+    return f'https://github.com/{found[1]}/{found[2]}/projects/{found[3]}' if found else ''
+
+
 class Summary(Board):
-    """A board whose epics are read as far as their bodies allow: an epic without a Work Breakdown
-    it can read has no rows, and is reported unresolved."""
+    """A board whose bodies are read as far as they allow: one without a Work Breakdown it can read
+    has no rows, and report() notes why for an epic the summary covers."""
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.why: dict[Key, str] = {}
 
     def table(self, key: Key) -> tuple[list[str], dict[str, list[str]]]:
-        if key in self.tables:
-            return self.tables[key]
-        try:
-            header, rows = super().table(key)
-        except Unreadable as unreadable:
-            header, rows, why = [], {}, str(unreadable)
-        else:
-            why = '' if header else 'no Work Breakdown'
-        if why:
-            self.unresolved.append(f"{label(key, self.home)} {self.issues[key]['title']}: {why}")
-        self.tables[key] = header, rows
-        return header, rows
+        if key not in self.tables:
+            try:
+                super().table(key)
+            except Unreadable as unreadable:
+                self.tables[key], self.why[key] = ([], {}), str(unreadable)
+            else:
+                if not self.tables[key][0]:
+                    self.why[key] = 'no Work Breakdown'
+        return self.tables[key]
+
+    def report(self, key: Key) -> None:
+        self.table(key)
+        if key in self.why:
+            self.unresolved.append(f"{label(key, self.home)} {self.issues[key]['title']}: {self.why[key]}")
 
 
 class Section:
-    """Lines grouped under the epic, or initiative, they belong to."""
+    """Lines grouped under the epic, or initiative, they belong to. A group is (initiative, epic,
+    repository, issue number), the number 0 for a group whose epic is not on the board."""
 
-    def __init__(self):
-        self.groups: dict[tuple[str, str], dict] = {}
+    def __init__(self, issues: dict[Key, dict]):
+        self.issues = issues
+        self.groups: dict[tuple[str, str, str, int], dict] = {}
 
-    def group(self, i: str, e: str) -> dict:
-        return self.groups.setdefault((i, e), {'note': '', 'lines': []})
+    def group(self, g: tuple[str, str, str, int]) -> dict:
+        return self.groups.setdefault(g, {'note': '', 'lines': []})
 
-    def render(self, headers: dict[tuple[str, str], dict]) -> list[str]:
+    def render(self) -> list[str]:
         out = []
-        for (i, e), g in sorted(self.groups.items()):
-            issue = headers.get((i, e))
-            ref = reference((i, e, ''))
-            head = f"*{ref} {epic_name(issue['title'])}*" if issue else f'*{ref}*'
+        for (i, e, repo, number), g in sorted(self.groups.items(), key=lambda kv: (*kv[0][:2], kv[0][2].lower())):
+            issue = self.issues.get((repo, number))
+            head = f"*{reference(i, e)} {epic_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
             note = f", {g['note']}" if g['note'] else ''
             out.append(f"• {head}{note}" + (f" — {issue['html_url']}" if issue else ''))
             out.extend(f'    ◦ {line}' for line in g['lines'])
@@ -118,16 +158,17 @@ def main() -> int:
     parser.add_argument('--items', required=True, help="the board's items, fetched with the Status field")
     parser.add_argument('--prs', required=True, help='pull requests as JSON lines')
     parser.add_argument('--since', help='the first day of the window, YYYY-MM-DD')
-    parser.add_argument('--initiative', help='only this initiative, e.g. I08')
+    parser.add_argument('--initiative', help='only this initiative, e.g. I08 or owner/repo:I08')
+    parser.add_argument('--initiatives', nargs='*', default=[], help='initiative issues off the board, as JSON')
     args = parser.parse_args()
-    since = date.fromisoformat(args.since) if args.since else previous_working_day(date.today())
+    since = date.fromisoformat(args.since) if args.since else week_before(date.today())
     after = datetime.combine(since, time()).astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-    only = None
+    only = only_repo = None
     if args.initiative:
-        m = re.fullmatch(r'I?(\d{1,2})', args.initiative.strip(), re.IGNORECASE)
+        m = re.fullmatch(r'(?:([^/:\s]+/[^/:\s]+):)?I?(\d{1,2})', args.initiative.strip(), re.IGNORECASE)
         if not m:
-            sys.exit(f'--initiative {args.initiative}: not an initiative reference such as I08')
-        only = m[1].zfill(2)
+            sys.exit(f'--initiative {args.initiative}: not an initiative reference such as I08 or owner/repo:I08')
+        only_repo, only = (m[1] or '').lower() or None, m[2].zfill(2)
 
     items = [i for i in pages(args.items)
              if i.get('content_type') == 'Issue' and (i.get('content') or {}).get('repository_url')]
@@ -135,27 +176,97 @@ def main() -> int:
         sys.exit("the items carry no Status field; fetch them with fields=<the board's Status field id>")
     issues = {key_of(i['content']): i['content'] for i in items}
     status = {key_of(i['content']): status_of(i) for i in items}
-    prs = pull_requests(args.prs)
-    by_url = {p['html_url']: p for p in prs}
-    by_epic: dict[tuple[str, str], list[dict]] = {}
-    for p in by_url.values():
-        if m := PR_REF.match(p['title']):
-            by_epic.setdefault(m.groups(), []).append(p)
+    for path in args.initiatives:
+        given = json.loads(Path(path).read_text())
+        if (t := tags(given['title'])) and not t[1]:
+            issues.setdefault(key_of(given), given)
     unresolved: list[str] = []
     home = Counter(k[0] for k in issues).most_common(1)[0][0] if issues else ''
     board = Summary(issues, unresolved, home)
+    canonical = {(k[0].lower(), k[1]): k for k in issues}
 
-    tagged, epic_ids, task_keys = {}, {}, {}
-    for k, issue in issues.items():
-        if not (t := tags(issue['title'])):
+    def on_board(key: Key | None) -> Key | None:
+        """The board's key for an issue a link names, whatever case the link writes."""
+        return canonical.get((key[0].lower(), key[1])) if key else None
+
+    tagged = {k: t for k, issue in issues.items() if (t := tags(issue['title']))}
+    initiatives = {k: t for k, t in tagged.items() if not t[1]}
+    epics = {k: t for k, t in tagged.items() if t[1] and not t[2]}
+    tasks = {k: t for k, t in tagged.items() if t[2]}
+
+    initiative_issue: dict[Scope, Key] = {}
+    scope_of_epic: dict[Key, Scope] = {}
+    epic_ids: dict[Scope, dict[str, Key]] = {}
+    for k, t in sorted(initiatives.items()):
+        scope = (k[0].lower(), t[0])
+        initiative_issue[scope] = k
+        for rid, r in board.table(k)[1].items():
+            if (ek := on_board(linked_issue(r[0]))) in epics:
+                scope_of_epic.setdefault(ek, scope)
+                epic_ids.setdefault(scope, {})[rid] = ek
+    for ek, t in sorted(epics.items()):
+        scope = scope_of_epic.setdefault(ek, (ek[0].lower(), t[0]))
+        epic_ids.setdefault(scope, {}).setdefault(f'E{t[1]}', ek)
+
+    epic_of: dict[Key, Key] = {}
+    for ek in sorted(epics):
+        for r in board.table(ek)[1].values():
+            if (tk := on_board(linked_issue(r[0]))) in tasks:
+                epic_of.setdefault(tk, ek)
+    by_reference = {(ek[0].lower(), *t[:2]): ek for ek, t in epics.items()}
+    for tk, t in tasks.items():
+        if tk not in epic_of and (ek := by_reference.get((tk[0].lower(), *t[:2]))):
+            epic_of[tk] = ek
+    owned: dict[Key, dict[str, Key]] = {}
+    for tk, ek in epic_of.items():
+        owned.setdefault(ek, {})[f'W{tasks[tk][2]}'] = tk
+
+    def epic_for(k: Key) -> Key | None:
+        return k if k in epics else epic_of.get(k)
+
+    def group_of(k: Key) -> tuple[str, str, str, int]:
+        if k in initiatives:
+            return tagged[k][0], '', k[0], k[1]
+        ek = epic_for(k)
+        return (*epics[ek][:2], ek[0], ek[1]) if ek else (*tagged[k][:2], k[0], 0)
+
+    def scopes_of(k: Key) -> set[Scope]:
+        """The initiatives an item works for: the one its epic belongs to, and the one its epic's
+        title names in the epic's repository."""
+        if k in initiatives:
+            return {(k[0].lower(), tagged[k][0])}
+        ek = epic_for(k)
+        return {scope_of_epic[ek], (ek[0].lower(), epics[ek][0])} if ek else {(k[0].lower(), tagged[k][0])}
+
+    if only:
+        scopes = set().union(*(scopes_of(k) for k in tagged))
+        chosen = {s for s in scopes if s[1] == only and (only_repo is None or s[0] == only_repo)}
+        choices = ', '.join(f'{r}:I{n}' for r, n in sorted(chosen or scopes))
+        if not chosen:
+            sys.exit(f'--initiative {args.initiative} matches no initiative the board works for: {choices}')
+        if len(chosen) > 1:
+            sys.exit(f'--initiative I{only} names initiatives in several repositories: {choices}')
+        tagged = {k: t for k, t in tagged.items() if scopes_of(k) & chosen}
+
+    # A pull request counts towards the epic of its reference in its own repository, else in the
+    # repository of the initiative holding such an epic.
+    epics_by_reference: dict[tuple[str, str], list[Key]] = {}
+    for ek, t in sorted(epics.items()):
+        epics_by_reference.setdefault(t[:2], []).append(ek)
+    by_url = {p['html_url']: p for p in pull_requests(args.prs)}
+    prs_of: dict[Key, list[dict]] = {}
+    for p in by_url.values():
+        if not (m := PR_REF.match(p['title'])):
             continue
-        if t[1] and not t[2]:
-            epic_ids.setdefault(t[0], {})[f'E{t[1]}'] = k
-        if t[2]:
-            task_keys.setdefault(t[:2], {})[f'W{t[2]}'] = k
-        if only is None or t[0] == only:
-            tagged[k] = t
-    headers = {(t[0], t[1]): issues[k] for k, t in tagged.items() if not t[2]}
+        if not (found := PULL_REF.search(p.get('html_url') or '')):
+            unresolved.append(f"pull request #{p['number']} {p['title']}: no repository in its URL")
+            continue
+        where = found[1].lower()
+        candidates = epics_by_reference.get(m.groups(), [])
+        chosen_epic = next((ek for ek in candidates if ek[0].lower() == where), None) or next(
+            (ek for ek in candidates if scope_of_epic[ek][0] == where), None)
+        if chosen_epic:
+            prs_of.setdefault(chosen_epic, []).append(p)
 
     def within(stamp: str | None) -> bool:
         return (stamp or '') >= after
@@ -163,41 +274,48 @@ def main() -> int:
     def done(k) -> bool:
         return status.get(k) == 'Done' and within(issues[k].get('closed_at'))
 
-    def next_task(k, t, header: list[str], rows: dict[str, list[str]]) -> tuple[str, str] | None:
-        """The epic's next task: its id and the line naming it."""
+    def next_task(ek: Key, header: list[str], rows: dict[str, list[str]]) -> tuple[set[Key], str] | None:
+        """The epic's next task: the task issues that stand for it, and the line naming it."""
+        ref = reference(*epics[ek])
         for tid, r in rows.items():
-            backing = linked_issue(r[0])
-            if backing and (backing not in issues or status.get(backing) in ACTIVE):
+            backing = on_board(linked_issue(r[0]))
+            if linked_issue(r[0]) and (not backing or status.get(backing) in ACTIVE):
                 continue
-            if not board.row_delivered(k, tid, reference(t)) and board.met(
-                    cell(header, r, 'Depends on'), k, epic_ids.get(t[0], {}), f'{reference(t)}:{tid}'):
-                return tid, f'{tid} {task_name(r, header)}'
+            if not board.row_delivered(ek, tid, ref) and board.met(
+                    cell(header, r, 'Depends on'), ek, epic_ids.get(scope_of_epic[ek], {}), f'{ref}:{tid}'):
+                return {t for t in (backing, owned.get(ek, {}).get(tid)) if t}, f'{tid} {task_name(r, header)}'
         return None
 
-    completed, progress, ready = Section(), Section(), []
-    named_next: set[tuple[str, str, str]] = set()
-    # Task issues sort before their epic, so an epic sees the lines its task issues gave.
-    for k, t in sorted(tagged.items(), key=lambda kv: (kv[1][0], kv[1][1], not kv[1][2], kv[1][2])):
-        i, e, w = t
-        issue = issues[k]
-        if not e:
-            if done(k):
-                completed.group(i, '')['note'] = 'initiative complete'
-            continue
-        if w:
-            line = f"W{w} {epic_name(issue['title'])} — {issue['html_url']}"
-            if done(k):
-                completed.group(i, e)['lines'].append(line)
-            elif status.get(k) in ACTIVE:
-                progress.group(i, e)['lines'].append(f"{status[k]}: {line}")
-            elif status.get(k) == 'Ready':
-                ready.append((issue, t, ''))
-            continue
+    completed, progress, ready = Section(issues), Section(issues), []
+    worked: set[Scope] = set()
+    named_next: set[Key] = set()
 
-        header, rows = board.table(k)
-        named = by_epic.get((i, e), [])
-        task_issues = {n for r in rows.values() if (n := linked_issue(r[0]))}
-        task_issues |= set(task_keys.get((i, e), {}).values())
+    def add(section: Section, k: Key, line: str | None = None, note: str | None = None) -> None:
+        group = section.group(group_of(k))
+        if line:
+            group['lines'].append(line)
+        if note is not None:
+            group['note'] = note
+        worked.update(scopes_of(k))
+
+    for k in tagged:
+        if k in initiatives and done(k):
+            add(completed, k, note='initiative complete')
+    for k in tagged:
+        if k not in tasks:
+            continue
+        line = f"W{tasks[k][2]} {epic_name(issues[k]['title'])} — {issues[k]['html_url']}"
+        if done(k):
+            add(completed, k, line)
+        elif status.get(k) in ACTIVE:
+            add(progress, k, f"{status[k]}: {line}")
+        elif status.get(k) == 'Ready':
+            ready.append((k, ''))
+    for ek in sorted((k for k in tagged if k in epics), key=group_of):
+        board.report(ek)
+        header, rows = board.table(ek)
+        named = prs_of.get(ek, [])
+        task_issues = {n for r in rows.values() if (n := on_board(linked_issue(r[0])))} | set(owned.get(ek, {}).values())
 
         def listed(pr: dict, shown) -> bool:
             return any(shown(n) and cites(pr, n) for n in task_issues)
@@ -209,43 +327,58 @@ def main() -> int:
             if pr:
                 linked.add(pr['html_url'])
                 if within(pr.get('merged_at')):
-                    completed.group(i, e)['lines'].append(f"{tid} {task_name(r, header)} — {pr['html_url']}")
+                    add(completed, ek, f"{tid} {task_name(r, header)} — {pr['html_url']}")
         for pr in named:
             if within(pr.get('merged_at')) and pr['html_url'] not in linked and not listed(pr, done):
-                completed.group(i, e)['lines'].append(f"{pr_title(pr)} — {pr['html_url']}")
-        if done(k):
-            completed.group(i, e)['note'] = 'epic complete'
+                add(completed, ek, f"{pr_title(pr)} — {pr['html_url']}")
+        if done(ek):
+            add(completed, ek, note='epic complete')
 
-        if status.get(k) in ACTIVE:
-            group = progress.group(i, e)
-            group['note'] = 'in review' if status[k] == 'In Review' else ''
+        if status.get(ek) in ACTIVE:
+            add(progress, ek, note='in review' if status[ek] == 'In Review' else '')
+            group = progress.group(group_of(ek))
             for pr in named:
                 if pr.get('state') == 'open' and not listed(pr, lambda n: status.get(n) in ACTIVE):
                     state = 'Draft' if pr.get('draft') else 'In Review'
                     group['lines'].append(f"{state}: {pr_title(pr)} — {pr['html_url']}")
-            if not group['lines'] and (task := next_task(k, t, header, rows)):
-                named_next.add((i, e, task[0][1:]))
+            if not group['lines'] and (task := next_task(ek, header, rows)):
+                named_next |= task[0]
                 group['lines'].append(f'Next: {task[1]}')
-        elif status.get(k) == 'Ready':
-            task = next_task(k, t, header, rows)
+        elif status.get(ek) == 'Ready':
+            task = next_task(ek, header, rows)
             if task:
-                named_next.add((i, e, task[0][1:]))
-            ready.append((issue, t, f'next {task[1]}' if task else ''))
+                named_next |= task[0]
+            ready.append((ek, f'next {task[1]}' if task else ''))
 
-    def rank(entry) -> tuple:
-        issue, t, _ = entry
-        levels = [PRIORITY[l['name']] for l in issue.get('labels', []) if l['name'] in PRIORITY]
-        return min(levels, default=UNRANKED), t
+    context = []
+    for scope in sorted(worked, key=lambda s: (s[1], s[0])):
+        if not (k := initiative_issue.get(scope)):
+            unresolved.append(f'I{scope[1]} in {scope[0]}: its initiative is not on the board; '
+                              'give its issue with --initiatives')
+            continue
+        title = issues[k]['title']
+        context.append(f"• *{reference(initiatives[k][0])} {epic_name(title)}:* "
+                       f"{subtitle(title)} — {issues[k]['html_url']}")
 
-    ready = sorted((r for r in ready if r[1] not in named_next), key=rank)
-    upcoming = [f"• *{reference(t)} {epic_name(issue['title'])}*" + (f', {task}' if task else '')
-                + f" — {issue['html_url']}" for issue, t, task in ready[:SHOWN]]
+    def rank(entry: tuple[Key, str]) -> tuple:
+        k = entry[0]
+        levels = [PRIORITY[l['name']] for l in issues[k].get('labels', []) if l['name'] in PRIORITY]
+        return min(levels, default=UNRANKED), tagged[k], k[0].lower()
+
+    ready = sorted((e for e in ready if e[0] not in named_next), key=rank)
+    upcoming = [f"• *{reference(*tagged[k])} {epic_name(issues[k]['title'])}*" + (f', {task}' if task else '')
+                + f" — {issues[k]['html_url']}" for k, task in ready[:SHOWN]]
     if len(ready) > SHOWN:
         upcoming.append(f'…and {len(ready) - SHOWN} more ready')
 
-    heading = f"*Progress since {since:%a} {since.day} {since:%b}*" + (f' — I{only}' if only else '')
-    print('\n'.join([heading, '', '*Completed*', *completed.render(headers), '', '*In progress*',
-                     *progress.render(headers), '', '*Next*', *(upcoming or ['• Nothing'])]))
+    scope_label = f'{only_repo}:I{only}' if only_repo else f'I{only}' if only else ''
+    heading = f"*Progress since {since:%a} {since.day} {since:%b}*" + (f' — {scope_label}' if scope_label else '')
+    link = board_link(items)
+    print('\n'.join([heading, *([f'Board: {link}'] if link else []),
+                     '', '*Initiatives*', *(context or ['• Nothing']),
+                     '', '*Completed*', *completed.render(),
+                     '', '*In progress*', *progress.render(),
+                     '', '*Next*', *(upcoming or ['• Nothing'])]))
     for note in dict.fromkeys(unresolved):
         print(f'unresolved: {note}', file=sys.stderr)
     return 0
