@@ -241,13 +241,24 @@ describe('workflow-loader', () => {
       // identifier they already hold, borrow a file that does not exist, or enter nowhere.
       writeFileSync(join(fixtureDir, 'source-wf', 'activities', '03-broken.yaml'),
         'id: broken\nversion: 1.0.0\n');
-      const workflow = (id: string, initial: string, refs: string[]) => {
+      const workflow = (id: string, initial: string, refs: string[], graph: string[] = []) => {
         mkdirSync(join(fixtureDir, id, 'activities'), { recursive: true });
         writeFileSync(join(fixtureDir, id, 'workflow.yaml'), [
           `id: ${id}`, 'version: 1.0.0', `title: ${id}`, `initialActivity: ${initial}`,
           ...(refs.length > 0 ? ['activities:', ...refs.map((r) => `  - ${r}`)] : []),
+          ...(graph.length > 0 ? ['graph:', ...graph] : []),
         ].join('\n'));
       };
+      // A lent activity declaring two exits, and borrowers that bind both, one, or one it lacks.
+      const bind = (...exits: string[]) => ['  review:', ...exits.map((e) => `    ${e}: __terminal__`)];
+      workflow('exit-lender-wf', 'review', [], bind('approved', 'rejected'));
+      writeFileSync(join(fixtureDir, 'exit-lender-wf', 'activities', '01-review.yaml'), [
+        'id: review', 'version: 1.0.0', 'name: Review', 'exits:',
+        '  - id: approved', '    isDefault: true', '  - id: rejected',
+      ].join('\n'));
+      workflow('exit-binds-all-wf', 'review', ['exit-lender-wf/01-review.yaml'], bind('approved', 'rejected'));
+      workflow('exit-binds-one-wf', 'review', ['exit-lender-wf/01-review.yaml'], bind('approved'));
+      workflow('exit-binds-extra-wf', 'review', ['exit-lender-wf/01-review.yaml'], bind('approved', 'rejected', 'escalated'));
       workflow('broken-borrower-wf', 'shared', ['source-wf/01-shared.yaml', 'source-wf/03-broken.yaml']);
       workflow('clash-wf', 'shared', ['source-wf/01-shared.yaml']);
       writeFileSync(join(fixtureDir, 'clash-wf', 'activities', '01-shared.yaml'), 'id: shared\nversion: 1.0.0\nname: Own shared\n');
@@ -297,6 +308,18 @@ describe('workflow-loader', () => {
       const result = await loadWorkflow(fixtureDir, 'clash-wf');
       expect(result.success).toBe(false);
       if (!result.success) expect(result.error.message).toContain('borrowed again');
+    });
+
+    it('binds a borrowed activity\'s exits in the borrowing workflow\'s own graph', async () => {
+      expect((await loadWorkflow(fixtureDir, 'exit-binds-all-wf')).success).toBe(true);
+
+      const unbound = await loadWorkflow(fixtureDir, 'exit-binds-one-wf');
+      expect(unbound.success).toBe(false);
+      if (!unbound.success) expect(unbound.error.message).toContain("exit 'rejected' is unbound");
+
+      const undeclared = await loadWorkflow(fixtureDir, 'exit-binds-extra-wf');
+      expect(undeclared.success).toBe(false);
+      if (!undeclared.success) expect(undeclared.error.message).toContain("binds 'review.escalated', which that activity does not declare");
     });
 
     it('fails the load when a reference names no activity file', async () => {
