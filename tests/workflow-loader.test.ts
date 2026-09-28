@@ -237,6 +237,23 @@ describe('workflow-loader', () => {
         '  - source-wf/01-shared.yaml',
         '  - source-wf/patterns/02-pattern.yaml',
       ].join('\n'));
+      // A source file that fails validation (no `name`), and workflows that borrow it, borrow an
+      // identifier they already hold, borrow a file that does not exist, or enter nowhere.
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', '03-broken.yaml'),
+        'id: broken\nversion: 1.0.0\n');
+      const workflow = (id: string, initial: string, refs: string[]) => {
+        mkdirSync(join(fixtureDir, id, 'activities'), { recursive: true });
+        writeFileSync(join(fixtureDir, id, 'workflow.yaml'), [
+          `id: ${id}`, 'version: 1.0.0', `title: ${id}`, `initialActivity: ${initial}`,
+          ...(refs.length > 0 ? ['activities:', ...refs.map((r) => `  - ${r}`)] : []),
+        ].join('\n'));
+      };
+      workflow('broken-borrower-wf', 'shared', ['source-wf/01-shared.yaml', 'source-wf/03-broken.yaml']);
+      workflow('clash-wf', 'shared', ['source-wf/01-shared.yaml']);
+      writeFileSync(join(fixtureDir, 'clash-wf', 'activities', '01-shared.yaml'), 'id: shared\nversion: 1.0.0\nname: Own shared\n');
+      workflow('missing-ref-wf', 'shared', ['source-wf/01-shared.yaml', 'source-wf/09-absent.yaml']);
+      workflow('no-entry-wf', 'absent', []);
+      writeFileSync(join(fixtureDir, 'no-entry-wf', 'activities', '01-only.yaml'), 'id: only\nversion: 1.0.0\nname: Only\n');
     });
 
     afterAll(() => {
@@ -252,6 +269,35 @@ describe('workflow-loader', () => {
         expect(raw.success, id).toBe(true);
         if (raw.success) expect(raw.value.sourceWorkflowId).toBe('source-wf');
       }
+    });
+
+    it('excludes a borrowed file that fails validation and reports it, as for an own file', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'broken-borrower-wf');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.workflow.activities?.map((a) => a.id)).toEqual(['shared']);
+      expect(result.value.activityLoadErrors).toEqual([
+        expect.objectContaining({ file: 'source-wf/03-broken.yaml', activity_id: 'broken' }),
+      ]);
+      expect((await readActivityRaw(fixtureDir, 'broken-borrower-wf', 'broken')).success).toBe(false);
+    });
+
+    it('fails the load when a borrowed activity repeats an identifier the workflow holds', async () => {
+      const result = await loadWorkflow(fixtureDir, 'clash-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toContain('borrowed again');
+    });
+
+    it('fails the load when a reference names no activity file', async () => {
+      const result = await loadWorkflow(fixtureDir, 'missing-ref-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toContain('names no activity file');
+    });
+
+    it('fails the load when initialActivity names no activity', async () => {
+      const result = await loadWorkflow(fixtureDir, 'no-entry-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toContain('names no activity this workflow contains');
     });
   });
 

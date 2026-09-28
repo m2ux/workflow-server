@@ -129,62 +129,51 @@ function identityFailure(index: CorpusIndex, workflowId: string): string | null 
     + 'references reach it by its directory and list_workflows publishes its declaration, so the two names have to match';
 }
 
+/** What a borrowed activity reference resolves to: the activity, a file that failed to load, or no file. */
+type ReferencedActivity =
+  | { kind: 'loaded'; activity: Activity; sourceWorkflowId: string }
+  | { kind: 'invalid'; error: DefinitionLoadError }
+  | { kind: 'missing' };
+
 /**
- * Resolve a shorthand activity reference like "work-package/02-design-philosophy.yaml"
- * or local references like "01-start-work-package.yaml".
+ * Resolve a borrowed activity reference such as "work-package/02-design-philosophy.yaml": the first
+ * segment is the workflow holding the file, the rest its path under that workflow's `activities/`.
+ * A file that fails to load is reported as a per-file error, as an activity file of the workflow's
+ * own is; a reference that reaches no file is `missing`, which fails the workflow load.
  */
-async function resolveActivityReference(index: CorpusIndex, workflowId: string, ref: string): Promise<{ activity: Activity; sourceWorkflowId: string } | null> {
-  const parts = ref.split('/');
+async function resolveActivityReference(index: CorpusIndex, ref: string): Promise<ReferencedActivity> {
+  const [targetWorkflowId = '', ...rest] = ref.split('/');
+  const filename = rest.join('/');
 
-  let targetWorkflowId: string;
-  let filename: string;
-
-  if (parts.length === 1) {
-    // Local reference within the same workflow (e.g., "01-start.yaml")
-    targetWorkflowId = workflowId;
-    filename = parts[0] || '';
-  } else {
-    // Cross-workflow reference (e.g., "work-package/02-design.yaml" or "work-package/activities/02-design.yaml")
-    targetWorkflowId = parts[0] || '';
-    filename = parts.slice(1).join('/');
-  }
-  
   // Activities sit under the target workflow's own `activities/`. The shorthand usually omits that
   // segment, so it is added when the reference leaves it out.
   const targetDir = workflowLocation(index, targetWorkflowId)?.dir;
-  if (!targetDir) return null;
+  if (!targetDir) return { kind: 'missing' };
   const activityPath = filename.startsWith('activities/')
     ? join(targetDir, filename)
     : join(targetDir, 'activities', filename);
+  if (!existsSync(activityPath)) return { kind: 'missing' };
 
-  if (!existsSync(activityPath)) return null;
-  
+  const parsed = parseActivityFilename(filename.split('/').pop() ?? '');
+  const failure = (error: string): ReferencedActivity =>
+    ({ kind: 'invalid', error: { file: ref, activity_id: parsed?.id, error } });
+
   try {
-    const content = await readFile(activityPath, 'utf-8');
-    const decoded = parseDefinition(content);
-    
-    const validation = safeValidateActivity(decoded);
+    const validation = safeValidateActivity(parseDefinition(await readFile(activityPath, 'utf-8')));
     if (!validation.success) {
-      logWarn('Invalid referenced activity', { ref, errors: validation.error.issues });
-      return null;
+      logWarn('Skipping invalid referenced activity', { ref, errors: validation.error.issues });
+      return failure(formatZodIssues(validation.error.issues));
     }
-    
     const activity = validation.data;
     populateStepIds(activity);
-
-    // Attempt to parse prefix from filename
-    const actualFilename = filename.split('/').pop() || '';
-    const parsed = parseActivityFilename(actualFilename);
-    if (parsed) {
-      activity.artifactPrefix = parsed.index;
-    }
+    if (parsed) activity.artifactPrefix = parsed.index;
 
     // The source workflow scopes the activity's bare references: a borrowed activity
     // resolves them against the workflow it was authored in, not the borrower.
-    return { activity, sourceWorkflowId: targetWorkflowId };
+    return { kind: 'loaded', activity, sourceWorkflowId: targetWorkflowId };
   } catch (error) {
     logWarn('Failed to load referenced activity', { ref, error: error instanceof Error ? error.message : 'Unknown error' });
-    return null;
+    return failure(error instanceof Error ? error.message : 'Unknown error');
   }
 }
 
@@ -230,24 +219,39 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     // workflow; borrowed cross-workflow activities against their source workflow (#166 B10).
     const activitySourceWorkflow = new Map<string, string>(resolvedActivities.map(a => [a.id, workflowId]));
 
+    // Borrowed activities join the workflow's own. An identifier appears once in a workflow — counting
+    // an own file that failed to load, whose identifier is still the workflow's — so a borrowed one
+    // that repeats an identifier fails the load rather than one definition silently winning.
     if (existingActivities && existingActivities.length > 0) {
-      const explicitlyReferencedActivities = await Promise.all(
-        existingActivities.map(async (ref) => {
-          const resolved = await resolveActivityReference(index, workflowId, ref);
-          if (!resolved) {
-            throw new Error(`Failed to resolve activity reference: ${ref}`);
-          }
-          activitySourceWorkflow.set(resolved.activity.id, resolved.sourceWorkflowId);
-          return resolved.activity;
-        })
-      );
-
-      // Add explicitly referenced activities, avoiding duplicates based on ID
-      for (const explicitActivity of explicitlyReferencedActivities) {
-        if (!resolvedActivities.some(a => a.id === explicitActivity.id)) {
-          resolvedActivities.push(explicitActivity);
+      const referenced = await Promise.all(existingActivities.map((ref) => resolveActivityReference(index, ref)));
+      const definedBy = new Map<string, string>([
+        ...resolvedActivities.map((a): [string, string] => [a.id, 'activities/']),
+        ...activityLoadErrors.flatMap((e): Array<[string, string]> => e.activity_id ? [[e.activity_id, `activities/${e.file}`]] : []),
+      ]);
+      const errors: string[] = [];
+      referenced.forEach((resolved, i) => {
+        const ref = existingActivities[i]!;
+        if (resolved.kind === 'missing') {
+          errors.push(`Activity reference '${ref}' names no activity file: the first segment is the workflow holding it and the rest its path under that workflow's activities/ folder.`);
+          return;
         }
-      }
+        const id = resolved.kind === 'loaded' ? resolved.activity.id : resolved.error.activity_id;
+        if (id !== undefined) {
+          const prior = definedBy.get(id);
+          if (prior !== undefined) {
+            errors.push(`Activity '${id}' is defined by ${prior} and borrowed again by '${ref}'. An activity identifier appears once in a workflow.`);
+            return;
+          }
+          definedBy.set(id, `'${ref}'`);
+        }
+        if (resolved.kind === 'invalid') {
+          activityLoadErrors.push(resolved.error);
+          return;
+        }
+        resolvedActivities.push(resolved.activity);
+        activitySourceWorkflow.set(resolved.activity.id, resolved.sourceWorkflowId);
+      });
+      if (errors.length > 0) return err(new WorkflowValidationError(workflowId, errors));
     }
 
     if (resolvedActivities.length > 0) {

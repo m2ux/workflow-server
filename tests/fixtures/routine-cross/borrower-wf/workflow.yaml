@@ -4,7 +4,6 @@ title: Borrower Workflow
 description: Borrows the source workflow's activity and declares no routine of its own, so the bare name inside the borrowed file resolves somewhere other than here.
 initialActivity: own-start
 activities:
-  - 01-own-start.yaml
   - source-wf/01-shared-review.yaml
 graph:
   own-start:

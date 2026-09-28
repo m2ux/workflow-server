@@ -398,8 +398,14 @@ describe('schema-validation', () => {
       id: 'test-workflow', version: '1.0.0', title: 'Test Workflow', initialActivity: 'start', ...extra,
     });
 
-    it('accepts local and cross-workflow activity references', () => {
-      expect(safeValidateWorkflowFile(file({ activities: ['01-start.yaml', 'work-package/02-design-philosophy.yaml'] })).success).toBe(true);
+    it('accepts a reference to another workflow\'s activity, with or without the activities/ segment', () => {
+      expect(safeValidateWorkflowFile(file({
+        activities: ['source-wf/02-design.yaml', 'source-wf/activities/04-research.yml'],
+      })).success).toBe(true);
+    });
+
+    it('rejects a reference that names no workflow, since own activities need none', () => {
+      expect(safeValidateWorkflowFile(file({ activities: ['01-start.yaml'] })).success).toBe(false);
     });
 
     it('accepts a reference into a subfolder of another workflow\'s activities', () => {

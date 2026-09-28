@@ -119,23 +119,23 @@ export const WorkflowSchema = z.object({
 export type Workflow = z.infer<typeof WorkflowSchema>;
 
 /**
- * A reference to an activity file. A single segment, `<NN>-<id>.yaml`, names a file in this
- * workflow's own `activities/` folder. With more segments the first is the workflow that holds the
- * file and the rest is its path under that workflow's `activities/` folder, subfolders included —
- * the leading `activities/` optional.
+ * A borrowed activity file: the first segment is the workflow that holds the file, and the rest is
+ * its path under that workflow's `activities/` folder, subfolders included — the leading
+ * `activities/` optional. A workflow's own activities are the files in its own folder, so a
+ * reference always names another workflow.
  */
 export const ActivityReferenceSchema = z.string().regex(
-  /^(?:[^/]+\/)*\d+-[^/]+\.ya?ml$/,
-  'an activity reference is `<NN>-<id>.yaml` or `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`',
-).describe('Activity file reference. `<NN>-<id>.yaml` names a file in this workflow\'s own `activities/` folder; `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` names a file under that workflow\'s `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`.');
+  /^[^/]+\/(?:[^/]+\/)*\d+-[^/]+\.ya?ml$/,
+  'an activity reference is `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`; a workflow\'s own activities are the files in its `activities/` folder and need no reference',
+).describe('Borrowed activity file, `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` (or `.yml`): a file under that workflow\'s `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`. The borrowed activity resolves its unqualified technique and routine references in the workflow it is borrowed from. A reference naming no file fails the workflow load; a file that fails validation is excluded from the load, as an activity file of the workflow\'s own is.');
 
 /**
  * A workflow definition file as authored. Its own activities are the files in its `activities/`
- * folder; `activities` lists only references, which is how a workflow borrows another's activity.
+ * folder; `activities` lists the activities it borrows from other workflows.
  */
 export const WorkflowFileSchema = WorkflowSchema.omit({ activities: true }).extend({
-  activities: enforcement(z.array(ActivityReferenceSchema).min(1).optional().describe('Activities referenced by file, beyond the files in this workflow\'s `activities/` folder; a reference to another workflow\'s activity borrows it.'), { owner: 'Engine', strictness: 'enforced' }),
-}).strict().describe('Workflow definition file: identity, shared declarations, activity references, and exit destinations.');
+  activities: enforcement(z.array(ActivityReferenceSchema).min(1).optional().describe('Activities borrowed from other workflows, each named by its file; the workflow\'s own activities are the files in its `activities/` folder. An activity identifier appears once in a workflow: a borrowed activity sharing its identifier with one of the workflow\'s own, or with another borrowed activity, fails the workflow load.'), { owner: 'Engine', strictness: 'enforced' }),
+}).strict().describe('Workflow definition file: identity, shared declarations, borrowed activities, and exit destinations.');
 export type WorkflowFile = z.infer<typeof WorkflowFileSchema>;
 
 export function validateWorkflow(data: unknown): Workflow { return WorkflowSchema.parse(data); }

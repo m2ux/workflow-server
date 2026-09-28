@@ -84,7 +84,6 @@ describe('borrowed-activity technique resolution', () => {
       'title: Borrower Workflow',
       'initialActivity: own-start',
       'activities:',
-      '  - 01-own-start.yaml',
       '  - source-wf/01-shared-work.yaml',
     ].join('\n'));
     writeFileSync(join(borrowerDir, 'activities', '01-own-start.yaml'), [

@@ -242,7 +242,7 @@ describe('activity-variables guard', () => {
       mkdirSync(join(root, 'borrower', 'activities'), { recursive: true });
       writeFileSync(join(root, 'library', 'workflow.yaml'),
         'id: library\nversion: 1.0.0\ntitle: Library\ninitialActivity: shared\n'
-        + 'variables:\n  - name: target_path\n    type: string\nactivities:\n  - 01-shared.yaml\n');
+        + 'variables:\n  - name: target_path\n    type: string\n');
       writeFileSync(join(root, 'library', 'activities', '01-shared.yaml'),
         'id: shared\nversion: 1.0.0\nname: Shared\nvariables:\n  reads:\n    - target_path\n'
         + 'steps:\n  - kind: action\n    id: work\n    when: target_path != ""\n');
