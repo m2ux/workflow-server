@@ -36,7 +36,7 @@ export const CheckpointOptionSchema = z.object({
   description: z.string().optional().describe('Explanation of the choice.'),
   effect: z.object({
     setVariable: enforcement(z.record(z.unknown().describe('Value assigned to the named variable.')).optional().describe('Variable assignments applied when this option is selected. Each value is checked against the variable\'s declared type and value set, and a mismatch is stored as written with a warning; a `{name}` template value passes through unchecked.'), { owner: 'Engine', strictness: 'enforced' }),
-    exit: enforcement(z.string().optional().describe('Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. An option naming an exit its activity does not declare fails the load. Omitted for an ad hoc checkpoint, which has no declared exits.'), { owner: 'Engine', strictness: 'advisory' }),
+    exit: enforcement(z.string().optional().describe('Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. An option naming an exit its activity does not declare fails the load. Omitted for an ad hoc checkpoint, which has no declared exits.'), { owner: 'Engine', strictness: 'enforced' }),
   }).strict().optional().describe('Variable assignments and activity exit associated with the choice.'),
 }).describe('Checkpoint choice and its associated effects.');
 export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
@@ -260,7 +260,7 @@ export const ActivitySchema = z.object({
 
   steps: z.array(StepSchema).optional().describe('Ordered steps, with checkpoints and loops at their positions in the sequence.'),
 
-  exits: enforcement(z.array(ExitSchema).optional().describe('Named outcomes, one of which the activity takes when its steps end. Every exit is bound to a destination in the workflow `graph`, and an unbound exit fails the workflow load. An activity with two or more exits declares exactly one `isDefault`. Omission makes the activity terminal.'), { owner: 'Engine', strictness: 'advisory' }),
+  exits: enforcement(z.array(ExitSchema).optional().describe('Named outcomes, one of which the activity takes when its steps end. Every exit is bound to a destination in the workflow `graph`, and an unbound exit fails the workflow load. An activity with two or more exits declares exactly one `isDefault`. Omission makes the activity terminal.'), { owner: 'Engine', strictness: 'enforced' }),
   triggers: enforcement(z.array(WorkflowTriggerSchema).optional().describe('Child workflows to start from this activity.'), { owner: 'Agent', strictness: 'advisory' }),
 
   outcome: enforcement(z.array(z.string().describe('Expected result of successful activity completion.')).optional().describe('Expected outcomes of successful activity completion.'), { owner: 'Agent', strictness: 'advisory' }),
