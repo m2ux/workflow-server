@@ -636,6 +636,15 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       });
       expect(result.isError).toBeTruthy();
     });
+
+    it('refuses a message alone supplied for a checkpoint the activity declares', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'issue-verification', message: 'Something else entirely' },
+      });
+      expect(result.isError).toBeTruthy();
+    });
   });
 
 

@@ -2423,7 +2423,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // second kind, so a mistyped id still fails the way it always has — a typo
       // never arrives carrying a message and two options.
       const adhoc = message !== undefined && options !== undefined ? { message, options } : undefined;
-      if (checkpoint && adhoc) {
+      if (checkpoint && (message !== undefined || options !== undefined)) {
         throw new Error(
           `Checkpoint '${checkpoint_id}' is declared by activity '${activity_id}', which owns its message and options. Yield it by id alone.`,
         );
