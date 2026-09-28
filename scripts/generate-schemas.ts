@@ -52,11 +52,15 @@ export const GENERATED_SCHEMAS: GeneratedSchema[] = [
   { name: 'technique', schema: TechniqueSchema, description: 'Technique capability with inputs, protocol, rules, and outputs.', refStrategy: 'root' },
 ];
 
-/** One schema's file content, byte for byte as it is written to disk. */
+/**
+ * One schema's file content, byte for byte as it is written to disk. The schema's own definition
+ * leads `definitions`, ahead of the shared ones, so it opens at a fixed line whatever is shared.
+ */
 export function renderSchema(entry: GeneratedSchema): string {
-  const json = zodToJsonSchema(entry.schema, { name: entry.name, $refStrategy: entry.refStrategy, definitions: entry.definitions ?? {} });
+  const json = zodToJsonSchema(entry.schema, { name: entry.name, $refStrategy: entry.refStrategy, definitions: entry.definitions ?? {} }) as { definitions?: Record<string, unknown> };
+  const definitions = json.definitions && { [entry.name]: json.definitions[entry.name], ...json.definitions };
   return JSON.stringify(
-    { $schema: 'https://json-schema.org/draft/2020-12/schema', title: entry.name, description: entry.description, ...json },
+    { $schema: 'https://json-schema.org/draft/2020-12/schema', title: entry.name, description: entry.description, ...json, ...(definitions && { definitions }) },
     null,
     2,
   ) + '\n';

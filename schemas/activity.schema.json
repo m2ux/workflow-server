@@ -4,127 +4,6 @@
   "description": "Activity definition with ordered steps.",
   "$ref": "#/definitions/activity",
   "definitions": {
-    "whenExpression": {
-      "type": "string",
-      "description": "Inline boolean expression in the `when` dialect, evaluated against the current session variables. Grammar: `orExpr := andExpr ('||' andExpr)*`; `andExpr := unary ('&&' unary)*`; `unary := '!' unary | primary`; `primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'`; `comparison := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal`. Precedence, tightest first: `()`, comparisons, `!`, `&&`, `||`; so `!a == b` reads as `!(a == b)`, and a negated left side of a comparison is not expressible. Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, `is_review_mode != true && (problem_complexity == \"moderate\" || problem_complexity == \"complex\")`."
-    },
-    "condition": {
-      "anyOf": [
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "simple",
-              "description": "Identifies a variable comparison or presence test."
-            },
-            "variable": {
-              "type": "string",
-              "description": "Variable name or dot-separated path to the value to test; a path through a missing or non-object segment reads as absent."
-            },
-            "operator": {
-              "type": "string",
-              "enum": [
-                "==",
-                "!=",
-                ">",
-                "<",
-                ">=",
-                "<=",
-                "exists",
-                "notExists"
-              ],
-              "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
-            },
-            "value": {
-              "type": [
-                "string",
-                "number",
-                "boolean",
-                "null"
-              ],
-              "description": "Comparison value; unnecessary for `exists` and `notExists` tests."
-            }
-          },
-          "required": [
-            "type",
-            "variable",
-            "operator"
-          ],
-          "additionalProperties": false,
-          "description": "Comparison of a variable with a value, or a test of its presence."
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "and",
-              "description": "Identifies an all-members condition."
-            },
-            "conditions": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/condition"
-              },
-              "minItems": 2,
-              "description": "At least two conditions that must all be true."
-            }
-          },
-          "required": [
-            "type",
-            "conditions"
-          ],
-          "additionalProperties": false,
-          "description": "Condition requiring every member to be true."
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "or",
-              "description": "Identifies an any-member condition."
-            },
-            "conditions": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/condition"
-              },
-              "minItems": 2,
-              "description": "At least two conditions, one or more of which must be true."
-            }
-          },
-          "required": [
-            "type",
-            "conditions"
-          ],
-          "additionalProperties": false,
-          "description": "Condition requiring at least one member to be true."
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "not",
-              "description": "Identifies a negated condition."
-            },
-            "condition": {
-              "$ref": "#/definitions/condition",
-              "description": "Condition that must be false."
-            }
-          },
-          "required": [
-            "type",
-            "condition"
-          ],
-          "additionalProperties": false,
-          "description": "Condition requiring its member to be false."
-        }
-      ],
-      "description": "Variable test or combination of conditions using `and`, `or`, or `not`."
-    },
     "activity": {
       "type": "object",
       "properties": {
@@ -777,6 +656,127 @@
       ],
       "additionalProperties": false,
       "description": "Activity with ordered steps; its artifacts are declared by the techniques its steps bind."
+    },
+    "whenExpression": {
+      "type": "string",
+      "description": "Inline boolean expression in the `when` dialect, evaluated against the current session variables. Grammar: `orExpr := andExpr ('||' andExpr)*`; `andExpr := unary ('&&' unary)*`; `unary := '!' unary | primary`; `primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'`; `comparison := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal`. Precedence, tightest first: `()`, comparisons, `!`, `&&`, `||`; so `!a == b` reads as `!(a == b)`, and a negated left side of a comparison is not expressible. Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, `is_review_mode != true && (problem_complexity == \"moderate\" || problem_complexity == \"complex\")`."
+    },
+    "condition": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "simple",
+              "description": "Identifies a variable comparison or presence test."
+            },
+            "variable": {
+              "type": "string",
+              "description": "Variable name or dot-separated path to the value to test; a path through a missing or non-object segment reads as absent."
+            },
+            "operator": {
+              "type": "string",
+              "enum": [
+                "==",
+                "!=",
+                ">",
+                "<",
+                ">=",
+                "<=",
+                "exists",
+                "notExists"
+              ],
+              "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and numeric strings, and are false when either side is anything else. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
+            },
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ],
+              "description": "Comparison value; unnecessary for `exists` and `notExists` tests."
+            }
+          },
+          "required": [
+            "type",
+            "variable",
+            "operator"
+          ],
+          "additionalProperties": false,
+          "description": "Comparison of a variable with a value, or a test of its presence."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "and",
+              "description": "Identifies an all-members condition."
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/condition"
+              },
+              "minItems": 2,
+              "description": "At least two conditions that must all be true."
+            }
+          },
+          "required": [
+            "type",
+            "conditions"
+          ],
+          "additionalProperties": false,
+          "description": "Condition requiring every member to be true."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "or",
+              "description": "Identifies an any-member condition."
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/condition"
+              },
+              "minItems": 2,
+              "description": "At least two conditions, one or more of which must be true."
+            }
+          },
+          "required": [
+            "type",
+            "conditions"
+          ],
+          "additionalProperties": false,
+          "description": "Condition requiring at least one member to be true."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "not",
+              "description": "Identifies a negated condition."
+            },
+            "condition": {
+              "$ref": "#/definitions/condition",
+              "description": "Condition that must be false."
+            }
+          },
+          "required": [
+            "type",
+            "condition"
+          ],
+          "additionalProperties": false,
+          "description": "Condition requiring its member to be false."
+        }
+      ],
+      "description": "Variable test or combination of conditions using `and`, `or`, or `not`."
     }
   }
 }
