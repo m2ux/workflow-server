@@ -54,11 +54,9 @@ Printed: the summary as Slack markup, for pasting into a channel: a *bold* headi
 --summary paragraph, when given, set off by blank lines, and the board's link beneath, *bold*
 sections, each issue or pull request by its bare URL, and a key to the reference letters and marks
 last. Each initiative, and each issue or pull request under Completed, In progress and Next, opens
-with the mark of its state. An initiative is done when Done, or when closed if off the board; in
-progress or in review when In Progress or In Review; else partly done. A group's heading under
-Completed is done when its issue is Done, else partly done; under In progress it is in review when
-its issue is In Review, else in progress. Its lines are done; in progress, in review or draft; and
-an epic's next task and each Next item are ready. Unresolved
+with the mark of its state. An initiative, and a group's heading, is done when its issue is Done,
+or closed if off the board; in review when In Review; else in progress. Its lines are done; in
+progress, in review or draft; and an epic's next task and each Next item are ready. Unresolved
 dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
 print to stderr.
 """
@@ -79,12 +77,11 @@ PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
             'priority: low': 4, 'priority: lowest': 5}
 UNRANKED = 2
 SHOWN = 5
-DONE, PARTLY, WORKING, REVIEW, DRAFT, READY = '✅', '🔶', '🔄', '👀', '📝', '▶️'
+DONE, WORKING, REVIEW, DRAFT, READY = '✅', '🔄', '👀', '📝', '▶️'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
 ACTIVE = tuple(MARK)
 KEY = ['*Key*', 'I=Initiative, E=Epic, W=Work Item',
-       f'{DONE} done · {PARTLY} partly done · {WORKING} in progress · {REVIEW} in review · '
-       f'{DRAFT} draft · {READY} ready']
+       f'{DONE} done · {WORKING} in progress · {REVIEW} in review · {DRAFT} draft · {READY} ready']
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
 Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
 
@@ -304,8 +301,14 @@ def main() -> int:
                 return {t for t in (backing, owned.get(ek, {}).get(tid)) if t}, f'{tid} {task_name(r, header)}'
         return None
 
-    completed = Section(issues, lambda k: DONE if status.get(k) == 'Done' else PARTLY)
-    progress = Section(issues, lambda k: MARK.get(status.get(k), WORKING))
+    def mark(k: Key) -> str:
+        """The mark of an initiative's or epic's state: done when Done, or closed if off the board;
+        in review when In Review; else in progress."""
+        closed = k not in status and issues.get(k, {}).get('state') == 'closed'
+        return DONE if status.get(k) == 'Done' or closed else MARK.get(status.get(k), WORKING)
+
+    completed = Section(issues, mark)
+    progress = Section(issues, mark)
     ready = []
     worked: set[Scope] = set()
     named_next: set[Key] = set()
@@ -375,9 +378,7 @@ def main() -> int:
                               'give its issue with --initiatives')
             continue
         title = issues[k]['title']
-        closed = k not in status and issues[k].get('state') == 'closed'
-        mark = DONE if status.get(k) == 'Done' or closed else MARK.get(status.get(k), PARTLY)
-        context.append(f"{mark} *{reference(initiatives[k][0])} {epic_name(title)}:* "
+        context.append(f"{mark(k)} *{reference(initiatives[k][0])} {epic_name(title)}:* "
                        f"{subtitle(title)} — {issues[k]['html_url']}")
 
     def rank(entry: tuple[Key, str]) -> tuple:
