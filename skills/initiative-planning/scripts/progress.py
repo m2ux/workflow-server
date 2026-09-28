@@ -52,11 +52,13 @@ is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the
 --summary paragraph, when given, set off by blank lines, and the board's link beneath, *bold*
-sections, each issue or pull request by its bare URL, and a key to the reference letters and marks last. Initiatives are
-bulleted; under Completed, In progress and Next each issue or pull request opens with the mark of
-its state. A group's heading under Completed is done when its issue is Done, else partly done; under
-In progress it is in review when its issue is In Review, else in progress. Its lines are done;
-in progress, in review, draft or next task; and each Next item is ready. Unresolved
+sections, each issue or pull request by its bare URL, and a key to the reference letters and marks
+last. Each initiative, and each issue or pull request under Completed, In progress and Next, opens
+with the mark of its state. An initiative is done when Done, or when closed if off the board; in
+progress or in review when In Progress or In Review; else partly done. A group's heading under
+Completed is done when its issue is Done, else partly done; under In progress it is in review when
+its issue is In Review, else in progress. Its lines are done; in progress, in review, draft or next
+task; and each Next item is ready. Unresolved
 dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
 print to stderr.
 """
@@ -373,7 +375,9 @@ def main() -> int:
                               'give its issue with --initiatives')
             continue
         title = issues[k]['title']
-        context.append(f"• *{reference(initiatives[k][0])} {epic_name(title)}:* "
+        closed = k not in status and issues[k].get('state') == 'closed'
+        mark = DONE if status.get(k) == 'Done' or closed else MARK.get(status.get(k), PARTLY)
+        context.append(f"{mark} *{reference(initiatives[k][0])} {epic_name(title)}:* "
                        f"{subtitle(title)} — {issues[k]['html_url']}")
 
     def rank(entry: tuple[Key, str]) -> tuple:

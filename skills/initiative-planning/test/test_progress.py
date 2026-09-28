@@ -292,13 +292,13 @@ class Initiatives(unittest.TestCase):
                  item(issue(5, '[I02] Idle: Nothing Moving'), 'Ready'),
                  item(issue(6, '[I02:E00] Waiting: Epic', body=epic_body(('W01', 'Go', ''))), 'Ready')]
         self.assertEqual(section(summary(items), 'Initiatives'),
-                         [f"• *I01 Worked:* The Outcome in One Line — {url('issues', 1)}"])
+                         [f"🔄 *I01 Worked:* The Outcome in One Line — {url('issues', 1)}"])
 
     def test_completed_work_counts_as_worked(self):
         items = [item(issue(1, '[I01] Shipped: All of It'), 'In Progress'),
                  item(issue(2, '[I01:E00] First: Epic', 'closed', IN, epic_body()), 'Done')]
         self.assertEqual(section(summary(items), 'Initiatives'),
-                         [f"• *I01 Shipped:* All of It — {url('issues', 1)}"])
+                         [f"🔄 *I01 Shipped:* All of It — {url('issues', 1)}"])
 
     def test_initiative_off_the_board_is_named_for_fetching(self):
         items = [item(issue(2, '[I08:E00] First: Epic', body=epic_body(('W01', 'Go', ''))), 'In Progress')]
@@ -312,7 +312,7 @@ class Initiatives(unittest.TestCase):
         initiative = issue(9, '[I08] Libraries: One Home for Every Operation')
         done = progress(items, [], '--since', SINCE, initiatives=(initiative,))
         self.assertEqual(section(done.stdout, 'Initiatives'),
-                         [f"• *I08 Libraries:* One Home for Every Operation — {url('issues', 9)}"])
+                         [f"🔶 *I08 Libraries:* One Home for Every Operation — {url('issues', 9)}"])
         self.assertNotIn('not on the board', done.stderr)
 
     def linked_elsewhere(self):
@@ -326,8 +326,8 @@ class Initiatives(unittest.TestCase):
         library = issue(9, '[I08] Libraries: One Home', repo='o/s')
         done = progress(self.linked_elsewhere(), [], '--since', SINCE, initiatives=(library,))
         self.assertEqual(section(done.stdout, 'Initiatives'), [
-            f"• *I01 Classifier:* The Outcome — {url('issues', 1)}",
-            f"• *I08 Libraries:* One Home — {url('issues', 9, 'o/s')}"])
+            f"🔄 *I01 Classifier:* The Outcome — {url('issues', 1)}",
+            f"🔶 *I08 Libraries:* One Home — {url('issues', 9, 'o/s')}"])
 
     def test_title_initiative_off_the_board_is_named_for_fetching(self):
         done = progress(self.linked_elsewhere(), [], '--since', SINCE)
@@ -336,6 +336,20 @@ class Initiatives(unittest.TestCase):
     def test_initiative_named_by_title_selects_the_epic(self):
         out = summary(self.linked_elsewhere(), (), '--initiative', 'o/s:I08')
         self.assertIn('I08:E00 Library', out)
+
+    def test_initiative_opens_with_the_mark_of_its_state(self):
+        epic = item(issue(2, '[I01:E00] First: Epic', 'closed', IN, epic_body()), 'Done')
+        marks = {'Done': '✅', 'In Review': '👀', 'In Progress': '🔄', 'Ready': '🔶'}
+        for state, mark in marks.items():
+            with self.subTest(state=state):
+                items = [item(issue(1, '[I01] Shipped: All', 'closed' if state == 'Done' else 'open'), state), epic]
+                self.assertEqual(section(summary(items), 'Initiatives')[0].split(' ')[0], mark)
+
+    def test_closed_initiative_off_the_board_is_done(self):
+        items = [item(issue(2, '[I08:E00] First: Epic', 'closed', IN, epic_body()), 'Done')]
+        initiative = issue(9, '[I08] Libraries: One Home', 'closed', IN)
+        done = progress(items, [], '--since', SINCE, initiatives=(initiative,))
+        self.assertEqual(section(done.stdout, 'Initiatives'), [f"✅ *I08 Libraries:* One Home — {url('issues', 9)}"])
 
     def test_nothing_worked_says_nothing(self):
         self.assertEqual(section(summary([item(issue(1, '[I01] Idle: All'), 'Backlog')]), 'Initiatives'),
