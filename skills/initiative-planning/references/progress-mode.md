@@ -35,7 +35,7 @@ next. The board's Status is the source, so the summary is as current as the boar
      count of the rest;
    - **Key:** what the reference letters stand for, I Initiative, E Epic and W Work Item, and
      what each line's opening mark says of its state: ✅ done, 🔶 partly done (an initiative or
-     epic still open), 🔄 in progress, 👀 in review, 📝 draft, ➡️ next task, 🔜 ready.
+     epic not Done), 🔄 in progress, 👀 in review, 📝 draft, ➡️ next task, 🔜 ready.
 5. **Give the initiatives off the board.** For each `unresolved` line naming an initiative not on
    the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch
    it, and re-run with `--initiatives issue-946.json …`.

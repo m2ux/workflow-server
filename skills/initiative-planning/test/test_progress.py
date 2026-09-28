@@ -87,6 +87,13 @@ class Completed(unittest.TestCase):
         out = summary([item(epic, 'In Progress')], [twice, twice])
         self.assertEqual(section(out, 'Completed')[1:], [f"    ✅ Work — {url('pull', 9)}"])
 
+    def test_epic_done_before_the_window_heads_its_work_as_done(self):
+        epic = issue(2, '[I01:E00] First: Epic', 'closed', BEFORE, epic_body((f"[W01]({url('pull', 50)})", 'Late', '')))
+        out = summary([item(epic, 'Done')], [pr(50, '[I01:E00] Late', IN)])
+        self.assertEqual(section(out, 'Completed'), [
+            f"✅ *I01:E00 First* — {url('issues', 2)}",
+            f"    ✅ W01 Late — {url('pull', 50)}"])
+
     def test_pull_requests_are_known_by_url_across_repositories(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 40)})", 'Here', '')))
         other = issue(2, '[I01:E00] Other: Epic', body=epic_body(('W01', 'There', '')), repo='o/s')
@@ -113,6 +120,13 @@ class InProgress(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         out = summary([item(epic, 'In Review')], [pr(54, '[I01:E00] Ready one')])
         self.assertEqual(section(out, 'In progress')[0], f"👀 *I01:E00 First* — {url('issues', 2)}")
+
+    def test_ready_epic_with_an_active_task_issue_heads_it_as_in_progress(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
+        out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W01] Task Issue: Open'), 'In Review')])
+        self.assertEqual(section(out, 'In progress'), [
+            f"🔄 *I01:E00 First* — {url('issues', 2)}",
+            f"    👀 W01 Task Issue — {url('issues', 3)}"])
 
     def test_active_task_issue_stands_for_the_pull_requests_citing_it(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))

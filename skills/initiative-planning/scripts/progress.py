@@ -52,9 +52,11 @@ is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the
 --summary paragraph, when given, and the board's link beneath, *bold* sections, each issue or pull
-request by its bare URL, and a key to the reference letters and marks last. Under Completed, In
-progress and Next each line opens with the mark of its state: done, or for an initiative or epic
-still open, partly done; in progress, in review, draft, next task, or ready. Unresolved
+request by its bare URL, and a key to the reference letters and marks last. Initiatives are
+bulleted; under Completed, In progress and Next each issue or pull request opens with the mark of
+its state. A group's heading under Completed is done when its issue is Done, else partly done; under
+In progress it is in review when its issue is In Review, else in progress. Its lines are done;
+in progress, in review, draft or next task; and each Next item is ready. Unresolved
 dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
 print to stderr.
 """
@@ -63,6 +65,7 @@ import json
 import re
 import sys
 from collections import Counter
+from collections.abc import Callable
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
@@ -76,10 +79,10 @@ UNRANKED = 2
 SHOWN = 5
 DONE, PARTLY, WORKING, REVIEW, DRAFT, NEXT, READY = '✅', '🔶', '🔄', '👀', '📝', '➡️', '🔜'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
+ACTIVE = tuple(MARK)
 KEY = ['Key: I=Initiative, E=Epic, W=Work Item',
        f'{DONE} done · {PARTLY} partly done · {WORKING} in progress · {REVIEW} in review · '
        f'{DRAFT} draft · {NEXT} next task · {READY} ready']
-ACTIVE = ('In Progress', 'In Review')
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
 Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
 
@@ -145,23 +148,23 @@ class Summary(Board):
 class Section:
     """Lines grouped under the epic, or initiative, they belong to. A group is (initiative, epic,
     repository, issue number), the number 0 for a group whose epic is not on the board. Its heading
-    carries the section's mark unless the group's own state sets another."""
+    carries the mark of its issue's state."""
 
-    def __init__(self, issues: dict[Key, dict], mark: str):
+    def __init__(self, issues: dict[Key, dict], mark: Callable[[Key], str]):
         self.issues = issues
         self.mark = mark
-        self.groups: dict[tuple[str, str, str, int], dict] = {}
+        self.groups: dict[tuple[str, str, str, int], list[str]] = {}
 
-    def group(self, g: tuple[str, str, str, int]) -> dict:
-        return self.groups.setdefault(g, {'mark': self.mark, 'lines': []})
+    def group(self, g: tuple[str, str, str, int]) -> list[str]:
+        return self.groups.setdefault(g, [])
 
     def render(self) -> list[str]:
         out = []
-        for (i, e, repo, number), g in sorted(self.groups.items(), key=lambda kv: (*kv[0][:2], kv[0][2].lower())):
+        for (i, e, repo, number), lines in sorted(self.groups.items(), key=lambda kv: (*kv[0][:2], kv[0][2].lower())):
             issue = self.issues.get((repo, number))
             head = f"*{reference(i, e)} {epic_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
-            out.append(f"{g['mark']} {head}" + (f" — {issue['html_url']}" if issue else ''))
-            out.extend(f'    {line}' for line in g['lines'])
+            out.append(f"{self.mark((repo, number))} {head}" + (f" — {issue['html_url']}" if issue else ''))
+            out.extend(f'    {line}' for line in lines)
         return out or ['• Nothing']
 
 
@@ -299,21 +302,21 @@ def main() -> int:
                 return {t for t in (backing, owned.get(ek, {}).get(tid)) if t}, f'{tid} {task_name(r, header)}'
         return None
 
-    completed, progress, ready = Section(issues, PARTLY), Section(issues, WORKING), []
+    completed = Section(issues, lambda k: DONE if status.get(k) == 'Done' else PARTLY)
+    progress = Section(issues, lambda k: MARK.get(status.get(k), WORKING))
+    ready = []
     worked: set[Scope] = set()
     named_next: set[Key] = set()
 
-    def add(section: Section, k: Key, line: str | None = None, mark: str | None = None) -> None:
+    def add(section: Section, k: Key, line: str | None = None) -> None:
         group = section.group(group_of(k))
         if line:
-            group['lines'].append(line)
-        if mark:
-            group['mark'] = mark
+            group.append(line)
         worked.update(scopes_of(k))
 
     for k in tagged:
         if k in initiatives and done(k):
-            add(completed, k, mark=DONE)
+            add(completed, k)
     for k in tagged:
         if k not in tasks:
             continue
@@ -345,18 +348,18 @@ def main() -> int:
             if within(pr.get('merged_at')) and pr['html_url'] not in linked and not listed(pr, done):
                 add(completed, ek, f"{DONE} {pr_title(pr)} — {pr['html_url']}")
         if done(ek):
-            add(completed, ek, mark=DONE)
+            add(completed, ek)
 
         if status.get(ek) in ACTIVE:
-            add(progress, ek, mark=MARK[status[ek]])
+            add(progress, ek)
             group = progress.group(group_of(ek))
             for pr in named:
                 if pr.get('state') == 'open' and not listed(pr, lambda n: status.get(n) in ACTIVE):
                     state = DRAFT if pr.get('draft') else REVIEW
-                    group['lines'].append(f"{state} {pr_title(pr)} — {pr['html_url']}")
-            if not group['lines'] and (task := next_task(ek, header, rows)):
+                    group.append(f"{state} {pr_title(pr)} — {pr['html_url']}")
+            if not group and (task := next_task(ek, header, rows)):
                 named_next |= task[0]
-                group['lines'].append(f'{NEXT} {task[1]}')
+                group.append(f'{NEXT} {task[1]}')
         elif status.get(ek) == 'Ready':
             task = next_task(ek, header, rows)
             if task:
