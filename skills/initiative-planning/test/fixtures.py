@@ -56,14 +56,22 @@ def run(script: str, *args: str, tz: str = 'UTC') -> subprocess.CompletedProcess
                           env={**os.environ, 'TZ': tz, 'PYTHONDONTWRITEBYTECODE': '1'})
 
 
-def progress(items: list[dict], prs: list[dict], *args: str, tz: str = 'UTC') -> subprocess.CompletedProcess:
-    """progress.py on the items, as two pages, and the pull requests as JSON lines."""
+def progress(items: list[dict], prs: list[dict], *args: str, tz: str = 'UTC',
+             initiatives: tuple[dict, ...] = ()) -> subprocess.CompletedProcess:
+    """progress.py on the items, as two pages, the pull requests as JSON lines, and each initiative
+    off the board as its own issue file."""
     with tempfile.TemporaryDirectory() as tmp:
         items_path, prs_path = Path(tmp, 'items.json'), Path(tmp, 'prs.json')
         half = len(items) // 2
         items_path.write_text(json.dumps(items[:half]) + '\n' + json.dumps(items[half:]))
         prs_path.write_text('\n'.join(json.dumps(p) for p in prs))
-        return run('progress.py', '--items', str(items_path), '--prs', str(prs_path), *args, tz=tz)
+        extra = []
+        for n, initiative in enumerate(initiatives):
+            path = Path(tmp, f'initiative-{n}.json')
+            path.write_text(json.dumps(initiative))
+            extra.append(str(path))
+        return run('progress.py', '--items', str(items_path), '--prs', str(prs_path), *args,
+                   *(['--initiatives', *extra] if extra else []), tz=tz)
 
 
 def section(output: str, name: str) -> list[str]:
