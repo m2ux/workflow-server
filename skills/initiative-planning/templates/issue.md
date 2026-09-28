@@ -4,7 +4,7 @@
 
 ## Problem
 
-{{The current state with measured evidence: counts, paths, file:line. Bullets for distinct facets.}}
+{{The current state with measured evidence: counts, and code linked from the words it supports. Bullets for distinct facets, sub-bullets for several items.}}
 
 ## Proposal
 

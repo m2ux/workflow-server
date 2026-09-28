@@ -4,7 +4,7 @@
 
 ## Problem
 
-{{One sentence on the gap, then one bullet per facet. Each bullet is bolded, carries measured evidence (counts, paths, file:line), and says why it matters.}}
+{{One sentence on the gap, then one bullet per facet. Each bullet is bolded, carries measured evidence (counts, and code linked from the words it supports), and says why it matters.}}
 
 - **{{Facet}}.** {{Evidence and consequence.}}
 
