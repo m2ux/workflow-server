@@ -252,6 +252,17 @@ describe('workflow-loader', () => {
       workflow('clash-wf', 'shared', ['source-wf/01-shared.yaml']);
       writeFileSync(join(fixtureDir, 'clash-wf', 'activities', '01-shared.yaml'), 'id: shared\nversion: 1.0.0\nname: Own shared\n');
       workflow('missing-ref-wf', 'shared', ['source-wf/01-shared.yaml', 'source-wf/09-absent.yaml']);
+      workflow('soft-gate-wf', 'ok', []);
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '01-ok.yaml'), 'id: ok\nversion: 1.0.0\nname: Ok\n');
+      const gate = (id: string, extra: string) => [
+        `id: ${id}`, 'version: 1.0.0', `name: ${id}`, 'steps:', '  - kind: checkpoint', '    id: confirm',
+        '    message: Proceed?', '    options:', '      - id: yes', '        label: Yes', extra,
+      ].join('\n');
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '02-lone-default.yaml'), gate('lone-default', '    defaultOption: yes'));
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '03-stray-default.yaml'),
+        gate('stray-default', '    defaultOption: no\n    autoAdvanceMs: 5000'));
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '04-soft.yaml'),
+        gate('soft', '    defaultOption: yes\n    autoAdvanceMs: 5000'));
       workflow('no-entry-wf', 'absent', []);
       writeFileSync(join(fixtureDir, 'no-entry-wf', 'activities', '01-only.yaml'), 'id: only\nversion: 1.0.0\nname: Only\n');
     });
@@ -292,6 +303,16 @@ describe('workflow-loader', () => {
       const result = await loadWorkflow(fixtureDir, 'missing-ref-wf');
       expect(result.success).toBe(false);
       if (!result.success) expect(result.error.message).toContain('names no activity file');
+    });
+
+    it('excludes an activity whose checkpoint declares half a soft gate, or a default naming no option', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'soft-gate-wf');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.workflow.activities?.map((a) => a.id).sort()).toEqual(['ok', 'soft']);
+      const errors = Object.fromEntries(result.value.activityLoadErrors.map((e) => [e.activity_id, e.error]));
+      expect(errors['lone-default']).toContain('defaultOption without autoAdvanceMs');
+      expect(errors['stray-default']).toContain('not one of its options');
     });
 
     it('fails the load when initialActivity names no activity', async () => {

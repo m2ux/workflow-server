@@ -12,7 +12,7 @@ import {
   safeValidateWorkflow,
   safeValidateWorkflowFile,
 } from '../schema/workflow.schema.js';
-import { type Activity, type Step, safeValidateActivity, populateStepIds, activityCheckpoints, flattenActivitySteps } from '../schema/activity.schema.js';
+import { type Activity, type Step, safeValidateActivity, populateStepIds, assertCheckpointDefaults, activityCheckpoints, flattenActivitySteps } from '../schema/activity.schema.js';
 import { collectRoutineRefs, materializeActivityRoutines } from './routine-resolver.js';
 import { buildRoutineLookup } from './routine-loader.js';
 import { VariableNameSchema } from '../schema/variable.schema.js';
@@ -100,6 +100,7 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activiti
       }
       const activity = validation.data;
       populateStepIds(activity);
+      assertCheckpointDefaults(activity);
       activity.artifactPrefix = parsed.index;
       activities.push(activity);
     } catch (error) {
@@ -166,6 +167,7 @@ async function resolveActivityReference(index: CorpusIndex, ref: string): Promis
     }
     const activity = validation.data;
     populateStepIds(activity);
+    assertCheckpointDefaults(activity);
     if (parsed) activity.artifactPrefix = parsed.index;
 
     // The source workflow scopes the activity's bare references: a borrowed activity

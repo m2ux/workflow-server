@@ -402,7 +402,7 @@
                   },
                   "defaultOption": {
                     "type": "string",
-                    "description": "Identifier of one of this checkpoint's options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither."
+                    "description": "Identifier of one of this checkpoint's options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither. One without the other, or a default naming none of the options, excludes the activity from the load; in a routine file, it fails the load of any workflow that reads that routine."
                   },
                   "autoAdvanceMs": {
                     "type": "integer",

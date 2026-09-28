@@ -81,7 +81,7 @@ export const CheckpointStepSchema = z.object({
   id: enforcement(z.string().describe('Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. With the activity identifier it forms the key a recorded response replays under on resume.'), { owner: 'Engine', strictness: 'enforced' }),
   message: z.string().describe('Message presented to the user.'),
   options: enforcement(z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'), { owner: 'Engine', strictness: 'enforced' }),
-  defaultOption: enforcement(z.string().optional().describe('Identifier of one of this checkpoint\'s options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither.'), { owner: 'Engine', strictness: 'enforced' }),
+  defaultOption: enforcement(z.string().optional().describe('Identifier of one of this checkpoint\'s options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither. One without the other, or a default naming none of the options, excludes the activity from the load; in a routine file, it fails the load of any workflow that reads that routine.'), { owner: 'Engine', strictness: 'enforced' }),
   autoAdvanceMs: enforcement(z.number().int().positive().optional().describe('Positive waiting interval in milliseconds before `defaultOption` may be selected automatically; declared together with `defaultOption`.'), { owner: 'Engine', strictness: 'enforced' }),
   ...stepCommonFields,
   ...stepEntryCondition,
@@ -202,6 +202,31 @@ export function populateStepIds(activity: Activity): void {
 
   // Top-level steps; fillScope recurses into each loop-kind step's nested body as its own scope.
   fillScope(activity.steps, 'top-level steps');
+}
+
+/**
+ * Check each checkpoint's unattended default. `defaultOption` and `autoAdvanceMs` are one
+ * declaration: together they make a gate soft, and a hard gate declares neither, so one without
+ * the other is refused here rather than when an auto-advance is first attempted. The default names
+ * one of the checkpoint's own options. Throws, as `populateStepIds` does, so the caller's per-file
+ * contract applies.
+ */
+export function assertCheckpointDefaults(activity: Activity): void {
+  for (const step of flattenActivitySteps(activity)) {
+    if (step.kind !== 'checkpoint') continue;
+    const hasDefault = step.defaultOption !== undefined;
+    if (hasDefault !== (step.autoAdvanceMs !== undefined)) {
+      throw new Error(
+        `Activity '${activity.id}': checkpoint '${step.id}' declares ${hasDefault ? 'defaultOption without autoAdvanceMs' : 'autoAdvanceMs without defaultOption'}; `
+        + 'a soft checkpoint declares both, and a hard checkpoint neither.',
+      );
+    }
+    if (hasDefault && !step.options.some((o) => o.id === step.defaultOption)) {
+      throw new Error(
+        `Activity '${activity.id}': checkpoint '${step.id}' names defaultOption '${step.defaultOption}', which is not one of its options.`,
+      );
+    }
+  }
 }
 
 /**

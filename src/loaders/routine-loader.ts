@@ -12,7 +12,7 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { type Activity, populateStepIds } from '../schema/activity.schema.js';
+import { type Activity, populateStepIds, assertCheckpointDefaults } from '../schema/activity.schema.js';
 import { type Routine, safeValidateRoutine } from '../schema/routine.schema.js';
 import { parseDefinition } from '../utils/serialization.js';
 import { type CorpusIndex, indexCorpus, namespaceLocation } from './corpus-index.js';
@@ -67,7 +67,9 @@ export async function readWorkflowRoutines(
         + `but sits in a file named '${name}' — a reference reaches a routine by its filename, so the two names have to match.`,
       );
     }
-    populateStepIds({ id: validation.data.id, steps: validation.data.steps } as Activity);
+    const body = { id: validation.data.id, steps: validation.data.steps } as Activity;
+    populateStepIds(body);
+    assertCheckpointDefaults(body);
     routines.set(name, validation.data);
   }
   return routines;

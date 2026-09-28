@@ -303,7 +303,7 @@ Exactly one of the three may be supplied. Both timers run from the moment the pa
 
 #### Soft Gate and Dismissal
 
-Auto-advance needs both a default option and a declared wait. That pair is a soft gate. A gate that must wait for a person declares neither, and declaring one without the other is a defect.
+Auto-advance needs both a default option and a declared wait. That pair is a soft gate. A gate that must wait for a person declares neither, and a checkpoint declaring one without the other, or a default that names none of its options, excludes its activity from the load.
 
 Dismissal is only open to a checkpoint carrying a structured condition. One gated by an inline expression cannot be dismissed this way. The server checks that the condition field is present and cannot check whether it is true, so the evaluation is taken on trust and recorded.
 
