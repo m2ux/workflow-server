@@ -94,7 +94,9 @@ workspace's dynamic-shell restrictions. Keep these files in a working directory 
 repository.
 
 The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace
-checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout.
+checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout. Their tests are
+in `test/`: `cd <workspace>/skills/initiative-planning && <workspace>/scripts/sbx python3 -m unittest
+discover -s test`.
 
 ## Rules
 
