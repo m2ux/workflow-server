@@ -57,8 +57,8 @@ last. Each initiative, and each issue or pull request under Completed, In progre
 with the mark of its state. An initiative is done when Done, or when closed if off the board; in
 progress or in review when In Progress or In Review; else partly done. A group's heading under
 Completed is done when its issue is Done, else partly done; under In progress it is in review when
-its issue is In Review, else in progress. Its lines are done; in progress, in review, draft or next
-task; and each Next item is ready. Unresolved
+its issue is In Review, else in progress. Its lines are done; in progress, in review or draft; and
+an epic's next task and each Next item are ready. Unresolved
 dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
 print to stderr.
 """
@@ -79,12 +79,12 @@ PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
             'priority: low': 4, 'priority: lowest': 5}
 UNRANKED = 2
 SHOWN = 5
-DONE, PARTLY, WORKING, REVIEW, DRAFT, NEXT, READY = '✅', '🔶', '🔄', '👀', '📝', '➡️', '🔜'
+DONE, PARTLY, WORKING, REVIEW, DRAFT, READY = '✅', '🔶', '🔄', '👀', '📝', '▶️'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
 ACTIVE = tuple(MARK)
 KEY = ['Key: I=Initiative, E=Epic, W=Work Item',
        f'{DONE} done · {PARTLY} partly done · {WORKING} in progress · {REVIEW} in review · '
-       f'{DRAFT} draft · {NEXT} next task · {READY} ready']
+       f'{DRAFT} draft · {READY} ready']
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
 Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
 
@@ -361,7 +361,7 @@ def main() -> int:
                     group.append(f"{state} {pr_title(pr)} — {pr['html_url']}")
             if not group and (task := next_task(ek, header, rows)):
                 named_next |= task[0]
-                group.append(f'{NEXT} {task[1]}')
+                group.append(f'{READY} {task[1]}')
         elif status.get(ek) == 'Ready':
             task = next_task(ek, header, rows)
             if task:
