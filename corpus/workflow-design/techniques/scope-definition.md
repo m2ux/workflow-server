@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -38,7 +38,7 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 2. Design Folder Structure
 
-- Design the folder layout — `workflow-{id}/` with `activities/`, `techniques/`, `resources/` — and the file naming scheme: `NN-name.yaml` for activities and techniques, `NN-name.md` for resources
+- Design the folder layout — `{id}/`, named for the workflow id, with `activities/`, `techniques/`, `resources/`, `routines/` as needed — and the file naming scheme: `NN-<id>.yaml` for activities, whose `id` matches the filename, and kebab-case `.md` for techniques and resources
 
 ### 3. Enumerate Files
 

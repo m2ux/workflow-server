@@ -184,9 +184,9 @@ A schema settles the call. What a Protocol does with a response — the branch i
 
 Where an application is still free-form, it is a technique. Where the path is accepted and consistent, it is a routine: a named run of those produce paths, spliced into the activity that binds it, and the home for a sequence, an iteration, a branch, or a gate that several sites share. Its sources are the two in [Workflows Ossify Patterns](#1-workflows-ossify-patterns). The Protocol that remains is the reading that routine cannot hold ([A Technique Is a Reading](#26-a-technique-is-a-reading)).
 
-## 43. An Activity Reuses Activities
+## 43. A Workflow Borrows Activities
 
-An activity may borrow, bind, or include another activity, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher).
+A workflow borrows another workflow's activity file by listing it under `activities:` as `<workflow>/[activities/]…/NN-<id>.yaml`, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). No construct binds or includes one activity inside another; a run of steps several activities share is a routine.
 
 ## 44. A Resource Splits for Section Delivery
 

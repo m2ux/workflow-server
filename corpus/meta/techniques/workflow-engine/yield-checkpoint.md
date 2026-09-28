@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ ID of the checkpoint being yielded — the activity YAML `id`, or `<baseId>#<ins
 
 ### 1. Yield Gate
 
-- Choose `{checkpoint_id}`: the activity YAML `id` as written for one-shot gates and for loop-body gates whose first answer should apply to every later iteration; for loop-body gates that need a distinct user decision per iteration, use `<baseId>#<instance>` (base id before `#`, plus a stable per-iteration discriminator — expand a declared `#{...}` template, or use the loop item's id/slug). Call `yield_checkpoint { session_index, checkpoint_id }`.
+- Choose `{checkpoint_id}`: the activity YAML `id` as written for one-shot gates and for loop-body gates whose first answer should apply to every later iteration; for loop-body gates that need a distinct user decision per iteration, use `<baseId>#<instance>` (base id before `#`, plus a stable per-iteration discriminator — expand a declared `#{...}` template, or use the loop item's id/slug). Call `yield_checkpoint { session_index, checkpoint_id }`, passing the values the steps before the gate produced as `variables_changed` so a gate message that interpolates them has them to render; omit it when those steps produced nothing.
 
 ### 2. Pause Or Continue
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Absolute path to the written impact-analysis artifact.
 
 - Classify each file as unaffected, directly modified (the change explicitly affects it), indirectly affected (a side-effect such as a broken transition chain), or removed (the change makes it obsolete), with justification
 
-### 3. Check Transition Integrity
+### 3. Check Exit Integrity
 
 - When activities are added, removed, or reordered: verify the workflow's `graph` binds every exit of every activity and sends each to an existing activity id or `__terminal__`, verify `initialActivity` still references a valid activity, and check that no activity becomes unreachable (nothing bound to it)
 
@@ -46,7 +46,7 @@ Absolute path to the written impact-analysis artifact.
 
 ### 5. Check Variable Integrity
 
-- Verify all `condition.variable` references in transitions, decisions, step gates (`when`/`condition`), and `kind: loop` steps resolve to defined workflow variables
+- Verify every variable read by an exit `when`, a step `when` or `condition`, or a loop's `continueWhile`, `breakCondition` or `over` resolves to a defined workflow variable
 - Verify all `effect.setVariable` keys in `kind: checkpoint` steps resolve to defined variables
 - Check for orphaned variables (defined but never referenced)
 

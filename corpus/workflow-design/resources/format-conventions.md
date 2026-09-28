@@ -37,11 +37,11 @@ Literacy surface for [create/update] of `{workflow-id}`. Grounded in schema docs
 | Artifacts | Declared on technique outputs; activity `artifacts[]` is server-computed |
 | Artifact links | `[label]({path_variable})` in checkpoint/action messages |
 
-## Transition authoring
+## Exit authoring
 
-- Quote string `condition.value` scalars that contain special characters; prefer plain unquoted booleans/numbers.
-- Use `isDefault: true` for the fallback arm; do not also attach a tautological variable condition on that same arm.
-- Non-default arms carry explicit `condition` objects; keep `to` ids reachable in the activity graph.
+- A non-default exit selects with a `when` expression, or is selected by a checkpoint option; quote string literals that contain special characters and leave booleans and numbers bare.
+- An activity with two or more exits marks exactly one `isDefault: true`; the default exit carries no `when`.
+- Every exit is bound in the workflow `graph` to an activity id, a parallel fan, or `__terminal__`.
 
 ## Plain technical language
 

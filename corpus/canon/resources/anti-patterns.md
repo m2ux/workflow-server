@@ -191,13 +191,13 @@ Iteration is written as prose instead of a `kind: loop` step.
 
 "If X then do A, otherwise B"
 
-Cross-activity routing is written as prose instead of an activity-level `decision`.
+Cross-activity routing is written as prose instead of as exits the workflow graph binds.
 
-**Detect:** Prose describes branching to different activities/paths without an activity-level `decision` with `branches`/`conditions`.
+**Detect:** Prose describes branching to different activities/paths that the activity's `exits` do not declare — no exit selected by a `when` or a checkpoint option, bound in the `graph` to that path.
 
 **Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared exit predicates.
 
-**Fix:** Declare an activity-level `decision` with branches/conditions; remove the prose branch recipe.
+**Fix:** Declare each outcome as an exit — a `when` on each non-default exit, or a checkpoint option that names it — bind every exit in the workflow `graph`, and remove the prose branch recipe.
 
 ### AP-12. artifact-not-buried
 
@@ -905,7 +905,7 @@ An activity carries prose rules: instead of pure mechanics.
 
 **Do not flag:** None. Behavioural guidance belongs on the bound technique.
 
-**Fix:** Delete an entry that restates structure the activity already enforces. Migrate a technique constraint to the owning technique (`single-rule-authority`). Encode an unenforced constraint as `when` or `condition`, a transition, a decision, a checkpoint, or `required: false`. A hard gate is `when` or `condition`. Step `required` is a worker hint. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
+**Fix:** Delete an entry that restates structure the activity already enforces. Migrate a technique constraint to the owning technique (`single-rule-authority`). Encode an unenforced constraint as `when` or `condition`, an exit `when`, a checkpoint, or `required: false`. A hard gate is `when` or `condition`. Step `required` is a worker hint. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
 
 ### AP-70. capability-group-placement
 
@@ -1029,11 +1029,11 @@ A recommendation is presented without follow-through implementation.
 
 A critical constraint is text-only with no structural enforcement.
 
-**Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or decision).
+**Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or exit `when`).
 
 **Do not flag:** Explicitly guidance-only / non-critical rules; rules already backed by structure on the same construct or a parent the actor always receives.
 
-**Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+**Fix:** Add structural enforcement (checkpoint, condition, validate, exit `when`), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
 
 ### AP-80. preserve-readme-content
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -67,4 +67,4 @@ This call moves a session pointer from inside the context that then carries the 
 
 ### no-session-left-running
 
-A session nothing else can advance is one that reaches its end here or never. Take its activities until the session reports `workflow_complete` — a context that stops partway leaves a session recorded as running that nothing will ever reach, and the results it was opened for unread (`activity-worker.outlive-dispatched-children`).
+A session nothing else can advance is one that reaches its end here or never. Take its activities until `get_workflow_status` reports the session `completed` — a context that stops partway leaves a session recorded as running that nothing will ever reach, and the results it was opened for unread (`activity-worker.outlive-dispatched-children`).

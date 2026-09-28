@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -33,7 +33,7 @@ Root workflow definition with metadata, variables, rules, and techniques
 
 #### activity_files
 
-One `.yaml` file per activity with steps, checkpoints, transitions
+One `.yaml` file per activity with steps, checkpoints, exits
 
 #### technique_files
 

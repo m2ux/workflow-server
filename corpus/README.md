@@ -10,7 +10,7 @@ Discovery enters this folder when it is pointed at the branch root. What each na
 
 Each product workflow is a directory of its own, typically carrying:
 
-- `workflow.yaml` — the definition: id, initial activity, transitions
+- `workflow.yaml` — the definition: id, `initialActivity`, `graph`, borrowed activities
 - `README.md` — what that workflow does
 - `activities/` — the stages of the graph
 - `techniques/` — judgement on live feedback those stages bind

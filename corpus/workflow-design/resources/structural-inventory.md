@@ -36,8 +36,7 @@ One object per target, carrying the three count groups, the activity ids in orde
         "techniques": 34,
         "resources": 21,
         "checkpoints": 12,
-        "transitions": 14,
-        "decisions": 3,
+        "exits": 14,
         "variables": 27,
         "rules": 9
       },
@@ -45,7 +44,8 @@ One object per target, carrying the three count groups, the activity ids in orde
         "technique": 61,
         "checkpoint": 12,
         "action": 18,
-        "loop": 4
+        "loop": 4,
+        "routine": 3
       },
       "activities": [
         { "ordinal": "01", "id": "intake-and-scope" },
@@ -67,8 +67,8 @@ One object per target, carrying the three count groups, the activity ids in orde
 | `targets[].version` | string | Its declared version at the time of the snapshot |
 | `targets[].initial_activity` | string | The activity the workflow starts at |
 | `targets[].file_counts` | object | Files by kind — `workflow_yaml`, `activity_yaml`, `technique_leaf`, `technique_container`, `resources`, `total`. Leaf counts exclude containers and READMEs; `resources` excludes README |
-| `targets[].entity_counts` | object | Definitions by kind — `activities`, `techniques` (leaf), `resources`, `checkpoints` (including those nested in loops), `transitions`, `decisions`, `variables`, `rules` (the activity partition) |
-| `targets[].step_kinds` | object | Steps across all activities by kind — `technique`, `checkpoint`, `action`, `loop` |
+| `targets[].entity_counts` | object | Definitions by kind — `activities`, `techniques` (leaf), `resources`, `checkpoints` (including those nested in loops), `exits`, `variables`, `rules` (the activity partition) |
+| `targets[].step_kinds` | object | Steps across all activities by kind — `technique`, `checkpoint`, `action`, `loop`, `routine` |
 | `targets[].activities` | object[] | The activity ids in workflow order, each with its `ordinal` |
 | `targets[].update_scope` | string \| null | What this session intends to change; null in a pure review with no change request |
 

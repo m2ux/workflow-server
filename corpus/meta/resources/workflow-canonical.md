@@ -18,11 +18,12 @@ interpreted according to this document.
 ## On-disk layout
 
 There is **one kind of technique**. A technique can contain nested techniques in its
-folder. A workflow's content lives under `techniques/`, `resources/` and `routines/`
-in these shapes:
+folder. A workflow's content lives under `activities/`, `techniques/`, `resources/`
+and `routines/` in these shapes:
 
 | Shape | Path | Frontmatter | Notes |
 |-------|------|-------------|-------|
+| **Activity** | `activities/<NN>-<id>.yaml` | YAML `id` / `version` | A stage of the graph. Its `id` matches the filename. |
 | **Standalone technique** | `techniques/<id>.md` | yes (`metadata.version`) | A single technique. |
 | **Container technique** | `techniques/<group>/TECHNIQUE.md` + `techniques/<group>/<sub>.md` | yes (each file carries `metadata.version`) | The folder is a namespace; `TECHNIQUE.md` is the container technique; each `<sub>.md` is a nested technique. |
 | **Resource** | `resources/<slug>.md` | yes | Freeform reference material. |
@@ -87,9 +88,11 @@ technique; agents do not assemble it by hand.
 ## Roles
 
 A persona contract: responsibilities, authority, refusals, qualified techniques.
-Roles have **no on-disk file** — they live as `##` sections within the workflow
-definition (`workflow.yaml`, e.g. `## Engineer`, `## Reviewer`). Role-to-technique
-binding lives in `workflow.yaml` activity definitions, not in frontmatter.
+Roles have **no on-disk file**. `workflow.yaml` holds no activities; it scopes rules
+and techniques to the orchestrator and the activity worker (`rules.workflow` /
+`rules.activity`, `techniques.workflow` / `techniques.activity`). Role-to-technique
+binding lives in the activity files' `steps[]` and in the workflow's
+`techniques.workflow` / `techniques.activity`, not in frontmatter.
 
 ## Tools
 

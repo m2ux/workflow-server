@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.13.0
+  version: 6.14.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Choose bare vs `#section` `resource_id` by how much of the resource this agent c
 
 ### variable-mutation-source
 
-Variables mutate from two sources only: checkpoint option effects (`setVariable`) and worker `activity_complete` results (`variables-changed`). Never mutate state through ad-hoc reasoning.
+Variables mutate from three sources only: checkpoint option effects (`setVariable`), worker `activity_complete` results (`variables-changed`), and the `variables_changed` a worker passes to `yield_checkpoint` — the values the steps before a gate produced. Never mutate state through ad-hoc reasoning.
 
 ### agent-id-scopes-delivery
 
