@@ -44,7 +44,7 @@ class Completed(unittest.TestCase):
         task = issue(3, '[I01:E00:W01] Task Issue: Done', 'closed', IN)
         out = summary([item(epic, 'In Progress'), item(task, 'Done')])
         self.assertEqual(section(out, 'Completed'), [
-            f"🔶 *I01:E00 First* — {url('issues', 2)}",
+            f"🔄 *I01:E00 First* — {url('issues', 2)}",
             f"    ✅ W01 Task Issue — {url('issues', 3)}"])
 
     def test_row_linking_a_pull_request_merged_in_the_window_is_listed(self):
@@ -53,7 +53,7 @@ class Completed(unittest.TestCase):
         prs = [pr(50, '[I01:E00] Old', BEFORE), pr(51, '[I01:E00] New', IN)]
         out = summary([item(epic, 'In Progress')], prs)
         self.assertEqual(section(out, 'Completed'), [
-            f"🔶 *I01:E00 First* — {url('issues', 2)}",
+            f"🔄 *I01:E00 First* — {url('issues', 2)}",
             f"    ✅ W02 New work — {url('pull', 51)}"])
 
     def test_merged_pull_request_no_row_links_is_listed_by_title(self):
@@ -100,9 +100,9 @@ class Completed(unittest.TestCase):
         prs = [pr(40, '[I01:E00] In r', IN), pr(40, '[I01:E00] In s', IN, repo='o/s')]
         out = summary([item(epic, 'In Progress'), item(other, 'In Progress')], prs)
         self.assertEqual(section(out, 'Completed'), [
-            f"🔶 *I01:E00 First* — {url('issues', 2)}",
+            f"🔄 *I01:E00 First* — {url('issues', 2)}",
             f"    ✅ W01 Here — {url('pull', 40)}",
-            f"🔶 *I01:E00 Other* — {url('issues', 2, 'o/s')}",
+            f"🔄 *I01:E00 Other* — {url('issues', 2, 'o/s')}",
             f"    ✅ In s — {url('pull', 40, 'o/s')}"])
 
 
@@ -229,7 +229,7 @@ class Window(unittest.TestCase):
         out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
         self.assertEqual(out.splitlines()[-4:], [
             '', '*Key*', 'I=Initiative, E=Epic, W=Work Item',
-            '✅ done · 🔶 partly done · 🔄 in progress · 👀 in review · 📝 draft · ▶️ ready'])
+            '✅ done · 🔄 in progress · 👀 in review · 📝 draft · ▶️ ready'])
 
     def test_heading_names_the_window_and_initiative(self):
         out = summary([item(issue(1, '[I08] Libraries: All'), 'In Progress')], (), '--initiative', 'I08')
@@ -312,7 +312,7 @@ class Initiatives(unittest.TestCase):
         initiative = issue(9, '[I08] Libraries: One Home for Every Operation')
         done = progress(items, [], '--since', SINCE, initiatives=(initiative,))
         self.assertEqual(section(done.stdout, 'Initiatives'),
-                         [f"🔶 *I08 Libraries:* One Home for Every Operation — {url('issues', 9)}"])
+                         [f"🔄 *I08 Libraries:* One Home for Every Operation — {url('issues', 9)}"])
         self.assertNotIn('not on the board', done.stderr)
 
     def linked_elsewhere(self):
@@ -327,7 +327,7 @@ class Initiatives(unittest.TestCase):
         done = progress(self.linked_elsewhere(), [], '--since', SINCE, initiatives=(library,))
         self.assertEqual(section(done.stdout, 'Initiatives'), [
             f"🔄 *I01 Classifier:* The Outcome — {url('issues', 1)}",
-            f"🔶 *I08 Libraries:* One Home — {url('issues', 9, 'o/s')}"])
+            f"🔄 *I08 Libraries:* One Home — {url('issues', 9, 'o/s')}"])
 
     def test_title_initiative_off_the_board_is_named_for_fetching(self):
         done = progress(self.linked_elsewhere(), [], '--since', SINCE)
@@ -339,7 +339,7 @@ class Initiatives(unittest.TestCase):
 
     def test_initiative_opens_with_the_mark_of_its_state(self):
         epic = item(issue(2, '[I01:E00] First: Epic', 'closed', IN, epic_body()), 'Done')
-        marks = {'Done': '✅', 'In Review': '👀', 'In Progress': '🔄', 'Ready': '🔶'}
+        marks = {'Done': '✅', 'In Review': '👀', 'In Progress': '🔄', 'Ready': '🔄'}
         for state, mark in marks.items():
             with self.subTest(state=state):
                 items = [item(issue(1, '[I01] Shipped: All', 'closed' if state == 'Done' else 'open'), state), epic]

@@ -24,8 +24,8 @@ next. The board's Status is the source, so the summary is as current as the boar
    reference in the epic's repository or its initiative's. It prints the `--summary` paragraph, set
    off by blank lines, and the board's link beneath the heading, then:
    - **Initiatives:** one line for each initiative with work under Completed or In progress, its
-     title's name and subtitle, for context, opening with the mark of its Status; one off the board
-     is done when closed, else partly done. An item works for the initiative whose table links
+     title's name and subtitle, for context, opening with the mark of its state; one off the board
+     is done when closed, else in progress. An item works for the initiative whose table links
      its epic and for the one its epic's title names;
    - **Completed:** items Done whose issue closed in the window, grouped under their epic, and
      the tasks whose pull requests merged in it. Closing is when an issue became Done, so one the
@@ -35,8 +35,8 @@ next. The board's Status is the source, so the summary is as current as the boar
    - **Next:** the five Ready items ranked by priority label, each epic with its next task, and a
      count of the rest;
    - **Key:** what the reference letters stand for, I Initiative, E Epic and W Work Item, and
-     what each line's opening mark says of its state: ✅ done, 🔶 partly done (an initiative or
-     epic not Done), 🔄 in progress, 👀 in review, 📝 draft, ▶️ ready.
+     what each line's opening mark says of its state: ✅ done, 🔄 in progress (an initiative
+     or epic open and not In Review), 👀 in review, 📝 draft, ▶️ ready.
 5. **Give the initiatives off the board.** For each `unresolved` line naming an initiative not on
    the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch
    it, and re-run with `--initiatives issue-946.json …`.
