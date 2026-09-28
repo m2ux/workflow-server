@@ -33,7 +33,7 @@ class Completed(unittest.TestCase):
 
     def test_epic_closed_in_window_is_complete(self):
         out = summary([item(issue(2, '[I01:E00] First: Epic', 'closed', IN, epic_body()), 'Done')])
-        self.assertEqual(section(out, 'Completed'), [f"• *I01:E00 First*, epic complete — {url('issues', 2)}"])
+        self.assertEqual(section(out, 'Completed'), [f"• *I01:E00 First* — {url('issues', 2)}"])
 
     def test_done_item_closed_before_window_is_left_out(self):
         out = summary([item(issue(2, '[I01:E00] First: Epic', 'closed', BEFORE, epic_body()), 'Done')])

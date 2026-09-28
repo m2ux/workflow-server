@@ -335,7 +335,7 @@ def main() -> int:
             if within(pr.get('merged_at')) and pr['html_url'] not in linked and not listed(pr, done):
                 add(completed, ek, f"{pr_title(pr)} — {pr['html_url']}")
         if done(ek):
-            add(completed, ek, note='epic complete')
+            add(completed, ek)
 
         if status.get(ek) in ACTIVE:
             add(progress, ek, note='in review' if status[ek] == 'In Review' else '')
