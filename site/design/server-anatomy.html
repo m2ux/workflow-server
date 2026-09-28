@@ -198,7 +198,7 @@
       <g font-size="14.5" font-weight="600" text-anchor="middle">
         <rect x="80" y="20" width="520" height="44" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="340" y="42" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">withAuditLog</text>
-        <text x="340" y="58" fill="var(--diagram-note)" font-size="12" font-weight="400">audit + trace on every call</text>
+        <text x="340" y="58" fill="var(--diagram-note)" font-size="12" font-weight="400">audit always; trace if session</text>
         <rect x="110" y="82" width="460" height="44" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="340" y="104" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13.5">loadSessionForTool</text>
         <text x="340" y="120" fill="var(--diagram-note)" font-size="12" font-weight="400">index → folder, seal check, parse</text>
@@ -227,7 +227,7 @@
 
   <p class="prose">Stage by stage:</p>
   <ol class="steps">
-    <li><strong><code>withAuditLog</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/logging.ts"><code>logging.ts</code></a>) — outermost wrapper on every registered handler. It times the call, emits a structured audit event to stderr, and — when the parameters include a <code>session_index</code> — appends a trace event to the session's in-process <code>TraceStore</code> buffer. This runs on success and on thrown errors alike, so a failed seal check or validation still leaves an audit and trace record.</li>
+    <li><strong><code>withAuditLog</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/logging.ts"><code>logging.ts</code></a>) — outermost wrapper on every registered handler. It times the call, emits a structured audit event to stderr, and — when the parameters include a <code>session_index</code> — appends a trace event to the session's in-process <code>TraceStore</code> buffer. The read-only diagnostics <code>get_trace</code>, <code>get_workflow_status</code> and <code>inspect_session</code> are excluded from the trace. This runs on success and on thrown errors alike, so a failed seal check or validation still leaves an audit and trace record.</li>
     <li><strong><code>loadSessionForTool</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/resolver.ts"><code>session/resolver.ts</code></a>) — resolves the six-character <code>session_index</code> to a planning folder (<a href="./session-store.html#index">how the index maps to disk</a>), verifies the HMAC seal on <code>session.json</code> against <code>.session-token</code>, and parses the file into typed <code>SessionFile</code> state. Child sessions dispatched via <code>dispatch_child</code> live inside the parent's <code>session.json</code>; the loader navigates to the embedded sub-state the index addresses. If the seal does not match or the file fails schema validation, the call stops here — the handler never runs on state the server cannot vouch for.</li>
     <li><strong><code>advanceSession</code></strong> and <strong><code>saveSessionForTool</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/resolver.ts"><code>session/resolver.ts</code></a>) — the write path. Handlers that change state build the next snapshot with <code>advanceSession</code> (increments <code>seq</code>, refreshes <code>ts</code>, applies a mutator callback), then pass it to <code>saveSessionForTool</code>, which merges embedded child updates back into the top-level file, canonicalises the JSON, recomputes the HMAC, and atomically writes <code>session.json</code> and <code>.session-token</code>. Read-only tools such as <code>get_activity</code> may still call save when they record delivery or fetch events in history.</li>
   </ol>
@@ -243,7 +243,7 @@
       <tbody>
         <tr><td><code>WorkflowNotFoundError</code>, <code>ActivityNotFoundError</code>, <code>TechniqueNotFoundError</code>, <code>ResourceNotFoundError</code></td><td>A definition referenced by id does not exist in the workflow directory.</td></tr>
         <tr><td><code>WorkflowValidationError</code></td><td>A definition file parses but fails schema validation; the error carries the issue list.</td></tr>
-        <tr><td><code>SessionStoreError</code></td><td>Session state cannot be loaded or written. The <code>code</code> field distinguishes <code>NOT_FOUND</code>, <code>COLLISION</code>, <code>SEAL_MISMATCH</code>, <code>INVALID_INDEX</code>, and <code>WORKSPACE_INVALID</code>.</td></tr>
+        <tr><td><code>SessionStoreError</code></td><td>Session state cannot be loaded or written. The <code>code</code> field distinguishes <code>NOT_FOUND</code>, <code>COLLISION</code>, <code>SEAL_MISMATCH</code>, <code>FOLDER_OCCUPIED</code>, <code>INVALID_INDEX</code>, <code>STALE_WRITE</code>, and <code>WORKSPACE_INVALID</code>.</td></tr>
         <tr><td><code>MarkdownTechniqueParseError</code>, <code>WorkspaceConfigError</code></td><td>A technique file violates the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique.md">technique protocol</a>, or the workspace path is unusable at startup.</td></tr>
       </tbody>
     </table>
@@ -268,9 +268,8 @@
         <text x="360" y="68" fill="var(--diagram-label)">engineering root</text>
         <text x="360" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">artifacts/planning/&lt;slug&gt;/</text>
         <g font-size="12" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">
-          <text x="360" y="122" fill="var(--diagram-note)">session.json</text>
-          <text x="360" y="142" fill="var(--diagram-note)">.session-token</text>
-          <text x="360" y="162" fill="var(--diagram-note)">workflow-trace.json</text>
+          <text x="360" y="128" fill="var(--diagram-note)">session.json</text>
+          <text x="360" y="148" fill="var(--diagram-note)">.session-token</text>
         </g>
         <text x="360" y="192" fill="var(--diagram-note)" font-size="12" font-weight="400">written by session store</text>
         <rect x="650" y="40" width="280" height="168" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
@@ -283,7 +282,7 @@
       </g>
       <text x="480" y="236" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">loaders read left · session store reads and writes centre · crypto.ts reads right</text>
     </svg>
-    <figcaption>The server reads the corpus at <code>--workflow-dir</code> (default <code>./workflows</code>). When that tree has a <code>corpus/</code> grouping, discovery walks it; <code>ledgers/</code>, <code>walks/</code>, and <code>docs/</code> sit beside it as named roots. A tree without that grouping is walked as the product root. Definitions and session artifacts are version-controlled in their respective trees; the server key is created lazily at <code>~/.workflow-server/secret</code> or Docker <code>$INSTALL/state/secret</code> (mode <code>0600</code>). Folder contents are detailed in <a href="./session-store.html">session store</a> and <a href="../guide/getting-started.html#layout">getting started</a>.</figcaption>
+    <figcaption>The server reads the corpus at <code>--workflow-dir</code> (default <code>.worktrees/workflows</code> of the primary checkout). When that tree has a <code>corpus/</code> grouping, discovery walks it; <code>ledgers/</code>, <code>walks/</code>, and <code>docs/</code> sit beside it as named roots. A tree without that grouping is walked as the product root. Definitions and session artifacts are version-controlled in their respective trees; the server key is created lazily at <code>~/.workflow-server/secret</code> or Docker <code>$INSTALL/state/secret</code> (mode <code>0600</code>). Folder contents are detailed in <a href="./session-store.html">session store</a> and <a href="../guide/getting-started.html#layout">getting started</a>.</figcaption>
   </figure>
 
   <h2 id="next">Next</h2>
