@@ -9,6 +9,7 @@ import { SessionFileSchema } from '../src/schema/session.schema.js';
 import { ActivitySchema } from '../src/schema/activity.schema.js';
 import { RoutineSchema } from '../src/schema/routine.schema.js';
 import { TechniqueSchema } from '../src/schema/technique.schema.js';
+import { WhenExpressionSchema } from '../src/schema/when-expression.js';
 import { renderEnforcement } from '../src/schema/enforcement.js';
 
 /**
@@ -31,20 +32,25 @@ interface GeneratedSchema {
    * schema `{}` (accept-anything), so any schema embedding ConditionSchema must use `root`.
    */
   refStrategy: 'none' | 'root';
+  /** Shared schemas emitted once under `definitions` and referenced from every site that uses them. */
+  definitions?: Record<string, Parameters<typeof zodToJsonSchema>[0]>;
 }
 
+/** The `when` dialect, defined once for every schema that carries step or exit gates. */
+const GATE_DEFINITIONS = { whenExpression: WhenExpressionSchema };
+
 export const GENERATED_SCHEMAS: GeneratedSchema[] = [
-  { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root' },
+  { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root', definitions: GATE_DEFINITIONS },
   { name: 'condition', schema: ConditionSchema, description: 'Condition expression schema', refStrategy: 'root' },
   { name: 'session-file', schema: SessionFileSchema, description: 'Session state recorded in session.json.', refStrategy: 'root' },
-  { name: 'activity', schema: ActivitySchema, description: 'Activity definition with ordered steps.', refStrategy: 'root' },
-  { name: 'routine', schema: RoutineSchema, description: 'Reusable steps with declared inputs, outputs, and internals.', refStrategy: 'root' },
+  { name: 'activity', schema: ActivitySchema, description: 'Activity definition with ordered steps.', refStrategy: 'root', definitions: GATE_DEFINITIONS },
+  { name: 'routine', schema: RoutineSchema, description: 'Reusable steps with declared inputs, outputs, and internals.', refStrategy: 'root', definitions: GATE_DEFINITIONS },
   { name: 'technique', schema: TechniqueSchema, description: 'Technique capability with inputs, protocol, rules, and outputs.', refStrategy: 'root' },
 ];
 
 /** One schema's file content, byte for byte as it is written to disk. */
 export function renderSchema(entry: GeneratedSchema): string {
-  const json = zodToJsonSchema(entry.schema, { name: entry.name, $refStrategy: entry.refStrategy });
+  const json = zodToJsonSchema(entry.schema, { name: entry.name, $refStrategy: entry.refStrategy, definitions: entry.definitions ?? {} });
   return JSON.stringify(
     { $schema: 'https://json-schema.org/draft/2020-12/schema', title: entry.name, description: entry.description, ...json },
     null,

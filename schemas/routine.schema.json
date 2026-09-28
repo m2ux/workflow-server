@@ -4,6 +4,10 @@
   "description": "Reusable steps with declared inputs, outputs, and internals.",
   "$ref": "#/definitions/routine",
   "definitions": {
+    "whenExpression": {
+      "type": "string",
+      "description": "Inline boolean expression in the `when` dialect, evaluated against the current session variables. Grammar: `orExpr := andExpr ('||' andExpr)*`; `andExpr := unary ('&&' unary)*`; `unary := '!' unary | primary`; `primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'`; `comparison := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal`. Precedence, tightest first: `()`, `!`, comparisons, `&&`, `||`. Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` convert both sides to numbers and are false when either side is not a finite number. An expression that does not parse evaluates to false. Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, `is_review_mode != true && (problem_complexity == \"moderate\" || problem_complexity == \"complex\")`."
+    },
     "routine": {
       "type": "object",
       "properties": {
@@ -35,7 +39,7 @@
                   {
                     "type": "string",
                     "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
-                    "description": "Snake_case noun phrase containing at least two words."
+                    "description": "Qualified snake_case noun phrase of at least two words: a lowercase letter, then lowercase letters and digits, with each further word after a single underscore (`analysis_target`, never bare `target`)."
                   },
                   {
                     "type": "string",
@@ -243,7 +247,7 @@
                         "properties": {
                           "name": {
                             "type": "string",
-                            "description": "Technique reference, such as `group::technique` or `workflow::group::technique`."
+                            "description": "Technique reference: `group::technique`, a bare technique name, or `workflow::group::technique`."
                           },
                           "inputs": {
                             "type": "object",
@@ -255,7 +259,7 @@
                               ],
                               "description": "Variable name, literal value, or template expression for an input."
                             },
-                            "description": "Input identifiers mapped to variable names, literals, or `{template}` expressions where the binding differs from the input name or default."
+                            "description": "Input identifiers mapped to a source: the name of a session variable to read under that input, a literal, or a `{template}` expression. Declared only for inputs whose source differs from the same-name variable or the declared default."
                           },
                           "outputs": {
                             "type": "object",
@@ -263,7 +267,7 @@
                               "type": "string",
                               "description": "Workflow variable name for the output."
                             },
-                            "description": "Output identifiers mapped to workflow variable names where the names differ."
+                            "description": "Output identifiers mapped to the workflow variable each value is written to. Declared only where that name differs from the output identifier."
                           }
                         },
                         "required": [
@@ -433,17 +437,17 @@
                     "description": "Actions associated with the technique step."
                   },
                   "when": {
-                    "type": "string",
-                    "description": "Boolean expression required to enter this step; mixed `&&` and `||` expressions require parentheses."
+                    "$ref": "#/definitions/whenExpression",
+                    "description": "Entry gate: the step runs only when this expression holds. On a checkpoint step, `condition`, not `when`, makes the checkpoint dismissible."
                   },
                   "required": {
                     "type": "boolean",
                     "const": false,
-                    "description": "Declare `false` for an optional step; omission means the step is required."
+                    "description": "Declare `false` for an optional step; omission means the step is required, and `true` is rejected."
                   },
                   "condition": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                    "description": "Structured entry condition; a checkpoint may be dismissed when this condition is false."
+                    "description": "Structured entry condition. Prefer `when` for a step gate. On a checkpoint step, `condition` is the only gate that makes the checkpoint dismissible: when it is false, the checkpoint may be dismissed as not met, and the activity takes its default exit."
                   }
                 },
                 "required": [
@@ -530,11 +534,11 @@
                               "additionalProperties": {
                                 "description": "Value assigned to the named variable."
                               },
-                              "description": "Variable assignments associated with selecting this option."
+                              "description": "Variable assignments applied when this option is selected. Each value is checked against the variable's declared type and value set, and a mismatch is stored as written with a warning; a `{name}` template value passes through unchecked."
                             },
                             "exit": {
                               "type": "string",
-                              "description": "Name from the owning activity's `exits`, omitted for an ad hoc checkpoint."
+                              "description": "Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. Omitted for an ad hoc checkpoint, which has no declared exits."
                             }
                           },
                           "additionalProperties": false,
@@ -610,11 +614,11 @@
                   },
                   "variable": {
                     "type": "string",
-                    "description": "Current-item variable bound each iteration."
+                    "description": "Current-item variable bound each iteration of a `forEach` loop; absent for `while` and `doWhile` loops."
                   },
                   "over": {
                     "type": "string",
-                    "description": "Collection expression iterated by a forEach loop."
+                    "description": "Collection a `forEach` loop iterates: a variable name or a dotted path into one; absent for `while` and `doWhile` loops."
                   },
                   "breakCondition": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
@@ -663,7 +667,7 @@
                   },
                   "routine": {
                     "type": "string",
-                    "description": "Routine reference in `[namespace::]name` form, with a directory name or corpus-relative path as the namespace."
+                    "description": "Routine reference in `[namespace::]name` form. The namespace is a directory name, or the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity's source workflow, then `meta`. The last segment is the routine and every segment before it is the namespace, since a routine name has no group grammar."
                   },
                   "with": {
                     "type": "object",
@@ -675,7 +679,7 @@
                       ],
                       "description": "Literal argument or braced host-variable reference."
                     },
-                    "description": "Routine input identifiers mapped to literal values or `{host_variable}` references; omitted arguments use declared defaults, then same-name host variables."
+                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default fails the load."
                   },
                   "outputs": {
                     "type": "object",
@@ -683,7 +687,7 @@
                       "type": "string",
                       "description": "Session variable name for the routine output."
                     },
-                    "description": "Routine output identifiers mapped to session variable names; only outputs declared optional may be left unbound."
+                    "description": "Routine output identifiers mapped to session variable names. An output left unbound produces no write; only an output declared `optional: true` may be left unbound, and any other unbound output fails the load."
                   },
                   "when": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"

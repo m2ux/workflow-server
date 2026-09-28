@@ -98,7 +98,7 @@
               },
               "source": {
                 "type": "string",
-                "description": "Input value source annotation; omitted from authored technique files."
+                "description": "Input value source annotation: a step-binding value, workflow variable, prior step output, declared default, optional input, inherited context, or `UNRESOLVED` when nothing in the workflow supplies it. Omitted from authored technique files."
               }
             },
             "required": [

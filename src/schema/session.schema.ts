@@ -70,7 +70,7 @@ const SessionFileBaseSchema = z.object({
 
   // Holds one activity or the branches of exactly one fan: every branch exit binds to its fan's join,
   // so a branch cannot open a fan of its own.
-  frontier: z.array(z.string().describe('Activity identifier, optionally qualified by an instance number.')).default([]).describe('Activities currently in progress, with parallel instances named `<activityId>#<instance>`.'),
+  frontier: z.array(z.string().describe('Activity identifier, optionally qualified by an instance number.')).default([]).describe('Activities currently in progress, with parallel instances named `<activityId>#<instance>`. Entries are distinct strings, so a bare activity identifier matches no instance of a fan. Empty between the last branch retiring and the join being entered, and after the run completes.'),
   currentTechnique: z.string().default('').describe('Current technique reference, or an empty string when none is selected.'),
 
   exit: z.string().default('').describe('Most recent activity exit, or an empty string when none is recorded.'),
@@ -97,7 +97,7 @@ const SessionFileBaseSchema = z.object({
 
   executionPath: z.enum(['agent', 'runner']).optional().describe('Execution mode: `agent` by default, or `runner`.'),
 
-  deliveredContent: z.record(z.record(z.string().describe('Fingerprint of the content associated with this key.')).describe('Content keys mapped to fingerprints for one agent.')).optional().describe('Content fingerprints grouped by agent identifier and content key.'),
+  deliveredContent: z.record(z.record(z.string().describe('Fingerprint of the content associated with this key.')).describe('Content keys mapped to fingerprints for one agent.')).optional().describe('Content fingerprints grouped by agent identifier, then content key. A key names one whole item, prefixed by its delivery channel: `bundle:<technique-ref>`, `bundle:rules:<hash>`, `activity_rules:<hash>`, `technique:<id>`, `workflow_bundle:<hash>`, `note:<id>:<hash>`, or `resource:<resource_id>`.'),
 
   declaredArtifacts: z.array(z.object({
     id: z.string().min(1).describe('Nonempty artifact identifier.'),

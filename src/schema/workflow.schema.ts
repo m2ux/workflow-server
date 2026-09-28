@@ -20,17 +20,17 @@ export const WorkflowRulesSchema = z.object({
 export type WorkflowRules = z.infer<typeof WorkflowRulesSchema>;
 
 export const InstanceFanSchema = z.object({
-  activity: z.string().describe('Activity identifier to run once per collection element.'),
-  over: z.string().describe('Collection variable name or dotted path, such as `work_units` or `execution_plan.steps`.'),
-  variable: VariableNameSchema.describe('Variable name for each collection element, declared among the activity\'s required inputs.'),
+  activity: z.string().describe('Activity every instance runs; instances differ only by the element each receives.'),
+  over: z.string().describe('Collection the activity runs once per element of: a variable name or a dotted path into one (`work_units`, `execution_plan.steps`). Read when the fan is entered, so its length then is the fan\'s width.'),
+  variable: VariableNameSchema.describe('Variable name each instance reads its own element at, declared among the names the activity `reads`. Name it as the consuming technique\'s input identifier so no step needs a rename.'),
   maxInstances: z.number().int().min(
     2,
     'a fan admits at least two instances; an exit that leads to one run of one activity names that activity',
-  ).optional().describe('Maximum number of parallel instances for this destination, at least two.'),
+  ).optional().describe('Widest fan this destination admits, at least two, narrowing the server\'s configured ceiling. A fan wider than either bound is refused when entered, naming the bound that applied and the width it saw.'),
 }).strict().describe('Activity repeated in parallel for each element of a collection.');
 export type InstanceFan = z.infer<typeof InstanceFanSchema>;
 
-export const FanMemberSchema = z.union([z.string().describe('Identifier of an activity to run once.'), InstanceFanSchema]).describe('One parallel activity or an activity repeated over a collection.');
+export const FanMemberSchema = z.union([z.string().describe('Identifier of an activity to run once.'), InstanceFanSchema]).describe('One fan member: an activity identifier to run once, or an instance fan. A member is never itself a list, so fans do not nest.');
 export type FanMember = z.infer<typeof FanMemberSchema>;
 
 export const DestinationSchema = z.union(
@@ -39,7 +39,7 @@ export const DestinationSchema = z.union(
     z.array(FanMemberSchema).min(
       2,
       'a fan names at least two members; an exit that leads to one activity names that activity, and an exit that runs one activity over a collection names the activity with that collection',
-    ).describe('At least two parallel activities or collection instances with a common next activity.'),
+    ).describe('Two or more members run together, one worker each. Every exit of every branch names the same single activity, the join, which the run enters once, after the last branch returns.'),
     InstanceFanSchema,
   ],
   {
@@ -110,10 +110,10 @@ export const WorkflowSchema = z.object({
   author: enforcement(z.string().optional().describe('Workflow author.'), { owner: 'Agent', strictness: 'advisory' }),
   tags: enforcement(z.array(z.string().describe('Workflow classification label.')).optional().describe('Labels for classifying the workflow.'), { owner: 'Engine', strictness: 'advisory' }),
   rules: WorkflowRulesSchema.optional().describe('Rules grouped by audience: workflow orchestrator, activity workers, or both.'),
-  variables: enforcement(z.array(VariableDefinitionSchema).optional().describe('Declarations of session facts and policy shared across activities; activity-produced variables belong in that activity\'s `variables.writes`.'), { owner: 'Engine', strictness: 'advisory' }),
+  variables: enforcement(z.array(VariableDefinitionSchema).optional().describe('Declarations of the session facts and policy this workflow file owns, spanning activities. A variable an activity writes is declared in that activity\'s `variables.writes` and contributed here when the activity joins the graph. Declarations of one name that each name a different type, starting value or value set fail the load; one silent about a starting value takes the value another names.'), { owner: 'Engine', strictness: 'advisory' }),
   techniques: WorkflowTechniquesSchema.optional().describe('Technique references grouped by scope: workflow orchestration or every activity.'),
   initialActivity: enforcement(z.string().describe('Identifier of the first activity to execute.'), { owner: 'Engine', strictness: 'advisory' }),
-  graph: GraphSchema.optional().describe('Activity identifiers mapped to exit identifiers and their destinations: an activity, `__terminal__`, or parallel activities or collection instances. Required when activities declare exits.'),
+  graph: GraphSchema.optional().describe('Activity identifiers mapped to exit identifiers and their destinations. A destination is one of: an activity identifier, which the run enters next; `__terminal__`, which ends the run; a list of two or more members, each an activity identifier or an instance fan, run together with one worker each; or a single instance fan, which runs one activity once per element of a collection. A fan\'s width is the number of branches once every member is flattened, an instance fan counting its collection\'s length when entered; it is bounded by the server\'s ceiling and by any `maxInstances` an instance fan declares. Every exit of every branch names the fan\'s join, so a branch cannot open a fan of its own; the run enters the join once, after the last branch returns, and each branch\'s outputs land in their own slot. Every exit of every activity is bound here: an unbound exit, an unknown exit and an unknown destination each fail the load. Omitted only when no activity declares exits.'),
   // Zod includes assembled activities; definition files may keep them separate.
   activities: enforcement(z.array(ActivitySchema).min(1).optional().describe('Activities in this workflow; omitted when activities are defined in separate files.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict().describe('Workflow identity, shared declarations, activities, and exit destinations.');

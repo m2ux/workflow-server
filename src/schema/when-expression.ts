@@ -2,21 +2,40 @@
  * Reference `when` expression dialect — parse, evaluate, and authoring checks.
  *
  * Grammar (C-style precedence, tightest first):
- *   primary     := IDENT | comparison | '(' orExpr ')'
+ *   primary     := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'
  *   unary       := '!' unary | primary
  *   comparison  := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal
  *   andExpr     := unary ('&&' unary)*
  *   orExpr      := andExpr ('||' andExpr)*
  *
  * Identifiers are dotted bag paths (`a.b.c`). Literals: true/false/null, quoted
- * strings, integers. Bare identifiers evaluate as truthiness. Numeric
- * comparators coerce both sides with Number() when finite.
+ * strings, integers, and bare words (strings). Bare identifiers evaluate as
+ * truthiness. Numeric comparators coerce both sides with Number() when finite.
  *
  * Authoring rule: mixing `&&` and `||` at the same nesting depth requires
  * parentheses so grouping is explicit (precedence is still defined for eval).
  *
  * Invalid / unparseable input fails closed (evaluate → false).
  */
+import { z } from 'zod';
+
+/** The dialect as authors read it: every `when` field shares this one definition. */
+export const WhenExpressionSchema = z.string().describe(
+  'Inline boolean expression in the `when` dialect, evaluated against the current session variables. '
+  + 'Grammar: `orExpr := andExpr (\'||\' andExpr)*`; `andExpr := unary (\'&&\' unary)*`; `unary := \'!\' unary | primary`; '
+  + '`primary := IDENT | comparison | \'true\' | \'false\' | \'(\' orExpr \')\'`; '
+  + '`comparison := IDENT (\'==\' | \'!=\' | \'>\' | \'<\' | \'>=\' | \'<=\') literal`. '
+  + 'Precedence, tightest first: `()`, `!`, comparisons, `&&`, `||`. '
+  + 'Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. '
+  + 'An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. '
+  + 'A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, '
+  + 'or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. '
+  + 'A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. '
+  + '`==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` convert both sides to numbers and are false when either side is not a finite number. '
+  + 'An expression that does not parse evaluates to false. '
+  + 'Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, '
+  + '`is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")`.',
+);
 
 export type CmpOp = '==' | '!=' | '>' | '<' | '>=' | '<=';
 

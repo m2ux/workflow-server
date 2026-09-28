@@ -19,7 +19,7 @@ export const InputItemDefinitionSchema = z.object({
   description: z.string().optional().describe('Input description, beginning with `(optional)` when the input is optional.'),
   default: enforcement(z.unknown().optional().describe('Default value when not supplied'), { owner: 'Engine', strictness: 'advisory' }),
   components: OutputComponentsDefinitionSchema.optional().describe('Named parts of a composite input, authored as `####` headings.'),
-  source: z.string().optional().describe('Input value source annotation; omitted from authored technique files.'),
+  source: z.string().optional().describe('Input value source annotation: a step-binding value, workflow variable, prior step output, declared default, optional input, inherited context, or `UNRESOLVED` when nothing in the workflow supplies it. Omitted from authored technique files.'),
 }).describe('Named technique input with optional default and component definitions.');
 export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;
 

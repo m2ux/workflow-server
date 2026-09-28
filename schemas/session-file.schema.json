@@ -54,7 +54,7 @@
             "description": "Activity identifier, optionally qualified by an instance number."
           },
           "default": [],
-          "description": "Activities currently in progress, with parallel instances named `<activityId>#<instance>`."
+          "description": "Activities currently in progress, with parallel instances named `<activityId>#<instance>`. Entries are distinct strings, so a bare activity identifier matches no instance of a fan. Empty between the last branch retiring and the join being entered, and after the run completes."
         },
         "currentTechnique": {
           "type": "string",
@@ -422,7 +422,7 @@
             },
             "description": "Content keys mapped to fingerprints for one agent."
           },
-          "description": "Content fingerprints grouped by agent identifier and content key."
+          "description": "Content fingerprints grouped by agent identifier, then content key. A key names one whole item, prefixed by its delivery channel: `bundle:<technique-ref>`, `bundle:rules:<hash>`, `activity_rules:<hash>`, `technique:<id>`, `workflow_bundle:<hash>`, `note:<id>:<hash>`, or `resource:<resource_id>`."
         },
         "declaredArtifacts": {
           "type": "array",
