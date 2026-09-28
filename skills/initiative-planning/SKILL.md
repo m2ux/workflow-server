@@ -65,6 +65,11 @@ columns, numbering, references and delivery.
   issue has an epic's structure without the Work Breakdown table. Keep the section order and the
   table columns. Fill each `{{…}}` and delete a section the template marks as optional when it has
   nothing to say. What a body leaves out is in the Work Breakdown guide.
+- **Code references.** A body references code as a link on the words it supports, a permalink
+  pinned to a commit with its line anchors, never a bare `path:line`:
+  `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
+- **Succinct items.** Each Problem and Proposal item is one or two sentences. Several things go in
+  a bulleted list, with sub-bullets as needed, never packed into one sentence.
 - **Next number.** Find the next initiative number by listing titles:
   `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
 - **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a
