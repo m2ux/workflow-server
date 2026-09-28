@@ -51,9 +51,10 @@ with the choices. An epic summarised whose Work Breakdown the scripts cannot rea
 is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the
---summary paragraph, when given, and the board's link beneath, *bold* sections, bullets, and each
-issue or pull request by its bare URL. Unresolved dependencies, unreadable epics, pull requests
-without a repository and worked initiatives not given print to stderr.
+--summary paragraph, when given, and the board's link beneath, *bold* sections, bullets, each
+issue or pull request by its bare URL, and a key to the reference letters last. Unresolved
+dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
+print to stderr.
 """
 import argparse
 import json
@@ -71,6 +72,7 @@ PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
             'priority: low': 4, 'priority: lowest': 5}
 UNRANKED = 2
 SHOWN = 5
+KEY = 'Key: I=Initiative, E=Epic, W=Work Item'
 ACTIVE = ('In Progress', 'In Review')
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
 Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
@@ -383,7 +385,8 @@ def main() -> int:
                      '', '*Initiatives*', *(context or ['• Nothing']),
                      '', '*Completed*', *completed.render(),
                      '', '*In progress*', *progress.render(),
-                     '', '*Next*', *(upcoming or ['• Nothing'])]))
+                     '', '*Next*', *(upcoming or ['• Nothing']),
+                     '', KEY]))
     for note in dict.fromkeys(unresolved):
         print(f'unresolved: {note}', file=sys.stderr)
     return 0

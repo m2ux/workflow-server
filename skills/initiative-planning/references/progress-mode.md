@@ -32,7 +32,8 @@ next. The board's Status is the source, so the summary is as current as the boar
    - **In progress:** epics and task issues In Progress or In Review, each epic with its open pull
      requests, or else its next task;
    - **Next:** the five Ready items ranked by priority label, each epic with its next task, and a
-     count of the rest.
+     count of the rest;
+   - **Key:** what the reference letters stand for: I Initiative, E Epic, W Work Item.
 5. **Give the initiatives off the board.** For each `unresolved` line naming an initiative not on
    the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch
    it, and re-run with `--initiatives issue-946.json …`.

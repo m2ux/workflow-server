@@ -211,6 +211,10 @@ class Window(unittest.TestCase):
             out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')], (), '--summary', str(path))
         self.assertEqual(out.splitlines()[1:3], ['We shipped the release.', 'Board: https://github.com/orgs/o/projects/7'])
 
+    def test_key_to_the_reference_letters_ends_the_summary(self):
+        out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
+        self.assertEqual(out.splitlines()[-2:], ['', 'Key: I=Initiative, E=Epic, W=Work Item'])
+
     def test_heading_names_the_window_and_initiative(self):
         out = summary([item(issue(1, '[I08] Libraries: All'), 'In Progress')], (), '--initiative', 'I08')
         self.assertEqual(out.splitlines()[0], '*Progress since Fri 25 Sep* — I08')
