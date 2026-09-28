@@ -1,0 +1,17 @@
+$schema: ../../../schemas/workflow.schema.json
+id: schema-hygiene-conformance
+version: 1.0.0
+title: Schema Hygiene Conformance
+description: >-
+  Live evidence for the session status, declared-checkpoint yield and bare rule reference
+  behaviour: one activity binding a local technique and its rule, then a declared checkpoint.
+author: m2ux
+tags:
+  - specimen
+techniques:
+  activity:
+    - variable-binding
+initialActivity: probe
+graph:
+  probe:
+    probed: __terminal__

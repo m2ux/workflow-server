@@ -1,0 +1,28 @@
+id: probe
+version: 1.0.0
+name: Probe
+description: Record the probe, then confirm it at a declared checkpoint.
+required: true
+techniques:
+  - hygiene-probe::local-marker
+variables:
+  writes:
+    - name: probe_recorded
+      type: boolean
+      description: True once the probe has executed.
+steps:
+  - kind: technique
+    technique: hygiene-probe
+  - kind: checkpoint
+    id: confirm
+    message: "Is the probe recorded?"
+    options:
+      - id: confirmed
+        label: "Confirmed"
+        effect:
+          exit: probed
+exits:
+  - id: probed
+    isDefault: true
+outcome:
+  - The probe has executed ({probe_recorded})
