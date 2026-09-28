@@ -37,9 +37,10 @@ next. The board's Status is the source, so the summary is as current as the boar
    the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch
    it, and re-run with `--initiatives issue-946.json …`.
 6. **Write the paragraph for management** from the Initiatives and Completed sections, and re-run
-   with `--summary summary.txt`. One paragraph in plain language: what the window delivered, as
-   outcomes for the initiatives it serves, with no references, links, task ids or tool names. Leave
-   out work in progress and next. With nothing completed, say so in one sentence.
+   with the same arguments and `--summary summary.txt`. One paragraph in plain language: what the
+   window delivered, as outcomes for the initiatives it serves, with no references, links, task ids
+   or tool names. Leave out work in progress and next. With nothing completed, say so in one
+   sentence.
 7. **Report** the summary verbatim in a fenced block, so the user copies it unaltered, with any
    `unresolved` line it prints to stderr beneath: a dependency on an issue off the board, which
    reads as blocked, or an epic whose Work Breakdown cannot be read, summarised without its tasks;
@@ -58,5 +59,5 @@ gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[]
 gh api repos/{owner}/{repo}/issues/946 > issue-946.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --initiatives issue-946.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --summary summary.txt
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08 --summary summary.txt
 ```

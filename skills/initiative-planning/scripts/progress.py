@@ -1,4 +1,5 @@
-"""Summarise a project board as a standup: what completed, what is in progress, and what is next.
+"""Summarise a project board as a standup: a paragraph for management on what the window
+accomplished, then what completed, what is in progress, and what is next.
 
 Usage:
   python3 progress.py --items items.json --prs prs.json [--since 2026-09-25] [--initiative [owner/repo:]I08]
@@ -50,9 +51,9 @@ with the choices. An epic summarised whose Work Breakdown the scripts cannot rea
 is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: a *bold* heading with the
---summary paragraph, when given, and the board's link beneath, *bold* sections, bullets, and each issue or pull request by its bare URL. Unresolved
-dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
-print to stderr.
+--summary paragraph, when given, and the board's link beneath, *bold* sections, bullets, and each
+issue or pull request by its bare URL. Unresolved dependencies, unreadable epics, pull requests
+without a repository and worked initiatives not given print to stderr.
 """
 import argparse
 import json
