@@ -216,7 +216,7 @@
         },
         "initialActivity": {
           "type": "string",
-          "description": "Identifier of the first activity to execute."
+          "description": "Identifier of the first activity to execute: the activity the first `next_activity` names, and the root the variable-reachability analysis walks from. Naming no activity of this workflow fails the load."
         },
         "graph": {
           "type": "object",

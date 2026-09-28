@@ -332,7 +332,10 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       ...(workflow.activities ?? []).map(a => a.id),
       ...activityLoadErrors.map(e => e.activity_id).filter((id): id is string => id !== undefined),
     ]);
-    const bindingErrors = validateExitBindings(workflow, knownActivityIds);
+    const bindingErrors = [
+      ...validateInitialActivity(workflow, knownActivityIds),
+      ...validateExitBindings(workflow, knownActivityIds),
+    ];
     if (bindingErrors.length > 0) return err(new WorkflowValidationError(workflowId, bindingErrors));
 
     logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
@@ -554,6 +557,18 @@ export function fanGroups(workflow: Workflow): FanGroup[] {
     }
   }
   return groups;
+}
+
+/**
+ * Check that the workflow enters at an activity it contains. The first `next_activity` must name
+ * this activity, and the variable-reachability analysis walks from it, so an entry naming nothing
+ * leaves the run unstartable and the analysis with no root to walk from. `knownActivityIds` is the
+ * set `validateExitBindings` reads.
+ */
+export function validateInitialActivity(workflow: Workflow, knownActivityIds: ReadonlySet<string>): string[] {
+  return knownActivityIds.has(workflow.initialActivity)
+    ? []
+    : [`Workflow initialActivity '${workflow.initialActivity}' names no activity this workflow contains.`];
 }
 
 /**

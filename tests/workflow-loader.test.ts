@@ -9,6 +9,7 @@ import {
   getExitBindings,
   exitDestinations,
   validateExitBindings,
+  validateInitialActivity,
   TERMINAL_SENTINEL,
   baseId,
   instanceIndex,
@@ -365,6 +366,20 @@ describe('workflow-loader', () => {
     it('returns empty for an activity the workflow does not contain', async () => {
       const workflow = await loadMetaWorkflow();
       expect(exitDestinations(workflow, 'no-such-activity')).toEqual([]);
+    });
+  });
+
+  describe('validateInitialActivity', () => {
+    const wf = (initialActivity: string) => ({ id: 'wf', version: '1.0.0', title: 'WF', initialActivity } as unknown as Workflow);
+    const known = new Set(['start', 'next']);
+
+    it('accepts an entry naming an activity the workflow contains', () => {
+      expect(validateInitialActivity(wf('start'), known)).toEqual([]);
+    });
+
+    it('reports an entry naming no activity the workflow contains', () => {
+      expect(validateInitialActivity(wf('begin'), known).join(' '))
+        .toContain("initialActivity 'begin' names no activity this workflow contains");
     });
   });
 
