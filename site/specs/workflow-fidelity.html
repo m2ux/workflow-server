@@ -73,7 +73,7 @@
   <figure class="diagram">
     <svg viewBox="0 0 960 470" role="img" aria-labelledby="fid-title fid-desc">
       <title id="fid-title">The seven enforcement layers</title>
-      <desc id="fid-desc">A stack of seven layers. Layer one, cryptographic integrity, applies to every call and is a hard gate. Layer two, the checkpoint gate, blocks transitions and is a hard gate. Layers three to six — cross-activity validation, transition condition tracking, the step completion manifest, and the activity manifest — are advisory checks that produce warnings. Layer seven, the execution trace, records the entire session.</desc>
+      <desc id="fid-desc">A stack of seven layers. Layer one, cryptographic integrity, applies to every call and is a hard gate. Layer two, the checkpoint gate, blocks transitions and is a hard gate. Layers three to six — cross-activity validation, reported-exit validation, the step completion manifest, and the activity manifest — are advisory checks that produce warnings. Layer seven, the execution trace, records the entire session.</desc>
       <g font-size="15" font-weight="600">
         <rect x="60" y="12" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
         <text x="80" y="34" fill="var(--diagram-label)">L1 · Cryptographic integrity (HMAC)</text>
@@ -95,7 +95,7 @@
         <text x="80" y="364" fill="var(--diagram-note)" font-size="13" font-weight="400">workflow-journey summary checked against definition and conditions</text>
         <rect x="60" y="384" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
         <text x="80" y="406" fill="var(--diagram-label)">L7 · Execution trace</text>
-        <text x="80" y="426" fill="var(--diagram-note)" font-size="13" font-weight="400">every tool call recorded; signed trace tokens resolvable via get_trace</text>
+        <text x="80" y="426" fill="var(--diagram-note)" font-size="13" font-weight="400">session calls recorded; signed trace tokens resolvable via get_trace</text>
       </g>
       <g font-size="13.5" fill="var(--diagram-note)">
         <text x="745" y="42">every call · hard</text>
@@ -120,8 +120,8 @@
     <table>
       <thead><tr><th scope="col">Layer</th><th scope="col">When it runs</th><th scope="col">Effect</th><th scope="col">What to do</th></tr></thead>
       <tbody>
-        <tr><td>L3 Cross-activity</td><td>Session navigation</td><td>Warns</td><td>Fix workflow switches, transitions, or stale definitions</td></tr>
-        <tr><td>L4 Transition condition</td><td><code>next_activity</code></td><td>Warns</td><td>Match claimed condition to a real transition</td></tr>
+        <tr><td>L3 Cross-activity</td><td>Session navigation</td><td>Warns</td><td>Fix transitions the graph does not bind, or stale definitions</td></tr>
+        <tr><td>L4 Reported exit</td><td><code>next_activity</code></td><td>Warns</td><td>Report an exit the activity declares and the graph binds to the target</td></tr>
         <tr><td>L5 Step manifest</td><td><code>next_activity</code></td><td>Warns</td><td>Report completed steps with valid ids and outputs</td></tr>
         <tr><td>L6 Activity manifest</td><td><code>next_activity</code></td><td>Warns</td><td>Summarize completed activities with real outcomes</td></tr>
       </tbody>
@@ -129,13 +129,13 @@
   </div>
 
   <h2 id="trace">The trace (L7)</h2>
-  <p>The server mechanically records every tool call — name, timing, status, workflow/activity/agent attribution, errors, and any validation warnings. At each activity transition the events are packaged into a compact, HMAC-signed trace token returned in <code>_meta.trace_token</code>; the agent accumulates these opaque strings and can resolve them at any time with <a href="../api/tools.html#get_trace"><code>get_trace</code></a>. Agents additionally write a semantic trace (step outputs, decisions, variable changes) to the planning folder; together the two give complete post-hoc visibility.</p>
+  <p>The server mechanically records each call that carries a <code>session_index</code>, apart from the read-only diagnostics <code>get_trace</code>, <code>get_workflow_status</code> and <code>inspect_session</code> — name, timing, status, workflow/activity/agent attribution, errors, and any validation warnings. At each activity transition the events are packaged into a compact, HMAC-signed trace token returned in <code>_meta.trace_token</code>; the agent accumulates these opaque strings and can resolve them at any time with <a href="../api/tools.html#get_trace"><code>get_trace</code></a>. Agents additionally write a semantic trace (step outputs, decisions, variable changes) to the planning folder; together the two give complete post-hoc visibility.</p>
 
   <h2 id="context">Context-pressure mitigation</h2>
   <p>Enforcement is half the story; the server also keeps agents' context windows small so instructions stay in effective attention: lightweight <code>get_workflow</code> metadata instead of full definitions, transitions delivered with each activity, pre-resolved technique bundles, lazy resources, a self-describing bootstrap, and compressed trace tokens (see <a href="./resource-resolution.html">resolution</a>).</p>
 
   <h2 id="limits">Honest limitations</h2>
-  <p>The enforcement is detection-oriented, not proof-oriented. The server verifies that steps were <em>reported</em>, not that the work was done; that a claimed condition maps to the target, not that it is true; that a checkpoint was <em>answered</em> after a plausible delay, not that a human saw it. The mechanical trace corroborates what tool calls actually happened, and post-hoc audit can cross-reference claims against checkpoint logs — the full list of limitations is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/fidelity.md">canonical document</a>.</p>
+  <p>The enforcement is detection-oriented, not proof-oriented. The server verifies that steps were <em>reported</em>, not that the work was done; that a reported exit is bound to the target, not that the activity reached it; that a checkpoint was <em>answered</em> after a plausible delay, not that a human saw it. The mechanical trace corroborates what tool calls actually happened, and post-hoc audit can cross-reference claims against checkpoint logs — the full list of limitations is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/fidelity.md">canonical document</a>.</p>
 </main>
 
 

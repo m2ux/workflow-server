@@ -126,7 +126,7 @@ Each `###` heading under Inputs or Outputs is an entry: a description, and optio
 * `#### audience` is who reads the output: `human` or `agent`. An output with an artifact declares it. On an output without one, absent means `human`. An agent artifact is JSON on disk, so its filename, or a template's literal suffix, ends in `.json`. A human artifact is prose.
 * `#### values` is the closed set the output admits. Backticked tokens in the body are the output's own set. `#####` children are the set one field admits.
 * `#### default` is an input's default value.
-* An entry whose description opens with `optional` is not required.
+* An entry whose description opens with `(optional)`, emphasis allowed and qualifiers inside the parentheses (`*(optional, default origin)*`), is not required.
 
 #### Audience
 

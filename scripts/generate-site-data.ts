@@ -347,11 +347,10 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'Child workflows are started with `dispatch_child`, not `start_session`.',
   ],
   get_workflow_status: [
-    'Returns whether the session is active, blocked at a checkpoint, or completed, plus the activities in flight and completed steps.',
-    'If the session is nested under a parent, parent context is included too.',
+    'Returns whether the session is active, blocked at a checkpoint, completed or aborted, plus the activities in flight, the completed activities, the last checkpoint answered and the variable bag.',
   ],
   inspect_session: [
-    'Read-only look at a session\'s stored state. Pick a `view`: `summary` (everything), `identity`, `variables`, `checkpoints`, `activities`, `history`, or `children`.',
+    'Read-only look at a session\'s stored state. Pick a `view`: `summary` (everything), `identity`, `variables`, `checkpoints`, `activities`, `history`, `children`, or `usage`.',
     'Returns a compact, purpose-built projection — never the raw session file.',
     'Pass `child_index` to look one level into a child session listed under `triggeredWorkflows`; pass `variable` with `view: variables` to read a single value.',
     'It never changes anything and works even while the session is paused at a checkpoint — which is often exactly when you want to look.',
@@ -380,7 +379,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   get_activity: [
     'Loads the full definition for the activity this context was dispatched for. Name it with `activity_id` where several are in flight; omit it on an ordinary walk, where the server reads the one activity from session state.',
     'You must pass `context_tokens`: your worker\'s context window size in tokens. The server uses this to decide how many step techniques to bundle inline.',
-    'Ungated techniques that fit the budget are included in the response under `step_techniques` — the same content you would get from `get_technique` for that step. Gated steps and overflow techniques still need a separate `get_technique` call.',
+    'Step-bound techniques whose gate answers true, and that fit the budget, are included in the response under `step_techniques` — the same content you would get from `get_technique` for that step. A step whose gate is false or unanswered, and a technique past the budget, still needs a separate `get_technique` call.',
     'If the session uses persistent context mode (or you pass `bundle: "reference"`), content you already received may come back as short unchanged markers instead of full text. Pass `bundle: "full"` to force full delivery.',
     '`_meta.batch` reports where your context stands against its batch bound: how many activities it has taken, the cap, what it has been delivered, the budget, and `may_continue`. On `may_continue: false`, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new `agent_id`.',
   ],

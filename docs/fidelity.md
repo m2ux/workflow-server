@@ -144,7 +144,7 @@ Others deliver content — `get_workflow`, `get_activity`, `get_technique`, `get
 - Real worker execution takes minutes, so the check never fires on a legitimate run.
 - An agent cannot dismiss an unconditional checkpoint. `condition_not_met` is rejected without a `condition` field.
 
-The three resolution modes and the timers each one waits out are specified in [checkpoints](checkpoint.md#three-ways-to-resolve-one).
+The three resolution modes and the timers each one waits out are specified in [checkpoints](checkpoint.md#resolving-a-pause).
 
 ## Layer 3: Cross-Activity Validation
 
@@ -178,7 +178,7 @@ classDiagram
 
 *Figure 8. Last Position, the Claim, and the Declared Graph.*
 
-Each call is compared with the definition the session started against, and each `next_activity` with the activity the server recorded last. A disagreement produces a warning in `_meta.validation`:
+Each call of `get_workflow`, `next_activity`, `get_activity`, `get_technique`, `get_resource`, `yield_checkpoint`, `present_checkpoint` and `respond_checkpoint` is compared with the definition the session started against, and each `next_activity` with the activity the server recorded last. A disagreement produces a warning in `_meta.validation`:
 
 | Check | What it detects |
 |-------|-----------------|
@@ -308,7 +308,7 @@ The server records every delivery of technique or resource content into the sess
 
 `technique_fetched`, `technique_bundled` and `resource_fetched` carry `chars`, the full payload size on either path, and `delivery: "full" | "unchanged"`. `activity_delivered` carries `delivery: "full" | "reference"` and no `chars`, since wire size lives on `activity_dispatched`. Characters delivered and characters saved are both summable from the history rather than estimated. An unchanged-reference answer under persistent context mode still counts as a delivery.
 
-Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique, or by an inline bundle delivery. Where `next_activity` names the `agent_id`, only that agent's deliveries count. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery.md#reference-delivery) and [bundling](delivery.md#eager-technique-bundling).
+Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique, or by an inline bundle delivery. Where `next_activity` names the `agent_id`, only that agent's deliveries count. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery.md#reference-delivery) and [bundling](delivery.md#eager-bundling).
 
 ## Layer 6: Activity Manifest
 

@@ -226,14 +226,14 @@ classDiagram
 
 ### Polling a Dispatched Workflow
 
-The user-facing agent can ask where a child run stands without waking it (Figure 13). The answer is the session's place: going, waiting on a person, or finished (Figure 14).
+The user-facing agent can ask where a child run stands without waking it (Figure 13). The answer is the session's place: going, waiting on a person, finished, or aborted (Figure 14).
 
 ```mermaid
 sequenceDiagram
   participant UserFacing as User-facing agent
   participant Server
   UserFacing->>Server: Ask where the child stands
-  Server-->>UserFacing: Going, waiting, or finished
+  Server-->>UserFacing: Going, waiting, finished, or aborted
 ```
 
 *Figure 13. Ask Where a Child Run Stands.*
@@ -242,7 +242,7 @@ sequenceDiagram
 classDiagram
   class ChildRun
   class Status {
-    going, waiting, or finished
+    going, waiting, finished, or aborted
   }
   ChildRun --> Status : reports
 ```

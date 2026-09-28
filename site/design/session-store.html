@@ -123,7 +123,7 @@
         <tr><th scope="col">Field group</th><th scope="col">Contents</th></tr>
       </thead>
       <tbody>
-        <tr><td>Identity</td><td><code>schemaVersion</code>, <code>sessionIndex</code>, <code>workflowId</code>, <code>workflowVersion</code> (captured at start, checked for drift on every call), <code>agentId</code>, <code>startedAt</code>.</td></tr>
+        <tr><td>Identity</td><td><code>schemaVersion</code>, <code>sessionIndex</code>, <code>workflowId</code>, <code>workflowVersion</code> (captured at start, and checked for drift by each call that reads the definition), <code>agentId</code>, <code>startedAt</code>.</td></tr>
         <tr><td>Position</td><td><code>frontier</code> (the activities in progress: an instance-fan branch as <code>&lt;activityId&gt;#&lt;index&gt;</code>, zero-based, and a list-fan member by its bare id), <code>completedActivities</code>, <code>status</code> (<code>running</code>, <code>completed</code>, <code>aborted</code>), and <code>activeCheckpoint</code> — the gate that pauses navigation while a decision is outstanding.</td></tr>
         <tr><td>Data</td><td><code>variables</code>, the schema-validated bag mutated only through declared paths (checkpoint effects and recorded outputs — see <a href="../specs/state-management.html">state</a>), plus <code>checkpointResponses</code>, which caches each resolved checkpoint so a replayed yield returns the earlier answer instead of asking twice.</td></tr>
         <tr><td>Ordering</td><td><code>seq</code>, a monotonic counter bumped by every mutation, and <code>ts</code> — together they make "which write is newer" a comparison, not a guess.</td></tr>

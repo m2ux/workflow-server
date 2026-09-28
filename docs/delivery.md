@@ -522,7 +522,7 @@ Inlining is automatic. There is no per-activity opt-in. What sizes the bundle is
 
 #### Which Steps Are Inlined
 
-Each technique step whose gate answers true, in document order, until the budget runs out. A step with no gate answers true. The server can take that answer when every variable the gate compares is already bound and no step of this activity produces one of them. Otherwise the gate is unanswered, and the step stays for a later fetch.
+Each technique step whose gate answers true, in document order, until the budget runs out. A step with no gate answers true. The server can take that answer when every variable the gate needs a value of is already bound and no step of this activity produces one of them. Otherwise the gate is unanswered, and the step stays for a later fetch.
 
 
 | Gate reads                                                                                       | Answer     | Delivery                                                                  |
@@ -530,7 +530,7 @@ Each technique step whose gate answers true, in document order, until the budget
 | Variables bound before the activity opened, none of them written inside it, and the gate is true | True       | Inlined. The worker certainly reaches this step                           |
 | The same, evaluating false                                                                       | False      | Left to fetch, and nothing is shipped for a step the run will not execute |
 | A variable this activity produces                                                                | Unanswered | Left to fetch                                                             |
-| A variable the gate compares, absent from the bag                                                | Unanswered | Left to fetch. An absent read is not the same as a negative one           |
+| A variable the gate needs a value of, absent from the bag: a bare read, or a comparison other than `!=` outside a `!` | Unanswered | Left to fetch. An absent read is not the same as a negative one |
 | An expression that does not parse                                                                | Unanswered | Left to fetch                                                             |
 
 

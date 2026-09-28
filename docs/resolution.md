@@ -533,7 +533,7 @@ The result of resolving a list of references is a bundle grouped into these buck
 * **`rules`** — a flat array of `[rule-name, rule-line]` tuples (one tuple per line) for rules that govern the role rather than any one technique.
 * **`unresolved`** — references that did not resolve.
 
-Empty buckets are omitted. Clients receive a bundle through `get_workflow` and `get_activity`, which [delivery](delivery.md#what-a-role-receives) describes.
+Empty buckets are omitted. Clients receive a bundle through `get_workflow` and `get_activity`, which [delivery](delivery.md#what-agents-are-sent) describes.
 
 ### Ancestor Contract
 
