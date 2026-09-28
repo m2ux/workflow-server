@@ -35,7 +35,7 @@
         "seq": {
           "type": "integer",
           "minimum": 0,
-          "description": "Nonnegative integer revision number for the session state."
+          "description": "Nonnegative integer revision number for the session state, increased by one with every state-changing tool call."
         },
         "ts": {
           "type": "integer",
@@ -51,10 +51,10 @@
           "type": "array",
           "items": {
             "type": "string",
-            "description": "Activity identifier, optionally qualified by an instance number."
+            "description": "Activity identifier, or `<activityId>#<index>` for one instance of an instance fan."
           },
           "default": [],
-          "description": "Activities currently in progress, with parallel instances named `<activityId>#<instance>`. Entries are distinct strings, so a bare activity identifier matches no instance of a fan. Empty between the last branch retiring and the join being entered, and after the run completes."
+          "description": "Activities currently in progress. An instance fan's branches are named `<activityId>#<index>`, the zero-based collection index; a list fan's plain members appear under their bare identifier. Entries are distinct strings, so a bare activity identifier matches no instance of an instance fan. Empty between the last branch retiring and the join being entered, and after the run completes."
         },
         "currentTechnique": {
           "type": "string",
@@ -394,7 +394,7 @@
         "repo": {
           "type": "string",
           "minLength": 1,
-          "description": "Target repository in `owner/repo` form."
+          "description": "Target repository in `owner/repo` form. Fixed once bound: binding a different repository to the session is rejected."
         },
         "contextMode": {
           "type": "string",

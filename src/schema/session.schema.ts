@@ -62,7 +62,7 @@ const SessionFileBaseSchema = z.object({
 
   agentId: z.string().min(1).describe('Nonempty identifier of the agent associated with this session.'),
 
-  seq: z.number().int().nonnegative().describe('Nonnegative integer revision number for the session state.'),
+  seq: z.number().int().nonnegative().describe('Nonnegative integer revision number for the session state, increased by one with every state-changing tool call.'),
 
   ts: z.number().int().nonnegative().describe('Time of the latest state revision, in Unix epoch seconds.'),
 
@@ -70,7 +70,7 @@ const SessionFileBaseSchema = z.object({
 
   // Holds one activity or the branches of exactly one fan: every branch exit binds to its fan's join,
   // so a branch cannot open a fan of its own.
-  frontier: z.array(z.string().describe('Activity identifier, optionally qualified by an instance number.')).default([]).describe('Activities currently in progress, with parallel instances named `<activityId>#<instance>`. Entries are distinct strings, so a bare activity identifier matches no instance of a fan. Empty between the last branch retiring and the join being entered, and after the run completes.'),
+  frontier: z.array(z.string().describe('Activity identifier, or `<activityId>#<index>` for one instance of an instance fan.')).default([]).describe('Activities currently in progress. An instance fan\'s branches are named `<activityId>#<index>`, the zero-based collection index; a list fan\'s plain members appear under their bare identifier. Entries are distinct strings, so a bare activity identifier matches no instance of an instance fan. Empty between the last branch retiring and the join being entered, and after the run completes.'),
   currentTechnique: z.string().default('').describe('Current technique reference, or an empty string when none is selected.'),
 
   exit: z.string().default('').describe('Most recent activity exit, or an empty string when none is recorded.'),
@@ -91,7 +91,7 @@ const SessionFileBaseSchema = z.object({
 
   planningFolderPath: z.string().optional().describe('Absolute path of the planning folder containing the session file.'),
 
-  repo: z.string().min(1).optional().describe('Target repository in `owner/repo` form.'),
+  repo: z.string().min(1).optional().describe('Target repository in `owner/repo` form. Fixed once bound: binding a different repository to the session is rejected.'),
 
   contextMode: z.enum(['persistent', 'fresh']).optional().describe('Agent context model: `persistent` receives content already delivered as hash references; `fresh`, the default, receives full content on every call.'),
 
