@@ -251,7 +251,7 @@ Holding `activities/` does not make a directory a namespace. An activity declare
 
 ### Filename Prefix
 
-An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
+An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. The rest of the filename is the activity's id, and a file declaring another id is left out of the load. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
 
 ## Routine
 

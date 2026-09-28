@@ -228,7 +228,7 @@ classDiagram
 
 *Figure 10. Agent, the Session, and the Effects.*
 
-An effect is applied on its own terms. A variable effect is written into the session. An exit effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back, because recording the answer does not itself move the session. Where that exit is immediate, the activity's remaining steps do not run.
+An effect is applied on its own terms. A variable effect is written into the session. An exit effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back, because recording the answer does not itself move the session. Where that exit is immediate, the activity's remaining steps do not run: `resume_checkpoint`, and a replayed `yield_checkpoint`, hand the worker the exit with `ends_activity`.
 
 #### Reading the Question
 
@@ -364,7 +364,7 @@ The user-facing agent wakes the orchestrator and passes the variable updates in 
 resume_checkpoint({ session_index })
 ```
 
-The server checks that the pause has been cleared and returns the checkpoint it answered, the option chosen, and the variables that option set. Calling this while the pause is still active is a hard error: the answer has to exist before the worker moves.
+The server checks that the pause has been cleared and returns the checkpoint it answered, the option chosen, the variables that option set, and the exit it selected, if any. An exit carrying `ends_activity` ended the activity at the checkpoint: the worker runs none of the remaining steps and reports the ones it ran. Calling this while the pause is still active is a hard error: the answer has to exist before the worker moves.
 
 ## Declaring a Checkpoint
 

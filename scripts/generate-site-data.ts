@@ -389,7 +389,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   ],
   resume_checkpoint: [
     'Call after the orchestrator resolves a checkpoint and resumes you.',
-    'Verifies the checkpoint is cleared and returns any variable updates to apply before continuing the activity.',
+    'Verifies the checkpoint is cleared and returns the checkpoint answered, the option chosen, the variable updates to apply, and the exit the option selected, if any. Where that exit carries `ends_activity`, run none of the remaining steps and report the ones you ran.',
   ],
   present_checkpoint: [
     'Loads the active checkpoint\'s message, options, and effects so you can show it to the user.',

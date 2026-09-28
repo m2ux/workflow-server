@@ -367,7 +367,7 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Call after the orchestrator resolves a checkpoint and resumes you.</p>
-          <p>Verifies the checkpoint is cleared and returns any variable updates to apply before continuing the activity.</p>
+          <p>Verifies the checkpoint is cleared and returns the checkpoint answered, the option chosen, the variable updates to apply, and the exit the option selected, if any. Where that exit carries <code>ends_activity</code>, run none of the remaining steps and report the ones you ran.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">

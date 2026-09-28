@@ -446,7 +446,7 @@ classDiagram
 
 *Figure 24. Immediate Exit, and the Steps It Ends.*
 
-An exit may be declared `immediate`. Selecting one at a checkpoint ends the activity's step sequence there, so a user who aborts does not then watch the remaining steps run. The step-manifest check reads the recorded exit and accounts for the steps it skipped.
+An exit may be declared `immediate`. Selecting one at a checkpoint ends the activity's step sequence there, so a user who aborts does not then watch the remaining steps run. The worker learns it from `resume_checkpoint`, or from a replayed `yield_checkpoint`, both of which return the exit with `ends_activity`. The step-manifest check reads the recorded exit and accounts for the steps it skipped.
 
 ## Varying the Path
 
