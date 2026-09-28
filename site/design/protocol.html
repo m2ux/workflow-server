@@ -171,7 +171,7 @@
   <h2 id="dispatch">Dispatch in practice</h2>
   <p>A typical work package starts before any planning folder exists: the meta session created by <code>start_session</code> for workflow selection is <em>transient</em>, living in the system temp directory. The first <code>dispatch_child</code> that commits to real work does three things at once — promotes the transient session into the engineering planning root (typically <code>artifacts/planning/&lt;slug&gt;/</code>, or <code>.engineering/artifacts/planning/&lt;slug&gt;/</code> in legacy single-root mode; slug from your request or a dated fallback), creates the child session embedded in the parent's file, and returns the child's own <code>session_index</code> for the worker. From there:</p>
     <ul>
-    <li><code>get_workflow_status</code> is the orchestrator's poll — position, active checkpoint, and child statuses without touching execution.</li>
+    <li><code>get_workflow_status</code> is the orchestrator's poll — status, the activities in flight and completed, the last checkpoint answered, and the variable bag, without touching execution.</li>
     <li>A child reaching its terminal activity flips its entry in the parent's <code>triggeredWorkflows</code> to <code>completed</code>; the parent discovers this on its next status read rather than by callback.</li>
     <li>Because children are <a href="../design/session-store.html#nesting">embedded, not separate files</a>, resuming the parent by folder name resumes the entire tree.</li>
   </ul>

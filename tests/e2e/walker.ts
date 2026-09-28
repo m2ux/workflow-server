@@ -955,9 +955,8 @@ export async function walk(
     current = next;
   }
 
-  // The session-file `status` field is the authoritative terminal signal
-  // (get_workflow_status only ever reports active/blocked). It flips to
-  // "completed" when a transition lands on a terminal activity.
+  // The session-file `status` field is the authoritative terminal signal. It
+  // flips to "completed" when a transition lands on a terminal activity.
   const sessionPath = join(harness.workspaceDir, '.engineering/artifacts/planning', planningSlug, 'session.json');
   let finalStatus = 'unknown';
   try {

@@ -2963,7 +2963,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Session status (active/blocked/completed), the activities in flight, completed activities, last checkpoint, and parent context if nested.',
+    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered, and the variable bag.',
     {
       ...sessionIndexParam,
     },
@@ -2977,12 +2977,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
       const workflow = wfResult.success ? wfResult.value : null;
 
-      let status: string;
-      if (clientActive) {
-        status = 'blocked';
-      } else {
-        status = 'active';
-      }
+      // An open checkpoint blocks a running session; otherwise the session file's own status holds.
+      const status = clientActive ? 'blocked' : state.status === 'running' ? 'active' : state.status;
 
       const traceEvents = config.traceStore ? config.traceStore.getEvents(state.sessionIndex) : [];
 
