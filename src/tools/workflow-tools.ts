@@ -802,7 +802,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
-        'repo_binding: required — pass working_directory as the absolute path of the checkout under work; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
+        'repo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work; a transient meta bootstrap may start unbound and binds when dispatch_child promotes it; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
       ];
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);
@@ -822,7 +822,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every technique of your contract arrives with its body; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one technique. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every technique of your contract arrives with its body, or, under persistent context mode, as an unchanged marker once this agent holds it; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one technique. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
     {
       ...sessionIndexParam,
     },
@@ -2397,7 +2397,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit an empty `<checkpoint_yield>` block: the orchestrator reads the open checkpoint from the server). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides — an activity declaring no gate is delivered no gate protocol, so fetch it with get_technique { technique_id: "workflow-engine::yield-checkpoint" } before raising one.',
+  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit an empty `<checkpoint_yield>` block, which hands control up the chain; the user-facing agent reads the open checkpoint from the server with present_checkpoint). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides — a workflow none of whose activities declares a gate is delivered no gate protocol, so fetch it with get_technique { technique_id: "workflow-engine::yield-checkpoint" } before raising one.',
     {
       ...sessionIndexParam,
       checkpoint_id: z.string().describe('Checkpoint id being yielded. Matches a checkpoint the current activity declares, or names a decision the activity did not anticipate — the latter requires `message` and `options`.'),
@@ -2552,7 +2552,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpoint_id,
           session_index,
           ...(publishedNames.length > 0 ? { variables_published: publishedNames } : {}),
-          message: `Checkpoint '${checkpoint_id}' successfully yielded. Emit an empty <checkpoint_yield> block, which hands control to the orchestrator to read the open checkpoint with present_checkpoint, then STOP execution and wait to be resumed.`
+          message: `Checkpoint '${checkpoint_id}' successfully yielded. Emit an empty <checkpoint_yield> block, which hands control up the chain for the user-facing agent to read the open checkpoint with present_checkpoint, then STOP execution and wait to be resumed.`
         }, null, 2) }],
         _meta: {
           session_index,
@@ -2564,7 +2564,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch). Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional `agent_id` attributes the row to a worker context.',
+  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY, on the `basis` the harness reports it: that activity\'s own spend, or the context\'s running total. Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional `agent_id` attributes the row to a worker context.',
     {
       ...sessionIndexParam,
       activity: z.string().describe('Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.'),

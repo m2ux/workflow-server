@@ -319,7 +319,7 @@ const TOOL_GROUPS: Array<{ title: string; note: string; tools: string[] }> = [
 const SITE_TOOL_SUMMARIES: Partial<Record<string, string>> = {
   start_session: 'Start or resume a workflow session.',
   dispatch_child: 'Start a child workflow inside the current session.',
-  get_activity: 'Load the current activity definition, including steps and transitions.',
+  get_activity: 'Load the current activity definition, including steps and exits.',
 };
 
 /** Readable full descriptions for the site. Parameter tables still come from source schemas. */
@@ -338,12 +338,12 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   ],
   start_session: [
     'Opens a new workflow session or resumes an existing one.',
-    'Returns a `session_index` (six characters), basic workflow metadata, `planning_folder_path` — the absolute path agents should use for session artifacts (host bind path under Docker when `HOST_PROJECTS_ROOT` is set; server-local path under stdio) — and `execution_path` (`agent` when a caller walks the definition, `runner` when the server does).',
+    'Returns a `session_index` (six characters), basic workflow metadata, `planning_folder_path` — the absolute path agents should use for session artifacts (host bind path under Docker when `HOST_PROJECTS_ROOT` is set; server-local path under stdio) — and `execution_path`, `agent`: a caller walks the definition.',
     'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin. `repo` is optional and must equal the derived origin when present.',
     'Pass `planning_folder` as any absolute path whose basename is your planning slug (for example, `.../planning/2026-05-28-my-slug`). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.',
     'If that named slug already has `session.json`, the session resumes and `workflow_id` is ignored. A derived dated slug that already holds a session opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call.',
     'A fresh durable meta session that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client and returns `client.session_index`. A durable meta start that cannot uniquely open a client returns a `decision` with no `session_index`; retry with `user_request`, `target_workflow_id`, `planning_folder`, or `fresh`. Origin binds even when the checkout folder is named for a branch.',
-    'Omit both `working_directory` and `planning_folder` to start a meta bootstrap session in a temp folder. Use `dispatch_child` later to promote it to an empty planning folder.',
+    'Omit `working_directory` on a meta session to start a bootstrap session in a temp folder, unless `planning_folder` names a folder that already holds a session. Use `dispatch_child` later to promote it to an empty planning folder.',
     'Child workflows are started with `dispatch_child`, not `start_session`.',
   ],
   get_workflow_status: [
@@ -357,7 +357,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   ],
   dispatch_child: [
     'Starts a child workflow inside the parent session you are already in.',
-    'Returns the child\'s `session_index`, `planning_folder_path`, and `execution_path`. The child\'s variables are seeded from the child workflow\'s defaults; the parent is unchanged.',
+    'Returns the child\'s `session_index`, `planning_folder_path`, and `execution_path`. The child\'s variables are seeded from the child workflow\'s defaults plus the parent\'s `user_request`; the parent records the child under `triggeredWorkflows`.',
     'Also returns `workflow.initialActivity` — the activity the child\'s first `next_activity` should name. A parent knows its own workflow\'s first activity, not its child\'s, and `get_workflow` stays where a session reads its own metadata, so this carries the child\'s across the boundary.',
     'The child state is stored inside the parent\'s `session.json` under `triggeredWorkflows`.',
     'When the parent is a temporary meta-bootstrap session, the server first promotes it to an empty planning folder on disk, then embeds the child. You can keep using the parent\'s original `session_index`.',
@@ -381,11 +381,11 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'You must pass `context_tokens`: your worker\'s context window size in tokens. The server uses this to decide how many step techniques to bundle inline.',
     'Step-bound techniques whose gate answers true, and that fit the budget, are included in the response under `step_techniques` — the same content you would get from `get_technique` for that step. A step whose gate is false or unanswered, and a technique past the budget, still needs a separate `get_technique` call.',
     'If the session uses persistent context mode (or you pass `bundle: "reference"`), content you already received may come back as short unchanged markers instead of full text. Pass `bundle: "full"` to force full delivery.',
-    '`_meta.batch` reports where your context stands against its batch bound: how many activities it has taken, the cap, what it has been delivered, the budget, and `may_continue`. On `may_continue: false`, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new `agent_id`.',
+    '`_meta.batch` reports where your context stands against its batch bound: how many activities it has taken, what it has been delivered, `may_continue`, and, where `bounded` is true, the cap and the budget. On `may_continue: false`, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new `agent_id`.',
   ],
   yield_checkpoint: [
     'Call when a checkpoint step tells you to stop and hand control to the orchestrator.',
-    'Records the checkpoint as active. Emit an empty `<checkpoint_yield>` block in your output; the orchestrator reads the open checkpoint with `present_checkpoint`.',
+    'Records the checkpoint as active. Emit an empty `<checkpoint_yield>` block in your output, which hands control up the chain; the user-facing agent reads the open checkpoint with `present_checkpoint`.',
   ],
   resume_checkpoint: [
     'Call after the orchestrator resolves a checkpoint and resumes you.',
@@ -404,7 +404,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   get_technique: [
     'Fetches one technique for the current workflow or activity.',
     'Before any activity is active, returns the workflow\'s first technique. During an activity, use `step_id` to fetch a specific step\'s technique, or omit `step_id` for the activity\'s first technique.',
-    'The response is fully composed: inherited inputs/outputs and merged rules from ancestor techniques, plus binding annotations when fetched via a step.',
+    'The response carries the technique body with its own rules, naming its ancestors in `inherits`; each ancestor scope\'s shared inputs, outputs and rules arrive once under `contracts`, plus binding annotations when fetched via a step.',
     'Techniques load one at a time. In persistent context mode, an identical refetch may return a short unchanged marker; pass `full: true` to get the full payload again.',
     'Every fetch is recorded for trace and advisory manifest checks on the next `next_activity` call.',
   ],
@@ -423,22 +423,18 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
 
 /** Shorter parameter descriptions for the site tables (schemas in source stay authoritative). */
 const SITE_PARAM_HINTS: Record<string, string> = {
-  session_index: 'Six-character token from `start_session`. Use the same value for every call in this session.',
-  workflow_id: 'Workflow id to run or dispatch (for example, `work-package`).',
+  session_index: 'Six-character index a `start_session` or `dispatch_child` response returned, copied verbatim. Use the same value for every call in this session.',
+  workflow_id: 'Workflow id to run or dispatch (for example, `meta`).',
   planning_folder: 'Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.',
-  agent_id: 'Label for this agent in the session trace.',
-  context_mode: '`persistent`: reuse earlier deliveries when one agent keeps full context. `fresh` (default): always return full content.',
   planning_slug: 'Slug for the promoted planning folder when dispatching from a meta bootstrap session. Ignored if the parent already has a persistent folder.',
-  activity_id: 'Activity to move to. First call: use `initialActivity` from `get_workflow`. Later: the activity the `graph` binds to the exit just taken.',
   exit: 'Name of the exit the previous activity took.',
-  step_manifest: 'Steps completed in the previous activity, for example `[{ "step_id": "detect-review-mode", "output": { "is_review_mode": false } }]`. Omit if no steps ran.',
+  step_manifest: 'Steps completed in the previous activity, for example `[{ "step_id": "check-inputs", "output": { "inputs_valid": true } }]`. Omit if no steps ran.',
   'step_manifest[].step_id': 'Step id from the activity definition (field name is `step_id`, not `id`).',
   'step_manifest[].output': 'What the step produced, as a JSON object keyed by the output id the bound technique declares — one output included. A key the technique does not declare is surfaced in _meta.validation.',
   activity_manifest: 'History of completed activities with their outcomes and the exit each took.',
   'activity_manifest[].activity_id': 'Completed activity id.',
   'activity_manifest[].outcome': 'Short outcome summary for that activity.',
   'activity_manifest[].exit': 'Exit that activity took, if any.',
-  context_tokens: 'Your worker context window in tokens. Required so the server can size inline technique bundling.',
   bundle: '`reference`: return unchanged markers for content already delivered. `full`: always return complete text.',
   checkpoint_id: 'Id of the checkpoint step you are yielding.',
   option_id: 'Option the user selected. Must match one of the checkpoint\'s defined options.',
@@ -446,7 +442,7 @@ const SITE_PARAM_HINTS: Record<string, string> = {
   condition_not_met: 'Set `true` to dismiss a conditional checkpoint whose condition evaluated to false.',
   step_id: 'Step within the current activity. Omit to get the first technique for the activity or workflow.',
   full: 'Force full content even when persistent mode would return an unchanged marker (`get_technique` or `get_resource`).',
-  resource_id: 'Resource slug, optionally workflow-prefixed (`meta/bootstrap-protocol`), optionally with `#section` anchor.',
+  resource_id: 'Resource slug, optionally workflow-prefixed (`meta/style-guide`), optionally with `#section` anchor.',
   trace_tokens: 'Tokens collected from `next_activity` `_meta.trace_token` responses.',
 };
 

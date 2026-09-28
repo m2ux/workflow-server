@@ -148,10 +148,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
         'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
-        'Pass `planning_folder` as an absolute path (basename = slug) to resume or pin a named folder. ' +
+        'Pass `planning_folder` as an absolute path (basename = slug) to resume the session that folder holds, or to pin a new folder for a session opened with `working_directory`. ' +
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
-        'Omit both `working_directory` and `planning_folder` for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
-        'Every session records `execution_path` (`agent` when a caller walks the definition, `runner` when the server does) on the session and echoes it here. ' +
+        'A meta session without `working_directory` is a transient bootstrap in a temp folder, unless `planning_folder` names a folder that already holds a session; `dispatch_child` promotes it later. Children use `dispatch_child`, not this tool. ' +
+        'Every session records `execution_path`, `agent`: a caller walks the definition. The session records it and this response echoes it. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks. ' +
         'A derived dated slug that already holds a session opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call. ' +
         'A fresh durable meta session that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client in this call and returns `client.session_index` plus `client.workflow.initialActivity`. ' +
