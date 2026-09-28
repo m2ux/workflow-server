@@ -322,6 +322,17 @@ describe('session-store primitives', () => {
       });
     });
 
+    it('names a folder whose session.json is not JSON when no folder matches', async () => {
+      const folder = await ensurePlanningFolder(workspace, '2026-05-14-unreadable');
+      await writeFile(sessionFilePath(folder), '{ not json', 'utf8');
+      const failure = await resolveSessionLocation(workspace, 'ZZZZZZ').catch((e: unknown) => e);
+      expect(failure).toMatchObject({ code: 'NOT_FOUND', details: { unreadable: [folder] } });
+      const described = describeSessionStoreError(failure);
+      expect(described).toContain(folder);
+      expect(described).toContain('restore that folder');
+      expect(described).not.toContain('Call start_session');
+    });
+
     it('rejects malformed session_index strings', async () => {
       await expect(resolveSessionLocation(workspace, 'lower6')).rejects.toMatchObject({
         code: 'INVALID_INDEX',

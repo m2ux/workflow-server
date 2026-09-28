@@ -571,6 +571,7 @@ async function findSessionsInEngineeringRoot(
   engineeringDir: string,
   sessionIndex: string,
   planningRelativeDir?: string,
+  unreadable: string[] = [],
 ): Promise<SessionLocation[]> {
   const root = planningRoot(engineeringDir, planningRelativeDir);
   let topEntries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
@@ -623,8 +624,8 @@ async function findSessionsInEngineeringRoot(
             matches.push({ folder: folderPath, jsonPath: [] });
           }
           walkEmbedded(state, folderPath, []);
-        } catch {
-          /* keep recursing */
+        } catch (err: unknown) {
+          if (err instanceof SessionStoreError && err.code === 'SESSION_INVALID') unreadable.push(folderPath);
         }
       } catch {
         continue;
@@ -646,8 +647,8 @@ async function findSessionsInEngineeringRoot(
           matches.push({ folder: folderPath, jsonPath: [] });
         }
         walkEmbedded(state, folderPath, []);
-      } catch {
-        /* no session.json at this level */
+      } catch (err: unknown) {
+        if (err instanceof SessionStoreError && err.code === 'SESSION_INVALID') unreadable.push(folderPath);
       }
     } catch {
       continue;
@@ -689,16 +690,22 @@ export async function resolveSessionLocation(
     : [workspaceDir];
   const planningRel = options?.planningRelativeDir;
   const matches: SessionLocation[] = [];
+  // A folder whose session.json is not JSON cannot be matched against the index, so a not-found
+  // names it: the session sought may be the one that file held.
+  const unreadable: string[] = [];
   for (const eng of roots) {
-    const found = await findSessionsInEngineeringRoot(eng, sessionIndex, planningRel);
+    const found = await findSessionsInEngineeringRoot(eng, sessionIndex, planningRel, unreadable);
     matches.push(...found);
   }
 
   if (matches.length === 0) {
     throw new SessionStoreError(
-      `resolveSessionLocation: no session under ${roots.join(', ')} has session_index '${sessionIndex}'`,
+      `resolveSessionLocation: no session under ${roots.join(', ')} has session_index '${sessionIndex}'`
+      + (unreadable.length > 0
+        ? `; ${unreadable.length === 1 ? 'one planning folder holds' : `${unreadable.length} planning folders hold`} a session.json that is not JSON and could not be checked: ${unreadable.join(', ')}`
+        : ''),
       'NOT_FOUND',
-      { workspaceDir, roots, sessionIndex },
+      { workspaceDir, roots, sessionIndex, ...(unreadable.length > 0 ? { unreadable } : {}) },
     );
   }
   if (matches.length > 1) {
