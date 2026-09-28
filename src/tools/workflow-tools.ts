@@ -2434,11 +2434,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           `To decide something this activity does not declare, pass 'message' and at least two 'options' with this id.`,
         );
       }
-      if (!checkpoint && (message !== undefined) !== (options !== undefined)) {
-        throw new Error(
-          `Checkpoint '${checkpoint_id}' is not declared by activity '${activity_id}', so it needs both 'message' and 'options'.`,
-        );
-      }
 
       // Values the steps before the gate produced. A worker cannot reach the bag
       // mid-activity by any other route, so a gate whose message interpolates one

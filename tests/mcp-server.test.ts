@@ -645,6 +645,16 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       });
       expect(result.isError).toBeTruthy();
     });
+
+    it('refuses a message without options for a checkpoint the activity does not declare', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'accept-late-scope', message: 'Take the extra file into scope?' },
+      });
+      expect(result.isError).toBeTruthy();
+      expect(rawText(result)).toContain("pass 'message' and at least two 'options'");
+    });
   });
 
 
