@@ -39,7 +39,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, LINK, OUTCOMES, cells, join_sections, row, split_sections
+from format import AC, LINK, OUTCOMES, cell, cells, join_sections, row, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -62,7 +62,6 @@ def for_epic(prs: list[dict], initiative: str, epic: str) -> dict[int, dict]:
 
 
 def epic_delivery(rows, header, named, links, tasks, report):
-    join = header.index('Join') if 'Join' in header else None
     delivered, by_pr = {}, {}
     for r in rows:
         task = LINK.sub(r'\1', r[0])
@@ -89,7 +88,7 @@ def epic_delivery(rows, header, named, links, tasks, report):
         pull = PULL_URL.search(existing[2]) if existing else None
         if pull:
             number = int(pull[1])
-            joins = set(re.findall(r'W\d\d', r[join])) if join is not None and join < len(r) else set()
+            joins = set(re.findall(r'W\d\d', cell(header, r, 'Join')))
             by_pr.setdefault(number, []).append((task, joins))
             if number not in named:
                 report['conflict'].append(f'{task} links #{number}, whose title does not name this epic')

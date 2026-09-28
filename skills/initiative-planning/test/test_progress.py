@@ -73,17 +73,17 @@ class Completed(unittest.TestCase):
                       [pr(53, '[I01:E00] Part of it', IN, body='Part of #3')])
         self.assertIn(f"    ◦ Part of it — {url('pull', 53)}", section(out, 'Completed'))
 
-    def test_task_issue_on_the_board_is_listed_once(self):
-        # Row W01 links a pull request; the board also holds W01's task issue, and a merged pull
-        # request cites W02's task issue, which no row links.
-        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 50)})", 'Work', ''),
-                                                                 ('W02', 'More', '')))
-        prs = [pr(50, '[I01:E00] Work', IN), pr(51, '[I01:E00] More', IN, body='Closes #4')]
-        out = summary([item(epic, 'In Progress'), item(issue(3, '[I01:E00:W01] Work: Task', 'closed', IN), 'Done'),
-                       item(issue(4, '[I01:E00:W02] More: Task', 'closed', IN), 'Done')], prs)
-        self.assertEqual(section(out, 'Completed')[1:], [
-            f"    ◦ W01 Work — {url('issues', 3)}",
-            f"    ◦ W02 More — {url('issues', 4)}"])
+    def test_pull_request_citing_a_listed_task_issue_no_row_links_is_left_out(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W02', 'More', '')))
+        out = summary([item(epic, 'In Progress'), item(issue(4, '[I01:E00:W02] More: Task', 'closed', IN), 'Done')],
+                      [pr(51, '[I01:E00] More', IN, body='Closes #4')])
+        self.assertEqual(section(out, 'Completed')[1:], [f"    ◦ W02 More — {url('issues', 4)}"])
+
+    def test_a_pull_request_given_twice_is_listed_once(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        twice = pr(9, '[I01:E00] Work', IN)
+        out = summary([item(epic, 'In Progress')], [twice, twice])
+        self.assertEqual(section(out, 'Completed')[1:], [f"    ◦ Work — {url('pull', 9)}"])
 
     def test_pull_requests_are_known_by_url_across_repositories(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 40)})", 'Here', '')))
@@ -215,6 +215,12 @@ class Options(unittest.TestCase):
         self.assertEqual(done.returncode, 0)
         self.assertEqual(section(done.stdout, 'Next'), [f"• *I08:E01 Broken* — {url('issues', 4)}"])
         self.assertIn('#4 [I08:E01] Broken: Epic: Work Breakdown has no table', done.stderr)
+
+    def test_epic_without_a_work_breakdown_is_reported(self):
+        bare = item(issue(4, '[I08:E01] Bare: Epic', body='## Overview\n\nx\n'), 'Ready')
+        done = progress([bare], [], '--since', SINCE)
+        self.assertEqual(section(done.stdout, 'Next'), [f"• *I08:E01 Bare* — {url('issues', 4)}"])
+        self.assertIn('#4 [I08:E01] Bare: Epic: no Work Breakdown', done.stderr)
 
     def test_initiative_reports_no_other_initiative_epics(self):
         broken = item(issue(4, '[I09:E01] Broken: Epic', body='## Work Breakdown\n\nTBD\n'), 'Ready')

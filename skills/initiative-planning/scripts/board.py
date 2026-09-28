@@ -51,7 +51,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import LINK, split_sections
+from format import LINK, cell, split_sections
 from update import PR_REF, Unreadable, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -116,21 +116,15 @@ def linked_issue(cell: str) -> Key | None:
     return issue_url(link[2]) if link else None
 
 
-def cell(header: list[str], r: list[str], column: str) -> str:
-    """A Work Breakdown row's cell in the named column, empty where the table has none."""
-    at = header.index(column) if column in header else None
-    return r[at] if at is not None and at < len(r) else ''
-
-
 def cites(pr: dict, key: Key) -> bool:
     """Whether a pull request's title or body cites the issue: by its URL or owner/repo#number, or
-    as a bare #number from the issue's own repository."""
+    as a bare #number from the issue's own repository. Repository names match in any case."""
     repo, number = key
     text = f"{pr['title']}\n{pr.get('body') or ''}"
-    if re.search(rf'(?<![\w.-]){re.escape(repo)}(?:/issues/|#){number}\b', text):
+    if re.search(rf'(?<![\w.-]){re.escape(repo)}(?:/issues/|#){number}\b', text, re.IGNORECASE):
         return True
     home = PULL_REF.search(pr.get('html_url') or '')
-    return bool(home) and home[1] == repo and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
+    return bool(home) and home[1].lower() == repo.lower() and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
 
 
 def option_name(name) -> str | None:

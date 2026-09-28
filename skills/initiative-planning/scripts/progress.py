@@ -9,8 +9,8 @@ pull requests as JSON lines, as update.py reads them, from as many repositories 
 a pull request is known by its URL, and cites an issue as board.py reads a citation.
 
 The board's Status is the source. Lines group under the epic they belong to. A row's task issue is
-the one its id links, or else the one on the board titled with its reference. A task issue listed
-stands for its row and for the pull requests that cite it:
+the one its id links. A task issue listed, which is one titled with the epic's reference, stands
+for the pull requests that cite it:
   Completed    items Done whose issue closed in the window: an initiative, an epic, or a task issue
                under its epic. Under each epic, the tasks whose row id links a pull request merged
                in the window, and each such pull request naming the epic that no row links and
@@ -27,7 +27,7 @@ as its next task is not listed again.
 
 The window opens at the start of --since in local time, by default the previous working day.
 --initiative limits the summary to one initiative. An epic whose Work Breakdown the scripts cannot
-read is summarised without its tasks.
+read, or that has none, is summarised without its tasks.
 
 Printed: the summary as Slack markup, for pasting into a channel: *bold* headings, bullets, and each
 issue or pull request by its bare URL. Unresolved dependencies and unreadable epics print to stderr.
@@ -38,8 +38,8 @@ import sys
 from collections import Counter
 from datetime import date, datetime, time, timedelta, timezone
 
-from board import Board, Key, PREFIX, cell, cites, key_of, label, linked_issue, pages, status_of
-from format import LINK, epic_name, phrase
+from board import Board, Key, PREFIX, cites, key_of, label, linked_issue, pages, status_of
+from format import LINK, cell, epic_name, phrase
 from update import PR_REF, PULL_URL, Unreadable, pull_requests
 
 PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
@@ -74,16 +74,22 @@ def pr_title(pr: dict) -> str:
 
 
 class Summary(Board):
-    """A board whose epics are read as far as their bodies allow: an epic whose Work Breakdown
-    cannot be read has no rows, and is reported unresolved."""
+    """A board whose epics are read as far as their bodies allow: an epic without a Work Breakdown
+    it can read has no rows, and is reported unresolved."""
 
     def table(self, key: Key) -> tuple[list[str], dict[str, list[str]]]:
-        try:
-            return super().table(key)
-        except Unreadable as unreadable:
-            self.unresolved.append(f"{label(key, self.home)} {self.issues[key]['title']}: {unreadable}")
-            self.tables[key] = [], {}
+        if key in self.tables:
             return self.tables[key]
+        try:
+            header, rows = super().table(key)
+        except Unreadable as unreadable:
+            header, rows, why = [], {}, str(unreadable)
+        else:
+            why = '' if header else 'no Work Breakdown'
+        if why:
+            self.unresolved.append(f"{label(key, self.home)} {self.issues[key]['title']}: {why}")
+        self.tables[key] = header, rows
+        return header, rows
 
 
 class Section:
@@ -132,7 +138,7 @@ def main() -> int:
     prs = pull_requests(args.prs)
     by_url = {p['html_url']: p for p in prs}
     by_epic: dict[tuple[str, str], list[dict]] = {}
-    for p in prs:
+    for p in by_url.values():
         if m := PR_REF.match(p['title']):
             by_epic.setdefault(m.groups(), []).append(p)
     unresolved: list[str] = []
@@ -157,15 +163,10 @@ def main() -> int:
     def done(k) -> bool:
         return status.get(k) == 'Done' and within(issues[k].get('closed_at'))
 
-    def task_issue(t, tid: str, r: list[str]) -> Key | None:
-        """The task issue a row stands for: the one its id links, or the one on the board titled
-        with its reference."""
-        return linked_issue(r[0]) or task_keys.get(t[:2], {}).get(tid)
-
     def next_task(k, t, header: list[str], rows: dict[str, list[str]]) -> tuple[str, str] | None:
         """The epic's next task: its id and the line naming it."""
         for tid, r in rows.items():
-            backing = task_issue(t, tid, r)
+            backing = linked_issue(r[0])
             if backing and (backing not in issues or status.get(backing) in ACTIVE):
                 continue
             if not board.row_delivered(k, tid, reference(t)) and board.met(
@@ -195,7 +196,7 @@ def main() -> int:
 
         header, rows = board.table(k)
         named = by_epic.get((i, e), [])
-        task_issues = {n for tid, r in rows.items() if (n := task_issue(t, tid, r))}
+        task_issues = {n for r in rows.values() if (n := linked_issue(r[0]))}
         task_issues |= set(task_keys.get((i, e), {}).values())
 
         def listed(pr: dict, shown) -> bool:
@@ -207,8 +208,7 @@ def main() -> int:
             pr = by_url.get(link[2]) if link and PULL_URL.search(link[2]) else None
             if pr:
                 linked.add(pr['html_url'])
-                backing = task_issue(t, tid, r)
-                if within(pr.get('merged_at')) and not (backing and done(backing)):
+                if within(pr.get('merged_at')):
                     completed.group(i, e)['lines'].append(f"{tid} {task_name(r, header)} — {pr['html_url']}")
         for pr in named:
             if within(pr.get('merged_at')) and pr['html_url'] not in linked and not listed(pr, done):

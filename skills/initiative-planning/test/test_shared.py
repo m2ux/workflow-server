@@ -11,8 +11,8 @@ from pathlib import Path
 from fixtures import SCRIPTS, issue, pr, run, url
 
 sys.path.insert(0, str(SCRIPTS))
-from board import Board, cell, cites, status_of  # noqa: E402
-from format import description, phrase  # noqa: E402
+from board import Board, cites, status_of  # noqa: E402
+from format import cell, description, phrase  # noqa: E402
 from update import Unreadable  # noqa: E402
 
 
@@ -40,6 +40,10 @@ class Cites(unittest.TestCase):
     def test_repository_whose_name_ends_the_same_cites_nothing(self):
         self.assertFalse(cites(pr(1, 'T', body='See xo/r#12'), self.key))
         self.assertFalse(cites(pr(1, 'T', body='See https://github.com/xo/r/issues/12'), self.key))
+
+    def test_repository_names_match_in_any_case(self):
+        self.assertTrue(cites(pr(1, 'T', body='Closes O/R#12', repo='o/s'), self.key))
+        self.assertTrue(cites(pr(1, 'T', body='Closes #12', repo='O/R'), self.key))
 
     def test_pull_request_url_of_another_shape_still_reads(self):
         record = {**pr(1, 'T', body='Closes #12'), 'html_url': 'https://github.com/o/r/pull/1/'}
