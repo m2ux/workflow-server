@@ -119,13 +119,15 @@ export const WorkflowSchema = z.object({
 export type Workflow = z.infer<typeof WorkflowSchema>;
 
 /**
- * A reference to an activity file: `[<workflow>/][activities/]<NN>-<id>.yaml`. With no workflow
- * segment it names a file in this workflow's own `activities/` folder.
+ * A reference to an activity file. A single segment, `<NN>-<id>.yaml`, names a file in this
+ * workflow's own `activities/` folder. With more segments the first is the workflow that holds the
+ * file and the rest is its path under that workflow's `activities/` folder, subfolders included —
+ * the leading `activities/` optional.
  */
 export const ActivityReferenceSchema = z.string().regex(
-  /^(?:[^/]+\/)?(?:activities\/)?\d+-[^/]+\.ya?ml$/,
-  'an activity reference is `[<workflow>/][activities/]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml`; an activity is defined in its own file, never inline',
-).describe('Activity file reference in `[<workflow>/][activities/]<NN>-<id>.yaml` form, such as `work-package/02-design-philosophy.yaml`; without a workflow segment it names a file in this workflow\'s own `activities/` folder.');
+  /^(?:[^/]+\/)*\d+-[^/]+\.ya?ml$/,
+  'an activity reference is `<NN>-<id>.yaml` or `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`; an activity is defined in its own file, never inline',
+).describe('Activity file reference. `<NN>-<id>.yaml` names a file in this workflow\'s own `activities/` folder; `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` names a file under that workflow\'s `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`.');
 
 /**
  * A workflow definition file as authored. Its own activities are the files in its `activities/`

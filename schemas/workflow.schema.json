@@ -292,8 +292,8 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^(?:[^/]+\\/)?(?:activities\\/)?\\d+-[^/]+\\.ya?ml$",
-            "description": "Activity file reference in `[<workflow>/][activities/]<NN>-<id>.yaml` form, such as `work-package/02-design-philosophy.yaml`; without a workflow segment it names a file in this workflow's own `activities/` folder."
+            "pattern": "^(?:[^/]+\\/)*\\d+-[^/]+\\.ya?ml$",
+            "description": "Activity file reference. `<NN>-<id>.yaml` names a file in this workflow's own `activities/` folder; `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` names a file under that workflow's `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`."
           },
           "minItems": 1,
           "description": "Activities referenced by file, beyond the files in this workflow's `activities/` folder; a reference to another workflow's activity borrows it. Every activity is defined in its own file; an inline activity is rejected."

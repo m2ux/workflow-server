@@ -402,6 +402,12 @@ describe('schema-validation', () => {
       expect(safeValidateWorkflowFile(file({ activities: ['01-start.yaml', 'work-package/02-design-philosophy.yaml'] })).success).toBe(true);
     });
 
+    it('accepts a reference into a subfolder of another workflow\'s activities', () => {
+      expect(safeValidateWorkflowFile(file({
+        activities: ['meta/patterns/02-supervisor.yaml', 'meta/activities/patterns/03-plan-and-execute.yaml'],
+      })).success).toBe(true);
+    });
+
     it('rejects an inline activity', () => {
       expect(safeValidateWorkflowFile(file({ activities: [{ id: 'start', version: '1.0.0', name: 'Start' }] })).success).toBe(false);
     });
