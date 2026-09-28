@@ -51,10 +51,11 @@ import re
 import sys
 from pathlib import Path
 
-from format import LINK, split_sections
-from update import PR_REF, table
+from format import LINK, cell, split_sections
+from update import PR_REF, Unreadable, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
@@ -113,6 +114,28 @@ def issue_url(url: str) -> Key | None:
 def linked_issue(cell: str) -> Key | None:
     link = LINK.fullmatch(cell)
     return issue_url(link[2]) if link else None
+
+
+def cites(pr: dict, key: Key) -> bool:
+    """Whether a pull request's title or body cites the issue: by its URL or owner/repo#number, or
+    as a bare #number from the issue's own repository. Repository names match in any case."""
+    repo, number = key
+    text = f"{pr['title']}\n{pr.get('body') or ''}"
+    if re.search(rf'(?<![\w.-]){re.escape(repo)}(?:/issues/|#){number}\b', text, re.IGNORECASE):
+        return True
+    home = PULL_REF.search(pr.get('html_url') or '')
+    return bool(home) and home[1].lower() == repo.lower() and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
+
+
+def option_name(name) -> str | None:
+    """A single-select option's name, which REST gives as a string or as {raw, html}."""
+    return name['raw'] if isinstance(name, dict) else name
+
+
+def status_of(item: dict) -> str | None:
+    """A board item's Status, None where it has none."""
+    value = next((f.get('value') for f in item.get('fields', []) if f.get('name') == 'Status'), None)
+    return option_name(value and value.get('name'))
 
 
 class Board:
@@ -220,7 +243,7 @@ def main() -> int:
     home = root[0]
     epics, tasks = load(args.epics), load(args.tasks)
     issues = {**load(args.others), **tasks, **epics, root: initiative}
-    prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()]
+    prs = pull_requests(args.prs)
     unresolved: list[str] = []
     board = Board(issues, unresolved, home)
 
@@ -228,11 +251,7 @@ def main() -> int:
     epic_ids = {LINK.sub(r'\1', r[0]): n for r in epic_rows if (n := linked_issue(r[0]))}
     status: dict[Key, str | None] = {}
 
-    def depends(header: list[str], r: list[str]) -> str:
-        column = header.index('Depends on') if 'Depends on' in header else None
-        return r[column] if column is not None and column < len(r) else ''
-
-    def pr_status(epic_key: str, cite: int | None = None) -> str | None:
+    def pr_status(epic_key: str, cite: Key | None = None) -> str | None:
         """In Review for an open pull request ready for review naming the issue, In Progress for an
         open draft, None for neither."""
         found = set()
@@ -240,8 +259,7 @@ def main() -> int:
             ref = PR_REF.match(p['title'])
             if p.get('state') != 'open' or not ref or ref.groups() != (tag, epic_key):
                 continue
-            text = f"{p['title']}\n{p.get('body') or ''}"
-            if cite is None or re.search(rf'#{cite}\b|/issues/{cite}\b', text):
+            if cite is None or cites(p, cite):
                 found.add('In Progress' if p.get('draft') else 'In Review')
         return 'In Review' if 'In Review' in found else 'In Progress' if found else None
 
@@ -265,9 +283,9 @@ def main() -> int:
             t = tasks[task_issue]
             if t['state'] == 'closed':
                 status[task_issue] = 'Done' if completed(t) else None
-            elif found := pr_status(epic_key, task_issue[1]):
+            elif found := pr_status(epic_key, task_issue):
                 status[task_issue] = found
-            elif not open_questions(t) and board.met(depends(task_header, tr), number, epic_ids, f'E{epic_key}:{tid}'):
+            elif not open_questions(t) and board.met(cell(task_header, tr, 'Depends on'), number, epic_ids, f'E{epic_key}:{tid}'):
                 status[task_issue] = 'Ready'
             else:
                 status[task_issue] = 'Backlog'
@@ -277,7 +295,7 @@ def main() -> int:
             status[number] = 'In Review'
         elif found or delivered_any:
             status[number] = 'In Progress'
-        elif not open_questions(epic) and board.met(depends(header, r), root, epic_ids, f'E{epic_key}'):
+        elif not open_questions(epic) and board.met(cell(header, r, 'Depends on'), root, epic_ids, f'E{epic_key}'):
             status[number] = 'Ready'
         else:
             status[number] = 'Backlog'
@@ -295,7 +313,7 @@ def main() -> int:
     field = next((f for f in pages(args.fields) if f.get('name') == 'Status'), None)
     if not field:
         sys.exit('the board has no Status field')
-    options = {o['name']['raw'] if isinstance(o['name'], dict) else o['name']: o['id'] for o in field.get('options', [])}
+    options = {option_name(o['name']): o['id'] for o in field.get('options', [])}
     missing = [s for s in STATUSES if s not in options]
     if missing:
         sys.exit(f"the board's Status field lacks {', '.join(missing)}")
@@ -313,9 +331,7 @@ def main() -> int:
         content = item.get('content') or {}
         if item.get('content_type') == 'Issue' and content.get('repository_url'):
             key = key_of(content)
-            value = next((f.get('value') for f in item.get('fields', []) if f.get('id') == field['id']), None)
-            name = value and value.get('name')
-            on_board[key] = (item['id'], name['raw'] if isinstance(name, dict) else name)
+            on_board[key] = (item['id'], status_of(item))
             if key not in status and content['state'] == 'closed' and not completed(content):
                 issues.setdefault(key, content)
                 cited = re.compile(rf"{re.escape(content['html_url'])}\b")
@@ -348,4 +364,7 @@ def main() -> int:
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Unreadable as unreadable:
+        sys.exit(str(unreadable))

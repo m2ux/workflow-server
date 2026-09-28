@@ -39,7 +39,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, LINK, OUTCOMES, cells, join_sections, row, split_sections
+from format import AC, LINK, OUTCOMES, cell, cells, join_sections, row, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -62,7 +62,6 @@ def for_epic(prs: list[dict], initiative: str, epic: str) -> dict[int, dict]:
 
 
 def epic_delivery(rows, header, named, links, tasks, report):
-    join = header.index('Join') if 'Join' in header else None
     delivered, by_pr = {}, {}
     for r in rows:
         task = LINK.sub(r'\1', r[0])
@@ -89,7 +88,7 @@ def epic_delivery(rows, header, named, links, tasks, report):
         pull = PULL_URL.search(existing[2]) if existing else None
         if pull:
             number = int(pull[1])
-            joins = set(re.findall(r'W\d\d', r[join])) if join is not None and join < len(r) else set()
+            joins = set(re.findall(r'W\d\d', cell(header, r, 'Join')))
             by_pr.setdefault(number, []).append((task, joins))
             if number not in named:
                 report['conflict'].append(f'{task} links #{number}, whose title does not name this epic')
@@ -118,13 +117,22 @@ def initiative_delivery(rows, epics, report):
     return delivered
 
 
+def pull_requests(path: str) -> list[dict]:
+    """Pull requests written as JSON lines, as `gh api --paginate ... --jq '.[] | ...'` writes them."""
+    return [json.loads(l) for l in Path(path).read_text().splitlines() if l.strip()]
+
+
+class Unreadable(ValueError):
+    """A body whose Work Breakdown the scripts cannot read."""
+
+
 def table(sections):
     lines = next((l for h, l in sections if h == 'Work Breakdown'), None)
     if lines is None:
         return None, None, None, None
     start = next((i for i, l in enumerate(lines) if l.startswith('|')), None)
     if start is None:
-        sys.exit('Work Breakdown has no table')
+        raise Unreadable('Work Breakdown has no table')
     end = start
     while end < len(lines) and lines[end].startswith('|'):
         end += 1
@@ -153,7 +161,7 @@ def main() -> int:
     kind = 'task' if task else 'epic' if epic else 'initiative'
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
-    prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else []
+    prs = pull_requests(args.prs) if args.prs else []
     named = for_epic(prs, initiative, epic) if epic else {}
     links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
     body = (issue.get('body') or '').replace('\r\n', '\n')
@@ -240,4 +248,7 @@ def main() -> int:
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Unreadable as unreadable:
+        sys.exit(str(unreadable))

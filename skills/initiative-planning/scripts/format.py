@@ -161,7 +161,18 @@ def epic_name(title: str) -> str:
 
 def description(line: str) -> str:
     """A row's Description phrase, without the criteria it cites."""
-    return cells(line)[1].split(' →', 1)[0].strip()
+    return phrase(cells(line)[1])
+
+
+def cell(header: list[str], r: list[str], column: str) -> str:
+    """A table row's cell in the named column, empty where the table has none."""
+    at = header.index(column) if column in header else None
+    return r[at] if at is not None and at < len(r) else ''
+
+
+def phrase(text: str) -> str:
+    """A Description cell's phrase, without the criteria it cites."""
+    return text.split(' →', 1)[0].strip()
 
 
 def colon_refs(text: str) -> str:
