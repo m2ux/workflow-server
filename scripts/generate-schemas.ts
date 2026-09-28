@@ -36,8 +36,12 @@ interface GeneratedSchema {
   definitions?: Record<string, Parameters<typeof zodToJsonSchema>[0]>;
 }
 
-/** The `when` dialect, defined once for every schema that carries step or exit gates. */
-const GATE_DEFINITIONS = { whenExpression: WhenExpressionSchema };
+/**
+ * The gate languages — the `when` dialect and structured conditions — defined once for every schema
+ * that carries step or exit gates, so a nested condition references the condition definition rather
+ * than the first field that happened to carry one.
+ */
+const GATE_DEFINITIONS = { whenExpression: WhenExpressionSchema, condition: ConditionSchema };
 
 export const GENERATED_SCHEMAS: GeneratedSchema[] = [
   { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root', definitions: GATE_DEFINITIONS },
