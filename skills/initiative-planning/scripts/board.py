@@ -115,6 +115,28 @@ def linked_issue(cell: str) -> Key | None:
     return issue_url(link[2]) if link else None
 
 
+def depends(header: list[str], r: list[str]) -> str:
+    """A Work Breakdown row's Depends on cell, empty where the table has none."""
+    column = header.index('Depends on') if 'Depends on' in header else None
+    return r[column] if column is not None and column < len(r) else ''
+
+
+def cites(pr: dict, number: int) -> bool:
+    """Whether a pull request's title or body cites the issue."""
+    return bool(re.search(rf'#{number}\b|/issues/{number}\b', f"{pr['title']}\n{pr.get('body') or ''}"))
+
+
+def option_name(name) -> str | None:
+    """A single-select option's name, which REST gives as a string or as {raw, html}."""
+    return name['raw'] if isinstance(name, dict) else name
+
+
+def status_of(item: dict) -> str | None:
+    """A board item's Status, None where it has none."""
+    value = next((f.get('value') for f in item.get('fields', []) if f.get('name') == 'Status'), None)
+    return option_name(value and value.get('name'))
+
+
 class Board:
     def __init__(self, issues: dict[Key, dict], unresolved: list[str], home: str):
         self.issues = issues
@@ -228,10 +250,6 @@ def main() -> int:
     epic_ids = {LINK.sub(r'\1', r[0]): n for r in epic_rows if (n := linked_issue(r[0]))}
     status: dict[Key, str | None] = {}
 
-    def depends(header: list[str], r: list[str]) -> str:
-        column = header.index('Depends on') if 'Depends on' in header else None
-        return r[column] if column is not None and column < len(r) else ''
-
     def pr_status(epic_key: str, cite: int | None = None) -> str | None:
         """In Review for an open pull request ready for review naming the issue, In Progress for an
         open draft, None for neither."""
@@ -240,8 +258,7 @@ def main() -> int:
             ref = PR_REF.match(p['title'])
             if p.get('state') != 'open' or not ref or ref.groups() != (tag, epic_key):
                 continue
-            text = f"{p['title']}\n{p.get('body') or ''}"
-            if cite is None or re.search(rf'#{cite}\b|/issues/{cite}\b', text):
+            if cite is None or cites(p, cite):
                 found.add('In Progress' if p.get('draft') else 'In Review')
         return 'In Review' if 'In Review' in found else 'In Progress' if found else None
 
@@ -295,7 +312,7 @@ def main() -> int:
     field = next((f for f in pages(args.fields) if f.get('name') == 'Status'), None)
     if not field:
         sys.exit('the board has no Status field')
-    options = {o['name']['raw'] if isinstance(o['name'], dict) else o['name']: o['id'] for o in field.get('options', [])}
+    options = {option_name(o['name']): o['id'] for o in field.get('options', [])}
     missing = [s for s in STATUSES if s not in options]
     if missing:
         sys.exit(f"the board's Status field lacks {', '.join(missing)}")
@@ -313,9 +330,7 @@ def main() -> int:
         content = item.get('content') or {}
         if item.get('content_type') == 'Issue' and content.get('repository_url'):
             key = key_of(content)
-            value = next((f.get('value') for f in item.get('fields', []) if f.get('id') == field['id']), None)
-            name = value and value.get('name')
-            on_board[key] = (item['id'], name['raw'] if isinstance(name, dict) else name)
+            on_board[key] = (item['id'], status_of(item))
             if key not in status and content['state'] == 'closed' and not completed(content):
                 issues.setdefault(key, content)
                 cited = re.compile(rf"{re.escape(content['html_url'])}\b")
