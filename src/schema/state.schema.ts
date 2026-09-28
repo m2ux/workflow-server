@@ -32,7 +32,7 @@ export const HistoryEventTypeSchema = z.enum([
   // Per-activity cost accounting (#324 B1, #346 DI-33, #407): harness-reported
   // token usage for ONE completed activity, recorded by record_usage at each
   // activity boundary. `activity` is the activity that ran; `data` carries
-  // { usage: <as reported>, agentId? }. One event per activity, so a resumed or
+  // { usage: <as reported>, basis, agentId? }. One event per activity, so a resumed or
   // re-dispatched activity contributes a row per pass, and a dispatch carrying a
   // run of activities contributes a row apiece under one agentId — the
   // resolution a batch size is calibrated from. A worker cannot self-measure, so
@@ -61,7 +61,7 @@ export const HistoryEventTypeSchema = z.enum([
   // Outcome accounting (#477): the outcome the orchestrator reported for one
   // completed activity, from the `activity_manifest` on next_activity.
   // `activity` is the activity that ran; `data` carries { outcome,
-  // transitionCondition? }. Close-out measures a run against these where the
+  // exit? }. Close-out measures a run against these where the
   // client workflow seeded no outcome list of its own, so a run is judged on
   // what its own activities delivered. One event per activity per report; a
   // manifest re-sent for an activity already carrying one adds nothing.
@@ -92,7 +92,7 @@ export const HistoryEntrySchema = z.object({
   checkpoint: z.string().optional().describe('Checkpoint identifier associated with the event.'),
   decision: z.string().optional().describe('Decision identifier associated with the event.'),
   loop: z.string().optional().describe('Loop identifier associated with the event.'),
-  data: z.record(z.unknown().describe('Value of a named event detail.')).optional().describe('Additional values describing the event.'),
+  data: z.record(z.unknown().describe('Value of a named event detail.')).optional().describe('Event-specific values, by `type`. `workflow_triggered` and `workflow_returned`: `{ workflowId, sessionIndex }` of the child. `activity_outcome`: `{ outcome, exit? }`. `progress_published`: `{ published }`. `step_started`: `{ stepId, agentId }`; `step_completed`: `{ stepId, agentId? }`. `checkpoint_response` and `checkpoint_replayed`: `{ optionId }`. `variable_set`: `{ name, value, source }`, with `source` one of `setVariable`, `variables_changed`, `fan_enter` or `yield_checkpoint`; a fan branch\'s write adds `{ key, instance, member, unit }`, a type mismatch adds `{ declaredType, valueType, typeMismatch: true }`, and a value outside the declared set adds `{ declaredValues, valueOutsideSet: true }`. `variables_seeded`: `{ variables }`, the whole seeded map. `technique_fetched`: `{ techniqueId, stepId?, agentId, chars, delivery }`; `technique_bundled`: `{ techniqueId, stepId, agentId, chars, delivery }`; `resource_fetched`: `{ resourceId, agentId, chars, delivery, bundled? }`, with `delivery` `full` or `unchanged` for all three. `activity_delivered`: `{ agentId, delivery, resolved_techniques, provenance_passes, bundled_steps, spent_chars, eager_budget_chars, response_spent_chars, response_bound_chars, fixed_chars, worker_bundle_chars }`, with `delivery` `full` or `reference`. `activity_dispatched`: `{ agentId, dispatch, chars? }`, with `dispatch` `fresh` or `resume`. `activity_redelivered`: `{ agentId, priorAgentId, chars }`. `activity_usage`: `{ usage, basis, agentId? }`. `batch_refused`: `{ agentId, limit, activities, chars, maxActivities, budgetChars }`, with `limit` `activity_cap` or `delivery_budget`. `workflow_started`, `workflow_completed`, `activity_entered`, `activity_exited` and `checkpoint_reached` carry none.'),
   error: z.object({ message: z.string().describe('Explanation of the error.'), code: z.string().optional().describe('Identifier for the error category.') }).optional().describe('Error message and optional code.'),
 }).describe('Timestamped record of session progress or an error.');
 export type HistoryEntry = z.infer<typeof HistoryEntrySchema>;
