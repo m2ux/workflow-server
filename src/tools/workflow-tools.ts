@@ -445,7 +445,7 @@ export function projectCheckpoints(s: SessionFile): Record<string, unknown> {
 }
 
 /**
- * Activity projection: completed / skipped lists, the current activity, and the
+ * Activity projection: the completed activities, the activities in flight, and the
  * outcome each completed activity reported. `outcomes` is what close-out
  * measures a run against where the client workflow seeded no outcome list of its
  * own, so a run is judged on what its own activities delivered. A completed
@@ -3038,7 +3038,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Projection: summary (default), identity, variables, checkpoints, activities (completed, skipped, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent\'s latest cumulative figure, the completed activities holding no row, and each child\'s cost outside those totals).'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities (completed, in flight, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent\'s latest cumulative figure, the completed activities holding no row, and each child\'s cost outside those totals).'),
       child_index: z.number().int().nonnegative().optional()
         .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()
