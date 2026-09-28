@@ -343,7 +343,7 @@ export function describeSessionStoreError(err: unknown): string {
   }
   switch (err.code) {
     case 'INVALID_INDEX':
-      return `Invalid session_index: ${err.message}. The session_index must be the 6-character base32 string returned by start_session.`;
+      return `Invalid session_index: ${err.message}. The session_index must be the 6-character base32 string a start_session or dispatch_child response returned.`;
     case 'NOT_FOUND':
       return `${err.message}. Call start_session to create or resume a planning folder. A session_index comes only from a start_session or dispatch_child response and cannot be composed or predicted, and it is valid only against a folder the server has sealed.`;
     case 'COLLISION':
