@@ -15,9 +15,11 @@ current as the board.
    issue whole. Fetch the pull requests that name an initiative, appending those of each further
    repository the board's issues live in with `>>`. The Commands below use board 2 and its Status
    field id; substitute the chosen board's.
-4. **Summarise** with `scripts/progress.py --items items.json --prs prs.json`. The window opens at
-   the start of the previous working day. Give `--since` for another, such as the last standup's
-   date for a weekly update, and `--initiative I08` when the user names one initiative. It prints:
+4. **Summarise** with `scripts/progress.py --items items.json --prs prs.json`. The window opens a
+   week before today. Give `--since` for another, such as the previous working day for a daily
+   standup, and `--initiative I08` when the user names one initiative. Each repository numbers its
+   own initiatives, so a board spanning repositories keeps their items apart, and a pull request
+   counts towards the epic of its reference in its own repository. It prints:
    - **Completed:** items Done whose issue closed in the window, grouped under their epic, and
      the tasks whose pull requests merged in it. Closing is when an issue became Done, so one the
      board caught up with later still falls on its closing date;
