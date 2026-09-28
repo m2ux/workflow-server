@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { loadWorkflow, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { loadWorkflow, loadWorkflowWithDiagnostics, readActivityRaw } from '../src/loaders/workflow-loader.js';
 import { readWorkflowRoutines } from '../src/loaders/routine-loader.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
 import type { Step } from '../src/schema/activity.schema.js';
@@ -269,6 +269,11 @@ describe('a routine file that fails to load costs only the references to it', ()
     const errors = await activityErrors({ activities: [host({ routine: 'broken-run' })], routines: [{ id: 'broken-run', steps: [] }] });
     expect(errors).toHaveLength(1);
     expect(errors[0]).toMatch(/routine 'broken-run' failed to load.*routines\/broken-run\.yaml/s);
+  });
+
+  it('leaves the excluded activity out of the raw read get_activity serves', async () => {
+    const { corpus, id } = writeTree({ activities: [host({ routine: 'broken-run' })], routines: [{ id: 'broken-run', steps: [] }] });
+    expect((await readActivityRaw(corpus, id, 'host')).success).toBe(false);
   });
 
   it('does not fall through to a same-named meta routine', async () => {
