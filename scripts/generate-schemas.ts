@@ -10,6 +10,7 @@ import { ActivitySchema } from '../src/schema/activity.schema.js';
 import { RoutineSchema } from '../src/schema/routine.schema.js';
 import { TechniqueSchema } from '../src/schema/technique.schema.js';
 import { WhenExpressionSchema } from '../src/schema/when-expression.js';
+import { TechniqueReferenceSchema } from '../src/schema/common.js';
 import { renderEnforcement } from '../src/schema/enforcement.js';
 
 /**
@@ -37,18 +38,19 @@ interface GeneratedSchema {
 }
 
 /**
- * The gate languages — the `when` dialect and structured conditions — defined once for every schema
- * that carries step or exit gates, so a nested condition references the condition definition rather
- * than the first field that happened to carry one.
+ * The grammars a schema's fields share — the technique reference, and the gate languages, the `when`
+ * dialect and structured conditions — each defined once in every schema that carries it, so a field
+ * references the definition rather than the first field that happened to carry one.
  */
-const GATE_DEFINITIONS = { whenExpression: WhenExpressionSchema, condition: ConditionSchema };
+const STEP_DEFINITIONS = { whenExpression: WhenExpressionSchema, condition: ConditionSchema, techniqueReference: TechniqueReferenceSchema };
+const WORKFLOW_DEFINITIONS = { techniqueReference: TechniqueReferenceSchema };
 
 export const GENERATED_SCHEMAS: GeneratedSchema[] = [
-  { name: 'workflow', schema: WorkflowFileSchema, description: 'Workflow definition file; its activities are the files in its activities/ folder and the files it references.', refStrategy: 'root' },
+  { name: 'workflow', schema: WorkflowFileSchema, description: 'Workflow definition file; its activities are the files in its activities/ folder and the activities it borrows.', refStrategy: 'root', definitions: WORKFLOW_DEFINITIONS },
   { name: 'condition', schema: ConditionSchema, description: 'Condition expression schema', refStrategy: 'root' },
   { name: 'session-file', schema: SessionFileSchema, description: 'Session state recorded in session.json.', refStrategy: 'root' },
-  { name: 'activity', schema: ActivitySchema, description: 'Activity definition with ordered steps.', refStrategy: 'root', definitions: GATE_DEFINITIONS },
-  { name: 'routine', schema: RoutineSchema, description: 'Reusable steps with declared inputs, outputs, and internals.', refStrategy: 'root', definitions: GATE_DEFINITIONS },
+  { name: 'activity', schema: ActivitySchema, description: 'Activity definition with ordered steps.', refStrategy: 'root', definitions: STEP_DEFINITIONS },
+  { name: 'routine', schema: RoutineSchema, description: 'Reusable steps with declared inputs, outputs, and internals.', refStrategy: 'root', definitions: STEP_DEFINITIONS },
   { name: 'technique', schema: TechniqueSchema, description: 'Technique capability with inputs, protocol, rules, and outputs.', refStrategy: 'root' },
 ];
 

@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { ConditionSchema } from './condition.schema.js';
-import { SemanticVersionSchema } from './common.js';
+import { SemanticVersionSchema, TechniqueReferenceSchema } from './common.js';
 import { enforcement } from './enforcement.js';
 import { ActivityVariablesSchema } from './variable.schema.js';
 import { WhenExpressionSchema } from './when-expression.js';
 
-export const TechniquesReferenceSchema = enforcement(z.array(z.string().describe('Technique reference using a `::`-separated path.')).describe('Activity-wide technique references, using `::`-separated paths.'), { owner: 'Engine', strictness: 'enforced' });
+export const TechniquesReferenceSchema = enforcement(z.array(TechniqueReferenceSchema).describe('Activity-wide technique references.'), { owner: 'Engine', strictness: 'enforced' });
 export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 export const BundleTechniquesSchema = enforcement(z.object({
@@ -42,7 +42,7 @@ export const CheckpointOptionSchema = z.object({
 export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
 
 export const TechniqueBindingSchema = z.object({
-  name: z.string().describe('Technique reference: `group::technique`, a bare technique name, or `workflow::group::technique`.'),
+  name: TechniqueReferenceSchema,
   inputs: enforcement(z.record(z.union([z.string().describe('Variable name, text literal, or template expression.'), z.number().describe('Numeric input value.'), z.boolean().describe('Boolean input value.')]).describe('Variable name, literal value, or template expression for an input.')).optional().describe('Input identifiers mapped to a source: the name of a session variable to read under that input, a literal, or a `{template}` expression. Declared only for inputs whose source differs from the same-name variable or the declared default.'), { owner: 'Agent', strictness: 'advisory' }),
   outputs: enforcement(z.record(z.string().describe('Workflow variable name for the output.')).optional().describe('Output identifiers mapped to the workflow variable each value is written to. Declared only where that name differs from the output identifier.'), { owner: 'Agent', strictness: 'advisory' }),
 }).describe('Technique reference with input and output bindings.');
@@ -60,7 +60,7 @@ const stepEntryCondition = {
 export const TechniqueStepSchema = z.object({
   kind: enforcement(z.literal('technique').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
   id: enforcement(z.string().optional().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it fails the load of any workflow that reads that routine. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted.'), { owner: 'Engine', strictness: 'enforced' }),
-  technique: z.union([z.string().describe('Technique reference using a `::`-separated path.'), TechniqueBindingSchema]).describe('Technique reference, or an object with `name` and optional `inputs` and `outputs` bindings.'),
+  technique: z.union([TechniqueReferenceSchema, TechniqueBindingSchema]).describe('Technique reference, or an object with `name` and optional `inputs` and `outputs` bindings.'),
   actions: enforcement(z.array(ActionSchema).optional().describe('Actions associated with the technique step.'), { owner: 'Agent', strictness: 'advisory' }),
   ...stepCommonFields,
   ...stepEntryCondition,

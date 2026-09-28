@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import { ActivitySchema } from './activity.schema.js';
-import { SemanticVersionSchema } from './common.js';
+import { SemanticVersionSchema, TechniqueReferenceSchema } from './common.js';
 import { enforcement } from './enforcement.js';
 import { VariableDefinitionSchema, VariableNameSchema } from './variable.schema.js';
 
 export { VariableNameSchema, VariableDefinitionSchema, type VariableDefinition } from './variable.schema.js';
 
 export const WorkflowTechniquesSchema = z.object({
-  workflow: enforcement(z.array(z.string().describe('Technique reference for workflow orchestration.')).optional().describe('Technique references for workflow orchestration, using `::`-separated paths.'), { owner: 'Engine', strictness: 'enforced' }),
-  activity: enforcement(z.array(z.string().describe('Technique reference shared by every activity.')).optional().describe('Technique references that apply to every activity.'), { owner: 'Engine', strictness: 'enforced' }),
+  workflow: enforcement(z.array(TechniqueReferenceSchema).optional().describe('Technique references for workflow orchestration.'), { owner: 'Engine', strictness: 'enforced' }),
+  activity: enforcement(z.array(TechniqueReferenceSchema).optional().describe('Technique references that apply to every activity.'), { owner: 'Engine', strictness: 'enforced' }),
 }).strict().describe('Technique references grouped by orchestration or activity scope.');
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
 

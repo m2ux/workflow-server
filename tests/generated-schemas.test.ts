@@ -91,4 +91,48 @@ describe('generated-schemas', () => {
     expect(byType('or').properties['conditions']!.items!.$ref).toBe('#/definitions/condition');
     expect(byType('not').properties['condition']!.$ref).toBe('#/definitions/condition');
   });
+
+  /** Every `$ref` target in a schema, wherever it sits. */
+  function refTargets(node: unknown, out: string[] = []): string[] {
+    if (Array.isArray(node)) { node.forEach((n) => refTargets(n, out)); return out; }
+    if (node === null || typeof node !== 'object') return out;
+    for (const [key, value] of Object.entries(node)) {
+      if (key === '$ref' && typeof value === 'string') out.push(value);
+      else refTargets(value, out);
+    }
+    return out;
+  }
+
+  const read = (name: string) => JSON.parse(readFileSync(join(SCHEMAS_DIR, `${name}.schema.json`), 'utf-8'));
+
+  it.each([
+    ['activity', ['activity', 'whenExpression', 'condition', 'techniqueReference']],
+    ['routine', ['routine', 'whenExpression', 'condition', 'techniqueReference']],
+    ['workflow', ['workflow', 'techniqueReference']],
+  ])('%s leads its definitions with its own and then the shared grammars', (name, keys) => {
+    expect(Object.keys(read(name).definitions)).toEqual(keys);
+  });
+
+  it.each(['activity', 'routine'])('%s gates and technique references reference the shared definitions', (name) => {
+    const schema = read(name);
+    const conditions = schema.definitions.condition.anyOf as Array<{ properties: Record<string, { $ref?: string; items?: { $ref?: string } }> }>;
+    const byType = (t: string) => conditions.find(v => (v.properties['type'] as { const?: string }).const === t)!;
+    expect(byType('and').properties['conditions']!.items!.$ref).toBe('#/definitions/condition');
+    expect(byType('not').properties['condition']!.$ref).toBe('#/definitions/condition');
+    // A condition field shared by every step kind is referenced at its first site; that site, and so
+    // every chain through it, ends at the condition definition rather than at another field's value.
+    const resolve = (ref: string): unknown => ref.slice(2).split('/').reduce<unknown>((n, k) => (n as Record<string, unknown>)[k], schema);
+    const ownPath = `#/definitions/${name}/`;
+    for (const ref of refTargets(schema).filter((r) => r.startsWith(ownPath) && /(condition|continueWhile|breakCondition)$/.test(r))) {
+      expect((resolve(ref) as { $ref?: string }).$ref, ref).toBe('#/definitions/condition');
+    }
+    expect(refTargets(schema)).toContain('#/definitions/whenExpression');
+    expect(refTargets(schema)).toContain('#/definitions/techniqueReference');
+  });
+
+  it('an activity exit gate and the activity technique list reference the shared definitions directly', () => {
+    const activity = read('activity').definitions.activity;
+    expect(activity.properties.exits.items.properties.when.$ref).toBe('#/definitions/whenExpression');
+    expect(activity.properties.techniques.items.$ref).toBe('#/definitions/techniqueReference');
+  });
 });
