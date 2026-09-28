@@ -361,7 +361,7 @@
             "persistent",
             "fresh"
           ],
-          "description": "Agent context model: `persistent` receives content already delivered as hash references; `fresh`, the default, receives full content on every call."
+          "description": "Agent context model. `persistent`: content already delivered to an agent arrives as a hash reference. `fresh`, the default: content arrives in full unless a call asks for reference delivery, except that `get_activity` sends references for the blocks every activity repeats to an agent returning under the identity its dispatch minted."
         },
         "executionPath": {
           "type": "string",
@@ -381,7 +381,7 @@
             },
             "description": "Content keys mapped to fingerprints for one agent."
           },
-          "description": "Content fingerprints grouped by agent identifier, then content key. A key names one whole item, prefixed by its delivery channel: `bundle:<technique-ref>`, `bundle:rules:<hash>`, `activity_rules:<hash>`, `technique:<id>`, `workflow_bundle:<hash>`, `note:<id>:<hash>`, or `resource:<resource_id>`."
+          "description": "Content fingerprints grouped by agent identifier, then content key. A key names one whole item, prefixed by its kind: `bundle:<technique-ref>`, `bundle:rules:<hash>`, `bundle:contract:<key>`, `activity_rules:<hash>`, `technique:<id>`, `workflow_bundle:<hash>`, `note:<id>:<hash>`, or `resource:<resource_id>`. An item two calls can deliver keeps one key across both, so a delivery through either collapses the other."
         },
         "declaredArtifacts": {
           "type": "array",

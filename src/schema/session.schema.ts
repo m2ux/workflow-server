@@ -30,7 +30,11 @@ export interface EmbeddedSessionRef {
   state?: SessionFile;
 }
 
-/** While set, every authenticated tool except `respond_checkpoint` is blocked. */
+/**
+ * While set, the content-delivery and run-progress tools refuse. The resolution calls
+ * (`present_checkpoint`, `respond_checkpoint`), the diagnostics (`inspect_session`,
+ * `get_workflow_status`), `record_usage` and `dispatch_child` stay open.
+ */
 export const ActiveCheckpointSchema = z.object({
   checkpointId: z.string().min(1).describe('Nonempty identifier of the outstanding checkpoint.'),
   activityId: z.string().min(1).describe('Nonempty identifier of the activity containing the checkpoint.'),
@@ -93,11 +97,11 @@ const SessionFileBaseSchema = z.object({
 
   repo: z.string().min(1).optional().describe('Target repository in `owner/repo` form. Fixed once bound: binding a different repository to the session is rejected.'),
 
-  contextMode: z.enum(['persistent', 'fresh']).optional().describe('Agent context model: `persistent` receives content already delivered as hash references; `fresh`, the default, receives full content on every call.'),
+  contextMode: z.enum(['persistent', 'fresh']).optional().describe('Agent context model. `persistent`: content already delivered to an agent arrives as a hash reference. `fresh`, the default: content arrives in full unless a call asks for reference delivery, except that `get_activity` sends references for the blocks every activity repeats to an agent returning under the identity its dispatch minted.'),
 
   executionPath: z.enum(['agent', 'runner']).optional().describe('Execution mode: `agent` by default, or `runner`.'),
 
-  deliveredContent: z.record(z.record(z.string().describe('Fingerprint of the content associated with this key.')).describe('Content keys mapped to fingerprints for one agent.')).optional().describe('Content fingerprints grouped by agent identifier, then content key. A key names one whole item, prefixed by its delivery channel: `bundle:<technique-ref>`, `bundle:rules:<hash>`, `activity_rules:<hash>`, `technique:<id>`, `workflow_bundle:<hash>`, `note:<id>:<hash>`, or `resource:<resource_id>`.'),
+  deliveredContent: z.record(z.record(z.string().describe('Fingerprint of the content associated with this key.')).describe('Content keys mapped to fingerprints for one agent.')).optional().describe('Content fingerprints grouped by agent identifier, then content key. A key names one whole item, prefixed by its kind: `bundle:<technique-ref>`, `bundle:rules:<hash>`, `bundle:contract:<key>`, `activity_rules:<hash>`, `technique:<id>`, `workflow_bundle:<hash>`, `note:<id>:<hash>`, or `resource:<resource_id>`. An item two calls can deliver keeps one key across both, so a delivery through either collapses the other.'),
 
   declaredArtifacts: z.array(z.object({
     id: z.string().min(1).describe('Nonempty artifact identifier.'),

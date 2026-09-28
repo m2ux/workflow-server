@@ -69,8 +69,8 @@ export function assertNoActiveCheckpoint(state: { activeCheckpoint?: { checkpoin
   if (state.activeCheckpoint) {
     throw new Error(
       `Blocked: Active checkpoint '${state.activeCheckpoint.checkpointId}' on activity '${state.activeCheckpoint.activityId}'. ` +
-      `All tools are gated until the checkpoint is resolved. ` +
-      `The orchestrator must call respond_checkpoint to clear the gate before any other tool calls can proceed.`
+      `Content-delivery and run-progress tools are gated until the checkpoint is resolved. ` +
+      `The orchestrator must call respond_checkpoint to clear the gate before these calls can proceed.`
     );
   }
 }

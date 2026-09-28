@@ -20,17 +20,20 @@ import { stringifyForResponse } from './serialization.js';
  * and a reader holding a fragment has no call that returns the part it lacks: the field is not a
  * thing with an identity, only a component of a technique that was delivered anyway.
  *
- * Content keys are namespaced by delivery channel so the composition paths
- * never cross-reference each other's payloads:
+ * Content keys are prefixed by the kind of item they name. A key names the item, not the call
+ * that delivered it, so an item two calls can deliver keeps one key across both — a step
+ * technique inlined by `get_activity` and fetched by `get_technique`, a linked resource, a shared
+ * contract — and a delivery through either collapses the other:
  *   - `bundle:<technique-ref>`   — one composed technique in the `get_activity` bundle
  *   - `bundle:rules:<hash>`      — the `get_activity` rules bundle
+ *   - `bundle:contract:<key>`    — one inherited contract block, in `get_activity` or `get_technique`
  *   - `activity_rules:<hash>`    — the inherited worker rules block
- *   - `technique:<id>`           — a full `get_technique` composed payload
+ *   - `technique:<id>`           — a composed technique, from `get_technique` or inlined as a step technique
  *   - `workflow_bundle:<hash>`   — the `get_workflow` orchestrator ops bundle
  *   - `note:<id>:<hash>`         — one delivery note (`bundle`, `step_techniques`,
  *     `resources`), the invariant prose explaining how to read the response
- *   - `resource:<resource_id>`   — a full `get_resource` payload (exact caller
- *     `resource_id`, including any `#section` anchor)
+ *   - `resource:<resource_id>`   — a resource, from `get_resource` (exact caller `resource_id`,
+ *     including any `#section` anchor) or linked from an inlined step technique
  *
  * `<hash>`-suffixed keys are content-keyed — the key IS the content hash, so a
  * changed payload gets a different key and delivers in full; no invalidation logic.

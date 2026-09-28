@@ -14,7 +14,7 @@ import { baseId, exitDestinations, getActivity, getExitBindings, TERMINAL_SENTIN
 export interface SessionView {
   /** Workflow id (`workflowId` on the `SessionFile`). */
   wf: string;
-  /** Current activity id (`currentActivity` on the `SessionFile`). */
+  /** Current activity id: the one the call names, or the `SessionFile` frontier's sole entry. */
   act: string;
   /** Workflow version (`workflowVersion` on the `SessionFile`). */
   v: string;
