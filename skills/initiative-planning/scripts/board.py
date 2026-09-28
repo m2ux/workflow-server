@@ -16,12 +16,15 @@ An organization's board is under orgs/{owner} in place of users/{owner}.
 unless exactly one does.
 
 Otherwise the board covers the initiative, every epic its Work Breakdown links, and every task issue
-an epic row links. An item already on the board for an issue those bodies cite, closed other than as
-completed (an issue a task subsumed), is removed. Each issue's Status, first match wins:
+an epic row links, in whichever repository each lives. An issue is known by its repository and
+number, so an epic another repository holds is tracked like one of the initiative's own, and two
+repositories' issues of one number stay apart. An item already on the board for an issue those
+bodies cite, closed other than as completed (an issue a task subsumed), is removed. Each issue's
+Status, first match wins:
   Done         closed as completed
   (removed)    closed any other way
-  In Review    an open pull request ready for review names it: its title names the epic, and for a
-               task issue its title or body also cites the issue
+  In Review    an open pull request ready for review names it: its title names the epic by the
+               initiative's row id, and for a task issue its title or body also cites the issue
   In Progress  an open draft pull request names it, or it is an epic with a delivered row
   Ready        every dependency in its row is delivered and it has no Open questions
   Backlog      otherwise
@@ -29,9 +32,11 @@ An open initiative is In Progress when any epic is Done, In Review or In Progres
 epic is Ready, and Backlog otherwise.
 
 A dependency is delivered when its task row is, or its issue is closed as completed. A task row is
-delivered when its id links a pull request or commit, or a task issue closed as completed. A
-dependency on an issue not given (another initiative's epic, #750) is reported unresolved and read
-as undelivered; give that issue with --others to resolve it.
+delivered when its id links a pull request or commit, or a task issue closed as completed. A bare
+#750 names an issue in the repository of the issue whose row cites it. A dependency on an issue not
+given (another initiative's epic, #750) is reported unresolved and read as undelivered; give that
+issue with --others to resolve it. An issue outside the initiative's repository prints as
+owner/repo#number.
 
 Printed: the gh call for each issue to add, item to remove and Status to set. A Status write sends
 the body file written under --out. Run the calls, fetch the items again and re-run: the board is
@@ -44,9 +49,10 @@ import sys
 from pathlib import Path
 
 from format import LINK, split_sections
-from update import PR_REF, ISSUE_URL, table
+from update import PR_REF, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
 STATUSES = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done')
@@ -64,8 +70,20 @@ def pages(path: str) -> list:
         items.extend(page)
 
 
-def load(paths: list[str]) -> dict[int, dict]:
-    return {i['number']: i for i in (json.loads(Path(p).read_text()) for p in paths)}
+Key = tuple[str, int]
+
+
+def key_of(issue: dict) -> Key:
+    """An issue's identity across repositories: its owner/repo and number."""
+    return issue['repository_url'].split('/repos/', 1)[1], issue['number']
+
+
+def label(key: Key, home: str) -> str:
+    return f'#{key[1]}' if key[0] == home else f'{key[0]}#{key[1]}'
+
+
+def load(paths: list[str]) -> dict[Key, dict]:
+    return {key_of(i): i for i in (json.loads(Path(p).read_text()) for p in paths)}
 
 
 def completed(issue: dict) -> bool:
@@ -83,48 +101,54 @@ def rows(issue: dict) -> tuple[list[str], list[list[str]]]:
     return (grid[0], grid[2:]) if grid else ([], [])
 
 
-def linked_issue(cell: str) -> int | None:
+def issue_url(url: str) -> Key | None:
+    found = ISSUE_REF.search(url)
+    return (found[1], int(found[2])) if found else None
+
+
+def linked_issue(cell: str) -> Key | None:
     link = LINK.fullmatch(cell)
-    found = ISSUE_URL.search(link[2]) if link else None
-    return int(found[1]) if found else None
+    return issue_url(link[2]) if link else None
 
 
 class Board:
-    def __init__(self, issues: dict[int, dict], unresolved: list[str]):
+    def __init__(self, issues: dict[Key, dict], unresolved: list[str], home: str):
         self.issues = issues
         self.unresolved = unresolved
-        self.tables: dict[int, tuple[list[str], dict[str, list[str]]]] = {}
+        self.home = home
+        self.tables: dict[Key, tuple[list[str], dict[str, list[str]]]] = {}
 
-    def table(self, number: int) -> tuple[list[str], dict[str, list[str]]]:
+    def table(self, key: Key) -> tuple[list[str], dict[str, list[str]]]:
         """An issue's Work Breakdown header, and its rows by id."""
-        if number not in self.tables:
-            header, body = rows(self.issues[number])
-            self.tables[number] = header, {i: r for r in body if (i := LINK.sub(r'\1', r[0]))}
-        return self.tables[number]
+        if key not in self.tables:
+            header, body = rows(self.issues[key])
+            self.tables[key] = header, {i: r for r in body if (i := LINK.sub(r'\1', r[0]))}
+        return self.tables[key]
 
-    def row_delivered(self, number: int, task: str, why: str) -> bool:
-        r = self.table(number)[1].get(task)
+    def row_delivered(self, key: Key, task: str, why: str) -> bool:
+        r = self.table(key)[1].get(task)
         if r is None:
-            self.unresolved.append(f'{why}: #{number} has no row {task}')
+            self.unresolved.append(f'{why}: {label(key, self.home)} has no row {task}')
             return False
         issue = linked_issue(r[0])
         if issue is None:
             return bool(LINK.fullmatch(r[0]))
         return self.issue_delivered(issue, why)
 
-    def issue_delivered(self, number: int, why: str) -> bool:
-        if number not in self.issues:
-            self.unresolved.append(f'{why}: #{number} not given')
+    def issue_delivered(self, key: Key, why: str) -> bool:
+        if key not in self.issues:
+            self.unresolved.append(f'{why}: {label(key, self.home)} not given')
             return False
-        return completed(self.issues[number])
+        return completed(self.issues[key])
 
-    def met(self, cell: str, home: int, epics: dict[str, int], why: str) -> bool:
+    def met(self, cell: str, home: Key, epics: dict[str, Key], why: str) -> bool:
         """Whether every dependency in a Depends on cell is delivered. home is the issue whose table
-        holds the row; epics maps the initiative's Eyy ids to their issues."""
+        holds the row, and the repository a bare #750 is read against; epics maps the initiative's
+        Eyy ids to their issues."""
         for entry in (e.strip() for e in cell.split(',') if e.strip()):
             link = LINK.fullmatch(entry)
             text, url = (link[1], link[2]) if link else (entry, '')
-            found = ISSUE_URL.search(url)
+            found = issue_url(url)
             span = RANGE.match(text)
             task = TASK_REF.search(text)
             if span:
@@ -133,19 +157,19 @@ class Board:
             elif re.fullmatch(r'W\d\d', text):
                 ok = self.row_delivered(home, text, why)
             elif re.fullmatch(r'#\d+', text):
-                ok = self.issue_delivered(int(text[1:]), why)
+                ok = self.issue_delivered((home[0], int(text[1:])), why)
             else:
-                number = int(found[1]) if found else epics.get(text.split(':')[0])
-                if number is None:
+                key = found or epics.get(text.split(':')[0])
+                if key is None:
                     self.unresolved.append(f'{why}: {text} links no issue')
                     ok = False
-                elif task and number not in self.issues:
-                    self.unresolved.append(f'{why}: #{number} not given')
+                elif task and key not in self.issues:
+                    self.unresolved.append(f'{why}: {label(key, self.home)} not given')
                     ok = False
                 elif task:
-                    ok = self.row_delivered(number, task[1], why)
+                    ok = self.row_delivered(key, task[1], why)
                 else:
-                    ok = self.issue_delivered(number, why)
+                    ok = self.issue_delivered(key, why)
             if not ok:
                 return False
         return True
@@ -188,15 +212,17 @@ def main() -> int:
     if not m or m[2]:
         sys.exit(f"not an initiative: {initiative['title']}")
     tag = m[1]
+    root = key_of(initiative)
+    home = root[0]
     epics, tasks = load(args.epics), load(args.tasks)
-    issues = {**load(args.others), **tasks, **epics, initiative['number']: initiative}
+    issues = {**load(args.others), **tasks, **epics, root: initiative}
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()]
     unresolved: list[str] = []
-    board = Board(issues, unresolved)
+    board = Board(issues, unresolved, home)
 
     header, epic_rows = rows(initiative)
     epic_ids = {LINK.sub(r'\1', r[0]): n for r in epic_rows if (n := linked_issue(r[0]))}
-    status: dict[int, str | None] = {}
+    status: dict[Key, str | None] = {}
 
     def depends(header: list[str], r: list[str]) -> str:
         column = header.index('Depends on') if 'Depends on' in header else None
@@ -221,13 +247,13 @@ def main() -> int:
             unresolved.append(LINK.sub(r'\1', r[0]) + ': its issue is not given with --epics')
             continue
         epic = epics[number]
-        epic_key = PREFIX.match(epic['title'])[2]
+        epic_key = LINK.sub(r'\1', r[0])[1:]
         task_header, task_rows = board.table(number)
         delivered_any = False
         for tid, tr in task_rows.items():
             task_issue = linked_issue(tr[0])
             if task_issue is not None and task_issue not in tasks:
-                unresolved.append(f'E{epic_key}:{tid}: task issue #{task_issue} is not given with --tasks')
+                unresolved.append(f'E{epic_key}:{tid}: task issue {label(task_issue, home)} is not given with --tasks')
                 continue
             delivered_any |= board.row_delivered(number, tid, f'E{epic_key}:{tid}')
             if task_issue is None:
@@ -235,7 +261,7 @@ def main() -> int:
             t = tasks[task_issue]
             if t['state'] == 'closed':
                 status[task_issue] = 'Done' if completed(t) else None
-            elif found := pr_status(epic_key, task_issue):
+            elif found := pr_status(epic_key, task_issue[1]):
                 status[task_issue] = found
             elif not open_questions(t) and board.met(depends(task_header, tr), number, epic_ids, f'E{epic_key}:{tid}'):
                 status[task_issue] = 'Ready'
@@ -247,20 +273,20 @@ def main() -> int:
             status[number] = 'In Review'
         elif found or delivered_any:
             status[number] = 'In Progress'
-        elif not open_questions(epic) and board.met(depends(header, r), initiative['number'], epic_ids, f'E{epic_key}'):
+        elif not open_questions(epic) and board.met(depends(header, r), root, epic_ids, f'E{epic_key}'):
             status[number] = 'Ready'
         else:
             status[number] = 'Backlog'
 
     epic_status = [status.get(n) for n in epic_ids.values()]
     if initiative['state'] == 'closed':
-        status[initiative['number']] = 'Done' if completed(initiative) else None
+        status[root] = 'Done' if completed(initiative) else None
     elif any(s in ('Done', 'In Review', 'In Progress') for s in epic_status):
-        status[initiative['number']] = 'In Progress'
+        status[root] = 'In Progress'
     elif 'Ready' in epic_status:
-        status[initiative['number']] = 'Ready'
+        status[root] = 'Ready'
     else:
-        status[initiative['number']] = 'Backlog'
+        status[root] = 'Backlog'
 
     field = next((f for f in pages(args.fields) if f.get('name') == 'Status'), None)
     if not field:
@@ -278,30 +304,31 @@ def main() -> int:
     on_board = {}
     for item in pages(args.items):
         content = item.get('content') or {}
-        if item.get('content_type') == 'Issue' and content.get('repository_url') == initiative['repository_url']:
+        if item.get('content_type') == 'Issue' and content.get('repository_url'):
+            key = key_of(content)
             value = next((f.get('value') for f in item.get('fields', []) if f.get('id') == field['id']), None)
             name = value and value.get('name')
-            on_board[content['number']] = (item['id'], name['raw'] if isinstance(name, dict) else name)
-            if content['number'] not in status and content['state'] == 'closed' and not completed(content):
-                issues.setdefault(content['number'], content)
-                cited = re.compile(rf"{re.escape(initiative['html_url'].rsplit('/', 1)[0])}/{content['number']}\b")
+            on_board[key] = (item['id'], name['raw'] if isinstance(name, dict) else name)
+            if key not in status and content['state'] == 'closed' and not completed(content):
+                issues.setdefault(key, content)
+                cited = re.compile(rf"{re.escape(content['html_url'])}\b")
                 if any(cited.search(i.get('body') or '') for i in (initiative, *epics.values(), *tasks.values())):
-                    status[content['number']] = None
+                    status[key] = None
 
     print(f"{args.board}: Status field {field['id']}")
     current, todo = 0, 0
-    for number, wanted in sorted(status.items()):
-        title = issues[number]['title']
-        held = on_board.get(number)
+    for key, wanted in sorted(status.items()):
+        title = f"{label(key, home)} {issues[key]['title']}"
+        held = on_board.get(key)
         if wanted is None and held:
-            print(f'  remove #{number} {title} (closed, not completed): '
+            print(f'  remove {title} (closed, not completed): '
                   f'gh api --method DELETE {args.board}/items/{held[0]}')
         elif wanted and not held:
-            print(f'  add #{number} {title} ({wanted}): '
-                  f"gh api --method POST {args.board}/items -f type=Issue -F id={issues[number]['id']}")
+            print(f'  add {title} ({wanted}): '
+                  f"gh api --method POST {args.board}/items -f type=Issue -F id={issues[key]['id']}")
         elif wanted and held[1] != wanted:
             body = out / f"status-{wanted.lower().replace(' ', '-')}.json"
-            print(f"  set #{number} {title}: {held[1] or 'no Status'} → {wanted}: "
+            print(f"  set {title}: {held[1] or 'no Status'} → {wanted}: "
                   f'gh api --method PATCH {args.board}/items/{held[0]} --input {body}')
         else:
             current += 1
