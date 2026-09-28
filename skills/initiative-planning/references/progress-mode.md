@@ -1,8 +1,8 @@
 # Progress mode
 
-Summarises a project board as a standup, in Slack markup for pasting into a channel: what completed,
-what is in progress, and what is next. The board's Status is the source, so the summary is as
-current as the board.
+Summarises a project board as a standup, in Slack markup for pasting into a channel: a paragraph for
+management on what the window accomplished, then what completed, what is in progress, and what is
+next. The board's Status is the source, so the summary is as current as the board.
 
 ## Procedure
 
@@ -21,8 +21,8 @@ current as the board.
    that number names initiatives in several repositories. Each repository numbers its own
    initiatives, and an initiative's epics and task issues may live in other repositories, so each
    item's place follows the Work Breakdown links, and a pull request counts towards the epic of its
-   reference in the epic's repository or its initiative's. It prints the board's link beneath the
-   heading, then:
+   reference in the epic's repository or its initiative's. It prints the `--summary` paragraph and
+   the board's link beneath the heading, then:
    - **Initiatives:** one line for each initiative with work under Completed or In progress, its
      title's name and subtitle, for context. An item works for the initiative whose table links
      its epic and for the one its epic's title names;
@@ -32,11 +32,19 @@ current as the board.
    - **In progress:** epics and task issues In Progress or In Review, each epic with its open pull
      requests, or else its next task;
    - **Next:** the five Ready items ranked by priority label, each epic with its next task, and a
-     count of the rest.
+     count of the rest;
+   - **Key:** what the reference letters stand for, I Initiative, E Epic and W Work Item, and
+     what each line's opening mark says of its state: ✅ done, 🔶 partly done (an initiative or
+     epic not Done), 🔄 in progress, 👀 in review, 📝 draft, ➡️ next task, 🔜 ready.
 5. **Give the initiatives off the board.** For each `unresolved` line naming an initiative not on
    the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch
    it, and re-run with `--initiatives issue-946.json …`.
-6. **Report** the summary verbatim in a fenced block, so the user copies it unaltered, with any
+6. **Write the paragraph for management** from the Initiatives and Completed sections, and re-run
+   with the same arguments and `--summary summary.txt`. One paragraph in plain language: what the
+   window delivered, as outcomes for the initiatives it serves, with no references, links, task ids
+   or tool names. Leave out work in progress and next. With nothing completed, say so in one
+   sentence.
+7. **Report** the summary verbatim in a fenced block, so the user copies it unaltered, with any
    `unresolved` line it prints to stderr beneath: a dependency on an issue off the board, which
    reads as blocked, or an epic whose Work Breakdown cannot be read, summarised without its tasks;
    review mode fixes its body.
@@ -54,4 +62,5 @@ gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[]
 gh api repos/{owner}/{repo}/issues/946 > issue-946.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --initiatives issue-946.json
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08
+cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08 --summary summary.txt
 ```
