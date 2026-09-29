@@ -123,11 +123,22 @@ describe('generated-schemas', () => {
     // every chain through it, ends at the condition definition rather than at another field's value.
     const resolve = (ref: string): unknown => ref.slice(2).split('/').reduce<unknown>((n, k) => (n as Record<string, unknown>)[k], schema);
     const ownPath = `#/definitions/${name}/`;
-    for (const ref of refTargets(schema).filter((r) => r.startsWith(ownPath) && /(condition|continueWhile|breakCondition)$/.test(r))) {
+    for (const ref of refTargets(schema).filter((r) => r.startsWith(ownPath) && /condition$/.test(r))) {
       expect((resolve(ref) as { $ref?: string }).$ref, ref).toBe('#/definitions/condition');
     }
-    expect(refTargets(schema)).toContain('#/definitions/whenExpression');
-    expect(refTargets(schema)).toContain('#/definitions/techniqueReference');
+    // Each step kind's entry gate, and a technique step's reference, reach the shared definitions.
+    const kinds = schema.definitions[name].properties.steps.items.anyOf as Array<{ properties: Record<string, { $ref?: string; anyOf?: Array<{ $ref?: string }> }> }>;
+    for (const kind of kinds) {
+      const when = kind.properties['when']!.$ref!;
+      expect(when.startsWith(ownPath) ? (resolve(when) as { $ref?: string }).$ref : when).toBe('#/definitions/whenExpression');
+    }
+    expect(kinds[0]!.properties['technique']!.anyOf![0]!.$ref).toBe('#/definitions/techniqueReference');
+    for (const kind of kinds) {
+      for (const field of ['continueWhile', 'breakCondition'] as const) {
+        const ref = kind.properties[field]?.$ref;
+        if (ref !== undefined) expect(ref, field).toBe('#/definitions/condition');
+      }
+    }
   });
 
   it('an activity exit gate and the activity technique list reference the shared definitions directly', () => {

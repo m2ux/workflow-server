@@ -37,7 +37,7 @@ classDiagram
 
 *Figure 2. Standalone Technique, Group, and Resource File.*
 
-Techniques and resources are markdown files on disk, and each one's filename is its id. A standalone technique is `techniques/{slug}.md`; a grouped technique is a folder holding a `TECHNIQUE.md` index plus one `{sub}.md` per nested technique; a resource is `resources/{slug}.md`. The id is the filename; a technique's frontmatter carries only its version.
+Techniques and resources are markdown files on disk. A standalone technique is `techniques/{slug}.md`; a grouped technique is a folder holding a `TECHNIQUE.md` index plus one `{sub}.md` per nested technique; a resource is `resources/{slug}.md`. A technique's id is its filename, and its frontmatter carries only its version. A resource answers to its filename or to the frontmatter `name` it declares, and returns that `name` as its id where it declares one.
 
 So the file `techniques/review-engine.md` is the technique `review-engine`, and that is the name an agent asks for it by.
 

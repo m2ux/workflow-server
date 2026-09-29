@@ -2,7 +2,7 @@
 
 A **resource** is a guide a **technique** cites and does not inline: a template, a command reference, a long explanation. A technique is a capability file. The author writes a resource when that material has more than one caller, or is too large to ride inside the technique. A **reference** is the name the agent asks for. A **section** is one heading of the file, fetched alone when the technique needs only that part.
 
-The filename is the id the agent asks by. The server returns the body with an id, the frontmatter `name` when the file declares one and the filename otherwise, and a **version**. How the name reaches the file is [resolution](resolution.md#resource). What a later send collapses to is [reference delivery](delivery.md#reference-delivery). The [calls](api.md) that ask for a resource are in the tool catalog.
+The agent asks by the filename, or by the frontmatter `name` the file declares. The server returns the body with an id, the frontmatter `name` when the file declares one and the filename otherwise, and a **version**. How the name reaches the file is [resolution](resolution.md#resource). What a later send collapses to is [reference delivery](delivery.md#reference-delivery). The [calls](api.md) that ask for a resource are in the tool catalog.
 
 ## File
 
