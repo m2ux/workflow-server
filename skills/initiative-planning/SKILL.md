@@ -20,20 +20,21 @@ decisions and each review.
 Read the file for the mode the request calls for:
 
 - **Plan mode** — raise, plan or restructure an initiative or epic; review a plan against its goal;
-  check dependencies; renumber; fold findings in: `references/plan-mode.md`.
+  check dependencies; renumber; fold findings in: [plan-mode.md](references/plan-mode.md).
 - **Review mode** — check existing issues against the templates and fix them:
-  `references/review-mode.md`.
+  [review-mode.md](references/review-mode.md).
 - **Update mode** — record delivered work: link tasks to their pull requests, tick criteria that
   hold, close complete task issues, epics and initiatives, and update the initiative's project
-  board: `references/update-mode.md`.
+  board: [update-mode.md](references/update-mode.md).
 - **Hoist mode** — find orphan issues, offer each a placement in an existing or new initiative,
-  epic or task, and migrate or subsume the ones the user places: `references/hoist-mode.md`.
+  epic or task, and migrate or subsume the ones the user places:
+  [hoist-mode.md](references/hoist-mode.md).
 - **Progress mode** — summarise the project board as a standup for a Slack channel: a paragraph
   for management on what the window accomplished, then what completed, what is in progress and
-  what is next: `references/progress-mode.md`.
+  what is next: [progress-mode.md](references/progress-mode.md).
 
-Every mode also reads `references/work-breakdown.md`, the guide to the Work Breakdown tables: their
-columns, numbering, references and delivery.
+Every mode also reads [work-breakdown.md](references/work-breakdown.md), the guide to the Work
+Breakdown tables: their columns, numbering, references and delivery.
 
 ## House scheme
 
@@ -48,14 +49,15 @@ columns, numbering, references and delivery.
   epic. Initiatives and epics count from `00`, and tasks from `W01`.
 - **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
   colon, and a subtitle stating the outcome; a standalone issue's title is the same without the
-  prefix. The name is two or three words and the subtitle a
-  succinct summary of at most ten, both in title case: `[I07:E06] Reliability Evaluation: Briefs,
-  Measures and the Thresholds That Define Reliable`.
-- **Bodies.** Every body follows its template in `templates/`: `initiative.md`, `epic.md`,
-  `task.md`, and `issue.md` for a standalone issue outside any initiative. A task or standalone
-  issue has an epic's structure without the Work Breakdown table. Keep the section order and the
-  table columns. Fill each `{{…}}` and delete a section the template marks as optional when it has
-  nothing to say. What a body leaves out is in the Work Breakdown guide.
+  prefix. The name is two or three words and the subtitle a succinct summary of at most ten, both
+  in title case: `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define
+  Reliable`.
+- **Bodies.** Every body follows its template: [initiative.md](templates/initiative.md),
+  [epic.md](templates/epic.md), [task.md](templates/task.md), and [issue.md](templates/issue.md)
+  for a standalone issue outside any initiative. A task or standalone issue has an epic's structure
+  without the Work Breakdown table. Keep the section order and the table columns. Fill each `{{…}}`
+  and delete a section the template marks as optional when it has nothing to say. What a body
+  leaves out is in the [Work Breakdown guide](references/work-breakdown.md).
 - **Code references.** A body references code as a link on the words it supports, a permalink
   pinned to a commit with its line anchors, never a bare `path:line`:
   `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
@@ -107,9 +109,9 @@ discover -s test`.
 - **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in
   the affected issues and, when there is one, the planning record.
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
-- **Bodies state the plan as it is.** No body carries change narrative:
-  nothing moved, renumbered, replaced, discharged or formerly anything. How the plan evolved goes in
-  the planning record and in commit and pull request bodies.
+- **Bodies state the plan as it is.** No body carries change narrative: nothing moved, renumbered,
+  replaced, discharged or formerly anything. How the plan evolved goes in the planning record and
+  in commit and pull request bodies.
 - **Other initiatives.** Editing another initiative's issue needs the user's explicit approval.
 - **Replies to feedback.** Once feedback on an issue is folded into its body, a comment mentions the
   reviewer and answers each of their points in turn, precisely and factually, with no thanks or
