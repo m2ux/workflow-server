@@ -2,13 +2,13 @@
 name: impact-analysis
 description: Guidelines for creating the impact-analysis planning artifact (classification, integrity, removals).
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   order: 15
 ---
 
 # Impact Analysis Guide
 
-Update-mode decision surface. Answers: what is touched, is integrity intact, and which removals are intentional? Human gate at impact-and-preservation. Canonical home for impact classification, integrity, and removals ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
+Update-mode decision surface. Answers: what is touched, is integrity intact, and which removals are intentional? Canonical home for impact classification, integrity, and removals ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 
 ## Template
 
@@ -27,7 +27,7 @@ Update-mode decision surface. Answers: what is touched, is integrity intact, and
 
 [2–3 sentences: kind of change; topology intact or not.]
 
-**removal_count:** N
+**Removals inventoried:** N
 
 ---
 
@@ -53,33 +53,29 @@ Update-mode decision surface. Answers: what is touched, is integrity intact, and
 
 ## 2. Integrity checks
 
-| Check | Verdict |
-|-------|---------|
-| Exits and graph / `initialActivity` / reachability | Pass / Fail — [one line] |
-| Technique / resource references | Pass / Fail — [one line] |
-| Variables / `setVariable` / step conditions | Pass / Fail — [one line] |
+**All integrity checks pass:** exits and graph / `initialActivity` / reachability; technique / resource references; variables / `setVariable` / step conditions.
+
+[Replace the line above with the divergences table when any check fails.]
+
+| Check | Divergence |
+|-------|------------|
+| check that fails | one line |
 
 ---
 
 ## 3. Removals inventory
 
+[Omit if none — a Summary count of 0 removals inventoried logs the null.]
+
 | # | Location | Removed | Preserved |
 |---|----------|---------|-----------|
 | 1 | `path` or gate | what drops | what stays |
-
-[Empty table + "none" line when removal_count is 0.]
-
----
-
-## Decision ask
-
-Confirm impact scope and intentional removals — or revise / preserve.
 ```
 
 ## Rules
 
 - **No unaffected per-file essays** — summary note only.
-- **Every material removal** gets a removed-vs-preserved row (content-preservation).
+- **Every material removal** gets a removed-vs-preserved row.
 - **Integrity** is verdict + one line, not a walkthrough.
 - **Own facts only.** Link design-specification and structural-inventory; do not restate purpose or inventory body ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 - **Line budget:** ~100 lines unless removals inventory is long (then table rows are the length).

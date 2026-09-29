@@ -6,7 +6,7 @@
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through its main activities plus a codebase-comprehension sub-flow, entered from design-philosophy or assumptions-review. Each activity has defined techniques, checkpoints, and exits. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through its main activities plus a codebase-comprehension sub-flow, entered from design-philosophy or assumptions-review. Each activity has defined techniques, checkpoints, and exits. Activities may be conditional (skipped based on complexity) or looped (repeated on failure), and review mode conditions their steps, checkpoints, and exits.
 
 Assumption and comprehension stages converge agent-resolvable concerns (analyse → challenge → combine) before residual stakeholder asks.
 
@@ -30,7 +30,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose, role, and a flow diagram) and a link to each activity's authoritative YAML definition.
+- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose and role) and a link to each activity's authoritative YAML definition.
 - **Techniques:** See [techniques/README.md](./techniques/README.md) for the technique inventory orientation; per-technique protocols live in the technique files.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index.
 

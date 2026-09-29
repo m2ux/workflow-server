@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.7.0
+version: 4.8.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
@@ -13,7 +13,7 @@ variables:
   writes:
     - name: client_workflow_completed
       type: boolean
-      description: Whether the dispatched client workflow has reached workflow_complete
+      description: Whether the client workflow walk ended with no further activity routed.
       defaultValue: false
 required: true
 steps:
@@ -38,7 +38,7 @@ steps:
         workflow_definition: target_workflow_id
   - kind: checkpoint
     id: completion-confirmed
-    message: Session summary presented above. Confirm closure or return to the workflow to address remaining items.
+    message: Session closure, with each target outcome reported as met or as a gap to address.
     options:
       - id: confirm
         label: Confirm closure

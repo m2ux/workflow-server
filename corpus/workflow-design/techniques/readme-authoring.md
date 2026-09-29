@@ -1,17 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
 Root `README.md` that orients readers to the workflow's purpose, structure, and links.
-
-## Inputs
-
-### operation_type
-
-The classified technique. When `update`, the README is updated in place to reflect structural changes; when `create`, it is generated fresh.
 
 ## Outputs
 
@@ -31,5 +25,5 @@ The workflow root README (create: generate; update: revise for structural change
 
 ### 1. Generate Or Update README
 
-- Create: write `{workflow_readme}` fresh. Update: revise the existing README for structural changes (activities, modes, links).
+- When `{operation_type}` is `create`, write `{workflow_readme}` fresh; when `update`, revise the existing README for structural changes (activities, modes, links).
 - Orientation stance: [Complete Documentation Structure](/canon/resources/design-principles.md#11-complete-documentation-structure) and `readme-orients-not-transcribes` — do not transcribe YAML.

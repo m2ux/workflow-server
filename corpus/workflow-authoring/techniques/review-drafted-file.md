@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,10 +17,6 @@ The manifest entry just drafted — full path, action, kind and the one-line sta
 
 The authored file at that entry's path, as just written.
 
-### operation_type
-
-The classified technique for the request — create, update or review.
-
 ### impact_analysis_path
 
 *(optional)* Absolute path to the impact report whose removals inventory the comparison is measured against. Absent on a run with no existing definition to assess, where there is nothing to compare.
@@ -33,7 +29,7 @@ True when `{operation_type}` is `update` and the drafted file removes material t
 
 ### impact_analysis
 
-The removals inventory carrying a row for every observed reduction, each stating where it happened, what drops, what survives and the stage that raised it. Reads as the `#### artifact` for `impact-analysis.md` at the shape [Template](../../resources/impact-analysis.md#template) declares, so the writer persists it into the numbered instance intake created.
+The removals inventory carrying a row for every observed reduction, each stating where it happened, what drops, what survives and the stage that raised it. Reads as the `#### artifact` for `impact-analysis.md` at the shape [Template](../resources/impact-analysis.md#template) declares, so the writer persists it into the numbered instance intake created.
 
 ## Protocol
 

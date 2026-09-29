@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -31,9 +31,9 @@ Session [retrospective](/work-package/resources/workflow-retrospective.md#output
 
 - Identify root causes, determine pattern frequency, and formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases)
 
-### 5. Write Retrospective Section
+### 5. Assemble Retrospective Section
 
-- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of the close-out document (update in place — it is the single terminal artifact) using the [workflow-retrospective](/work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities. Include only the signal categories that have content.
+- Assemble `{retrospective_document}` as the `## Workflow Retrospective` section at the shape the [workflow-retrospective](/work-package/resources/workflow-retrospective.md#output-section-template) section template declares — omit the PR reference and report activities as a count out of the design workflow's activities. Include only the signal categories that have content.
 
 ## Rules
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -36,7 +36,7 @@ Boolean — true while open audit-resolvable assumptions remain; false once no o
 ### 1. Classify Resolvability
 
 - Read all open assumptions from `{assumptions_log}` — [Design Assumptions Guide](../resources/design-assumptions.md#assumptions-log-template)
-- Classify each with the resolvability vocabulary in [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md) (`audit` vs `open`). Criteria homes for `audit` rows: schema / `schemas/README.md`; [convention-conformance](/canon/resources/convention-conformance.md); [anti-patterns](/canon/resources/anti-patterns.md); [design-principles](/canon/resources/design-principles.md). Do not Apply sibling `audit-*` techniques from this Protocol ([pass-orchestration-in-technique](/canon/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique)).
+- Classify each with the resolvability vocabulary in [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md) (`audit` vs `open`). Criteria homes for `audit` rows: the JSON schemas at `workflow-server://schemas`; [convention-conformance](/canon/resources/convention-conformance.md); [anti-patterns](/canon/resources/anti-patterns.md); [design-principles](/canon/resources/design-principles.md). Do not Apply sibling `audit-*` techniques from this Protocol ([anti-patterns](/canon/resources/anti-patterns.md): `pass-orchestration-in-technique`).
 - Genuine design judgements stay **open**
 - If the log has no open assumptions, set `{has_resolvable_assumptions}` and `{has_open_assumptions}` false and skip further work
 - If every open assumption is a judgement (not audit-resolvable), set `{has_resolvable_assumptions}` false and proceed to Update Open Assumptions
@@ -57,7 +57,7 @@ Boolean — true while open audit-resolvable assumptions remain; false once no o
 
 ### 5. Record Open Rationales
 
-- For each remaining open assumption, record why no audit can settle it — durable evidence for Gate 2 batch disposition
+- For each remaining open assumption, record why no audit can settle it
 
 ## Rules
 
@@ -68,7 +68,3 @@ Reconciliation runs autonomously, without user interaction — emit `{assumption
 ### convergence-definition
 
 Convergence means no open assumption remains audit-resolvable. Stakeholder-dependent judgements may still be open in `{open_assumptions}`.
-
-### no-sibling-audit-invoke
-
-Do not Apply / `::`-invoke `audit-*` techniques. Quality-review audit steps remain activity-bound elsewhere; this technique settles assumptions against criteria resources only.

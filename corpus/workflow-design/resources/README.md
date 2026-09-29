@@ -55,7 +55,7 @@ The design canon this workflow audits against — principles, anti-patterns, the
 | `compliance-review.md` / `post-update-review.md` | [compliance-report](compliance-report.md) |
 | `expressiveness-findings.md`, `conformance-findings.md`, `rule-hygiene-findings.md`, `enforcement-findings.md`, `principle-findings.md`, `anti-pattern-findings.md`, `verified-findings.md` | [findings-satellite](findings-satellite.md) |
 
-Each creation guide has a **Template** section and **Rules** for lean, decision-facing population. Persist techniques cite these guides; layout authority lives here, not in ad-hoc protocol prose.
+Each creation guide has a **Template** section and **Rules** for lean, decision-facing population. The techniques that assemble each artifact cite these guides; layout authority lives here, not in ad-hoc protocol prose.
 
 ---
 

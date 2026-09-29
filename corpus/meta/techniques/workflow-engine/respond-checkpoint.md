@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -9,17 +9,13 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 ## Inputs
 
-### session_index
-
-`session_index` of the worker whose active checkpoint is being resolved
-
 ### checkpoint_resolution
 
 `{ option_id }` | `{ auto_advance: true }` | `{ condition_not_met: true }`
 
 ## Outputs
 
-### effects
+### checkpoint_reply
 
 The reply the server returns on clearing the active checkpoint: `resolved_option`, the option taken; `effect`, its `setVariable` assignments and `exit`; `exit`, the selected exit with its `next_activity`, carrying `ends_activity` where selecting it ends the activity at this gate; and `dismissed`, set on a `condition_not_met` resolution, which selects no option.
 
@@ -27,26 +23,21 @@ The reply the server returns on clearing the active checkpoint: `resolved_option
 
 ### 1. Verify Auto-Advance
 
-- When `{checkpoint_resolution}` is `{ auto_advance: true }`, apply `verify-auto-advance-on-resolve` before calling `respond_checkpoint`.
+- When `{checkpoint_resolution}` is `{ auto_advance: true }`, confirm the gate is one the definition declares soft, per `present-checkpoint-to-user.verify-auto-advance-capability`, before calling `respond_checkpoint`.
+  > `auto_advance: true` is valid only on a soft gate, and the server refuses it on a gate that carries no such declaration. Never resolve a hard gate by auto-advance.
 
 ### 2. Clear Active Gate
 
-- Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns its reply. Capture the reply as `{effects}` and propagate it to the worker on resume.
-  > When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
+- Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns its reply. Capture the reply as `{checkpoint_reply}` and propagate it to the worker on resume.
+  > - When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
+  > - When the call returns `Invalid option`, STOP. Apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to retrieve the valid options. Never guess.
+
 ## Rules
-
-### no-option-hallucination
-
-If `respond_checkpoint` returns `Invalid option`, STOP. Apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to retrieve the valid options. Never guess.
-
-### verify-auto-advance-on-resolve
-
-`auto_advance: true` is valid only on a gate the definition declares soft. Confirm via `present-checkpoint-to-user.verify-auto-advance-capability` before calling `respond_checkpoint`; the server refuses the call on a gate that carries no such declaration. Do not invent auto-advance on a hard gate.
 
 ### auto-advance-spends-the-declared-interval
 
-The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded, so this call is the route that spends it. A resolution that must not wait belongs on the headless path of `present-checkpoint-to-user.present-before-any-resolution`, which makes no call at all.
+The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded. A resolution that must not wait takes the headless path of `present-checkpoint-to-user.present-before-any-resolution`, which makes no call.
 
 ### dismiss-only-a-gate-whose-condition-is-false
 
-`condition_not_met: true` is the resolution for a checkpoint whose declared `condition` evaluates false against the run's variable bag — the gate is cleared without a decision because the run never reached the situation it asks about. The server refuses it on a checkpoint carrying no `condition`. Never use it to clear a gate whose condition holds.
+`condition_not_met: true` is the resolution for a checkpoint whose declared `condition` evaluates false against the run's variable bag, and clears the gate without a decision. The server refuses it on a checkpoint carrying no `condition`. Never use it to clear a gate whose condition holds.

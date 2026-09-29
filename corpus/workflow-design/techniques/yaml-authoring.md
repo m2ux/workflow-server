@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Schema-valid workflow YAML files.
 
 ### schema_type
 
-Which schema applies to this file — one of: workflow (`schemas/workflow.schema.json`), activity (`schemas/activity.schema.json`), technique (`schemas/technique.schema.json`)
+Which schema applies to this file — one of `workflow`, `activity` or `technique`
 
 ### reference_file
 
@@ -31,11 +31,11 @@ The set of files drafted for this workflow so far, extended with the one just wr
 
 ### 2. Read Schema Field Tables
 
-- Read `schemas/README.md` for the field tables, required properties, and valid values for the `{schema_type}`
+- Read the JSON schema for `{schema_type}` from `workflow-server://schemas` for its fields, required properties, and valid values
 
 ### 3. Plan Content
 
-- Identify which schema fields will be used by consulting the JSON schema definition (`schemas/{schema_type}.schema.json`)
+- Identify which schema fields will be used from the JSON schema for `{schema_type}`
 - Map content to fields using formal constructs from [schema-construct-inventory](/canon/resources/schema-construct-inventory.md); cross-check required vs optional properties for the `{schema_type}`
 
 ### 4. Draft Content
@@ -45,7 +45,7 @@ The set of files drafted for this workflow so far, extended with the one just wr
 
 ### 5. Validate Against Schema
 
-- Validate the file against its JSON schema (`workflow.schema.json`, `activity.schema.json`, or `technique.schema.json`)
+- Validate the file against the JSON schema for `{schema_type}`
 
 ### 6. Run Workflow Validator
 
@@ -86,3 +86,15 @@ Follow field ordering from existing files of the same type ([convention-conforma
 ### schema-reference
 
 workflow.yaml files should include a `$schema` field pointing to the schema file path
+
+### a-step-binds-only-its-deviations
+
+A step binding a technique with no deviation uses the bare-string form (`technique: group::technique`). Its `inputs` list only the inputs whose value differs from same-name binding or a declared `default`, and its `outputs` only the outputs whose landed bag name differs from the output's own id.
+
+### a-name-mismatch-is-closed-at-the-caller
+
+Where the bag and a technique name one value differently, the caller's bag variable takes the technique's input id, or the step carries one `inputs` rename. The technique keeps its own names.
+
+### a-foreign-technique-is-qualified
+
+A technique from any other group or namespace, a `meta` group included, is written qualified (`gitnexus::analyze`, `review-assumptions::reconcile`). A standalone `meta` technique is written bare (`verify-artifact-conforms`): a bare name resolves in the referring workflow, then in `meta`.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Operation-type classification and design-intent baseline for create, update or r
 
 ### operation_type
 
-The classified technique — sole mode state for the run:
+The classified operation — sole mode state for the run:
 
 - **Review** — existing-workflow reference(s) plus an audit intent (recognition signals include "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow")
 - **Update** — existing-workflow reference plus a change request
@@ -55,11 +55,11 @@ Per-target baseline of the existing definition — file counts by kind, entity c
 
 ### change_category
 
-In update mode, the categorised change request from `{user_description}`: one or more of the categories in [Change Categories](../../resources/update-mode-guide.md#change-categories). Unset otherwise.
+In update mode, the categorised change request from `{user_description}`: one or more of the categories in [Change Categories](../resources/update-mode-guide.md#change-categories). Unset otherwise.
 
 ## Protocol
 
-### 1. Classify Technique
+### 1. Classify Operation
 
 - Determine `{operation_type}` per the Output criteria
 - Set `{operation_type_ambiguous}` true when classification signals conflict or are insufficient; otherwise false
@@ -79,7 +79,7 @@ In update mode, the categorised change request from `{user_description}`: one or
 
 ### 4. Categorise the Change Request
 
-- In update mode, categorise the change `{user_description}` asks for into `{change_category}` per [Change Categories](../../resources/update-mode-guide.md#change-categories); a request spanning more than one category records each
+- In update mode, categorise the change `{user_description}` asks for into `{change_category}` per [Change Categories](../resources/update-mode-guide.md#change-categories); a request spanning more than one category records each
 
 ## Rules
 

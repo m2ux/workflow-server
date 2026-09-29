@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -9,9 +9,9 @@ Schema-system and YAML-convention literacy for the design intent.
 
 ## Outputs
 
-### format_conventions_path
+### format_conventions
 
-Absolute path to the written format-conventions artifact (create mode only).
+The format-conventions summary for this change, at the shape [Template](../resources/format-conventions.md#template) declares. Assembled on a create or update run; absent on a review run.
 
 #### artifact
 
@@ -21,9 +21,9 @@ Absolute path to the written format-conventions artifact (create mode only).
 
 `human`
 
-### applicable_constructs_path
+### applicable_constructs
 
-Absolute path to the written applicable-constructs artifact (create mode only).
+The applicable-constructs list for this change, at the shape [Template](../resources/applicable-constructs.md#template) declares. Assembled on a create or update run; absent on a review run.
 
 #### artifact
 
@@ -37,8 +37,7 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 1. Load Schemas
 
-- Load all five JSON schema definitions from `workflow-server://schemas` (workflow, activity, technique, condition, state) — conformance reference for drafted content. Delivery: [resource-loading-via-tool](/meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool).
-- Read `schemas/README.md` for ontology, field tables, examples, and validation guidance
+- Load the JSON schema definitions the [schema-construct-inventory](/canon/resources/schema-construct-inventory.md#universal-obligation) names as served at `workflow-server://schemas` — the conformance reference for drafted content. That URI is an MCP resource, read as a resource rather than by resource id.
 
 ### 2. Load Design-Time Canon
 
@@ -47,7 +46,7 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 3. Survey Reference Workflows
 
-- Refresh the catalog via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md) and survey 2+ similar-type workflows from orchestrator-supplied definitions ([no-domain-work](/meta/techniques/orchestrator-conduct.md#no-domain-work) — workers do not load full workflow definitions)
+- Survey 2+ similar-type workflows from the catalog and the definitions the orchestrator supplies; a worker does not load full workflow definitions itself
 
 ### 4. Ground YAML Syntax
 
@@ -57,12 +56,10 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 - Cross-reference the schema field tables to identify applicable constructs with correct field names, types, required-property cross-checks, and reference-workflow examples
 
-### 6. Persist Format Conventions
+### 6. Assemble Format Conventions
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the format-conventions summary per [format-conventions](../resources/format-conventions.md#template) and its [Rules](../resources/format-conventions.md#rules); capture `{format_conventions_path}`
-- Skip when `{operation_type}` is `update` or `review`
+- When `{operation_type}` is `create` or `update`: assemble `{format_conventions}` at the shape [Template](../resources/format-conventions.md#template) declares, under its [Rules](../resources/format-conventions.md#rules)
 
-### 7. Persist Applicable Constructs
+### 7. Assemble Applicable Constructs
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the applicable-constructs list per [applicable-constructs](../resources/applicable-constructs.md#template) and its [Rules](../resources/applicable-constructs.md#rules); capture `{applicable_constructs_path}`
-- Skip when `{operation_type}` is `update` or `review`
+- When `{operation_type}` is `create` or `update`: assemble `{applicable_constructs}` at the shape [Template](../resources/applicable-constructs.md#template) declares, under its [Rules](../resources/applicable-constructs.md#rules)

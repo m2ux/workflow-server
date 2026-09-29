@@ -1,15 +1,15 @@
 id: retrospective
-version: 1.4.0
+version: 1.5.0
 name: Retrospective
 description: A recorded completion summary (create/update) and a session retrospective capturing lessons before the workflow ends.
 variables:
   reads:
     - component_git_dir
     - host_repo_path
+    - manifest_entries
     - operation_type
     - planning_folder_path
     - pr_number
-    - scope_manifest
     - target_path
     - worktree_created
   writes:
@@ -20,6 +20,9 @@ variables:
 required: true
 steps:
   - kind: technique
+    id: conduct-retrospective
+    technique: conduct-retrospective
+  - kind: technique
     id: create-completion-doc
     technique: create-completion-doc
     when: operation_type != 'review'
@@ -28,26 +31,22 @@ steps:
     technique:
       name: work-package::manage-artifacts::write-artifact
       inputs:
-        bare_filename: completion.md
+        bare_filename: COMPLETE.md
         artifact_content: completion_document
-        target_dir: planning_folder_path
     when: operation_type != 'review'
-  - kind: technique
-    id: conduct-retrospective
-    technique: conduct-retrospective
   - kind: technique
     id: persist-retrospective
     technique:
       name: work-package::manage-artifacts::write-artifact
       inputs:
-        bare_filename: completion.md
+        bare_filename: COMPLETE.md
         artifact_content: retrospective_document
-        target_dir: planning_folder_path
+    when: operation_type == 'review'
   - kind: technique
     id: remove-session-worktree
     technique: work-package::manage-git::remove-worktree
     when: worktree_created == true
 outcome:
-  - A completion summary records what the session delivered, the key design decisions and alternatives rejected, and known limitations
+  - A later reader learns what the session delivered and what it left open without replaying it
   - A session retrospective captures friction points and prioritized workflow improvements before the work ends
   - When this run created or reused a dedicated edit worktree, optional teardown clears `{target_path}` after the retrospective

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ Per-finding record of the file edited, the change made, and the schema-validatio
 
 ### impact_analysis
 
-The removals inventory carrying a row for every reduction this round applied that it did not already name, each stating where it happened, what drops, what survives, and `remediation round N` as the stage that raised it. Reads as the `#### artifact` for `impact-analysis.md` at the shape [Template](../../resources/impact-analysis.md#template) declares.
+The removals inventory carrying a row for every reduction this round applied that it did not already name, each stating where it happened, what drops, what survives, and `remediation round N` as the stage that raised it. Reads as the `#### artifact` for `impact-analysis.md` at the shape [Template](../resources/impact-analysis.md#template) declares.
 
 ## Protocol
 

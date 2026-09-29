@@ -50,7 +50,7 @@ A semi-reversible or irreversible change waits for explicit confirmation that in
 
 ## 9. Encode Constraints as Structure
 
-A critical constraint is a checkpoint, a condition, or a validate action. Rule text does not enforce it.
+A critical constraint is a checkpoint, a condition, a validate action, or an exit `when`. Rule text does not enforce it.
 
 ## 10. Non-Destructive Updates
 

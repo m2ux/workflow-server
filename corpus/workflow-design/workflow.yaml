@@ -16,7 +16,7 @@ tags:
   - conventions
 rules:
   activity:
-    - The target specification's design dimensions are elicited once and carried forward as the run's own record, so a later activity reads the specification rather than re-deriving it
+    - The target specification's design dimensions are elicited once and carried forward as the run's own record
 techniques:
   activity:
     - variable-binding
@@ -33,7 +33,7 @@ variables:
   - name: host_repo_path
     type: string
     description: Absolute path to the host repository the session belongs to.
-  - name: scope_manifest
+  - name: manifest_entries
     type: array
     description: List of files to create, modify, or remove with full paths and actions.
   - name: assumptions_log
@@ -52,6 +52,7 @@ graph:
     done: scope-and-draft
   impact-analysis:
     done: scope-and-draft
+    revise: impact-analysis
   scope-and-draft:
     done: quality-review
     redraft: scope-and-draft

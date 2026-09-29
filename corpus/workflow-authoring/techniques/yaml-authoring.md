@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -39,18 +39,18 @@ True when `{yaml_file}` parses and conforms to the schema its kind selects. Fals
 
 ### 2. Read the Schema Field Tables
 
-- Read `schemas/README.md` for the field table, required properties and allowed values of that kind
+- Read the JSON schema for that kind from `workflow-server://schemas` for its fields, required properties and allowed values
 
 ### 3. Plan the Content
 
 - Identify which fields the content needs from the JSON schema for that kind
 - When `{selected_findings}` is present, the files to author are the ones those findings cite, and the planned change is exactly what each finding's fix prescribes
-- Map the content onto formal constructs, taking the table for its own level from [Activity-Level Constructs](/canon/resources/schema-construct-inventory.md#activity-level-constructs-activityschemajson), [Workflow-Level Constructs](/canon/resources/schema-construct-inventory.md#workflow-level-constructs-workflowschemajson) or [Technique-Level Constructs](/canon/resources/schema-construct-inventory.md#technique-level-constructs-techniqueschemajson) or [Routine-Level Constructs](/canon/resources/schema-construct-inventory.md#routine-level-constructs-routineschemajson), plus [Condition Constructs](/canon/resources/schema-construct-inventory.md#condition-constructs-conditionschemajson) wherever a gate is authored
+- Map the content onto formal constructs, taking the table for its own level from [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md), plus its condition table wherever a gate is authored
 - Cross-check required against optional properties before drafting rather than after validation fails
 
 ### 4. Draft the Content
 
-- Write `{yaml_file}` at the path `{current_file}` names, in the style [YAML style](../../resources/yaml-style.md) states
+- Write `{yaml_file}` at the path `{current_file}` names, in the style [YAML style](../resources/yaml-style.md) states
 
 ### 5. Validate Against the Schema
 
@@ -67,3 +67,15 @@ True when `{yaml_file}` parses and conforms to the schema its kind selects. Fals
 ### smallest-edit-that-resolves
 
 An edit authored to resolve a finding is the smallest change that resolves it. Content no finding names is preserved, and rewriting a region because it was already open is not part of the fix.
+
+### a-step-binds-only-its-deviations
+
+A step binding a technique with no deviation uses the bare-string form (`technique: group::technique`). Its `inputs` list only the inputs whose value differs from same-name binding or a declared `default`, and its `outputs` only the outputs whose landed bag name differs from the output's own id.
+
+### a-name-mismatch-is-closed-at-the-caller
+
+Where the bag and a technique name one value differently, the caller's bag variable takes the technique's input id, or the step carries one `inputs` rename. The technique keeps its own names.
+
+### a-foreign-technique-is-qualified
+
+A technique from any other group or namespace, a `meta` group included, is written qualified (`gitnexus::analyze`, `review-assumptions::reconcile`). A standalone `meta` technique is written bare (`verify-artifact-conforms`): a bare name resolves in the referring workflow, then in `meta`.

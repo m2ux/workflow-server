@@ -1,7 +1,7 @@
 id: scope-and-draft
-version: 1.8.0
+version: 1.9.0
 name: Scope and Draft
-description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
+description: "A confirmed file manifest for the change, with every file it names authored against its schema."
 variables:
   reads:
     - component_git_dir
@@ -34,15 +34,15 @@ variables:
       type: string
       description: Absolute path to the persisted impact-analysis artifact.
       defaultValue: ""
+    - name: manifest_entries
+      type: array
+      description: List of files to create, modify or remove with full paths and actions.
     - name: removal_disposition
       type: string
       description: What the review decided about an unflagged removal. Absent until one is reviewed.
       values:
         - flagged
         - restored
-    - name: scope_manifest
-      type: array
-      description: List of files to create, modify or remove with full paths and actions.
     - name: scope_manifest_confirmed
       type: boolean
       description: Whether the complete file manifest has been confirmed.
@@ -70,7 +70,7 @@ required: true
 steps:
   - kind: technique
     id: derive-workflow-branch
-    technique: workflow-definition::derive-workflow-branch
+    technique: derive-workflow-branch
     when: operation_type != 'review'
   - kind: technique
     id: ensure-worktree
@@ -82,7 +82,7 @@ steps:
     when: operation_type != 'review'
   - kind: technique
     id: define-scope
-    technique: workflow-definition::scope-definition
+    technique: scope-definition
     when: operation_type != 'review'
   - kind: technique
     id: persist-scope-manifest
@@ -90,7 +90,7 @@ steps:
       name: work-package::manage-artifacts::write-artifact
       inputs:
         bare_filename: scope-manifest.md
-        artifact_content: scope_manifest
+        artifact_content: scope_manifest_report
       outputs:
         written_artifact: scope_manifest_path
     when: operation_type != 'review'
@@ -128,7 +128,7 @@ steps:
     name: File Drafting Loop
     loopType: forEach
     variable: current_file
-    over: scope_manifest
+    over: manifest_entries
     maxIterations: 50
     when: scope_manifest_confirmed == true
     steps:
@@ -145,10 +145,10 @@ steps:
         steps:
           - kind: technique
             id: author-yaml
-            technique: workflow-definition::yaml-authoring
+            technique: yaml-authoring
       - kind: technique
         id: review-file
-        technique: workflow-definition::review-drafted-file
+        technique: review-drafted-file
       - kind: checkpoint
         id: preservation-check#{current_file.path}
         condition:
@@ -182,11 +182,11 @@ steps:
         when: has_unflagged_removals == true && removal_disposition == 'flagged'
       - kind: technique
         id: apply-removal-disposition
-        technique: workflow-definition::yaml-authoring
+        technique: yaml-authoring
         when: has_unflagged_removals == true && removal_disposition == 'restored'
   - kind: technique
     id: author-workflow-readme
-    technique: workflow-definition::readme-authoring
+    technique: readme-authoring
     when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: verify-artifact-conformance

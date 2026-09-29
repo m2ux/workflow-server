@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -20,6 +20,14 @@ Free-form description of the workflow the user wants to create or modify
 ### target_workflow_ids
 
 *(optional)* Ordered list of workflow ids to audit in review mode. Single-target review uses a one-element list. Update/create modes leave this unset and use `{target_workflow_id}` alone.
+
+### operation_type
+
+*(optional)* The classified operation for the request. Absent until the request is classified.
+
+### planning_folder_path
+
+Absolute path to this session's planning folder.
 
 ## Outputs
 
@@ -67,7 +75,7 @@ Every planning fact has exactly one canonical artifact. When another artifact or
 
 ### canonical-home-map
 
-The canonical home for each shared design-session fact category. Templates carry link-only slots for every category they don't home; [verify-artifact-conforms](/meta/techniques/verify-artifact-conforms.md) enforces the map at the end of `scope-and-draft`.
+The canonical home for each shared design-session fact category. Templates carry link-only slots for every category they don't home; the planning-artifact conformance check enforces the map.
 
 | Fact category | Canonical home |
 |---|---|
@@ -82,10 +90,10 @@ The canonical home for each shared design-session fact category. Templates carry
 | Compliance / audit findings | `compliance-report.md` (and findings satellites) |
 | In-task follow-ups | `follow-ups.md` (see [follow-ups](../resources/follow-ups.md)) |
 | Out-of-scope deferred items | `deferred-items.md` |
-| Session index (Progress, Links, Design Decisions pointers) | `README.md` |
+| Session index (Progress, Links) | `README.md` |
 
 README Problem Overview and Solution Overview are link-only slots pointing at `design-specification.md` (Solution also links `scope-manifest.md` for the file breakdown).
 
 ### line-budget
 
-Fill-template `## Rules` line budgets are hard under [verify-artifact-conforms](/meta/techniques/verify-artifact-conforms.md) — over-budget prose is a `line-budget` violation.
+Fill-template `## Rules` line budgets are hard under the planning-artifact conformance check — over-budget prose is a `line-budget` violation.

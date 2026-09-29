@@ -12,7 +12,7 @@ This file is an orientation map. Authoritative definitions live in the per-activ
 
 ### 01. Intake and Context
 
-Derive create/update/review from the request (`intake-classification`), land gap flags (`operation_type_ambiguous`, `change_request_clear`, composite `intent_needs_confirmation`) and `{headless_mode}` (default true; false on explicit interactive opt-out such as “interactive”, “not headless”, or “with checkpoints”), set targets (`target_workflow_id` / `target_workflow_ids`), bind the planning folder and seed its `README.md` (create/update), then internalize schemas/conventions via `context-loading`. Gate 1 (`design-intent-batch`) fires only when `intent_needs_confirmation`; the clear path announces and proceeds. Create/update auto-confirm format literacy and schema constructs. Review with certain targets announces and sets `review_scope_confirmed`; ambiguous review targets enter Gate 1. Review-seeded updates skip Gate 1.
+Classify the request as create, update or review, identify the target workflows, confirm intent with the user when the request leaves it unclear, seed the planning folder (create/update), and internalize the schemas and YAML conventions the drafting needs.
 
 Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads to [Requirements Refinement](#03-requirements-refinement), or directly to [Quality Review](#08-quality-review) in review mode.
 
@@ -20,7 +20,7 @@ Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads 
 
 ### 03. Requirements Refinement
 
-Guided specification: create mode derives the design dimensions, runs an optional design-context soft gate, then a `forEach` over design dimensions (prepare → surface questions → capture); update mode synthesizes the specification from the change request (`synthesize-update-specification`) with no per-dimension elicitation. Both paths persist the design specification; `spec-confirmed` is a soft gate (stakeholder attestation at Gate 2). It then surfaces design assumptions (`work-package::review-assumptions::collect`), reconciles via `reconcile-design-assumptions` in a `while has_resolvable_assumptions` loop, and leaves open judgements in the assumptions log for Gate 2 — no per-assumption interview parade.
+Turn the request into a design specification — elicited dimension by dimension on create, synthesized from the change request on update — then surface the design assumptions it rests on and settle every one that an audit can resolve, leaving only genuine design judgements open for approval before commit.
 
 Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yaml). Skipped in review mode; leads to [Pattern Analysis](#04-pattern-analysis) (create) or [Impact Analysis](#05-impact-analysis) (update).
 
@@ -28,7 +28,7 @@ Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yam
 
 ### 04. Pattern Analysis
 
-Extract structural and content patterns from comparable existing workflows, persist the comparison as a planning artifact, and soft-gate adoption at `patterns-confirmed` (`defaultOption` + `autoAdvanceMs`; auto-resolve when `{headless_mode}`). Create mode only.
+Extract structural and content patterns from comparable existing workflows and persist the comparison, so the new workflow aligns with its siblings. Create mode only.
 
 Definition: [`04-pattern-analysis.yaml`](./04-pattern-analysis.yaml). Leads to [Scope and Draft](#06-scope-and-draft).
 
@@ -36,7 +36,7 @@ Definition: [`04-pattern-analysis.yaml`](./04-pattern-analysis.yaml). Leads to [
 
 ### 05. Impact Analysis
 
-Assess the impact of proposed changes against an existing workflow's files, exits and graph, and references, and flag any content that will be removed so removals are deliberate rather than silent. When `removal_count` is zero the activity messages and continues; otherwise one soft `impact-and-preservation-confirmed` gate covers both blast radius and removals. Update mode only.
+Assess the impact of proposed changes against an existing workflow's files, exits and graph, and references, and inventory any content the change removes so every removal is one the user approved. Update mode only.
 
 Definition: [`05-impact-analysis.yaml`](./05-impact-analysis.yaml). Leads to [Scope and Draft](#06-scope-and-draft).
 
@@ -44,7 +44,7 @@ Definition: [`05-impact-analysis.yaml`](./05-impact-analysis.yaml). Leads to [Sc
 
 ### 06. Scope and Draft
 
-In create/update modes, derive `{target_path}` and ensure a dedicated workflows worktree on `{workflow_branch}` (compose WP `create-worktree`) before drafting. Then define the complete file manifest and structural design up front, run a per-file drafting and review pass over every entry in the confirmed manifest (writes under `{target_path}`), validating each YAML file against its schema as it is written. After drafting, a block-indexed review (`review-draft-yaml`) feeds a single attestation gate — create mode `draft-attestation`, update mode `batch-review-attested` (change summary + blocks together). The value is a complete, pre-approved scope and a set of drafted files that are reviewed, attested, and schema-valid. Carries a per-file user checkpoint in create mode and a content-preservation guard in update mode.
+In create/update modes, prepare a dedicated workflows worktree on `{workflow_branch}`, define the complete file manifest and structural design, then draft, review and schema-validate every file the manifest names under `{target_path}`. The value is a complete, pre-approved scope and a set of drafted files that are reviewed, attested and schema-valid.
 
 Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml). Skipped in review mode; leads to [Quality Review](#08-quality-review).
 
@@ -52,7 +52,7 @@ Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml). Skipped in r
 
 ### 08. Quality Review
 
-Quality review of the drafted content. In create/update modes it runs the expressiveness, conformance, rule-hygiene, and rule-enforcement audit passes — each pass reports a zero-finding action message when clean, or a non-blocking flagged-findings message (no checkpoint) when findings remain, since they are fixed automatically — then a bounded fix cycle — activity steps edit via `yaml-authoring`, re-validate via `audit-schema-validation`, and record via `apply-audit-fixes`, then re-run the audits, up to 3 iterations — and a critical-blocker gate that returns to Scope and Draft when a Critical finding remains. In review mode it `forEach`es over `target_workflow_ids` (binding each to `target_workflow_id`) and runs the compliance audit (reload, principles, anti-patterns, schema validation, verify-high-findings, compile-report) per target, then presents a severity-rated report, after which the user chooses whether to fix the findings (`fix-issues` / `selective-fixes` seeds update mode and skips intake re-confirmation). The value is workflow content that has been checked against the design principles and conventions, and had its fixable findings resolved in place automatically, before it is committed.
+Audit the drafted content, or in review mode each target workflow, against the design principles, anti-patterns and conventions, and resolve the fixable findings in place. The passes, the fix cycle and the review-mode report live in [`08-quality-review.yaml`](./08-quality-review.yaml). The value is workflow content checked against the canon, with its fixable findings resolved, before it is committed.
 
 Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Validate and Commit](#09-validate-and-commit).
 
@@ -60,7 +60,7 @@ Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Vali
 
 ### 09. Validate and Commit
 
-Final schema validation, scope verification, and README generation/update, then — in create/update modes — Gate 2 (`approve-to-commit`): a blocking batch that links design specification, assumptions/open judgements, impact, draft attestation, and planning README. Gate 2 stays interactive even when `{headless_mode}`. After approval: commit from the session `{target_path}` worktree (already on `{workflow_branch}` from scope-and-draft ensure), and a pull request opened against the `workflows` branch and marked ready (`publish-workflow-pr`); workflow changes never land straight on `workflows`. Validation and scope soft gates are presented only when `fail_count` or `unaddressed_count` is greater than zero. In review mode it instead saves and commits the compliance report directly.
+Validate every file against its schema, verify the scope manifest is addressed, and generate or update the README set; then, in create/update modes, take the stakeholder approval, commit from the session `{target_path}` worktree and open a pull request against the `workflows` branch (`publish-workflow-pr`). In review mode it saves and commits the compliance report.
 
 Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Terminal in create and review modes; leads to [Post-Update Review](#10-post-update-review) in update mode.
 
@@ -68,7 +68,7 @@ Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Term
 
 ### 10. Post-Update Review
 
-Automatic post-commit compliance audit of the updated workflow. Reloads the committed state, then binds expressiveness, conformance, principles, anti-patterns, and schema-validation audits as consecutive steps (plus `scope-audit`), summarizes findings, and persists a review snapshot via bound `write-artifact`. Empty expressiveness/conformance satellites are skipped (`*_finding_count > 0`). When `review_findings_count` is zero it proceeds to the retrospective; otherwise a quality-review-style remedia while-loop applies fixes and re-audits automatically (never asks accept/iterate/revert). A publish tail then re-verifies scope and the planning README, commits, pushes, and refreshes the open pull request, so remedia success proceeds to the retrospective; remedia still dirty restarts at [Intake and Context](#01-intake-and-context). Update mode only.
+Automatic post-commit compliance audit of the updated workflow: reload the committed state, audit it, remediate remaining findings automatically, and publish the remediation to the open pull request. The audit passes and the remediation cycle live in [`10-post-update-review.yaml`](./10-post-update-review.yaml). Update mode only.
 
 Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml).
 
@@ -76,6 +76,6 @@ Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml).
 
 ### 11. Retrospective
 
-Terminal activity for every mode. In create/update modes it records a `COMPLETE.md` completion summary (`create-completion-doc`) — what was delivered, the design decisions and alternatives rejected, scope outcome, and known limitations — then conducts a session retrospective (`conduct-retrospective`) that analyses the non-checkpoint interactions and records prioritized workflow improvements. When `{worktree_created}` is true, optional teardown composes WP `remove-worktree` for the session `{target_path}`. It is the workflow-design counterpart of work-package's Complete activity, minus the PR-merge and next-package-selection steps (workflow-design commits directly and has no package portfolio). A trivial session skips the retrospective.
+Terminal activity for every mode. It conducts a session retrospective (`conduct-retrospective`) of prioritized workflow improvements and writes one `COMPLETE.md` close-out document. In create/update modes that document is the completion summary (`create-completion-doc`) — what was delivered, links to the design decisions, scope outcome, and known limitations — with the retrospective as its section; in review mode it is the retrospective alone. The activity optionally tears down the session worktree the run created.
 
 Definition: [`11-retrospective.yaml`](./11-retrospective.yaml). Terminal in all modes.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -27,7 +27,7 @@ Array of artifact entries (`id`, `name`, `path`).
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity (`activity-worker.batch-ends-where-the-server-says`). The envelope is the only place this answer appears again, so it is read here and carried there unchanged.
+Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity (`activity-worker.batch-ends-where-the-server-says`).
 
 ## Outputs
 
@@ -61,29 +61,30 @@ optional — the exit id a checkpoint option named, set when a checkpoint effect
 
 #### next_activity_id
 
-Where the worker resolved the run goes next (or null when the workflow is complete). Required on every successful `activity_complete`: this context holds the activity definition and the exit destinations the routing was resolved from, and the envelope is the only report of the result. Ordinarily one activity id; where the exit taken is bound to several branches, the destination as the `exit_destinations` block gave it — passed on unread, because the server expands it.
+The `next_activity_id` output of [evaluate-transition](./evaluate-transition.md), carried unread.
 
 #### next_activity_fans
 
-Whether that destination opens several branches rather than one activity — true where the `exit_destinations` block gave the exit taken anything other than a single activity id: a list of members, or one activity together with the collection it runs over. A string is one activity (or `__terminal__`); anything else is a fan. The orchestrator dispatches a fan on it, so the reading belongs in the envelope beside the destination it describes.
+The `next_activity_fans` output of evaluate-transition.
 
 #### activity_exit
 
-The exit id this activity took, from evaluate-transition, or `workflow_complete` where it declared none. The orchestrator passes it to `next_activity` as `exit`.
+The `activity_exit` output of evaluate-transition.
 
 #### batch_may_continue
 
-Whether this context may take another activity, folded from the input of the same name. Required on every successful `activity_complete`: the server answered it for this context and the envelope is the only report of that answer (`dispatch-activity.batch-is-bounded-by-the-server`).
+Whether this context may take another activity, folded from the input of the same name.
 
 ## Protocol
 
 ### 1. Fold Activity Results
 
-- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Include `{selected_exit}` if a checkpoint effect named an exit.
+- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Carry `{batch_may_continue}` unchanged: every successful envelope carries it.
+  > Where a checkpoint effect named an exit, include `{selected_exit}`.
 
 ### 2. Read Routing Destination
 
-- Resolve the next activity: with the current activity definition and its `exit_destinations` both in hand from `get_activity`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope. Do not omit these fields: the delivery they were resolved from reached this context and no other, so an omission cannot be recovered later.
+- Resolve the next activity: with the current activity definition and its `exit_destinations` both in hand from `get_activity`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope, passing `{next_activity_id}` on unread. Every successful envelope carries `{next_activity_id}` and `{next_activity_fans}`, and `{activity_exit}` wherever an exit was taken.
 
 ### 3. Return Envelope
 
@@ -92,4 +93,4 @@ Whether this context may take another activity, folded from the input of the sam
 
 ### no-readme-persist-on-worker
 
-Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties, and are done elsewhere once the envelope is returned — do not do them here, and do not wait for them. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status writes go through [sync-progress-status](./sync-progress-status.md) by owning activity, not per envelope artifact entry.
+Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties, and are done elsewhere once the envelope is returned — do not do them here, and do not wait for them. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status is written per owning activity, not per envelope artifact entry.

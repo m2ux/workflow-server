@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.10.0
+  version: 2.11.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Operation-type classification and design-intent baseline for create, update, or 
 
 ### operation_type
 
-The classified technique — sole mode state for the session:
+The classified operation — sole mode state for the session:
 
 - **Review** — existing-workflow reference(s) plus an audit intent (recognition signals include "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow")
 - **Update** — existing-workflow reference plus a change request
@@ -47,7 +47,7 @@ Ordered list of workflow ids to audit in review mode. One element for single-tar
 
 ### structural_inventory
 
-Per-target structural inventory following the [Structural Inventory Guide](../resources/structural-inventory.md#template): file counts, entity counts, step kinds, activity ids in order, and the scope of the change under way.
+Per-target structural inventory at the shape [Template](../resources/structural-inventory.md#template) declares: file counts, entity counts, step kinds, activity ids in order, and the scope of the change under way.
 
 #### artifact
 
@@ -63,7 +63,7 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ## Protocol
 
-### 1. Classify Technique
+### 1. Classify Operation
 
 - Determine `{operation_type}` per the Output criteria
 - Set `{operation_type_ambiguous}` true when classification signals conflict or are insufficient; otherwise false
@@ -78,24 +78,20 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ### 3. Load Target Definitions
 
-- When `{operation_type}` is `update` or `review`, load targets via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md) from orchestrator-supplied definitions ([no-domain-work](/meta/techniques/orchestrator-conduct.md#no-domain-work))
+- When `{operation_type}` is `update` or `review`, load targets from the definitions the orchestrator supplies
 
 ### 4. Build Structural Inventory
 
-- Build `{structural_inventory}` for each target following the [Structural Inventory Guide](../resources/structural-inventory.md#template)
+- When `{operation_type}` is `update` or `review`: build `{structural_inventory}` for each target at the shape [Template](../resources/structural-inventory.md#template) declares
+- When create mode: build no inventory
 
-### 5. Persist Structural Inventory
-
-- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` per [structural-inventory](../resources/structural-inventory.md#template)
-- When create mode: build no inventory, there being no existing definition to snapshot
-
-### 6. Parse Change Request
+### 5. Parse Change Request
 
 - When `{operation_type}` is `update`, categorize the change request derived from the `{user_description}` into `{change_category}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md))
 
-### 7. Summarize Design Intent
+### 6. Summarize Design Intent
 
-- Accept the `{user_description}` and summarize key design intent into `{$design_intent}` — purpose, domain, rough activity count, and constraints
+- Summarize the key design intent of `{user_description}` — purpose, domain, rough activity count, and constraints
 
 ## Rules
 

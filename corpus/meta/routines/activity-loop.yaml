@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.0.0
+version: 1.1.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -73,7 +73,7 @@ steps:
             session_index: session_index
             worker_agent_id: worker_agent_id
             step_manifest: "{worker_result.steps_completed}"
-            state: variables
+            variable_bag: variables
       - kind: technique
         id: enter-activity
         when: "!worker_agent_id && !worker_result.next_activity_fans"
@@ -83,7 +83,7 @@ steps:
             activity_id: current_activity
             session_index: session_index
             agent_technique: workflow-engine::activity-worker
-            state: variables
+            variable_bag: variables
       - kind: technique
         id: enter-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -101,9 +101,9 @@ steps:
         technique:
           name: fan::spawn-branches
           inputs:
-            branch_list: branch_list
+            branch_activities: branch_activities
             agent_technique: workflow-engine::activity-worker
-            state: variables
+            variable_bag: variables
           outputs:
             branch_envelopes: branch_envelopes
       - kind: loop
@@ -111,7 +111,7 @@ steps:
         name: Branch Retirement
         loopType: forEach
         variable: current_branch
-        over: branch_list
+        over: branch_activities
         maxIterations: 50
         when: "!worker_agent_id && worker_result.next_activity_fans"
         steps:
@@ -134,7 +134,7 @@ steps:
         technique:
           name: workflow-engine::commit-and-persist
           inputs:
-            activity_id: "{branch_list}"
+            activity_id: "{branch_activities}"
       - kind: action
         id: advance-past-fan
         when: fan_convergence_activity
@@ -179,8 +179,16 @@ steps:
             session_index: session_index
             activity_id: current_activity
             worker_agent_id: worker_agent_id
-            effects: effects
-            state: variables
+            checkpoint_reply: checkpoint_reply
+            variable_bag: variables
+      - kind: action
+        id: clear-checkpoint-reply
+        when: checkpoint_reply
+        actions:
+          # The reply belongs to the continuation just made; no later dispatch in the walk binds it.
+          - action: set
+            target: checkpoint_reply
+            value: null
       - kind: technique
         id: commit-activity-artifacts
         when: worker_result.result_type == "activity_complete"

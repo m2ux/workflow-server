@@ -7,7 +7,7 @@ metadata:
 
 # Applicable Constructs Guide
 
-Literacy surface for create/update drafting. Answers: which schema constructs apply to this change, and why? Agent-facing; short enough for a gate skim.
+Literacy surface for create/update drafting. Answers: which schema constructs apply to this change, and why? Agent-facing and short.
 
 ## Template
 
@@ -30,4 +30,3 @@ Schema constructs for [create/update] of `{workflow-id}`.
 - **One row per construct this change needs** — not the full construct inventory.
 - **Reference column** points at a live file or field. A row names the construct; the inventory entry stays where it is.
 - **Line budget:** ~30 lines.
-- Skip writing this artifact in review mode.

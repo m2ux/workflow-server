@@ -31,7 +31,7 @@ Template and fill rules for `COMPLETE.md`, the close-out document of a workflow-
 
 ## Design Decisions
 
-Link the assumptions log and the planning README Design Decisions section.
+Link the assumptions log and the design specification.
 Record here ONLY drafting-time decisions with no other home (Context / Decision /
 Rationale / Alternatives).
 
@@ -59,7 +59,7 @@ manifest or unaddressed items — folding in the scope-discipline audit.]
 ## Rules
 
 - **What Was Delivered** is concrete — name the files produced or changed, not a vague summary.
-- **Link, don't restate.** Decisions live in the assumptions log and README; scope lives in the manifest; COMPLETE stays a short close-out.
+- **Link, don't restate.** Decisions live in the assumptions log and design specification; scope lives in the manifest; COMPLETE stays a short close-out.
 - **Exception-only Scope Outcome.** All-✅ tables carry no information; only drift earns rows.
 - **Omit null sections** rather than writing "none".
 - **Line budget:** ~70 lines — delivery, links and limitations. A longer close-out is a sign a section belongs in its own home, not that it needs a restated design-decision essay.

@@ -7,7 +7,7 @@ metadata:
 
 # Format Conventions Guide
 
-Literacy surface for create/update drafting. Answers: which YAML and project conventions does this change need? Agent-facing; keep short for human skim at literacy gates.
+Literacy surface for create/update drafting. Answers: which YAML and project conventions does this change need? Agent-facing and short.
 
 ## Template
 
@@ -30,7 +30,7 @@ Literacy surface for [create/update] of `{workflow-id}`. Grounded in schema docs
 | Technique / resource files | kebab-case `.md`; container `TECHNIQUE.md` for groups |
 | Field order | `id`, `version`, `name`/`title`, `description` early |
 | Versions | Semantic `X.Y.Z` |
-| Steps | Ordered `steps[]` with `kind:` technique / action / checkpoint / loop |
+| Steps | Ordered `steps[]` with `kind:` technique / routine / action / checkpoint / loop |
 | Technique binding | Bare op inside activity-named groups; `group::op` otherwise |
 | Checkpoints | Inline `kind: checkpoint` with statement `message`, `options[]`, effects |
 | Routing | Activity-level `exits[]` (`id` / `when` / `isDefault` / `immediate`), bound in the workflow's `graph` |
@@ -56,6 +56,5 @@ Literacy surface for [create/update] of `{workflow-id}`. Grounded in schema docs
 ## Rules
 
 - **Only what this change needs.** Drop convention rows the draft will not touch.
-- **Tables over prose.** No tutorial narrative; the schema README stays the deep home.
+- **Tables over prose.** No tutorial narrative; the JSON schemas at `workflow-server://schemas` stay the deep home.
 - **Line budget:** ~50 lines.
-- Skip writing this artifact in review mode.

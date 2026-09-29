@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Shared inputs and authoring invariants for every technique in this workflow.
+Shared inputs and authoring invariants for the techniques that classify, author and audit workflow definition files.
 
 ## Inputs
 
@@ -17,6 +17,14 @@ Free-form statement of the workflow the user wants created, changed or audited.
 
 Absolute path to this run's planning folder — the write location for every planning artifact.
 
+### target_path
+
+Absolute path of the run's edit worktree, where definition files are read and create and update edits land.
+
+### operation_type
+
+*(optional)* The classified operation — `create`, `update` or `review`. Absent until the request is classified.
+
 ### target_workflow_id
 
 *(optional)* Id of the workflow this run is authoring, changing or auditing.
@@ -26,6 +34,10 @@ Absolute path to this run's planning folder — the write location for every pla
 *(optional)* Ordered list of workflow ids in scope for this run; a single-target run carries a one-element list.
 
 ## Rules
+
+### edit-surface-is-the-evidence
+
+Definition files are read and written under `{target_path}`. The served catalog answers from the library checkout, which can lag the branch under change, so a claim taken from it is not evidence about the files this run edits.
 
 ### single-source-and-link
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -25,10 +25,6 @@ Rule-hygiene findings — each a flagged rule with its file, rule key, the hygie
 
 Count of entries in `{rule_hygiene_findings}`.
 
-### rule_hygiene_findings_path
-
-Absolute path to the persisted findings artifact when `{rule_hygiene_finding_count}` is greater than zero; empty otherwise.
-
 ## Protocol
 
 ### 1. Load Catalog Section
@@ -43,8 +39,7 @@ Absolute path to the persisted findings artifact when `{rule_hygiene_finding_cou
 - For each entry: apply its **Detect** (or equivalent prose), honor **Do not flag** / caveats, and record **Fix** when a violation is found
 - For each finding record into `{rule_hygiene_findings}`: entry **name** (primary), **AP-XX** designator, file path, rule key, offending content, recommended fix
 
-### 3. Persist Findings
+### 3. Assemble Findings
 
 - Set `{rule_hygiene_finding_count}` to the number of findings
-- When `{rule_hygiene_finding_count}` is greater than zero: persist `{rule_hygiene_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{rule_hygiene_findings_path}`
-- When `{rule_hygiene_finding_count}` is zero: leave `{rule_hygiene_findings_path}` empty
+- Assemble `{rule_hygiene_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares

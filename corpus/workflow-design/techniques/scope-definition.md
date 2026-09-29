@@ -1,17 +1,35 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
 
 Complete scope and structure definition as a lean scope manifest.
 
+## Inputs
+
+### target_path
+
+Absolute filesystem path of the dedicated workflows edit-root worktree for this session — where create/update edits land.
+
+### workflow_branch
+
+Feature branch the edit-root worktree has checked out.
+
+### workflow_id
+
+The id of the workflow being created or updated.
+
 ## Outputs
 
-### scope_manifest
+### manifest_entries
 
 The complete file manifest: one entry per file to create/modify/remove with its full path, action, type, and one-line description.
+
+### scope_manifest_report
+
+The rendered scope manifest: the file table from `{manifest_entries}` with the structural design and drafting order sections, at the shape [Template](../resources/scope-manifest.md#template) declares.
 
 #### artifact
 
@@ -23,17 +41,13 @@ The complete file manifest: one entry per file to create/modify/remove with its 
 
 ### file_count
 
-Number of files in `{scope_manifest}`.
-
-### scope_manifest_path
-
-Absolute path to the written scope-manifest artifact (includes structural design and drafting order sections).
+Number of files in `{manifest_entries}`.
 
 ## Protocol
 
 ### 1. Verify Edit Root
 
-- Verify `{target_path}` is present and checked out on `{workflow_branch}` (the dedicated session worktree from prepare-workflow-branch / ensure) before any path definitions proceed
+- Verify `{target_path}` is present and checked out on `{workflow_branch}` before any path definitions proceed
 - Do not treat the shared workflows library checkout as the edit root
 
 ### 2. Design Folder Structure
@@ -42,18 +56,16 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 3. Enumerate Files
 
-- Enumerate every file to create/modify/remove with full paths under `{target_path}/{workflow_id}/`: per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description — no implicit files; capture as `{scope_manifest}` and set `{file_count}`
+- Enumerate every file to create/modify/remove with full paths under `{target_path}/{workflow_id}/`: per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description — no implicit files; capture as `{manifest_entries}` and set `{file_count}`
 
 ### 4. Assemble Structural Design
 
-- Assemble `{$structural_design}` for the Structural design section of [scope-manifest](../resources/scope-manifest.md#template): directory tree (or "unchanged" for update), short note on changed graph bindings when topology changes, and a compact pattern-alignment table — not a pattern-comparison essay
+- Assemble `{$structural_design}` for the Structural design section the [Template](../resources/scope-manifest.md#template) declares: directory tree (or "unchanged" for update), short note on changed graph bindings when topology changes, and a compact pattern-alignment table — not a pattern-comparison essay
 
 ### 5. Assemble Drafting Order
 
-- Assemble `{$drafting_order}` for the Drafting order section of [scope-manifest](../resources/scope-manifest.md#template): drafting order (`workflow.yaml`, activities, techniques, resources, README) with a one-line rationale per tier
+- Assemble `{$drafting_order}` for the Drafting order section the [Template](../resources/scope-manifest.md#template) declares: drafting order (`workflow.yaml`, activities, techniques, resources, README) with a one-line rationale per tier
 
-### 6. Persist Scope Manifest
+### 6. Compose Scope Manifest Report
 
-- Persist `{scope_manifest}` together with `{$structural_design}` and `{$drafting_order}`, following [scope-manifest](../resources/scope-manifest.md#template)
-- Own facts only: link impact analysis and design specification rather than restating them
-- Capture `{scope_manifest_path}`
+- Render the file table from `{manifest_entries}` with `{structural_design}` and `{drafting_order}` into `{scope_manifest_report}` at the shape [Template](../resources/scope-manifest.md#template) declares, under its [Rules](../resources/scope-manifest.md#rules)

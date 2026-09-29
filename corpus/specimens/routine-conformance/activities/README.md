@@ -8,7 +8,7 @@ The authoritative definition of each activity — its steps, technique bindings,
 
 ### 01. Plan Probes
 
-Chooses the directory both passes open with, via [`01-plan-probes.yaml`](./01-plan-probes.yaml). One target rather than a list, because the measurement each pass binds is what names the target after it. Leads to [Count Pass](#02-count-pass).
+Chooses the directory both passes open with, via [`01-plan-probes.yaml`](./01-plan-probes.yaml). One target: the measurement each pass binds names the target after it. Leads to [Count Pass](#02-count-pass).
 
 Definition: [`01-plan-probes.yaml`](./01-plan-probes.yaml)
 

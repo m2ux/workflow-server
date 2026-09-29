@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -12,10 +12,6 @@ Orchestrator-owned Progress **status** writer for selected activity (and optiona
 ### target_status
 
 Status value to write — a canonical icon from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary).
-
-### activity_id
-
-*(optional)* Activity that owns the Progress rows. Used to resolve `{artifact_prefix}` when `{artifact_prefix}` is unbound.
 
 ### artifact_prefix
 

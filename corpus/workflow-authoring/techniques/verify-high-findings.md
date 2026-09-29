@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -64,7 +64,7 @@ A High finding is confirmed only when independently re-derived from the construc
 
 ### no-originating-rationale
 
-The re-derivation reads the cited construct and nothing else. The originating pass's reasoning is not consulted — not to follow it and not to check agreement with it — because a re-derivation that has read the argument it is testing is not independent.
+The re-derivation reads the cited construct and nothing else. The originating pass's reasoning is not consulted — not to follow it and not to check agreement with it.
 
 ### remediation-needs-a-re-derived-claim
 

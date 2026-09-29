@@ -1,9 +1,10 @@
 id: impact-analysis
-version: 1.8.0
+version: 1.9.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, exits and graph, and references.
 variables:
   reads:
+    - accumulated_design
     - component_git_dir
     - operation_type
     - planning_folder_path
@@ -16,11 +17,11 @@ variables:
       defaultValue: ""
     - name: preservation_required
       type: boolean
-      description: Whether the reader asked for flagged content to survive the change, so drafting frames each file to keep it. False while no removal has been reviewed, which is the whole of the create path — that route reaches drafting without visiting this activity.
+      description: Whether the reader asked for flagged content to survive the change.
       defaultValue: false
     - name: removal_count
       type: number
-      description: Count of content removals inventoried by impact-analysis.
+      description: Count of inventoried content removals.
       defaultValue: 0
 required: false
 steps:
@@ -35,7 +36,8 @@ steps:
       inputs:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis
-        target_dir: planning_folder_path
+      outputs:
+        written_artifact: impact_analysis_path
     when: operation_type == 'update'
   - kind: action
     id: impact-no-removals
@@ -63,6 +65,8 @@ steps:
       - id: revise-impact
         label: Revise impact scope
         description: Impact scope is incomplete or over-inclusive.
+        effect:
+          exit: revise
       - id: preserve
         label: Preserve some flagged content
         description: Some flagged content must be preserved rather than removed.
@@ -72,6 +76,7 @@ steps:
 exits:
   - id: done
     isDefault: true
+  - id: revise
 outcome:
   - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
   - Exit bindings and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring

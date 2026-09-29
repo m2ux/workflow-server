@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.0.0
+  version: 6.1.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ Comments explain why code exists and the rationale for design choices, rather th
 
 ### checkpoint-discipline
 
-Resolving a checkpoint is the meta-orchestrator's, via [present-checkpoint-to-user](./workflow-engine/present-checkpoint-to-user.md) then [respond-checkpoint](./workflow-engine/respond-checkpoint.md). A worker reaching a gate pauses there via [yield-checkpoint](./workflow-engine/yield-checkpoint.md); a workflow orchestrator passes the yield it receives upward unchanged.
+Resolving a checkpoint — presenting it to the user, then sending back the selection — is the meta-orchestrator's. A worker reaching a gate pauses there by yielding it; a workflow orchestrator passes the yield it receives upward unchanged.
 
 ### operational-discipline-bundled-tools-only
 

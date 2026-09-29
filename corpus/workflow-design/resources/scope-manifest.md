@@ -2,13 +2,13 @@
 name: scope-manifest
 description: Guidelines for creating the scope-manifest planning artifact (file table + lean structural notes).
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 17
 ---
 
 # Scope Manifest Guide
 
-Activity-layer decision surface for create/update. Answers: which files, what structural shape, and in what drafting order? Human gate at `scope-and-structure-confirmed`. Canonical home for the file manifest, structural design, and drafting order ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
+Activity-layer decision surface for create/update. Answers: which files, what structural shape, and in what drafting order? Canonical home for the file manifest, structural design, and drafting order ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 
 ## Template
 
@@ -42,7 +42,7 @@ Activity-layer decision surface for create/update. Answers: which files, what st
 ├── …
 ```
 
-**Flow:** [one line if topology unchanged; else short transition note]
+**Flow:** [one line if topology unchanged; else short note on changed graph bindings]
 
 | Pattern | This change |
 |---------|-------------|

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ The constraints the change surface imposes on scope: the co-change set — files
 
 ### impact_analysis
 
-The assembled impact report: per-file classification, the integrity verdicts, and the removals inventory as removed-versus-preserved rows. Shaped by [Template](../../resources/impact-analysis.md#template).
+The assembled impact report: per-file classification, the integrity verdicts, and the removals inventory as removed-versus-preserved rows. Shaped by [Template](../resources/impact-analysis.md#template).
 
 #### artifact
 
@@ -43,15 +43,16 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 ### 1. Enumerate Files
 
-- Build a full inventory of the target's files with paths and purposes: the root definition, `activities/*.yaml`, techniques (`<slug>.md` standalone, `<group>/TECHNIQUE.md` container contracts, `<group>/<op>.md` nested), `resources/*.md` and the README
+- Build a full inventory of the target's files with paths and purposes: the root definition, `activities/*.yaml`, `routines/*.yaml`, techniques (`<slug>.md` standalone, `<group>/TECHNIQUE.md` container contracts, `<group>/<op>.md` nested), `resources/*.md` and the README
 
 ### 2. Classify Impact
 
 - Classify each file as unaffected, directly modified (the change explicitly affects it), indirectly affected (a side-effect such as an exit the graph no longer binds), or removed (the change makes it obsolete), with a one-line justification
+- Trace the side-effects each change class in `{change_brief}` implies: adding an activity may need new graph bindings upstream, techniques or resources; removing one breaks the graph bindings that lead into it and may orphan techniques; renaming an activity id breaks every graph binding naming it and `initialActivity`; adding a checkpoint may need new variables; changing checkpoint options may invalidate downstream conditions; adding or removing a mode affects the mode variable and every gate that branches on it; changing a variable's type affects every condition comparing it
 
 ### 3. Check Exit Integrity
 
-- Where activities are added, removed or reordered: verify the workflow's `graph` binds every exit of every activity and sends each to an existing activity id or `__terminal__`, verify `initialActivity` still names a valid activity, and verify no activity is left with nothing bound to it
+- Verify the workflow's `graph` binds every exit of every activity and sends each to an existing activity id or `__terminal__`, verify `initialActivity` still names a valid activity, and verify no activity is left with nothing bound to it
 
 ### 4. Check Reference Integrity
 
@@ -75,15 +76,11 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 ### 8. Compose the Impact Report
 
-- Assemble `{impact_analysis}` from the classification, the integrity verdicts and the removals inventory, at the shape [Template](../../resources/impact-analysis.md#template) declares
-- Link `{change_brief}` for purpose and `{structural_inventory}` for the baseline rather than restating either
+- Assemble `{impact_analysis}` from the classification, the integrity verdicts and the removals inventory, at the shape [Template](../resources/impact-analysis.md#template) declares
+- Link `{change_brief}` on the Change source line and `{structural_inventory}` on the Baseline line
 
 ## Rules
 
 ### content-preservation
 
-A reduction is a decision, not a side-effect of an edit. Prefer additive change, and treat a reduction that no inventory row names as unapproved regardless of how small it is.
-
-### side-effect-detection
-
-Each change class implies side-effects the change request does not state: adding an activity may need new graph bindings upstream, techniques or resources; removing one breaks the graph bindings that lead into it and may orphan techniques; renaming an activity id breaks every graph binding naming it and `initialActivity`; adding a checkpoint may need new variables; changing checkpoint options may invalidate downstream conditions; adding or removing a mode affects the mode variable and every gate that branches on it; changing a variable's type affects every condition comparing it.
+A reduction is a decision, not a side-effect of an edit. Prefer additive change.

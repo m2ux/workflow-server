@@ -86,24 +86,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/agent-conduct.md:34",
-      "op": "present-checkpoint-to-user",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/agent-conduct.md:34",
-      "op": "respond-checkpoint",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/agent-conduct.md:34",
-      "op": "yield-checkpoint",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/fan/enter-fan.md:46",
       "op": "git::commit-regular-files",
       "verdict": "fix-later",
@@ -381,12 +363,6 @@
     },
     {
       "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:67",
-      "op": "orchestrator-conduct",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:67",
       "op": "workflow-engine",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
@@ -568,12 +544,6 @@
     {
       "site": "corpus/meta/techniques/workflow-engine/finalize-activity.md:82",
       "op": "evaluate-transition",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/finalize-activity.md:91",
-      "op": "sync-progress-status",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -2036,43 +2006,43 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-authoring/techniques/TECHNIQUE.md:36",
+      "site": "corpus/workflow-authoring/techniques/TECHNIQUE.md:48",
       "op": "verify-artifact-conforms",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-authoring/techniques/workflow-definition/audit-canon.md:64",
+      "site": "corpus/workflow-authoring/techniques/audit-canon.md:64",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-authoring/techniques/workflow-definition/audit-canon.md:64",
+      "site": "corpus/workflow-authoring/techniques/audit-canon.md:64",
       "op": "heading-search",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-authoring/techniques/workflow-definition/resolve-consumer-surface.md:26",
+      "site": "corpus/workflow-authoring/techniques/resolve-consumer-surface.md:26",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-authoring/techniques/workflow-definition/resolve-consumer-surface.md:26",
+      "site": "corpus/workflow-authoring/techniques/resolve-consumer-surface.md:26",
       "op": "reference-lookup",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-authoring/techniques/workflow-definition/resolve-consumer-surface.md:26",
+      "site": "corpus/workflow-authoring/techniques/resolve-consumer-surface.md:26",
       "op": "resolve-graph",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-authoring/techniques/workflow-definition/verify-high-findings.md:55",
+      "site": "corpus/workflow-authoring/techniques/verify-high-findings.md:55",
       "op": "Enumerate the Criteria Units",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
@@ -2096,38 +2066,8 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-design/techniques/context-loading.md:40",
-      "op": "resource-loading-via-tool",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/context-loading.md:50",
-      "op": "list-workflows",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/context-loading.md:50",
-      "op": "no-domain-work",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/workflow-design/techniques/context-loading.md:54",
       "op": "yaml-authoring",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/intake-classification.md:81",
-      "op": "list-workflows",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/intake-classification.md:81",
-      "op": "no-domain-work",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -2146,12 +2086,6 @@
     {
       "site": "corpus/workflow-design/techniques/reload-workflow.md:14",
       "op": "no-domain-work",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/TECHNIQUE.md:70",
-      "op": "verify-artifact-conforms",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     }

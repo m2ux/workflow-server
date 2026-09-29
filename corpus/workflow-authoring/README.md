@@ -18,7 +18,7 @@ Activity `#` columns match the on-disk `NN-` file prefixes; the prefix is server
 **Detailed documentation:**
 
 - **Activities:** [activities/README.md](./activities/README.md) — the per-activity orientation map, linking the authoritative YAML.
-- **Techniques:** [techniques/README.md](./techniques/README.md) — the local technique group and the shared techniques this workflow binds.
+- **Techniques:** [techniques/README.md](./techniques/README.md) — the local techniques and the shared techniques this workflow binds.
 - **Resources:** [resources/README.md](./resources/README.md) — creation guides, read-guides, and where the audit criteria live.
 
 ---
@@ -74,29 +74,29 @@ corpus/workflow-authoring/
 ├── techniques/
 │   ├── README.md                           # Technique orientation map
 │   ├── TECHNIQUE.md                        # Shared inputs and authoring invariants
-│   └── workflow-definition/                # Local technique group — cross-workflow addressable
-│       ├── TECHNIQUE.md                    # Group contract
-│       ├── intake-classification.md
-│       ├── elicit-change-brief.md
-│       ├── synthesize-change-brief.md
-│       ├── impact-analysis.md
-│       ├── derive-workflow-branch.md
-│       ├── scope-definition.md
-│       ├── yaml-authoring.md
-│       ├── review-drafted-file.md
-│       ├── readme-authoring.md
-│       ├── load-known-findings.md
-│       ├── reload-workflow.md
-│       ├── resolve-consumer-surface.md
-│       ├── audit-canon.md
-│       ├── audit-schema-validation.md
-│       ├── apply-audit-fixes.md
-│       ├── verify-high-findings.md
-│       ├── compile-report.md
-│       ├── scope-verification.md
-│       ├── compose-publication.md
-│       ├── commit-verification.md
-│       └── create-completion-doc.md
+│   ├── intake-classification.md
+│   ├── select-dimension-set.md
+│   ├── elicit-change-brief.md
+│   ├── synthesize-change-brief.md
+│   ├── impact-analysis.md
+│   ├── derive-workflow-branch.md
+│   ├── scope-definition.md
+│   ├── yaml-authoring.md
+│   ├── review-drafted-file.md
+│   ├── readme-authoring.md
+│   ├── load-known-findings.md
+│   ├── reload-workflow.md
+│   ├── resolve-consumer-surface.md
+│   ├── inventory-prose-fields.md
+│   ├── audit-canon.md
+│   ├── audit-schema-validation.md
+│   ├── apply-audit-fixes.md
+│   ├── verify-high-findings.md
+│   ├── compile-report.md
+│   ├── scope-verification.md
+│   ├── compose-publication.md
+│   ├── commit-verification.md
+│   └── create-completion-doc.md
 └── resources/
     ├── README.md                           # Resource index and artifact-to-guide map
     ├── change-brief.md                     # Creation guide

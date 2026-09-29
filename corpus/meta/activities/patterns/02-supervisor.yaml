@@ -1,7 +1,7 @@
 id: supervisor
-version: 3.1.0
+version: 3.2.0
 name: Supervisor
-description: Classify a request onto a fixed specialist lane, dispatch that lane, and synthesise or escalate — borrowable mid-phase supervisor pattern.
+description: Borrowable mid-phase supervisor pattern over a fixed roster of specialist lanes.
 variables:
   reads:
     - lane_roster
@@ -16,7 +16,7 @@ variables:
       description: The roster lane the request classified onto, or escalate where none fits.
     - name: classification_rationale
       type: string
-      description: Why the request landed on that lane, carried into synthesis or escalation.
+      description: Why the request landed on that lane.
     - name: work_units
       type: array
       description: The selected lane as a one-element ordered array of { id, brief, tools_hint? }.
@@ -63,4 +63,4 @@ exits:
 outcome:
   - Request classified onto exactly one lane from the consumer-supplied roster
   - Specialist brief dispatched in isolation
-  - Synthesis or escalation rationale available in the bag
+  - Synthesis, or the escalation rationale

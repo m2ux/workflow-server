@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -25,10 +25,6 @@ Expressiveness findings — each a flagged instance with its file, the prose pas
 
 Count of entries in `{expressiveness_findings}`.
 
-### expressiveness_findings_path
-
-Absolute path to the persisted findings artifact when `{expressiveness_finding_count}` is greater than zero; empty otherwise.
-
 ## Protocol
 
 ### 1. Load Inventory
@@ -41,8 +37,7 @@ Absolute path to the persisted findings artifact when `{expressiveness_finding_c
 - Walk every prose passage in `workflow.yaml`, activity files, and technique files against the inventory
 - For each match where prose substitutes for a formal construct: record file, passage, target construct, and a before/after rewrite (construct in place, or move to the fitting field) into `{expressiveness_findings}`
 
-### 3. Persist Findings
+### 3. Assemble Findings
 
 - Set `{expressiveness_finding_count}` to the number of findings
-- When `{expressiveness_finding_count}` is greater than zero: persist `{expressiveness_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{expressiveness_findings_path}`
-- When `{expressiveness_finding_count}` is zero: leave `{expressiveness_findings_path}` empty
+- Assemble `{expressiveness_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares

@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../../README.md)
 
-Borrowable mid-phase multi-agent pipelines. They are **not** part of meta's lifecycle graph (`loadActivitiesFromDir` is non-recursive — this subdirectory is library-only).
+Borrowable mid-phase multi-agent pipelines. This subdirectory is a library: its activities sit outside meta's lifecycle graph.
 
 Session-level orchestrator/worker dispatch remains [`dispatch-activity`](../../techniques/workflow-engine/dispatch-activity.md). These activities cover **in-activity decompose / dispatch / consolidate** only, and they work through their units one at a time inside the calling worker.
 
@@ -60,8 +60,8 @@ Fixed `{lane_roster}` classification (not dynamic decomposition). Escalation whe
 
 ### 03 Plan and Execute
 
-Hard `plan-confirmed` gate — the answer admits the plan into execution, so it waits for a person. `forEach` execute; `while` replan when `plan_needs_replan`. Nested re-execute after replan.
+A person admits the plan into execution, and the plan is revised while execution finds it wrong.
 
 ### 05 Lead Researcher
 
-Research-question planning, dispatch, synthesise, then `while has_research_gaps` follow-up (max 3 rounds). The follow-up loop is what this pattern is for — a fan opens once and cannot re-dispatch after a synthesis. Where a question deserves a context of its own and no follow-up round is needed, fan the questions from the graph instead and keep this for the loop.
+Research questions are planned and answered, and follow-up rounds run while gaps remain. The follow-up loop is what this pattern is for — a fan opens once and cannot re-dispatch after a synthesis. Where a question deserves a context of its own and no follow-up round is needed, fan the questions from the graph instead and keep this for the loop.

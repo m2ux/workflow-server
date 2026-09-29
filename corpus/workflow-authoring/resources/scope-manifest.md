@@ -2,7 +2,7 @@
 name: scope-manifest
 description: Creation guide for the scope-manifest planning artifact — file table, structural design, drafting order.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 12
 ---
 
@@ -40,7 +40,7 @@ The file-level decision surface for a create or update run. Answers: which files
 ├── …
 ```
 
-**Flow:** [one line when the topology is unchanged; otherwise a short transition note]
+**Flow:** [one line when the topology is unchanged; otherwise a short note on changed graph bindings]
 
 | Convention | This change |
 |------------|-------------|

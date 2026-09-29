@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -9,25 +9,13 @@ Continue the worker that already holds an activity under the delivery identity i
 
 ## Inputs
 
-### session_index
-
-`session_index` of the worker being continued.
-
-### activity_id
-
-Activity the worker holds.
-
 ### worker_agent_id
 
 Server-side worker identity the worker's dispatch bound — the identity the delivery ledger is keyed on.
 
-### effects
+### checkpoint_reply
 
-The resolved checkpoint's reply.
-
-### state
-
-Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, …).
+*(optional)* The reply the server returned on clearing the checkpoint the worker yielded. Present only on a continuation past that gate.
 
 ## Outputs
 
@@ -43,11 +31,11 @@ The identity now holding the activity: the one the worker was continued under wh
 
 ### 1. Compose the continuation stub
 
-- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{state}` as substitutions, binding `agent_id` to `{worker_agent_id}` and carrying `{effects}`. The worker role is what carries the duty to return an envelope, and `{effects}` is what makes the stub clear the gate first.
+- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{variable_bag}` as substitutions, binding `agent_id` to `{worker_agent_id}` and carrying `{checkpoint_reply}`.
 
 ### 2. Continue the worker
 
-- Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with the composed prompt and `{session_index}`.
+- Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with `agent_id` the harness identifier of the agent carrying `{worker_agent_id}`, the composed prompt as `composed_prompt`, and `{session_index}`.
 
 ### 3. Await the envelope
 
@@ -56,15 +44,10 @@ The identity now holding the activity: the one the worker was continued under wh
 
 ### 4. Replace a context that is gone
 
-- Mint a new `{worker_agent_id}` per `dispatch-activity.delivery-keys-on-agent-context`, apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, no `effects`, and `{state}` as substitutions with `agent_id` bound to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return that identity with the replacement's envelope
-  > Bind `agent_id` to the minted identity rather than the one that is gone — the ledger keyed on the dead context credits the replacement with deliveries it never received.
+- Mint a new `{worker_agent_id}` per `dispatch-activity.delivery-keys-on-agent-context`, apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, no `checkpoint_reply`, and `{variable_bag}` as substitutions with `agent_id` bound to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return `{worker_agent_id}` and the replacement's envelope as `{worker_result}`
+  > - Bind `agent_id` to the minted identity rather than the one that is gone — the ledger keyed on the dead context credits the replacement with deliveries it never received.
+  > - A replacement re-crossing an answered gate takes the answer already given, whichever context crosses it, so the user is not asked twice. The steps before that gate run a second time, side effects and all.
 
 ### 5. Account for the continuation
 
 - Account for this continuation of `{activity_id}` per `dispatch-activity.account-every-activity`.
-
-## Rules
-
-### a-replacement-repeats-the-work-not-the-question
-
-A checkpoint response is keyed by activity and checkpoint with no agent component, so a replacement worker re-crossing an answered gate takes the stored answer and the user is not asked twice. The steps before that gate do run a second time, side effects and all, which is the price this recovery pays and the reason it is reached for a context that is gone rather than one that answered badly.

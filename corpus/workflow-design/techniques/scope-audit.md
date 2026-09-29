@@ -1,11 +1,25 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
 Scope-discipline audit of the committed change set against the confirmed scope manifest.
+
+## Inputs
+
+### manifest_entries
+
+The confirmed file manifest for this run — one entry per file to create, modify or remove, each with its path, its action and a one-line statement of the change.
+
+### target_path
+
+Absolute filesystem path of the dedicated workflows edit-root worktree for this session — where create/update edits land.
+
+### workflow_branch
+
+Feature branch the edit-root worktree has checked out.
 
 ## Outputs
 
@@ -21,7 +35,7 @@ Severity-rated drift findings: each names a file changed outside the manifest (a
 
 ### 2. Compare Against Manifest
 
-- Compare that set against `{scope_manifest}`: flag each file changed outside the manifest as an unplanned change, and each manifest item with no corresponding change as unaddressed scope
+- Compare that set against `{manifest_entries}`: flag each file changed outside the manifest as an unplanned change, and each manifest item with no corresponding change as unaddressed scope
 
 ### 3. Compose Drift Findings
 

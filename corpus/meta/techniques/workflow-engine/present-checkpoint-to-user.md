@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Load the active checkpoint's details and present them to the user.
 
 ## Inputs
-
-### session_index
-
-`session_index` of the worker whose active checkpoint is being presented
 
 ### headless_mode
 
@@ -27,7 +23,8 @@ Load the active checkpoint's details and present them to the user.
 
 ### 1. Load Active Checkpoint
 
-- Call `present_checkpoint { session_index }`; it returns the active checkpoint's message and options. If this returns `no active checkpoint on session`, the worker has not yet yielded a checkpoint or the previous one was already resolved — re-check that you are presenting against the correct `{session_index}`.
+- Call `present_checkpoint { session_index }` for the active checkpoint. It returns the checkpoint's definition, its soft-gate declaration and each option's effects included, with the message and each option's label and description rendered from the variable bag; each option that names an exit also carries a `consequence`: that `exit`, the `next_activity` it leads to, and `ends_activity` where selecting it ends the activity at this gate.
+  > If this returns `no active checkpoint on session`, no checkpoint has been yielded yet or the previous one was already resolved: re-check that you are presenting against the correct `{session_index}`.
 
 ### 2. Establish Gate Softness
 
@@ -35,7 +32,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 3. Resolve Published Links
 
-- Resolve the checklist against the remote before it is published. A gate is reached mid-activity, before that activity's commit, so `git -C {host_repo_path} rev-parse --abbrev-ref HEAD` names the session branch `{$branch}`, and `git -C {host_repo_path} ls-tree -r --name-only origin/{branch} {planning_folder_path}` lists exactly what a reader can open: an item whose artifact is present renders as a link, and one whose artifact is absent renders as plain text. This stops a dead link being published; it does not make an artifact available sooner. It also catches a push that silently failed and an edit made out of band.
+- Resolve the checklist against the remote before it is published. A gate is reached mid-activity, before that activity's commit, so `git -C {host_repo_path} rev-parse --abbrev-ref HEAD` names the session branch `{$branch}`, and `git -C {host_repo_path} ls-tree -r --name-only origin/{branch} {planning_folder_path}` lists exactly what a reader can open: an item whose artifact is present renders as a link, and one whose artifact is absent renders as plain text.
 
 ### 4. Pick Resolution Path
 
@@ -47,7 +44,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 6. Apply Declared Answer
 
-- On the headless path, and only for a soft gate: resolve to the answer the gate declares without putting anything to the user, and record that the resolution reached no user. The audit record carries the distinction, so a reader of the session can tell a person's answer from a default.
+- On the headless path, and only for a soft gate: resolve to the answer the gate declares without putting anything to the user, and record that the resolution reached no user.
 
 ### 7. Capture Selection
 

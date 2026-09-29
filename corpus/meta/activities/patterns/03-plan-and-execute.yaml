@@ -1,7 +1,7 @@
 id: plan-and-execute
-version: 1.1.0
+version: 1.2.0
 name: Plan and Execute
-description: Plan once, gate optionally, execute steps in order, and replan while surprise remains — borrowable mid-phase plan-and-execute pattern.
+description: Borrowable mid-phase plan-and-execute pattern.
 variables:
   reads:
     - planning_context

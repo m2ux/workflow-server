@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.9.0
+  version: 2.10.0
 ---
 
 ## Capability
@@ -11,20 +11,19 @@ Compose a minimal stub that binds agent identity and directs the agent to Apply 
 
 ### agent_technique
 
-Canonical agent technique — workflow-engine::activity-worker or workflow-engine::workflow-orchestrator. These are the two agent roles, and each is the entry point to the rules its holder owes. Resuming is a worker continuing the activity it already holds, so it takes the worker role and is signalled by `{effects}` rather than by a role of its own.
+Canonical agent technique — workflow-engine::activity-worker or workflow-engine::workflow-orchestrator. A worker continued past a gate takes activity-worker.
 
 ### substitutions
 
 Map of placeholder name → value. Must include `session_index`, `workflow_id`, and `agent_id`, and `activity_id` as well for activity-worker.
 
-### effects
-
-*(optional)* A resolved checkpoint's reply. Present only when the stub continues a
-worker past a gate, and its presence is what makes this a continuation.
-
 ### holds_prior_deliveries
 
-Whether `agent_id` names a context that already received content under this session — true when continuing a worker onto the next activity of its batch, false for a freshly minted identity. Decides the delivery mode the stub asks for, which the receiving agent cannot infer: a fresh context reading unchanged markers holds none of the bytes they stand for.
+Whether `agent_id` names a context that already received content under this session — true when continuing a worker onto the next activity of its batch, false for a freshly minted identity.
+
+### checkpoint_reply
+
+*(optional)* The reply the server returned on clearing the checkpoint the worker yielded. Present only on a continuation past that gate.
 
 ## Outputs
 
@@ -41,8 +40,8 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### 2. Emit entry tools
 
-- When `{effects}` is bound, and `{agent_technique}` is activity-worker: instruct `resume_checkpoint { session_index }` FIRST, carrying the `effects` substitution, then the activity-worker line below. That call verifies the orchestrator has already resolved the gate; it goes first because its refusal is the one a worker has a remedy for, where a blocked `get_activity` gives it none. A continuation still takes its activity, which is where its duties and the definition it routes from come from
-- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for, which the server refuses to guess while several are in flight, so a branch worker that omits it is refused on its first call. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise, because a fresh context needs the bytes
+- When `{checkpoint_reply}` is bound, and `{agent_technique}` is activity-worker: instruct `resume_checkpoint { session_index }` FIRST, carrying `{checkpoint_reply}`, then the activity-worker line below
+- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `get_workflow { session_index }`, which delivers the techniques bundle the Direct Apply phase names. Its session is already open and its identity is bound in the block above; this call scopes to neither, and the orchestrator spends `agent_id` on the delivery calls that take one
 
 ### 3. Direct Apply
@@ -58,4 +57,4 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### context-travels-as-state
 
-Prior-activity context reaches a worker as state, not as prose in the stub. Artifact paths, decisions, and measurements already live in the session bag and in the artifacts those bag variables point at; the worker binds them through its activity's step inputs. Do not restate artifact content, decisions, or scope lists in `{composed_prompt}` — a paraphrase drifts from the artifact that records it, and the worker cannot tell which is authoritative. A fact the worker needs and no variable carries is a missing declaration, not a licence to inline.
+Prior-activity context reaches a worker as state, not as prose in the stub. Artifact paths, decisions, and measurements already live in the session bag and in the artifacts those bag variables point at; the worker binds them through its activity's step inputs. Do not restate artifact content, decisions, or scope lists in `{composed_prompt}`. A fact the worker needs and no variable carries is a missing declaration, not a licence to inline.

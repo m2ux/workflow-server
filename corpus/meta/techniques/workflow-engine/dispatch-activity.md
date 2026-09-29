@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.27.1
+  version: 1.28.0
 ---
 
 ## Capability
@@ -9,29 +9,13 @@ Transition the session to a target activity and spawn a worker to carry it, and 
 
 ## Inputs
 
-### session_index
-
-`session_index` of the session whose activity is being dispatched
-
-### activity_id
-
-Activity ID to enter.
-
 ### from_activity
 
-*(optional)* The activity this call retires — the one its exit and step manifest belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
-
-### exit_id
-
-*(optional)* The exit that activity took, which the server checks against the destination this call enters. Unset alongside `{from_activity}`.
+*(optional)* The activity this call retires — the one `{exit_id}` and `{step_manifest}` belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
 
 ### agent_technique
 
 Canonical agent technique for the worker — default workflow-engine::activity-worker.
-
-### state
-
-Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, `agent_id`, …)
 
 ### planning_folder_path
 
@@ -67,7 +51,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 
 ### 3. Compose Worker Stub
 
-- Mint `{worker_agent_id}` for this dispatch per `delivery-keys-on-agent-context`, then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
+- Mint `{worker_agent_id}` for this dispatch per `delivery-keys-on-agent-context`, then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{variable_bag}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
 
 ### 4. Spawn And Await Worker
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Orchestrator agent for a client workflow — owns the activity loop, checkpoint bubbling, and post-activity persistence.
 
 ## Inputs
-
-### session_index
-
-Stable session index for every authenticated tool call.
 
 ### workflow_id
 

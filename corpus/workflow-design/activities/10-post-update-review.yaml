@@ -1,14 +1,14 @@
 id: post-update-review
-version: 1.12.0
+version: 1.13.0
 name: Post-Update Review
-description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert) and publishes the remediation to the open pull request.
+description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation, with automatic remediation of remaining findings published to the open pull request.
 variables:
   reads:
     - component_git_dir
     - host_repo_path
+    - manifest_entries
     - planning_folder_path
     - pr_number
-    - scope_manifest
     - target_path
     - verified_findings
     - workflow_branch
@@ -17,16 +17,20 @@ variables:
       type: number
       description: Scope-manifest items confirmed addressed by scope-verification.
       defaultValue: 0
+    - name: anti_pattern_finding_count
+      type: number
+      description: Count of anti-pattern violations.
+      defaultValue: 0
     - name: anti_pattern_findings_path
       type: string
-      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      description: Absolute path to the persisted anti-pattern-findings artifact.
       defaultValue: ""
     - name: body
       type: string
       description: "Pull-request body: the change stated in a short paragraph, the manifest's entries as the file breakdown, and a link to the planning folder for the artifacts behind the change."
     - name: conformance_finding_count
       type: number
-      description: Count of convention-conformance divergences from audit-conformance.
+      description: Count of convention-conformance divergences.
       defaultValue: 0
     - name: conformance_findings_path
       type: string
@@ -37,7 +41,7 @@ variables:
       description: The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
     - name: expressiveness_finding_count
       type: number
-      description: Count of expressiveness findings from audit-expressiveness.
+      description: Count of expressiveness findings.
       defaultValue: 0
     - name: expressiveness_findings_path
       type: string
@@ -47,9 +51,13 @@ variables:
       type: number
       description: Count of YAML files that failed schema validation.
       defaultValue: 0
-    - name: needs_audit_fixes
+    - name: has_critical_anti_pattern_finding
       type: boolean
-      description: Whether audit passes surfaced findings that still need remedia.
+      description: Whether any anti-pattern finding is Critical severity.
+      defaultValue: false
+    - name: has_critical_principle_finding
+      type: boolean
+      description: Whether any design-principle finding is Critical severity.
       defaultValue: false
     - name: needs_recommit
       type: boolean
@@ -67,9 +75,13 @@ variables:
       type: string
       description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
       defaultValue: ""
+    - name: principle_finding_count
+      type: number
+      description: Count of design-principle findings.
+      defaultValue: 0
     - name: principle_findings_path
       type: string
-      description: Absolute path to the persisted principle-findings artifact (review mode).
+      description: Absolute path to the persisted principle-findings artifact.
       defaultValue: ""
     - name: pushed_branch
       type: string
@@ -102,14 +114,52 @@ steps:
     id: audit-expressiveness
     technique: audit-expressiveness
   - kind: technique
+    id: persist-expressiveness-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: expressiveness-findings.md
+        artifact_content: expressiveness_findings
+      outputs:
+        written_artifact: expressiveness_findings_path
+    when: expressiveness_finding_count > 0
+  - kind: technique
     id: audit-conformance
     technique: audit-conformance
+  - kind: technique
+    id: persist-conformance-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: conformance-findings.md
+        artifact_content: conformance_findings
+      outputs:
+        written_artifact: conformance_findings_path
+    when: conformance_finding_count > 0
   - kind: technique
     id: audit-principles
     technique: audit-principles
   - kind: technique
+    id: persist-principle-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: principle-findings.md
+        artifact_content: principle_findings
+      outputs:
+        written_artifact: principle_findings_path
+  - kind: technique
     id: audit-anti-patterns
     technique: audit-anti-patterns
+  - kind: technique
+    id: persist-anti-pattern-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: anti-pattern-findings.md
+        artifact_content: anti_pattern_findings
+      outputs:
+        written_artifact: anti_pattern_findings_path
   - kind: technique
     id: audit-schema-validation
     technique: audit-schema-validation
@@ -126,7 +176,6 @@ steps:
       inputs:
         bare_filename: post-update-review.md
         artifact_content: findings_summary
-        target_dir: planning_folder_path
       outputs:
         written_artifact: report_path
   - kind: action
@@ -134,11 +183,8 @@ steps:
     when: review_findings_count == 0
     actions:
       - action: set
-        target: needs_audit_fixes
-        message: Set false — this pass's audit is already clean; do not enter remedia from a sticky prior value.
-      - action: set
         target: needs_recommit
-        message: Set false — clean audit this pass means no remedia edits are pending recommit; clear any sticky prior value.
+        value: false
       - action: message
         message: "Post-update review complete — 0 findings ([post-update review]({report_path}))."
   - kind: action
@@ -146,11 +192,8 @@ steps:
     when: review_findings_count > 0
     actions:
       - action: set
-        target: needs_audit_fixes
-        message: Set true when review_findings_count is greater than 0 so the remedia while-loop runs. False only when the summary is already clean.
-      - action: set
         target: needs_recommit
-        message: Set true — remedia edits already-committed files, so the publish tail below commits, pushes, and refreshes the pull request.
+        value: true
       - action: message
         message: "Post-update review complete. {review_findings_count} findings — remediating automatically ([post-update review]({report_path}))."
   - kind: loop
@@ -159,9 +202,9 @@ steps:
     loopType: while
     continueWhile:
       type: simple
-      variable: needs_audit_fixes
-      operator: ==
-      value: true
+      variable: review_findings_count
+      operator: ">"
+      value: 0
     maxIterations: 3
     steps:
       - kind: technique
@@ -177,29 +220,70 @@ steps:
         id: remedia-audit-expressiveness
         technique: audit-expressiveness
       - kind: technique
+        id: remedia-refresh-expressiveness-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: expressiveness-findings.md
+            artifact_content: expressiveness_findings
+          outputs:
+            written_artifact: expressiveness_findings_path
+        when: expressiveness_finding_count > 0
+      - kind: technique
         id: remedia-audit-conformance
         technique: audit-conformance
+      - kind: technique
+        id: remedia-refresh-conformance-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: conformance-findings.md
+            artifact_content: conformance_findings
+          outputs:
+            written_artifact: conformance_findings_path
+        when: conformance_finding_count > 0
       - kind: technique
         id: remedia-audit-principles
         technique: audit-principles
       - kind: technique
+        id: remedia-refresh-principle-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: principle-findings.md
+            artifact_content: principle_findings
+          outputs:
+            written_artifact: principle_findings_path
+      - kind: technique
         id: remedia-audit-anti-patterns
         technique: audit-anti-patterns
+      - kind: technique
+        id: remedia-refresh-anti-pattern-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: anti-pattern-findings.md
+            artifact_content: anti_pattern_findings
+          outputs:
+            written_artifact: anti_pattern_findings_path
       - kind: technique
         id: remedia-revalidate-schema
         technique: audit-schema-validation
       - kind: technique
         id: remedia-summarize
         technique: summarize-findings
-      - kind: action
-        id: remedia-reassess
-        actions:
-          - action: set
-            target: needs_audit_fixes
-            message: After re-running the audits and summarize-findings, set true iff review_findings_count is still greater than 0; false when every pass comes back at 0 findings.
+      - kind: technique
+        id: remedia-refresh-review-snapshot
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: post-update-review.md
+            artifact_content: findings_summary
+          outputs:
+            written_artifact: report_path
   - kind: action
     id: remedia-still-dirty
-    when: needs_audit_fixes == true
+    when: review_findings_count > 0
     actions:
       - action: message
         message: "Post-update remedia exhausted with findings remaining ([post-update review]({report_path}))."
@@ -251,16 +335,16 @@ steps:
     actions:
       - action: set
         target: needs_recommit
-        message: Set false — the remedia edits are committed, pushed, and reflected in the pull request.
+        value: false
       - action: message
         message: "Post-update remediation published to [PR #{pr_number}]({pr_url})."
 exits:
   - id: needs-audit-fixes
-    when: needs_audit_fixes == true
+    when: review_findings_count > 0
   - id: review-clean
-    when: review_findings_count == 0 && needs_recommit == false && needs_audit_fixes == false
+    when: review_findings_count == 0 && needs_recommit == false
     isDefault: true
 outcome:
-  - The committed update is either clean or automatically remediated — findings never wait on an accept/iterate/revert choice
-  - Remediation edits reach the open pull request from here, so a finding costs one audit rather than a second pass over the whole definition tree
-  - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed
+  - The committed update is clean, or its findings are remediated automatically
+  - The open pull request carries every remediation edit
+  - A dated compliance snapshot records the audited state of the committed update, for later audits to compare against

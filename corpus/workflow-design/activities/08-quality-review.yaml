@@ -1,5 +1,5 @@
 id: quality-review
-version: 2.1.0
+version: 2.2.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 variables:
@@ -12,16 +12,20 @@ variables:
     - target_path
     - target_workflow_ids
   writes:
+    - name: anti_pattern_finding_count
+      type: number
+      description: Count of anti-pattern violations.
+      defaultValue: 0
     - name: anti_pattern_findings_path
       type: string
-      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      description: Absolute path to the persisted anti-pattern-findings artifact.
       defaultValue: ""
     - name: compliance_report
       type: string
       description: "Rolled-up compliance report body following the Compliance Report Template: severity counts, finding tables, and recommended fixes. Principle and anti-pattern detail stays in satellite finding files linked from the report."
     - name: conformance_finding_count
       type: number
-      description: Count of convention-conformance divergences from audit-conformance.
+      description: Count of convention-conformance divergences.
       defaultValue: 0
     - name: conformance_findings_path
       type: string
@@ -32,7 +36,7 @@ variables:
       description: The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
     - name: enforcement_finding_count
       type: number
-      description: Count of text-only rules from audit-rule-enforcement.
+      description: Count of text-only rules.
       defaultValue: 0
     - name: enforcement_findings_path
       type: string
@@ -40,7 +44,7 @@ variables:
       defaultValue: ""
     - name: expressiveness_finding_count
       type: number
-      description: Count of expressiveness findings from audit-expressiveness.
+      description: Count of expressiveness findings.
       defaultValue: 0
     - name: expressiveness_findings_path
       type: string
@@ -54,20 +58,36 @@ variables:
       type: boolean
       description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
       defaultValue: false
+    - name: has_critical_anti_pattern_finding
+      type: boolean
+      description: Whether any anti-pattern finding is Critical severity.
+      defaultValue: false
+    - name: has_critical_principle_finding
+      type: boolean
+      description: Whether any design-principle finding is Critical severity.
+      defaultValue: false
     - name: needs_audit_fixes
       type: boolean
       description: Whether audit passes surfaced findings that still need remedia.
       defaultValue: false
     - name: operation_type
       type: string
-      description: The classified operation for the request — create, update, or review.
+      description: The classified operation for the request.
+      values:
+        - create
+        - update
+        - review
     - name: pass_count
       type: number
       description: Count of YAML files that passed schema validation.
       defaultValue: 0
+    - name: principle_finding_count
+      type: number
+      description: Count of design-principle findings.
+      defaultValue: 0
     - name: principle_findings_path
       type: string
-      description: Absolute path to the persisted principle-findings artifact (review mode).
+      description: Absolute path to the persisted principle-findings artifact.
       defaultValue: ""
     - name: report_path
       type: string
@@ -79,7 +99,7 @@ variables:
       defaultValue: 0
     - name: rule_hygiene_finding_count
       type: number
-      description: Count of rule-hygiene findings from audit-rule-hygiene.
+      description: Count of rule-hygiene findings.
       defaultValue: 0
     - name: rule_hygiene_findings_path
       type: string
@@ -96,10 +116,6 @@ variables:
       type: array
       description: "The recalibrated finding set: each High marked confirmed, downgraded or withdrawn with the evidence of its re-derivation, and each surviving Medium spot-confirmed. Only entries in this set are eligible to drive a fix."
       defaultValue: []
-    - name: verified_findings_path
-      type: string
-      description: Absolute path to the persisted verified-findings artifact.
-      defaultValue: ""
 required: true
 steps:
   - kind: loop
@@ -124,7 +140,8 @@ steps:
           inputs:
             bare_filename: "{target_workflow_id}-principle-findings.md"
             artifact_content: principle_findings
-            target_dir: planning_folder_path
+          outputs:
+            written_artifact: principle_findings_path
       - kind: technique
         id: anti-pattern-scan
         technique: audit-anti-patterns
@@ -135,7 +152,8 @@ steps:
           inputs:
             bare_filename: "{target_workflow_id}-anti-pattern-findings.md"
             artifact_content: anti_pattern_findings
-            target_dir: planning_folder_path
+          outputs:
+            written_artifact: anti_pattern_findings_path
       - kind: technique
         id: schema-validation-check
         technique: audit-schema-validation
@@ -149,7 +167,6 @@ steps:
           inputs:
             bare_filename: "{target_workflow_id}-verified-findings.md"
             artifact_content: verified_findings
-            target_dir: planning_folder_path
       - kind: technique
         id: compile-report
         technique: compile-report
@@ -160,7 +177,6 @@ steps:
       inputs:
         bare_filename: compliance-review.md
         artifact_content: compliance_report
-        target_dir: planning_folder_path
       outputs:
         written_artifact: report_path
     when: operation_type == 'review'
@@ -196,6 +212,16 @@ steps:
     id: audit-expressiveness
     technique: audit-expressiveness
     when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: technique
+    id: persist-expressiveness-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: expressiveness-findings.md
+        artifact_content: expressiveness_findings
+      outputs:
+        written_artifact: expressiveness_findings_path
+    when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count > 0
   - kind: action
     id: expressiveness-clean
     when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count == 0
@@ -212,6 +238,16 @@ steps:
     id: audit-conformance
     technique: audit-conformance
     when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: technique
+    id: persist-conformance-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: conformance-findings.md
+        artifact_content: conformance_findings
+      outputs:
+        written_artifact: conformance_findings_path
+    when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count > 0
   - kind: action
     id: conformance-clean
     when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count == 0
@@ -228,6 +264,16 @@ steps:
     id: audit-rule-hygiene
     technique: audit-rule-hygiene
     when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: technique
+    id: persist-rule-hygiene-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: rule-hygiene-findings.md
+        artifact_content: rule_hygiene_findings
+      outputs:
+        written_artifact: rule_hygiene_findings_path
+    when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count > 0
   - kind: action
     id: rule-hygiene-clean
     when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count == 0
@@ -251,7 +297,8 @@ steps:
       inputs:
         bare_filename: enforcement-findings.md
         artifact_content: enforcement_findings
-        target_dir: planning_folder_path
+      outputs:
+        written_artifact: enforcement_findings_path
     when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count > 0
   - kind: action
     id: enforcement-clean
@@ -276,7 +323,6 @@ steps:
       inputs:
         bare_filename: verified-findings.md
         artifact_content: verified_findings
-        target_dir: planning_folder_path
     when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: action
     id: classify-audit-findings
@@ -312,14 +358,54 @@ steps:
         id: re-audit-expressiveness
         technique: audit-expressiveness
       - kind: technique
+        id: refresh-expressiveness-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: expressiveness-findings.md
+            artifact_content: expressiveness_findings
+          outputs:
+            written_artifact: expressiveness_findings_path
+        when: expressiveness_finding_count > 0
+      - kind: technique
         id: re-audit-conformance
         technique: audit-conformance
+      - kind: technique
+        id: refresh-conformance-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: conformance-findings.md
+            artifact_content: conformance_findings
+          outputs:
+            written_artifact: conformance_findings_path
+        when: conformance_finding_count > 0
       - kind: technique
         id: re-audit-rule-hygiene
         technique: audit-rule-hygiene
       - kind: technique
+        id: refresh-rule-hygiene-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: rule-hygiene-findings.md
+            artifact_content: rule_hygiene_findings
+          outputs:
+            written_artifact: rule_hygiene_findings_path
+        when: rule_hygiene_finding_count > 0
+      - kind: technique
         id: re-audit-rule-enforcement
         technique: audit-rule-enforcement
+      - kind: technique
+        id: refresh-enforcement-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: enforcement-findings.md
+            artifact_content: enforcement_findings
+          outputs:
+            written_artifact: enforcement_findings_path
+        when: enforcement_finding_count > 0
       - kind: action
         id: reassess-audit-fixes
         actions:

@@ -831,7 +831,7 @@ A code token appears bare without backticks.
 
 **Detect:** A bare designator (`{id}`, `{$name}`, a dotted rule address), a CLI or shell command including a single-quoted command, an MCP tool call, a resource URI (`scheme://…`), or a literal path or filename, outside a code span and not a markdown or `::` link target.
 
-**Do not flag:** A token already inside a code span or fence. A descriptive prose noun ("the planning folder"). A hyperlink or `::` target. An invocation argument name (`paren-invocation-args`). A fragmented span (`` `git -C` `{x}` ``) is this fault: one span. Backticks without braces still fail `brace-declared-ids`.
+**Do not flag:** A token already inside a code span or fence. A descriptive prose noun ("the planning folder"). A hyperlink or `::` target. An invocation argument name (`paren-invocation-args`). A heading token a guard parses by pattern. A fragmented span (`` `git -C` `{x}` ``) is this fault: one span. Backticks without braces still fail `brace-declared-ids`.
 
 **Fix:** Wrap each bare code token in one backtick span, designators inside the same span as the surrounding command. Convert a single-quoted command. De-escape `{\$name}` to `` `{$name}` `` (`escape-literal-dollar`).
 
@@ -1287,7 +1287,7 @@ A design-time authoring standard is filed as a runtime rule.
 
 **Detect:** A rule in `rules.*` or technique `## Rules` governs how to *write* workflows (content shape of YAML/technique/resource files, authoring standards) rather than current-session runtime conduct. Signals: restates a design principle or anti-pattern; would apply in an unrelated authoring session.
 
-**Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions.
+**Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions. An authoring technique's rules for the definitions it drafts.
 
 **Fix:** Remove it from `rules.*` or technique `## Rules`. Migrate it into the design-time canon — a principle, this catalogue, the construct inventory, or an existing covering entry. Enforce it in the authoring audit.
 
@@ -1601,9 +1601,9 @@ An Input or Output description hyperlinks or otherwise associates the bind slot 
 
 ## Draft Hygiene
 
-Smells in draft prose. The `MR-` designator is stable.
+Smells in draft prose.
 
-### MR-1. cut-comment-jsdoc-verbosity
+### AP-126. cut-comment-jsdoc-verbosity
 
 "This function iterates the list and returns the count"
 
@@ -1615,7 +1615,7 @@ A comment narrates what the next line already says.
 
 **Fix:** Delete or collapse to a single why-line. Prefer renaming and structure over commentary.
 
-### MR-2. no-dense-prose-after-config-examples
+### AP-127. no-dense-prose-after-config-examples
 
 "The `timeout` field above sets the timeout"
 
@@ -1627,7 +1627,7 @@ Prose after a complete example restates fields the example already shows.
 
 **Fix:** Keep the example; cut the restatement. Point to the Template/Rules for fill constraints.
 
-### MR-3. worktree-root-placeholders
+### AP-128. worktree-root-placeholders
 
 "`/home/someone/projects/dev/workflow-server/.worktrees/workflows`"
 
@@ -1639,7 +1639,7 @@ A literal checkout root stands where a portable placeholder belongs.
 
 **Fix:** Use worktree-root or bag placeholders (`{target_path}`, `{planning_folder_path}`, `{workflow_id}/…`) so content is portable across checkouts.
 
-### MR-4. no-parallel-runbook-when-setup-covers-it
+### AP-129. no-parallel-runbook-when-setup-covers-it
 
 "Clone the repo, npm install, npm start"
 
@@ -1651,7 +1651,7 @@ A second how-to restates install and run steps a setup document already owns.
 
 **Fix:** Link to SETUP once; keep only the workflow-specific delta here.
 
-### AP-126. variable-description-one-line
+### AP-130. variable-description-one-line
 
 "`Set by the checkpoint. Drives the gate. Read by later steps.`"
 
@@ -1663,7 +1663,7 @@ A workflow `variables[].description` carries more than what the value is.
 
 **Fix:** Rewrite to one line naming the value; delete producer, consumer, gate, and layout tails.
 
-### AP-127. bag-value-as-literal
+### AP-131. bag-value-as-literal
 
 "push the branch to `workflows`" / "the audit covers all eight design dimensions"
 
@@ -1675,7 +1675,7 @@ A concrete value is written out where a declared variable or technique input alr
 
 **Fix:** Replace the literal with `{name}` for the declared slot. Leave exactly one home for the value — the declaration.
 
-### AP-128. unproduced-value-read
+### AP-132. unproduced-value-read
 
 "`when: intent_detected == true` on the sole producer" / "`variable: matched_item`, `operator: ==`, `value: null` on the reader's gate"
 
@@ -1687,7 +1687,7 @@ A reader can reach a variable on a path that skips its only producer.
 
 **Fix:** Ask definedness with `operator: exists` or `notExists`. Where the excluded path needs the value, add the producer arm so the gates are exhaustive. A `defaultValue` a reader cannot tell from a produced value is not that arm.
 
-### AP-129. stale-restatement-after-change
+### AP-133. stale-restatement-after-change
 
 "`identifies the target and any saved session` surviving in one README tier after the sibling tier gained `when the request states resume intent`"
 
@@ -1699,7 +1699,7 @@ A change leaves a restatement asserting the behaviour it altered.
 
 **Fix:** Update every occurrence in one edit and record the count in the file manifest. Where the claim has one home, delete the restatements. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
-### AP-130. artifact-name-is-filename
+### AP-134. artifact-name-is-filename
 
 "`COMPLETE.md` (implementation) or planning-folder session `README.md` section (review mode)" / "`stage-1.md` (fast stage) / `stage-2.md` (deep stage)"
 
@@ -1711,7 +1711,7 @@ An `#### artifact` body is not one filename.
 
 **Fix:** Several files: one `###` output each, with its own `#### artifact`. A mode-selected name: one op per mode, gated at the bind (`no-monolith-masking-steps`). A section of another technique's file: no artifact here. A sibling's files: declare them on the sibling (`canonical-fact-home`).
 
-### AP-131. resource-id-names-its-content
+### AP-135. resource-id-names-its-content
 
 "`complete-wp` on the resource holding the close-out template"
 
@@ -1723,7 +1723,7 @@ A consult resource's id is a verb phrase.
 
 **Fix:** Rename to the content plus its kind, and update `name:`, the resources index, and every relative and `::` reference in one edit. Where the verb names a technique, move the content into a technique. See [Convention Over Invention](./design-principles.md#7-convention-over-invention).
 
-### AP-132. deployment-path-in-capability
+### AP-136. deployment-path-in-capability
 
 "Shared contract for planning-folder artifacts under `.engineering/artifacts/planning/`"
 
@@ -1735,7 +1735,7 @@ A consult resource's id is a verb phrase.
 
 **Fix:** Name the artifact class and the contribution. Where a consumer needs the location, declare an input with a `default` and reference it from Protocol. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure).
 
-### AP-133. overlapping-rule-scopes
+### AP-137. overlapping-rule-scopes
 
 "a rule for every artifact and a second for large artifacts, each prescribing different handling"
 
@@ -1747,7 +1747,7 @@ Two rules' triggers intersect and their handling differs, with no order between 
 
 **Fix:** One entry, the narrower case as a condition inside it. Where both remain, the narrower names what it overrides (`dotted-rule-address`). Splitting the triggers is valid where the split is a real distinction.
 
-### AP-134. whole-resource-for-one-section
+### AP-138. whole-resource-for-one-section
 
 "per the [Review Comment Template](../resources/review-mode.md)"
 
@@ -1759,7 +1759,7 @@ A citation delivers a whole resource where the prose reads one section.
 
 **Fix:** Cite `../resources/example.md#section-title`, link text the section title, one citation per section. A bare citation beside anchored ones is anchored or dropped. A large resource no section covers is a split under [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain).
 
-### AP-135. tool-contract-restated-in-protocol
+### AP-139. tool-contract-restated-in-protocol
 
 "Each entry is an object with two string fields: `step_id` … and `output` … ; do not pass an empty array"
 
@@ -1771,7 +1771,7 @@ Protocol restates a tool argument's shape.
 
 **Fix:** Keep the obligation and the reason. Drop the shape. See [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface).
 
-### AP-136. phase-cited-by-ordinal
+### AP-140. phase-cited-by-ordinal
 
 "the primitive step 5 resolves for the layout" / "[render](./render.md) step 3 owns that resolution"
 
@@ -1783,7 +1783,7 @@ A reference names a Protocol phase by its ordinal.
 
 **Fix:** Name the technique or op that holds the phase. Anchor the heading where that one phase is required. Where the pointer only explains the cited work, delete it. See also `anchored-protocol-references`.
 
-### AP-137. unowned-harness-capability
+### AP-141. unowned-harness-capability
 
 "capture session history via `inspect_session` (same stance as [generate-summary] / [verify-outcomes])"
 
@@ -1795,7 +1795,7 @@ No technique owns a harness capability that several techniques call.
 
 **Fix:** Author the technique, declare the product, bind it as an activity step, and let consumers declare that product as an input. Repoint sideways citations at the owner. See also `pass-orchestration-in-technique`.
 
-### AP-138. output-without-destination
+### AP-142. output-without-destination
 
 "`dependency_graph` and `prioritization_rationale` declared beside the ranking document whose sections they are"
 
@@ -1807,7 +1807,7 @@ A declared output has no reader.
 
 **Fix:** A file takes `#### artifact` (`artifact-not-buried`, `artifact-name-is-filename`). A field of a sibling document is a `####` of that output. A later step binds it and declares the input. A human sees `{id}` from the binding activity (`session-interaction-in-technique`). Otherwise delete the declaration and the variable that shadowed it. The inverse is `technique-outputs-declared`.
 
-### AP-139. framing-outside-any-section
+### AP-143. framing-outside-any-section
 
 "# Overview — operative prose a section citation never returns… [body before the first `##`]"
 
@@ -1819,7 +1819,7 @@ A resource carries operative prose in a span no `##` anchor reaches, while techn
 
 **Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. See [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`.
 
-### AP-140. declared-input-never-read
+### AP-144. declared-input-never-read
 
 "`### activity_id` and `### session_index` declared, with no phase naming either"
 
@@ -1831,7 +1831,7 @@ A technique declares an input its own Protocol and Rules never reach, so the bin
 
 **Fix:** Reference `{id}` from the phase that spends it, or delete the declaration. Where the value belongs to an op this technique applies, pass it at the Apply site (`apply-omits-declared-input`).
 
-### AP-141. apply-omits-declared-input
+### AP-145. apply-omits-declared-input
 
 "Apply [continue-agent] with the composed prompt"
 
@@ -1843,7 +1843,7 @@ A Protocol Apply passes some of the applied technique's declared inputs and omit
 
 **Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. A slot declared and never passed on is `declared-input-never-read`.
 
-### AP-142. branch-on-undeclared-threshold
+### AP-146. branch-on-undeclared-threshold
 
 "When the worker does not return within the expected time"
 
@@ -1855,7 +1855,7 @@ A Protocol branch conditions on a magnitude nothing declares, so the agent canno
 
 **Fix:** Declare the threshold and compare it by designator — a technique input with a `#### default`, a workflow variable, or a row in the owning policy resource. Where no owner can supply it, delete the branch and rebuild any behaviour it guarded on a condition the agent can observe. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
 
-### AP-143. inherited-rules-re-enumerated
+### AP-147. inherited-rules-re-enumerated
 
 "Honor no-get-activity-from-orchestrator, no-pre-load-techniques, delivery-keys-on-agent-context, …"
 
@@ -1867,7 +1867,7 @@ A rules entry cites rules another file owns and the reader already receives, so 
 
 **Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it. Carry over any clause the deleted entry held that no other surface states. The Inputs-side fault is `inherited-input-re-declared`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
-### AP-144. reference-without-provenance
+### AP-148. reference-without-provenance
 
 "the activity `id` already returned by `get_activity`" / "the commit for that activity has already landed"
 
@@ -1879,7 +1879,7 @@ A reference does not resolve to one source, so the reader cannot tell which valu
 
 **Fix:** Name the supplier — the phase that produces the value, the call that returns it, or the technique that guarantees the action — or declare it and reference the designator. Where nothing supplies it, delete the reference. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
-### AP-145. pre-session-prose-defers-to-the-framework
+### AP-149. pre-session-prose-defers-to-the-framework
 
 "Derive the repository by applying [resolve-host-repo](…)" in the bootstrap procedure / `resolve-host-repo.prose-sources-are-fallback-only`
 
@@ -1891,7 +1891,7 @@ Bootstrap prose sends the reader somewhere they have no way to go.
 
 **Fix:** Inline the instruction's substance and keep the name only as a forward label. On this surface that overrides `dotted-rule-address`. See [Pre-Session Prose Stands Alone](./design-principles.md#33-pre-session-prose-stands-alone).
 
-### AP-146. instruction-narrates-an-actor
+### AP-150. instruction-narrates-an-actor
 
 "The next activity reaches this context only as a continuation stub the orchestrator sends after continue-batch has advanced the pointer" / "The orchestrator applies commit-and-persist for the activity just finished before reaching this technique"
 
@@ -1903,7 +1903,7 @@ A rule, Protocol step, or I/O description describes an actor instead of instruct
 
 **Fix:** Address the reader. Where the clause carried a duty of the reader's, restate it as an imperative. Where it described another actor, restate the reason from the reader's own position or delete it. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
-### AP-147. rule-binds-beyond-its-operation
+### AP-151. rule-binds-beyond-its-operation
 
 "`sync-progress-status` is the only writer of Progress status — not a per-activity YAML step, not a client-workflow activity rule, not a worker duty" on a persistence technique's `## Rules`
 
@@ -1915,7 +1915,7 @@ A technique's rule states policy over a subject the technique does not own, so i
 
 **Fix:** Move the claim to the surface that owns the subject, widen that statement to cover whatever the rule uniquely carried, and delete the rule where nothing technique-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
-### AP-148. inherited-input-re-declared
+### AP-152. inherited-input-re-declared
 
 "`### planning_folder_path` on a leaf whose workflow-root `TECHNIQUE.md` declares it already"
 
@@ -1927,7 +1927,7 @@ A leaf redeclares an input a container contract merges into it, so one bind slot
 
 **Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
-### AP-149. schema-semantics-restated
+### AP-153. schema-semantics-restated
 
 "A `when` gate takes the operators `==`, `!=`, `>`, `<`, `>=`, `<=`, with `()` binding tighter than `!`"
 
@@ -1939,7 +1939,7 @@ Definition prose restates what a schema field means, so the schema and the prose
 
 **Fix:** Delete the restatement and let the field carry it; where prose needs the fact, cite the schema resource once. Where the schema cannot express the fact, declare it in the schema first, then delete the prose (`value-set-in-prose`). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
-### AP-150. engine-internals-narrated
+### AP-154. engine-internals-narrated
 
 "The server writes `session.json` and its `.session-token` seal atomically on every authenticated call"
 
@@ -1951,7 +1951,7 @@ An engine technique describes where the server keeps its state or how it does it
 
 **Fix:** Delete the narration; keep the call, the value and the obligation. Where the mechanism explains a constraint the reader must honour, state the constraint as the invariant and drop the machinery. See [Document in Positive Present](./design-principles.md#17-document-in-positive-present).
 
-### AP-151. value-set-in-prose
+### AP-155. value-set-in-prose
 
 "`analysis_type`: 'completion' (continuing previous work) or 'context' (new initiative)"
 
@@ -1963,7 +1963,7 @@ A variable's admitted values are enumerated in a description while the declarati
 
 **Fix:** Declare the set as `values` on the variable and cut it from the prose. Leave a description of what the value holds and what its absence means. Where two declarations of the name disagree on the set, the load refuses them. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home); also `variable-description-one-line`.
 
-### AP-152. one-invariant-per-rule
+### AP-156. one-invariant-per-rule
 
 "Each instance materialises its own checkout … **It is declared per member and it is uniform within one.** … Reach for it only where per-unit attribution is the point."
 
@@ -1975,7 +1975,7 @@ One `## Rules` entry states several constraints, so no part of it can be cited o
 
 **Fix:** Give each constraint its own entry, named for the invariant it states. Demote cost guidance and hazards to a `>` caveat on the rule they qualify (`constraint-as-blockquote`). Delete any part whose claim another surface already owns — a schema field's description, a load-time refusal, another technique's rule (`schema-semantics-restated`, `rule-binds-beyond-its-operation`). See [A Rule States One Invariant](./design-principles.md#45-a-rule-states-one-invariant).
 
-### AP-153. call-omits-conditionally-required-argument
+### AP-157. call-omits-conditionally-required-argument
 
 "`next_activity { session_index, activity_id, step_manifest }`, against a tool that refuses the call whenever the session holds an open activity"
 
@@ -1987,7 +1987,7 @@ A Protocol writes a call signature without an argument its schema marks optional
 
 **Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the technique reaches the call in both states, mark that input optional and state the state that leaves it unset. The technique-to-technique form is `apply-omits-declared-input`.
 
-### AP-154. call-omits-required-argument
+### AP-158. call-omits-required-argument
 
 "`record_usage { session_index, activity, usage }`, against a tool declaring a fourth parameter as required"
 
@@ -1999,7 +1999,7 @@ A Protocol writes a whole call signature without an argument the tool's schema d
 
 **Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the omission traces to a parameter the tool gained after the technique was written, sweep every call the corpus describes to that tool (`stale-restatement-after-change`).
 
-### AP-155. call-names-an-undeclared-argument
+### AP-159. call-names-an-undeclared-argument
 
 "`start_session { session_index, agent_id }`, against a tool declaring no session parameter"
 
@@ -2011,7 +2011,7 @@ A Protocol writes a call signature naming an argument the tool does not declare,
 
 **Fix:** Delete the argument, or correct it to the name the tool declares. Where it names a parameter the tool once carried, sweep every call the corpus describes to that tool (`stale-restatement-after-change`).
 
-### AP-156. protocol-phase-as-list-item
+### AP-160. protocol-phase-as-list-item
 
 "`1. **Engineering commit + push:** Commit ALL changes under .engineering/…`"
 
@@ -2023,7 +2023,7 @@ A Protocol phase is an entry in a flat numbered list, so it has a number and no 
 
 **Fix:** Give each phase a `### N. Title` heading naming its outcome, and move its work to bullets beneath. A bold label already present is the title. A phase whose outcome cannot be named is `rule-as-protocol-step` or `constraint-as-blockquote`. Heading length and composition are [A Phase Heading Names the Outcome](./design-principles.md#39-a-phase-heading-names-the-outcome).
 
-### AP-157. unreachable-operation-reference
+### AP-161. unreachable-operation-reference
 
 "never [continue-agent](../harness-compat/continue-agent.md) on a prior worker" in a rule / "the commit it was built at sits in the inventory [resolve-graph](./resolve-graph.md) reads" as a Protocol aside
 
@@ -2035,7 +2035,7 @@ A technique names another technique without invoking it, sending its reader some
 
 **Fix:** State the fact the reference stood for, without naming the technique. Where it carried a standing choice of instrument, move it to the container technique that holds both techniques, phrased so it needs no reference. Where it carried sequencing, the run binding both techniques owns it. See [A Technique Names Only What Its Reader Holds](./design-principles.md#36-a-technique-names-only-what-its-reader-holds); also `pass-orchestration-in-technique`, `anchored-protocol-references`.
 
-### AP-158. produce-path-without-a-reading
+### AP-162. produce-path-without-a-reading
 
 "1. Call `<tool> { … }` and record the `{report}`." as the whole Protocol
 
@@ -2047,7 +2047,7 @@ A technique's Protocol is the tool's own call and nothing else, so the technique
 
 **Fix:** Add the phase that reads the answer — what it caps, what it omits, what an empty result means, what the recovery is. Where no such reading exists, retire the technique and bind the tool at the run that needed it. See [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading).
 
-### AP-159. construct-folder-without-a-readme
+### AP-163. construct-folder-without-a-readme
 
 "`<workflow>/techniques/<group>/` holding four technique files and no `README.md`"
 
@@ -2059,7 +2059,7 @@ A construct subfolder carries definitions and no README, so nothing orients a re
 
 **Fix:** Add a README stating the folder's purpose, what its members have in common, and where a reader goes next. The index points at the files and does not restate them. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
 
-### AP-160. relocation-without-a-preserved-outcome
+### AP-164. relocation-without-a-preserved-outcome
 
 "a re-probe duty moved out of a technique's prose into a gated activity step, with nothing writing the flag its consumers read"
 
@@ -2071,7 +2071,7 @@ A duty moves to another home and neither home names the outcome the move had to 
 
 **Fix:** At the receiving site, state the outcome that still has to hold and the check confirming it — a declared output the consumers read, a gate on the same variable, an artifact at the same path. Where the move retires the behaviour, say so where the behaviour was. See [A Relocation Records the Outcome It Keeps](./design-principles.md#38-a-relocation-records-the-outcome-it-keeps).
 
-### AP-161. unproducible-declared-value
+### AP-165. unproducible-declared-value
 
 "`unanswerable` where the member has neither instrument to ask" on an output, under a phase setting that same field to `none` wherever neither instrument found anything
 
