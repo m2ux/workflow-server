@@ -1,0 +1,33 @@
+## Overview
+
+{{One paragraph: what the initiative achieves, stated as the end state. Name the goal the reviews will test against.}}
+
+## Problem
+
+{{One sentence on the gap, then one bullet per facet. Each bullet opens with a bold statement, its body on the next line, carries measured evidence (counts, and code linked from the words it supports), and says why it matters.}}
+
+- **{{Facet}}.**
+  {{Evidence and consequence.}}
+
+## Proposal
+
+- **{{Move}}.**
+  {{What is done, in one or two sentences.}}
+
+## Work Breakdown
+
+| Epic | Description | Depends on |
+| --- | --- | --- |
+| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{The epic's title name, the part before the colon}} → AC{{n}}, AC{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} |
+
+## Acceptance Criteria
+
+- [ ] **AC1.** {{One invariant, a condition that holds or does not, meeting the goal pass criterion rules: SMART, no stale counts, local, and whole. It ends by naming its instrument: the automated test that verifies it (as the all-workflows walk shows), or how the user confirms it (as the user confirms from a production run).}}
+
+## Non-goals
+
+- {{One succinct sentence on what this initiative does not do. It names no initiative, epic, task or issue, and no owner.}}
+
+## References
+
+- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there.}}

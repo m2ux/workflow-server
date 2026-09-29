@@ -7,15 +7,15 @@ issues.json is every issue in the repository as `gh api --paginate
 "repos/{owner}/{repo}/issues?state=all&per_page=100"` returns it: the pages' arrays one after
 another. Pull requests are skipped.
 
-A house issue is one whose title starts with an [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix; an open
-issue without one is standalone, and every standalone issue is a hoist candidate. An orphan is one
-that no open house issue's body links, by URL or by #n; one that only closed house issues cite is
-still an orphan, and the listing names those citers. A cited standalone issue is one that open house
-issues link, as a reference or in prose, though it sits outside the structure; the listing names
-the issues citing it.
+An agent-engineering issue is one whose title starts with an [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz]
+prefix; an open issue without one is standalone, and every standalone issue is a hoist candidate.
+An orphan is one that no open agent-engineering issue's body links, by URL or by #n; one that only
+closed agent-engineering issues cite is still an orphan, and the listing names those citers. A cited
+standalone issue is one that open agent-engineering issues link, as a reference or in prose, though
+it sits outside the structure; the listing names the issues citing it.
 
-Printed: each orphan, then each cited standalone issue, with its labels, the house issues citing
-it, and any planning folder its body links (a tree or blob link into a planning folder of markdown
+Printed: each orphan, then each cited standalone issue, with its labels, the agent-engineering
+issues citing it, and any planning folder its body links (a tree or blob link into a planning folder of markdown
 files), then each open initiative and epic with its theme labels, as the placements a hoist can
 offer. A candidate with planning is subsumed and closed when hoisted. Planning linked only from
 comments is not listed.
@@ -26,7 +26,7 @@ import re
 import sys
 from pathlib import Path
 
-HOUSE = re.compile(r'^\[I\d\d(?::E\d\d(?::W\d\d)?)?\] ')
+AGENT_ENGINEERING = re.compile(r'^\[I\d\d(?::E\d\d(?::W\d\d)?)?\] ')
 PLANNING = re.compile(r'https://github\.com/[^)\s]*/(?:tree|blob)/[^)\s]*planning/[^)\s]*')
 
 
@@ -62,16 +62,16 @@ def main() -> int:
         print('no issues')
         return 1
     repo = re.search(r'github\.com/([^/]+/[^/]+)/issues/', issues[0]['html_url'])[1]
-    house = [i for i in issues if HOUSE.match(i['title'])]
-    live = set().union(*(cited(i['body'] or '', repo) for i in house if i['state'] == 'open'))
+    agent_engineering = [i for i in issues if AGENT_ENGINEERING.match(i['title'])]
+    live = set().union(*(cited(i['body'] or '', repo) for i in agent_engineering if i['state'] == 'open'))
     closed_citers: dict[int, list[int]] = {}
     live_citers: dict[int, list[int]] = {}
-    for i in house:
+    for i in agent_engineering:
         into = closed_citers if i['state'] == 'closed' else live_citers
         for n in cited(i['body'] or '', repo):
             into.setdefault(n, []).append(i['number'])
 
-    standalone = sorted((i for i in issues if i['state'] == 'open' and not HOUSE.match(i['title'])),
+    standalone = sorted((i for i in issues if i['state'] == 'open' and not AGENT_ENGINEERING.match(i['title'])),
                         key=lambda i: i['number'])
     for heading, group, citers, which in (
             ('orphans', [i for i in standalone if i['number'] not in live], closed_citers, 'closed '),
@@ -86,7 +86,7 @@ def main() -> int:
         print()
 
     print('--- open initiatives and epics')
-    for i in sorted((i for i in house if i['state'] == 'open' and not re.match(r'^\[I\d\d:E\d\d:W', i['title'])),
+    for i in sorted((i for i in agent_engineering if i['state'] == 'open' and not re.match(r'^\[I\d\d:E\d\d:W', i['title'])),
                     key=lambda i: i['title']):
         themes = [l for l in labels(i) if l.startswith('theme:')]
         print(f"#{i['number']} {i['title']}  [{', '.join(themes)}]")
