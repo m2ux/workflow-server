@@ -74,6 +74,25 @@ Binding-fidelity: stamp `7062aa0a`, before the base. The three entries at files 
 
 read 54 · unread 0.
 
+## Second pass — the fix surface
+
+**Base:** #970 fix commit `166718d6` (parent `0d56c951`), #971 fix commit `23de2dfb` (parent `8a7dc934`) · **Coverage:** 221 units × 37 paths (36 touched, 1 closure: `evaluate-transition.md`, which reads the new `selected_exit`) · **Guards:** clean on both heads, and no ledger was edited.
+
+**Resolved:** the seven diff Contract findings K1–K7, and the diff Hygiene findings apart from those carried as known below.
+
+**The second pass, walked over the first fix commits, found:**
+- **Introduced by the fixes:**
+  - Hygiene: `effects` readers restating the field list, the pattern exit id copied into the README, `## Graph` against the siblings' `## Flow`, "the fix loop's exits", an ambiguous `local-marker` rule, and procedure in `finalize-activity`'s Capability.
+  - Contract: `finalize-activity` reading `selected_exit` undeclared.
+
+  All are corrected in the amended fix commits, and the guards pass after.
+- **Corrected while there:** a pre-existing Live finding in `activity-worker`, which placed the `batch:` block at the head of the `get_activity` response. It sits at the end (`workflow-tools.ts:2408`).
+- **Known, left open:**
+  - The `effects` id names one member of the reply it carries. A rename crosses the meta loop's bindings.
+  - The rule duplicated between `variable-binding` and `variable-mutation-source`.
+  - The one-step rules in `yield-checkpoint` and `respond-checkpoint`.
+- **Pre-existing on the newly surfaced files:** about 30 Hygiene findings and 4 Contract findings (fan-conformance README steps, activity-worker applying techniques without their inputs, resume-from-checkpoint's two answer sources, README pass inventories). They are itemised in `walk2-A.md` to `walk2-F.md`.
+
 ## Notes
 
 - The #970 body, read as the scope manifest (AP-03), claims an exits-for-transitions sweep; the surviving "transition" wording above is the unfinished part. The body predates commits `3261c0d8` and `0d56c951`: it gives `yield-checkpoint` as 1.5.0 (the branch has 1.4.0) and omits activity-worker 1.10.0, the undeclared-yield and per-visit replay text, the variable-binding, pattern-analysis and 05-impact-analysis edits, the README sweep and the two resource bumps.

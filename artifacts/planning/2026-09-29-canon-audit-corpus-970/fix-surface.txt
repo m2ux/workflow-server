@@ -1,0 +1,40 @@
+# Fix commit 1df70bd2 on PR 970 (worktree /home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene, parent 0d56c951)
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/canon/resources/design-principles.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/codebase-wiki/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/activities/patterns/02-supervisor.yaml
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/activities/patterns/03-plan-and-execute.yaml
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/activities/patterns/05-lead-researcher.yaml
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/activities/patterns/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/variable-binding.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/TECHNIQUE.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/activity-worker.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/compose-prompt.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/finalize-activity.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/respond-checkpoint.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/resume-from-checkpoint.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/resume-worker.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/yield-checkpoint.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/midnight-system-review/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/prism-evaluate/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/prism-update/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/specimens/fan-conformance/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/specimens/git-pin-conformance/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/specimens/gitnexus-radius-conformance/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/specimens/routine-conformance/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/substrate-node-security-audit/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/work-package/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/work-packages/activities/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/workflow-authoring/resources/impact-analysis.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/workflow-design/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/workflow-design/techniques/audit-rule-enforcement.md
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/workflow-design/techniques/scope-definition.md
+# Closure: reads selected_exit, which the fix declared as an output of resume-from-checkpoint and yield-checkpoint
+/home/mike1/projects/dev/workflow-server/.worktrees/corpus-schema-hygiene/corpus/meta/techniques/workflow-engine/evaluate-transition.md
+# Fix commit 4ef2c6d6 on PR 971 (worktree /home/mike1/projects/dev/workflow-server/.worktrees/specimen-schema-hygiene, parent 8a7dc934)
+/home/mike1/projects/dev/workflow-server/.worktrees/specimen-schema-hygiene/corpus/specimens/schema-hygiene-conformance/README.md
+/home/mike1/projects/dev/workflow-server/.worktrees/specimen-schema-hygiene/corpus/specimens/schema-hygiene-conformance/activities/01-probe.yaml
+/home/mike1/projects/dev/workflow-server/.worktrees/specimen-schema-hygiene/corpus/specimens/schema-hygiene-conformance/activities/02-gate-exit.yaml
+/home/mike1/projects/dev/workflow-server/.worktrees/specimen-schema-hygiene/corpus/specimens/schema-hygiene-conformance/techniques/hygiene-probe.md
+/home/mike1/projects/dev/workflow-server/.worktrees/specimen-schema-hygiene/corpus/specimens/schema-hygiene-conformance/workflow.yaml
+/home/mike1/projects/dev/workflow-server/.worktrees/specimen-schema-hygiene/walks/roster.json
