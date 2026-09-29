@@ -9,10 +9,6 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 ## Inputs
 
-### session_index
-
-`session_index` of the worker whose active checkpoint is being resolved
-
 ### checkpoint_resolution
 
 `{ option_id }` | `{ auto_advance: true }` | `{ condition_not_met: true }`
@@ -32,12 +28,10 @@ The reply the server returns on clearing the active checkpoint: `resolved_option
 ### 2. Clear Active Gate
 
 - Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns its reply. Capture the reply as `{checkpoint_reply}` and propagate it to the worker on resume.
-  > When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
+  > - When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
+  > - When the call returns `Invalid option`, STOP. Apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to retrieve the valid options. Never guess.
+
 ## Rules
-
-### no-option-hallucination
-
-If `respond_checkpoint` returns `Invalid option`, STOP. Apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to retrieve the valid options. Never guess.
 
 ### verify-auto-advance-on-resolve
 
@@ -45,8 +39,8 @@ If `respond_checkpoint` returns `Invalid option`, STOP. Apply [present-checkpoin
 
 ### auto-advance-spends-the-declared-interval
 
-The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded, so this call is the route that spends it. A resolution that must not wait belongs on the headless path of `present-checkpoint-to-user.present-before-any-resolution`, which makes no call at all.
+The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded. A resolution that must not wait takes the headless path of `present-checkpoint-to-user.present-before-any-resolution`, which makes no call.
 
 ### dismiss-only-a-gate-whose-condition-is-false
 
-`condition_not_met: true` is the resolution for a checkpoint whose declared `condition` evaluates false against the run's variable bag — the gate is cleared without a decision because the run never reached the situation it asks about. The server refuses it on a checkpoint carrying no `condition`. Never use it to clear a gate whose condition holds.
+`condition_not_met: true` is the resolution for a checkpoint whose declared `condition` evaluates false against the run's variable bag, and clears the gate without a decision. The server refuses it on a checkpoint carrying no `condition`. Never use it to clear a gate whose condition holds.

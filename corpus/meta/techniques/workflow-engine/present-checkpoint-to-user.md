@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Load the active checkpoint's details and present them to the user.
 
 ## Inputs
-
-### session_index
-
-`session_index` of the worker whose active checkpoint is being presented
 
 ### headless_mode
 
@@ -27,7 +23,8 @@ Load the active checkpoint's details and present them to the user.
 
 ### 1. Load Active Checkpoint
 
-- Call `present_checkpoint { session_index }`; it returns the active checkpoint's message and options. If this returns `no active checkpoint on session`, the worker has not yet yielded a checkpoint or the previous one was already resolved — re-check that you are presenting against the correct `{session_index}`.
+- Call `present_checkpoint { session_index }`; it returns the active checkpoint with its message and each option's label and description rendered from the variable bag, its effects and auto-advance declaration, and on each option whose effect names an exit a `consequence` carrying that `exit`, its `next_activity`, and `ends_activity` where selecting it ends the activity at the gate.
+  > If this returns `no active checkpoint on session`, no checkpoint has been yielded yet or the previous one was already resolved: re-check that you are presenting against the correct `{session_index}`.
 
 ### 2. Establish Gate Softness
 

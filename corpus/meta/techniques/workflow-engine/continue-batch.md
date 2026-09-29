@@ -9,14 +9,6 @@ Advance the session to the next activity and continue the worker already carryin
 
 ## Inputs
 
-### session_index
-
-`session_index` of the session being advanced.
-
-### activity_id
-
-Next activity for the worker to walk — the target of this advance.
-
 ### from_activity
 
 The activity this advance retires — the one `{exit_id}` and `{step_manifest}` belong to.
@@ -32,10 +24,6 @@ Server-side worker identity the batch is carried under — the identity the deli
 ### step_manifest
 
 One entry per step of the activity the worker just finished — `steps_completed` from the `activity_complete` envelope the preceding dispatch or continuation returned. Feeds the server's step-completion and technique-fetch validation.
-
-### state
-
-Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, …).
 
 ## Outputs
 
@@ -56,7 +44,7 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ### 2. Compose the continuation stub
 
-- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{state}` as substitutions, binding `activity_id` to the advanced activity and `agent_id` to `{worker_agent_id}`.
+- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{variable_bag}` as substitutions, binding `activity_id` to the advanced activity and `agent_id` to `{worker_agent_id}`.
 
 ### 3. Continue the worker
 

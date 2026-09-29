@@ -1,11 +1,29 @@
 ---
 metadata:
-  version: 6.14.0
+  version: 6.15.0
 ---
 
 ## Capability
 
 Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints. Every rule here is one both an orchestrator and a worker can act on; the boundaries a single role carries belong to that role's own technique.
+
+## Inputs
+
+### session_index
+
+The session every authenticated tool call names — the 6-character base32 index `start_session` returns.
+
+### activity_id
+
+*(optional)* The activity the operation acts on: the one it enters, carries or continues, or the one whose completion it records. Where a fan converges, the branches it retired. Unset for an operation that acts on no one activity.
+
+### variable_bag
+
+*(optional)* The session's current variable bag (`session_index`, `workflow_id`, `activity_id`, …) — what a stub's substitutions are completed from and what a step reference or an exit's `when` resolves against. Unset for an operation that reads neither.
+
+### checkpoint_reply
+
+*(optional)* The reply the server returned on clearing a checkpoint this context yielded. Present only on a continuation past that gate, and its presence is what distinguishes one from a first dispatch.
 
 ## Rules
 

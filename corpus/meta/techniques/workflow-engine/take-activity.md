@@ -9,14 +9,6 @@ Advance a session this context owns onto an activity and carry that activity her
 
 ## Inputs
 
-### session_index
-
-`session_index` of the session being advanced — one this context opened, which no other context holds.
-
-### activity_id
-
-Activity ID to enter.
-
 ### from_activity
 
 *(optional)* The activity this call retires — the one `{exit_id}` and `{step_manifest}` belong to. Unset where the session holds nothing to retire, which is the first entry of a walk.
@@ -33,10 +25,6 @@ Activity ID to enter.
 
 Canonical agent technique this context follows for the activity — default workflow-engine::activity-worker.
 
-### state
-
-Current variable state the activity's steps resolve their references against (`session_index`, `workflow_id`, `activity_id`, …).
-
 ## Outputs
 
 ### worker_result
@@ -52,7 +40,7 @@ The envelope the activity produced — one of two tagged result types: the `chec
 
 ### 2. Carry the activity
 
-- Follow `{agent_technique}` here — [activity-worker](./activity-worker.md) by default — with `{state}` supplying the bindings its steps resolve against: call `get_activity { session_index, context_tokens }`, execute the activity's steps, and finalise per [finalize-activity](./finalize-activity.md); hold what that produced as `{worker_result}`
+- Follow `{agent_technique}` here — [activity-worker](./activity-worker.md) by default — with `{variable_bag}` supplying the bindings its steps resolve against: call `get_activity { session_index, context_tokens }`, execute the activity's steps, and finalise per [finalize-activity](./finalize-activity.md); hold what that produced as `{worker_result}`
   > Delivery is scoped to this context's own identity, which one context legitimately holds for a session it owns (`agent-id-scopes-delivery`).
 
 ### 3. Account for the activity

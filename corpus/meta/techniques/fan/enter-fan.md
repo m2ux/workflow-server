@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ The exit that activity took. Required: an exit the graph fans has to say which d
 
 ## Outputs
 
-### branch_list
+### branch_activities
 
 The branches the destination opened, in the order the server gave them. The order every later pass over them follows.
 
@@ -48,5 +48,5 @@ The activity the branches converge on, as the barrier reported it — what the r
 
 ### 2. Open every branch with one call
 
-- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read `_meta.fan` as `{branch_list}` and `_meta.barrier.destination` as `{barrier_destination}`. One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen
+- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read `_meta.fan` as `{branch_activities}` and `_meta.barrier.destination` as `{barrier_destination}`. One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen
 

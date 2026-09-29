@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -9,7 +9,7 @@ Give every branch an identity and a stub, emit them all in one turn, and hand ba
 
 ## Inputs
 
-### branch_list
+### branch_activities
 
 The branches the fan opened, in the order the server gave them.
 
@@ -17,21 +17,21 @@ The branches the fan opened, in the order the server gave them.
 
 Canonical agent technique for each branch worker — default workflow-engine::activity-worker.
 
-### state
+### variable_bag
 
-Current variable state for stub substitution (`session_index`, `workflow_id`, …), which each branch's stub is completed from with its own activity and identity.
+The session's current variable bag (`session_index`, `workflow_id`, …), which each branch's stub is completed from with its own activity and identity.
 
 ## Outputs
 
 ### branch_envelopes
 
-What each branch returned, one per entry of `{branch_list}` and in that order.
+What each branch returned, one per entry of `{branch_activities}` and in that order.
 
 ## Protocol
 
 ### 1. Give each branch an identity and a stub
 
-- For each entry of `{branch_list}`, mint an identity per `one-identity-per-branch` and apply [compose-prompt](../workflow-engine/compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false`, and `{state}` as substitutions, adding that entry as `activity_id` and its own minted identity as `agent_id`. A minted identity holds nothing, so each branch takes its activity in full
+- For each entry of `{branch_activities}`, mint an identity per `one-identity-per-branch` and apply [compose-prompt](../workflow-engine/compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false`, and `{variable_bag}` as substitutions, adding that entry as `activity_id` and its own minted identity as `agent_id`. A minted identity holds nothing, so each branch takes its activity in full
 
 ### 2. Emit the batch in one turn
 

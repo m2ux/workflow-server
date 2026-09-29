@@ -9,21 +9,9 @@ Worker for a dispatched activity — executes bound steps, yields checkpoints, a
 
 ## Inputs
 
-### session_index
-
-Stable session index for every authenticated tool call.
-
 ### workflow_id
 
 Workflow the worker is executing an activity for.
-
-### activity_id
-
-Activity id the worker's current dispatch or continuation bound — must match the activity returned by `get_activity`.
-
-### checkpoint_reply
-
-*(optional)* The reply a checkpoint this context yielded received when the orchestrator resolved it. Present only on a continuation, and its presence is what distinguishes one from a first dispatch.
 
 ### agent_id
 
@@ -58,13 +46,13 @@ Worker agent identity for this dispatch.
 
 ### 5. Finalize the activity
 
-- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
+- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the steps this activity ran as `steps_completed`, the checkpoints it answered as `checkpoints_responded`, the artifacts it wrote as `artifacts_produced`, and the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
 
 ## Rules
 
 ### follow-bundled-rules
 
-Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically. Every rule in `agent-conduct` is one a worker can honour; the orchestrator's boundaries live in [orchestrator-conduct](../orchestrator-conduct.md) and are not a worker's to read.
+Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically. Every rule in `agent-conduct` is one a worker can honour; the orchestrator's boundaries are not a worker's to read.
 
 ### worker-control-plane-ban
 
@@ -74,7 +62,7 @@ A workflow this worker launches is a session of its own, with no other owner: dr
 
 ### one-activity-at-a-time-in-a-batch
 
-Return each activity's `activity_complete` envelope as it finishes per [finalize-activity](./finalize-activity.md) — a batch defers nothing to its end. An activity finished but not yet reported is work nothing outside this context knows about, so it is lost with the context. Reporting each one as it lands is what keeps a lost context to the cost of one activity.
+Return each activity's `activity_complete` envelope as it finishes per [finalize-activity](./finalize-activity.md) — a batch defers nothing to its end.
 
 ### agent-id-on-delivery-calls
 
@@ -82,7 +70,7 @@ Every `get_activity`, `get_technique` and `get_resource` call this worker makes 
 
 ### outlive-dispatched-children
 
-While a step of this activity holds work still running outside this context — an agent it dispatched, a task it armed a completion signal on — the activity is not finished, so stay live until every one of them has returned. A completion signal armed on that work is delivered to the context that armed it, so a context that has ended leaves the signal with nowhere to land and the result it carried unread.
+While a step of this activity holds work still running outside this context — an agent it dispatched, a task it armed a completion signal on — the activity is not finished, so stay live until every one of them has returned.
 
 ### final-message-is-an-envelope
 
@@ -98,4 +86,4 @@ A step's bound technique loads as that step is reached; the whole activity is ne
 
 ### batch-ends-where-the-server-says
 
-Each `get_activity` response closes with a `batch:` block reporting how many activities have been delivered to this context (`activities_delivered`), what it has been delivered in characters, and whether it may take another; `_meta.batch` carries the same reading. Where `bounded` is true the two limits ride alongside those counts, and the tally is read against them. Where it is false no limit governs this scope, and none is reported — a count standing higher than a limit that was never in force is a comparison the block declines to invite. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.
+Each `get_activity` response closes with a `batch:` block reporting how many activities have been delivered to this context (`activities_delivered`), what it has been delivered in characters, and whether it may take another; `_meta.batch` carries the same reading. Where `bounded` is true the two limits ride alongside those counts, and the tally is read against them. Where it is false no limit governs this scope, and none is reported. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.

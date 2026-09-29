@@ -86,24 +86,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/agent-conduct.md:34",
-      "op": "present-checkpoint-to-user",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/agent-conduct.md:34",
-      "op": "respond-checkpoint",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/agent-conduct.md:34",
-      "op": "yield-checkpoint",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/fan/enter-fan.md:46",
       "op": "git::commit-regular-files",
       "verdict": "fix-later",
@@ -376,12 +358,6 @@
     {
       "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:67",
       "op": "agent-conduct",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:67",
-      "op": "orchestrator-conduct",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

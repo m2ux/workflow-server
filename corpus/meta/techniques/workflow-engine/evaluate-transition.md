@@ -17,10 +17,6 @@ Just-completed activity definition (with `exits[]`)
 
 The destination each of the just-completed activity's exits leads to, keyed by exit id, exactly as the graph names it. A string is one activity or `__terminal__`. A list of members, or one activity together with the collection it runs over, is a fan. An exit absent from the map has no destination bound.
 
-### state
-
-Current variable state
-
 ### selected_exit
 
 Optional exit id a checkpoint option named, from its effect.
@@ -47,7 +43,7 @@ The exit id taken, passed to `next_activity` as `exit`. Unset where the activity
 
 ### 2. Evaluate Conditional Exits
 
-- Otherwise iterate `current_activity.exits[]` in array order, evaluating each `when` against the current `{state}`, and take the first whose `when` is true. Where more than one holds at the activity boundary, take the first in array order and log a warning. An exit with no `when` is not selected here — it is either the default or one only a checkpoint option names.
+- Otherwise iterate `{current_activity}.exits[]` in array order, evaluating each `when` against the current `{variable_bag}`, and take the first whose `when` is true. Where more than one holds at the activity boundary, take the first in array order and log a warning. An exit with no `when` is not selected here — it is either the default or one only a checkpoint option names.
 
 ### 3. Fall Back To Default
 
