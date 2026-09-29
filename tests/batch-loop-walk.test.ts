@@ -71,7 +71,7 @@ type Bag = Record<string, unknown>;
  * - `continue-batched-worker` → `workflow-engine::continue-batch`: advances the pointer, then returns
  *   an envelope and the identity now holding the activity — the held one, or a replacement it spawned.
  * - `enter-activity` → the run's `enter_activity` input: advances the pointer unless
- *   `activity_entered` says the session already stands on the activity, mints an identity named for
+ *   `stands_on_activity` says the session already stands on the activity, mints an identity named for
  *   that activity, and returns an envelope. Entering `__terminal__` completes the session: it returns
  *   the `workflow_complete` envelope and mints no identity.
  * - `enter-fan` → `fan::enter-fan`: one call opens every branch and reports the activity they
@@ -104,7 +104,7 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
       bag['worker_result'] = { result_type: 'workflow_complete' };
       return;
     }
-    if (!bag['activity_entered']) log.push('advance');
+    if (!bag['stands_on_activity']) log.push('advance');
     bag['worker_agent_id'] = `worker:${activity}`;
     bag['worker_result'] = next();
   },
@@ -314,6 +314,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     expect(ids.slice(0, loopAt + 1)).toEqual([
       'verify-preconditions',
       'prime-initial-activity',
+      'resume-standing-activity',
       'activity-cycle',
     ]);
     expect(def.steps.filter((s) => s.kind === 'loop')).toHaveLength(1);
@@ -502,7 +503,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // its commit follows the fan's with no advance between them.
     expect(result.log).toEqual(['advance', 'commit', 'advance', 'commit', 'commit', 'terminal']);
     expect(result.minted).toEqual(['worker:implementation-analysis', 'worker:gather']);
-    expect(result.bag['activity_entered']).toBe(false);
+    expect(result.bag['stands_on_activity']).toBe(false);
     expect(result.bag['current_activity']).toBeNull();
     expect(result.bag['worker_agent_id']).toBeNull();
   });
