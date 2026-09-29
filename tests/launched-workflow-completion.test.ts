@@ -159,7 +159,9 @@ describe('a launched workflow walked to its end (#656)', () => {
 
     // Walk the launched workflow: into its opening activity, then off the end.
     await call('next_activity', { session_index: childIndex, activity_id: initialActivity });
+    expect(body(await call('get_workflow_status', { session_index: childIndex }))['status']).toBe('active');
     await call('next_activity', { session_index: childIndex, activity_id: '__terminal__', from_activity: initialActivity });
+    expect(body(await call('get_workflow_status', { session_index: childIndex }))['status']).toBe('completed');
 
     const stored = readSession();
     const record = stored.triggeredWorkflows[0]!;

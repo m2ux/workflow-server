@@ -6,7 +6,7 @@ A **worker** carries out one activity, in the background, and cannot speak to th
 
 A **session** holds the pause and the recorded answer. The worker hands up a **block**, an empty marker, and stops. **Yielded** means the pause is new. **Replayed** means an answer is already there and the worker continues. An **answer key** names the activity and the checkpoint, so a replacement worker can replay. The [calls](api.md#workflow-navigation) record the pause, show it, answer it, and continue.
 
-A **gate** is a checkpoint placed before the steps its answer steers. An answer's **effect** writes a variable or names the activity's outcome. A **routine** declares one gate that several **sites** reuse. A **dispatch** sends a worker an activity, and a checkpoint is never that activity's first step. What a timer cannot prove is in [fidelity](fidelity.md).
+A **gate** is a checkpoint placed before the steps its answer steers. An answer's **effect** writes a variable or names the activity's outcome. A **routine** declares one gate that several **sites** reuse. A **dispatch** sends a worker an activity, and a guard reports a checkpoint placed as that activity's first step. What a timer cannot prove is in [fidelity](fidelity.md).
 
 ## Checkpoint Flow
 
@@ -109,7 +109,7 @@ A worker that meets a decision its activity never declared may yield one anyway,
 
 ### One Pause per Session
 
-A second pause is refused on a session that already has one, while a parent and a child each keep their own (Figure 5). Every session in the tree has that slot, and a replacement worker replays by the answer key (Figure 6).
+A second pause is refused on a session that already has one, while a parent and a child each keep their own (Figure 5). Every session in the tree has that slot, and a replacement worker replays by the answer key (Figure 6). An answer lasts one visit: entering an activity clears the answers its earlier visits recorded, so a revisit asks again.
 
 ```mermaid
 sequenceDiagram
@@ -228,7 +228,7 @@ classDiagram
 
 *Figure 10. Agent, the Session, and the Effects.*
 
-An effect is applied on its own terms. A variable effect is written into the session. An exit effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back, because recording the answer does not itself move the session. Where that exit is immediate, the activity's remaining steps do not run.
+An effect is applied on its own terms. A variable effect is written into the session. An exit effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back, because recording the answer does not itself move the session. Where that exit is immediate, the activity's remaining steps do not run: `resume_checkpoint`, and a replayed `yield_checkpoint`, hand the worker the exit with `ends_activity`.
 
 #### Reading the Question
 
@@ -303,7 +303,7 @@ Exactly one of the three may be supplied. Both timers run from the moment the pa
 
 #### Soft Gate and Dismissal
 
-Auto-advance needs both a default option and a declared wait. That pair is a soft gate. A gate that must wait for a person declares neither, and declaring one without the other is a defect.
+Auto-advance needs both a default option and a declared wait. That pair is a soft gate. A gate that must wait for a person declares neither, and a checkpoint declaring one without the other, or a default that names none of its options, excludes its activity from the load.
 
 Dismissal is only open to a checkpoint carrying a structured condition. One gated by an inline expression cannot be dismissed this way. The server checks that the condition field is present and cannot check whether it is true, so the evaluation is taken on trust and recorded.
 
@@ -325,7 +325,7 @@ sequenceDiagram
   alt The pause is still active
     Session-->>Worker: Hard error
   else The pause is cleared
-    Session-->>Worker: The recorded effects
+    Session-->>Worker: The answered checkpoint, its option, and the variables it set
   end
 ```
 
@@ -364,21 +364,23 @@ The user-facing agent wakes the orchestrator and passes the variable updates in 
 resume_checkpoint({ session_index })
 ```
 
-The server checks that the pause has been cleared and returns the recorded effects. Calling this while the pause is still active is a hard error: the answer has to exist before the worker moves.
+The server checks that the pause has been cleared and returns the checkpoint it answered, the option chosen, the variables that option set, and the exit it selected, if any. An exit carrying `ends_activity` ended the activity at the checkpoint: the worker runs none of the remaining steps and reports the ones it ran. Calling this while the pause is still active is a hard error: the answer has to exist before the worker moves.
 
 ## Declaring a Checkpoint
 
-One declaration is reused at several sites, then shown to the worker as an ordinary checkpoint (Figure 15). The step, the shared routine, and the sites that refer to it are the pieces (Figure 16). The step's fields are the [schema](../schemas/activity.schema.json#L428).
+One declaration is reused at several sites, then shown to the worker as an ordinary checkpoint (Figure 15). The step, the shared routine, and the sites that refer to it are the pieces (Figure 16). The step's fields are the [schema](../schemas/activity.schema.json#L344).
 
 ```mermaid
 sequenceDiagram
   participant Author
   participant Routine
   participant Site
+  participant Server
   participant Worker
   Author->>Routine: Declare the gate once
   Site->>Routine: Refer to it
-  Routine->>Worker: An ordinary checkpoint
+  Routine->>Server: Spliced into the referring activity at load
+  Server->>Worker: An ordinary checkpoint, in the delivered activity
 ```
 
 
@@ -432,7 +434,7 @@ steps:
             target_confirmed: false
 ```
 
-The fields of that declaration are the [schema](../schemas/activity.schema.json#L428).
+The fields of that declaration are the [schema](../schemas/activity.schema.json#L344).
 
 
 
@@ -499,20 +501,20 @@ Requirements come from conjuncts only. An alternative proves nothing about which
 
 ### Never the First Step
 
-A checkpoint is refused as the first step, and the decision sits in one of the other places (Figure 19). The activity and the dispatch would otherwise pay for a pause before any work (Figure 20).
+The checkpoint-entry guard reports a checkpoint placed as the first step, and the decision sits in one of the other places (Figure 19). The activity and the dispatch would otherwise pay for a pause before any work (Figure 20).
 
 ```mermaid
 sequenceDiagram
-  participant Dispatch
+  participant Guard
   participant Activity
-  Dispatch->>Activity: First step is a checkpoint
-  Activity-->>Dispatch: Refused
+  Guard->>Activity: Read the first materialised step
+  Activity-->>Guard: A checkpoint, reported
   Note over Activity: Put the decision at the previous activity's end, or before dispatch
 ```
 
 
 
-*Figure 19. A Checkpoint Is Refused as the First Step.*
+*Figure 19. A Checkpoint as the First Step Is Reported.*
 
 ```mermaid
 classDiagram

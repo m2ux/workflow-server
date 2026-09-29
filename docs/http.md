@@ -42,13 +42,13 @@ Compose alternative: [`docker-compose.yml` on the `docker` branch](https://githu
 ~/.local/share/workflow-server/stop.sh --name=workflow-server-trial
 ```
 
-The sidecar uses the same install binds (projects root, HMAC state) as the first instance. `--workflows-dir` selects the corpus for that container. Cursor's MCP URL is whatever `.mcp.json` names; point it at the printed URL to talk to the sidecar.
+The sidecar uses the same install binds (projects root, HMAC state) as the first instance. `--workflows-dir` selects the corpus for that container. Cursor reads its MCP URL from `.cursor/mcp.json`, which the workspace links to `.mcp.json`; point it at the printed URL to talk to the sidecar.
 
 ### Reload an experiment sidecar on a stable port
 
 `tests/scripts/reload-exp-sidecar.sh` stops one named container, compiles the engine checkout on the host, and starts it again on the same host port and corpus with that `dist` (and the engine `schemas`) bound read-only. The process is still `node dist/index.js` on the image's production `node_modules`. The image definition and the launcher come from the branch named by `--docker-branch`, which defaults to `docker`. The image rebuilds when `package.json`, `package-lock.json`, or that Dockerfile drifted, or when `--rebuild-image` is passed. An override that lacks `--dist-dir` is replaced by that branch's `start.sh` so the bind still lands. It refuses the install container name `workflow-server` and host port 3000.
 
-`--name` is the only required flag. Host port, corpus, engine checkout, image and projects root each default to what the named container records, running or exited, so reloading the pairing under test is `--name` alone and a sidecar a reboot left stopped reloads on the port it had; each is required when no container of that name exists. `--image` defaults to the image the named container records; when none exists it is `workflow-server:local`. `--build` defaults to the engine checkout the named container records; when none exists it is the checkout that contains the script. Pass a directory when naming a pairing whose engine lives in another worktree.
+`--name` is the only required flag. Host port, corpus, engine checkout, image and projects root each default to what the named container records, running or exited, so reloading the pairing under test is `--name` alone and a sidecar a reboot left stopped reloads on the port it had. When no container of that name exists, host port and corpus are required and the projects root is optional. `--image` defaults to the image the named container records; when none exists it is `workflow-server:local`. `--build` defaults to the engine checkout the named container records; when none exists it is the checkout that contains the script. Pass a directory when naming a pairing whose engine lives in another worktree.
 
 ```bash
 # First reload of a new experiment: name the pairing.
@@ -76,7 +76,7 @@ docker inspect workflow-server-exp --format '{{json .Config.Labels}}'
 curl -fsS http://127.0.0.1:32772/ready
 ```
 
-**Cite the pin, not the path.** A corpus is usually served from a worktree under `.worktrees/`, which exists to be removed — a host path names where the tree stood on one machine at one time, and names nothing once the worktree is gone. `corpus.pin` is a commit, and stays resolvable from the repository for as long as the branch holding it does, so it is the handle a record of a run should carry. Whenever a mounted tree stops holding a workflow, readiness reports `corpusServes: false` instead of the server answering every request with a miss.
+**Cite the pin, not the path.** A corpus is usually served from a worktree under `.worktrees/`, which exists to be removed — a host path names where the tree stood on one machine at one time, and names nothing once the worktree is gone. The container label `workflow-server.corpus.pin` is a commit, and stays resolvable from the repository for as long as the branch holding it does, so it is the handle a record of a run should carry. Whenever a mounted tree stops holding a workflow, readiness reports `corpusServes: false`, and tool calls against it miss.
 
 **Keeping a walk out of live planning.** Planning resolves at `<projects-root>/<repo>/.engineering/artifacts/planning`, so a sidecar sharing the install projects root writes a dated folder beside real work on every run. `--projects-root=DIR` gives an experiment a root of its own, holding its own checkout of the target repo, and the whole run can then be thrown away.
 
@@ -93,9 +93,9 @@ curl -fsS http://127.0.0.1:32772/ready
 **Expected cues**
 
 - `/health` → JSON with `"status":"ok"` (or equivalent ok payload).
-- `/ready` → ready payload with **`sessionKeyWritable: true`** and **`corpusServes: true`**, beside a `corpus` object naming the mounted tree and counting the workflows in it.
+- `/ready` → ready payload whose `checks` carry **`sessionKeyWritable: true`** and **`corpusServes: true`**, beside a `corpus` object naming the mounted tree and counting the workflows in it.
 
-A green `/health` without `sessionKeyWritable: true` means sessions cannot start. `corpusServes: false` means the mounted tree holds no workflow, so every tool call misses — check the corpus bind against `corpus.dir`.
+A green `/health` without `sessionKeyWritable: true` means sessions cannot start. `corpusServes: false` means the mounted tree holds no workflow, so every tool call misses — check the corpus bind against `corpus.hostDir`, the host tree behind the mount.
 
 Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints when the host port is 0). Routes: [api.md](api.md#http-endpoints).
 
@@ -104,8 +104,8 @@ Adjust host/port if you changed `--host-port` (or read the URL `start.sh` prints
 | Symptom | What to check |
 |---------|----------------|
 | `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [fidelity](fidelity.md) |
-| `corpusServes` is false | The corpus bind — compare `corpus.dir` in the payload with `--workflows-dir` |
-| OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
+| `corpusServes` is false | The corpus bind — compare `corpus.hostDir` in the payload with `--workflows-dir` |
+| OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth: an unserved route, such as an OAuth discovery probe, answers 404, and a `/mcp` request carrying no session that is not an initialize request answers 400 |
 | Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |
 
-Shared install sequence (deploy, checkout, Cursor workspace, update workflows): [setup.md](setup.md).
+Shared setup sequence (choose a transport, initialise the workspace, verify): [setup.md](setup.md).

@@ -64,8 +64,14 @@ import { META_WORKFLOW_ID } from './corpus-index.js';
 
 export { META_WORKFLOW_ID };
 
-/** Sync routine lookup by workflow id: routine name → definition. Undefined when absent. */
-export type RoutineLookup = (workflowId: string) => ReadonlyMap<string, Routine> | undefined;
+/**
+ * Sync routine lookup by workflow id: routine name → definition. Undefined when absent. `invalid`,
+ * on a lookup read off disk, names a routine file that failed to load, so a reference to it reports
+ * that failure at the referring site; a file nothing refers to affects nothing.
+ */
+export type RoutineLookup = ((workflowId: string) => ReadonlyMap<string, Routine> | undefined) & {
+  invalid?: (workflowId: string, name: string) => string | undefined;
+};
 
 export class RoutineResolutionError extends Error {
   constructor(message: string) {
@@ -123,6 +129,12 @@ export function resolveRoutine(
   for (const workflowId of workflowIds) {
     const routine = lookup(workflowId)?.get(name);
     if (routine !== undefined) return routine;
+    // A file of that name that failed to load still shadows the next scope's: falling through
+    // would run a different routine under the name the author wrote.
+    const failure = lookup.invalid?.(workflowId, name);
+    if (failure !== undefined) {
+      throw new RoutineResolutionError(`${context}: routine '${ref}' failed to load — ${failure}`);
+    }
   }
   throw new RoutineResolutionError(
     `${context}: unresolved routine '${ref}' — no routines/${name}.yaml in `
@@ -678,7 +690,7 @@ function operationArgument(
     throw new RoutineResolutionError(
       `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds no argument — `
       + 'bind it to a technique reference under \'with\', or give the declaration a default. A technique parameter takes '
-      + 'no value from the host, a bag holding values rather tha techniques.',
+      + 'no value from the host, a bag holding values rather than techniques.',
     );
   }
   if (typeof argument !== 'string' || argument.includes('{')) {

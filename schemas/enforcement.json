@@ -18,7 +18,7 @@
     },
     "initialActivity": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "rules.activity": {
       "owner": "Engine",
@@ -50,7 +50,7 @@
     },
     "variables": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "variables[].defaultValue": {
       "owner": "Engine",
@@ -62,11 +62,11 @@
     },
     "variables[].type": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "variables[].values": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "version": {
       "owner": "Engine",
@@ -88,7 +88,7 @@
     },
     "exits": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "id": {
       "owner": "Engine",
@@ -156,11 +156,11 @@
     },
     "steps[].options[].effect.exit": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "steps[].options[].effect.setVariable": {
       "owner": "Engine",
-      "strictness": "enforced"
+      "strictness": "advisory"
     },
     "steps[].over": {
       "owner": "Agent",
@@ -236,11 +236,11 @@
     },
     "variables.writes[].type": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "variables.writes[].values": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     }
   },
   "routine": {
@@ -290,11 +290,11 @@
     },
     "steps[].options[].effect.exit": {
       "owner": "Engine",
-      "strictness": "advisory"
+      "strictness": "enforced"
     },
     "steps[].options[].effect.setVariable": {
       "owner": "Engine",
-      "strictness": "enforced"
+      "strictness": "advisory"
     },
     "steps[].over": {
       "owner": "Agent",

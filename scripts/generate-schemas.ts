@@ -3,12 +3,14 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { WorkflowSchema } from '../src/schema/workflow.schema.js';
+import { WorkflowFileSchema } from '../src/schema/workflow.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
 import { SessionFileSchema } from '../src/schema/session.schema.js';
 import { ActivitySchema } from '../src/schema/activity.schema.js';
 import { RoutineSchema } from '../src/schema/routine.schema.js';
 import { TechniqueSchema } from '../src/schema/technique.schema.js';
+import { WhenExpressionSchema } from '../src/schema/when-expression.js';
+import { TechniqueReferenceSchema } from '../src/schema/common.js';
 import { renderEnforcement } from '../src/schema/enforcement.js';
 
 /**
@@ -31,22 +33,36 @@ interface GeneratedSchema {
    * schema `{}` (accept-anything), so any schema embedding ConditionSchema must use `root`.
    */
   refStrategy: 'none' | 'root';
+  /** Shared schemas emitted once under `definitions` and referenced from every site that uses them. */
+  definitions?: Record<string, Parameters<typeof zodToJsonSchema>[0]>;
 }
 
+/**
+ * The grammars a schema's fields share — the technique reference, and the gate languages, the `when`
+ * dialect and structured conditions — each defined once in every schema that carries it, so a field
+ * references the definition rather than the first field that happened to carry one.
+ */
+const STEP_DEFINITIONS = { whenExpression: WhenExpressionSchema, condition: ConditionSchema, techniqueReference: TechniqueReferenceSchema };
+const WORKFLOW_DEFINITIONS = { techniqueReference: TechniqueReferenceSchema };
+
 export const GENERATED_SCHEMAS: GeneratedSchema[] = [
-  { name: 'workflow', schema: WorkflowSchema, description: 'Workflow definition schema', refStrategy: 'root' },
+  { name: 'workflow', schema: WorkflowFileSchema, description: 'Workflow definition file; its activities are the files in its activities/ folder and the activities it borrows.', refStrategy: 'root', definitions: WORKFLOW_DEFINITIONS },
   { name: 'condition', schema: ConditionSchema, description: 'Condition expression schema', refStrategy: 'root' },
-  { name: 'session-file', schema: SessionFileSchema, description: 'Server-managed session file (session.json) — canonical session state owned by the workflow server.', refStrategy: 'root' },
-  { name: 'activity', schema: ActivitySchema, description: 'Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop | routine).', refStrategy: 'root' },
-  { name: 'routine', schema: RoutineSchema, description: 'Routine definition schema — a named run of steps declaring its inputs, outputs and internals, materialised into the activity that refers to it.', refStrategy: 'root' },
-  { name: 'technique', schema: TechniqueSchema, description: 'Technique definition schema — a capability file parsed from markdown into this shape.', refStrategy: 'root' },
+  { name: 'session-file', schema: SessionFileSchema, description: 'Session state recorded in session.json.', refStrategy: 'root' },
+  { name: 'activity', schema: ActivitySchema, description: 'Activity definition with ordered steps.', refStrategy: 'root', definitions: STEP_DEFINITIONS },
+  { name: 'routine', schema: RoutineSchema, description: 'Reusable steps with declared inputs, outputs, and internals.', refStrategy: 'root', definitions: STEP_DEFINITIONS },
+  { name: 'technique', schema: TechniqueSchema, description: 'Technique capability with inputs, protocol, rules, and outputs.', refStrategy: 'root' },
 ];
 
-/** One schema's file content, byte for byte as it is written to disk. */
+/**
+ * One schema's file content, byte for byte as it is written to disk. The schema's own definition
+ * leads `definitions`, ahead of the shared ones, so it opens at a fixed line whatever is shared.
+ */
 export function renderSchema(entry: GeneratedSchema): string {
-  const json = zodToJsonSchema(entry.schema, { name: entry.name, $refStrategy: entry.refStrategy });
+  const json = zodToJsonSchema(entry.schema, { name: entry.name, $refStrategy: entry.refStrategy, definitions: entry.definitions ?? {} }) as { definitions?: Record<string, unknown> };
+  const definitions = json.definitions && { [entry.name]: json.definitions[entry.name], ...json.definitions };
   return JSON.stringify(
-    { $schema: 'https://json-schema.org/draft/2020-12/schema', title: entry.name, description: entry.description, ...json },
+    { $schema: 'https://json-schema.org/draft/2020-12/schema', title: entry.name, description: entry.description, ...json, ...(definitions && { definitions }) },
     null,
     2,
   ) + '\n';

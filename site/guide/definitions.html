@@ -80,6 +80,7 @@
         <tr><td><a href="#checkpoint"><strong>Checkpoint</strong></a></td><td>A deliberate pause for your decision</td></tr>
         <tr><td><a href="#discover"><strong>Discover</strong></a></td><td>Bootstrap tool that returns the startup procedure</td></tr>
         <tr><td><a href="#dispatch"><strong>Dispatch</strong></a></td><td>How orchestrators spawn and coordinate workers</td></tr>
+        <tr><td><a href="#exit"><strong>Exit</strong></a></td><td>A named outcome an activity ends with; the graph says where it leads</td></tr>
         <tr><td><a href="#fidelity"><strong>Fidelity</strong></a></td><td>Server enforcement that keeps agents on the defined path</td></tr>
         <tr><td><a href="#goal"><strong>Goal</strong></a></td><td>What you ask for in natural language</td></tr>
         <tr><td><a href="#loop"><strong>Loop</strong></a></td><td>A step that repeats nested steps while a condition holds</td></tr>
@@ -94,9 +95,8 @@
         <tr><td><a href="#step"><strong>Step</strong></a></td><td>One ordered unit of work inside an activity</td></tr>
         <tr><td><a href="#technique"><strong>Technique</strong></a></td><td>Markdown definition of one capability</td></tr>
         <tr><td><a href="#tool"><strong>Tool</strong></a></td><td>An MCP operation the agent invokes through the server</td></tr>
-        <tr><td><a href="#transition"><strong>Transition</strong></a></td><td>Rule for which activity runs next</td></tr>
         <tr><td><a href="#variable"><strong>Variable</strong></a></td><td>Named value in session state that steps read and write</td></tr>
-        <tr><td><a href="#work-package"><strong>Work package</strong></a></td><td>The bundled workflow for one unit of work</td></tr>
+        <tr><td><a href="#work-package"><strong>Work package</strong></a></td><td>One unit of work a run plans and delivers</td></tr>
         <tr><td><a href="#worker"><strong>Worker</strong></a></td><td>Background agent that executes activity steps</td></tr>
         <tr><td><a href="#workflow"><strong>Workflow</strong></a></td><td>The overall process from start to finish</td></tr>
         <tr><td><a href="#workflow-server"><strong>Workflow server</strong></a></td><td>The MCP server that enforces workflows and owns session state</td></tr>
@@ -110,7 +110,7 @@
   <p class="prose">An <strong>action</strong> is a step kind with inline instructions — validate something, emit a message, set a flag — rather than delegating to a technique file. The agent executes the listed actions against current variables; the server records progress but does not interpret the action verbs themselves. See <a href="../specs/workflows.html#step-kinds">step kinds</a>.</p>
 
   <h3 id="activity">Activity</h3>
-  <p class="prose">An <strong>activity</strong> is one phase of a workflow: planning, implementation, review, validation, and so on. Each activity is a YAML file listing ordered steps and optional transitions to other activities. The orchestrator moves between activities as the run progresses; the server tracks which activity is current in <code>session.json</code>. See <a href="../specs/workflows.html#activities">Activities</a>.</p>
+  <p class="prose">An <strong>activity</strong> is one phase of a workflow: planning, implementation, review, validation, and so on. Each activity is a YAML file listing ordered steps and the named exits it may take; the workflow graph binds each exit to a destination. The orchestrator moves between activities as the run progresses; the server tracks which activity is current in <code>session.json</code>. See <a href="../specs/workflows.html#activities">Activities</a>.</p>
 
   <h3 id="artifact">Artifact</h3>
   <p class="prose">An <strong>artifact</strong> is a planning output the workflow stores in your session folder — design notes, compliance reviews, implementation plans — separate from your application source code. Artifacts give later activities and checkpoints something concrete to reference. See <a href="../specs/state-management.html#planning-folder">the planning folder</a>.</p>
@@ -127,8 +127,11 @@
   <h3 id="dispatch">Dispatch</h3>
   <p class="prose"><strong>Dispatch</strong> is how the server hands work to the right agent layer: a user-facing orchestrator manages state and checkpoints, while ephemeral workers execute activity steps in the background and bubble pauses back up when they need your input. See <a href="../specs/dispatch.html">Dispatch</a>.</p>
 
+  <h3 id="exit">Exit</h3>
+  <p class="prose">An <strong>exit</strong> is a named outcome an activity can end with, and the workflow's graph binds each exit to the activity it leads to. Exit conditions read variables and checkpoint outcomes from session state; the worker takes the first exit whose condition holds, or the default, and the server enters the destination the graph binds to it. See <a href="../specs/state-management.html">State</a>.</p>
+
   <h3 id="fidelity">Fidelity</h3>
-  <p class="prose"><strong>Fidelity</strong> is the server's job of enforcing the workflow definition instead of trusting the agent to follow it voluntarily — validating transitions, gating advancement at checkpoints, and keeping session state on disk as the single source of truth. See <a href="../specs/workflow-fidelity.html">Fidelity</a>.</p>
+  <p class="prose"><strong>Fidelity</strong> is the server's job of enforcing the workflow definition instead of trusting the agent to follow it voluntarily — validating the exits agents report, gating advancement at checkpoints, and keeping session state on disk as the single source of truth. See <a href="../specs/workflow-fidelity.html">Fidelity</a>.</p>
 
   <h3 id="goal">Goal</h3>
   <p class="prose">A <strong>goal</strong> is what you state in natural language — implement issue #42, start a work package for authentication — and the agent matches to a workflow. You never name tools or session tokens; the server and bootstrap procedure handle routing once the goal is understood.</p>
@@ -137,7 +140,7 @@
   <p class="prose">A <strong>loop</strong> is a step kind that repeats a nested list of steps — once per item of a collection it walks, or for as long as its <code>continueWhile</code> test holds. Loops let activities revisit work — retry a validation, iterate on a plan — without duplicating step definitions. See <a href="../specs/workflows.html#step-kinds">step kinds</a>.</p>
 
   <h3 id="manifest">Manifest</h3>
-  <p class="prose">The <strong>manifest</strong> is the <code>workflow.yaml</code> file at the root of a workflow directory. It declares the workflow's identity, variables, activity list, initial activity, and orchestrator-level techniques and rules — the map the server reads when a session starts. See <a href="../specs/workflows.html#workflows">Workflows</a>.</p>
+  <p class="prose">The <strong>manifest</strong> is the <code>workflow.yaml</code> file at the root of a workflow directory. It declares the workflow's identity, variables, borrowed activities, the graph, the initial activity, and orchestrator-level techniques and rules; the workflow's own activities are the files in <code>activities/</code> — the map the server reads when a session starts. See <a href="../specs/workflows.html#workflows">Workflows</a>.</p>
 
   <h3 id="mcp">MCP</h3>
   <p class="prose"><strong>MCP</strong> (Model Context Protocol) is the wire format your IDE uses to talk to external tools. The workflow-server registers as an MCP server; your agent calls its tools through the client's MCP configuration. See <a href="https://modelcontextprotocol.io/">modelcontextprotocol.io</a> and <a href="./getting-started.html#configure">Getting started</a>.</p>
@@ -146,9 +149,9 @@
   <p class="prose">An <strong>orchestrator</strong> is the agent layer that owns workflow navigation — calling <code>next_activity</code>, presenting checkpoints to you, and spawning workers for individual activities. In a typical run you interact with the top-level orchestrator; background workers stay out of your chat. See <a href="../specs/dispatch.html">Dispatch</a>.</p>
 
   <h3 id="planning-folder">Planning folder</h3>
-  <p class="prose">A <strong>planning folder</strong> is the per-session directory under the engineering root where the server writes <code>session.json</code>, artifacts, and traces — typically <code>artifacts/planning/&lt;slug&gt;/</code> on an engineering-branch checkout, or <code>.engineering/artifacts/planning/&lt;slug&gt;/</code> in legacy single-root mode. Because state lives on disk under the install layout, sessions survive IDE restarts and can be resumed across conversations.</p>
+  <p class="prose">A <strong>planning folder</strong> is the per-session directory under the engineering root that holds the server's <code>session.json</code> and the artifacts the run produces — typically <code>artifacts/planning/&lt;slug&gt;/</code> on an engineering-branch checkout, or <code>.engineering/artifacts/planning/&lt;slug&gt;/</code> in legacy single-root mode. Because state lives on disk under the install layout, sessions survive IDE restarts and can be resumed across conversations.</p>
   <h3 id="engineering-root">Engineering root</h3>
-  <p class="prose">The <strong>engineering root</strong> is where planning and session files live (<code>ServerConfig.engineeringDir</code>). Under the projects multi-root it is <code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.engineering/</code> (basename checkout you manage). Storage patterns: <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md">engineering-storage.md</a>.</p>
+  <p class="prose">The <strong>engineering root</strong> is where planning and session files live (<code>ServerConfig.engineeringDir</code>). Under the projects multi-root it is <code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.engineering/</code> (basename checkout you manage). Setup: the <a href="https://github.com/m2ux/workflow-server/blob/workspace/README.md">workspace README</a>.</p>
 
   <h3 id="resource">Resource</h3>
   <p class="prose">A <strong>resource</strong> is reference material — extra markdown the server can attach when a technique links to it. Resources load lazily with <code>get_resource</code> only when needed, so the agent's context stays focused on the step in front of it. See <a href="../specs/workflows.html#resources">Resources</a> and <a href="../specs/resource-resolution.html">Resolution</a>.</p>
@@ -163,7 +166,7 @@
   <p class="prose">The <strong>session index</strong> is the short token returned by <code>start_session</code> that identifies which planning folder a tool call belongs to. Agents pass it on later workflow-server calls so the server can load the right <code>session.json</code> without you copying paths or IDs. See <a href="../api/tools.html#start_session">start_session</a>.</p>
 
   <h3 id="step">Step</h3>
-  <p class="prose">A <strong>step</strong> is one ordered unit of work inside an activity. Steps run in file order unless a loop or transition sends execution elsewhere; each step has a <em>kind</em> — <a href="#technique">technique</a>, <a href="#action">action</a>, <a href="#checkpoint">checkpoint</a>, or <a href="#loop">loop</a> — that tells the agent what to do. See <a href="../specs/workflows.html#step-kinds">step kinds</a>.</p>
+  <p class="prose">A <strong>step</strong> is one ordered unit of work inside an activity. Steps run in file order unless a loop repeats them or an immediate exit chosen at a checkpoint ends the sequence; each step has a <em>kind</em> — <a href="#technique">technique</a>, <a href="#action">action</a>, <a href="#checkpoint">checkpoint</a>, <a href="#loop">loop</a>, or routine, a shared run of steps the server splices in — that tells the agent what to do. See <a href="../specs/workflows.html#step-kinds">step kinds</a>.</p>
 
   <h3 id="technique">Technique</h3>
   <p class="prose">A <strong>technique</strong> is a markdown file that defines one capability: what it does, what inputs it needs, what outputs it produces, and the protocol steps to follow. Activity steps bind techniques by <code>::</code> path; the agent fetches each one just-in-time with <code>get_technique</code> rather than reading repository files directly. See <a href="../specs/workflows.html#techniques">Techniques</a>.</p>
@@ -171,14 +174,11 @@
   <h3 id="tool">Tool</h3>
   <p class="prose">A <strong>tool</strong> is an MCP operation exposed by the workflow-server — <code>discover</code>, <code>start_session</code>, <code>get_activity</code>, <code>yield_checkpoint</code>, and others. The agent invokes tools; the server validates each call against the workflow definition and updates session state. You do not call these yourself. See <a href="../api/tools.html">Tool reference</a>.</p>
 
-  <h3 id="transition">Transition</h3>
-  <p class="prose">A <strong>transition</strong> is a rule that decides which activity runs next when the current one finishes. Transitions read variables and checkpoint outcomes from session state; the server evaluates them deterministically rather than letting the agent guess. See <a href="../specs/state-management.html">State</a>.</p>
-
   <h3 id="variable">Variable</h3>
-  <p class="prose">A <strong>variable</strong> is a named slot in session state — <code>target_path</code>, <code>issue_number</code>, flags set by checkpoint choices — that steps and transitions read and write. The manifest seeds defaults at session start; techniques and checkpoints update the bag as the run proceeds. See <a href="../specs/workflows.html#binding">Variables and binding</a>.</p>
+  <p class="prose">A <strong>variable</strong> is a named slot in session state — <code>output_dir</code>, <code>ticket_id</code>, flags set by checkpoint choices — that steps and exit conditions read, and steps write. At session start the server seeds the manifest's declared defaults plus <code>user_request</code> and repository facts; checkpoint effects and the worker's reported <code>variables_changed</code> then update the bag as the run proceeds. See <a href="../specs/workflows.html#binding">Variables and binding</a>.</p>
 
   <h3 id="work-package">Work package</h3>
-  <p class="prose">A <strong>work package</strong> is the bundled <code>work-package</code> workflow for planning and implementing one unit of work — a feature, an issue, a remediation. You start or resume it in natural language; the server handles session creation, activity navigation, and checkpoints along the way. See <a href="./getting-started.html#run">Run and resume</a>.</p>
+  <p class="prose">A <strong>work package</strong> is one unit of work — a feature, an issue, a remediation — that a workflow plans and delivers. You start or resume it in natural language; the server handles session creation, activity navigation, and checkpoints along the way. See <a href="./getting-started.html#run">Run and resume</a>.</p>
 
   <h3 id="worker">Worker</h3>
   <p class="prose">A <strong>worker</strong> is a background agent spawned to execute the steps inside one activity. Workers call techniques and yield checkpoints; they do not prompt you directly — pauses bubble up to the orchestrator that faces you. See <a href="../specs/dispatch.html">Dispatch</a>.</p>

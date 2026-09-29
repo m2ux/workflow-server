@@ -2,7 +2,7 @@
 
 One agent cannot talk to a person, track a long run, and write the code, so the work is split into three roles. The **user-facing agent** is the only one that talks to the person. It starts an **orchestrator**, which tracks one workflow, and the orchestrator starts a **worker** to carry out one **activity**, a single phase of that workflow. A **dispatch** is one such handing-on. A **session** is one run; every call names it with a short **session index**, never a token, and the notes of the run live in a **planning folder**. Starting a workflow opens a **child session** inside the one already open.
 
-A **batch** keeps one worker, and so one **context** — the working memory that agent holds — across several activities. Starting one new worker, and a new context, for each item of a list is a **fan**. A **gate** is a pause for a person. The **host** is the program the agents run in; when it can start a background agent, a **sub-agent**, the chain is three agents, and when it cannot, one agent takes each role in turn. The [calls](api.md#session) that open a child run and ask where it stands are in the tool catalog. Where the session itself is kept is [state](state.md#persistence).
+A **batch** keeps one worker, and so one **context** — the working memory that agent holds — across several activities. Starting one new worker, and a new context, for each of several branches is a **fan**. A **gate** is a pause for a person. The **host** is the program the agents run in; when it can start a background agent, a **sub-agent**, the chain is three agents, and when it cannot, one agent takes each role in turn. The [calls](api.md#session) that open a child run and ask where it stands are in the tool catalog. Where the session itself is kept is [state](state.md#persistence).
 
 ## Roles
 
@@ -150,20 +150,23 @@ classDiagram
 
 ### Fanning an Exit
 
-A destination may name several branches, one worker for each item of a list the activity before it wrote. An empty list is not a fan. They start together in one turn, and the run meets again only when every branch has returned (Figure 9). The exit, the list, the branches, and the meeting point are one picture (Figure 10). How many branches may open is in [configuration](configuration.md#delivery-budgets).
+A destination may name several branches, one worker each: a list of activities, or one activity for each item of a list the activity before it wrote. An empty list is refused, so an exit that may have nothing to fan routes past it with a `when` predicate. They start together in one turn, and the run meets again only when every branch has returned (Figure 9). The exit, the list, the branches, and the meeting point are one picture (Figure 10). How many branches may open is in [configuration](configuration.md#delivery-budgets).
 
 ```mermaid
 sequenceDiagram
   participant Orchestrator
-  participant List
+  participant Server
   participant BranchA as Branch
   participant BranchB as Branch
-  Orchestrator->>List: Read the items written earlier
-  Orchestrator->>BranchA: One worker for an item
-  Orchestrator->>BranchB: One worker for an item
+  Orchestrator->>Server: next_activity to the fanning destination
+  Server->>Server: Read the items written earlier, one branch each
+  Server-->>Orchestrator: The branches still outstanding
+  Orchestrator->>BranchA: One worker for a branch
+  Orchestrator->>BranchB: One worker for a branch
   BranchA-->>Orchestrator: Return
   BranchB-->>Orchestrator: Return
-  Orchestrator->>Orchestrator: Meet, once every branch is back
+  Orchestrator->>Server: next_activity from each branch as it returns
+  Server->>Server: Enter the meeting point once the last branch is back
 ```
 
 *Figure 9. One Worker per List Item, Meeting When All Return.*
@@ -226,14 +229,14 @@ classDiagram
 
 ### Polling a Dispatched Workflow
 
-The user-facing agent can ask where a child run stands without waking it (Figure 13). The answer is the session's place: going, waiting on a person, or finished (Figure 14).
+The user-facing agent can ask where a child run stands without waking it (Figure 13). The answer is the session's place: going, waiting on a person, finished, or aborted (Figure 14).
 
 ```mermaid
 sequenceDiagram
   participant UserFacing as User-facing agent
   participant Server
   UserFacing->>Server: Ask where the child stands
-  Server-->>UserFacing: Going, waiting, or finished
+  Server-->>UserFacing: Going, waiting, finished, or aborted
 ```
 
 *Figure 13. Ask Where a Child Run Stands.*
@@ -242,7 +245,7 @@ sequenceDiagram
 classDiagram
   class ChildRun
   class Status {
-    going, waiting, or finished
+    going, waiting, finished, or aborted
   }
   ChildRun --> Status : reports
 ```

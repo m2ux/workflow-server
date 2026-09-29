@@ -92,6 +92,8 @@ export class SessionStoreError extends Error {
       | 'NOT_FOUND'
       | 'COLLISION'
       | 'SEAL_MISMATCH'
+      | 'SESSION_INVALID'
+      | 'SESSION_OUTDATED'
       | 'FOLDER_OCCUPIED'
       | 'INVALID_INDEX'
       | 'STALE_WRITE'
@@ -347,7 +349,7 @@ export async function readSessionFile(
     const msg = err instanceof Error ? err.message : String(err);
     throw new SessionStoreError(
       `session.json in ${folderAbsPath} is not valid JSON: ${msg}`,
-      'SEAL_MISMATCH',
+      'SESSION_INVALID',
       { folder: folderAbsPath },
     );
   }
@@ -487,8 +489,9 @@ export async function writeSeal(
 /**
  * Verify that `.session-token` in `folderAbsPath` is the HMAC of the exact
  * bytes currently in `session.json`. Returns the parsed state on success;
- * throws `SessionStoreError(SEAL_MISMATCH)` on any drift (hand-edit,
- * whitespace change, torn write).
+ * throws `SessionStoreError(SEAL_MISMATCH)` when the seal is missing or the
+ * bytes drifted from it (hand-edit, whitespace change, a write torn between
+ * the two files). Bytes that are not JSON raise `SESSION_INVALID` first.
  *
  * The comparison uses `timingSafeEqual` over the hex strings; the seal is
  * not secret per se, but a constant-time check costs nothing and keeps the
@@ -569,6 +572,7 @@ async function findSessionsInEngineeringRoot(
   engineeringDir: string,
   sessionIndex: string,
   planningRelativeDir?: string,
+  unreadable: string[] = [],
 ): Promise<SessionLocation[]> {
   const root = planningRoot(engineeringDir, planningRelativeDir);
   let topEntries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
@@ -621,8 +625,8 @@ async function findSessionsInEngineeringRoot(
             matches.push({ folder: folderPath, jsonPath: [] });
           }
           walkEmbedded(state, folderPath, []);
-        } catch {
-          /* keep recursing */
+        } catch (err: unknown) {
+          if (err instanceof SessionStoreError && err.code === 'SESSION_INVALID') unreadable.push(folderPath);
         }
       } catch {
         continue;
@@ -644,8 +648,8 @@ async function findSessionsInEngineeringRoot(
           matches.push({ folder: folderPath, jsonPath: [] });
         }
         walkEmbedded(state, folderPath, []);
-      } catch {
-        /* no session.json at this level */
+      } catch (err: unknown) {
+        if (err instanceof SessionStoreError && err.code === 'SESSION_INVALID') unreadable.push(folderPath);
       }
     } catch {
       continue;
@@ -687,16 +691,22 @@ export async function resolveSessionLocation(
     : [workspaceDir];
   const planningRel = options?.planningRelativeDir;
   const matches: SessionLocation[] = [];
+  // A folder whose session.json is not JSON cannot be matched against the index, so a not-found
+  // names it: the session sought may be the one that file held.
+  const unreadable: string[] = [];
   for (const eng of roots) {
-    const found = await findSessionsInEngineeringRoot(eng, sessionIndex, planningRel);
+    const found = await findSessionsInEngineeringRoot(eng, sessionIndex, planningRel, unreadable);
     matches.push(...found);
   }
 
   if (matches.length === 0) {
     throw new SessionStoreError(
-      `resolveSessionLocation: no session under ${roots.join(', ')} has session_index '${sessionIndex}'`,
+      `resolveSessionLocation: no session under ${roots.join(', ')} has session_index '${sessionIndex}'`
+      + (unreadable.length > 0
+        ? `; ${unreadable.length === 1 ? 'one planning folder holds' : `${unreadable.length} planning folders hold`} a session.json that is not JSON and could not be checked: ${unreadable.join(', ')}`
+        : ''),
       'NOT_FOUND',
-      { workspaceDir, roots, sessionIndex },
+      { workspaceDir, roots, sessionIndex, ...(unreadable.length > 0 ? { unreadable } : {}) },
     );
   }
   if (matches.length > 1) {

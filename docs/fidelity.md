@@ -6,7 +6,7 @@ The server keeps the **session**, the run, in the **planning folder**, where the
 
 A **seal** is the mark the server puts on the state file, bound to the server's **signing key**. A **read** is the server opening that file. The seal is checked on every read, so a file changed outside the server fails the next one.
 
-A **trace** is the server's own record of calls, written on every call. At a **handover**, when one activity is left for the next, the layers between the seal and the trace run (Figure 2). The seal is the foundation, and the trace sits on top (Figure 1). A warning left unread stays in the trace, so a drifting agent remains visible afterwards.
+A **trace** is the server's own record of calls made against a session. At a **handover**, when one activity is left for the next, the layers between the seal and the trace run (Figure 2). The seal is the foundation, and the trace sits on top (Figure 1). A warning left unread stays in the trace, so a drifting agent remains visible afterwards.
 
 A **worker** carries out one activity. A **checkpoint** is a pause for a person, and while it is open the worker cannot go on. An **exit** is the outcome named when an activity is left. The **graph** says which exit leads to which activity.
 
@@ -15,7 +15,7 @@ A **step manifest** lists the steps the agent says it completed. An **activity m
 ```mermaid
 block-beta
 columns 1
-Trace["Trace. Recorded on every call"]
+Trace["Trace. Recorded on each session call"]
 Activity["Activity manifest. Warns"]
 Step["Step manifest. Warns"]
 Exit["Reported exit. Warns"]
@@ -31,8 +31,8 @@ flowchart TD
     seal["Seal checked"] --> work["Activity carried out"]
     work --> checkpoint{"Checkpoint clear?"}
     checkpoint -->|No| refuse["Call refused"]
-    checkpoint -->|Yes| graph["Claimed path checked"]
-    graph -.-> manifest["Reported work checked"]
+    checkpoint -->|Yes| path["Claimed path checked"]
+    path -.-> manifest["Reported work checked"]
     manifest --> trace["Trace recorded"]
 ```
 
@@ -51,7 +51,8 @@ sequenceDiagram
   participant File as State file
   Agent->>Server: Name the session
   Server->>File: Read the bytes and the seal
-  File-->>Server: Agree, or refuse the read
+  File-->>Server: The bytes and the seal
+  Server->>Server: Verify the seal, or refuse the read
 ```
 
 *Figure 3. The Seal Is Checked on Every Read.*
@@ -87,12 +88,12 @@ While a checkpoint is open, the run cannot advance past it (Figure 5). The calls
 
 ```mermaid
 sequenceDiagram
-  participant Worker
+  participant Orchestrator
   participant Server
-  Worker->>Server: Advance while a checkpoint is open
-  Server-->>Worker: Refused
-  Worker->>Server: Show the question, or record the answer
-  Server-->>Worker: Allowed
+  Orchestrator->>Server: Advance while a checkpoint is open
+  Server-->>Orchestrator: Refused
+  Orchestrator->>Server: Show the question, or record the answer
+  Server-->>Orchestrator: Allowed
 ```
 
 *Figure 5. An Open Checkpoint Refuses the Advance.*
@@ -144,11 +145,11 @@ Others deliver content — `get_workflow`, `get_activity`, `get_technique`, `get
 - Real worker execution takes minutes, so the check never fires on a legitimate run.
 - An agent cannot dismiss an unconditional checkpoint. `condition_not_met` is rejected without a `condition` field.
 
-The three resolution modes and the timers each one waits out are specified in [checkpoints](checkpoint.md#three-ways-to-resolve-one).
+The three resolution modes and the timers each one waits out are specified in [checkpoints](checkpoint.md#resolving-a-pause).
 
 ## Layer 3: Cross-Activity Validation
 
-Each call is set beside the position the server recorded last time (Figure 7). A jump the graph does not allow, or an outcome the activity did not declare, is a warning, and the call still proceeds (Figure 8).
+Each advance is set beside the position the server recorded last time (Figure 7). A jump the graph does not allow, or an outcome the activity did not declare, is a warning, and the call still proceeds (Figure 8).
 
 ```mermaid
 sequenceDiagram
@@ -178,18 +179,16 @@ classDiagram
 
 *Figure 8. Last Position, the Claim, and the Declared Graph.*
 
-On every tool call the server compares the position it recorded last time against what this call claims. A disagreement produces a warning in `_meta.validation`:
+Each call of `get_workflow`, `next_activity`, `get_activity`, `get_technique`, `get_resource`, `yield_checkpoint`, `present_checkpoint` and `respond_checkpoint` is compared with the definition the session started against, and each `next_activity` with the activity the server recorded last. A disagreement produces a warning in `_meta.validation`:
 
 | Check | What it detects |
 |-------|-----------------|
-| Workflow consistency | The agent switched workflows mid-session without starting a new one |
 | Activity transition | The agent jumped to an activity the graph binds no exit of the previous one to |
-| Technique association | The agent loaded a technique the current activity does not declare |
 | Version drift | The workflow definition changed on disk since the session started |
 
 ## Layer 4: Reported Exit
 
-On `next_activity` an agent may name the outcome the activity it is leaving reached, as the `exit` parameter. The server checks that the activity declares an exit by that name, and that the graph binds that exit to the requested target (Figure 9). The exit is then recorded in the sealed state and in the trace, so the agent cannot revise it afterwards (Figure 10).
+On `next_activity` an agent may name the outcome the activity it is leaving reached, as the `exit` parameter. The server checks that the activity declares an exit by that name, and that the graph binds that exit to the requested target (Figure 9). The session then holds it as the last reported exit, which the next transition replaces (Figure 10). The lasting record of what each activity reached is the outcome an `activity_manifest` entry reports, written once per activity as an `activity_outcome` history event.
 
 ```mermaid
 sequenceDiagram
@@ -197,7 +196,7 @@ sequenceDiagram
   participant Server
   Agent->>Server: Name the exit on leaving the activity
   Server->>Server: The activity declares it, and the graph binds it to the target
-  Server->>Server: Record it, so it cannot be revised
+  Server->>Server: Hold it as the last reported exit
 ```
 
 *Figure 9. A Named Exit Is Checked, Then Recorded.*
@@ -214,11 +213,11 @@ classDiagram
     binds the exit to the target
   }
   class Record {
-    sealed state and the trace
+    the session's last reported exit
   }
   Exit --> Activity : must be declared
   Exit --> Graph : must lead to the target
-  Exit --> Record : written, and not revised
+  Exit --> Record : held until the next transition
 ```
 
 *Figure 10. Exit, the Activity That Declares It, the Graph, and the Record.*
@@ -235,8 +234,7 @@ When an activity is left, the agent reports the steps it completed and the activ
 sequenceDiagram
   participant Agent
   participant Server
-  Agent->>Server: Leave this activity
-  Agent->>Server: Report the steps and the activities so far
+  Agent->>Server: Leave this activity, reporting the steps and the activities so far
   Server->>Server: Warn where the report does not hold
 ```
 
@@ -287,7 +285,7 @@ Each warns rather than blocks:
 
 A step gated by `when` or `condition`, and a loop carrying a `continueWhile` continuation test, may be omitted: the agent evaluated the gate and skipped the step. A loop's continuation test decides whether its body runs at all, which is why a loop carrying one is gated on the same terms as a conditional step.
 
-Those three fields are the only ones the validator reads. `step.required` is a hint for the worker, not a check.
+So may every step after a checkpoint whose recorded answer selected an `immediate` exit, since that answer ended the activity there. `step.required` is a hint for the worker, not a check.
 
 ### What a Loop Body Owes the Manifest
 
@@ -305,12 +303,12 @@ The server records every delivery of technique or resource content into the sess
 |-------|-------------|
 | `technique_fetched` | a `get_technique` call, with the resolved id, the bound `step_id` where supplied, and the agent |
 | `technique_bundled` | each step technique inlined by `get_activity` |
-| `resource_fetched` | a `get_resource` call — observability only |
+| `resource_fetched` | a `get_resource` call, and each resource body `get_activity` places in its response, marked `bundled` — observability only |
 | `activity_delivered` | each `get_activity`, naming what that call resolved and spent |
 
-All three delivery events carry `chars`, the full payload size on either path, and `delivery: "full" | "unchanged"`. Characters delivered and characters saved are both summable from the history rather than estimated. An unchanged-reference answer under persistent context mode still counts as a delivery.
+`technique_fetched`, `technique_bundled` and `resource_fetched` carry `chars`, the full payload size on either path, and `delivery: "full" | "unchanged"`. `activity_delivered` carries `delivery: "full" | "reference"` and no `chars`, since wire size lives on `activity_dispatched`. Characters delivered and characters saved are both summable from the history rather than estimated. An unchanged-reference answer under persistent context mode still counts as a delivery.
 
-Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique, or by an inline bundle delivery. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery.md#reference-delivery) and [bundling](delivery.md#eager-technique-bundling).
+Against that record, a manifested technique step with no delivery during the current activity visit warns. The step was reported complete but its technique content was never loaded, which is the signature of silent degradation. A step counts as covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique, or by an inline bundle delivery. Where `next_activity` names the `agent_id`, only that agent's deliveries count. A loop-back revisit needs its own fetches. Delivery mechanics are in [reference delivery](delivery.md#reference-delivery) and [bundling](delivery.md#eager-bundling).
 
 ## Layer 6: Activity Manifest
 
@@ -332,18 +330,18 @@ Each check warns: that every activity id exists in the workflow, that outcomes a
 
 ## Layer 7: Execution Trace
 
-Every call is recorded as it happens (Figure 13). At a handover, the calls since the last one are handed back as a token the agent carries without reading (Figure 14).
+Each call against a session is recorded as it happens (Figure 13). At a handover, the calls since the last one are handed back as a token the agent carries without reading (Figure 14).
 
 ```mermaid
 sequenceDiagram
   participant Agent
   participant Server
-  Agent->>Server: Any call
+  Agent->>Server: A call against the session
   Server->>Server: Record it
   Server-->>Agent: At a handover, a token for the calls since the last one
 ```
 
-*Figure 13. Every Call Is Recorded, and a Handover Returns a Token.*
+*Figure 13. Each Session Call Is Recorded, and a Handover Returns a Token.*
 
 ```mermaid
 classDiagram
@@ -364,7 +362,7 @@ classDiagram
 
 ### What Each Event Carries
 
-The server captures a mechanical trace of every tool call through `withAuditLog`:
+The server captures a mechanical trace of each session call through `withAuditLog`, apart from the read-only diagnostics `get_trace`, `get_workflow_status` and `inspect_session`:
 
 | Field | Description |
 |-------|-------------|
@@ -386,7 +384,7 @@ A token is self-contained rather than a pointer into server memory, so it stays 
 
 What the trace makes possible after the fact:
 
-- **Parent and child correlation** — a launched workflow's events carry their own `sid`, and the session file records which session launched it.
+- **Parent and child correlation** — a launched workflow's events carry its own session index as `traceId`, each token names it as `sid`, and the session file records which session launched it.
 
 Agents write a second, semantic trace — step outputs, checkpoint responses, decision branches, variable changes — into the planning folder, per the workflow's own technique instructions. The server's mechanical trace and that semantic one together give complete visibility.
 

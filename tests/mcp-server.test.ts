@@ -520,7 +520,29 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(responded.isError).toBeFalsy();
       const payload = parseToolResponse(responded);
       expect(payload.exit).toEqual({ id: 'abort', next_activity: 'complete', ends_activity: true });
-      expect(payload.message).toContain('do not run the remaining steps');
+      expect(payload.message).toContain('stops rather than running the remaining steps');
+
+      // The worker learns it on resume, and again on a replay of the same gate.
+      const resumed = parseToolResponse(await client.callTool({
+        name: 'resume_checkpoint',
+        arguments: { session_index: nextToken },
+      }));
+      expect(resumed.exit).toEqual({ id: 'abort', next_activity: 'complete', ends_activity: true });
+      expect(resumed.message).toContain('do not run the remaining steps');
+      const status = parseToolResponse(await client.callTool({
+        name: 'get_workflow_status',
+        arguments: { session_index: nextToken },
+      }));
+      expect(status.last_checkpoint).toEqual(expect.objectContaining({
+        activity_id: 'submit-for-review', checkpoint_id: 'body-non-conformant', option_id: 'abort',
+      }));
+      const replayed = parseToolResponse(await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      }));
+      expect(replayed.status).toBe('replayed');
+      expect(replayed.exit).toEqual({ id: 'abort', next_activity: 'complete', ends_activity: true });
+      expect(replayed.message).toContain('do not run the remaining steps');
 
       // The worker reports only what it ran. The steps after the gate are the exit's doing, so the
       // manifest check accounts for them rather than reporting them missing.
@@ -537,6 +559,38 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(moved.isError).toBeFalsy();
       const validation = (moved._meta as Record<string, unknown>)['validation'] as { warnings: string[] };
       expect(validation.warnings.some(w => w.includes('Missing steps'))).toBe(false);
+    });
+
+    it('asks again on a revisit rather than replaying the answer an earlier visit gave', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'submit-for-review');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      });
+      await new Promise(r => setTimeout(r, 3100));
+      await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'provide-input' },
+      });
+      await client.callTool({ name: 'resume_checkpoint', arguments: { session_index: nextToken } });
+
+      // provide-input ends the activity and leads back into it: the revisit's gate is a new pause.
+      const reentered = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: nextToken,
+          from_activity: 'submit-for-review',
+          activity_id: 'submit-for-review',
+          exit: 'provide-input',
+          step_manifest: RAN_BEFORE_ABORT,
+        },
+      });
+      expect(reentered.isError).toBeFalsy();
+      const again = parseToolResponse(await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      }));
+      expect(again.status).toBe('yielded');
     });
 
     it('reports the tail missing when the same manifest arrives with no immediate exit taken', async () => {
@@ -635,6 +689,25 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeTruthy();
+    });
+
+    it('refuses a message alone supplied for a checkpoint the activity declares', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'issue-verification', message: 'Something else entirely' },
+      });
+      expect(result.isError).toBeTruthy();
+    });
+
+    it('refuses a message without options for a checkpoint the activity does not declare', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'accept-late-scope', message: 'Take the extra file into scope?' },
+      });
+      expect(result.isError).toBeTruthy();
+      expect(rawText(result)).toContain("pass 'message' and at least two 'options'");
     });
   });
 
@@ -1810,7 +1883,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       });
       expect(result.isError).toBe(true);
       const errorText = rawText(result);
-      expect(errorText).toContain('missing defaultOption or autoAdvanceMs');
+      expect(errorText).toContain('it is a hard checkpoint');
     });
 
     it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {
@@ -1860,6 +1933,14 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.dismissed).toBe(true);
+
+      // Status reports the dismissal as one, not as an option chosen.
+      const status = parseToolResponse(await client.callTool({
+        name: 'get_workflow_status',
+        arguments: { session_index: cpHandle },
+      }));
+      expect(status.last_checkpoint).toEqual(expect.objectContaining({ checkpoint_id: conditionalCpId, dismissed: true }));
+      expect(status.last_checkpoint).not.toHaveProperty('option_id');
     });
 
     it('respond_checkpoint should return effects from selected option', async () => {

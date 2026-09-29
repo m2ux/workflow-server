@@ -1,6 +1,6 @@
 import type { ZodTypeAny } from 'zod';
 
-/** Who carries the field: the server, or the executing agent. */
+/** Who carries out what the field means: the server, or the executing agent. */
 export type EnforcementOwner = 'Engine' | 'Agent';
 
 /** Whether a failed check blocks. Advisory renders or warns and does not block. */

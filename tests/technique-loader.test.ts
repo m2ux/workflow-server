@@ -158,6 +158,14 @@ describe('technique-loader', () => {
       }
     });
 
+    it('resolves a bare rule reference against the current workflow before meta', async () => {
+      // `override-marker` is declared only by the work-package copy of the technique, which
+      // shadows the meta copy for a bare reference made from work-package.
+      const resolved = await resolveTechniques(['explicit-prefix-target::override-marker'], FIXTURE_DIR, 'work-package');
+      expect(resolved[0]!.type).toBe('rule');
+      expect(String(resolved[0]!.body)).toMatch(/override is non-empty/);
+    });
+
     it('PR126-TC-06: a malformed op file (missing Protocol) does not resolve as a technique', async () => {
       // broken.md has no `## Protocol`; the op parser throws and resolveTechniques surfaces the ref
       // as not-found rather than a partial/silent technique. The grouped index still loads fine.

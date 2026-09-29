@@ -1,8 +1,8 @@
 # Routine
 
-A **routine** is a named run of steps, written once and referred to from more than one **site**. A site is a step in an **activity** — one phase of a **workflow** — that points at the routine. The loader substitutes the site's arguments, prefixes every identifier from that step, and splices the steps in place of the reference. Downstream, the manifest, the guards, and the worker see ordinary steps.
+A **routine** is a named run of steps, written once and referred to from more than one **site**. A site is a step in an **activity** — one phase of a **workflow** — that points at the routine. The loader substitutes the site's arguments, prefixes every identifier from that step, and splices the steps in place of the reference. Downstream, the manifest, the worker, and every guard that reads the loaded workflow see ordinary steps.
 
-An **input** is a parameter the site supplies. An **output** is a value the run produces, owned here. An **internal** is a name the body's steps pass between themselves, and it never enters the workflow's variables. A **reference** is the name the site uses. How that name reaches the file is [resolution](resolution.md#routine). The fields of the file are the [schema](../schemas/routine.schema.json#L9). The fields of the referring step are the [schema](../schemas/activity.schema.json#L578).
+An **input** is a parameter the site supplies. An **output** is a value the run produces, owned here. An **internal** is a name the body's steps pass between themselves, and it never enters the workflow's variables. A **reference** is the name the site uses. How that name reaches the file is [resolution](resolution.md#routine). The fields of the file are the [schema](../schemas/routine.schema.json#L9). The fields of the referring step are the [schema](../schemas/activity.schema.json#L504).
 
 ## File
 
@@ -36,7 +36,7 @@ classDiagram
 
 *Figure 2. File, Signature, and Steps.*
 
-The file is `routines/<name>.yaml`, beside `activities/`. It has no place in an order, so the filename carries no number. The file's id agrees with the filename, is kebab-case, and carries no double colon. A routine with no steps is a signature with nothing behind it.
+The file is `routines/<name>.yaml`, beside `activities/`. It has no place in an order, so the filename carries no number. The file's id agrees with the filename, is kebab-case, and carries no double colon. A routine declares at least one step.
 
 The home is the workflow whose activities reach it, or the shared meta layer where more than one workflow does. A library that offers routines and declares no workflow is a third home, for a run that binds that library's own techniques.
 
@@ -57,7 +57,7 @@ outputs:
 steps:
   - kind: checkpoint
     id: confirm
-    message: "Is this the right target?"
+    message: "Is {target} the right target?"
     options:
       - id: yes
         label: "Yes"
@@ -104,7 +104,7 @@ classDiagram
 
 *Figure 4. Input, Internal, and Output.*
 
-An input declares an id, a description, and an optional default. An output declares an id, a type, a description, an optional closed set of values, and whether it may be absent. An internal declares an id and a description, and nothing else: no type, no default, no value set. It never enters the workflow's variables. Its materialised name carries the host activity and the reference path, so two activities that use one routine do not share it.
+An input declares an id, a description, an optional default, and optionally `kind: technique`, which marks a parameter standing where a technique reference belongs. An output declares an id, a type, a description, an optional closed set of values, and whether it may be absent. An internal declares an id and a description, and nothing else: no type, no default, no value set. It never enters the workflow's variables. Its materialised name carries the host activity and the reference path, so two activities that use one routine do not share it.
 
 A routine declares no exits, no outcome, no rules, no triggers, and no activity-wide techniques. It takes no place in the graph, costs no hand-off, and has no delivery of its own.
 
@@ -154,7 +154,9 @@ A reference is `[namespace::]name`. A qualified name resolves in that namespace 
     confirmed: target_confirmed
 ```
 
-A braced value is a host variable. A bare value is a literal. A declared input left unbound takes its default, or the host's value under the input's own id. An output the site leaves unbound produces no write, and fails the load unless the declaration says it is optional.
+A braced value is a host variable. A bare value is a literal. A declared input left unbound takes its default, or the host's value under the input's own id. A `kind: technique` input takes a literal technique reference or its default, nothing from the host, and is an error with neither; a body technique step that binds one declares its own id. An output the site leaves unbound produces no write, and is an error unless the declaration says it is optional. An argument naming no declared input, and an output binding naming no declared output, are errors too.
+
+A reference error excludes the referring activity from the load and records an activity load error; the rest of the workflow loads. An invalid routine file, one its schema rejects, whose id disagrees with its filename, or whose steps break a step rule such as a duplicate step id, is recorded against that routine alone. Each activity referring to it is excluded with that error naming the file, a routine of the same name in a later scope is not used in its place, and a file nothing refers to affects nothing.
 
 The step's id is the prefix every identifier in the materialised body carries. Its gate is `when` alone. A structured condition is rejected: on a checkpoint that field is what makes the gate dismissible, and a site condition pushed into the body would hand every gate in the run a capability its author never declared.
 
@@ -192,4 +194,4 @@ classDiagram
 
 A site gate applies to every step the reference stands for. A body step with a gate of its own takes both, conjoined: the site gate says whether the run happens, and the body gate says whether that step happens within it.
 
-Two references to one routine do not collide. Each body is prefixed from its own step. A routine may refer to another. Prefixes compose, and a cycle fails the load.
+Two references to one routine do not collide. Each body is prefixed from its own step. A routine may refer to another. Prefixes compose, and a cycle is a reference error.

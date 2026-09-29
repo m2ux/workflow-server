@@ -36,6 +36,10 @@ describe('when-expression', () => {
       expect(assertWhenAuthoring('(a == true && b == true) || c == true').ok).toBe(true);
       expect(assertWhenAuthoring('a == true && (b == true || c == true)').ok).toBe(true);
     });
+    it('rejects bare mixed inside a parenthesis', () => {
+      expect(assertWhenAuthoring('x && (a && b || c)').ok).toBe(false);
+      expect(assertWhenAuthoring('x && ((a && b) || c)').ok).toBe(true);
+    });
   });
 
   describe('PR383-TC-04 unary ! and nesting', () => {
@@ -177,6 +181,27 @@ describe('when-expression', () => {
         }
       });
     }
+  });
+
+  describe('numeric comparison compares only numbers, alike in both dialects', () => {
+    it.each([
+      [{ x: 5 }, true],
+      [{ x: '5' }, true],
+      [{ x: 0 }, false],
+      [{ x: true }, false],
+      [{ x: null }, false],
+      [{ x: '' }, false],
+      [{ x: 'five' }, false],
+      [{}, false],
+    ] as const)('x > 0 with %j → %s', (bag, expected) => {
+      const vars = bag as Record<string, unknown>;
+      expect(evaluateWhenExpression('x > 0', vars)).toBe(expected);
+      expect(evaluateCondition({ type: 'simple', variable: 'x', operator: '>', value: 0 }, vars)).toBe(expected);
+    });
+    it('a null or false never passes a lower bound', () => {
+      expect(evaluateWhenExpression('x >= 0', { x: null })).toBe(false);
+      expect(evaluateWhenExpression('x > -1', { x: false })).toBe(false);
+    });
   });
 
   describe('PR383-TC-11 flat && regression', () => {

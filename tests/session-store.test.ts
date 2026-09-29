@@ -206,6 +206,13 @@ describe('session-store primitives', () => {
       await expect(verifySeal(folder)).rejects.toMatchObject({ code: 'SEAL_MISMATCH' });
     });
 
+    it('returns SESSION_INVALID, not SEAL_MISMATCH, when session.json is not JSON', async () => {
+      const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc-not-json');
+      await writeSessionFile(folder, { schemaVersion: 1 });
+      await writeFile(sessionFilePath(folder), '{ not json', 'utf8');
+      await expect(verifySeal(folder)).rejects.toMatchObject({ code: 'SESSION_INVALID' });
+    });
+
     it('writeSeal refreshes the seal in place', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc-reseal');
       await writeSessionFile(folder, { schemaVersion: 1, body: 'v1' });
@@ -313,6 +320,17 @@ describe('session-store primitives', () => {
       await expect(resolveSessionLocation(workspace, 'ZZZZZZ')).rejects.toMatchObject({
         code: 'NOT_FOUND',
       });
+    });
+
+    it('names a folder whose session.json is not JSON when no folder matches', async () => {
+      const folder = await ensurePlanningFolder(workspace, '2026-05-14-unreadable');
+      await writeFile(sessionFilePath(folder), '{ not json', 'utf8');
+      const failure = await resolveSessionLocation(workspace, 'ZZZZZZ').catch((e: unknown) => e);
+      expect(failure).toMatchObject({ code: 'NOT_FOUND', details: { unreadable: [folder] } });
+      const described = describeSessionStoreError(failure);
+      expect(described).toContain(folder);
+      expect(described).toContain('restore that folder');
+      expect(described).not.toContain('Call start_session');
     });
 
     it('rejects malformed session_index strings', async () => {
@@ -451,7 +469,7 @@ describe('session-store primitives', () => {
       expect(described).toContain('already holds a run');
       expect(described).toContain('nothing was written');
       expect(described).toContain('ABCDEF');
-      expect(described).toContain('distinct planning_folder');
+      expect(described).toContain('planning_slug on dispatch_child');
     });
 
     it('SEAL_MISMATCH names key rotation as the likely cause', () => {
@@ -460,6 +478,17 @@ describe('session-store primitives', () => {
       );
       expect(described).toContain('rotated signing key');
       expect(described).toContain('Nothing was written');
+    });
+
+    it('gives an unreadable and an outdated session file remedies of their own', () => {
+      const invalid = describeSessionStoreError(new SessionStoreError('session.json in /planning/x is not valid JSON', 'SESSION_INVALID'));
+      expect(invalid).toContain('cannot be read as a session');
+      expect(invalid).not.toContain('signing key');
+      const outdated = describeSessionStoreError(
+        new SessionStoreError('session.json in /planning/x predates the frontier. Start a fresh session.', 'SESSION_OUTDATED'),
+      );
+      expect(outdated).toContain('Start a fresh session');
+      expect(outdated).not.toContain('Restore the folder');
     });
   });
 

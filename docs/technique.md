@@ -123,10 +123,10 @@ Each `###` heading under Inputs or Outputs is an entry: a description, and optio
 * `##### <field>` under an output is a field one entry of that component carries, where the component holds a list. A component with fields becomes an object. One without stays the description string. A loop's item name appears in no signature, so without the declaration a step reading a field of that item is a claim nothing can settle.
 * `#### entry` is reserved, for an output that is a list rather than a value with parts. Its `#####` children are the fields one entry carries. Reserving the name keeps `####` meaning a part of the value everywhere else.
 * `#### artifact` is the persistence filename: a literal, or a `{token}` template the worker fills in. One filename per output, one path segment ending in an extension. A technique that writes several files declares one output per file.
-* `#### audience` is who reads the output: `human` or `agent`. Absent means `human`. An agent artifact is JSON on disk. A human artifact is prose.
+* `#### audience` is who reads the output: `human` or `agent`. An output with an artifact declares it. On an output without one, absent means `human`. An agent artifact is JSON on disk, so its filename, or a template's literal suffix, ends in `.json`. A human artifact is prose.
 * `#### values` is the closed set the output admits. Backticked tokens in the body are the output's own set. `#####` children are the set one field admits.
 * `#### default` is an input's default value.
-* An entry whose description opens with `optional` is not required.
+* An entry whose description opens with `(optional)`, emphasis allowed and qualifiers inside the parentheses (`*(optional, default origin)*`), is not required.
 
 #### Audience
 
@@ -134,7 +134,7 @@ Pick the audience from who reads the artifact.
 
 * **Agent** — written only for the next agent to consume as state: tables that carry ids, routing or index state, anything a later step reads back.
 * **Human** — a person reads it linearly: a design write-up, a summary, a README.
-* **Absent** — human, the case when the declaration omits audience.
+* **Absent** — human, and only on an output with no artifact.
 
 An agent artifact carries no prose narrative and does not restate another artifact. A human artifact states a thing once and links the rest. The declaration says who reads the artifact as it exists. It does not fix the shape of a particular payload. That shape belongs to the artifact's own guide.
 
@@ -326,14 +326,14 @@ classDiagram
 
 Both delivery paths use the same composition. In memory the merge is complete. On the wire:
 
-* Inputs and outputs are merged from every ancestor outward to the executing workflow root. The local entry overrides an ancestor entry of the same id. Own entries ride the body. Ancestor entries ride that ancestor's block under contracts.
+* Inputs and outputs are merged from every ancestor outward to the root of the workflow that holds the technique file. The local entry overrides an ancestor entry of the same id. Own entries ride the body. Ancestor entries ride that ancestor's block under contracts.
 * Rules are merged the same way. Own rules ride the body. Shared rules ride contracts. Role-level rules that govern no one technique remain entries in the bundle's rules list.
 
 A container contributes a contract, never a procedure. Protocol does not inherit. A technique's protocol is delivered as authored.
 
 ### Whose Ancestors Count
 
-Ancestry follows the executing workflow: its root technique file, and each containing group's index along the path. Containers from a different workflow are not included. Only the executing workflow's containers apply.
+Ancestry follows the workflow that holds the technique file, whichever workflow asked for it: that workflow's root technique file, and each containing group's index along the path. A technique fetched across a namespace boundary carries the contract written above it there, never one belonging to the workflow that asked.
 
 ## Delivery
 
@@ -380,7 +380,7 @@ A delivered body carries the capability, the inputs as authored on that techniqu
 | `rules` | The role's own rules, which govern no one technique. |
 | `unresolved` | References that did not resolve. A non-empty list is a definition defect. |
 
-An activity load and a workflow load deliver the activity's technique list through this bundle. Asking for one technique delivers that body and the contracts beside it. Which call does which is in the [catalog](api.md).
+An activity load and a workflow load each deliver their role's technique list through this bundle. Asking for one technique delivers that body and the contracts beside it. Which call does which is in the [catalog](api.md).
 
 ### Binding
 

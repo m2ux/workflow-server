@@ -2,7 +2,7 @@
 
 These programs measure how much text the server sends an agent while it works through a workflow, and what a finished run cost in tokens. The contract under test is [reference delivery](delivery.md#reference-delivery).
 
-- Three benchmarks drive the server over an in-memory transport and change one thing at a time to isolate cause.
+- The benchmarks drive the server over an in-memory transport and change one thing at a time to isolate cause.
 - The profiler reads a run that already happened.
 
 Pick the tool that changes the thing you changed: a number from another tool cannot be blamed on your edit.
@@ -153,7 +153,8 @@ classDiagram
 npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=AFTER --context-mode=fresh --gate --max-regression-pct=1
 
 # Re-record the baseline, in the same commit as the change that moved it.
-npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=baseline --context-mode=fresh --no-compare
+# The run writes to stdout; the fixture's description field is kept by hand.
+npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=baseline --context-mode=fresh --no-compare > benchmark/fixtures/token-benchmark-baseline.json
 
 # The reference-delivery win. Banner-warned as cross-mode.
 npm run --silent bench:token -- --label=opt --context-mode=persistent
@@ -165,5 +166,5 @@ npm run --silent bench:token -- --label=raw --context-mode=persistent --no-compa
 ### Run Profiler
 
 ```bash
-npm run profile:run -- --session=03e43af3
+npm run profile:run -- --session=<session-id>
 ```

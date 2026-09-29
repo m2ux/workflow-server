@@ -12,7 +12,7 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { type Activity, populateStepIds } from '../schema/activity.schema.js';
+import { type Activity, populateStepIds, assertCheckpointDefaults } from '../schema/activity.schema.js';
 import { type Routine, safeValidateRoutine } from '../schema/routine.schema.js';
 import { parseDefinition } from '../utils/serialization.js';
 import { type CorpusIndex, indexCorpus, namespaceLocation } from './corpus-index.js';
@@ -44,33 +44,62 @@ export async function readWorkflowRoutines(
   workflowId: string,
   index: CorpusIndex = indexCorpus(workflowDir),
 ): Promise<ReadonlyMap<string, Routine>> {
+  const { routines, invalid } = await readRoutineFiles(workflowDir, workflowId, index);
+  const first = invalid.values().next();
+  if (!first.done) throw new RoutineResolutionError(first.value);
+  return routines;
+}
+
+/**
+ * Read each routine file of a workflow on its own: the routines that load, and, by name, why each
+ * of the rest did not. One bad file costs only the references to it, so a lookup keeps the two apart
+ * rather than failing on the first.
+ */
+async function readRoutineFiles(
+  workflowDir: string,
+  workflowId: string,
+  index: CorpusIndex,
+): Promise<{ routines: Map<string, Routine>; invalid: Map<string, string> }> {
   const routines = new Map<string, Routine>();
+  const invalid = new Map<string, string>();
   const dir = namespaceLocation(index, workflowId)?.dir;
-  if (!dir) return routines;
+  if (!dir) return { routines, invalid };
   const routinesPath = join(dir, ROUTINES_DIR);
-  if (!existsSync(routinesPath)) return routines;
+  if (!existsSync(routinesPath)) return { routines, invalid };
 
   for (const file of await readdir(routinesPath)) {
     const name = /^(.+)\.ya?ml$/.exec(file)?.[1];
     if (!name) continue;
-    const content = await readFile(join(routinesPath, file), 'utf-8');
-    const validation = safeValidateRoutine(parseDefinition(content));
+    const site = `Routine '${workflowId}::${name}' (${ROUTINES_DIR}/${file})`;
+    let validation: ReturnType<typeof safeValidateRoutine>;
+    try {
+      validation = safeValidateRoutine(parseDefinition(await readFile(join(routinesPath, file), 'utf-8')));
+    } catch (error) {
+      invalid.set(name, `${site} does not parse: ${error instanceof Error ? error.message : String(error)}`);
+      continue;
+    }
     if (!validation.success) {
-      throw new RoutineResolutionError(
-        `Routine '${workflowId}::${name}' (${ROUTINES_DIR}/${file}) is not a valid routine: `
-        + formatZodIssues(validation.error.issues),
-      );
+      invalid.set(name, `${site} is not a valid routine: ${formatZodIssues(validation.error.issues)}`);
+      continue;
     }
     if (validation.data.id !== name) {
-      throw new RoutineResolutionError(
-        `Routine ${ROUTINES_DIR}/${file} in workflow '${workflowId}' declares id '${validation.data.id}' `
-        + `but sits in a file named '${name}' — a reference reaches a routine by its filename, so the two names have to match.`,
-      );
+      invalid.set(name, `${site} declares id '${validation.data.id}' `
+        + `but sits in a file named '${name}' — a reference reaches a routine by its filename, so the two names have to match.`);
+      continue;
     }
-    populateStepIds({ id: validation.data.id, steps: validation.data.steps } as Activity);
+    try {
+      const body = { id: validation.data.id, steps: validation.data.steps } as Activity;
+      populateStepIds(body);
+      assertCheckpointDefaults(body);
+    } catch (error) {
+      // The step checks speak of the body they walk; the site names the routine file instead.
+      const message = (error instanceof Error ? error.message : String(error)).replace(/^Activity '[^']*': /, '');
+      invalid.set(name, `${site}: ${message}`);
+      continue;
+    }
     routines.set(name, validation.data);
   }
-  return routines;
+  return { routines, invalid };
 }
 
 /**
@@ -85,6 +114,7 @@ export async function buildRoutineLookup(
 ): Promise<RoutineLookup> {
   const index = indexCorpus(workflowDir);
   const loaded = new Map<string, ReadonlyMap<string, Routine>>();
+  const invalid = new Map<string, ReadonlyMap<string, string>>();
   const pending = new Set<string>([META_WORKFLOW_ID, ...scopeWorkflowIds]);
   const noteRef = (ref: string): void => {
     try {
@@ -103,7 +133,9 @@ export async function buildRoutineLookup(
     pending.clear();
     await Promise.all(batch.map(async (id) => {
       if (loaded.has(id)) return;
-      loaded.set(id, await readWorkflowRoutines(workflowDir, id, index));
+      const files = await readRoutineFiles(workflowDir, id, index);
+      loaded.set(id, files.routines);
+      invalid.set(id, files.invalid);
     }));
     for (const id of batch) {
       for (const routine of loaded.get(id)?.values() ?? []) {
@@ -111,7 +143,9 @@ export async function buildRoutineLookup(
       }
     }
   }
-  return (workflowId) => loaded.get(workflowId);
+  return Object.assign((workflowId: string) => loaded.get(workflowId), {
+    invalid: (workflowId: string, name: string) => invalid.get(workflowId)?.get(name),
+  });
 }
 
 /**
@@ -120,7 +154,9 @@ export async function buildRoutineLookup(
  *
  * A corpus-wide sweep reports rather than aborts: a single unreadable file is a defect to name, and
  * a reader that threw would take the whole sweep down and report nothing at all — including for the
- * files that are fine. The per-workflow read still throws, because a LOAD wants the failure loud.
+ * files that are fine. `readWorkflowRoutines` throws on a workflow's first bad file, for a caller that
+ * wants that workflow's routines whole; a load reads through `buildRoutineLookup`, which keeps each
+ * bad file against its own name.
  */
 export async function readCorpusRoutines(
   workflowDir: string,

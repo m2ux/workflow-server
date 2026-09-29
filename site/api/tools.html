@@ -121,27 +121,27 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Opens a new workflow session or resumes an existing one.</p>
-          <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, <code>planning_folder_path</code> — the absolute path agents should use for session artifacts (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set; server-local path under stdio) — and <code>execution_path</code> (<code>agent</code> when a caller walks the definition, <code>runner</code> when the server does).</p>
+          <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, <code>planning_folder_path</code> — the absolute path agents should use for session artifacts (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set; server-local path under stdio) — and <code>execution_path</code>, <code>agent</code>: a caller walks the definition.</p>
           <p>Pass <code>working_directory</code> as the absolute path of the checkout under work; the server derives <code>owner/repo</code> from that checkout's origin. <code>repo</code> is optional and must equal the derived origin when present.</p>
           <p>Pass <code>planning_folder</code> as any absolute path whose basename is your planning slug (for example, <code>.../planning/2026-05-28-my-slug</code>). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.</p>
           <p>If that named slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. A derived dated slug that already holds a session opens the next free <code>YYYY-MM-DD-&lt;workflow_id&gt;-N</code> folder in the same call.</p>
           <p>A fresh durable meta session that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client and returns <code>client.session_index</code>. A durable meta start that cannot uniquely open a client returns a <code>decision</code> with no <code>session_index</code>; retry with <code>user_request</code>, <code>target_workflow_id</code>, <code>planning_folder</code>, or <code>fresh</code>. Origin binds even when the checkout folder is named for a branch.</p>
-          <p>Omit both <code>working_directory</code> and <code>planning_folder</code> to start a meta bootstrap session in a temp folder. Use <code>dispatch_child</code> later to promote it to an empty planning folder.</p>
+          <p>Omit <code>working_directory</code> on a meta session to start a bootstrap session in a temp folder, unless <code>planning_folder</code> names a folder that already holds a session. Use <code>dispatch_child</code> later to promote it to an empty planning folder.</p>
           <p>Child workflows are started with <code>dispatch_child</code>, not <code>start_session</code>.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
+          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>meta</code>).</td></tr>
           <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
           <tr><td><code>working_directory</code></td><td><code>string</code></td><td>no</td><td>Optional. Absolute path of the checkout under work. The bound repository is that checkout's origin. Bare/relative paths rejected.</td></tr>
           <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.</td></tr>
           <tr><td><code>user_request</code></td><td><code>string</code></td><td>no</td><td>The user's free-form request that opened this session. Seeded into the variable bag as <code>user_request</code>, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.</td></tr>
           <tr><td><code>target_workflow_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Client workflow id after a workflow-selection decision. Distinct from workflow_id, which is the top-level session (default meta).</td></tr>
           <tr><td><code>fresh</code></td><td><code>boolean</code></td><td>no</td><td>Optional. After a resume-session decision, ignore saved hits and embed a new client.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
-          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Agent identity stored on the session (default &quot;orchestrator&quot;). Use one canonical id for solo persistent walks. Default: <code>&quot;orchestrator&quot;</code></td></tr>
+          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>Optional. &quot;persistent&quot; = reference delivery; ONLY for solo (same agent retains payloads). Omit/&quot;fresh&quot; for disposable workers. Resume overwrites recorded mode.</td></tr>
           </tbody>
         </table>
         </div>
@@ -151,15 +151,15 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
+          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>meta</code>).</td></tr>
           <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
           <tr><td><code>working_directory</code></td><td><code>string</code></td><td>no</td><td>Optional. Absolute path of the checkout under work. The bound repository is that checkout's origin. Bare/relative paths rejected.</td></tr>
           <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.</td></tr>
           <tr><td><code>user_request</code></td><td><code>string</code></td><td>no</td><td>The user's free-form request that opened this session. Seeded into the variable bag as <code>user_request</code>, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.</td></tr>
           <tr><td><code>target_workflow_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Client workflow id after a workflow-selection decision. Distinct from workflow_id, which is the top-level session (default meta).</td></tr>
           <tr><td><code>fresh</code></td><td><code>boolean</code></td><td>no</td><td>Optional. After a resume-session decision, ignore saved hits and embed a new client.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
-          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Agent identity stored on the session (default &quot;orchestrator&quot;). Use one canonical id for solo persistent walks. Default: <code>&quot;orchestrator&quot;</code></td></tr>
+          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>Optional. &quot;persistent&quot; = reference delivery; ONLY for solo (same agent retains payloads). Omit/&quot;fresh&quot; for disposable workers. Resume overwrites recorded mode.</td></tr>
           </tbody>
         </table>
         </div>
@@ -167,17 +167,16 @@
       </section>
       <section class="tool" id="get_workflow_status">
         <h3><code>get_workflow_status</code></h3>
-        <p class="tool-summary">Session status (active/blocked/completed), the activities in flight, completed activities, last checkpoint, and parent context if nested.</p>
+        <p class="tool-summary">Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered (its activity, checkpoint, the option chosen or <code>dismissed</code>, and time), and the variable bag.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Returns whether the session is active, blocked at a checkpoint, or completed, plus the activities in flight and completed steps.</p>
-          <p>If the session is nested under a parent, parent context is included too.</p>
+          <p>Returns whether the session is active, blocked at a checkpoint, completed or aborted, plus the activities in flight, the completed activities, the last checkpoint answered and the variable bag.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
@@ -187,7 +186,7 @@
         <p class="tool-summary">Read-only compact projection of session state (never raw session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Read-only look at a session's stored state. Pick a <code>view</code>: <code>summary</code> (everything), <code>identity</code>, <code>variables</code>, <code>checkpoints</code>, <code>activities</code>, <code>history</code>, or <code>children</code>.</p>
+          <p>Read-only look at a session's stored state. Pick a <code>view</code>: <code>summary</code> (everything), <code>identity</code>, <code>variables</code>, <code>checkpoints</code>, <code>activities</code>, <code>history</code>, <code>children</code>, or <code>usage</code>.</p>
           <p>Returns a compact, purpose-built projection — never the raw session file.</p>
           <p>Pass <code>child_index</code> to look one level into a child session listed under <code>triggeredWorkflows</code>; pass <code>variable</code> with <code>view: variables</code> to read a single value.</p>
           <p>It never changes anything and works even while the session is paused at a checkpoint — which is often exactly when you want to look.</p>
@@ -196,11 +195,11 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities (completed, skipped, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent's latest cumulative figure, the completed activities holding no row, and each child's cost outside those totals). Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities (completed, in flight, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent's latest cumulative figure, the completed activities holding no row, and each child's cost outside those totals). Default: <code>&quot;summary&quot;</code></td></tr>
           <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional. Project triggeredWorkflows[child_index].state instead of the parent session.</td></tr>
           <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional. With view=variables, return a single variable by name.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Narrow history and usage projections to events/rows whose data.agentId matches this worker context.</td></tr>
           </tbody>
         </table>
         </div>
@@ -211,7 +210,7 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Starts a child workflow inside the parent session you are already in.</p>
-          <p>Returns the child's <code>session_index</code>, <code>planning_folder_path</code>, and <code>execution_path</code>. The child's variables are seeded from the child workflow's defaults; the parent is unchanged.</p>
+          <p>Returns the child's <code>session_index</code>, <code>planning_folder_path</code>, and <code>execution_path</code>. The child's variables are seeded from the child workflow's defaults plus the parent's <code>user_request</code>; the parent records the child under <code>triggeredWorkflows</code>.</p>
           <p>Also returns <code>workflow.initialActivity</code> — the activity the child's first <code>next_activity</code> should name. A parent knows its own workflow's first activity, not its child's, and <code>get_workflow</code> stays where a session reads its own metadata, so this carries the child's across the boundary.</p>
           <p>The child state is stored inside the parent's <code>session.json</code> under <code>triggeredWorkflows</code>.</p>
           <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to an empty planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>
@@ -221,12 +220,12 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>yes</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;worker&quot;</code></td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>yes</td><td>Workflow id to run or dispatch (for example, <code>meta</code>).</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Child agent_id (default &quot;worker&quot;). Default: <code>&quot;worker&quot;</code></td></tr>
           <tr><td><code>planning_slug</code></td><td><code>string</code></td><td>no</td><td>Slug for the promoted planning folder when dispatching from a meta bootstrap session. Ignored if the parent already has a persistent folder.</td></tr>
           <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Bind owner/repo onto the parent session when missing (must match if already set). session.json#repo is the source of truth.</td></tr>
-          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
+          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>Optional. Child delivery mode. &quot;persistent&quot; ONLY for solo child walks; omit/&quot;fresh&quot; for worker-dispatched walks.</td></tr>
           </tbody>
         </table>
         </div>
@@ -248,7 +247,7 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
@@ -267,16 +266,16 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string | (string | object)[] | 1</code></td><td>yes</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string | (string | object)[] | 1</code></td><td>yes</td><td>Where the run goes next, read from the graph where the graph states it: naming <code>from_activity</code> and <code>exit</code> together settles the destination, including its shape, so an exit the graph fans opens one branch per element of the collection it names whatever this field holds. What this field decides is the walk's opening, where nothing is retired yet — the <code>initialActivity</code> from get_workflow — and any exit the graph leaves unbound, as an activity id or <code>__terminal__</code>.</td></tr>
           <tr><td><code>from_activity</code></td><td><code>string</code></td><td>no</td><td>The activity this call is exiting — the one <code>exit</code>, <code>step_manifest</code>, <code>variables_changed</code> and <code>artifacts_produced</code> belong to, instance-qualified (<code>challenge-pass#1</code>) where the graph runs that activity once per element of a collection. Required whenever anything is in flight, which is every call but a session's first, so a call always names the activity it is returning rather than leaving the server to infer it. Omitted only on that first call, when the frontier is empty.</td></tr>
           <tr><td><code>exit</code></td><td><code>string</code></td><td>no</td><td>Name of the exit the previous activity took.</td></tr>
-          <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: { &quot;is_review_mode&quot;: false } }]</code>. Omit if no steps ran.</td></tr>
+          <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;check-inputs&quot;, &quot;output&quot;: { &quot;inputs_valid&quot;: true } }]</code>. Omit if no steps ran.</td></tr>
           <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with their outcomes and the exit each took.</td></tr>
           <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Variable assignments the completing activity produced — relay the worker's <code>activity_complete</code> <code>variables_changed</code> map verbatim. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so the bag a later get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.</td></tr>
           <tr><td><code>artifacts_produced</code></td><td><code>object[]</code></td><td>no</td><td>Artifacts the completing activity produced: [{id, name, path?}]. Merged by id into the session declared-artifact accumulation; planning-folder reconciliation joins on id (warn-only).</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
-          <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>no</td><td>Your worker context window in tokens. Required so the server can size inline technique bundling.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Worker context that completed the exiting activity — scopes technique-fetch fidelity and step_completed attribution.</td></tr>
+          <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>no</td><td>Optional, with agent_id. That context's declared window, so <code>_meta.batch</code> reports whether it may take this activity — a reading that counts the lazy fetches the exiting activity made. Continue the worker on <code>may_continue: true</code>; spawn a fresh agent_id otherwise.</td></tr>
           <tr><td><code>progress_published</code></td><td><code>boolean</code></td><td>no</td><td>Whether the in-progress Progress mark for this activity is committed and pushed before the worker spawns. Recorded as a <code>progress_published</code> event, so an activity opened without one is answerable from the session rather than only from whoever was watching the working tree at the time. Omit only where the session has no planning folder to mark.</td></tr>
           </tbody>
         </table>
@@ -303,23 +302,23 @@
       </section>
       <section class="tool" id="get_activity">
         <h3><code>get_activity</code></h3>
-        <p class="tool-summary">Load the current activity definition, including steps and transitions.</p>
+        <p class="tool-summary">Load the current activity definition, including steps and exits.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Loads the full definition for the activity this context was dispatched for. Name it with <code>activity_id</code> where several are in flight; omit it on an ordinary walk, where the server reads the one activity from session state.</p>
           <p>You must pass <code>context_tokens</code>: your worker's context window size in tokens. The server uses this to decide how many step techniques to bundle inline.</p>
-          <p>Ungated techniques that fit the budget are included in the response under <code>step_techniques</code> — the same content you would get from <code>get_technique</code> for that step. Gated steps and overflow techniques still need a separate <code>get_technique</code> call.</p>
+          <p>Step-bound techniques whose gate answers true, and that fit the budget, are included in the response under <code>step_techniques</code> — the same content you would get from <code>get_technique</code> for that step. A step whose gate is false or unanswered, and a technique past the budget, still needs a separate <code>get_technique</code> call.</p>
           <p>If the session uses persistent context mode (or you pass <code>bundle: &quot;reference&quot;</code>), content you already received may come back as short unchanged markers instead of full text. Pass <code>bundle: &quot;full&quot;</code> to force full delivery.</p>
-          <p><code>_meta.batch</code> reports where your context stands against its batch bound: how many activities it has taken, the cap, what it has been delivered, the budget, and <code>may_continue</code>. On <code>may_continue: false</code>, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new <code>agent_id</code>.</p>
+          <p><code>_meta.batch</code> reports where your context stands against its batch bound: how many activities it has taken, what it has been delivered, <code>may_continue</code>, and, where <code>bounded</code> is true, the cap and the budget. On <code>may_continue: false</code>, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new <code>agent_id</code>.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>yes</td><td>Your worker context window in tokens. Required so the server can size inline technique bundling.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>yes</td><td>REQUIRED. Caller's context window in tokens; sets the eager step-technique bundling budget for this activity and the cumulative batch budget across the run this context is walking. Per-call, never defaulted — omitting it is a validation error.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Identity of the AGENT CONTEXT making this call — mint one per dispatched worker and reuse it verbatim for that worker's whole life, resuming it after a gate and advancing it to the next activity of its batch. Scopes the delivery ledger (and the dispatch record) to that context: a fresh id gets full delivery, a reused id gets unchanged-references for what that context already received. Omit for solo walks. Never rebinds the session agent.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>The activity this context was dispatched for, instance-qualified (<code>challenge-pass#1</code>) where the graph runs that activity once per element of a collection. Required whenever several activities are in flight; omit it on an ordinary walk. A name the session is not on is refused rather than served, so a branch is never quietly handed a sibling's body.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           </tbody>
         </table>
@@ -329,17 +328,17 @@
       <p>Yield to the orchestrator, present decisions to the user, and resume.</p>
       <section class="tool" id="yield_checkpoint">
         <h3><code>yield_checkpoint</code></h3>
-        <p class="tool-summary">Worker tool: mark a checkpoint active and yield to the orchestrator (emit <code>&lt;checkpoint_yield&gt;</code> with the returned session_index).</p>
+        <p class="tool-summary">Worker tool: mark a checkpoint active and yield to the orchestrator (emit an empty <code>&lt;checkpoint_yield&gt;</code> block, which hands control up the chain; the user-facing agent reads the open checkpoint from the server with present_checkpoint).</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Call when a checkpoint step tells you to stop and hand control to the orchestrator.</p>
-          <p>Records the checkpoint as active and returns the <code>session_index</code> for a <code>&lt;checkpoint_yield&gt;</code> block in your output.</p>
+          <p>Records the checkpoint as active. Emit an empty <code>&lt;checkpoint_yield&gt;</code> block in your output, which hands control up the chain; the user-facing agent reads the open checkpoint with <code>present_checkpoint</code>.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           <tr><td><code>checkpoint_id</code></td><td><code>string</code></td><td>yes</td><td>Id of the checkpoint step you are yielding.</td></tr>
           <tr><td><code>message</code></td><td><code>string</code></td><td>no</td><td>Only for a decision the activity does not declare: the question put to the user. Forbidden on a declared checkpoint, whose definition owns the wording.</td></tr>
           <tr><td><code>options</code></td><td><code>object[]</code></td><td>no</td><td>Only for a decision the activity does not declare: at least two answers. The decision is recorded; an option here sets no variable, so a value the run must read belongs on a declared checkpoint.</td></tr>
@@ -368,13 +367,13 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Call after the orchestrator resolves a checkpoint and resumes you.</p>
-          <p>Verifies the checkpoint is cleared and returns any variable updates to apply before continuing the activity.</p>
+          <p>Verifies the checkpoint is cleared and returns the checkpoint answered, the option chosen, the variable updates to apply, and the exit the option selected, if any. Where that exit carries <code>ends_activity</code>, run none of the remaining steps and report the ones you ran.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
@@ -391,7 +390,7 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
@@ -410,7 +409,7 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           <tr><td><code>option_id</code></td><td><code>string</code></td><td>no</td><td>Option the user selected. Must match one of the checkpoint's defined options.</td></tr>
           <tr><td><code>auto_advance</code></td><td><code>boolean</code></td><td>no</td><td>Set <code>true</code> to use the checkpoint's default option after its timer elapses.</td></tr>
           <tr><td><code>condition_not_met</code></td><td><code>boolean</code></td><td>no</td><td>Set <code>true</code> to dismiss a conditional checkpoint whose condition evaluated to false.</td></tr>
@@ -427,7 +426,7 @@
           <summary>Full description</summary>
           <p>Fetches one technique for the current workflow or activity.</p>
           <p>Before any activity is active, returns the workflow's first technique. During an activity, use <code>step_id</code> to fetch a specific step's technique, or omit <code>step_id</code> for the activity's first technique.</p>
-          <p>The response is fully composed: inherited inputs/outputs and merged rules from ancestor techniques, plus binding annotations when fetched via a step.</p>
+          <p>The response carries the technique body with its own rules, naming its ancestors in <code>inherits</code>; each ancestor scope's shared inputs, outputs and rules arrive once under <code>contracts</code>, plus binding annotations when fetched via a step.</p>
           <p>Techniques load one at a time. In persistent context mode, an identical refetch may return a short unchanged marker; pass <code>full: true</code> to get the full payload again.</p>
           <p>Every fetch is recorded for trace and advisory manifest checks on the next <code>next_activity</code> call.</p>
         </details>
@@ -435,11 +434,11 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Identity of the AGENT CONTEXT making this call — mint one per dispatched worker and reuse it verbatim for that worker's whole life, resuming it after a gate and advancing it to the next activity of its batch. Scopes the delivery ledger (and the dispatch record) to that context: a fresh id gets full delivery, a reused id gets unchanged-references for what that context already received. Omit for solo walks. Never rebinds the session agent.</td></tr>
           <tr><td><code>technique_id</code></td><td><code>string</code></td><td>no</td><td>Optional. A technique of your role's contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only techniques this session's roles name are servable; anything else is refused. Not for a step's own technique, which <code>step_id</code> addresses.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Optional. The activity you were dispatched for. A step id resolves against the session's CURRENT activity, so passing this turns a pointer that has moved on into an error instead of a technique from the wrong activity.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>
@@ -451,11 +450,11 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Identity of the AGENT CONTEXT making this call — mint one per dispatched worker and reuse it verbatim for that worker's whole life, resuming it after a gate and advancing it to the next activity of its batch. Scopes the delivery ledger (and the dispatch record) to that context: a fresh id gets full delivery, a reused id gets unchanged-references for what that context already received. Omit for solo walks. Never rebinds the session agent.</td></tr>
           <tr><td><code>technique_id</code></td><td><code>string</code></td><td>no</td><td>Optional. A technique of your role's contract, by the id it is keyed under — a protocol you have reached and were not sent (a checkpoint you are about to raise that your activity never declared), or one whose delivery your context no longer holds. Only techniques this session's roles name are servable; anything else is refused. Not for a step's own technique, which <code>step_id</code> addresses.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Optional. The activity you were dispatched for. A step id resolves against the session's CURRENT activity, so passing this turns a pointer that has moved on into an error instead of a technique from the wrong activity.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>
@@ -478,9 +477,9 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
-          <tr><td><code>resource_id</code></td><td><code>string</code></td><td>yes</td><td>Resource slug, optionally workflow-prefixed (<code>meta/bootstrap-protocol</code>), optionally with <code>#section</code> anchor.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Identity of the AGENT CONTEXT making this call — mint one per dispatched worker and reuse it verbatim for that worker's whole life, resuming it after a gate and advancing it to the next activity of its batch. Scopes the delivery ledger (and the dispatch record) to that context: a fresh id gets full delivery, a reused id gets unchanged-references for what that context already received. Omit for solo walks. Never rebinds the session agent.</td></tr>
+          <tr><td><code>resource_id</code></td><td><code>string</code></td><td>yes</td><td>Resource slug, optionally workflow-prefixed (<code>meta/style-guide</code>), optionally with <code>#section</code> anchor.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>
@@ -501,29 +500,29 @@
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           <tr><td><code>trace_tokens</code></td><td><code>string[]</code></td><td>no</td><td>Tokens collected from <code>next_activity</code> <code>_meta.trace_token</code> responses.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Keep only trace events whose aid equals this worker context.</td></tr>
           </tbody>
         </table>
         </div>
       </section>
       <section class="tool" id="record_usage">
         <h3><code>record_usage</code></h3>
-        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch).</p>
+        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY, on the <code>basis</code> the harness reports it: that activity's own spend, or the context's running total.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch). Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional <code>agent_id</code> attributes the row to a worker context.</p>
+          <p>Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY, on the <code>basis</code> the harness reports it: that activity's own spend, or the context's running total. Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional <code>agent_id</code> attributes the row to a worker context.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.</td></tr>
           <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token figure for this ONE activity, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
           <tr><td><code>basis</code></td><td><code>&quot;delta&quot; | &quot;cumulative&quot;</code></td><td>yes</td><td>What the figure counts. <code>delta</code> is this activity's own spend and sums with its siblings. <code>cumulative</code> is a running total for this agent context, which several harnesses report — those are carried as the latest figure per agent, since summing them counts every earlier activity again. Read the harness output rather than assuming: a cumulative figure passed as a delta is what makes a total wrong in a direction nothing reveals.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Worker context that incurred this usage — the same identity used on get_activity for that dispatch. Stored as data.agentId on the activity_usage event so inspect_session can filter and attribute rows, and so the rows of one batched dispatch are readable as a group. Omit when attribution is unknown; the row remains valid as an unattributed bucket.</td></tr>
           </tbody>
         </table>
         </div>

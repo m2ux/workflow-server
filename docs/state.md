@@ -6,7 +6,7 @@ A **variable** is a named fact the workflow declares. The **bag** is the set of 
 
 The session lives in the **planning folder**. The **state file** in that folder is the session written down. An agent holds a **session index**, a short name that finds the state file. A **seal** is the mark on the state file, bound to the server's **signing key**. A **read** is the server opening the state file.
 
-**Seeding** writes each declared starting value into the bag when the session opens. A **checkpoint** is a pause for a person. A **worker** carries out one activity. An **orchestrator** tracks the workflow. A **user-facing agent** is the one that can ask a person. After seeding, a checkpoint answer and a worker's outputs are what change the bag.
+**Seeding** writes each declared starting value into the bag when the session opens. A **checkpoint** is a pause for a person. A **worker** carries out one activity. An **orchestrator** tracks the workflow. A **user-facing agent** is the one that can ask a person. After seeding, a checkpoint answer and a worker's outputs are what change the bag, beside two writes the server makes of its own.
 
 ## Where Variables Come From
 
@@ -79,7 +79,7 @@ variables:
   - name: needs_migration
     type: boolean
     defaultValue: false
-  - name: planning_folder_path
+  - name: review_scope
     type: string
     required: true
 ```
@@ -146,7 +146,7 @@ classDiagram
 
 *Figure 8. Declarations, and the Bag They Seed.*
 
-The server seeds every declared default from the combined set when the session opens: at `start_session` for a top-level session, and at `dispatch_child` for an embedded child, which seeds from the child workflow's own declarations. The seeded map is recorded as a single `variables_seeded` event.
+The server seeds every declared default from the combined set when the session opens: at `start_session` for a top-level session, and for an embedded child at `dispatch_child`, or at the `start_session` that opens a catalog-matched client, each seeding from the child workflow's own declarations. A top-level session also seeds `user_request` when one is passed, and, from a `working_directory`, the repository facts `host_repo_path`, `target_repo`, `component_path` and `is_monorepo`. A child opened by `dispatch_child` also takes the parent's `user_request`, and a client opened by `start_session` takes the repository facts. The seeded map is recorded as a single `variables_seeded` event.
 
 Seeding at creation keeps the orchestrator's copy of the state and the server's bag in agreement from the first call, so `get_workflow_status` returns the seeded values rather than an empty map.
 
@@ -183,7 +183,7 @@ A declared type is one of `string`, `number`, `boolean`, `array` or `object`, an
 
 ## How State Changes
 
-After seeding, a checkpoint answer and a worker's output are what write the bag, and both go through the same server routine (Figure 11). The bag is the union of what the user decided and what the workers found (Figure 12).
+After seeding, what agents write into the bag is a checkpoint answer or a worker's output, and both go through the same server routine (Figure 11). The bag is the union of what the user decided and what the workers found (Figure 12).
 
 ```mermaid
 stateDiagram-v2
@@ -211,6 +211,8 @@ classDiagram
 
 *Figure 12. Bag, Checkpoint Answer, and Worker Output.*
 
+The server writes two things of its own: the container a fan fills, when the fan opens, and on resume, the new request and, when the workflow's version differs from the one the session recorded, any declared default the bag lacks.
+
 ### An Answer at a Checkpoint
 
 A worker that reaches a checkpoint pauses, and the question travels up to the user-facing agent (Figure 13). The option the person picks may write a variable, and that write is the effect (Figure 14). The chain is [dispatch](dispatch.md).
@@ -219,9 +221,11 @@ A worker that reaches a checkpoint pauses, and the question travels up to the us
 sequenceDiagram
   participant Worker
   participant Person as User-facing agent
+  participant Server
   participant Bag
   Worker->>Person: The question travels up
-  Person->>Bag: The chosen option writes a variable
+  Person->>Server: respond_checkpoint with the chosen option
+  Server->>Bag: The option's effect writes a variable
 ```
 
 *Figure 13. A Checkpoint Answer Writes a Variable Into the Bag.*
@@ -249,7 +253,7 @@ classDiagram
 }
 ```
 
-The user-facing agent passes the update down to the orchestrator, which applies it to its own copy of the state before passing it on to the worker.
+The server writes the chosen option's `setVariable` into the bag when `respond_checkpoint` records the answer, and `resume_checkpoint` hands the worker those values as `variables_changed`.
 
 ### A Worker's Outputs
 
@@ -259,9 +263,11 @@ A worker that finishes an activity names the variables its work settled, and the
 sequenceDiagram
   participant Worker
   participant Orchestrator
+  participant Server
   participant Bag
   Worker->>Orchestrator: The variables the work settled
-  Orchestrator->>Bag: Relayed on the transition
+  Orchestrator->>Server: next_activity with variables_changed
+  Server->>Bag: Written on the transition
 ```
 
 *Figure 15. A Worker's Outputs Are Written on the Transition.*
@@ -340,17 +346,17 @@ graph:
     standard: analyse-sources
 ```
 
-### How the Orchestrator Decides
+### How the Exit Is Decided
 
-The orchestrator tests the exits in order, takes the first whose condition holds, and otherwise takes the default (Figure 19). A checkpoint option that names an exit wins over that test (Figure 20).
+The worker tests its activity's exits in order, takes the first whose condition holds, and otherwise takes the default (Figure 19). The server evaluates no exit. A checkpoint option that names an exit wins over that test (Figure 20).
 
 ```mermaid
 stateDiagram-v2
   [*] --> Evaluating
   Evaluating --> Chosen: the first condition holds
-  Evaluating --> Default: no condition holds
+  Evaluating --> DefaultExit: no condition holds
   Chosen --> Next: the graph names the destination
-  Default --> Next: the graph names the destination
+  DefaultExit --> Next: the graph names the destination
 ```
 
 *Figure 19. The First Condition That Holds Chooses the Exit. Otherwise the Default.*
@@ -372,7 +378,7 @@ classDiagram
 
 *Figure 20. Condition, Default Exit, and a Checkpoint Option.*
 
-It then reads the destination from the graph and calls `next_activity` with that id, reporting the exit it took as the `exit` parameter. It asks neither the user nor the model, which is what the declared form is for.
+It reads the destination from its `exit_destinations`, and the orchestrator calls `next_activity` with that id, reporting the exit taken as the `exit` parameter. It asks neither the user nor the model, which is what the declared form is for.
 
 An exit's `when` is the same inline expression a step gate uses: comparisons with `==`, `!=`, `>`, `<`, `>=` and `<=`, bare identifier truthiness, unary `!`, and `&&` / `||` with parentheses.
 
@@ -440,7 +446,7 @@ classDiagram
 
 *Figure 24. Immediate Exit, and the Steps It Ends.*
 
-An exit may be declared `immediate`. Selecting one at a checkpoint ends the activity's step sequence there, so a user who aborts does not then watch the remaining steps run. The step-manifest check reads the recorded exit and accounts for the steps it skipped.
+An exit may be declared `immediate`. Selecting one at a checkpoint ends the activity's step sequence there, so a user who aborts does not then watch the remaining steps run. The worker learns it from `resume_checkpoint`, or from a replayed `yield_checkpoint`, both of which return the exit with `ends_activity`. The step-manifest check reads the recorded exit and accounts for the steps it skipped.
 
 ## Varying the Path
 
@@ -519,8 +525,9 @@ Not every call returns a session index.
 |----------|------|
 | `client` beside the session | A unique catalog match, with no resume phrasing in the request |
 | A `decision`, and no `session_index` | A durable meta start that cannot uniquely open a client. The decision is `workflow-selection` or `resume-session` |
+| A `decision`, and no `session_index` | A `working_directory` that does not resolve to one repository and component, or a `repo` that disagrees with it. The decision is `unbound-repo`, `binding-mismatch`, `component-choice` or `unmapped-root` |
 
-Every response carries `execution_path`: `agent` where a caller walks the definition, `runner` where the server does.
+Every response that opens a session carries `execution_path`: `agent` where a caller walks the definition, `runner` where the server does.
 
 <a id="persistence"></a>
 
@@ -568,7 +575,7 @@ The `README.md` carries a Progress table. The orchestrator marks a row in progre
 
 ### Session Files
 
-The server writes the state file, then the seal, on every authenticated call (Figure 31). Those two files are the pieces (Figure 32).
+The server writes the state file, then the seal, on every call that changes the session (Figure 31). Those two files are the pieces (Figure 32).
 
 ```mermaid
 sequenceDiagram
@@ -594,10 +601,10 @@ classDiagram
 
 *Figure 32. State File, and the Seal on It.*
 
-The server owns the canonical session state and writes it to disk atomically. Agents hold a six-character session index, derived deterministically from the planning slug, and nothing else. They neither read nor write the state themselves. Each session folder holds two files:
+The server owns the canonical session state and writes it to disk atomically. Agents hold a six-character session index, derived deterministically from the planning folder's path under the server's signing key, and nothing else. They neither read nor write the state themselves. Each session folder holds two files:
 
-* **`session.json`** is the state file, validated against the [schema](../schemas/session-file.schema.json). It holds where the run has got to, what it decided, and what it did — the workflow and version it started against, the variable bag, the activities completed and skipped, the checkpoint responses, the history, any launched children, and for a child, a snapshot of its parent. A person can read it, and it is reproducible from the workflow definition. Read the schema for the field-by-field shape rather than a list here, which would drift from it.
-* **`.session-token`** is the seal, binding those exact bytes to the engineering root and to the server's signing key. The server verifies it on every read, and a disagreement fails the read. What the seal does and does not prove is in [fidelity](fidelity.md#layer-1-session-integrity).
+* **`session.json`** is the state file, validated against the [schema](../schemas/session-file.schema.json). It holds where the run has got to, what it decided, and what it did — the workflow and version it started against, the variable bag, the activities completed, the checkpoint responses, the history, and any launched children, each with its own state embedded. A person can read it, and it is reproducible from the workflow definition. Read the schema for the field-by-field shape rather than a list here, which would drift from it.
+* **`.session-token`** is the seal, binding those exact bytes to the server's signing key. The server verifies it on every read, and a disagreement fails the read. What the seal does and does not prove is in [fidelity](fidelity.md#layer-1-session-integrity).
 
 ### Writes Against One Session
 
@@ -643,18 +650,17 @@ The error text tells the agent to make the same call again, and states that noth
 
 ### Pause, Stop, Resume
 
-A running session can pause or stop, and resume returns it to the same place (Figure 35). The state file, not the agent's memory, holds that place (Figure 36).
+When its agent stops, a session stays `running`: nothing records a pause, and resume returns it to the place the state file holds (Figure 35). The state file, not the agent's memory, holds that place (Figure 36).
 
 ```mermaid
 stateDiagram-v2
   [*] --> Running: the session opens
-  Running --> Paused: the agent stops
-  Running --> Stopped: the agent stops
-  Paused --> Running: resume reads the state file
-  Stopped --> Running: resume reads the state file
+  Running --> Unattended: the agent stops, and the file is unchanged
+  Unattended --> Running: resume reads the state file
+  Running --> [*]: completed or aborted
 ```
 
-*Figure 35. Pause or Stop, Then Resume at the Same Place.*
+*Figure 35. The Agent Stops, the File Holds, and Resume Returns to the Same Place.*
 
 ```mermaid
 classDiagram

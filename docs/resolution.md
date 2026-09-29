@@ -17,7 +17,6 @@ sequenceDiagram
   participant File
   participant Name
   File->>Name: The filename is the id
-  Name->>Name: The frontmatter repeats it
 ```
 
 *Figure 1. The Filename Is the Name an Agent Asks For.*
@@ -38,9 +37,9 @@ classDiagram
 
 *Figure 2. Standalone Technique, Group, and Resource File.*
 
-Techniques and resources are markdown files on disk, and each one's filename is its id. A standalone technique is `techniques/{slug}.md`; a grouped technique is a folder holding a `TECHNIQUE.md` index plus one `{sub}.md` per nested technique; a resource is `resources/{slug}.md`. The id matches the filename, and the frontmatter repeats it.
+Techniques and resources are markdown files on disk. A standalone technique is `techniques/{slug}.md`; a grouped technique is a folder holding a `TECHNIQUE.md` index plus one `{sub}.md` per nested technique; a resource is `resources/{slug}.md`. A technique's id is its filename, and its frontmatter carries only its version. A resource answers to its filename or to the frontmatter `name` it declares, and returns that `name` as its id where it declares one.
 
-So the file `techniques/workflow-engine.md` is the technique `workflow-engine`, and that is the name an agent asks for it by.
+So the file `techniques/review-engine.md` is the technique `review-engine`, and that is the name an agent asks for it by.
 
 ### Reference Path
 
@@ -86,11 +85,11 @@ A reference is a `::`-delimited path:
 
 ```yaml
 techniques:
-  primary: workflow-engine::dispatch-activity
+  primary: run-engine::hand-off
   supporting:
-    - workflow-engine::evaluate-transition
-    - agent-conduct::checkpoint-discipline
-    - meta::agent-conduct::file-sensitivity      # namespace-prefixed
+    - run-engine::choose-exit
+    - conduct::confirm-before-deleting
+    - meta::conduct::file-care                   # namespace-prefixed
     - shared::indexer::analyse                   # a namespace named by its path
 ```
 
@@ -132,15 +131,15 @@ classDiagram
 
 A namespace is a directory offering artifacts to references. It earns that by holding a `techniques/`, `resources/` or `routines/` directory, or by holding a `workflow.yaml` — and a directory holding a definition is a workflow as well, the guide an operator follows. The two are usually one directory: a workflow keeping its own library beside its definition is addressable with nothing done to it.
 
-Discovery walks `corpus/` under the pointed tree and does not search sibling folders. The walk stops at a workflow: a definition owns everything beneath it, so a workflow file nested under another workflow is not a second product. The workflow id is the directory name. A declaration that names a different id is an identity mismatch, and neither name resolves.
+Discovery walks the `corpus/` grouping under the pointed tree where one exists, and the pointed directory otherwise; a grouping's siblings are not searched. The walk stops at a workflow: a definition owns everything beneath it, so a workflow file nested under another workflow is not a second product. The workflow id is the directory name. A declaration that names a different id is an identity mismatch, and neither name resolves.
 
 `activities/` earns nothing. An activity declares exits, and the destinations those exits lead to live in a definition's `graph`, so an activity in a directory holding no definition could never be routed. Activities belong to workflows; the three library kinds are what a namespace offers.
 
 #### Name and Path
 
-A namespace answers to two names: its directory name, and the slash-joined path from the corpus root that reaches it. The name is what a reference ordinarily carries, so a folder can be re-grouped without rewriting what points at it; the path is what a reference carries where a name is claimed twice, or where an author would rather be explicit. `shared/indexer/techniques/analyse.md` answers to `indexer::analyse` and to `shared::indexer::analyse` alike.
+A namespace answers to its directory name, to the slash-joined path from the corpus root that reaches it, and to any trailing part of that path that reaches it alone. The name is what a reference ordinarily carries, so a folder can be re-grouped without rewriting what points at it; the path is what a reference carries where a name is claimed twice, or where an author would rather be explicit. `shared/indexer/techniques/analyse.md` answers to `indexer::analyse` and to `shared::indexer::analyse` alike.
 
-Two consequences are worth stating. A namespace holding no definition never reaches `list_workflows`, because the listing reads definitions rather than a list of names to exclude — so a shared library sits in the corpus without appearing as a workflow. And where a namespace at `a/b` and a directory `a/techniques/b/` both exist, one reference names two files: `indexCorpus` reports the collision and the reference is refused naming both, rather than one reading being picked and the other left unreachable.
+Two consequences are worth stating. A namespace holding no definition never reaches `list_workflows`, because the listing reads definitions rather than a list of names to exclude — so a shared library sits in the corpus without appearing as a workflow. And where a namespace at `a/b` and a directory `a/techniques/b/` both exist, one reference names two files: `indexCorpus` reports the collision, and a technique reference is refused naming both, rather than one reading being picked and the other left unreachable. A resource reference that reads both ways takes neither namespace: the whole string is read as a bare id in the session's workflow.
 ### Shared Meta Layer
 
 Shared behaviour is written once in meta, and a workflow's own file of the same name wins (Figure 7). The current workflow and meta are the two places (Figure 8).
@@ -252,7 +251,7 @@ Holding `activities/` does not make a directory a namespace. An activity declare
 
 ### Filename Prefix
 
-The filename may begin with a number. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
+An activity filename begins with a number and a hyphen (`01-gather.yaml`), and a file without one is not loaded. The rest of the filename is the activity's id, and a file declaring another id is left out of the load. That number is the prefix put in front of each document the activity writes. How documents are named is [naming](delivery.md#how-documents-are-named).
 
 ## Routine
 
@@ -291,7 +290,7 @@ A routine lives at `routines/<name>.yaml`, beside `activities/`. The filename is
 
 ### Splice
 
-The loader substitutes the site's arguments through the body, prefixes every identifier inside it from the referring step's id, and splices the steps in place of the reference. The step manifest, the guards, and the worker see ordinary steps. Two references to one routine do not collide, because each body is prefixed from its own step. A routine may refer to another, and a cycle fails the load.
+The loader substitutes the site's arguments through the body, prefixes every identifier inside it from the referring step's id, and splices the steps in place of the reference. The step manifest, the worker, and every guard that reads the loaded workflow see ordinary steps. Two references to one routine do not collide, because each body is prefixed from its own step. A routine may refer to another, and a cycle excludes the referring activity from the load.
 
 ## Technique
 
@@ -332,10 +331,10 @@ There is one kind of technique. It is either a single markdown file, or a folder
 A technique publishes:
 
 * **`id`**, **`version`**, **`capability`** — the identity and the capability statement.
-* **`inputs`** (optional) — an array of entries, each with `id`, `description`, `required`, `default`, and optional `components` (named sub-members).
-* **`outputs`** (optional) — an array of entries, each with `id`, `description`, optional `components`, and an optional `artifact` carrying a `name` (the filename produced when the output is persisted).
-* **`protocol`** — an ordered list of blocks `{title?, steps[]}`. Steps are imperative bullets; failure handling is expressed inline within the relevant steps.
-* **`rules`** — named behavioural invariants that apply across the technique. Each key is a rule name (or a group prefix); each value is a single rule string or an array of related rules.
+* **`inputs`** (optional) — an array of entries, each with `id`, an optional `description` (beginning `(optional)` for an optional input), an optional `default`, and optional `components` (named sub-members).
+* **`outputs`** (optional) — an array of entries, each with `id`, an optional `description`, optional `components`, and an optional `artifact` carrying a `name` (the filename produced when the output is persisted).
+* **`protocol`** (optional) — an ordered list of blocks `{title?, steps[]}`. Steps are imperative bullets; failure handling is expressed inline within the relevant steps.
+* **`rules`** (optional) — named behavioural invariants that apply across the technique. Each key is a rule name (or a group prefix); each value is a single rule string or an array of related rules.
 
 Section shapes and the addressing grammar are the [technique protocol](technique.md). The case and shape of every id are the [identifier conventions](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md).
 
@@ -407,7 +406,7 @@ Technique invocations also appear inside step descriptions:
 ```yaml
 steps:
   - id: dispatch-worker
-    description: "workflow-engine::dispatch-activity(activity_id: {next}, agent_id: 'worker')"
+    description: "run-engine::hand-off(activity_id: {next}, agent_id: 'worker')"
 ```
 
 The inline form points at the same technique body. Agents read the technique from the bundled response rather than re-fetching it.
@@ -419,13 +418,15 @@ A reference is located, then read as a whole technique, a nested technique, or a
 ```mermaid
 stateDiagram-v2
   [*] --> Located
+  Located --> Unresolved: no technique file
   Located --> Whole: no nested segment
   Located --> Nested: a nested file matches
-  Nested --> Rule: no nested file matches
+  Located --> Rule: a nested segment, and no nested file
   Rule --> Unresolved: no rule matches
   Whole --> [*]
   Nested --> [*]
   Rule --> [*]
+  Unresolved --> [*]
 ```
 
 *Figure 21. A Reference Becomes a Whole Technique, a Nested One, a Rule, or Unresolved.*
@@ -435,13 +436,16 @@ classDiagram
   class Prefix {
     names the namespace
   }
+  class Namespace {
+    the one a prefix names
+  }
   class CurrentWorkflow {
     tried first when there is no prefix
   }
   class Meta {
     the shared layer, tried second
   }
-  Prefix --> CurrentWorkflow : a prefix does not fall through
+  Prefix --> Namespace : resolves there and nowhere else
   CurrentWorkflow --> Meta : shadows a same-named file
 ```
 
@@ -452,7 +456,7 @@ classDiagram
 Each reference resolves as follows:
 
 1. **Locate the technique.** If the reference carries a namespace prefix, load from that namespace's `techniques/` folder and nowhere else — a prefix says where the technique lives, so a fallback would deliver a different file under the same reference. Otherwise resolve **current-workflow-first, then the `meta` shared layer** — the current workflow's technique shadows a same-named `meta` one.
-2. **Whole-technique reference** (no nested segment) — deliver the technique's own body (capability, flow, inputs, protocol, outputs) and auto-include its rules.
+2. **Whole-technique reference** (no nested segment) — deliver the technique's own body (capability, inputs, protocol, outputs) and auto-include its rules.
 3. **Nested reference** — try a `{group}/{sub}.md` nested technique first (current-workflow-first, then `meta`); deliver its body and auto-include its rules.
 4. **Rule reference** — if no nested technique matches, match the trailing segment against the technique's rules. A direct name match resolves to that rule. A group prefix `{group}` expands to every `{group}-*` rule.
 5. **Unresolved** — a reference that matches none of the above surfaces explicitly; it is never silently dropped.
@@ -534,7 +538,7 @@ The result of resolving a list of references is a bundle grouped into these buck
 * **`rules`** — a flat array of `[rule-name, rule-line]` tuples (one tuple per line) for rules that govern the role rather than any one technique.
 * **`unresolved`** — references that did not resolve.
 
-Empty buckets are omitted. The lookup is structural and requires no session token; most clients receive it indirectly through the bundles that `get_workflow` and `get_activity` produce, which [delivery](delivery.md#what-a-role-receives) describes.
+Empty buckets are omitted. Clients receive a bundle through `get_workflow` and `get_activity`, which [delivery](delivery.md#what-agents-are-sent) describes.
 
 ### Ancestor Contract
 
@@ -573,10 +577,10 @@ A technique points at a resource by a link, and the server rewrites that link in
 ```mermaid
 sequenceDiagram
   participant Technique
-  participant Link
+  participant ResourceLink as Link
   participant Agent
-  Technique->>Link: Points at a resource
-  Link->>Agent: Rewritten into a name the agent can ask for
+  Technique->>ResourceLink: Points at a resource
+  ResourceLink->>Agent: Rewritten into a name the agent can ask for
 ```
 
 *Figure 29. A Resource Link Is Rewritten Into a Name the Agent Can Ask For.*
@@ -641,7 +645,7 @@ get_resource({ session_index, resource_id: "meta/activity-worker-prompt" })
 
 The server resolves the reference:
 
-* **Bare slugs** (for example `"review-mode"`) resolve within the session's workflow.
+* **Bare slugs** (for example `"review-checklist"`) resolve within the session's workflow.
 * **Prefixed references** (for example `"meta/activity-worker-prompt"`) resolve from the named namespace. The prefix is the longest leading run of segments naming one, so `"shared/indexer/index-reading"` reads the namespace `shared/indexer` and the slug `index-reading`.
 
 ### Narrowing to One Section

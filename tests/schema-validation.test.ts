@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   WorkflowSchema,
   safeValidateWorkflow,
+  safeValidateWorkflowFile,
 } from '../src/schema/workflow.schema.js';
 import {
   ActivitySchema,
@@ -392,8 +393,34 @@ describe('schema-validation', () => {
     });
   });
 
+  describe('WorkflowFileSchema', () => {
+    const file = (extra: Record<string, unknown>) => ({
+      id: 'test-workflow', version: '1.0.0', title: 'Test Workflow', initialActivity: 'start', ...extra,
+    });
+
+    it('accepts a reference to another workflow\'s activity, with or without the activities/ segment', () => {
+      expect(safeValidateWorkflowFile(file({
+        activities: ['source-wf/02-design.yaml', 'source-wf/activities/04-research.yml'],
+      })).success).toBe(true);
+    });
+
+    it('rejects a reference that names no workflow, since own activities need none', () => {
+      expect(safeValidateWorkflowFile(file({ activities: ['01-start.yaml'] })).success).toBe(false);
+    });
+
+    it('accepts a reference into a subfolder of another workflow\'s activities', () => {
+      expect(safeValidateWorkflowFile(file({
+        activities: ['meta/patterns/02-supervisor.yaml', 'meta/activities/patterns/03-plan-and-execute.yaml'],
+      })).success).toBe(true);
+    });
+
+    it('rejects a reference that is not an activity file', () => {
+      expect(safeValidateWorkflowFile(file({ activities: ['work-package/design-philosophy'] })).success).toBe(false);
+    });
+  });
+
   describe('WorkflowSchema', () => {
-    const minimalActivity = { 
+    const minimalActivity = {
       id: 'activity-1', 
       version: '1.0.0',
       name: 'Activity One',

@@ -9,6 +9,8 @@ import {
   getExitBindings,
   exitDestinations,
   validateExitBindings,
+  validateInitialActivity,
+  readActivityRaw,
   TERMINAL_SENTINEL,
   baseId,
   instanceIndex,
@@ -211,6 +213,176 @@ describe('workflow-loader', () => {
     });
   });
 
+  describe('activity sources', () => {
+    let fixtureDir: string;
+
+    beforeAll(() => {
+      fixtureDir = mkdtempSync(join(tmpdir(), 'workflow-loader-activity-sources-'));
+      // A source workflow holding one activity at the top of its folder and one in a subfolder,
+      // and a borrower that references both.
+      mkdirSync(join(fixtureDir, 'source-wf', 'activities', 'patterns'), { recursive: true });
+      writeFileSync(join(fixtureDir, 'source-wf', 'workflow.yaml'),
+        'id: source-wf\nversion: 1.0.0\ntitle: Source\ninitialActivity: shared\n');
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', '01-shared.yaml'),
+        'id: shared\nversion: 1.0.0\nname: Shared\n');
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', 'patterns', '02-pattern.yaml'),
+        'id: pattern\nversion: 1.0.0\nname: Pattern\n');
+      mkdirSync(join(fixtureDir, 'borrower-wf'));
+      writeFileSync(join(fixtureDir, 'borrower-wf', 'workflow.yaml'), [
+        'id: borrower-wf',
+        'version: 1.0.0',
+        'title: Borrower',
+        'initialActivity: shared',
+        'activities:',
+        '  - source-wf/01-shared.yaml',
+        '  - source-wf/patterns/02-pattern.yaml',
+      ].join('\n'));
+      // A source file that fails validation (no `name`), and workflows that borrow it, borrow an
+      // identifier they already hold, borrow a file that does not exist, or enter nowhere.
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', '03-broken.yaml'),
+        'id: broken\nversion: 1.0.0\n');
+      const workflow = (id: string, initial: string, refs: string[], graph: string[] = []) => {
+        mkdirSync(join(fixtureDir, id, 'activities'), { recursive: true });
+        writeFileSync(join(fixtureDir, id, 'workflow.yaml'), [
+          `id: ${id}`, 'version: 1.0.0', `title: ${id}`, `initialActivity: ${initial}`,
+          ...(refs.length > 0 ? ['activities:', ...refs.map((r) => `  - ${r}`)] : []),
+          ...(graph.length > 0 ? ['graph:', ...graph] : []),
+        ].join('\n'));
+      };
+      // A lent activity declaring two exits, and borrowers that bind both, one, or one it lacks.
+      const bind = (...exits: string[]) => ['  review:', ...exits.map((e) => `    ${e}: __terminal__`)];
+      workflow('exit-lender-wf', 'review', [], bind('approved', 'rejected'));
+      writeFileSync(join(fixtureDir, 'exit-lender-wf', 'activities', '01-review.yaml'), [
+        'id: review', 'version: 1.0.0', 'name: Review', 'exits:',
+        '  - id: approved', '    isDefault: true', '  - id: rejected',
+      ].join('\n'));
+      workflow('exit-binds-all-wf', 'review', ['exit-lender-wf/01-review.yaml'], bind('approved', 'rejected'));
+      workflow('exit-binds-one-wf', 'review', ['exit-lender-wf/01-review.yaml'], bind('approved'));
+      workflow('exit-binds-extra-wf', 'review', ['exit-lender-wf/01-review.yaml'], bind('approved', 'rejected', 'escalated'));
+      workflow('broken-borrower-wf', 'shared', ['source-wf/01-shared.yaml', 'source-wf/03-broken.yaml']);
+      workflow('clash-wf', 'shared', ['source-wf/01-shared.yaml']);
+      writeFileSync(join(fixtureDir, 'clash-wf', 'activities', '01-shared.yaml'), 'id: shared\nversion: 1.0.0\nname: Own shared\n');
+      workflow('missing-ref-wf', 'shared', ['source-wf/01-shared.yaml', 'source-wf/09-absent.yaml']);
+      workflow('soft-gate-wf', 'ok', []);
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '01-ok.yaml'), 'id: ok\nversion: 1.0.0\nname: Ok\n');
+      const gate = (id: string, extra: string) => [
+        `id: ${id}`, 'version: 1.0.0', `name: ${id}`, 'steps:', '  - kind: checkpoint', '    id: confirm',
+        '    message: Proceed?', '    options:', '      - id: yes', '        label: Yes', extra,
+      ].join('\n');
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '02-lone-default.yaml'), gate('lone-default', '    defaultOption: yes'));
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '03-stray-default.yaml'),
+        gate('stray-default', '    defaultOption: no\n    autoAdvanceMs: 5000'));
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '04-soft.yaml'),
+        gate('soft', '    defaultOption: yes\n    autoAdvanceMs: 5000'));
+      // A declared id the filename disagrees with, own and borrowed, and a graph naming each by the
+      // id its filename carries.
+      workflow('id-mismatch-wf', 'ok', ['source-wf/04-labelled.yaml'], ['  ok: {}', '  named: {}', '  labelled: {}']);
+      writeFileSync(join(fixtureDir, 'id-mismatch-wf', 'activities', '01-ok.yaml'), 'id: ok\nversion: 1.0.0\nname: Ok\n');
+      writeFileSync(join(fixtureDir, 'id-mismatch-wf', 'activities', '02-named.yaml'), 'id: other\nversion: 1.0.0\nname: Other\n');
+      writeFileSync(join(fixtureDir, 'source-wf', 'activities', '04-labelled.yaml'), 'id: relabelled\nversion: 1.0.0\nname: Relabelled\n');
+      workflow('no-entry-wf', 'absent', []);
+      writeFileSync(join(fixtureDir, 'no-entry-wf', 'activities', '01-only.yaml'), 'id: only\nversion: 1.0.0\nname: Only\n');
+      // Two own files whose names carry one id.
+      workflow('twin-wf', 'twin', []);
+      writeFileSync(join(fixtureDir, 'twin-wf', 'activities', '01-twin.yaml'), 'id: twin\nversion: 1.0.0\nname: Twin\n');
+      writeFileSync(join(fixtureDir, 'twin-wf', 'activities', '02-twin.yaml'), 'id: twin\nversion: 1.0.0\nname: Other twin\n');
+    });
+
+    /** The raw read get_activity serves, from the load it makes. */
+    const rawRead = async (workflowId: string, activityId: string) => {
+      const loaded = await loadWorkflowWithDiagnostics(fixtureDir, workflowId);
+      if (!loaded.success) throw new Error(`load failed: ${loaded.error.message}`);
+      return readActivityRaw(loaded.value, activityId);
+    };
+
+    afterAll(() => {
+      rmSync(fixtureDir, { recursive: true, force: true });
+    });
+
+    it('borrows activities from another workflow, a subfolder of its activities included', async () => {
+      const result = await loadWorkflow(fixtureDir, 'borrower-wf');
+      expect(result.success).toBe(true);
+      if (result.success) expect(result.value.activities?.map((a) => a.id).sort()).toEqual(['pattern', 'shared']);
+      for (const id of ['shared', 'pattern']) {
+        const raw = await rawRead('borrower-wf', id);
+        expect(raw.success, id).toBe(true);
+        if (raw.success) expect(raw.value.sourceWorkflowId).toBe('source-wf');
+      }
+    });
+
+    it('excludes a borrowed file that fails validation and reports it, as for an own file', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'broken-borrower-wf');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.workflow.activities?.map((a) => a.id)).toEqual(['shared']);
+      expect(result.value.activityLoadErrors).toEqual([
+        expect.objectContaining({ file: 'source-wf/03-broken.yaml', activity_id: 'broken' }),
+      ]);
+      expect((await rawRead('broken-borrower-wf', 'broken')).success).toBe(false);
+    });
+
+    it('fails the load when two of its own files carry one identifier', async () => {
+      const result = await loadWorkflow(fixtureDir, 'twin-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toContain('defined by both activities/01-twin.yaml and activities/02-twin.yaml');
+    });
+
+    it('fails the load when a borrowed activity repeats an identifier the workflow holds', async () => {
+      const result = await loadWorkflow(fixtureDir, 'clash-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toContain('borrowed again');
+    });
+
+    it('binds a borrowed activity\'s exits in the borrowing workflow\'s own graph', async () => {
+      expect((await loadWorkflow(fixtureDir, 'exit-binds-all-wf')).success).toBe(true);
+
+      const unbound = await loadWorkflow(fixtureDir, 'exit-binds-one-wf');
+      expect(unbound.success).toBe(false);
+      if (!unbound.success) expect(unbound.error.message).toContain("exit 'rejected' is unbound");
+
+      const undeclared = await loadWorkflow(fixtureDir, 'exit-binds-extra-wf');
+      expect(undeclared.success).toBe(false);
+      if (!undeclared.success) expect(undeclared.error.message).toContain("binds 'review.escalated', which that activity does not declare");
+    });
+
+    it('fails the load when a reference names no activity file', async () => {
+      const result = await loadWorkflow(fixtureDir, 'missing-ref-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toContain('names no activity file');
+    });
+
+    it('excludes an activity whose checkpoint declares half a soft gate, or a default naming no option', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'soft-gate-wf');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.workflow.activities?.map((a) => a.id).sort()).toEqual(['ok', 'soft']);
+      const errors = Object.fromEntries(result.value.activityLoadErrors.map((e) => [e.activity_id, e.error]));
+      expect(errors['lone-default']).toContain('defaultOption without autoAdvanceMs');
+      expect(errors['stray-default']).toContain('not one of its options');
+      // The raw read serves what the load kept, so an excluded activity is not delivered either.
+      expect((await rawRead('soft-gate-wf', 'lone-default')).success).toBe(false);
+      expect((await rawRead('soft-gate-wf', 'soft')).success).toBe(true);
+    });
+
+    it('excludes an activity whose declared id disagrees with its filename, own or borrowed', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'id-mismatch-wf');
+      expect(result.success).toBe(true);
+      if (!result.success) return;
+      expect(result.value.workflow.activities?.map((a) => a.id)).toEqual(['ok']);
+      expect(result.value.activityLoadErrors).toEqual(expect.arrayContaining([
+        expect.objectContaining({ file: '02-named.yaml', activity_id: 'other', error: expect.stringContaining("in a file named for 'named'") }),
+        expect.objectContaining({ file: 'source-wf/04-labelled.yaml', activity_id: 'relabelled' }),
+      ]));
+      expect((await rawRead('id-mismatch-wf', 'other')).success).toBe(false);
+    });
+
+    it('fails the load when initialActivity names no activity', async () => {
+      const result = await loadWorkflow(fixtureDir, 'no-entry-wf');
+      expect(result.success).toBe(false);
+      if (!result.success) expect(result.error.message).toContain('names no activity this workflow contains');
+    });
+  });
+
   describe.skipIf(!LIVE_CORPUS)('getActivity', () => {
     it('should find an activity by ID within a loaded workflow', async () => {
       const workflow = await loadMetaWorkflow();
@@ -365,6 +537,20 @@ describe('workflow-loader', () => {
     it('returns empty for an activity the workflow does not contain', async () => {
       const workflow = await loadMetaWorkflow();
       expect(exitDestinations(workflow, 'no-such-activity')).toEqual([]);
+    });
+  });
+
+  describe('validateInitialActivity', () => {
+    const wf = (initialActivity: string) => ({ id: 'wf', version: '1.0.0', title: 'WF', initialActivity } as unknown as Workflow);
+    const known = new Set(['start', 'next']);
+
+    it('accepts an entry naming an activity the workflow contains', () => {
+      expect(validateInitialActivity(wf('start'), known)).toEqual([]);
+    });
+
+    it('reports an entry naming no activity the workflow contains', () => {
+      expect(validateInitialActivity(wf('begin'), known).join(' '))
+        .toContain("initialActivity 'begin' names no activity this workflow contains");
     });
   });
 

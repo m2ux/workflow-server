@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const sessionIndexParam = {
   session_index: z.string()
     .regex(/^[A-Z2-7]{6}$/, 'session_index must be a 6-character RFC 4648 base32 string (A-Z, 2-7)')
-    .describe('REQUIRED. Stable 6-character session_index from start_session; pass on every authenticated call.'),
+    .describe('REQUIRED. The 6-character session_index a start_session or dispatch_child response returned, copied verbatim; it cannot be composed or predicted. Pass it on every authenticated call.'),
 };
 
 
@@ -69,8 +69,8 @@ export function assertNoActiveCheckpoint(state: { activeCheckpoint?: { checkpoin
   if (state.activeCheckpoint) {
     throw new Error(
       `Blocked: Active checkpoint '${state.activeCheckpoint.checkpointId}' on activity '${state.activeCheckpoint.activityId}'. ` +
-      `All tools are gated until the checkpoint is resolved. ` +
-      `The orchestrator must call respond_checkpoint to clear the gate before any other tool calls can proceed.`
+      `Content-delivery and run-progress tools are gated until the checkpoint is resolved. ` +
+      `The orchestrator must call respond_checkpoint to clear the gate before these calls can proceed.`
     );
   }
 }

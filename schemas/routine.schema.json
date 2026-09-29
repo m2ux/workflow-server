@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "routine",
-  "description": "Routine definition schema — a named run of steps declaring its inputs, outputs and internals, materialised into the activity that refers to it.",
+  "description": "Reusable steps with declared inputs, outputs, and internals.",
   "$ref": "#/definitions/routine",
   "definitions": {
     "routine": {
@@ -10,7 +10,7 @@
         "id": {
           "type": "string",
           "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
-          "description": "Unique identifier for the routine, and the name a reference resolves."
+          "description": "Unique kebab-case routine identifier, without `::`."
         },
         "version": {
           "type": "string",
@@ -34,7 +34,8 @@
                 "anyOf": [
                   {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$"
+                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+                    "description": "Qualified snake_case noun phrase of at least two words: a lowercase letter, then lowercase letters and digits, with each further word after a single underscore (`analysis_target`, never bare `target`)."
                   },
                   {
                     "type": "string",
@@ -96,10 +97,11 @@
                       "type",
                       "mode",
                       "kind"
-                    ]
+                    ],
+                    "description": "Permitted single-word variable name."
                   }
                 ],
-                "description": "The name this parameter carries inside the body, and the name an unbound site falls through to in the host's bag."
+                "description": "Parameter name within the routine body."
               },
               "description": {
                 "type": "string",
@@ -108,7 +110,7 @@
               "kind": {
                 "type": "string",
                 "const": "technique",
-                "description": "Declared where the argument is a technique reference standing in a body step's technique position. A reference site binds it with a literal reference, and an unbound one with no default fails the load."
+                "description": "Marks a technique-reference parameter, requiring a literal technique reference at each use or a declared default. A body technique step binding this parameter declares its own `id`, since a derived one would name the parameter."
               },
               "default": {
                 "type": [
@@ -116,16 +118,17 @@
                   "number",
                   "boolean"
                 ],
-                "description": "The value the body takes where a reference site binds nothing. Without one, an unbound input reads the host's value under this id."
+                "description": "Value for an unbound argument; without a default, a value parameter uses the host variable of the same name."
               }
             },
             "required": [
               "id",
               "description"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Routine parameter with an optional technique-reference kind and default."
           },
-          "description": "Declared parameters. Every name the body reads that it does not write is one of these."
+          "description": "Parameters for every value the body reads without producing itself."
         },
         "outputs": {
           "type": "array",
@@ -141,7 +144,7 @@
                     "$ref": "#/definitions/routine/properties/inputs/items/properties/id/anyOf/1"
                   }
                 ],
-                "description": "The name this value carries inside the body. A reference site binds it to the session variable its value lands under."
+                "description": "Output name within the routine body, bound to a session variable at each use."
               },
               "type": {
                 "type": "string",
@@ -152,7 +155,7 @@
                   "array",
                   "object"
                 ],
-                "description": "Declared type, carried onto the session variable the reference site binds this output to."
+                "description": "Type of the output and its bound session variable."
               },
               "description": {
                 "type": "string",
@@ -161,15 +164,16 @@
               "values": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Allowed string output value."
                 },
                 "minItems": 1,
-                "description": "The complete set of values a string output admits, carried onto the bound session variable."
+                "description": "Complete set of allowed values for a string output."
               },
               "optional": {
                 "type": "boolean",
                 "const": true,
-                "description": "Declared only when a reference site may leave this output unbound, which drops the bindings that write it. Leaving an unmarked output unbound fails the load."
+                "description": "Declare `true` to allow this output to remain unbound; omission requires an output binding."
               }
             },
             "required": [
@@ -177,9 +181,10 @@
               "type",
               "description"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Produced value with its type, allowed values, and binding requirement."
           },
-          "description": "Declared produced values, each a full variable declaration bound to a session variable at the point of use."
+          "description": "Produced values, each declared with the type its bound session variable takes."
         },
         "internals": {
           "type": "array",
@@ -195,7 +200,7 @@
                     "$ref": "#/definitions/routine/properties/inputs/items/properties/id/anyOf/1"
                   }
                 ],
-                "description": "The name this value carries inside the body. Materialised per host activity and per reference site, and never a workflow variable."
+                "description": "Name local to the routine body at each use, outside the workflow variable set."
               },
               "description": {
                 "type": "string",
@@ -206,9 +211,10 @@
               "id",
               "description"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Named value shared by steps within one use of a routine."
           },
-          "description": "Names the body's steps pass between themselves, which never enter the workflow variable set."
+          "description": "Names for values shared between the routine's steps, local to each use."
         },
         "steps": {
           "type": "array",
@@ -224,19 +230,18 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. Defaults to the last `::` segment of the technique reference; the one step kind whose id may be omitted."
                   },
                   "technique": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "$ref": "#/definitions/techniqueReference"
                       },
                       {
                         "type": "object",
                         "properties": {
                           "name": {
-                            "type": "string",
-                            "description": "The `group::technique` (or bare op / `workflow::group::op`) technique reference this step invokes."
+                            "$ref": "#/definitions/techniqueReference"
                           },
                           "inputs": {
                             "type": "object",
@@ -245,25 +250,28 @@
                                 "string",
                                 "number",
                                 "boolean"
-                              ]
+                              ],
+                              "description": "Variable name, literal value, or template expression for an input."
                             },
-                            "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
+                            "description": "Input identifiers mapped to a source: the name of a session variable to read under that input, a literal, or a `{template}` expression. Declared only for inputs whose source differs from the same-name variable or the declared default."
                           },
                           "outputs": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "type": "string",
+                              "description": "Workflow variable name for the output."
                             },
-                            "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
+                            "description": "Output identifiers mapped to the workflow variable each value is written to. Declared only where that name differs from the output identifier."
                           }
                         },
                         "required": [
                           "name"
                         ],
-                        "additionalProperties": false
+                        "additionalProperties": false,
+                        "description": "Technique reference with input and output bindings."
                       }
                     ],
-                    "description": "Canonical per-step binding: a `group::technique` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
+                    "description": "Technique reference, or an object with `name` and optional `inputs` and `outputs` bindings."
                   },
                   "actions": {
                     "type": "array",
@@ -279,148 +287,56 @@
                             "emit",
                             "message"
                           ],
-                          "description": "Action verb, interpreted by the executing agent. The server has no action interpreter: executing `set` is the worker's job, and its value reaches the session variable bag when the worker reports it in the `variables_changed` its orchestrator relays on next_activity. `set` is slated for removal at the next workflow-schema major (#166 B7/B12)."
+                          "description": "Action for the executing agent to perform; a `set` value reaches the session when the agent reports it."
                         },
                         "target": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Variable name or other target of the action."
                         },
                         "message": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Message associated with the action."
                         },
-                        "value": {},
+                        "value": {
+                          "description": "Value assigned or supplied by the action."
+                        },
                         "description": {
                           "type": "string",
                           "description": "Human-readable description of what this action does"
                         },
                         "condition": {
-                          "anyOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "simple"
-                                },
-                                "variable": {
-                                  "type": "string"
-                                },
-                                "operator": {
-                                  "type": "string",
-                                  "enum": [
-                                    "==",
-                                    "!=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "exists",
-                                    "notExists"
-                                  ]
-                                },
-                                "value": {
-                                  "type": [
-                                    "string",
-                                    "number",
-                                    "boolean",
-                                    "null"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "variable",
-                                "operator"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "and"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {
-                                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                  },
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "or"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {
-                                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                  },
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "not"
-                                },
-                                "condition": {
-                                  "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "condition"
-                              ],
-                              "additionalProperties": false
-                            }
-                          ],
+                          "$ref": "#/definitions/condition",
                           "description": "Condition that must be true for this action to execute"
                         }
                       },
                       "required": [
                         "action"
                       ],
-                      "additionalProperties": false
-                    }
+                      "additionalProperties": false,
+                      "description": "Action with an optional target, value, message, and condition."
+                    },
+                    "description": "Actions associated with the technique step."
                   },
                   "when": {
-                    "type": "string",
-                    "description": "Inline boolean expression that gates this step. Operators: ==, !=, >, <, >=, <=, bare identifier truthiness, unary !, &&, ||, and parentheses. Precedence (C-style, tightest first): () > ! > comparisons > && > ||. Mixing && and || at the same nesting depth requires parentheses. Examples: \"has_saved_state == true\", \"remediation_round > 0\", \"a == true && b != false\", \"(a && b) || c\", \"is_review_mode != true && (problem_complexity == \\\"moderate\\\" || problem_complexity == \\\"complex\\\")\". Evaluated by the executing agent against current variable state; the server never evaluates gates. Mechanical nets (e2e walker, guards) use the shared reference evaluator and treat invalid expressions as false (step does not run). On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal."
+                    "$ref": "#/definitions/whenExpression",
+                    "description": "Entry gate: the step runs only when this expression holds. On a checkpoint step, `condition`, not `when`, makes the checkpoint dismissible."
                   },
                   "required": {
                     "type": "boolean",
                     "const": false,
-                    "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it."
+                    "description": "Declare `false` for an optional step; omission means the step is required, and `true` is rejected."
                   },
                   "condition": {
-                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                    "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
+                    "$ref": "#/definitions/condition",
+                    "description": "Structured entry condition. Prefer `when` for a step gate. On a checkpoint step, `condition` is the only gate that makes the checkpoint dismissible: when it is false, the checkpoint may be dismissed as not met, selecting no option and no exit."
                   }
                 },
                 "required": [
                   "kind",
                   "technique"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Step that invokes a technique with optional actions and entry conditions."
               },
               {
                 "type": "object",
@@ -432,7 +348,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this step within the activity."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine."
                   },
                   "actions": {
                     "type": "array",
@@ -455,7 +371,8 @@
                   "kind",
                   "id"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Control step with optional actions and entry conditions."
               },
               {
                 "type": "object",
@@ -467,7 +384,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this step within the activity; the stable checkpoint-response replay key."
+                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. With the activity identifier it forms the key a recorded response replays under on resume."
                   },
                   "message": {
                     "type": "string",
@@ -479,47 +396,54 @@
                       "type": "object",
                       "properties": {
                         "id": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Option identifier within the checkpoint."
                         },
                         "label": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Short label for the choice."
                         },
                         "description": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Explanation of the choice."
                         },
                         "effect": {
                           "type": "object",
                           "properties": {
                             "setVariable": {
                               "type": "object",
-                              "additionalProperties": {},
-                              "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
+                              "additionalProperties": {
+                                "description": "Value assigned to the named variable."
+                              },
+                              "description": "Variable assignments applied when this option is selected. Each value is checked against the variable's declared type and value set, and a mismatch is stored as written with a warning; a `{name}` template value passes through unchecked."
                             },
                             "exit": {
                               "type": "string",
-                              "description": "Exit of the owning activity this option selects — a name from the activity's `exits[]`, never an activity id. The destination is the workflow's to state: `present_checkpoint` reads it from the workflow graph so the option's consequence is stated before the user chooses. An adhoc checkpoint has no declared exits, so its options carry setVariable only."
+                              "description": "Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. An option naming an exit its activity does not declare fails the workflow load. Omitted for an ad hoc checkpoint, which has no declared exits."
                             }
                           },
-                          "additionalProperties": false
+                          "additionalProperties": false,
+                          "description": "Variable assignments and activity exit associated with the choice."
                         }
                       },
                       "required": [
                         "id",
                         "label"
                       ],
-                      "additionalProperties": false
+                      "additionalProperties": false,
+                      "description": "Checkpoint choice and its associated effects."
                     },
                     "minItems": 1,
                     "description": "Decision options with effects."
                   },
                   "defaultOption": {
                     "type": "string",
-                    "description": "The answer a soft gate takes when no person is reached."
+                    "description": "Identifier of one of this checkpoint's options, taken when no person answers. Declared together with `autoAdvanceMs`: the pair makes the checkpoint soft, and a hard checkpoint declares neither. One without the other, or a default naming none of the options, excludes the activity from the load; in a routine file, it excludes each activity that refers to that routine."
                   },
                   "autoAdvanceMs": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
-                    "description": "The interval the server spends before applying a soft gate's default on respond_checkpoint { auto_advance: true }."
+                    "description": "Positive waiting interval in milliseconds before `defaultOption` may be selected automatically; declared together with `defaultOption`."
                   },
                   "when": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"
@@ -537,7 +461,8 @@
                   "message",
                   "options"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "User decision at a defined position in the activity steps."
               },
               {
                 "type": "object",
@@ -549,11 +474,11 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this step within the activity."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine."
                   },
                   "name": {
                     "type": "string",
-                    "description": "Structural label for the iteration (the one step kind that carries a name)."
+                    "description": "Human-readable label for the iteration."
                   },
                   "loopType": {
                     "type": "string",
@@ -562,33 +487,34 @@
                       "while",
                       "doWhile"
                     ],
-                    "description": "Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after."
+                    "description": "Iteration over a collection (`forEach`), with a pre-test (`while`), or with a post-test (`doWhile`)."
                   },
                   "continueWhile": {
-                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                    "description": "The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken."
+                    "$ref": "#/definitions/condition",
+                    "description": "Continuation condition required for `while` and `doWhile` loops and absent for `forEach` loops."
                   },
                   "variable": {
                     "type": "string",
-                    "description": "Current-item variable bound each iteration."
+                    "description": "Current-item variable bound each iteration of a `forEach` loop: required there, and absent for `while` and `doWhile` loops."
                   },
                   "over": {
                     "type": "string",
-                    "description": "Collection expression iterated by a forEach loop."
+                    "description": "Collection a `forEach` loop iterates: a variable name or a dotted path into one. Required on a `forEach` loop, and absent for `while` and `doWhile` loops."
                   },
                   "breakCondition": {
-                    "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                    "description": "Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead."
+                    "$ref": "#/definitions/condition",
+                    "description": "Condition that ends a `forEach` loop before the next item; absent for `while` and `doWhile` loops."
                   },
                   "maxIterations": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
-                    "description": "Safety bound on iteration count, enforced by the executing agent."
+                    "description": "Maximum number of iterations."
                   },
                   "steps": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/definitions/routine/properties/steps/items"
+                      "$ref": "#/definitions/routine/properties/steps/items",
+                      "description": "Step within the loop body."
                     },
                     "description": "The loop body, a nested ordered list of steps."
                   },
@@ -605,7 +531,8 @@
                   "loopType",
                   "steps"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Loop over a collection or until a continuation test fails, entered when its `when` expression holds."
               },
               {
                 "type": "object",
@@ -617,11 +544,11 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Identifier for this step within the activity, and the prefix every identifier in the materialised body carries."
+                    "description": "Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. It is also the prefix every identifier in the routine body carries once spliced in."
                   },
                   "routine": {
                     "type": "string",
-                    "description": "Routine reference: `[namespace::]name`, the namespace spelled by its directory name or by the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity's source workflow and then meta. The last segment is the routine and every segment before it belongs to the namespace — a routine name carries no group grammar."
+                    "description": "Routine reference in `[namespace::]name` form, with no segment empty. The namespace is a directory name, or the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity's source workflow, then `meta`. The last segment is the routine and every segment before it is the namespace, since a routine name has no group grammar."
                   },
                   "with": {
                     "type": "object",
@@ -630,16 +557,18 @@
                         "string",
                         "number",
                         "boolean"
-                      ]
+                      ],
+                      "description": "Literal argument or braced host-variable reference."
                     },
-                    "description": "Arguments: routine input id → the value it takes here. A braced value is a reference to a host variable and a bare value is a literal. A declared input left unbound takes the host's value under the input's own id, or the input's declared default."
+                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default, or an argument naming no declared input, excludes the referring activity from the load. A `kind: technique` input takes a literal technique reference, a string holding no `{`, since the substitution happens when the definitions load and a braced value has no value then; any other argument to it excludes the referring activity from the load."
                   },
                   "outputs": {
                     "type": "object",
                     "additionalProperties": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Session variable name for the routine output."
                     },
-                    "description": "Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed."
+                    "description": "Routine output identifiers mapped to session variable names. An output left unbound produces no write; only an output declared `optional: true` may be left unbound. Any other unbound output, or a binding naming no declared output, excludes the referring activity from the load."
                   },
                   "when": {
                     "$ref": "#/definitions/routine/properties/steps/items/anyOf/0/properties/when"
@@ -653,12 +582,14 @@
                   "id",
                   "routine"
                 ],
-                "additionalProperties": false
+                "additionalProperties": false,
+                "description": "Routine invocation with argument and output bindings, entered when its `when` expression holds."
               }
-            ]
+            ],
+            "description": "Step selected by `kind`; its guidance lives in the bound technique."
           },
           "minItems": 1,
-          "description": "The run, an ordered list of kind-tagged steps. A routine with no steps is a signature with nothing behind it."
+          "description": "Nonempty ordered list of steps."
         }
       },
       "required": [
@@ -667,7 +598,133 @@
         "name",
         "steps"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Reusable steps with declared inputs, outputs, and internals."
+    },
+    "whenExpression": {
+      "type": "string",
+      "description": "Inline boolean expression in the `when` dialect, evaluated against the current session variables. Grammar: `orExpr := andExpr ('||' andExpr)*`; `andExpr := unary ('&&' unary)*`; `unary := '!' unary | primary`; `primary := IDENT | comparison | 'true' | 'false' | '(' orExpr ')'`; `comparison := IDENT ('==' | '!=' | '>' | '<' | '>=' | '<=') literal`. Precedence, tightest first: `()`, comparisons, `!`, `&&`, `||`; so `!a == b` reads as `!(a == b)`, and a negated left side of a comparison is not expressible. Mixing `&&` and `||` at the same nesting depth requires parentheses, so grouping is always explicit: `(a && b) || c`, never `a && b || c`. An IDENT is a variable name or a dotted path into one (`execution_plan.status`): a letter or underscore, then letters, digits, underscores and dots. A literal is `true`, `false`, `null`, a single- or double-quoted string (a backslash escapes the next character), an integer with an optional leading `-`, or a bare word, which is a string (`analysis_type == completion`). Decimals are not literals. A bare IDENT holds when its value is truthy. A variable that is absent is undefined: it is falsy, `==` matches nothing (not even `null` or `false`), and `!=` matches every literal. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and strings that read as a finite number, as a structured condition does, and are false when either side is anything else, a boolean, null, an absent variable and a blank string included. An expression that does not parse evaluates to false. Examples: `has_saved_state == true`, `remediation_round > 0`, `!is_review_mode`, `a == true && b != false`, `(a && b) || c`, `is_review_mode != true && (problem_complexity == \"moderate\" || problem_complexity == \"complex\")`."
+    },
+    "condition": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "simple",
+              "description": "Identifies a variable comparison or presence test."
+            },
+            "variable": {
+              "type": "string",
+              "description": "Variable name or dot-separated path to the value to test; a path through a missing or non-object segment reads as absent."
+            },
+            "operator": {
+              "type": "string",
+              "enum": [
+                "==",
+                "!=",
+                ">",
+                "<",
+                ">=",
+                "<=",
+                "exists",
+                "notExists"
+              ],
+              "description": "Comparison or presence test applied to a variable. `==` and `!=` compare strictly, without type coercion. `>`, `<`, `>=` and `<=` compare numbers and strings that read as a finite number, and are false when either side is anything else, a boolean, null, an absent value and a blank string included. `exists` holds when the value is present and not null; `notExists` holds when it is absent or null."
+            },
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ],
+              "description": "Comparison value; unnecessary for `exists` and `notExists` tests."
+            }
+          },
+          "required": [
+            "type",
+            "variable",
+            "operator"
+          ],
+          "additionalProperties": false,
+          "description": "Comparison of a variable with a value, or a test of its presence."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "and",
+              "description": "Identifies an all-members condition."
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/condition"
+              },
+              "minItems": 2,
+              "description": "At least two conditions that must all be true."
+            }
+          },
+          "required": [
+            "type",
+            "conditions"
+          ],
+          "additionalProperties": false,
+          "description": "Condition requiring every member to be true."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "or",
+              "description": "Identifies an any-member condition."
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/condition"
+              },
+              "minItems": 2,
+              "description": "At least two conditions, one or more of which must be true."
+            }
+          },
+          "required": [
+            "type",
+            "conditions"
+          ],
+          "additionalProperties": false,
+          "description": "Condition requiring at least one member to be true."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "not",
+              "description": "Identifies a negated condition."
+            },
+            "condition": {
+              "$ref": "#/definitions/condition",
+              "description": "Condition that must be false."
+            }
+          },
+          "required": [
+            "type",
+            "condition"
+          ],
+          "additionalProperties": false,
+          "description": "Condition requiring its member to be false."
+        }
+      ],
+      "description": "Variable test or combination of conditions using `and`, `or`, or `not`."
+    },
+    "techniqueReference": {
+      "type": "string",
+      "description": "Technique reference: `[namespace::]technique[::nested…]`, segments separated by `::`, none of them empty. When its leading segments spell a namespace the corpus holds and at least one segment follows them, the rest of the path resolves in that namespace and nowhere else. A namespace is spelled by its directory name, by the path from the corpus root that reaches it, or by as much of the end of that path as reaches it alone (`gitnexus` and `support::gitnexus` name the same one); the longest leading run that spells a namespace wins. Otherwise every segment is a path under the referring workflow's `techniques/`, the first naming a group and the last the technique, resolved in the referring workflow and then in `meta`; a borrowed activity's referring workflow is the one it is borrowed from. On a step, a one-segment reference resolves first as `<activity-id>::<name>`, in the group named after the activity, and as written where that group holds no such technique. A reference that reads both ways is refused, naming both files. The spelling `namespace/technique` names a namespace, whether or not the corpus holds one; a second slash, or a slash after a `::`, is malformed. Where no nested technique matches, the last segment names a rule on the technique before it, and a group name `{group}` stands for every rule named `{group}-*`."
     }
   }
 }

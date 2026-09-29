@@ -2,11 +2,11 @@
 
 The JSON Schema definitions live in [schemas/](../schemas/). They define the structure for workflow definitions, conditional logic, and the on-disk session record.
 
-The server exposes these schemas as [MCP resources](api.md#mcp-resources).
+The server exposes every one of these schemas except the routine schema as [MCP resources](api.md#mcp-resources).
 
 ## Overview
 
-The workflow server uses six schemas:
+The workflow server uses these schemas:
 
 
 | Schema                                                  | Purpose                    |
@@ -21,11 +21,11 @@ The workflow server uses six schemas:
 
 ## Enforcement Model
 
-The server enforces structure at load time plus a small runtime core; most schema semantics are carried out by the executing agents. `get_activity` delivers the raw activity YAML verbatim, so every authored field reaches the agent. Each field has an owner and a strictness.
+The server enforces structure at load time plus a runtime core; the executing agents carry out the rest. `get_activity` delivers the activity YAML as authored, with each step's resolved id filled in and each routine reference replaced by the routine's steps, so every authored field reaches the agent. Each field has an owner and a strictness.
 
-- **Owner** — `Engine` when server behavior or a check depends on the field. `Agent` when the field is delivered and no server path reads it.
-- **Strictness** — `enforced` when a failed check blocks. `advisory` when the field is rendered or checked warn-only, and compliance does not block.
+- **Owner** — who carries out what the field means. `Engine` when the server does: it acts on the value, or a server check decides by it. `Agent` when the executing agent does. The server may still read an `Agent` field, to bundle, annotate or check a report, without doing what the field says.
+- **Strictness** — `enforced` when a check on the field blocks, at load or at run time. `advisory` when every check on it only renders or warns.
 
 ## Generation
 
-A definition the server validates is a Zod schema in [src/schema/](../src/schema/). The generator lists the six and renders each one to JSON Schema. `npm run build:schemas` writes that rendering to the file of the same name in [schemas/](../schemas/), and writes the owner and strictness of each annotated field to [enforcement.json](../schemas/enforcement.json). [check:schemas](../guards/check-generated-schemas.ts#L38) fails when a file on disk differs from that rendering.
+A definition the server validates is a Zod schema in [src/schema/](../src/schema/). The generator lists them and renders each one to JSON Schema. `npm run build:schemas` writes that rendering to the file of the same name in [schemas/](../schemas/), and writes the owner and strictness of each annotated field to [enforcement.json](../schemas/enforcement.json). [check:schemas](../guards/check-generated-schemas.ts#L38) fails when a file on disk differs from that rendering.

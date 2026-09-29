@@ -445,7 +445,7 @@ export function projectCheckpoints(s: SessionFile): Record<string, unknown> {
 }
 
 /**
- * Activity projection: completed / skipped lists, the current activity, and the
+ * Activity projection: the completed activities, the activities in flight, and the
  * outcome each completed activity reported. `outcomes` is what close-out
  * measures a run against where the client workflow seeded no outcome list of its
  * own, so a run is judged on what its own activities delivered. A completed
@@ -759,6 +759,43 @@ export function projectSessionView(
 }
 
 
+/** The option id a `condition_not_met` dismissal is recorded under, which selects no option. */
+const DISMISSED_OPTION_ID = '__condition_not_met__';
+
+/** A checkpoint answer's exit as the worker and the user-facing agent read it. */
+interface ExitReport { id: string; next_activity?: string | string[]; ends_activity?: true }
+
+/**
+ * What an answer's exit means for the activity it was raised in: the exit, the destination the
+ * graph binds to it, and whether it ends the activity at the checkpoint. The worker reads it on
+ * resume and on replay, so an immediate exit stops the sequence where it was chosen.
+ */
+function exitReport(workflow: Workflow, activityId: string, exit: string): ExitReport {
+  const binding = getExitBindings(workflow, activityId).find(b => b.exit === exit);
+  return {
+    id: exit,
+    ...(binding ? { next_activity: destinationField(binding.to) } : {}),
+    ...(binding?.immediate ? { ends_activity: true as const } : {}),
+  };
+}
+
+/**
+ * Clear the answers an activity's earlier visits recorded, as the activity is entered. An answer
+ * replays to a worker resuming the same visit; a revisit asks again, so an answer whose exit leads
+ * back into its own activity cannot replay itself round the loop. The history names each answer's
+ * activity and checkpoint apart, which the joined key cannot do for ids that themselves hold a hyphen.
+ */
+function forgetEarlierVisitAnswers(draft: SessionFile, activityId: string): void {
+  for (const event of draft.history) {
+    if (event.type !== 'checkpoint_response' || event.activity !== activityId || event.checkpoint === undefined) continue;
+    delete draft.checkpointResponses[`${activityId}-${event.checkpoint}`];
+  }
+}
+
+/** The instruction a worker follows when an answer's exit ends its activity. */
+const endsActivityInstruction = (exit: string): string =>
+  `Exit '${exit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator.`;
+
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
   const sessionScope = buildSessionScope(config);
@@ -781,7 +818,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
-        'repo_binding: required — pass working_directory as the absolute path of the checkout under work; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
+        'repo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work; a transient meta bootstrap may start unbound and binds when dispatch_child promotes it; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
       ];
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);
@@ -801,7 +838,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every technique of your contract arrives with its body; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one technique. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it. Every technique of your contract arrives with its body, or, under persistent context mode, as an unchanged marker once this agent holds it; a rule the technique declares rides that body, and a rule a scope shares arrives once under `contracts`, named from `inherits`. The `rules` list beside them carries your role\'s own rules, which govern no one technique. The workflow metadata rides whole — every variable the run carries is declared with its type, its value set and its starting value. What each variable is FOR is not stated here and is not missing from here: that prose belongs to the activity that produces the value and the activity that consumes it, and rides their definitions.',
     {
       ...sessionIndexParam,
     },
@@ -1183,7 +1220,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     return { key: branchKey(base), slot: instanceIndex(entry) ?? 0, unit: base };
   }
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Each transition starts from where the previous one left the session, so issue it only once the previous transition has answered. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`.',
     {
       ...sessionIndexParam,
       activity_id: DestinationSchema.describe(
@@ -1464,6 +1501,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             });
           }
           for (const branch of fanEnter.branches) {
+            forgetEarlierVisitAnswers(draft, branch.entry);
             draft.frontier.push(branch.entry);
             draft.history.push({ timestamp: now, type: 'activity_entered', activity: branch.entry });
             if (progress_published !== undefined) {
@@ -1478,6 +1516,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
         const target = targets[0]!;
         if (!isTerminal) {
+          forgetEarlierVisitAnswers(draft, target);
           draft.frontier.push(target);
           draft.history.push({ timestamp: now, type: 'activity_entered', activity: target });
           // Whether the dispatch published this activity's in-progress mark. The mark lives
@@ -1713,8 +1752,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const workflow_id = state.workflowId;
+      const diagResult = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
+      if (!diagResult.success) throw diagResult.error;
+      const workflow = diagResult.value.workflow;
+      const activitySourceWorkflow = diagResult.value.activitySourceWorkflow;
       // N instances of one fanned activity share one definition file, so the read takes the base.
-      const rawResult = await readActivityRaw(config.workflowDir, workflow_id, baseId(activity_id));
+      const rawResult = await readActivityRaw(diagResult.value, baseId(activity_id));
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
       const { content: rawActivity, sourceWorkflowId } = rawResult.value;
       let activityBody = injectResolvedStepIds(rawActivity);
@@ -1730,20 +1773,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const view = sessionView(state, activity_id);
-      const diagResult = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
-      const result = diagResult.success
-        ? { success: true as const, value: diagResult.value.workflow }
-        : diagResult;
-      const activitySourceWorkflow = diagResult.success
-        ? diagResult.value.activitySourceWorkflow
-        : new Map<string, string>();
 
       // The one value this instance is working on. The shared bag is one flat record, so N
       // instances cannot read different values at one bare name, and no grammar in the tree admits
       // the indirection that would let an instance spell its own read — so it arrives here.
-      const fanInstance = diagResult.success
-        ? fanProjection(diagResult.value.workflow, state.variables, activity_id, state.completedActivities)
-        : undefined;
+      const fanInstance = fanProjection(workflow, state.variables, activity_id, state.completedActivities);
       // Overlaid onto the bag the eager-bundling decision reads (`bagAtOpen`), which reads state as
       // it stands at the moment of delivery.
       const deliveryVariables = fanInstance === undefined
@@ -1768,15 +1802,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Bundle the techniques the activity references (delivered as full protocols), deduped with
       // the workflow-level techniques inherited by every activity (`techniques.activity`, injected
       // here so a common technique is declared once on the workflow) and the core worker techniques.
-      const activity = result.success ? getActivity(result.value, activity_id) : undefined;
+      const activity = getActivity(workflow, activity_id);
       const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
-      const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
+      const inheritedTechRefs = (workflow as { techniques?: { activity?: string[] } }).techniques?.activity ?? [];
 
       // The part of this response that does not vary with what the bundle carries: the activity the
       // call is for, and the rules the worker is held to.
       const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
       const fixed = await fixedResponseParts({
-        activity, workflow: result.success ? result.value : undefined, activityId: activity_id,
+        activity, workflow, activityId: activity_id,
         sessionIndex: session_index, fanInstance, workflowDir: config.workflowDir, workflowId: workflow_id,
         activityBody, state, newDeliveries, scope, mayReferBack,
       });
@@ -1790,7 +1824,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // activity would re-deliver the whole rules list at every activity whose set differed —
       // measured at twenty thousand characters against the four and a half thousand the narrower
       // reading saves. One set for one walk collapses, which is the mechanism this rides on.
-      const runDeclaresGate = result.success && (result.value.activities ?? []).some(
+      const runDeclaresGate = (workflow.activities ?? []).some(
         (a) => flattenActivitySteps(a).some((s) => s.kind === 'checkpoint'),
       );
       const workerTechniques = Array.from(new Set([
@@ -1805,8 +1839,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // controls describe a step kind none of them is. Both are read over the whole graph rather
       // than over this activity's own position in it, for the reason the gate reading is: a rules
       // list that differed between activities would deliver whole at each change.
-      const graphFans = result.success && fanGroups(result.value).length > 0;
-      const runDeclaresLoop = result.success && (result.value.activities ?? []).some(
+      const graphFans = fanGroups(workflow).length > 0;
+      const runDeclaresLoop = (workflow.activities ?? []).some(
         (a) => flattenActivitySteps(a).some((s) => s.kind === 'loop'),
       );
       const withheldRules = [
@@ -1925,14 +1959,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
        */
       let lazyFalseGates = 0;
       const lazyUnanswered: GateUnansweredCounts = { pending: 0, unbound: 0, unparsed: 0 };
-      if (!optedOut && result.success && activity) {
+      if (!optedOut && activity) {
         // One pass serves both the gate reading (which bag entries this activity produces) and the
         // provenance decoration further down.
         const bindsTechnique = flattenActivitySteps(activity as Activity)
           .some((s) => s.kind === 'technique' && s.id !== undefined);
         if (bindsTechnique) {
           producerIndex = await buildProducerIndex({
-            workflow: result.value,
+            workflow,
             workflowDir: config.workflowDir,
             activitySourceWorkflow,
           });
@@ -2188,7 +2222,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const validation = buildValidation(
-        result.success ? validateWorkflowVersion(view, result.value) : null,
+        validateWorkflowVersion(view, workflow),
         ...bundlingWarnings,
       );
 
@@ -2376,7 +2410,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit `<checkpoint_yield>` with the returned session_index). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides — an activity declaring no gate is delivered no gate protocol, so fetch it with get_technique { technique_id: "workflow-engine::yield-checkpoint" } before raising one.',
+  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit an empty `<checkpoint_yield>` block, which hands control up the chain; the user-facing agent reads the open checkpoint from the server with present_checkpoint). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides — a workflow none of whose activities declares a gate is delivered no gate protocol, so fetch it with get_technique { technique_id: "workflow-engine::yield-checkpoint" } before raising one.',
     {
       ...sessionIndexParam,
       checkpoint_id: z.string().describe('Checkpoint id being yielded. Matches a checkpoint the current activity declares, or names a decision the activity did not anticipate — the latter requires `message` and `options`.'),
@@ -2423,7 +2457,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // second kind, so a mistyped id still fails the way it always has — a typo
       // never arrives carrying a message and two options.
       const adhoc = message !== undefined && options !== undefined ? { message, options } : undefined;
-      if (checkpoint && adhoc) {
+      if (checkpoint && (message !== undefined || options !== undefined)) {
         throw new Error(
           `Checkpoint '${checkpoint_id}' is declared by activity '${activity_id}', which owns its message and options. Yield it by id alone.`,
         );
@@ -2432,11 +2466,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         throw new Error(
           `Checkpoint not found: ${checkpoint_id} in activity ${activity_id}. ` +
           `To decide something this activity does not declare, pass 'message' and at least two 'options' with this id.`,
-        );
-      }
-      if (!checkpoint && (message !== undefined) !== (options !== undefined)) {
-        throw new Error(
-          `Checkpoint '${checkpoint_id}' is not declared by activity '${activity_id}', so it needs both 'message' and 'options'.`,
         );
       }
 
@@ -2468,6 +2497,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const effect: Record<string, unknown> = {};
         if (effects?.variablesSet) effect['setVariable'] = effects.variablesSet;
         if (effects?.exit) effect['exit'] = effects.exit;
+        const replayedExit = effects?.exit ? exitReport(result.value, activity_id, effects.exit) : undefined;
 
         const replayedAt = new Date().toISOString();
         const next = advanceSession(state, (draft) => {
@@ -2486,7 +2516,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpoint_id,
           session_index,
           resolved_option: priorResponse.optionId,
-          message: `Checkpoint '${checkpoint_id}' already has a recorded response (option '${priorResponse.optionId}') from a prior run. The stored response has been replayed; apply any returned effect to your local state and continue execution WITHOUT yielding to the orchestrator.`,
+          ...(replayedExit ? { exit: replayedExit } : {}),
+          message: `Checkpoint '${checkpoint_id}' already has a recorded response (option '${priorResponse.optionId}') from a prior run. The stored response has been replayed; apply any returned effect to your local state`
+            + (replayedExit?.ends_activity
+              ? `, WITHOUT yielding to the orchestrator. ${endsActivityInstruction(replayedExit.id)}`
+              : ' and continue execution WITHOUT yielding to the orchestrator.'),
         };
         if (Object.keys(effect).length > 0) responsePayload['effect'] = effect;
 
@@ -2531,7 +2565,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpoint_id,
           session_index,
           ...(publishedNames.length > 0 ? { variables_published: publishedNames } : {}),
-          message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this session_index to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
+          message: `Checkpoint '${checkpoint_id}' successfully yielded. Emit an empty <checkpoint_yield> block, which hands control up the chain for the user-facing agent to read the open checkpoint with present_checkpoint, then STOP execution and wait to be resumed.`
         }, null, 2) }],
         _meta: {
           session_index,
@@ -2543,7 +2577,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch). Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional `agent_id` attributes the row to a worker context.',
+  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY, on the `basis` the harness reports it: that activity\'s own spend, or the context\'s running total. Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional `agent_id` attributes the row to a worker context.',
     {
       ...sessionIndexParam,
       activity: z.string().describe('Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.'),
@@ -2599,7 +2633,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('resume_checkpoint', 'Worker tool: continue after the orchestrator resolves a checkpoint. Verifies no activeCheckpoint and returns the resolved checkpoint, the option selected, and the `variables_changed` its effect applied — the values the bag gained while the worker was suspended.',
+  server.tool('resume_checkpoint', 'Worker tool: continue after the orchestrator resolves a checkpoint. Verifies no activeCheckpoint and returns the resolved checkpoint, the option selected, the `variables_changed` its effect applied — the values the bag gained while the worker was suspended — and the `exit` it selected, if any; `exit.ends_activity` means stop without running the remaining steps.',
     {
       ...sessionIndexParam,
     },
@@ -2618,25 +2652,35 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // What the orchestrator's decision changed while the worker was suspended. The server applied
       // the selected option's setVariable effect at respond_checkpoint, so the values are already in
-      // the bag and the worker's own copy is behind by exactly this much. Read from the response the
-      // orchestrator just recorded — the most recent one, since the active checkpoint is cleared by
-      // then, leaving no id on the session to key by.
-      const resolved = Object.entries(state.checkpointResponses)
-        .sort(([, a], [, b]) => a.respondedAt.localeCompare(b.respondedAt))
-        .pop();
-      const variablesChanged = resolved?.[1].effects?.variablesSet ?? {};
+      // the bag and the worker's own copy is behind by exactly this much. Read from the answer the
+      // history recorded last, which names the activity and the checkpoint: the active checkpoint is
+      // cleared by then, leaving no id on the session to key by.
+      const answered = [...state.history].reverse().find((e) => e.type === 'checkpoint_response');
+      const answerKey = answered?.activity !== undefined && answered.checkpoint !== undefined
+        ? `${answered.activity}-${answered.checkpoint}` : undefined;
+      const response = answerKey !== undefined ? state.checkpointResponses?.[answerKey] : undefined;
+      const variablesChanged = response?.effects?.variablesSet ?? {};
       const changedNames = Object.keys(variablesChanged);
+      let resumedExit: ExitReport | undefined;
+      if (response?.effects?.exit && answered?.activity !== undefined) {
+        const wf = await loadWorkflow(config.workflowDir, state.workflowId);
+        resumedExit = wf.success ? exitReport(wf.value, baseId(answered.activity), response.effects.exit) : { id: response.effects.exit };
+      }
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'resumed',
           session_index,
-          checkpoint: resolved?.[0],
-          option_id: resolved?.[1].optionId,
+          checkpoint: answered?.checkpoint,
+          option_id: response?.optionId,
           variables_changed: variablesChanged,
-          message: changedNames.length
-            ? `Checkpoint cleared. The selected option set ${changedNames.join(', ')} — the values above are in the session bag; carry them in your own state and proceed to the next step.`
-            : 'Checkpoint cleared. The selected option set no variables. Proceed to the next step.',
+          ...(resumedExit ? { exit: resumedExit } : {}),
+          message: (changedNames.length
+            ? `Checkpoint cleared. The selected option set ${changedNames.join(', ')} — the values above are in the session bag; carry them in your own state`
+            : 'Checkpoint cleared. The selected option set no variables')
+            + (resumedExit?.ends_activity
+              ? `. ${endsActivityInstruction(resumedExit.id)}`
+              : (changedNames.length ? ' and proceed to the next step.' : '. Proceed to the next step.')),
         }, null, 2) }],
         _meta: { session_index, validation },
       };
@@ -2780,7 +2824,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       } else if (auto_advance) {
         if (!checkpoint.defaultOption || !checkpoint.autoAdvanceMs) {
           throw new Error(
-            `Cannot auto-advance checkpoint '${checkpoint_id}': missing defaultOption or autoAdvanceMs.`
+            `Cannot auto-advance checkpoint '${checkpoint_id}': it is a hard checkpoint, declaring no defaultOption and autoAdvanceMs, so a person answers it.`
           );
         }
         const requiredSeconds = Math.ceil(checkpoint.autoAdvanceMs / 1000);
@@ -2790,10 +2834,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             `(${elapsed}s < ${requiredSeconds}s). Wait for the full autoAdvanceMs (${checkpoint.autoAdvanceMs}ms) before auto-advancing.`
           );
         }
-        const defaultOpt = checkpoint.options.find(o => o.id === checkpoint.defaultOption);
-        if (!defaultOpt) {
-          throw new Error(`Default option '${checkpoint.defaultOption}' not found in checkpoint '${checkpoint_id}'.`);
-        }
+        // The load refuses a default naming none of the checkpoint's options, so this always matches.
+        const defaultOpt = checkpoint.options.find(o => o.id === checkpoint.defaultOption)!;
         resolvedOptionId = checkpoint.defaultOption;
         effect = defaultOpt.effect as Record<string, unknown> | undefined;
       } else if (condition_not_met) {
@@ -2819,7 +2861,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // CheckpointResponseSchema requires `optionId` + `respondedAt`; for
         // `condition_not_met` dismissals we still record the resolution with
         // a sentinel option id so the on-disk schema stays valid.
-        const recordedOptionId = resolvedOptionId ?? (condition_not_met ? '__condition_not_met__' : '__unknown__');
+        const recordedOptionId = resolvedOptionId ?? (condition_not_met ? DISMISSED_OPTION_ID : '__unknown__');
         // Unwrap the response effect into the schema-flat shape: the encoded effect gives
         // { setVariable: {...}, exit: '...' } and the schema stores variablesSet / exit.
         const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; exit?: string };
@@ -2878,14 +2920,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // ends the sequence here, so the worker is told to stop rather than run the remaining steps.
       const chosenExit = (effect as { exit?: string } | undefined)?.exit;
       if (chosenExit !== undefined) {
+        const report = exitReport(result.value, active.activityId, chosenExit);
+        responseData['exit'] = report;
         const binding = getExitBindings(result.value, active.activityId).find(b => b.exit === chosenExit);
-        responseData['exit'] = {
-          id: chosenExit,
-          ...(binding ? { next_activity: destinationField(binding.to) } : {}),
-          ...(binding?.immediate ? { ends_activity: true } : {}),
-        };
-        if (binding?.immediate) {
-          responseData['message'] = `Exit '${chosenExit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator, whose next target is ${destinationPhrase(binding.to)}.`;
+        if (report.ends_activity && binding) {
+          responseData['message'] = `Exit '${chosenExit}' ends the activity at this checkpoint: the worker learns so from resume_checkpoint and stops rather than running the remaining steps, and the orchestrator's next target is ${destinationPhrase(binding.to)}.`;
         }
       }
 
@@ -2963,7 +3002,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Session status (active/blocked/completed), the activities in flight, completed activities, last checkpoint, and parent context if nested.',
+    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered (its activity, checkpoint, the option chosen or `dismissed`, and time), and the variable bag.',
     {
       ...sessionIndexParam,
     },
@@ -2977,31 +3016,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const wfResult = await loadWorkflow(config.workflowDir, clientWf || 'unknown');
       const workflow = wfResult.success ? wfResult.value : null;
 
-      let status: string;
-      if (clientActive) {
-        status = 'blocked';
-      } else {
-        status = 'active';
-      }
+      // An open checkpoint blocks a running session; otherwise the session file's own status holds.
+      const status = clientActive ? 'blocked' : state.status === 'running' ? 'active' : state.status;
 
-      const traceEvents = config.traceStore ? config.traceStore.getEvents(state.sessionIndex) : [];
-
-      // Completed activities come from authoritative session state (the trace
-      // store may be disabled). Fall back to trace-derived only if state is empty.
-      let completedActivities: string[] = Array.isArray(state.completedActivities) ? [...state.completedActivities] : [];
-      if (completedActivities.length === 0 && traceEvents.length > 0) {
-        const activitySet = new Set<string>();
-        for (const event of traceEvents) {
-          if (event.name === 'next_activity' && event.act && event.s === 'ok' && !activitySet.has(event.act)) {
-            activitySet.add(event.act);
-            completedActivities.push(event.act);
-          }
-        }
-      }
-
-      const lastCheckpoint = traceEvents
-        .filter(e => e.name === 'respond_checkpoint' && e.s === 'ok')
-        .pop();
+      // Both read from the session file, which records every completed activity and every answer
+      // whether or not a trace is held.
+      const completedActivities = [...state.completedActivities];
+      const lastAnswer = [...state.history].reverse().find((e) => e.type === 'checkpoint_response');
 
       const response: Record<string, unknown> = {
         status,
@@ -3021,10 +3042,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         } : { id: clientWf },
       };
 
-      if (lastCheckpoint) {
+      if (lastAnswer) {
         response['last_checkpoint'] = {
-          activity_id: lastCheckpoint.act,
-          timestamp: lastCheckpoint.ts,
+          activity_id: lastAnswer.activity,
+          checkpoint_id: lastAnswer.checkpoint,
+          ...(lastAnswer.data?.['optionId'] === DISMISSED_OPTION_ID
+            ? { dismissed: true }
+            : { option_id: lastAnswer.data?.['optionId'] }),
+          timestamp: lastAnswer.timestamp,
         };
       }
 
@@ -3042,7 +3067,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Projection: summary (default), identity, variables, checkpoints, activities (completed, skipped, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent\'s latest cumulative figure, the completed activities holding no row, and each child\'s cost outside those totals).'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities (completed, in flight, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent\'s latest cumulative figure, the completed activities holding no row, and each child\'s cost outside those totals).'),
       child_index: z.number().int().nonnegative().optional()
         .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()

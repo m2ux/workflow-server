@@ -1,14 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "workflow",
-  "description": "Workflow definition schema",
+  "description": "Workflow definition file; its activities are the files in its activities/ folder and the activities it borrows.",
   "$ref": "#/definitions/workflow",
   "definitions": {
     "workflow": {
       "type": "object",
       "properties": {
         "$schema": {
-          "type": "string"
+          "type": "string",
+          "description": "URI of the JSON Schema for this workflow definition."
         },
         "id": {
           "type": "string",
@@ -29,13 +30,15 @@
         },
         "author": {
           "type": "string",
-          "description": "Author metadata; not read by the server."
+          "description": "Workflow author."
         },
         "tags": {
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "description": "Workflow classification label."
+          },
+          "description": "Labels for classifying the workflow."
         },
         "rules": {
           "type": "object",
@@ -43,27 +46,30 @@
             "workflow": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Rule for the workflow orchestrator."
               },
-              "description": "Orchestrator-only rules governing workflow execution; surfaced in get_workflow."
+              "description": "Rules for the workflow orchestrator."
             },
             "activity": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Rule for every activity worker."
               },
-              "description": "Worker-facing rules inherited by every activity; injected into every get_activity response."
+              "description": "Rules for the workers executing each activity."
             },
             "universal": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "description": "Rule for both the orchestrator and activity workers."
               },
-              "description": "Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity."
+              "description": "Rules for both the orchestrator and activity workers."
             }
           },
           "additionalProperties": false,
-          "description": "Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds."
+          "description": "Rules grouped by audience: workflow orchestrator, activity workers, or both."
         },
         "variables": {
           "type": "array",
@@ -74,7 +80,8 @@
                 "anyOf": [
                   {
                     "type": "string",
-                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$"
+                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+                    "description": "Qualified snake_case noun phrase of at least two words: a lowercase letter, then lowercase letters and digits, with each further word after a single underscore (`analysis_target`, never bare `target`)."
                   },
                   {
                     "type": "string",
@@ -136,10 +143,11 @@
                       "type",
                       "mode",
                       "kind"
-                    ]
+                    ],
+                    "description": "Permitted single-word variable name."
                   }
                 ],
-                "description": "Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption."
+                "description": "Snake_case noun phrase of at least two words, or a listed single-word exemption."
               },
               "type": {
                 "type": "string",
@@ -150,35 +158,38 @@
                   "array",
                   "object"
                 ],
-                "description": "Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes."
+                "description": "Declared variable type. A value written to the session, through a checkpoint `setVariable` effect or a reported variable change, is checked against it; a mismatch is stored as written with a warning, and a `{name}` template value is exempt. Declarations of one name, in the workflow or its activities, that name different types fail the workflow load."
               },
               "description": {
-                "type": "string"
+                "type": "string",
+                "description": "Meaning and intended use of the variable."
               },
               "values": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Allowed string value for the variable."
                 },
                 "minItems": 1,
-                "description": "The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type."
+                "description": "Complete set of values the variable admits: nonempty, without repeats, and declared only on a `string` variable. A declared `defaultValue` must be one of them. A value written outside the set is stored as written with a warning, and a `{name}` template value is exempt. Declarations of one name that each name a value set, and name different ones, fail the workflow load."
               },
               "defaultValue": {
-                "description": "Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this)."
+                "description": "Initial value, present from the start of every session and child session. Do not gate a defaulted variable with `exists` or `notExists`: the variable is always present, so the gate is constant, and `check:variable-model` rejects it. Declarations of one name that each name a starting value, and name different ones, fail the workflow load."
               },
               "required": {
                 "type": "boolean",
                 "default": false,
-                "description": "Authoring metadata; the server does not check that the variable is ever set."
+                "description": "Marks the variable as expected to be set; no check reads it."
               }
             },
             "required": [
               "name",
               "type"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Variable declaration with type, allowed values, and an optional initial value."
           },
-          "description": "The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow's graph — get_workflow renders the whole set, and two declarations of one name that each name a different type, starting value or value set fail the load — one silent about a starting value takes the value another site names. The session variable bag is seeded from each declaration's defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity's variables_changed."
+          "description": "Declarations of the session facts and policy this workflow file owns, spanning activities. A variable an activity writes is declared in that activity's `variables.writes` and contributed here when the activity joins the graph. Declarations of one name that each name a different type, starting value or value set fail the load; one silent about a starting value takes the value another names."
         },
         "techniques": {
           "type": "object",
@@ -186,24 +197,24 @@
             "workflow": {
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "#/definitions/techniqueReference"
               },
-              "description": "Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques."
+              "description": "Technique references for workflow orchestration."
             },
             "activity": {
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "#/definitions/techniqueReference"
               },
-              "description": "Technique references inherited by every activity; injected into every get_activity technique bundle."
+              "description": "Technique references that apply to every activity."
             }
           },
           "additionalProperties": false,
-          "description": "Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity)."
+          "description": "Technique references grouped by scope: workflow orchestration or every activity."
         },
         "initialActivity": {
           "type": "string",
-          "description": "ID of the first activity to execute: the id the first `next_activity` call names, and the root the reachability half of the activity-variables guard walks from — the analysis that decides, for each activity, which variables the run has written by the time it arrives there."
+          "description": "Identifier of the first activity to execute: the activity the first `next_activity` names, and the root the variable-reachability analysis walks from. Naming no activity of this workflow fails the load."
         },
         "graph": {
           "type": "object",
@@ -212,25 +223,27 @@
             "additionalProperties": {
               "anyOf": [
                 {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Destination activity identifier, or `__terminal__` to end the workflow."
                 },
                 {
                   "type": "array",
                   "items": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Identifier of an activity to run once."
                       },
                       {
                         "type": "object",
                         "properties": {
                           "activity": {
                             "type": "string",
-                            "description": "The activity every instance of this fan runs. One activity: its instances differ by the element each is handed and by nothing else."
+                            "description": "Activity every instance runs; instances differ only by the element each receives."
                           },
                           "over": {
                             "type": "string",
-                            "description": "The collection in the variable bag this destination runs the activity once per element of, by name or by a dotted path into a named value (`work_units`, `execution_plan.steps`). Read when the fan is entered, so its length is the fan's width."
+                            "description": "Collection the activity runs once per element of: a variable name or a dotted path into one (`work_units`, `execution_plan.steps`). Its first segment names a variable the workflow declares, or the workflow load fails. Read when the fan is entered, so its length then is the fan's width. The fan is refused unless the collection is present, an array, and nonempty, with each element a string or an object carrying a string `id`, and no two elements sharing an id."
                           },
                           "variable": {
                             "anyOf": [
@@ -241,12 +254,12 @@
                                 "$ref": "#/definitions/workflow/properties/variables/items/properties/name/anyOf/1"
                               }
                             ],
-                            "description": "The name each instance reads its own element at. The activity this fan runs declares it among the names it needs its workflow to supply; name it as the consuming technique's own input id so no step needs a rename."
+                            "description": "Variable name each instance reads its own element at. The workflow load fails unless the activity declares it among the names it `reads`, and fails when it equals the first segment of `over` or the activity also declares it among its writes. Name it as the consuming technique's input identifier so no step needs a rename."
                           },
                           "maxInstances": {
                             "type": "integer",
                             "minimum": 2,
-                            "description": "Optional. The widest fan this destination admits, declared only where the work wants a tighter bound than the server's configured ceiling and with the reason stated. Either bound refuses the fan-enter for a wider destination, naming the bound that applied and the width it saw. Each instance beyond the first costs a whole further delivery of this activity."
+                            "description": "Widest fan this destination admits, at least two, narrowing the server's configured ceiling. A fan wider than either bound is refused when entered, naming the bound that applied and the width it saw."
                           }
                         },
                         "required": [
@@ -254,630 +267,34 @@
                           "over",
                           "variable"
                         ],
-                        "additionalProperties": false
+                        "additionalProperties": false,
+                        "description": "Activity repeated in parallel for each element of a collection."
                       }
-                    ]
+                    ],
+                    "description": "One fan member: an activity identifier to run once, or an instance fan. A member is never itself a list, so fans do not nest."
                   },
-                  "minItems": 2
+                  "minItems": 2,
+                  "description": "Two or more members run together, one worker each. Every exit of every branch names the same single activity, the join, which the run enters once, after the last branch returns."
                 },
                 {
                   "$ref": "#/definitions/workflow/properties/graph/additionalProperties/additionalProperties/anyOf/1/items/anyOf/1"
                 }
-              ]
-            }
+              ],
+              "description": "Next activity, terminal outcome, or parallel group of activities or collection instances."
+            },
+            "description": "Exit identifiers mapped to destinations for one activity."
           },
-          "description": "The workflow's shape: for each activity, where each of its exits leads. This is the single home for the routing — an activity names outcomes, the workflow names destinations, so a borrowed activity sits in this graph without its lending workflow having a say. A destination naming one activity sends the run there, and `__terminal__` ends the run. A destination naming several activities runs them together, one worker to each. A destination naming one activity together with the collection to run it over runs one worker per element of that collection, each handed its own element at the name the destination gives; the graph names the collection, so the width is that collection's length when the fan is entered. Any destination is bounded by the server's ceiling, or by a tighter `maxInstances` an instance fan declares, measured against the branches it opens once every member is flattened. Either fan lands each branch's outputs in its own slot under the branch's own derived key, and the run enters the single activity all of the branches' own exits name, once, after the last of them returns. Omitted only by a workflow whose activities declare no exits."
+          "description": "Activity identifiers mapped to exit identifiers and their destinations. A destination is one of: an activity identifier, which the run enters next; `__terminal__`, which ends the run; a list of two or more members, each an activity identifier or an instance fan, run together with one worker each; or a single instance fan, which runs one activity once per element of a collection. A fan's width is the number of branches once every member is flattened, an instance fan counting its collection's length when entered; it is bounded by the server's ceiling and by any `maxInstances` an instance fan declares. Every exit of every branch names the fan's join, one single activity, and the load fails otherwise, so a branch cannot open a fan of its own; the run enters the join once, after the last branch returns. A fan also fails the load when an activity appears twice among its members, counting the activity an instance fan runs; when a member is `__terminal__`; when a branch binds no exit, or an exit back to itself; when the join is `__terminal__` or the activity whose exit opens the fan; when a branch declares a checkpoint step; when a branch binds `workflow-engine::commit-and-persist` or `workflow-engine::handle-sub-workflow`, or a `git::` technique without also binding `git::create-worktree`; when a branch's outputs key (`<id>_outputs`, its hyphens read as underscores) is not a legal variable name; and when an activity reads a slot of a fanned activity's outputs (`review_unit_outputs.<n>`) the fan can never fill, a plain member filling slot 0 alone and an instance fan filling as many as its `maxInstances`, or four. Each fanned activity's outputs land in an array variable named for it, its id with `-` replaced by `_` and `_outputs` appended (`review-unit` lands in `review_unit_outputs`), one slot per branch in collection order, each carrying its unit's id and that branch's values. Every exit of every activity is bound here: an unbound exit, an unknown exit and an unknown destination each fail the load. Omitted only when no activity declares exits."
         },
         "activities": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Unique identifier for the activity"
-              },
-              "version": {
-                "type": "string",
-                "pattern": "^\\d+\\.\\d+\\.\\d+$",
-                "description": "Semantic version of the activity"
-              },
-              "name": {
-                "type": "string",
-                "description": "Human-readable activity name"
-              },
-              "description": {
-                "type": "string",
-                "description": "Detailed description of the activity"
-              },
-              "variables": {
-                "type": "object",
-                "properties": {
-                  "reads": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/workflow/properties/variables/items/properties/name"
-                    },
-                    "description": "Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound techniques' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here."
-                  },
-                  "writes": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/definitions/workflow/properties/variables/items"
-                    },
-                    "description": "Session variables this activity puts into the bag: its bound techniques' outputs (under their declared id or the step binding's remap target), its checkpoint setVariable effects, its `set` action targets, and the item variable each of its loops binds per iteration. Contributed to the including workflow's variable set, defaultValue included."
-                  }
-                },
-                "additionalProperties": false,
-                "description": "The session variables this activity reads and writes. Its writes are declarations contributed to the including workflow's variable set; its reads are the names it needs that workflow to supply."
-              },
-              "techniques": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Activity-wide technique references (`::` paths); bundled into get_activity."
-              },
-              "bundleTechniques": {
-                "type": "object",
-                "properties": {
-                  "maxChars": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "description": "Per-technique character cap layered on the server-derived per-activity eager-delivery budget: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }. Set to 0 to opt this activity out of eager step-technique bundling entirely."
-                  }
-                },
-                "required": [
-                  "maxChars"
-                ],
-                "additionalProperties": false,
-                "description": "Opt-in hybrid bundling: get_activity inlines each step technique whose composed wire form is at most maxChars and whose gate answers true at activity open; larger ones, and those whose gate has no answer yet, remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check."
-              },
-              "steps": {
-                "type": "array",
-                "items": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
-                          "const": "technique",
-                          "description": "Step-kind discriminator."
-                        },
-                        "id": {
-                          "type": "string",
-                          "description": "Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name."
-                        },
-                        "technique": {
-                          "anyOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "name": {
-                                  "type": "string",
-                                  "description": "The `group::technique` (or bare op / `workflow::group::op`) technique reference this step invokes."
-                                },
-                                "inputs": {
-                                  "type": "object",
-                                  "additionalProperties": {
-                                    "type": [
-                                      "string",
-                                      "number",
-                                      "boolean"
-                                    ]
-                                  },
-                                  "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
-                                },
-                                "outputs": {
-                                  "type": "object",
-                                  "additionalProperties": {
-                                    "type": "string"
-                                  },
-                                  "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
-                                }
-                              },
-                              "required": [
-                                "name"
-                              ],
-                              "additionalProperties": false
-                            }
-                          ],
-                          "description": "Canonical per-step binding: a `group::technique` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
-                        },
-                        "actions": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "action": {
-                                "type": "string",
-                                "enum": [
-                                  "log",
-                                  "validate",
-                                  "set",
-                                  "emit",
-                                  "message"
-                                ],
-                                "description": "Action verb, interpreted by the executing agent. The server has no action interpreter: executing `set` is the worker's job, and its value reaches the session variable bag when the worker reports it in the `variables_changed` its orchestrator relays on next_activity. `set` is slated for removal at the next workflow-schema major (#166 B7/B12)."
-                              },
-                              "target": {
-                                "type": "string"
-                              },
-                              "message": {
-                                "type": "string"
-                              },
-                              "value": {},
-                              "description": {
-                                "type": "string",
-                                "description": "Human-readable description of what this action does"
-                              },
-                              "condition": {
-                                "anyOf": [
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "simple"
-                                      },
-                                      "variable": {
-                                        "type": "string"
-                                      },
-                                      "operator": {
-                                        "type": "string",
-                                        "enum": [
-                                          "==",
-                                          "!=",
-                                          ">",
-                                          "<",
-                                          ">=",
-                                          "<=",
-                                          "exists",
-                                          "notExists"
-                                        ]
-                                      },
-                                      "value": {
-                                        "type": [
-                                          "string",
-                                          "number",
-                                          "boolean",
-                                          "null"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "variable",
-                                      "operator"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "and"
-                                      },
-                                      "conditions": {
-                                        "type": "array",
-                                        "items": {
-                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                        },
-                                        "minItems": 2
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "conditions"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "or"
-                                      },
-                                      "conditions": {
-                                        "type": "array",
-                                        "items": {
-                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                        },
-                                        "minItems": 2
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "conditions"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "not"
-                                      },
-                                      "condition": {
-                                        "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "condition"
-                                    ],
-                                    "additionalProperties": false
-                                  }
-                                ],
-                                "description": "Condition that must be true for this action to execute"
-                              }
-                            },
-                            "required": [
-                              "action"
-                            ],
-                            "additionalProperties": false
-                          }
-                        },
-                        "when": {
-                          "type": "string",
-                          "description": "Inline boolean expression that gates this step. Operators: ==, !=, >, <, >=, <=, bare identifier truthiness, unary !, &&, ||, and parentheses. Precedence (C-style, tightest first): () > ! > comparisons > && > ||. Mixing && and || at the same nesting depth requires parentheses. Examples: \"has_saved_state == true\", \"remediation_round > 0\", \"a == true && b != false\", \"(a && b) || c\", \"is_review_mode != true && (problem_complexity == \\\"moderate\\\" || problem_complexity == \\\"complex\\\")\". Evaluated by the executing agent against current variable state; the server never evaluates gates. Mechanical nets (e2e walker, guards) use the shared reference evaluator and treat invalid expressions as false (step does not run). On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal."
-                        },
-                        "required": {
-                          "type": "boolean",
-                          "const": false,
-                          "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it."
-                        },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                          "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "technique"
-                      ],
-                      "additionalProperties": false
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
-                          "const": "action",
-                          "description": "Step-kind discriminator."
-                        },
-                        "id": {
-                          "type": "string",
-                          "description": "Identifier for this step within the activity."
-                        },
-                        "actions": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items"
-                          },
-                          "description": "Control actions; may be empty for marker steps."
-                        },
-                        "when": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
-                        },
-                        "required": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
-                        },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "id"
-                      ],
-                      "additionalProperties": false
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
-                          "const": "checkpoint",
-                          "description": "Step-kind discriminator."
-                        },
-                        "id": {
-                          "type": "string",
-                          "description": "Identifier for this step within the activity; the stable checkpoint-response replay key."
-                        },
-                        "message": {
-                          "type": "string",
-                          "description": "Message presented to the user."
-                        },
-                        "options": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "label": {
-                                "type": "string"
-                              },
-                              "description": {
-                                "type": "string"
-                              },
-                              "effect": {
-                                "type": "object",
-                                "properties": {
-                                  "setVariable": {
-                                    "type": "object",
-                                    "additionalProperties": {},
-                                    "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
-                                  },
-                                  "exit": {
-                                    "type": "string",
-                                    "description": "Exit of the owning activity this option selects — a name from the activity's `exits[]`, never an activity id. The destination is the workflow's to state: `present_checkpoint` reads it from the workflow graph so the option's consequence is stated before the user chooses. An adhoc checkpoint has no declared exits, so its options carry setVariable only."
-                                  }
-                                },
-                                "additionalProperties": false
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "label"
-                            ],
-                            "additionalProperties": false
-                          },
-                          "minItems": 1,
-                          "description": "Decision options with effects."
-                        },
-                        "defaultOption": {
-                          "type": "string",
-                          "description": "The answer a soft gate takes when no person is reached."
-                        },
-                        "autoAdvanceMs": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0,
-                          "description": "The interval the server spends before applying a soft gate's default on respond_checkpoint { auto_advance: true }."
-                        },
-                        "when": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
-                        },
-                        "required": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
-                        },
-                        "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "id",
-                        "message",
-                        "options"
-                      ],
-                      "additionalProperties": false
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
-                          "const": "loop",
-                          "description": "Step-kind discriminator."
-                        },
-                        "id": {
-                          "type": "string",
-                          "description": "Identifier for this step within the activity."
-                        },
-                        "name": {
-                          "type": "string",
-                          "description": "Structural label for the iteration (the one step kind that carries a name)."
-                        },
-                        "loopType": {
-                          "type": "string",
-                          "enum": [
-                            "forEach",
-                            "while",
-                            "doWhile"
-                          ],
-                          "description": "Iteration type. `forEach` walks a collection; `while` takes its continuation test before the first pass; `doWhile` takes it after."
-                        },
-                        "continueWhile": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                          "description": "The continuation test of a while/doWhile loop: the body runs again while this holds. Declared by every repeat-until loop and by no forEach, whose iteration is bounded by its collection. Evaluated by the executing agent; `loopType` says when it is taken."
-                        },
-                        "variable": {
-                          "type": "string",
-                          "description": "Current-item variable bound each iteration."
-                        },
-                        "over": {
-                          "type": "string",
-                          "description": "Collection expression iterated by a forEach loop."
-                        },
-                        "breakCondition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
-                          "description": "Early exit from item iteration, evaluated by the executing agent before each item: iteration stops when it holds. A repeat-until loop states its stopping condition in `continueWhile` instead."
-                        },
-                        "maxIterations": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0,
-                          "description": "Safety bound on iteration count, enforced by the executing agent."
-                        },
-                        "steps": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items"
-                          },
-                          "description": "The loop body, a nested ordered list of steps."
-                        },
-                        "when": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
-                        },
-                        "required": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "id",
-                        "loopType",
-                        "steps"
-                      ],
-                      "additionalProperties": false
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "type": "string",
-                          "const": "routine",
-                          "description": "Step-kind discriminator."
-                        },
-                        "id": {
-                          "type": "string",
-                          "description": "Identifier for this step within the activity, and the prefix every identifier in the materialised body carries."
-                        },
-                        "routine": {
-                          "type": "string",
-                          "description": "Routine reference: `[namespace::]name`, the namespace spelled by its directory name or by the path from the corpus root reaching it. A qualified name resolves in that namespace only; a bare name resolves against the referring activity's source workflow and then meta. The last segment is the routine and every segment before it belongs to the namespace — a routine name carries no group grammar."
-                        },
-                        "with": {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": [
-                              "string",
-                              "number",
-                              "boolean"
-                            ]
-                          },
-                          "description": "Arguments: routine input id → the value it takes here. A braced value is a reference to a host variable and a bare value is a literal. A declared input left unbound takes the host's value under the input's own id, or the input's declared default."
-                        },
-                        "outputs": {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "string"
-                          },
-                          "description": "Output bindings: routine output id → the session variable its value lands under. An output the site leaves unbound produces no write, and its declaration says whether that is allowed."
-                        },
-                        "when": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
-                        },
-                        "required": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "id",
-                        "routine"
-                      ],
-                      "additionalProperties": false
-                    }
-                  ]
-                },
-                "description": "Ordered, kind-tagged execution steps for this activity"
-              },
-              "exits": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "Outcome name, unique within the activity. Kebab-case, in the activity's vocabulary — never an activity id."
-                    },
-                    "label": {
-                      "type": "string",
-                      "description": "Human-readable statement of the outcome."
-                    },
-                    "when": {
-                      "type": "string",
-                      "description": "Inline boolean expression selecting this exit, evaluated agent-side against the variable bag in the `when` dialect the step gates use. Omitted on an exit only a checkpoint option selects, and on the default exit."
-                    },
-                    "isDefault": {
-                      "type": "boolean",
-                      "const": true,
-                      "description": "The outcome when no `when` matched and no checkpoint option selected an exit — including a checkpoint dismissed because its condition was not met. Declared exactly once on an activity with two or more exits; `isDefault: false` is redundant and rejected."
-                    },
-                    "immediate": {
-                      "type": "boolean",
-                      "const": true,
-                      "description": "Selecting this exit at a checkpoint ends the step sequence there: the remaining steps do not run and the step-manifest check accounts for them. Declared for the aborts, where the tail would otherwise run against the user's decision. Without it an exit is recorded when chosen and taken when the sequence ends. `immediate: false` is redundant and rejected."
-                    }
-                  },
-                  "required": [
-                    "id"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Named outcomes of this activity, one of which it takes when its steps end. Each is bound to a destination in the workflow's `graph`; an unbound exit fails the workflow load. Omitted on an activity that is terminal by omission."
-              },
-              "triggers": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "workflow": {
-                      "type": "string",
-                      "description": "ID of the workflow to trigger"
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "Description of when/why this workflow is triggered"
-                    },
-                    "passContext": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session's bag starts from the child workflow's own declared defaults, nothing more."
-                    }
-                  },
-                  "required": [
-                    "workflow"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Workflows the orchestrator dispatches from this activity (via dispatch_child with an explicit workflow_id); the server does not act on trigger declarations."
-              },
-              "outcome": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Expected outcomes when activity completes successfully. Advisory — the server does not reconcile them against activity_manifest outcomes."
-              },
-              "required": {
-                "type": "boolean",
-                "default": true,
-                "description": "Whether this activity is required in the workflow"
-              },
-              "rules": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Activity-level rules and constraints that agents must follow"
-              },
-              "artifactPrefix": {
-                "type": "string",
-                "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.yaml). Server-computed — do not set in definition files."
-              }
-            },
-            "required": [
-              "id",
-              "version",
-              "name"
-            ],
-            "additionalProperties": false
+            "type": "string",
+            "pattern": "^[^/]+\\/(?:[^/]+\\/)*\\d+-[^/]+\\.ya?ml$",
+            "description": "Borrowed activity file, `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` (or `.yml`): a file under that workflow's `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`. The borrowed activity resolves its unqualified technique and routine references in the workflow it is borrowed from. A reference naming no file fails the workflow load; a file that fails validation is excluded from the load, as an activity file of the workflow's own is."
           },
           "minItems": 1,
-          "description": "Activities that comprise this workflow. An activity whose exits the `graph` binds sits in a sequence; one declaring no exits is terminal. Omitted in definition files where activities are separate files."
+          "description": "Activities borrowed from other workflows, each named by its file; the workflow's own activities are the files in its `activities/` folder. An activity identifier appears once in a workflow: two of the workflow's own files carrying one identifier, or a borrowed activity sharing its identifier with one of the workflow's own or with another borrowed activity, fails the workflow load."
         }
       },
       "required": [
@@ -886,7 +303,12 @@
         "title",
         "initialActivity"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Workflow definition file: identity, shared declarations, borrowed activities, and exit destinations."
+    },
+    "techniqueReference": {
+      "type": "string",
+      "description": "Technique reference: `[namespace::]technique[::nested…]`, segments separated by `::`, none of them empty. When its leading segments spell a namespace the corpus holds and at least one segment follows them, the rest of the path resolves in that namespace and nowhere else. A namespace is spelled by its directory name, by the path from the corpus root that reaches it, or by as much of the end of that path as reaches it alone (`gitnexus` and `support::gitnexus` name the same one); the longest leading run that spells a namespace wins. Otherwise every segment is a path under the referring workflow's `techniques/`, the first naming a group and the last the technique, resolved in the referring workflow and then in `meta`; a borrowed activity's referring workflow is the one it is borrowed from. On a step, a one-segment reference resolves first as `<activity-id>::<name>`, in the group named after the activity, and as written where that group holds no such technique. A reference that reads both ways is refused, naming both files. The spelling `namespace/technique` names a namespace, whether or not the corpus holds one; a second slash, or a slash after a `::`, is malformed. Where no nested technique matches, the last segment names a rule on the technique before it, and a group name `{group}` stands for every rule named `{group}-*`."
     }
   }
 }

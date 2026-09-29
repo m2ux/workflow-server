@@ -457,7 +457,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: true,
     json: false,
-    proves: 'every when: gate parses under the reference dialect and parenthesizes mixed &&/||',
+    proves: 'every when: gate on a step or exit parses under the reference dialect and parenthesizes mixed &&/||',
     form: 'authored',
   },
   {

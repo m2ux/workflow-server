@@ -88,7 +88,7 @@
   </div>
 
   <h3 id="layout">Install layout (defaults)</h3>
-  <p class="prose">Preferred paths (see <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/install-projects-worktrees.md">install-projects-worktrees.md</a>):</p>
+  <p class="prose">Preferred paths (see the <a href="https://github.com/m2ux/workflow-server/blob/workspace/README.md">workspace README</a>):</p>
   <div class="table-wrap">
     <table>
       <thead><tr><th scope="col">Path</th><th scope="col">Default</th><th scope="col">Purpose</th></tr></thead>
@@ -105,7 +105,7 @@
   <p class="prose"><strong>Install</strong> (host), <strong>deploy</strong> (into the product repo), and <strong>checkout</strong> under <code>$HOST_PROJECTS_ROOT/&lt;repo&gt;</code> are different operations — see <a href="https://github.com/m2ux/workflow-server/blob/main/docs/setup.md">setup.md</a>.</p>
 
   <h3 id="http-install">Docker / HTTP (quick)</h3>
-  <pre><code>curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
+  <pre><code>curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts/install.sh | bash
 ~/.local/share/workflow-server/start.sh -d</code></pre>
   <p class="prose">Creates the install layout, places a corpus at <code>$INSTALL/workflows</code> (or <code>--workflows-dir</code>), writes <code>$INSTALL/env</code>, and starts the GHCR image. <code>--corpus-branch</code> and <code>--repo-url</code> select which tree to clone; those values are what <code>start.sh</code> refreshes. Verify and MCP client steps: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/http.md">http.md</a>.</p>
 
@@ -115,56 +115,40 @@ cd workflow-server
 npm ci
 # corpus at --workflow-dir (default .worktrees/workflows)
 git worktree add .worktrees/workflows workflows
-npm run build
-# optional host layout (without Docker):
-./scripts/install.sh --install-dir=~/.local/share/workflow-server</code></pre>
-  <p class="prose">The server reads any corpus at <code>--workflow-dir</code> (default <code>.worktrees/workflows</code> of the primary checkout). Product definitions live under <code>corpus/</code> of that tree. Point the IDE MCP config at <code>dist/index.js</code> with <code>--install-dir</code> and <code>--workflow-dir</code>. Full client snippet and verify: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/stdio.md">stdio.md</a>.</p>
+npm run build</code></pre>
+  <p class="prose">The server reads any corpus at <code>--workflow-dir</code> (default <code>.worktrees/workflows</code> of the primary checkout). Product definitions live under <code>corpus/</code> of that tree. Point the IDE MCP config at <code>dist/index.js</code> with <code>--workspace=PATH</code> (one checkout, or a projects root holding several) or <code>--repo=owner/repo</code>; <code>--install-dir</code> alone is not a binding, and the process exits. Full client snippet and verify: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/stdio.md">stdio.md</a>.</p>
 
-  <h2 id="deploy">2. Init a target repo</h2>
-  <p class="prose">Two steps per product repo: deploy engineering into the repo, then check it out under <code>$HOST_PROJECTS_ROOT</code>.</p>
-
-  <h3 id="deploy-a">2a. Deploy engineering</h3>
-  <p class="prose">A product repository keeps its engineering storage outside this tree. Patterns (same-repo orphan, shared engineering monorepo, in-branch): <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md">docs/engineering-storage.md</a>.</p>
-
-  <h3 id="checkout-project">2b. Checkout the project</h3>
-  <pre><code># HOST_PROJECTS_ROOT from $INSTALL/env (default: ~/projects/dev)
-git clone https://github.com/owner/repo.git "$HOST_PROJECTS_ROOT/&lt;repo&gt;"
-mkdir -p "$HOST_PROJECTS_ROOT/&lt;repo&gt;/.worktrees"</code></pre>
-  <p class="prose">Use the repo <strong>basename</strong> for <code>&lt;repo&gt;</code>. Layout: <code>checkout = $HOST_PROJECTS_ROOT/&lt;repo&gt;</code>, planning under <code>checkout/.engineering/…</code>, feature worktrees under <code>checkout/.worktrees/&lt;slug&gt;/</code>. Full detail: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/setup.md#2b-checkout-the-project">setup.md §2b</a> · <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/install-projects-worktrees.md">install-projects-worktrees.md</a>. Repeat 2a → 2b for each product repo.</p>
+  <h2 id="deploy">2. Initialise the workspace</h2>
+  <p class="prose">Follow the setup instructions in the <a href="https://github.com/m2ux/workflow-server/blob/workspace/README.md">workspace README</a>: it checks out the template workspace, forks it, deploys the engineering branch, and adds each project component the agents work on.</p>
 
   <h2 id="configure">3. Setup Cursor workspace</h2>
-  <p class="prose">The kickoff workspace lives on the workspace branch. <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/ide-setup.md">IDE setup</a> covers the bootstrap rule and the workspace roots. Transports: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/http.md">http.md</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/docs/stdio.md">stdio.md</a>.</p>
+  <p class="prose">The kickoff workspace lives on the workspace branch. The <a href="https://github.com/m2ux/workflow-server/blob/workspace/README.md">workspace README</a> covers its rules, including the bootstrap rule, and the workspace roots. Transports: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/http.md">http.md</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/docs/stdio.md">stdio.md</a>.</p>
   <p class="prose" id="bootstrap-rule">The discover-first bootstrap rule is part of that IDE setup.</p>
 
   <h2 id="verify">4. Verify</h2>
   <p class="prose">Transport-specific health checks:</p>
   <ul class="prose">
-    <li><strong>HTTP</strong> — <code>/health</code>, <code>/ready</code> (require <code>sessionKeyWritable: true</code> and <code>corpusServes: true</code>), container logs (<a href="https://github.com/m2ux/workflow-server/blob/main/docs/http.md">http.md</a> §4).</li>
+    <li><strong>HTTP</strong> — <code>/health</code>, <code>/ready</code> (require <code>sessionKeyWritable: true</code> and <code>corpusServes: true</code>), container logs (<a href="https://github.com/m2ux/workflow-server/blob/main/docs/http.md">http.md</a> §3).</li>
     <li><strong>stdio</strong> — build/paths, MCP spawn without errors (<a href="https://github.com/m2ux/workflow-server/blob/main/docs/stdio.md">stdio.md</a> §3).</li>
   </ul>
-  <p class="prose"><strong>Primary MCP smoke:</strong> from the example workspace, ask the agent to start a work-package (or any) workflow. It must call <a href="../api/tools.html#discover"><code>discover</code></a> first, then <a href="../api/tools.html#start_session"><code>start_session</code></a> with <code>repo: "owner/repo"</code>, and return a <code>session_index</code>. <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> alone is not enough. If the agent skips <code>discover</code>, the bootstrap rule is not loaded — see <a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/ide-setup.md">docs/ide-setup.md</a>.</p>
+  <p class="prose"><strong>Primary MCP smoke:</strong> from the example workspace, ask the agent to start any workflow. It must call <a href="../api/tools.html#discover"><code>discover</code></a> first, then <a href="../api/tools.html#start_session"><code>start_session</code></a> with <code>working_directory</code> set to the absolute path of the checkout under work (the server derives <code>owner/repo</code> from its origin), and return a <code>session_index</code>. <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> alone is not enough. If the agent skips <code>discover</code>, the bootstrap rule is not loaded — see the <a href="https://github.com/m2ux/workflow-server/blob/workspace/README.md">workspace README</a>.</p>
 
   <h2 id="run">5. Run and resume</h2>
-  <p class="prose">Drive workflows in natural language — no tool names, no tokens to copy. A <strong>work package</strong> is the bundled workflow for planning and implementing one unit of work (for example a feature or issue).</p>
+  <p class="prose">Drive workflows in natural language — no tool names, no tokens to copy. The examples name an invented <code>feature-delivery</code> workflow; name one your corpus offers.</p>
   <p><strong>Start</strong> a workflow by naming the goal:</p>
-  <pre><code>Start a new work-package workflow for implementing user authentication</code></pre>
-  <pre><code>Begin a work-package workflow for issue #42</code></pre>
+  <pre><code>Start a new feature-delivery workflow for implementing user authentication</code></pre>
+  <pre><code>Begin a feature-delivery workflow for issue #42</code></pre>
   <p><strong>Resume</strong> one — sessions live on disk, so this works across restarts and even across chat conversations:</p>
-  <pre><code>Resume the work-package workflow we were working on</code></pre>
-  <pre><code>Continue the authentication work package from where we left off</code></pre>
+  <pre><code>Resume the feature-delivery workflow we were working on</code></pre>
+  <pre><code>Continue the authentication work from where we left off</code></pre>
   <p><strong>Finish</strong> or wind one down:</p>
-  <pre><code>End the current work-package workflow</code></pre>
-
-  <h2 id="day-two">Update workflows</h2>
-  <p class="prose">Same operations as <a href="https://github.com/m2ux/workflow-server/blob/main/docs/setup.md">setup.md</a> §4 (Update Workflows). The anchor <code>#day-two</code> is stable for existing links.</p>
-  <pre><code>$INSTALL/update-workflows.sh   # refresh the corpus at $INSTALL/workflows; restart HTTP if running
-$INSTALL/stop.sh               # stop HTTP container</code></pre>
+  <pre><code>End the current feature-delivery workflow</code></pre>
 
   <h2 id="next">Next steps</h2>
   <ul class="prose">
     <li><a href="./definitions.html">Browse the definitions</a> — glossary of terms across the docs and workflow runs.</li>
     <li><a href="../specs/state-management.html#planning-folder">The planning folder</a> — where a run's notes are written, apart from the code change.</li>
-    <li><a href="https://github.com/m2ux/workflow-server/blob/workspace/docs/engineering-storage.md">Engineering storage patterns</a> — orphan, shared monorepo, in-branch.</li>
+    <li><a href="https://github.com/m2ux/workflow-server/blob/workspace/README.md">Workspace README</a> — the engineering worktree and project components.</li>
   </ul>
 </main>
 

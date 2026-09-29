@@ -133,14 +133,12 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     });
 
   for (const { dir } of workflows) {
-    // `workflow.yaml` too: a workflow file may carry activities inline, loops and all. And
-    // `routines/`, because a routine body holds loops and an unbounded `while` in a shared body
-    // propagates to every reference site rather than to one (#704).
-    const roots = [join(dir, 'workflow.yaml')].filter((path) => existsSync(path));
+    // `routines/` too, because a routine body holds loops and an unbounded `while` in a shared body
+    // propagates to every reference site rather than to one.
     const owned = [join(dir, 'activities'), join(dir, 'routines')]
       .filter((path) => existsSync(path))
       .flatMap((path) => definitions(path));
-    for (const path of [...roots, ...owned]) {
+    for (const path of owned) {
       scanned++;
       try {
         walk(parseDefinition(readFileSync(path, 'utf-8')), relative(root, path), findings);

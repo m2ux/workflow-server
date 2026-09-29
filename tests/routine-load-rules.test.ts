@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { loadWorkflow, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { loadWorkflow, loadWorkflowWithDiagnostics, readActivityRaw } from '../src/loaders/workflow-loader.js';
 import { readWorkflowRoutines } from '../src/loaders/routine-loader.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
 import type { Step } from '../src/schema/activity.schema.js';
@@ -254,6 +254,66 @@ describe('a reference that does not resolve drops its activity and reports why',
     expect(result.value.activityLoadErrors).toHaveLength(1);
     expect(result.value.activityLoadErrors[0]!.activity_id).toBe('host');
     expect(result.value.authoredActivities.has('host')).toBe(false);
+  });
+});
+
+describe('a routine file that fails to load costs only the references to it', () => {
+  it('leaves a workflow that never refers to it loading clean', async () => {
+    expect(await activityErrors({
+      activities: [host({ routine: 'shared-run' })],
+      routines: [routine('shared-run'), { id: 'broken-run', steps: [] }],
+    })).toEqual([]);
+  });
+
+  it('excludes the activity that refers to it, naming the routine file', async () => {
+    const errors = await activityErrors({ activities: [host({ routine: 'broken-run' })], routines: [{ id: 'broken-run', steps: [] }] });
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toMatch(/routine 'broken-run' failed to load.*routines\/broken-run\.yaml/s);
+  });
+
+  it('holds for a routine file that does not parse, wherever it sits', async () => {
+    const { corpus, id } = writeTree({
+      activities: [host({ routine: 'shared-run' }), host({ routine: 'garbled-run' }, 'garbled-host')],
+      routines: [routine('shared-run')],
+      metaRoutines: [routine('unrelated-run')],
+    });
+    writeFileSync(join(corpus, 'meta', 'routines', 'garbled-run.yaml'), 'steps: [unclosed\n');
+    const result = await loadWorkflowWithDiagnostics(corpus, id);
+    if (!result.success) throw new Error(`load failed: ${result.error.message}`);
+    expect(result.value.workflow.activities!.map((a) => a.id)).toEqual(['host']);
+    expect(result.value.activityLoadErrors.map((e) => e.error))
+      .toEqual([expect.stringMatching(/routine 'garbled-run' failed to load.*routines\/garbled-run\.yaml\) does not parse/s)]);
+  });
+
+  it('leaves the excluded activity out of the raw read get_activity serves', async () => {
+    const { corpus, id } = writeTree({ activities: [host({ routine: 'broken-run' })], routines: [{ id: 'broken-run', steps: [] }] });
+    const loaded = await loadWorkflowWithDiagnostics(corpus, id);
+    if (!loaded.success) throw new Error(`load failed: ${loaded.error.message}`);
+    expect((await readActivityRaw(loaded.value, 'host')).success).toBe(false);
+  });
+
+  it('does not fall through to a same-named meta routine', async () => {
+    const errors = await activityErrors({
+      activities: [host({ routine: 'shared-run' })],
+      routines: [{ id: 'shared-run', steps: [] }],
+      metaRoutines: [routine('shared-run')],
+    });
+    expect(errors.join(' ')).toContain("routine 'shared-run' failed to load");
+  });
+
+  it('reports a step rule a routine body breaks against the routine, not as an activity', async () => {
+    const { corpus, id } = writeTree({
+      activities: [host({ routine: 'gate-run' })],
+      routines: [routine('gate-run', {
+        steps: [{ kind: 'checkpoint', id: 'confirm', message: 'Proceed?', options: [{ id: 'go', label: 'Go' }], defaultOption: 'go' }],
+      })],
+    });
+    const result = await loadWorkflowWithDiagnostics(corpus, id);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    const [error] = result.value.activityLoadErrors.map((e) => e.error);
+    expect(error).toContain(`Routine '${id}::gate-run' (routines/gate-run.yaml): checkpoint 'confirm' declares defaultOption without autoAdvanceMs`);
+    expect(error).not.toContain("Activity 'gate-run'");
   });
 });
 

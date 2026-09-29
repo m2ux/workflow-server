@@ -8,11 +8,21 @@ One of a workspace path **or** `--repo` is required at startup. The table names 
 
 | Variable or flag | Default | Description |
 |------------------|---------|-------------|
-| `--workspace=PATH` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` | — | Explicit workspace or worktree root. Legacy single root: planning sits under this path |
-| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$HOST_PROJECTS_ROOT/<repo>/.worktrees` and `$HOST_PROJECTS_ROOT/<repo>/.engineering` |
+| `--workspace=PATH` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` | — | Explicit workspace or worktree root. In single-root mode, planning sits under this path |
+| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$INSTALL/projects/<name>/.worktrees` and `$INSTALL/projects/<name>/.engineering`, where `<name>` is the last segment of the repository and `$INSTALL` the install root. A workspace path takes precedence |
 | `--install-dir=PATH` / `WORKFLOW_SERVER_INSTALL_DIR` | `~/.local/share/workflow-server`, or `$XDG_DATA_HOME/workflow-server` | Install root, used with `--repo` |
-| `WORKFLOW_SERVER_ENGINEERING_DIR` | equals the workspace when unbound; `$HOST_PROJECTS_ROOT` under multi-root Docker | Engineering multi-root, or the single engineering checkout used for planning and session files |
-| `PLANNING_SLUG` | `.engineering/artifacts/planning` (legacy), or `artifacts/planning` (repo and engineering-root modes) | Planning directory, relative to the engineering root |
+| `WORKFLOW_SERVER_ENGINEERING_DIR` | the workspace | Engineering multi-root, or the single engineering checkout used for planning and session files. Read only with a workspace path; Docker's `start.sh` passes the container path of the engineering root it binds |
+| `PLANNING_SLUG` | `.engineering/artifacts/planning` (single-root mode), or `artifacts/planning` (repo and engineering-root modes) | Planning directory, relative to the engineering root |
+
+## Host paths
+
+Under Docker the server reads its trees at container paths. These name the host directories bound there, so a path the server returns, and the corpus it reports serving, are the host's.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HOST_PROJECTS_ROOT` / `HOST_PROJECTS_DIR` | — | Host directory bound as the projects root; returned paths under it are rewritten to the host path |
+| `HOST_WORKTREE_ROOT` / `HOST_WORKTREE_DIR` | — | Host directory bound as the worktree root, rewritten the same way |
+| `HOST_WORKFLOWS_DIR` / `HOST_WORKFLOWS_ROOT` | — | Host tree behind the corpus mount, reported as `corpus.hostDir` by `GET /ready` |
 
 ## Process
 
@@ -46,10 +56,10 @@ The key that seals session state lives in a file named `secret`. The server look
 ## Examples
 
 ```bash
-# Legacy single root — workspace doubles as the engineering root for planning
+# Single root — workspace doubles as the engineering root for planning
 node dist/index.js --workspace=~/work --workflow-dir=.worktrees/workflows
 
-# Per-repo layout, after install.sh and a checkout under HOST_PROJECTS_ROOT
+# Per-repo layout, after install.sh and a checkout under $INSTALL/projects
 node dist/index.js --repo=m2ux/workflow-server --transport=http
 
 # HTTP defaults from npm

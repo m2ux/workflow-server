@@ -384,8 +384,8 @@ export async function resolveTechniques(
       continue;
     }
 
-    // 2. Rule on the technique index.
-    const skillResult = await readTechniqueRef(techRef, index);
+    // 2. Rule on the technique index, resolved current-workflow-first like the technique itself.
+    const skillResult = await readTechniqueRef(techRef, index, currentWorkflow);
     if (!skillResult.success) {
       results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
       continue;

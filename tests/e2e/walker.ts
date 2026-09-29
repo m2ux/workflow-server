@@ -696,9 +696,9 @@ async function resolveCheckpoint(
   if (isError(y)) throw new Error(`yield_checkpoint(${checkpointId}) failed`);
   const yieldBody = parseToolResponse(y);
 
-  // Re-entering an activity replays its recorded checkpoint response: the server
-  // returns status:'replayed' and deliberately does NOT set an active checkpoint
-  // (the user is not prompted twice), so there is nothing to respond to. Apply
+  // A gate already answered in this visit of the activity replays its recorded
+  // response: the server returns status:'replayed' and deliberately does NOT set an
+  // active checkpoint (the user is not prompted twice), so there is nothing to respond to. Apply
   // the replayed effect and continue without respond/resume.
   if (yieldBody.status === 'replayed') {
     const effect = (yieldBody.effect ?? {}) as Record<string, unknown>;
@@ -955,9 +955,8 @@ export async function walk(
     current = next;
   }
 
-  // The session-file `status` field is the authoritative terminal signal
-  // (get_workflow_status only ever reports active/blocked). It flips to
-  // "completed" when a transition lands on a terminal activity.
+  // The session-file `status` field is the authoritative terminal signal. It
+  // flips to "completed" when a transition lands on a terminal activity.
   const sessionPath = join(harness.workspaceDir, '.engineering/artifacts/planning', planningSlug, 'session.json');
   let finalStatus = 'unknown';
   try {
