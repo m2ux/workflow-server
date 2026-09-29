@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.14.0
+  version: 1.15.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Optional. Fresh-session workflow id (default `meta`). Ignored on resume.
 
 ### planning_folder
 
-Optional. Absolute path whose basename is the planning slug. Omit for a transient meta bootstrap when the slug is not yet known.
+Optional. Absolute path of one planning folder: a folder holding a session resumes, and a new folder sits directly under the planning root of `{working_directory}`, its basename the planning slug. Omit for a transient meta bootstrap when the slug is not yet known.
 
 ### repo
 
@@ -106,7 +106,7 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ### planning-folder-absolute-or-omit
 
-When targeting a planning folder, `planning_folder` MUST be an absolute path; only the basename is consumed as the slug. Bare slugs and relative paths are rejected. Omit `planning_folder` entirely for a transient meta bootstrap — the server mints a transitional slug and parks the session until `dispatch_child` promotes it. Always prefer the returned `planning_folder_path` over any path the agent constructed.
+When targeting a planning folder, `planning_folder` MUST be an absolute path. A new folder outside the planning root of `{working_directory}` is refused, and the refusal names that root. Bare slugs and relative paths are rejected. Omit `planning_folder` entirely for a transient meta bootstrap — the server mints a transitional slug and parks the session until `dispatch_child` promotes it. Always prefer the returned `planning_folder_path` over any path the agent constructed.
 
 ### origin-binds-from-working-directory
 

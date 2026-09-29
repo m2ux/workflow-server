@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: plain-language
-version: 1.4.0
+version: 1.5.0
 title: Plain Language Workflow
 description: >-
   Author, rewrite, or audit a document so its readers can find what they need, understand what they find, and use it. Applies the four principles and guidelines of ISO 24495-1, with an optional ASD-STE100 controlled-language overlay for technical documentation.
@@ -19,6 +19,9 @@ techniques:
   activity:
     - variable-binding
 variables:
+  - name: planning_folder_path
+    type: string
+    description: Absolute path to this run's planning folder, seeded when the session opens.
   - name: user_request
     type: string
     description: The user's free-form request that opened this run.
