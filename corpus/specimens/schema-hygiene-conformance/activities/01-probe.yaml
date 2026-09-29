@@ -1,0 +1,21 @@
+id: probe
+version: 1.0.0
+name: Probe
+description: The local probe, bound with its rule by a bare reference.
+required: true
+techniques:
+  - hygiene-probe::local-marker
+variables:
+  writes:
+    - name: probe_recorded
+      type: boolean
+      description: True once the probe has executed.
+steps:
+  - kind: technique
+    id: record
+    technique: hygiene-probe
+exits:
+  - id: probed
+    isDefault: true
+outcome:
+  - The probe has executed ({probe_recorded})

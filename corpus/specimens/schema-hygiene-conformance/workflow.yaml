@@ -1,0 +1,33 @@
+$schema: ../../../schemas/workflow.schema.json
+id: schema-hygiene-conformance
+version: 1.1.0
+title: Schema Hygiene Conformance
+description: >-
+  Live evidence for the session status, declared-checkpoint yield, bare rule reference, borrowed
+  activity, numeric gate and immediate-exit behaviour.
+author: m2ux
+tags:
+  - specimen
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: flag_on
+    type: boolean
+    defaultValue: true
+    description: A boolean an ordering comparison reads; it stands for no number, so the comparison is false.
+  - name: unit_count
+    type: number
+    defaultValue: 3
+    description: A number an ordering comparison reads, as the control for flag_on.
+initialActivity: probe
+graph:
+  probe:
+    probed: dispatch
+  dispatch:
+    dispatched: gate-exit
+  gate-exit:
+    halted: __terminal__
+    finished: __terminal__
+activities:
+  - mvw/01-dispatch.yaml
