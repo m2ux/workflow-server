@@ -1633,12 +1633,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // The barrier rides every fan-related response in one shape: a reading rather than a verdict,
       // because there is no barrier-met call to make. `met` is true with an empty pending list on
-      // the call that enters the destination.
+      // the call that enters the destination. The call that opens a fan names its join too: the fan
+      // hangs off the retiring activity's exit, and the graph fixes where its branches converge.
       if (openFan !== undefined || fanEnter !== undefined || next.frontier.length > 1) {
+        const enteredFan = fanEnter === undefined ? undefined
+          : fanGroups(result.value).find((f) => f.source === baseId(retiring ?? '') && f.exit === exit);
         meta['barrier'] = {
-          destination: openFan?.join ?? (entering && !fanEnter ? targets[0] : undefined),
+          destination: openFan?.join ?? enteredFan?.join ?? (entering && !fanEnter ? targets[0] : undefined),
           pending: next.frontier,
-          met: entering,
+          met: entering && fanEnter === undefined,
         };
       }
       // What the enter derived, so nothing downstream reads a collection to count it.

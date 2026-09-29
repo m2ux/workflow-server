@@ -96,6 +96,35 @@ describe('the collection a fan runs over', () => {
     const fan = (opened._meta as { fan?: Array<{ branches: string[] }> } | undefined)?.fan;
     expect(fan?.flatMap((member) => member.branches)).toEqual(['probe-unit#0', 'probe-unit#1']);
   });
+
+  it('names the join on the call that opens the fan', async () => {
+    const start = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'instance-fan-fixture',
+        agent_id: 'orchestrator',
+        planning_folder: `${harness.workspaceDir}/.engineering/artifacts/planning/fan-open-barrier`,
+      },
+    });
+    const sessionIndex = (JSON.parse((start.content as Array<{ text: string }>)[0]!.text) as { session_index: string }).session_index;
+
+    await harness.client.callTool({
+      name: 'next_activity',
+      arguments: { session_index: sessionIndex, activity_id: 'scope-sweep' },
+    });
+    const opened = await harness.client.callTool({
+      name: 'next_activity',
+      arguments: {
+        session_index: sessionIndex,
+        activity_id: { activity: 'probe-unit', over: 'probe_targets', variable: 'probe_target' },
+        from_activity: 'scope-sweep',
+        exit: 'scoped',
+        variables_changed: { probe_targets: ['one', 'two'] },
+      },
+    });
+    const barrier = (opened._meta as { barrier?: { destination?: string; pending: string[]; met: boolean } } | undefined)?.barrier;
+    expect(barrier).toEqual({ destination: 'combine-probes', pending: ['probe-unit#0', 'probe-unit#1'], met: false });
+  });
 });
 
 describe('the concurrent-dispatch technique reaches the orchestrator that can use it', () => {
