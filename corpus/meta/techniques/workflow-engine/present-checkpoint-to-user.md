@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### user_selection
 
-`{ option_id, effects }` — captured user response
+`{ option_id, reply, effects }` — captured user response. `reply` is the text the user typed with an option whose effect declares `recordReply`, and is unset for any other option.
 
 ## Protocol
 
@@ -41,6 +41,7 @@ Load the active checkpoint's details and present them to the user.
 ### 5. Put Gate To User
 
 - On the interactive path, and on every hard gate whatever the run's mode: put the checkpoint's message and its `options[]` to the user through the host's own question primitive, and wait for an explicit selection. This is the user's only opportunity to respond. Capture their `option_id`.
+  > Where the selected option's effect declares `recordReply`, the text the user types with it is the reply: capture it verbatim, and ask for it when the user selected the option without typing any.
 
 ### 6. Apply Declared Answer
 
@@ -48,7 +49,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 7. Capture Selection
 
-- Record the resolved `{user_selection}` — the `option_id` and its `effects` (or `auto_advance` / `condition_not_met`).
+- Record the resolved `{user_selection}` — the `option_id`, its reply where the option records one, and its `effects` (or `auto_advance` / `condition_not_met`).
 
 ### 8. Relay Selection
 
@@ -65,7 +66,7 @@ A gate is **soft** when it declares an answer the run may take where no person i
 
 ### a-correction-lands-in-the-bag
 
-A reply that corrects a value, rather than only selecting an option, is written into the variable bag against the value it corrects — so every later gate and step reads the corrected one. A correction held in the resolving agent's own reasoning is unreadable to the worker that acts on it next, and to anyone reading the session afterwards.
+A reply that corrects a value, rather than only selecting an option, is written into the variable bag against the value it corrects — so every later gate and step reads the corrected one. An option whose effect declares `recordReply` is where a gate takes that text: it travels as the reply, and the server stores it in the variable the option names. A correction held in the resolving agent's own reasoning is unreadable to the worker that acts on it next, and to anyone reading the session afterwards.
 
 ### never-soft-when-the-answer-authorises
 
