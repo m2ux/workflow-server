@@ -11,29 +11,19 @@ description: >-
 
 # Initiative Planning
 
-An initiative is one issue that states a goal and lists its epics. Each epic is an issue with its own
-tasks. Issues are the plan. A planning record on the `engineering` branch holds the evidence, the
-decisions and each review.
+An initiative is one issue that states a goal and lists its epics. Each epic is an issue with its own tasks. Issues are the plan. A planning record on the `engineering` branch holds the evidence, the decisions and each review.
 
 ## Modes
 
 Read the file for the mode the request calls for:
 
-- **[Plan mode](references/plan-mode.md)** — raise, plan or restructure an initiative or epic;
-  review a plan against its goal; check dependencies; renumber; fold findings in.
-- **[Review mode](references/review-mode.md)** — check existing issues against the templates and
-  fix them.
-- **[Update mode](references/update-mode.md)** — record delivered work: link tasks to their pull
-  requests, tick criteria that hold, close complete task issues, epics and initiatives, and update
-  the initiative's project board.
-- **[Hoist mode](references/hoist-mode.md)** — find orphan issues, offer each a placement in an
-  existing or new initiative, epic or task, and migrate or subsume the ones the user places.
-- **[Progress mode](references/progress-mode.md)** — summarise the project board as a standup for
-  a Slack channel: a paragraph for management on what the window accomplished, then what
-  completed, what is in progress and what is next.
+- **[Plan mode](references/plan-mode.md)** — raise, plan or restructure an initiative or epic; review a plan against its goal; check dependencies; renumber; fold findings in.
+- **[Review mode](references/review-mode.md)** — check existing issues against the templates and fix them.
+- **[Update mode](references/update-mode.md)** — record delivered work: link tasks to their pull requests, tick criteria that hold, close complete task issues, epics and initiatives, and update the initiative's project board.
+- **[Hoist mode](references/hoist-mode.md)** — find orphan issues, offer each a placement in an existing or new initiative, epic or task, and migrate or subsume the ones the user places.
+- **[Progress mode](references/progress-mode.md)** — summarise the project board as a standup for a Slack channel: a paragraph for management on what the window accomplished, then what completed, what is in progress and what is next.
 
-Every mode also reads [work-breakdown.md](references/work-breakdown.md), the guide to the Work
-Breakdown tables: their columns, numbering, references and delivery.
+Every mode also reads [work-breakdown.md](references/work-breakdown.md), the guide to the Work Breakdown tables: their columns, numbering, references and delivery.
 
 ## Agent-engineering scheme
 
@@ -44,44 +34,17 @@ Breakdown tables: their columns, numbering, references and delivery.
 | Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
 | Standalone issue | `Name: Subtitle`, with no prefix | no `type:*` |
 
-- **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the
-  epic. Initiatives and epics count from `00`, and tasks from `W01`.
-- **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a
-  colon, and a subtitle stating the outcome; a standalone issue's title is the same without the
-  prefix. The name is two or three words and the subtitle a succinct summary of at most ten, both
-  in title case: `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define
-  Reliable`.
-- **Bodies.** Every body follows its template: [initiative.md](templates/initiative.md),
-  [epic.md](templates/epic.md), [task.md](templates/task.md), and [issue.md](templates/issue.md)
-  for a standalone issue outside any initiative. A task or standalone issue has an epic's structure
-  without the Work Breakdown table. Keep the section order and the table columns. Fill each `{{…}}`
-  and delete a section the template marks as optional when it has nothing to say. What a body
-  leaves out is in the [Work Breakdown guide](references/work-breakdown.md).
-- **Code references.** A body references code as a link on the words it supports, a permalink
-  pinned to a commit with its line anchors, never a bare `path:line`:
-  `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
-- **Succinct items.** Each Problem and Proposal item is one or two sentences. Several things go in
-  a bulleted list, with sub-bullets as needed, never packed into one sentence.
-- **Bold leads.** A Problem or Proposal item that opens with a bold statement puts its body on the
-  next line, indented under the bullet:
-
-  ```markdown
-  - **Length is the only check on entry.**
-    The data source decodes the key and never checks its value.
-  ```
-- **Next number.** Find the next initiative number by listing titles:
-  `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
-- **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a
-  `priority: *` as they apply. Only labels that exist:
-  `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
+- **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the epic. Initiatives and epics count from `00`, and tasks from `W01`.
+- **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a colon, and a subtitle stating the outcome; a standalone issue's title is the same without the prefix. The name is two or three words and the subtitle a succinct summary of at most ten, both in title case: `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define Reliable`.
+- **Bodies.** Every body follows its template: [initiative.md](templates/initiative.md), [epic.md](templates/epic.md), [task.md](templates/task.md), and [issue.md](templates/issue.md) for a standalone issue outside any initiative. A task or standalone issue has an epic's structure without the Work Breakdown table. Keep the section order and the table columns. Fill each `{{…}}` and delete a section the template marks as optional when it has nothing to say. What a body leaves out is in the [Work Breakdown guide](references/work-breakdown.md).
+- **Code references.** A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
+- **Succinct items.** Each Problem and Proposal item is one or two sentences. Several things go in a bulleted list, with sub-bullets as needed, never packed into one sentence.
+- **Next number.** Find the next initiative number by listing titles: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
+- **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a `priority: *` as they apply. Only labels that exist: `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
 
 ## Commands
 
-GitHub goes through REST only, with full host permissions. Once per session, before the first `gh`
-call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not
-persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves
-`{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of
-the repository that holds the issues:
+GitHub goes through REST only, with full host permissions. Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of the repository that holds the issues:
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
@@ -94,23 +57,15 @@ gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --
 gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
 ```
 
-Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the
-workspace's dynamic-shell restrictions. Keep these files in a working directory outside the
-repository.
+Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the workspace's dynamic-shell restrictions. Keep these files in a working directory outside the repository.
 
-The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace
-checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout. Their tests are
-in `test/`: `cd <workspace>/skills/initiative-planning && <workspace>/scripts/sbx python3 -m unittest
-discover -s test`.
+The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout. Their tests are in `test/`: `cd <workspace>/skills/initiative-planning && <workspace>/scripts/sbx python3 -m unittest discover -s test`.
 
 ## Rules
 
-- **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in
-  the affected issues and, when there is one, the planning record.
+- **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in the affected issues and, when there is one, the planning record.
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
-- **Bodies state the plan as it is.** No body carries change narrative: nothing moved, renumbered,
-  replaced, discharged or formerly anything. How the plan evolved goes in the planning record and
-  in commit and pull request bodies.
+- **Bodies state the plan as it is.** No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything. How the plan evolved goes in the planning record and in commit and pull request bodies.
 - **Other initiatives.** Editing another initiative's issue needs the user's explicit approval.
 - **Replies to feedback.** Once feedback on an issue is folded into its body, a comment mentions the
   reviewer and answers each of their points in turn, precisely and factually, with no thanks or
