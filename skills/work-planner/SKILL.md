@@ -6,8 +6,8 @@ description: >-
   scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure,
   review or renumber an initiative or epic; to check an issue's format or dependency order; to fold
   review findings into issues; to update an initiative or epic with completed work; to hoist or
-  triage orphan issues into an initiative; or for a progress summary, standup or status update in
-  Slack.
+  triage orphan issues into an initiative; for a progress summary, standup or status update in
+  Slack; or to revise or update the work-planner skill itself.
 ---
 
 # Work Planner
@@ -52,6 +52,9 @@ Read the file for the mode the request calls for:
   - Standup summaries of the project board for a Slack channel
   - A paragraph for management on what the window accomplished
   - What completed, what is in progress and what is next
+- **[Revise](references/revise-mode.md)**
+  - Changes to this skill's own files
+  - Conformance with the skill's [guidelines](references/guidelines.md)
 
 ## Formatting Scheme
 
