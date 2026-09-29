@@ -23,4 +23,4 @@ True once the probe has executed.
 
 ### local-marker
 
-A rule this workflow alone declares, so a bare reference to it resolves only against this workflow.
+`{probe_recorded}` is true only once the probe has executed.

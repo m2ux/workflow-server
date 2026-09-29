@@ -1,7 +1,7 @@
 id: gate-exit
 version: 1.0.0
 name: Gate Exit
-description: Run two gated probes, then stop at a checkpoint whose answer can end the activity before its last step.
+description: The numeric gates and the checkpoint whose answer can end the activity ahead of its last step.
 required: true
 variables:
   reads:
@@ -22,7 +22,7 @@ steps:
     when: unit_count > 2
   - kind: checkpoint
     id: stop-here
-    message: "End this activity here?"
+    message: "The activity can end here, ahead of after-gate."
     options:
       - id: halt
         label: "Halt"

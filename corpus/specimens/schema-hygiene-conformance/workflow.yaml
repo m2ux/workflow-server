@@ -4,8 +4,7 @@ version: 1.1.0
 title: Schema Hygiene Conformance
 description: >-
   Live evidence for the session status, declared-checkpoint yield, bare rule reference, borrowed
-  activity, numeric gate and immediate-exit behaviour: a local probe, an activity borrowed from the
-  minimum viable workflow, then two gated probes and a checkpoint whose answer can end its activity.
+  activity, numeric gate and immediate-exit behaviour.
 author: m2ux
 tags:
   - specimen
@@ -21,8 +20,6 @@ variables:
     type: number
     defaultValue: 3
     description: A number an ordering comparison reads, as the control for flag_on.
-activities:
-  - mvw/01-dispatch.yaml
 initialActivity: probe
 graph:
   probe:
@@ -32,3 +29,5 @@ graph:
   gate-exit:
     halted: __terminal__
     finished: __terminal__
+activities:
+  - mvw/01-dispatch.yaml
