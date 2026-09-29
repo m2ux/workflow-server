@@ -62,7 +62,7 @@ describe('guard registry', () => {
    */
   it('names the guards that consume the loader', () => {
     expect(GUARDS.filter((g) => g.form === 'materialised').map((g) => g.id).sort())
-      .toEqual(['checkpoint-entry', 'refs', 'routines', 'stealth-isolation', 'workflow-yaml']);
+      .toEqual(['checkpoint-entry', 'message-binding', 'refs', 'routines', 'stealth-isolation', 'workflow-yaml']);
   });
 
   it('separates corpus-scoped guards from repo-scoped ones', () => {
@@ -145,10 +145,6 @@ describe('guard registry', () => {
       'guards/check-delta.ts': 'the runner that diffs a walk against the merge-base',
       'guards/check-session-contract.ts':
         'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
-      'guards/check-message-binding.ts':
-        'reads the corpus and holds at 107 findings the engine could not have avoided until '
-        + 'yield_checkpoint could publish a gate activity\'s own outputs; enrolling it enforces on '
-        + 'definitions written before the remedy existed, so it runs by path until those are triaged',
       'guards/check-operation-contract.ts':
         'reads the corpus and holds at 12 findings, each a variable declared a scalar against an '
         + 'technique publishing members — one value described two incompatible ways. They are a '

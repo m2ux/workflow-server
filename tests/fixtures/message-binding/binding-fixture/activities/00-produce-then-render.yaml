@@ -1,18 +1,25 @@
 id: produce-then-render
 version: 1.0.0
 name: Produce Then Render
-description: A technique step produces a path, and the gate after it cites that path.
+description: A technique step produces a path the gate after it cites; a later step produces one the gate before it cites.
 variables:
   reads:
     - session_input
   writes:
     - name: produced_path
       type: string
-      description: Path the technique step writes
+      description: Path the first technique step writes
       defaultValue: ""
     - name: undefaulted_note
       type: string
-      description: Value the technique step writes, carrying no default
+      description: Value the first technique step writes, carrying no default
+    - name: later_path
+      type: string
+      description: Path the last technique step writes
+      defaultValue: ""
+    - name: later_note
+      type: string
+      description: Value the last technique step writes, carrying no default
 required: true
 steps:
   - kind: technique
@@ -34,9 +41,20 @@ steps:
     id: announce
     actions:
       - action: message
-        message: "Session input {session_input} is prior state and renders."
+        message: "Session input {session_input} is prior state, and {later_note} is the agent's own to state."
+  - kind: checkpoint
+    id: cites-later-output
+    message: "The second artifact is at {later_path}."
+    options:
+      - id: confirmed
+        label: Yes, proceed
+        description: "The note reads {later_note}."
+  - kind: technique
+    id: produce-later
+    technique: produce-later
 exits:
   - id: done
     isDefault: true
+  - id: revise
 outcome:
-  - The gate cites a path its own activity produced
+  - A gate cites a path an earlier step of its activity produced, and another cites one a later step produces

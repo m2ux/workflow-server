@@ -271,6 +271,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'authored',
   },
   {
+    id: 'message-binding',
+    script: 'guards/check-message-binding.ts',
+    npmScript: 'check:message-binding',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every gate shows only values the bag holds when it is presented',
+    form: 'materialised',
+  },
+  {
     id: 'decision-order',
     script: 'guards/check-decision-order.ts',
     npmScript: 'check:decision-order',

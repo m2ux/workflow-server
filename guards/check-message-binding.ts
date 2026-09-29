@@ -1,54 +1,44 @@
 /**
- * check-message-binding — a user-facing message may only interpolate a value the bag already holds.
+ * check-message-binding — a gate may only show a value the bag holds when the gate is presented.
  *
- * The server receives an activity's technique outputs at the activity boundary, on next_activity.
- * A message rendered before that boundary therefore reads a bag that does not yet hold them, so a
- * message interpolating a value its own activity produces renders the placeholder itself, or the
- * declared default, and says nothing it meant to say. The reader sees a dead link and cannot tell
- * it from a real one.
+ * The server renders a checkpoint's message, and each option's label and description, from the
+ * session bag at `present_checkpoint`. What the bag holds at that moment is the values earlier
+ * activities put there, the session facts, the effects of gates answered before this one, and the
+ * values the steps before this gate produced, which the worker publishes when it yields the gate.
+ * A value this activity produces only at or after the gate is none of those, so the gate shows the
+ * placeholder itself, or the declared default, and says nothing it meant to say. The reader sees a
+ * dead link and cannot tell it from a real one.
  *
- * Two producers do reach the bag mid-activity: a checkpoint `setVariable` effect, applied when the
- * orchestrator resolves the gate, and a worker publishing step outputs on `yield_checkpoint`. A
- * name a checkpoint before this step sets is bound; a name only a technique step produces is not.
+ * A message action is not rendered by the server: the agent carrying the activity states it, from
+ * values it already holds. So only the gate's own wording is measured here.
+ *
+ * A gate inside a loop is reached again on the next pass, after the steps below it in the body have
+ * run. A value one of those steps produces is therefore bound on every later pass, and a declared
+ * default is what the first pass shows — so a loop-carried value with a default is bound.
+ *
+ * Producers come from the same index the provenance annotation reads (`buildProducerIndex`): each
+ * bound technique's declared outputs and remaps, each `set` target, each gate's effects, each loop
+ * variable, in document order. A name more than one activity produces may already be bound by
+ * whichever ran first, and the graph decides which, so only a name this activity alone produces is
+ * judged.
  *
  * This check answers when a name is bound, and nothing about the shape of what it is bound to. A
  * message addressing into a value — `{report.summary}` — has its member measured against the
- * producing output's declared components by `check-binding-fidelity`'s `output-path-undeclared`,
- * which keeps every `{token}` whole for that purpose.
- *
- * That second half reaches only an output that declares components. One declaring none states
- * nothing about its shape, so a member read off it is reached past rather than contradicted and
- * goes unmeasured — the carve-out that check makes for every read, messages included. Neither half
- * reaches which of a contract's fields a particular run populates, which the producing technique
- * states in prose and no static check settles.
+ * producing output's declared components by `check-binding-fidelity`'s `output-path-undeclared`.
  *
  * Run: npx tsx guards/check-message-binding.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, existsSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { parse } from 'yaml';
+import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { buildProducerIndex } from '../src/utils/binding-provenance.js';
+import { flattenActivitySteps, type Step } from '../src/schema/activity.schema.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, defaultCorpusDest, ownDefinitionsIn, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
-import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
-
-interface Step {
-  kind?: string;
-  id?: string;
-  message?: string;
-  actions?: { action?: string; message?: string }[];
-  options?: { effect?: { setVariable?: Record<string, unknown>; recordReply?: string } }[];
-}
-
-interface Activity {
-  id?: string;
-  steps?: Step[];
-  variables?: { writes?: ({ name?: string } | string)[] };
-}
 
 /** The bag entry a dotted path belongs to: producers name whole variables, prose reads into them. */
 function rootOf(path: string): string {
@@ -67,112 +57,98 @@ function interpolations(template: string): string[] {
   return names;
 }
 
-/** Every message a step renders to a user: a gate's own wording, and its message actions. */
-function messages(step: Step): { where: string; template: string }[] {
+/** The wording `present_checkpoint` renders from the bag: the message, and each option's text. */
+function gateTexts(step: { message?: string | undefined; options?: { id: string; label?: string | undefined; description?: string | undefined }[] | undefined }): { where: string; template: string }[] {
   const out: { where: string; template: string }[] = [];
-  if (step.kind === 'checkpoint' && typeof step.message === 'string') {
-    out.push({ where: 'checkpoint message', template: step.message });
-  }
-  for (const action of step.actions ?? []) {
-    if (action.action === 'message' && typeof action.message === 'string') {
-      out.push({ where: 'message action', template: action.message });
-    }
+  if (typeof step.message === 'string') out.push({ where: 'checkpoint message', template: step.message });
+  for (const option of step.options ?? []) {
+    if (typeof option.label === 'string') out.push({ where: `label of option '${option.id}'`, template: option.label });
+    if (typeof option.description === 'string') out.push({ where: `description of option '${option.id}'`, template: option.description });
   }
   return out;
 }
 
-/** Names an activity declares it puts in the bag. */
-function writesOf(activity: Activity): Set<string> {
-  const out = new Set<string>();
-  for (const write of activity.variables?.writes ?? []) {
-    const name = typeof write === 'string' ? write : write.name;
-    if (typeof name === 'string') out.add(name);
+/** For each loop, the ids of every step its body holds, nested loops included. */
+function loopBodies(steps: Step[] | undefined, out: Set<string>[] = []): Set<string>[] {
+  for (const step of steps ?? []) {
+    if (step.kind !== 'loop') continue;
+    const body = new Set<string>();
+    const collect = (inner: Step[] | undefined): void => {
+      for (const s of inner ?? []) {
+        if (s.id !== undefined) body.add(s.id);
+        if (s.kind === 'loop') collect(s.steps as Step[]);
+      }
+    };
+    collect(step.steps as Step[]);
+    out.push(body);
+    loopBodies(step.steps as Step[], out);
   }
   return out;
 }
 
-/** Names bound by a checkpoint effect at a step index below `before`. */
-function setByEarlierGate(steps: Step[], before: number): Set<string> {
-  const out = new Set<string>();
-  for (const step of steps.slice(0, before)) {
-    if (step.kind !== 'checkpoint') continue;
-    for (const option of step.options ?? []) {
-      for (const name of Object.keys(option.effect?.setVariable ?? {})) out.add(name);
-      if (option.effect?.recordReply) out.add(option.effect.recordReply);
-    }
-  }
-  return out;
-}
-
-export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
+export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
   const findings: Finding[] = [];
   let scanned = 0;
   const index = indexCorpus(root);
-  for (const { id: workflow, dir } of corpusWorkflows(root, index)) {
-    const activitiesDir = join(dir, 'activities');
-    if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
-
-    // This workflow's own activities: whether a message binds a name that is bound by the time it
-    // renders is answered from the producers across them.
-    const parsed = new Map<string, Activity>();
-    for (const { rel, path } of ownDefinitionsIn(activitiesDir)) {
-      const def = parse(readFileSync(path, 'utf-8')) as Activity | null;
-      if (def) parsed.set(rel, def);
+  for (const { id: workflowId } of corpusWorkflows(root, index)) {
+    const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
+    if (!loaded.success) continue;
+    const { workflow, activitySourceWorkflow } = loaded.value;
+    const producerIndex = await buildProducerIndex({ workflow, workflowDir: root, activitySourceWorkflow });
+    const producingActivities = new Map<string, Set<string>>();
+    for (const producer of producerIndex.producers) {
+      const activities = producingActivities.get(producer.name) ?? new Set<string>();
+      activities.add(producer.activityId);
+      producingActivities.set(producer.name, activities);
     }
+    const defaulted = new Set(
+      (workflow.variables ?? []).filter((v) => v.defaultValue !== undefined).map((v) => v.name),
+    );
 
-    // A name more than one activity writes may already be bound by whichever ran first, and the
-    // graph decides which that is. Only a name with a single producer is provably unbound here.
-    const producers = new Map<string, number>();
-    for (const activity of parsed.values()) {
-      for (const name of writesOf(activity)) producers.set(name, (producers.get(name) ?? 0) + 1);
-    }
-
-    // A name no activity produces is a session fact, seeded before any activity runs.
-    const sessionFacts = new Set<string>();
-    // A produced name carrying a default renders that default in place of the value: not the
-    // placeholder text, and not what the message meant to say either.
-    const defaulted = new Set<string>();
-    for (const [name, declaration] of declaredVariables(root, workflow, index)) {
-      if (!producers.has(name)) sessionFacts.add(name);
-      else if (declaration.defaultValue !== undefined) defaulted.add(name);
-    }
-
-    for (const [entry, activity] of parsed) {
+    for (const activity of workflow.activities ?? []) {
+      // A borrowed activity is judged in the workflow that authored it, so each file is read once.
+      if ((activitySourceWorkflow.get(activity.id) ?? workflowId) !== workflowId) continue;
       scanned++;
-      const writes = writesOf(activity);
-      const steps = activity.steps ?? [];
-      steps.forEach((step, index) => {
-        const boundByGate = setByEarlierGate(steps, index);
-        for (const { where, template } of messages(step)) {
+      const loops = loopBodies(activity.steps);
+      for (const step of flattenActivitySteps(activity)) {
+        if (step.kind !== 'checkpoint' || step.id === undefined) continue;
+        const position = producerIndex.positions.get(`${activity.id}|${step.id}`) ?? -1;
+        const gateId = step.id;
+        const enclosing = loops.filter((body) => body.has(gateId));
+        for (const { where, template } of gateTexts(step)) {
           for (const name of new Set(interpolations(template))) {
-            if (!writes.has(name)) continue;
-            if (sessionFacts.has(name)) continue;
-            if ((producers.get(name) ?? 0) > 1) continue;
-            if (boundByGate.has(name)) continue;
+            const activities = producingActivities.get(name);
+            // Prior state, a session fact, or a name another activity may have produced first.
+            if (activities === undefined || !activities.has(activity.id) || activities.size > 1) continue;
+            const producedBefore = producerIndex.producers.some(
+              (p) => p.name === name && p.activityId === activity.id && p.ordinal < position,
+            );
+            if (producedBefore) continue;
+            const loopCarried = defaulted.has(name) && producerIndex.producers.some(
+              (p) => p.name === name && p.activityId === activity.id && enclosing.some((body) => body.has(p.stepId)),
+            );
+            if (loopCarried) continue;
             const rendersDefault = defaulted.has(name);
-            const renders = rendersDefault ? 'the declared default' : 'the placeholder text';
             findings.push({
               check: rendersDefault ? 'renders-declared-default' : 'renders-placeholder',
-              site: `${relative(root, join(activitiesDir, entry))}::${step.id ?? '?'}`,
-              detail: `${where} on step '${step.id ?? '?'}' interpolates '${name}', which this `
-                + `activity produces itself. The bag receives an activity's technique outputs at the `
-                + `activity boundary, so at this point it renders ${renders} rather than the value. `
-                + `Publish it on yield_checkpoint, bind it from a checkpoint effect before this step, `
-                + `or move the message to an activity that reads '${name}' as prior state.`,
+              site: `${workflowId}/${activity.id}::${step.id}`,
+              detail: `${where} on step '${step.id}' interpolates '${name}', which this activity produces `
+                + `only at or after this gate, so the gate shows ${rendersDefault ? 'the declared default' : 'the placeholder text'} `
+                + `rather than the value. Produce it in a step before the gate, or move the text to where '${name}' is prior state.`,
             });
           }
         }
-      });
+      }
     }
   }
-  assertScanned(scanned, 'activity files', root);
+  assertScanned(scanned, 'activities', root);
   return findings;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   await runGuard('message-binding', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-    okMessage: 'every user-facing message interpolates a value the bag holds when it renders',
-    remedy: 'publish the value on yield_checkpoint, bind it from an earlier checkpoint effect, or render the message where the value is prior state',
+    okMessage: 'every gate shows only values the bag holds when it is presented',
+    remedy: 'produce the value in a step before the gate, or move the text to where the value is prior state',
   });
 }
