@@ -58,6 +58,8 @@ Read the file for the mode the request calls for:
 
 ## Formatting Scheme
 
+Every issue the skill writes follows this scheme: its title, labels and body.
+
 | Level | Title | Labels |
 | --- | --- | --- |
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
