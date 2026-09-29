@@ -12,13 +12,13 @@ metadata:
 
 Every piece of prose is checked against the entries below. Where a formal construct exists, the definition uses it. [Schema Expressiveness](./anti-patterns.md#schema-expressiveness) audits the same misses.
 
-This inventory names the construct. Field tables, required properties, and examples live in `schemas/README.md`. The URI `workflow-server://schemas` aggregates the JSON schemas. On-disk layout and technique inheritance live in [On-disk layout](/meta/resources/workflow-canonical.md#on-disk-layout).
+This inventory names the construct. Field tables and required properties live in the JSON schemas below, which the URI `workflow-server://schemas` aggregates. On-disk layout and technique inheritance live in [On-disk layout](/meta/resources/workflow-canonical.md#on-disk-layout).
 
-- Workflow — `schemas/workflow.schema.json`, `schemas/README.md#workflow-schema`
-- Activity — `schemas/activity.schema.json`, `schemas/README.md#activity-schema`
-- Technique — `schemas/technique.schema.json`, `schemas/README.md#technique-schema`
-- Condition — `schemas/condition.schema.json`, `schemas/README.md#condition-schema`
-- Routine — `schemas/routine.schema.json`, `schemas/README.md#routine-routineschemajson`
+- Workflow — `schemas/workflow.schema.json`
+- Activity — `schemas/activity.schema.json`
+- Technique — `schemas/technique.schema.json`
+- Condition — `schemas/condition.schema.json`
+- Routine — `schemas/routine.schema.json`
 
 ## Activity-Level Constructs (activity.schema.json)
 
@@ -28,13 +28,13 @@ Each entry maps a phrase onto an activity construct.
 
 An activity: the stage that binds the techniques and routines and holds the conversation at that point in the session.
 
-[24. Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities). Fields: `schemas/README.md#activity`.
+[24. Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities).
 
 ### Do X, then do Y, then do Z
 
 A technique step: one `steps[]` entry with `kind: technique`, binding one technique.
 
-[AP-15. procedure-in-protocol](./anti-patterns.md#ap-15-procedure-in-protocol), [AP-17. bound-step-no-description](./anti-patterns.md#ap-17-bound-step-no-description), [AP-18. no-monolith-masking-steps](./anti-patterns.md#ap-18-no-monolith-masking-steps). Fields: `schemas/README.md#step`.
+[AP-15. procedure-in-protocol](./anti-patterns.md#ap-15-procedure-in-protocol), [AP-17. bound-step-no-description](./anti-patterns.md#ap-17-bound-step-no-description), [AP-18. no-monolith-masking-steps](./anti-patterns.md#ap-18-no-monolith-masking-steps).
 
 ### Compose or chain techniques for work
 
@@ -52,7 +52,7 @@ An activity file borrowed from another workflow, listed under the workflow's `ac
 
 A graph instance fan: the activity that emits the work units, the activity that runs once per unit, and the activity they converge on.
 
-[40. Fan-Out Lives at the Layer That Runs the Work](./design-principles.md#40-fan-out-lives-at-the-layer-that-runs-the-work), [scatter-gather](/meta/techniques/scatter-gather.md). Fields: `schemas/README.md#workflow-root-entity`.
+[40. Fan-Out Lives at the Layer That Runs the Work](./design-principles.md#40-fan-out-lives-at-the-layer-that-runs-the-work), [scatter-gather](/meta/techniques/scatter-gather.md).
 
 ### Supervisor, fixed specialist lanes
 
@@ -94,37 +94,31 @@ A child workflow.
 
 An action step: one `steps[]` entry with `kind: action`.
 
-Fields: `schemas/README.md#action`.
-
 ### Ask the user whether to proceed
 
 A checkpoint step: one `steps[]` entry with `kind: checkpoint`.
 
-[AP-09. checkpoint-not-prose](./anti-patterns.md#ap-09-checkpoint-not-prose), [AP-97. link-named-artifacts](./anti-patterns.md#ap-97-link-named-artifacts), [AP-98. no-next-step-narration](./anti-patterns.md#ap-98-no-next-step-narration), [AP-99. statement-not-question](./anti-patterns.md#ap-99-statement-not-question), [AP-101. no-caption-only-message](./anti-patterns.md#ap-101-no-caption-only-message). Fields: `schemas/README.md#checkpoint-steps`.
+[AP-09. checkpoint-not-prose](./anti-patterns.md#ap-09-checkpoint-not-prose), [AP-97. link-named-artifacts](./anti-patterns.md#ap-97-link-named-artifacts), [AP-98. no-next-step-narration](./anti-patterns.md#ap-98-no-next-step-narration), [AP-99. statement-not-question](./anti-patterns.md#ap-99-statement-not-question), [AP-101. no-caption-only-message](./anti-patterns.md#ap-101-no-caption-only-message).
 
 ### Repeat for each item, or do until done
 
 A loop step: one `steps[]` entry with `kind: loop`.
 
-[AP-10. loop-not-prose](./anti-patterns.md#ap-10-loop-not-prose). Fields: `schemas/README.md#loop-steps`.
+[AP-10. loop-not-prose](./anti-patterns.md#ap-10-loop-not-prose).
 
 ### Several activities carry the same run of steps
 
 A routine step: one `steps[]` entry with `kind: routine`.
 
-[42. A Routine Holds the Codified Path](./design-principles.md#42-a-routine-holds-the-codified-path). Fields: `schemas/README.md#routine-step`.
+[42. A Routine Holds the Codified Path](./design-principles.md#42-a-routine-holds-the-codified-path).
 
 ### If X then do A, otherwise do B
 
 An activity exit, bound to its destination in the workflow `graph`.
 
-Fields: `schemas/README.md#exits-and-the-graph`.
-
 ### This triggers the X workflow
 
 An activity trigger.
-
-Fields: `schemas/README.md#triggers`.
 
 ### This produces a report file
 
@@ -136,13 +130,13 @@ A `#### artifact` on the producing technique's output.
 
 An activity `outcome` entry.
 
-[AP-32. outcome-names-value](./anti-patterns.md#ap-32-outcome-names-value). Fields: `schemas/README.md#activity`.
+[AP-32. outcome-names-value](./anti-patterns.md#ap-32-outcome-names-value).
 
 ### Only run when X is true
 
 The step gate: `when` on every kind, and `condition` on a technique, action, or checkpoint step.
 
-[Condition Constructs](#condition-constructs-conditionschemajson). Fields: `schemas/README.md#step`.
+[Condition Constructs](#condition-constructs-conditionschemajson).
 
 ### The agent must follow these constraints
 
@@ -153,8 +147,6 @@ An activity `rules` entry.
 ### This activity needs X and produces Y
 
 The activity variable contract, `variables.reads` and `variables.writes`, for names that cross the activity boundary.
-
-Fields: `schemas/README.md#enforcement-model`.
 
 ## Workflow-Level Constructs (workflow.schema.json)
 
@@ -169,8 +161,6 @@ A workflow: the durable graph of activities for that circumstance.
 ### The session starts with X, or this policy holds all run
 
 A workflow variable.
-
-Fields: `schemas/README.md#variables`.
 
 ### Can run in fast or thorough mode
 
@@ -188,31 +178,25 @@ A workflow rule in the audience bucket that hears it.
 
 A technique reference on `techniques.workflow` or `techniques.activity`.
 
-[AP-36. techniques-list-disjoint](./anti-patterns.md#ap-36-techniques-list-disjoint), [AP-39. hoist-universal-techniques](./anti-patterns.md#ap-39-hoist-universal-techniques). Fields: `schemas/README.md#techniquesreference`.
+[AP-36. techniques-list-disjoint](./anti-patterns.md#ap-36-techniques-list-disjoint), [AP-39. hoist-universal-techniques](./anti-patterns.md#ap-39-hoist-universal-techniques).
 
 ### Start with the first activity
 
 The workflow's `initialActivity`.
 
-Fields: `schemas/README.md#workflow-root-entity`.
-
 ### After X, go to Y, or this activity can end the run
 
 A `graph` binding from that activity's exit to one activity, or to `__terminal__`.
-
-Fields: `schemas/README.md#exits-and-the-graph`.
 
 ### These activities read none of each other's output
 
 A `graph` destination naming two or more activities that run together.
 
-Fields: `schemas/README.md#workflow-root-entity`.
-
 ### Do this once per work unit, each in its own worker
 
 A `graph` destination naming the activity, the collection, and the per-instance variable.
 
-[40. Fan-Out Lives at the Layer That Runs the Work](./design-principles.md#40-fan-out-lives-at-the-layer-that-runs-the-work), [scatter-gather](/meta/techniques/scatter-gather.md). Fields: `schemas/README.md#workflow-root-entity`.
+[40. Fan-Out Lives at the Layer That Runs the Work](./design-principles.md#40-fan-out-lives-at-the-layer-that-runs-the-work), [scatter-gather](/meta/techniques/scatter-gather.md).
 
 ## Routine-Level Constructs (routine.schema.json)
 
@@ -286,13 +270,13 @@ The container `TECHNIQUE.md` contract.
 
 A technique input.
 
-[AP-16. technique-inputs-declared](./anti-patterns.md#ap-16-technique-inputs-declared). Fields: `schemas/README.md#technique-schema`.
+[AP-16. technique-inputs-declared](./anti-patterns.md#ap-16-technique-inputs-declared).
 
 ### Produces an audit report
 
 A technique output.
 
-[AP-109. technique-outputs-declared](./anti-patterns.md#ap-109-technique-outputs-declared), [AP-12. artifact-not-buried](./anti-patterns.md#ap-12-artifact-not-buried). Fields: `schemas/README.md#technique-schema`.
+[AP-109. technique-outputs-declared](./anti-patterns.md#ap-109-technique-outputs-declared), [AP-12. artifact-not-buried](./anti-patterns.md#ap-12-artifact-not-buried).
 
 ### Never modify the schema
 
@@ -320,28 +304,18 @@ Each entry maps a phrase onto a condition.
 
 A simple condition.
 
-Fields: `schemas/README.md#simple-conditions`.
-
 ### If the variable is defined
 
 A simple condition with operator `exists` or `notExists`.
-
-Fields: `schemas/README.md#simple-conditions`.
 
 ### If A and B are both true
 
 A condition of type `and`.
 
-Fields: `schemas/README.md#composite-conditions`.
-
 ### If either A or B is true
 
 A condition of type `or`.
 
-Fields: `schemas/README.md#composite-conditions`.
-
 ### If X is not the case
 
 A condition of type `not`.
-
-Fields: `schemas/README.md#composite-conditions`.
