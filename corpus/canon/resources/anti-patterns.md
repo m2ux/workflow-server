@@ -191,13 +191,13 @@ Iteration is written as prose instead of a `kind: loop` step.
 
 "If X then do A, otherwise B"
 
-Cross-activity routing is written as prose instead of an activity-level `decision`.
+Cross-activity routing is written as prose instead of as exits the workflow graph binds.
 
-**Detect:** Prose describes branching to different activities/paths without an activity-level `decision` with `branches`/`conditions`.
+**Detect:** Prose describes branching to different activities/paths that the activity's `exits` do not declare — no exit selected by a `when` or a checkpoint option, bound in the `graph` to that path.
 
 **Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared exit predicates.
 
-**Fix:** Declare an activity-level `decision` with branches/conditions; remove the prose branch recipe.
+**Fix:** Declare each outcome as an exit — a `when` on each non-default exit, or a checkpoint option that names it — bind every exit in the workflow `graph`, and remove the prose branch recipe.
 
 ### AP-12. artifact-not-buried
 
@@ -905,7 +905,7 @@ An activity carries prose rules: instead of pure mechanics.
 
 **Do not flag:** None. Behavioural guidance belongs on the bound technique.
 
-**Fix:** Delete an entry that restates structure the activity already enforces. Migrate a technique constraint to the owning technique (`single-rule-authority`). Encode an unenforced constraint as `when` or `condition`, a transition, a decision, a checkpoint, or `required: false`. A hard gate is `when` or `condition`. Step `required` is a worker hint. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
+**Fix:** Delete an entry that restates structure the activity already enforces. Migrate a technique constraint to the owning technique (`single-rule-authority`). Encode an unenforced constraint as `when` or `condition`, an exit `when`, a checkpoint, or `required: false`. A hard gate is `when` or `condition`. Step `required` is a worker hint. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
 
 ### AP-70. capability-group-placement
 
@@ -1029,11 +1029,11 @@ A recommendation is presented without follow-through implementation.
 
 A critical constraint is text-only with no structural enforcement.
 
-**Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or decision).
+**Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or exit `when`).
 
 **Do not flag:** Explicitly guidance-only / non-critical rules; rules already backed by structure on the same construct or a parent the actor always receives.
 
-**Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+**Fix:** Add structural enforcement (checkpoint, condition, validate, exit `when`), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
 
 ### AP-80. preserve-readme-content
 
@@ -1463,7 +1463,7 @@ A technique's Protocol invokes other techniques to do work — sequencing siblin
 
 **Detect:** Technique Capability or Protocol applies, invokes, or runs another technique for work, by `Apply [technique]` or a `::` invocation, one or many. Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass pipeline or a façade over shared ops; Outputs that only re-export children. Test: moving each invoked op to its own `steps[]` entry at the binding site, with any local value-assembly technique kept separate, preserves behaviour.
 
-**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`). Citing resources, including creation-guide Templates. Container I/O and rule merge. Activity `steps[]` and routine technique binds. Activity borrow, bind, or include of a reusable orchestration pattern. Tools. One produce path over tools and resources (load, derive, persist one product) with no Apply or `::` work invoke. Stage or gate locus without an op inventory (`technique-stage-agnostic`).
+**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`). Citing resources, including creation-guide Templates. Container I/O and rule merge. Activity `steps[]` and routine technique binds. A borrowed activity file. Tools. One produce path over tools and resources (load, derive, persist one product) with no Apply or `::` work invoke. Stage or gate locus without an op inventory (`technique-stage-agnostic`).
 
 **Fix:** Delete the façade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared technique as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
 

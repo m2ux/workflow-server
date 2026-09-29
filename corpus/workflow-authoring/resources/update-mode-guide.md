@@ -2,7 +2,7 @@
 name: update-mode-guide
 description: Change-request category vocabulary for modifying an existing workflow.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 21
 ---
 
@@ -18,6 +18,6 @@ Vocabulary for categorising a change request against an existing workflow.
 | **Technique** | Add, modify or remove a technique or a binding |
 | **Resource** | Add, modify or remove a resource |
 | **Metadata** | Workflow id, title, description, tags, version or similar root fields |
-| **Structural refactor** | Transitions, decisions, variables or cross-cutting shape changes with no single-file focus |
+| **Structural refactor** | Exits and graph bindings, variables or cross-cutting shape changes with no single-file focus |
 
 A request may span more than one category; record each that applies.

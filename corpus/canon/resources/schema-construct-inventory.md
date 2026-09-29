@@ -44,9 +44,9 @@ Consecutive technique steps in the activity.
 
 ### Compose or reuse activities
 
-A borrowed, bound, or included activity.
+An activity file borrowed from another workflow, listed under the workflow's `activities:` as `<workflow>/[activities/]…/NN-<id>.yaml`.
 
-[43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+[43. A Workflow Borrows Activities](./design-principles.md#43-a-workflow-borrows-activities).
 
 ### Orchestrator-workers, fan-out then consolidate
 
@@ -58,13 +58,13 @@ A graph instance fan: the activity that emits the work units, the activity that 
 
 The supervisor pattern activity.
 
-[02-supervisor.yaml](/meta/activities/patterns/02-supervisor.yaml), [43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+[02-supervisor.yaml](/meta/activities/patterns/02-supervisor.yaml), [43. A Workflow Borrows Activities](./design-principles.md#43-a-workflow-borrows-activities).
 
 ### Plan and execute
 
 The plan-and-execute pattern activity.
 
-[03-plan-and-execute.yaml](/meta/activities/patterns/03-plan-and-execute.yaml), [43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+[03-plan-and-execute.yaml](/meta/activities/patterns/03-plan-and-execute.yaml), [43. A Workflow Borrows Activities](./design-principles.md#43-a-workflow-borrows-activities).
 
 ### Subagent isolation, each unit its own commit
 
@@ -76,7 +76,7 @@ A graph instance fan whose activity binds `git::create-worktree`.
 
 The lead-researcher pattern activity.
 
-[05-lead-researcher.yaml](/meta/activities/patterns/05-lead-researcher.yaml), [43. An Activity Reuses Activities](./design-principles.md#43-an-activity-reuses-activities).
+[05-lead-researcher.yaml](/meta/activities/patterns/05-lead-researcher.yaml), [43. A Workflow Borrows Activities](./design-principles.md#43-a-workflow-borrows-activities).
 
 ### Agent as tool, an opaque sub-agent call
 

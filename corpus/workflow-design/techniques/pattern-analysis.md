@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -33,8 +33,8 @@ Absolute path to the written pattern-analysis artifact.
 
 ### 2. Extract Patterns
 
-- Extract structural conventions across the references: activity naming (NN-name), step/checkpoint ratios, transitions, technique assignment (primary vs supporting), artifact naming, resource organization
-- Extract content conventions across the references: rule structuring, checkpoint effects, transition conditions, artifact-location references, technique protocol/inputs/output usage
+- Extract structural conventions across the references: activity naming (NN-name), step/checkpoint ratios, exits and their graph bindings, technique assignment (primary vs supporting), artifact naming, resource organization
+- Extract content conventions across the references: rule structuring, checkpoint effects, exit conditions, artifact-location references, technique protocol/inputs/output usage
 
 ### 3. Assemble Comparison
 

@@ -94,7 +94,7 @@ A symbol id states what the value is: affirmative, head noun last, `snake_case`.
 
 ## 20. Keep Orchestration in Structure
 
-An activity owns stage, checkpoints, transitions, and graph progress. A technique produces values and durable evidence, and does not name the activity flow or the gates that consume its outputs.
+An activity owns its stage, checkpoints, and exits, and the workflow graph binds each exit to what runs next. A technique produces values and durable evidence, and does not name the activity flow or the gates that consume its outputs.
 
 ## 21. Match the Harness Surface
 
@@ -184,9 +184,9 @@ A schema settles the call. What a Protocol does with a response — the branch i
 
 Where an application is still free-form, it is a technique. Where the path is accepted and consistent, it is a routine: a named run of those produce paths, spliced into the activity that binds it, and the home for a sequence, an iteration, a branch, or a gate that several sites share. Its sources are the two in [Workflows Ossify Patterns](#1-workflows-ossify-patterns). The Protocol that remains is the reading that routine cannot hold ([A Technique Is a Reading](#26-a-technique-is-a-reading)).
 
-## 43. An Activity Reuses Activities
+## 43. A Workflow Borrows Activities
 
-An activity may borrow, bind, or include another activity, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher).
+A workflow borrows another workflow's activity file, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). The reference form is the one the [construct inventory](./schema-construct-inventory.md#compose-or-reuse-activities) states.
 
 ## 44. A Resource Splits for Section Delivery
 

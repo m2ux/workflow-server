@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Server-side worker identity the worker's dispatch bound — the identity the del
 
 ### effects
 
-Variable updates carried by the resolved checkpoint.
+The resolved checkpoint's reply.
 
 ### state
 

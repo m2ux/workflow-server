@@ -6,7 +6,7 @@ Lifecycle activities that run inside the meta session when the agent remains on 
 
 Borrowable mid-phase orchestration pattern activities live under [`patterns/`](./patterns/README.md) and are **not** part of this lifecycle list.
 
-The authoritative definition of each activity — its steps, technique bindings, checkpoints, loop, transitions, and outcomes — lives in the linked `.yaml` file and is served by `get_activity`. The entries below are orientation only.
+The authoritative definition of each activity — its steps, technique bindings, checkpoints, loop, exits, and outcomes — lives in the linked `.yaml` file and is served by `get_activity`. The entries below are orientation only.
 
 ---
 

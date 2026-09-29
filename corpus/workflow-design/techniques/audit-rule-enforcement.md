@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Structure-backed-constraint audit of every `rules[]` entry for text-only critica
 
 ### enforcement_findings
 
-Text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision).
+Text-only rules found — each with its file, rule content, whether it is critical, and the structural mechanism `structure-backed-constraints` prescribes for it.
 
 #### artifact
 

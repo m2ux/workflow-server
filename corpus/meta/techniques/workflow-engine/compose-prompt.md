@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.8.1
+  version: 2.9.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Map of placeholder name → value. Must include `session_index`, `workflow_id`, 
 
 ### effects
 
-*(optional)* Variable updates carried by a resolved checkpoint. Present only when the stub continues a
+*(optional)* A resolved checkpoint's reply. Present only when the stub continues a
 worker past a gate, and its presence is what makes this a continuation.
 
 ### holds_prior_deliveries

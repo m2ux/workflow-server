@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
 
-Compile the `activity_complete` result after all steps, checkpoints, and artifacts are done.
+Compile the activity's `activity_complete` result.
 
 ## Inputs
 
@@ -20,6 +20,10 @@ Array of checkpoint responses (`option_id` + effects).
 ### artifacts_produced
 
 Array of artifact entries (`id`, `name`, `path`).
+
+### selected_exit
+
+*(optional)* The exit a checkpoint answer in this activity selected.
 
 ### batch_may_continue
 
@@ -45,7 +49,7 @@ array of checkpoint responses (`option_id` + effects).
 
 #### variables_changed
 
-state variables the activity mutated, reported by the worker — one of the two sanctioned state-mutation sources.
+state variables the activity mutated, reported by the worker — one of the sanctioned sources `variable-mutation-source` names.
 
 #### artifacts_produced
 

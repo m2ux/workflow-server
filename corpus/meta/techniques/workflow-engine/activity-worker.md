@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Activity id the worker's current dispatch or continuation bound — must match t
 
 ### effects
 
-*(optional)* Variable updates carried by a checkpoint this context yielded and the orchestrator has since resolved. Present only on a continuation, and its presence is what distinguishes one from a first dispatch.
+*(optional)* The reply a checkpoint this context yielded received when the orchestrator resolved it. Present only on a continuation, and its presence is what distinguishes one from a first dispatch.
 
 ### agent_id
 
@@ -35,7 +35,7 @@ Worker agent identity for this dispatch.
 
 - Confirm the activity `id` on the `get_activity` response whose techniques bundle delivered this technique equals `{activity_id}` per `verify-dispatched-activity`
 - Follow the techniques bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
-- Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound (`batch-ends-where-the-server-says`)
+- Read `may_continue` from the `batch:` block closing that response — this context's standing against its bound (`batch-ends-where-the-server-says`)
 
 ### 2. Load resources
 
@@ -45,7 +45,7 @@ Worker agent identity for this dispatch.
 ### 3. Take the walk position
 
 - Open the activity at its first step
-  > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) and carry on from the paused step instead. The remaining steps and the envelope are owed either way — a gate pauses the walk, it does not end it.
+  > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) in place of opening at the first step. The envelope is owed either way.
 
 ### 4. Execute steps
 
@@ -58,7 +58,7 @@ Worker agent identity for this dispatch.
 
 ### 5. Finalize the activity
 
-- When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
+- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
 
 ## Rules
 
@@ -98,4 +98,4 @@ A step's bound technique loads as that step is reached; the whole activity is ne
 
 ### batch-ends-where-the-server-says
 
-Each `get_activity` opens with a `batch:` block reporting how many activities have been delivered to this context (`activities_delivered`), what it has been delivered in characters, and whether it may take another; `_meta.batch` carries the same reading. Where `bounded` is true the two limits ride alongside those counts, and the tally is read against them. Where it is false no limit governs this scope, and none is reported — a count standing higher than a limit that was never in force is a comparison the block declines to invite. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.
+Each `get_activity` response closes with a `batch:` block reporting how many activities have been delivered to this context (`activities_delivered`), what it has been delivered in characters, and whether it may take another; `_meta.batch` carries the same reading. Where `bounded` is true the two limits ride alongside those counts, and the tally is read against them. Where it is false no limit governs this scope, and none is reported — a count standing higher than a limit that was never in force is a comparison the block declines to invite. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.

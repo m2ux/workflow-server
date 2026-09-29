@@ -25,7 +25,7 @@ Discovery enters `corpus/` and skips `ledgers/`, `walks/` and `docs/` at the bra
 Create a directory named for the workflow's id with a `workflow.yaml` in it, under `corpus/`. Grouping folders carry no definition and exist to organise the corpus, so `corpus/group/kind/example/workflow.yaml` is the workflow `example` and is referenced by that name alone. Discovery skips `ledgers/`, `walks/` and `docs/` at the branch root, and four folder names at every depth — `activities`, `resources`, `techniques` and `routines`. The directory name is the id every reference reaches it by, so it matches the `id` the definition declares; `npm run check:workflow-identity` holds the two together.
 
 1. Create `corpus/{workflow-id}/` with `workflow.yaml`, `README.md`, and `activities/`, `resources/`, `techniques/`, `routines/` as needed.
-2. Prefix activity files `{NN}-{id}.yaml`. Connect them with `transitions`; set the workflow's `initialActivity`.
+2. Name activity files `{NN}-{id}.yaml`, where `{id}` is the activity's `id`. Declare each activity's `exits` and bind them in the workflow `graph`; set the workflow's `initialActivity`.
 3. Commit on this branch.
 
 ### Linking between definition files

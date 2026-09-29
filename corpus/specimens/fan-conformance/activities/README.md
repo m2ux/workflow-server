@@ -2,7 +2,7 @@
 
 > Part of the [Fan Conformance Workflow](../README.md)
 
-This is the per-activity orientation map: each entry gives the activity's purpose, the position it holds in a fan, what that position requires of it, and a link to its authoritative definition. The structured definition of each activity — its steps, exits, technique bindings and transitions — lives in the corresponding `NN-<id>.yaml` file; it is not duplicated here.
+This is the per-activity orientation map: each entry gives the activity's purpose, the position it holds in a fan, what that position requires of it, and a link to its authoritative definition. The structured definition of each activity — its steps, exits and technique bindings — lives in the corresponding `NN-<id>.yaml` file; it is not duplicated here.
 
 For the activity-to-activity flow diagram and the destination grammar the graph is written in, see the [workflow README](../README.md). Each activity section below also includes a mermaid diagram showing its internal flow.
 

@@ -2,7 +2,7 @@
 
 > prism-update workflow — linear pipeline with a verify → apply-updates retry loop
 
-Each activity's authoritative definition — steps, checkpoints, transitions — lives in its `NN-<id>.yaml` file (served by `get_activity`). This README is orientation only.
+Each activity's authoritative definition — steps, checkpoints, exits — lives in its `NN-<id>.yaml` file (served by `get_activity`). This README is orientation only.
 
 ## Activity Sequence
 

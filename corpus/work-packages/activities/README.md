@@ -1,6 +1,6 @@
 # Work Packages — Activities
 
-Sequential activity chain for planning and coordinating multiple related work packages. Each row links to the authoritative activity definition (steps, checkpoints, loops, and transitions live in the YAML).
+Sequential activity chain for planning and coordinating multiple related work packages. Each row links to the authoritative activity definition (steps, checkpoints, loops, and exits live in the YAML).
 
 | # | Activity | Role |
 |---|----------|------|

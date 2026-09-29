@@ -4,7 +4,7 @@
 
 The activities that carry a review from a resolved change surface through plan-approved evidence probing, rubric adjudication, and a signed-off merge-readiness verdict, with an optional publication tail. The spine runs `01`–`07` with one point where it opens several branches at once: `03` fans to one probe per investigation area, and those branches converge on `05`. The `verdict-review` checkpoint can route back to `02` for plan-level rework, and `08` is entered only when a PR surface exists and publication is approved.
 
-This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, loops, validations, and transitions — lives in the per-activity YAML linked below and is served by `get_activity`. Cross-cutting invariants live in the workflow-root [`workflow.yaml`](../workflow.yaml) `rules`.
+This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, loops, validations, and exits — lives in the per-activity YAML linked below and is served by `get_activity`. Cross-cutting invariants live in the workflow-root [`workflow.yaml`](../workflow.yaml) `rules`.
 
 ---
 

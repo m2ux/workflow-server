@@ -59,7 +59,7 @@ The spine is linear — scope, prompt, analyse, finalize, deliver — with two b
 | 03 | [**Audit Report Finalization**](./activities/README.md#03-audit-report-finalization) (`audit-finalize`) | Assemble prism's `REPORT.md` + `DEFINITIVE-FINDINGS.md` into the three audit deliverables and cross-validate them |
 | 04 | [**Deliver Audit Results**](./activities/README.md#04-deliver-audit-results) (`deliver-audit`) | Present the deliverables with finding counts, the core finding, top remediations, and a full artifact index |
 
-**Detailed documentation:** See [activities/README.md](./activities/README.md) for the per-activity orientation map. The authoritative step/checkpoint/transition definitions live in each activity YAML and are served by `get_activity`.
+**Detailed documentation:** See [activities/README.md](./activities/README.md) for the per-activity orientation map. The authoritative step, checkpoint and exit definitions live in each activity YAML and are served by `get_activity`.
 
 ---
 
