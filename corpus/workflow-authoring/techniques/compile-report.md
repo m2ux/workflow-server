@@ -37,7 +37,7 @@ Keys of findings already accepted or baselined, each pairing a criteria entry wi
 
 ### findings_register
 
-The register body: the severity summary, the change-surface membership table (touched whole files, I/O-contract closure, consumers), one findings section per target, the coverage divergences, the accepted exclusions and the sources consulted. Shaped by [Template](../../resources/findings-register.md#template). Every section is one row per item.
+The register body: the severity summary, the change-surface membership table (touched whole files, I/O-contract closure, consumers), one findings section per target, the coverage divergences, the accepted exclusions and the sources consulted. Shaped by [Template](../resources/findings-register.md#template). Every section is one row per item.
 
 #### artifact
 

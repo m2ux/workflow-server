@@ -43,7 +43,7 @@ exits:
     when: current_activity == null
 outcome:
   - The client workflow has executed end to end with its artifacts committed and state persisted at every activity boundary
-  - Each worker carried a bounded run of activities in one context, so the harness baseline was paid once a run rather than once an activity
+  - Each worker carried a bounded run of activities in one context, paying the harness baseline once for the run
   - The user retained control over every decision point — checkpoints surfaced to them and their selections steered the workflow
   - The client workflow has no further activities to run, so the meta can proceed to close it out
   - Reaching the end of the activity loop is recorded, so close-out can tell a completed run from one that stopped at the iteration bound

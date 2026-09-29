@@ -38,7 +38,7 @@ steps:
         workflow_definition: target_workflow_id
   - kind: checkpoint
     id: completion-confirmed
-    message: Close the session, or return to the workflow to address the remaining items?
+    message: Session closure, with each target outcome reported as met or as a gap to address.
     options:
       - id: confirm
         label: Confirm closure

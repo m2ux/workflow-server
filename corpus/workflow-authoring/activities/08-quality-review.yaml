@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.4.0
+version: 1.5.0
 name: Quality Review
 description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
 variables:
@@ -77,13 +77,13 @@ steps:
       - kind: technique
         id: author-fixes
         technique:
-          name: workflow-definition::yaml-authoring
+          name: yaml-authoring
           inputs:
             selected_findings: verified_findings
   - kind: technique
     id: record-fixes
     technique:
-      name: workflow-definition::apply-audit-fixes
+      name: apply-audit-fixes
       inputs:
         selected_findings: verified_findings
     when: remediation_round > 0
@@ -99,7 +99,7 @@ steps:
     when: remediation_round > 0
   - kind: technique
     id: load-known-findings
-    technique: workflow-definition::load-known-findings
+    technique: load-known-findings
   - kind: technique
     id: survey-reference-workflows
     technique:
@@ -116,19 +116,19 @@ steps:
     steps:
       - kind: technique
         id: rebind-target-baseline
-        technique: workflow-definition::reload-workflow
+        technique: reload-workflow
       - kind: technique
         id: resolve-consumer-surface
-        technique: workflow-definition::resolve-consumer-surface
+        technique: resolve-consumer-surface
       - kind: technique
         id: inventory-prose-fields
-        technique: workflow-definition::inventory-prose-fields
+        technique: inventory-prose-fields
       - kind: technique
         id: sweep-canon
-        technique: workflow-definition::audit-canon
+        technique: audit-canon
       - kind: technique
         id: validate-schema
-        technique: workflow-definition::audit-schema-validation
+        technique: audit-schema-validation
         actions:
           - action: set
             target: register_sections

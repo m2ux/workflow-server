@@ -208,6 +208,52 @@
       "rationale": "deprecated-twin-shape"
     },
     {
+      "site": "workflow-authoring/activities/01-intake-and-context.yaml + workflow-design/activities/05-impact-analysis.yaml",
+      "run": [
+        "T:impact-analysis()",
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "deprecated-twin-shape"
+    },
+    {
+      "site": "workflow-authoring/activities/06-scope-and-draft.yaml + workflow-design/activities/06-scope-and-draft.yaml",
+      "run": [
+        "T:scope-definition()",
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "deprecated-twin-shape"
+    },
+    {
+      "site": "workflow-authoring/activities/09-validate-and-commit.yaml + workflow-design/activities/09-validate-and-commit.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "T:commit-verification()",
+        "T:git::push-branch(branch,remote_name,repo_path)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "deprecated-twin-shape"
+    },
+    {
+      "site": "workflow-authoring/activities/09-validate-and-commit.yaml + workflow-design/activities/10-post-update-review.yaml",
+      "run": [
+        "A:message=",
+        "T:scope-verification()",
+        "T:workflow-engine::verify-readme-conforms(seed_profile)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "deprecated-twin-shape"
+    },
+    {
+      "site": "workflow-authoring/activities/09-validate-and-commit.yaml + workflow-design/activities/11-retrospective.yaml",
+      "run": [
+        "T:create-completion-doc()",
+        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "deprecated-twin-shape"
+    },
+    {
       "site": "workflow-design/activities/01-intake-and-context.yaml + workflow-design/activities/05-impact-analysis.yaml + workflow-design/activities/08-quality-review.yaml",
       "run": [
         "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",

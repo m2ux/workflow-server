@@ -70,7 +70,7 @@ required: true
 steps:
   - kind: technique
     id: derive-workflow-branch
-    technique: workflow-definition::derive-workflow-branch
+    technique: derive-workflow-branch
     when: operation_type != 'review'
   - kind: technique
     id: ensure-worktree
@@ -82,7 +82,7 @@ steps:
     when: operation_type != 'review'
   - kind: technique
     id: define-scope
-    technique: workflow-definition::scope-definition
+    technique: scope-definition
     when: operation_type != 'review'
   - kind: technique
     id: persist-scope-manifest
@@ -145,10 +145,10 @@ steps:
         steps:
           - kind: technique
             id: author-yaml
-            technique: workflow-definition::yaml-authoring
+            technique: yaml-authoring
       - kind: technique
         id: review-file
-        technique: workflow-definition::review-drafted-file
+        technique: review-drafted-file
       - kind: checkpoint
         id: preservation-check#{current_file.path}
         condition:
@@ -182,11 +182,11 @@ steps:
         when: has_unflagged_removals == true && removal_disposition == 'flagged'
       - kind: technique
         id: apply-removal-disposition
-        technique: workflow-definition::yaml-authoring
+        technique: yaml-authoring
         when: has_unflagged_removals == true && removal_disposition == 'restored'
   - kind: technique
     id: author-workflow-readme
-    technique: workflow-definition::readme-authoring
+    technique: readme-authoring
     when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: verify-artifact-conformance

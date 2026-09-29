@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Shared inputs and authoring invariants for every technique in this workflow.
+Shared inputs and authoring invariants for the techniques that classify, author and audit workflow definition files.
 
 ## Inputs
 
@@ -34,6 +34,10 @@ Absolute path of the run's edit worktree, where definition files are read and cr
 *(optional)* Ordered list of workflow ids in scope for this run; a single-target run carries a one-element list.
 
 ## Rules
+
+### edit-surface-is-the-evidence
+
+Definition files are read and written under `{target_path}`. The served catalog answers from the library checkout, which can lag the branch under change, so a claim taken from it is not evidence about the files this run edits.
 
 ### single-source-and-link
 

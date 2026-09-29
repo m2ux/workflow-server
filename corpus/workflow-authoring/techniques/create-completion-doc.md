@@ -33,7 +33,7 @@ Whether the inventoried content removals were approved.
 
 ### completion_document
 
-The close-out record: what the run delivered, links to where its decisions live, the scope outcome stated as exceptions only, the limitations and deferrals it leaves behind, and the retrospective on the run itself as a section rather than a separate document. Shaped by [Template](../../resources/completion-artifact.md#template).
+The close-out record: what the run delivered, links to where its decisions live, the scope outcome stated as exceptions only, the limitations and deferrals it leaves behind, and the retrospective on the run itself as a section rather than a separate document. Shaped by [Template](../resources/completion-artifact.md#template).
 
 #### artifact
 

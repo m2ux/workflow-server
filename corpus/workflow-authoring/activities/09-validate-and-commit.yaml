@@ -91,10 +91,10 @@ required: true
 steps:
   - kind: technique
     id: verify-audit-findings
-    technique: workflow-definition::verify-high-findings
+    technique: verify-high-findings
   - kind: technique
     id: compile-register
-    technique: workflow-definition::compile-report
+    technique: compile-report
   - kind: technique
     id: persist-register
     technique:
@@ -170,7 +170,7 @@ steps:
         message: "A Critical finding stands in the [findings register]({report_path}), so the run holds at the register with nothing committed."
   - kind: technique
     id: verify-scope-manifest
-    technique: workflow-definition::scope-verification
+    technique: scope-verification
     when: operation_type != 'review' && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: verify-planning-readme
@@ -219,7 +219,7 @@ steps:
           exit: return-to-draft
   - kind: technique
     id: compose-publication
-    technique: workflow-definition::compose-publication
+    technique: compose-publication
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: stage-and-commit
@@ -230,7 +230,7 @@ steps:
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: verify-commit
-    technique: workflow-definition::commit-verification
+    technique: commit-verification
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: push-branch
@@ -253,7 +253,7 @@ steps:
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: compose-close-out
-    technique: workflow-definition::create-completion-doc
+    technique: create-completion-doc
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: persist-close-out

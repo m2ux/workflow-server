@@ -21,6 +21,14 @@ Per-principle Pass / Partial / Violation classifications with file, field, and l
 
 `human`
 
+### principle_finding_count
+
+Count of partially compliant and violating entries in `{principle_findings}`.
+
+### has_critical_principle_finding
+
+Whether any entry in `{principle_findings}` is Critical severity: a schema-invalid or structurally broken construct.
+
 ## Protocol
 
 ### 1. Audit Principle Compliance
@@ -36,3 +44,4 @@ Per-principle Pass / Partial / Violation classifications with file, field, and l
 ### 3. Assemble Findings
 
 - Assemble `{principle_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares
+- Set `{principle_finding_count}` to the number of partially compliant and violating entries, and `{has_critical_principle_finding}` to whether any of them is Critical

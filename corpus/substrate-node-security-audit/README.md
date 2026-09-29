@@ -25,7 +25,7 @@ This workflow guides the complete lifecycle of a security audit:
 
 The role split (orchestrator coordinates and dispatches; sub-agents perform deep crate-level review) and the verification/merge gates are workflow invariants — see the `rules` in [`workflow.yaml`](./workflow.yaml).
 
-**Relationship to `prism-audit`.** This workflow and [`prism-audit`](/prism-audit/README.md) are two deliberately different-philosophy security audits. `prism-audit` composes a codebase-tailored prompt and triggers the generic [`prism`](/prism/README.md) lens engine, reusing prism's analysis, adversarial pass, and report contract. This workflow is a bespoke deep multi-agent review tuned to Substrate node internals — a fixed §3 checklist, per-crate concurrent context windows, a coverage gate, and merge/reconciliation — none of which prism packages. The two share the Impact × Feasibility severity model and the `gitnexus` capability, but not an analysis spine; this workflow does not build on prism by design.
+**Relationship to `prism-audit`.** This workflow and [`prism-audit`](/prism-audit/README.md) are two security audits with separate analysis spines. `prism-audit` composes a codebase-tailored prompt and triggers the generic [`prism`](/prism/README.md) lens engine, reusing prism's analysis, adversarial pass, and report contract. This workflow is a bespoke deep multi-agent review tuned to Substrate node internals, with its own spine: a fixed §3 checklist, per-crate concurrent context windows, a coverage gate, and merge/reconciliation. The two share the Impact × Feasibility severity model and the `gitnexus` capability.
 
 ---
 
@@ -190,7 +190,7 @@ The [activities README](./activities/README.md) states which of these the graph 
 | [`sub-architectural-analysis`](./activities/13-sub-architectural-analysis.yaml) | S | Reconnaissance | Security-oriented architectural decomposition surfacing vulnerability domains beyond the [§3 checklist](./resources/audit-prompt-template.md#3-systematic-manual-review-strategies) |
 | [`sub-crate-review`](./activities/10-sub-crate-review.yaml) | Group A | Primary Audit | Deep, evidence-backed [§3 review](./resources/audit-prompt-template.md#3-systematic-manual-review-strategies) of an entire priority crate |
 | [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml) | Group B | Primary Audit | Pattern-based and mechanical analysis across the whole scope, with zero-hit cases verified rather than assumed clean |
-| [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml) | Group D | Primary Audit | Per-function toolkit review so no benign-looking helper is skimmed past |
+| [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml) | Group D | Primary Audit | Per-function toolkit review of every helper, benign-looking ones included |
 | [`sub-output-verification`](./activities/14-sub-output-verification.yaml) | V | Primary Audit | Fresh-context validation that every required agent ran and every mandatory table is present, stabilizing finding counts across runs |
 | [`sub-structured-merge`](./activities/15-sub-structured-merge.yaml) | M | Primary Audit | Fresh-context, provably-lossless merge into a single canonical, deduplicated, severity-scored finding set |
 

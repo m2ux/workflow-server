@@ -21,6 +21,14 @@ Findings grouped by catalog entry **name** / **designator**: file path, offendin
 
 `human`
 
+### anti_pattern_finding_count
+
+Count of entries in `{anti_pattern_findings}`.
+
+### has_critical_anti_pattern_finding
+
+Whether any entry in `{anti_pattern_findings}` is Critical severity: a schema-invalid or structurally broken construct.
+
 ## Protocol
 
 ### 1. Load Catalog
@@ -40,3 +48,4 @@ Findings grouped by catalog entry **name** / **designator**: file path, offendin
 ### 3. Assemble Findings
 
 - Assemble `{anti_pattern_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares
+- Set `{anti_pattern_finding_count}` to the number of findings, and `{has_critical_anti_pattern_finding}` to whether any of them is Critical

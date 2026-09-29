@@ -12,7 +12,7 @@ metadata:
 
 Every piece of prose is checked against the entries below. Where a formal construct exists, the definition uses it. [Schema Expressiveness](./anti-patterns.md#schema-expressiveness) audits the same misses.
 
-This inventory names the construct. Field tables and required properties live in the JSON schemas below. The URI `workflow-server://schemas` serves the workflow, activity, technique and condition schemas; the routine schema is read at its repository path. On-disk layout and technique inheritance live in [On-disk layout](/meta/resources/workflow-canonical.md#on-disk-layout).
+This inventory names the construct. Field tables and required properties live in the JSON schemas below. The URI `workflow-server://schemas` serves the workflow, activity, condition, technique and session-file schemas; the routine schema is read at its repository path. On-disk layout and technique inheritance live in [On-disk layout](/meta/resources/workflow-canonical.md#on-disk-layout).
 
 - Workflow — `schemas/workflow.schema.json`
 - Activity — `schemas/activity.schema.json`

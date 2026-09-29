@@ -18,8 +18,8 @@ The audit-specific work lives here — prompt generation, domain mapping, trust-
 - **Cross-validated deliverables.** prism's own adversarial pass challenges the structural analysis and severity-calibrates the result; finalization consolidates findings across audit scopes into a navigable report, expanded per-finding write-ups, and the design trade-offs behind the findings.
 
 **Use this workflow when you want to:**
-- Run a security audit of a codebase and get a report you can act on, not a wall of raw analysis
-- Tailor the analysis to the target's real architecture instead of a one-size-fits-all security prompt
+- Run a security audit of a codebase and get a report you can act on
+- Tailor the analysis to the target's real architecture
 - Audit multiple scopes (services, crates, subsystems) in one run, with findings consolidated across them
 - Feed the findings into remediation (see the [remediate-vuln](/remediate-vuln/README.md) workflow)
 
@@ -75,7 +75,7 @@ The workflow writes all artifacts under the user-supplied `audit_output_path`:
 | `DETAILED-FINDINGS.md` | audit-finalize | One expanded write-up per finding, taken from prism's `DEFINITIVE-FINDINGS.md` (Description, Impact, Location, Recommendation, Adversarial confirmation, and Graph Evidence carried from prism's blast-radius enrichment) |
 | `DESIGN-TRADE-OFFS.md` | audit-finalize | Falsifiable design trade-offs behind the findings, each with code-level evidence and actionable design questions |
 
-Severity labels throughout are computed from an **Impact × Feasibility** rubric, not assigned intuitively.
+Severity labels throughout are computed from an **Impact × Feasibility** rubric.
 
 ---
 

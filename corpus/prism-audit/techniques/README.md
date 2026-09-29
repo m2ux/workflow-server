@@ -2,7 +2,7 @@
 
 > Part of the [Prism Audit Workflow](../README.md)
 
-The technique library for the prism-audit workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each technique's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The technique library for the prism-audit workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each technique's `.md` file and are served by `get_technique`.
 
 [`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs, Outputs, Rules, and Errors for every technique here.
 
@@ -75,7 +75,7 @@ Because each group is named after the activity whose steps bind it, those steps 
 
 ## Cross-Workflow Techniques
 
-These techniques are inherited or bound cross-workflow, not authored here:
+These techniques are inherited or bound from other workflows:
 
 | Reference | Used for |
 |-----------|----------|

@@ -12,6 +12,10 @@ variables:
     - target_path
     - target_workflow_ids
   writes:
+    - name: anti_pattern_finding_count
+      type: number
+      description: Count of anti-pattern violations.
+      defaultValue: 0
     - name: anti_pattern_findings_path
       type: string
       description: Absolute path to the persisted anti-pattern-findings artifact.
@@ -54,6 +58,14 @@ variables:
       type: boolean
       description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
       defaultValue: false
+    - name: has_critical_anti_pattern_finding
+      type: boolean
+      description: Whether any anti-pattern finding is Critical severity.
+      defaultValue: false
+    - name: has_critical_principle_finding
+      type: boolean
+      description: Whether any design-principle finding is Critical severity.
+      defaultValue: false
     - name: needs_audit_fixes
       type: boolean
       description: Whether audit passes surfaced findings that still need remedia.
@@ -68,6 +80,10 @@ variables:
     - name: pass_count
       type: number
       description: Count of YAML files that passed schema validation.
+      defaultValue: 0
+    - name: principle_finding_count
+      type: number
+      description: Count of design-principle findings.
       defaultValue: 0
     - name: principle_findings_path
       type: string

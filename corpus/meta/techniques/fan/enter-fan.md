@@ -52,5 +52,5 @@ The activity the branches converge on, as the barrier reported it — what the r
 
 ### 2. Open every branch with one call
 
-- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read `_meta.fan` as `{branch_activities}` and `_meta.barrier.destination` as `{barrier_destination}`. One call retires the exiting activity and opens every branch, so entering a fan cannot half-happen
+- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read `_meta.fan` as `{branch_activities}` and `_meta.barrier.destination` as `{barrier_destination}`. The call retires the exiting activity and opens every branch
 

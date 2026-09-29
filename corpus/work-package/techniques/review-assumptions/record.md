@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 `human`
 
+### assumptions_log_path
+
+Path to the written assumptions log.
+
 ### has_deferred_assumptions
 
 Boolean gate — true iff any assumption was marked deferred (needs-discussion).
@@ -39,7 +43,7 @@ Boolean gate — true iff any assumption was marked deferred (needs-discussion).
 
 ### 2. Write the Outcomes Into the Log
 
-- Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred: <follow-up> in the Outcome column — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact).
+- Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred: <follow-up> in the Outcome column — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact). Emit the log's path as `{assumptions_log_path}`.
 
 ### 3. Link the Deferred Register
 

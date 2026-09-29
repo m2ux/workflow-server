@@ -17,6 +17,10 @@ variables:
       type: number
       description: Scope-manifest items confirmed addressed by scope-verification.
       defaultValue: 0
+    - name: anti_pattern_finding_count
+      type: number
+      description: Count of anti-pattern violations.
+      defaultValue: 0
     - name: anti_pattern_findings_path
       type: string
       description: Absolute path to the persisted anti-pattern-findings artifact.
@@ -47,6 +51,14 @@ variables:
       type: number
       description: Count of YAML files that failed schema validation.
       defaultValue: 0
+    - name: has_critical_anti_pattern_finding
+      type: boolean
+      description: Whether any anti-pattern finding is Critical severity.
+      defaultValue: false
+    - name: has_critical_principle_finding
+      type: boolean
+      description: Whether any design-principle finding is Critical severity.
+      defaultValue: false
     - name: needs_recommit
       type: boolean
       description: True when post-update remedia edits are pending publication to the open pull request.
@@ -63,6 +75,10 @@ variables:
       type: string
       description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
       defaultValue: ""
+    - name: principle_finding_count
+      type: number
+      description: Count of design-principle findings.
+      defaultValue: 0
     - name: principle_findings_path
       type: string
       description: Absolute path to the persisted principle-findings artifact.

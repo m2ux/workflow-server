@@ -29,7 +29,7 @@ The constraints the change surface imposes on scope: the co-change set — files
 
 ### impact_analysis
 
-The assembled impact report: per-file classification, the integrity verdicts, and the removals inventory as removed-versus-preserved rows. Shaped by [Template](../../resources/impact-analysis.md#template).
+The assembled impact report: per-file classification, the integrity verdicts, and the removals inventory as removed-versus-preserved rows. Shaped by [Template](../resources/impact-analysis.md#template).
 
 #### artifact
 
@@ -76,7 +76,7 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 ### 8. Compose the Impact Report
 
-- Assemble `{impact_analysis}` from the classification, the integrity verdicts and the removals inventory, at the shape [Template](../../resources/impact-analysis.md#template) declares
+- Assemble `{impact_analysis}` from the classification, the integrity verdicts and the removals inventory, at the shape [Template](../resources/impact-analysis.md#template) declares
 - Link `{change_brief}` on the Change source line and `{structural_inventory}` on the Baseline line
 
 ## Rules

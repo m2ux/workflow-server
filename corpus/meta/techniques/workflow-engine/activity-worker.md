@@ -42,7 +42,7 @@ Worker agent identity for this dispatch.
 ### 4. Execute steps
 
 - Execute each activity step in document order
-- Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
+- Read the artifact each bound artifact-path input names before the step that consumes it
 - For `kind: technique` steps, load the bound technique on reach per `progressive-step-technique-load`
 - Apply each bound technique via [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag per `gate-evaluation`, and a loop's controls per `loop-control`

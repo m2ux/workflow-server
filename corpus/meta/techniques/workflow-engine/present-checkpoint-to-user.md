@@ -32,7 +32,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 3. Resolve Published Links
 
-- Resolve the checklist against the remote before it is published. A gate is reached mid-activity, before that activity's commit, so `git -C {host_repo_path} rev-parse --abbrev-ref HEAD` names the session branch `{$branch}`, and `git -C {host_repo_path} ls-tree -r --name-only origin/{branch} {planning_folder_path}` lists exactly what a reader can open: an item whose artifact is present renders as a link, and one whose artifact is absent renders as plain text. This stops a dead link being published; it does not make an artifact available sooner. It also catches a push that silently failed and an edit made out of band.
+- Resolve the checklist against the remote before it is published. A gate is reached mid-activity, before that activity's commit, so `git -C {host_repo_path} rev-parse --abbrev-ref HEAD` names the session branch `{$branch}`, and `git -C {host_repo_path} ls-tree -r --name-only origin/{branch} {planning_folder_path}` lists exactly what a reader can open: an item whose artifact is present renders as a link, and one whose artifact is absent renders as plain text.
 
 ### 4. Pick Resolution Path
 
@@ -44,7 +44,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 6. Apply Declared Answer
 
-- On the headless path, and only for a soft gate: resolve to the answer the gate declares without putting anything to the user, and record that the resolution reached no user. The audit record carries the distinction, so a reader of the session can tell a person's answer from a default.
+- On the headless path, and only for a soft gate: resolve to the answer the gate declares without putting anything to the user, and record that the resolution reached no user.
 
 ### 7. Capture Selection
 

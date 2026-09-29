@@ -33,7 +33,7 @@ The complete file manifest — one entry per file to create, modify or remove, e
 
 ### scope_manifest_report
 
-The rendered scope manifest: the file table from `{manifest_entries}` with the structural design and drafting order sections. Shaped by [Template](../../resources/scope-manifest.md#template).
+The rendered scope manifest: the file table from `{manifest_entries}` with the structural design and drafting order sections. Shaped by [Template](../resources/scope-manifest.md#template).
 
 #### artifact
 
@@ -62,15 +62,15 @@ Number of entries in `{manifest_entries}`.
 
 ### 3. Assemble the Structural Design
 
-- Assemble the Structural design section of [Template](../../resources/scope-manifest.md#template): the directory tree, or an explicit statement that the layout is unchanged; a short note on changed graph bindings wherever the topology changes; and a compact alignment table against the conventions — not a comparison essay
+- Assemble the Structural design section of [Template](../resources/scope-manifest.md#template): the directory tree, or an explicit statement that the layout is unchanged; a short note on changed graph bindings wherever the topology changes; and a compact alignment table against the conventions — not a comparison essay
 
 ### 4. Assemble the Drafting Order
 
-- Assemble the Drafting order section of [Template](../../resources/scope-manifest.md#template): root definition, activities, techniques, resources, README, each tier with a one-line rationale
+- Assemble the Drafting order section of [Template](../resources/scope-manifest.md#template): root definition, activities, techniques, resources, README, each tier with a one-line rationale
 
 ### 5. Render the Manifest Report
 
-- Render the file table from `{manifest_entries}` with both sections into `{scope_manifest_report}` at the shape [Template](../../resources/scope-manifest.md#template) declares
+- Render the file table from `{manifest_entries}` with both sections into `{scope_manifest_report}` at the shape [Template](../resources/scope-manifest.md#template) declares
 - Link `{change_brief}` and the impact classification on the Basis line
 
 ## Rules

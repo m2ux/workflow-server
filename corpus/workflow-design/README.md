@@ -1,13 +1,11 @@
 # Workflow Design Workflow
 
-> **DEPRECATED — start [`workflow-authoring`](/workflow-authoring/README.md) instead.**
-> This workflow remains only so sessions already in flight can finish, and is removed once none
-> remain. Do not start a new session against it. Its version is deliberately frozen: a bump would
-> emit a version-mismatch warning on every call for every in-flight session.
+> **Replaced by [`workflow-authoring`](/workflow-authoring/README.md), where every new session starts.**
+> This workflow serves the sessions already in flight, and is removed once none remain. Its version
+> is frozen: a bump emits a version-mismatch warning on every call of every in-flight session.
 >
-> A session already under way can be finished here. At the commit gates, thirty-second
-> auto-advances accept the result as it stands, including *proceed to commit* when files fail
-> schema validation. Prefer finishing promptly over resuming late.
+> At the commit gates, thirty-second auto-advances accept the result as it stands, including
+> *proceed to commit* when files fail schema validation. Prefer finishing promptly over resuming late.
 
 > Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, it derives intent from a free-form user description, reconciles design assumptions, and collects the stakeholder decisions into one approval before commit; it runs headless by default (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 

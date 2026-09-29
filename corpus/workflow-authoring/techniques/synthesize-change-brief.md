@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Change brief for an existing workflow, covering only the dimensions the change a
 
 ### change_category
 
-The categorised change request — one or more of the categories in [Change Categories](../../resources/update-mode-guide.md#change-categories).
+The categorised change request — one or more of the categories in [Change Categories](../resources/update-mode-guide.md#change-categories).
 
 ### structural_inventory
 
@@ -25,7 +25,7 @@ Baseline of the target's existing definition: file counts by kind, entity counts
 
 ### change_brief
 
-The assembled change brief for an existing workflow: purpose, the **changed** members of the guide's update dimension set, and the judgements left open. Unchanged dimensions are absent. Shaped by [Template](../../resources/change-brief.md#template).
+The assembled change brief for an existing workflow: purpose, the **changed** members of the guide's update dimension set, and the judgements left open. Unchanged dimensions are absent. Shaped by [Template](../resources/change-brief.md#template).
 
 #### artifact
 
@@ -48,6 +48,6 @@ Number of design judgements recorded as unresolved in `{change_brief}`. Zero whe
 
 ### 2. Assemble the Changed Dimensions
 
-- From the update set in [Mode Dimension Sets](../../resources/elicitation-guide.md#mode-dimension-sets), emit only the dimensions that change against the baseline and the change sources; an unchanged dimension is absent from `{change_brief}`, not reprinted from the baseline
+- From the update set in [Mode Dimension Sets](../resources/elicitation-guide.md#mode-dimension-sets), emit only the dimensions that change against the baseline and the change sources; an unchanged dimension is absent from `{change_brief}`, not reprinted from the baseline
 - Derive each emitted dimension from the change sources and the baseline; prefer additive edits the sources name, and introduce no structural change the sources do not ask for
-- Fold the emitted dimensions into `{change_brief}` at the shape [Template](../../resources/change-brief.md#template) declares, and set `{open_judgements_count}` to the number of judgements the sources leave unresolved
+- Fold the emitted dimensions into `{change_brief}` at the shape [Template](../resources/change-brief.md#template) declares, and set `{open_judgements_count}` to the number of judgements the sources leave unresolved

@@ -29,7 +29,7 @@ True when `{operation_type}` is `update` and the drafted file removes material t
 
 ### impact_analysis
 
-The removals inventory carrying a row for every observed reduction, each stating where it happened, what drops, what survives and the stage that raised it. Reads as the `#### artifact` for `impact-analysis.md` at the shape [Template](../../resources/impact-analysis.md#template) declares, so the writer persists it into the numbered instance intake created.
+The removals inventory carrying a row for every observed reduction, each stating where it happened, what drops, what survives and the stage that raised it. Reads as the `#### artifact` for `impact-analysis.md` at the shape [Template](../resources/impact-analysis.md#template) declares, so the writer persists it into the numbered instance intake created.
 
 ## Protocol
 

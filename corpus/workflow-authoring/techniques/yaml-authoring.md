@@ -50,7 +50,7 @@ True when `{yaml_file}` parses and conforms to the schema its kind selects. Fals
 
 ### 4. Draft the Content
 
-- Write `{yaml_file}` at the path `{current_file}` names, in the style [YAML style](../../resources/yaml-style.md) states
+- Write `{yaml_file}` at the path `{current_file}` names, in the style [YAML style](../resources/yaml-style.md) states
 
 ### 5. Validate Against the Schema
 

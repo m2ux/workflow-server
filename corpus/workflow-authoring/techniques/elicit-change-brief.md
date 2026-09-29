@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ The answers recorded for those dimensions. Empty when no person was asked.
 
 ### change_brief
 
-The assembled change brief for a new workflow: purpose, the dimension captures the guide's create set calls for, and the judgements left open. Shaped by [Template](../../resources/change-brief.md#template).
+The assembled change brief for a new workflow: purpose, the dimension captures the guide's create set calls for, and the judgements left open. Shaped by [Template](../resources/change-brief.md#template).
 
 #### artifact
 
@@ -39,7 +39,7 @@ Number of design judgements recorded as unresolved in `{change_brief}`. Zero whe
 
 ### 1. Assemble the Change Brief
 
-- Fold `{dimension_captures}` into `{change_brief}` at the shape [Template](../../resources/change-brief.md#template) declares, in `{design_dimensions}` order
+- Fold `{dimension_captures}` into `{change_brief}` at the shape [Template](../resources/change-brief.md#template) declares, in `{design_dimensions}` order
 - Omit a question already settled by an earlier capture
 - Where `{dimension_captures}` has no answer a dimension needs, record the gap as an open judgement
 - Set `{open_judgements_count}` to the number of open-judgement rows
