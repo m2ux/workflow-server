@@ -155,7 +155,7 @@
     },
     {
       "id": "schema-hygiene-conformance",
-      "reason": "Its checkpoints exist to exercise the server's live yield, resume and replay replies — the empty yield block, a declared yield by id, an immediate exit returned with ends_activity — and its gated probes exercise eager bundling on a running instance. A sidecar change-surface walk measures those; a coverage walk would only reach options whose every exit leads to the terminal."
+      "reason": "Its checkpoints exist to exercise the server's live yield, resume and replay replies — the empty yield block, a declared yield by id, an immediate exit returned with ends_activity — and its gated probes exercise eager bundling on a running instance. A sidecar change-surface walk measures those; a coverage walk counts the options chosen and reads none of those replies."
     },
     {
       "id": "gitnexus-radius-conformance",
