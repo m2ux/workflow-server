@@ -19,6 +19,10 @@
  *   declared in the workflow's `variables[]`.
  * - `setvariable-outside-value-set` — a `setVariable` literal is outside the
  *   target variable's declared `values`. `{name}` passthroughs are exempt.
+ * - `record-reply-undeclared` — an option's `recordReply` names a variable
+ *   that is not declared in the workflow's `variables[]`.
+ * - `record-reply-not-string` — an option's `recordReply` names a variable
+ *   declared with a type other than `string`, the only type a typed reply has.
  *
  * Only structured conditions are walked; the `when:` string dialect has no
  * exists-shaped predicate (verified against the corpus during B7). Dotted
@@ -52,7 +56,9 @@ export interface VariableModelViolation {
     | 'default-type-mismatch'
     | 'setvariable-type-mismatch'
     | 'setvariable-undeclared'
-    | 'setvariable-outside-value-set';
+    | 'setvariable-outside-value-set'
+    | 'record-reply-undeclared'
+    | 'record-reply-not-string';
   /** The offending variable and the observed shape. */
   detail: string;
 }
@@ -169,6 +175,20 @@ export function lintDocument(
             detail: `setVariable '${name}': ${JSON.stringify(value)} is outside the declared value set [${decl.values!.join(', ')}]`,
           });
         }
+      }
+    }
+    // The variable a checkpoint option stores the user's typed reply in.
+    const recordReply = node.recordReply;
+    if (typeof recordReply === 'string') {
+      const decl = decls.get(recordReply);
+      if (!decl) {
+        violations.push({ file, rule: 'record-reply-undeclared', detail: `recordReply '${recordReply}' has no declaration in workflow.yaml variables[]` });
+      } else if (decl.type !== undefined && decl.type !== 'string') {
+        violations.push({
+          file,
+          rule: 'record-reply-not-string',
+          detail: `recordReply '${recordReply}': a typed reply is a string, but the variable is declared ${decl.type}`,
+        });
       }
     }
   }

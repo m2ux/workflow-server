@@ -60,6 +60,14 @@ options:
     expect(lintDocument(doc, DECLS, 'x.yaml')).toEqual([]);
   });
 
+  it('holds a reply variable to a declared string', () => {
+    expect(lintDocument(parse('effect: { recordReply: repo_root }'), DECLS, 'x.yaml')).toEqual([]);
+    expect(lintDocument(parse('effect: { recordReply: phantom_value }'), DECLS, 'x.yaml').map(v => v.rule))
+      .toEqual(['record-reply-undeclared']);
+    expect(lintDocument(parse('effect: { recordReply: review_needed }'), DECLS, 'x.yaml').map(v => v.rule))
+      .toEqual(['record-reply-not-string']);
+  });
+
   describe('declared value sets (#518 W5.4)', () => {
     const SET_DECLS = new Map<string, VariableDeclaration>([
       ...DECLS,

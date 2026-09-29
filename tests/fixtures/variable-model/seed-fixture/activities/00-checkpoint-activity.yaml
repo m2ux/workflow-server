@@ -37,6 +37,11 @@ steps:
         effect:
           setVariable:
             operation_type: review
+      - id: typed-reply
+        label: Typed reply
+        description: The text the user types is stored in a string variable.
+        effect:
+          recordReply: unset_marker
 exits:
   - id: done
     isDefault: true

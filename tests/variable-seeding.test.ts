@@ -392,6 +392,45 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(event.data.valueOutsideSet).toBeUndefined();
   });
 
+  describe('typed reply (recordReply)', () => {
+    async function respondText(args: Record<string, unknown>): Promise<{ isError: boolean; text: string }> {
+      const result = await client.callTool({ name: 'respond_checkpoint', arguments: args });
+      return { isError: Boolean(result.isError), text: (result.content as { text: string }[])[0]?.text ?? '' };
+    }
+
+    it('stores the text the user typed in the option\'s reply variable, and resume hands it to the worker', async () => {
+      const slug = '2026-09-29-typed-reply';
+      const sessionIndex = await startAtCheckpoint(slug);
+      await call('respond_checkpoint', { session_index: sessionIndex, option_id: 'typed-reply', reply: 'docs/spec.md' });
+      const stored = readSession(slug);
+      expect(stored.variables.unset_marker).toBe('docs/spec.md');
+      const event = stored.history.find((h: { type: string; data?: Record<string, unknown> }) => h.type === 'variable_set' && h.data?.name === 'unset_marker');
+      expect(event.data.source).toBe('checkpoint_reply');
+      const resumed = await call('resume_checkpoint', { session_index: sessionIndex });
+      const body = JSON.parse((resumed.content as { text: string }[])[0]!.text);
+      expect(body.variables_changed).toEqual({ unset_marker: 'docs/spec.md' });
+    });
+
+    it('refuses an option that records a reply when no reply is passed, and leaves the gate open', async () => {
+      const slug = '2026-09-29-typed-reply-missing';
+      const sessionIndex = await startAtCheckpoint(slug);
+      const refused = await respondText({ session_index: sessionIndex, option_id: 'typed-reply' });
+      expect(refused.isError).toBe(true);
+      expect(refused.text).toMatch(/records the user's typed reply in 'unset_marker'/);
+      expect(readSession(slug).activeCheckpoint).toBeDefined();
+    });
+
+    it('refuses a reply with an option that records none, and a reply with no option', async () => {
+      const sessionIndex = await startAtCheckpoint('2026-09-29-typed-reply-stray');
+      const stray = await respondText({ session_index: sessionIndex, option_id: 'matching-assignment', reply: 'text' });
+      expect(stray.isError).toBe(true);
+      expect(stray.text).toMatch(/records no typed reply/);
+      const bare = await respondText({ session_index: sessionIndex, condition_not_met: true, reply: 'text' });
+      expect(bare.isError).toBe(true);
+      expect(bare.text).toMatch(/reply accompanies option_id/);
+    });
+  });
+
   it('respond_checkpoint exempts {name} template passthroughs from type validation', async () => {
     const sessionIndex = await startAtCheckpoint('2026-07-07-type-template');
     const result = await call('respond_checkpoint', { session_index: sessionIndex, option_id: 'template-assignment' });

@@ -494,6 +494,11 @@ function substituteStep(step: Step, siteBinding: SiteBinding, context: string): 
     if (step.message) out['message'] = substituteTokens(step.message, map);
     for (const option of step.options ?? []) {
       const effect = option.effect;
+      if (effect?.recordReply) {
+        const target = renameHead(effect.recordReply, map);
+        if (target === undefined) delete effect.recordReply; // a dropped output writes nothing
+        else effect.recordReply = target;
+      }
       if (!effect?.setVariable) continue;
       const rewritten: Record<string, unknown> = {};
       for (const [name, value] of Object.entries(effect.setVariable)) {

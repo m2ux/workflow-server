@@ -274,6 +274,8 @@ describe('workflow-loader', () => {
         gate('stray-default', '    defaultOption: no\n    autoAdvanceMs: 5000'));
       writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '04-soft.yaml'),
         gate('soft', '    defaultOption: yes\n    autoAdvanceMs: 5000'));
+      writeFileSync(join(fixtureDir, 'soft-gate-wf', 'activities', '05-reply-default.yaml'),
+        gate('reply-default', '        effect:\n          recordReply: typed_note\n    defaultOption: yes\n    autoAdvanceMs: 5000'));
       // A declared id the filename disagrees with, own and borrowed, and a graph naming each by the
       // id its filename carries.
       workflow('id-mismatch-wf', 'ok', ['source-wf/04-labelled.yaml'], ['  ok: {}', '  named: {}', '  labelled: {}']);
@@ -351,7 +353,7 @@ describe('workflow-loader', () => {
       if (!result.success) expect(result.error.message).toContain('names no activity file');
     });
 
-    it('excludes an activity whose checkpoint declares half a soft gate, or a default naming no option', async () => {
+    it('excludes an activity whose checkpoint declares half a soft gate, a default naming no option, or a default recording a reply', async () => {
       const result = await loadWorkflowWithDiagnostics(fixtureDir, 'soft-gate-wf');
       expect(result.success).toBe(true);
       if (!result.success) return;
@@ -359,6 +361,7 @@ describe('workflow-loader', () => {
       const errors = Object.fromEntries(result.value.activityLoadErrors.map((e) => [e.activity_id, e.error]));
       expect(errors['lone-default']).toContain('defaultOption without autoAdvanceMs');
       expect(errors['stray-default']).toContain('not one of its options');
+      expect(errors['reply-default']).toContain('records a typed reply');
       // The raw read serves what the load kept, so an excluded activity is not delivered either.
       expect((await rawRead('soft-gate-wf', 'lone-default')).success).toBe(false);
       expect((await rawRead('soft-gate-wf', 'soft')).success).toBe(true);

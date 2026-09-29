@@ -47,7 +47,7 @@ export function isTemplateReference(value: unknown): boolean {
  * distinguishes it from a worker's report: it assigns the container whole, which is not a merge and
  * is not a branch's write.
  */
-export type VariableWriteSource = 'setVariable' | 'variables_changed' | 'yield_checkpoint' | 'fan_enter';
+export type VariableWriteSource = 'setVariable' | 'checkpoint_reply' | 'variables_changed' | 'yield_checkpoint' | 'fan_enter';
 
 /**
  * Where a branch's reported map lands: the container's key, the slot the branch's frontier entry

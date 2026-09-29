@@ -405,6 +405,7 @@
           <p>Present the checkpoint to the user and wait for input before calling this.</p>
           <p>Provide exactly one of: <code>option_id</code> (user picked an option), <code>auto_advance</code> (timer elapsed on a checkpoint with a default), or <code>condition_not_met</code> (conditional checkpoint whose condition was false).</p>
           <p>Variable effects from the chosen option are applied; type mismatches produce warnings in <code>_meta.validation</code> but do not block the response.</p>
+          <p>An option whose effect declares <code>recordReply</code> takes the text the user typed as <code>reply</code>, stored in that variable. <code>reply</code> is refused with any other option.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
@@ -412,6 +413,7 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character index a <code>start_session</code> or <code>dispatch_child</code> response returned, copied verbatim. Use the same value for every call in this session.</td></tr>
           <tr><td><code>option_id</code></td><td><code>string</code></td><td>no</td><td>Option the user selected. Must match one of the checkpoint's defined options.</td></tr>
+          <tr><td><code>reply</code></td><td><code>string</code></td><td>no</td><td>Text the user typed with <code>option_id</code>. Required when that option declares <code>recordReply</code>, refused otherwise.</td></tr>
           <tr><td><code>auto_advance</code></td><td><code>boolean</code></td><td>no</td><td>Set <code>true</code> to use the checkpoint's default option after its timer elapses.</td></tr>
           <tr><td><code>condition_not_met</code></td><td><code>boolean</code></td><td>no</td><td>Set <code>true</code> to dismiss a conditional checkpoint whose condition evaluated to false.</td></tr>
           </tbody>

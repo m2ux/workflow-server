@@ -37,9 +37,16 @@ export const CheckpointOptionSchema = z.object({
   effect: z.object({
     setVariable: enforcement(z.record(z.unknown().describe('Value assigned to the named variable.')).optional().describe('Variable assignments applied when this option is selected. Each value is checked against the variable\'s declared type and value set, and a mismatch is stored as written with a warning; a `{name}` template value passes through unchecked.'), { owner: 'Engine', strictness: 'advisory' }),
     exit: enforcement(z.string().optional().describe('Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. An option naming an exit its activity does not declare fails the workflow load. Omitted for an ad hoc checkpoint, which has no declared exits.'), { owner: 'Engine', strictness: 'enforced' }),
-  }).strict().optional().describe('Variable assignments and activity exit associated with the choice.'),
+    recordReply: enforcement(z.string().optional().describe('Variable that stores the text the user types with this option: a path, a correction, the change a revision asks for. `respond_checkpoint` refuses this option without a `reply`, and refuses a `reply` with any option that does not declare one. A soft checkpoint\'s `defaultOption` records none, which the load enforces.'), { owner: 'Engine', strictness: 'enforced' }),
+  }).strict().optional().describe('Variable assignments, the typed reply\'s variable, and the activity exit associated with the choice.'),
 }).describe('Checkpoint choice and its associated effects.');
 export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
+
+/** The session variables selecting an option writes: its `setVariable` keys and its reply variable. */
+export function optionWrites(option: CheckpointOption): string[] {
+  const names = Object.keys(option.effect?.setVariable ?? {});
+  return option.effect?.recordReply ? [...names, option.effect.recordReply] : names;
+}
 
 export const TechniqueBindingSchema = z.object({
   name: TechniqueReferenceSchema,
@@ -208,8 +215,8 @@ export function populateStepIds(activity: Activity): void {
  * Check each checkpoint's unattended default. `defaultOption` and `autoAdvanceMs` are one
  * declaration: together they make a gate soft, and a hard gate declares neither, so one without
  * the other is refused here rather than when an auto-advance is first attempted. The default names
- * one of the checkpoint's own options. Throws, as `populateStepIds` does, so the caller's per-file
- * contract applies.
+ * one of the checkpoint's own options, and records no typed reply. Throws, as `populateStepIds`
+ * does, so the caller's per-file contract applies.
  */
 export function assertCheckpointDefaults(activity: Activity): void {
   for (const step of flattenActivitySteps(activity)) {
@@ -221,9 +228,16 @@ export function assertCheckpointDefaults(activity: Activity): void {
         + 'a soft checkpoint declares both, and a hard checkpoint neither.',
       );
     }
-    if (hasDefault && !step.options.some((o) => o.id === step.defaultOption)) {
+    const defaultOption = step.options.find((o) => o.id === step.defaultOption);
+    if (hasDefault && !defaultOption) {
       throw new Error(
         `Activity '${activity.id}': checkpoint '${step.id}' names defaultOption '${step.defaultOption}', which is not one of its options.`,
+      );
+    }
+    if (defaultOption?.effect?.recordReply) {
+      throw new Error(
+        `Activity '${activity.id}': checkpoint '${step.id}' names defaultOption '${step.defaultOption}', which records a typed reply; `
+        + 'an unattended default has no reply to record.',
       );
     }
   }

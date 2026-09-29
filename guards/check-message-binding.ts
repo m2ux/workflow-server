@@ -41,7 +41,7 @@ interface Step {
   id?: string;
   message?: string;
   actions?: { action?: string; message?: string }[];
-  options?: { effect?: { setVariable?: Record<string, unknown> } }[];
+  options?: { effect?: { setVariable?: Record<string, unknown>; recordReply?: string } }[];
 }
 
 interface Activity {
@@ -98,6 +98,7 @@ function setByEarlierGate(steps: Step[], before: number): Set<string> {
     if (step.kind !== 'checkpoint') continue;
     for (const option of step.options ?? []) {
       for (const name of Object.keys(option.effect?.setVariable ?? {})) out.add(name);
+      if (option.effect?.recordReply) out.add(option.effect.recordReply);
     }
   }
   return out;

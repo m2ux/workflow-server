@@ -185,7 +185,7 @@ export interface DerivedContract {
   artifactWrites: Set<string>;
   /**
    * Every name a step produces, whether or not any declaration mentions it: a bound technique's
-   * declared output, a remap target, a checkpoint's setVariable key, a `set` action's target, a
+   * declared output, a remap target, a checkpoint's setVariable key or reply variable, a `set` action's target, a
    * loop's item variable. Most are local to the activity — an output a later step of the same
    * activity consumes and nothing else ever sees — so this is not a set of session writes. It is
    * wider than `writes` on purpose: `writes` is narrowed to the declared namespace, and the
@@ -483,7 +483,7 @@ async function readSignature(
  * to its own contract by the binding-fidelity guard, and stays out of this one.
  *
  * Writes are the producer sites `binding-provenance` scans for: a bound op's outputs (under their
- * declared id, or the step binding's remap target), checkpoint `setVariable` keys, `set` action
+ * declared id, or the step binding's remap target), checkpoint `setVariable` keys and reply variables, `set` action
  * targets and loop variables.
  *
  * Reads are the names the activity consults: a bound op's input under the name-match convention,
@@ -673,6 +673,7 @@ export async function deriveActivityContract(args: {
           if (typeof value === 'string') tokenReads(value).forEach(read);
           write(name);
         }
+        if (option.effect?.recordReply) write(option.effect.recordReply);
       }
     }
 
