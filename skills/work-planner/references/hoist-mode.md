@@ -2,10 +2,11 @@
 
 Brings the tracker's standalone issues into the agent-engineering structure: each one the user chooses joins an existing initiative, epic or task, or a new one. Every open issue with no agent-engineering prefix is a candidate, in two groups:
 
-- **Orphans:**
+- **Orphans.**
   No open initiative, epic or task links them.
-- **Cited standalone issues:**
-  Open agent-engineering issues link them, as a reference or in prose, yet they sit outside the structure. An investigation an epic cites is one. When the citing epic's criteria already carry its work, the investigation is subsumed into that epic.
+- **Cited standalone issues.**
+  - Open agent-engineering issues link them, as a reference or in prose, yet they sit outside the structure. An investigation an epic cites is one.
+  - When the citing epic's criteria already carry its work, the investigation is subsumed into that epic.
 
 ## Placements
 
@@ -18,45 +19,79 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 | **Leave** | nothing; the orphan is not initiative work | stays open, in the standalone layout |
 
 - **Kept.**
-  The orphan becomes the new task, epic or initiative issue. It takes every formatting rule of that kind: the title form, the labels, its template, and the scheme's rules for bodies, code references and succinct items. The issue that lists it links it: a task's row id, or an epic's row in its initiative.
+  - The orphan becomes the new task, epic or initiative issue.
+  - It takes every formatting rule of that kind: the title form, the labels, its template, and the scheme's rules for bodies, code references and succinct items.
+  - The issue that lists it links it: a task's row id, or an epic's row in its initiative.
 - **Original body.**
-  A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first, headed by a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan. A subsumed orphan closes with its body as it is.
+  - A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first.
+  - The comment opens with a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan.
+  - A subsumed orphan closes with its body as it is.
 - **Subsumed.**
-  The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, and its design goes into the Proposal. That issue's References cite the orphan for the detail it holds, so nothing it recorded is lost. The orphan is then closed with a comment naming the issue that took it.
+  - The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, and its design goes into the Proposal.
+  - That issue's References cite the orphan for the detail it holds, so nothing it recorded is lost.
+  - The orphan is then closed with a comment naming the issue that took it.
 - **Keep or subsume.**
-  An orphan that already references detailed planning, a folder of markdown files such as `artifacts/planning/2026-09-10-activity-representation/`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes. Otherwise keep the orphan when its work needs discussion or evidence of its own, as a task with its own issue does, and subsume it when its detail fits in rows, criteria and a reference.
+  - An orphan that already references detailed planning, a folder of markdown files such as `artifacts/planning/2026-09-10-activity-representation/`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes.
+  - Otherwise keep the orphan when its work needs discussion or evidence of its own, as a task with its own issue does.
+  - Subsume it when its detail fits in rows, criteria and a reference.
 - **Left.**
   An orphan left in place keeps no agent-engineering prefix, and takes the formatting rules of a standalone issue: the title form, `templates/issue.md`, and the scheme's rules for bodies, code references and succinct items.
-- **Bodies state the result:**
-  None says work was hoisted, migrated or subsumed, or names where it came from. A reference to the orphan says what detail it holds (`The evidence walks and the carve-outs.`), and a kept orphan's body reads as if it had always been its task, epic or initiative. What the orphan said before lives in the original-body comment, never in the body.
+- **Bodies state the result.**
+  - No body says work was hoisted, migrated or subsumed, or names where it came from.
+  - A reference to the orphan says what detail it holds (`The evidence walks and the carve-outs.`).
+  - A kept orphan's body reads as if it had always been its task, epic or initiative.
+  - What the orphan said before lives in the original-body comment, never in the body.
 
 ## Procedure
 
-1. **Fetch** every issue: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" > issues.json`.
-2. **List candidates** with `scripts/orphans.py issues.json`. It prints the orphans, then the cited standalone issues, each with its labels, the agent-engineering issues citing it and any planning folder it links, then the open initiatives and epics a placement can name.
-3. **Triage** each orphan. Read it whole, with its comments (`gh api --paginate repos/{owner}/{repo}/issues/874/comments`), and the bodies of the initiatives and epics whose themes and criteria it touches, and note any planning folder it references, in its body or its comments. For each orphan, draft:
+1. **Fetch.**
+   Fetch every issue: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" > issues.json`.
+2. **List candidates.**
+   Run `scripts/orphans.py issues.json`. It prints:
+   - the orphans;
+   - the cited standalone issues, each with its labels, the agent-engineering issues citing it and any planning folder it links;
+   - the open initiatives and epics a placement can name.
+3. **Triage.**
+   Read each orphan whole, with its comments (`gh api --paginate repos/{owner}/{repo}/issues/874/comments`), and the bodies of the initiatives and epics whose themes and criteria it touches. Note any planning folder it references, in its body or its comments. For each orphan, draft:
    - the placements that fit, best first, each naming its target and whether the orphan is kept or subsumed;
    - for a placement in an existing epic, the row it would add (Description, criteria, Depends on, Join), or the existing task that already delivers it;
-   - **Leave** when no initiative's goal covers it, or when it is not planned work. A candidate whose work an existing criterion already states is subsumed into the issue holding that criterion, with no new row; for a cited standalone issue, that is usually the issue citing it.
-4. **Offer** each orphan to the user: a plain paragraph on what the orphan asks and where it fits, then the placements as options with the recommended one first, and Leave last. Placing an orphan in another initiative's issue needs that answer as its approval.
-5. **Apply** each choice in turn:
-   - **Existing task:**
-     Add the orphan's outcomes to the task issue's criteria and its design to the Proposal. Where they reach past the epic's criteria, add epic criteria too, cited by the task's row. Subsume the orphan.
-   - **New task:**
-     Draft the row and its criteria in the epic. Number it where it can start, with `scripts/renumber.py` when undelivered tasks must move. Keep or subsume the orphan.
-   - **New epic:**
-     Draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves; follow plan mode's steps for creating and linking an epic. Keep or subsume.
-   - **New initiative:**
-     Run plan mode with the orphan as its input. Keep or subsume.
-   - **Kept:**
+   - Leave, when no initiative's goal covers it, or when it is not planned work.
+
+   A candidate whose work an existing criterion already states is subsumed into the issue holding that criterion, with no new row; for a cited standalone issue, that is usually the issue citing it.
+4. **Offer.**
+   - Offer each orphan to the user: a plain paragraph on what the orphan asks and where it fits, then the placements as options with the recommended one first, and Leave last.
+   - Placing an orphan in another initiative's issue needs that answer as its approval.
+5. **Apply.**
+   Apply each choice in turn:
+   - **Existing task.**
+     - Add the orphan's outcomes to the task issue's criteria and its design to the Proposal.
+     - Where they reach past the epic's criteria, add epic criteria too, cited by the task's row.
+     - Subsume the orphan.
+   - **New task.**
+     - Draft the row and its criteria in the epic.
+     - Number it where it can start, with `scripts/renumber.py` when undelivered tasks must move.
+     - Keep or subsume the orphan.
+   - **New epic.**
+     - Draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves.
+     - Follow plan mode's steps for creating and linking an epic.
+     - Keep or subsume the orphan.
+   - **New initiative.**
+     Run plan mode with the orphan as its input. Keep or subsume the orphan.
+   - **Kept.**
      Post the original-body comment, then retitle, label and rewrite the orphan by its kind's rules, carrying its evidence into Problem and its design into Proposal.
-   - **Leave:**
-     Run review mode's check (`format.py`) on the orphan. When its body needs rewriting, post the original-body comment, then rewrite it by a standalone issue's rules, carrying its content into the template's sections.
-   - **Subsumed:**
-     Cite the orphan under the taking issue's References (`- **Rn.** [Element Shape](…/issues/874) — The operations surveyed and their prose entries.`), and any planning it references as its own entry, then close it: comment `Tracked in [I07:E01](…/issues/937) W04.` and `gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_reason=not_planned`. The work stays planned in the taking issue, which is where that work is tracked.
+   - **Leave.**
+     - Run review mode's check (`format.py`) on the orphan.
+     - When its body needs rewriting, post the original-body comment, then rewrite it by a standalone issue's rules, carrying its content into the template's sections.
+   - **Subsumed.**
+     - Cite the orphan under the taking issue's References (`- **Rn.** [Element Shape](…/issues/874) — The operations surveyed and their prose entries.`), and any planning it references as its own entry.
+     - Close it: comment `Tracked in [I07:E01](…/issues/937) W04.` and `gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_reason=not_planned`.
+     - The work stays planned in the taking issue, which is where that work is tracked.
 6. **Review.**
-   Run review mode's check (`format.py`) on every issue the hoist changed or created, and `deps.py` on each initiative that gained a task or epic. Fold every finding in.
-7. **Report** each orphan's placement, the issues changed, created or closed, and the orphans left.
+   - Run review mode's check (`format.py`) on every issue the hoist changed or created.
+   - Run `deps.py` on each initiative that gained a task or epic.
+   - Fold every finding in.
+7. **Report.**
+   Report each orphan's placement, the issues changed, created or closed, and the orphans left.
 
 ## Commands
 
