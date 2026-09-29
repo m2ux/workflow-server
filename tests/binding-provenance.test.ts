@@ -364,6 +364,7 @@ describe('declaredOutputsByStep', () => {
     declaredVariables: new Set(),
     producers,
     positions: new Map(),
+    steps: [],
     resolvedTechniques: producers.length,
     unreadableOps: new Set(unreadable),
   });

@@ -1,0 +1,19 @@
+id: shared-after
+version: 1.0.0
+name: Shared After
+description: A second producer of the shared note.
+variables:
+  writes:
+    - name: shared_note
+      type: string
+      description: A note two activities produce
+required: true
+steps:
+  - kind: technique
+    id: produce
+    technique: produce-shared
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The shared note has a second producer

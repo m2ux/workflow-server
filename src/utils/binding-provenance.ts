@@ -96,6 +96,12 @@ export interface ProducerIndex {
   producers: ProducerSite[];
   /** Document-order position of `activityId`/`stepId`, or -1 where the step is not in the workflow. */
   positions: Map<string, number>;
+  /**
+   * The step at each document-order position, as the loaded activity holds it. A step id is
+   * unique only within one step list, so a reader that must tell two same-id steps apart — one at
+   * the top level, one in a loop body — resolves a position to its step object here.
+   */
+  steps: Step[];
   /** Distinct technique refs resolved to build this index — what a delivery reports as resolve work. */
   resolvedTechniques: number;
   /**
@@ -168,6 +174,7 @@ export async function buildProducerIndex(args: {
   const declaredVariables = new Set((workflow.variables ?? []).map((v) => v.name));
   const producers: ProducerSite[] = [];
   const positions = new Map<string, number>();
+  const steps: Step[] = [];
   let ordinal = 0;
 
   const unreadableOps = new Set<string>();
@@ -215,6 +222,7 @@ export async function buildProducerIndex(args: {
 
     for (const step of flattenActivitySteps(activity)) {
       const at = ordinal++;
+      steps[at] = step;
       const stepId = step.id ?? (step.kind === 'technique' ? techniqueName(step.technique) : undefined) ?? '?';
       if (step.id !== undefined) positions.set(positionKey(activity.id, step.id), at);
 
@@ -255,7 +263,7 @@ export async function buildProducerIndex(args: {
     }
   }
 
-  return { declaredVariables, producers, positions, resolvedTechniques: ownOutputsCache.size, unreadableOps };
+  return { declaredVariables, producers, positions, steps, resolvedTechniques: ownOutputsCache.size, unreadableOps };
 }
 
 /** Positions are keyed by the pair, since one step id can occur in more than one activity. */

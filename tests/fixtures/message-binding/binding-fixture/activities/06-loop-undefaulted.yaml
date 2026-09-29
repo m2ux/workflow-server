@@ -1,0 +1,50 @@
+id: loop-undefaulted
+version: 1.0.0
+name: Loop Undefaulted
+description: A gate inside a loop shows a note the body produces after it, with no default for the first pass.
+variables:
+  writes:
+    - name: loop_note
+      type: string
+      description: A note each pass produces
+    - name: again_flag
+      type: boolean
+      description: True when the pass repeats
+      defaultValue: false
+required: true
+steps:
+  - kind: loop
+    id: passes
+    name: Passes
+    loopType: doWhile
+    maxIterations: 3
+    continueWhile:
+      type: simple
+      variable: again_flag
+      operator: ==
+      value: true
+    steps:
+      - kind: checkpoint
+        id: shows-loop-note
+        message: "The last pass noted {loop_note}."
+        options:
+          - id: again
+            label: Again
+            description: Repeat.
+            effect:
+              setVariable:
+                again_flag: true
+          - id: stop
+            label: Stop
+            description: End.
+            effect:
+              setVariable:
+                again_flag: false
+      - kind: technique
+        id: note
+        technique: note-loop
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A loop's gate shows a value its first pass has not produced

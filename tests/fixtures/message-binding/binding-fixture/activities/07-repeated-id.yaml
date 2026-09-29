@@ -1,0 +1,47 @@
+id: repeated-id
+version: 1.0.0
+name: Repeated Id
+description: A top-level gate shows a value a later step produces, and a later loop body reuses the gate's id.
+variables:
+  writes:
+    - name: found_value
+      type: string
+      description: A value found after the gate
+      defaultValue: ""
+    - name: round_flag
+      type: boolean
+      description: True when the round repeats
+      defaultValue: false
+required: true
+steps:
+  - kind: checkpoint
+    id: review
+    message: "The value found is {found_value}."
+    options:
+      - id: ok
+        label: Proceed
+        description: The value is right.
+  - kind: technique
+    id: find
+    technique: find-value
+  - kind: loop
+    id: rounds
+    name: Rounds
+    loopType: doWhile
+    maxIterations: 2
+    continueWhile:
+      type: simple
+      variable: round_flag
+      operator: ==
+      value: true
+    steps:
+      - kind: action
+        id: review
+        actions:
+          - action: log
+            message: A body step whose id the gate above also carries.
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A gate and a loop-body step share an id

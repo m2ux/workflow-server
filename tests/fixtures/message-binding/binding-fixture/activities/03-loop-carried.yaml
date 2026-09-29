@@ -1,0 +1,51 @@
+id: loop-carried
+version: 1.0.0
+name: Loop Carried
+description: A gate inside a loop cites a count a step below it in the body produces on each pass.
+variables:
+  writes:
+    - name: round_count
+      type: number
+      description: Rounds completed so far
+      defaultValue: 0
+    - name: another_round
+      type: boolean
+      description: True when the pass repeats
+      defaultValue: false
+required: true
+steps:
+  - kind: loop
+    id: rounds
+    name: Rounds
+    loopType: doWhile
+    maxIterations: 3
+    continueWhile:
+      type: simple
+      variable: another_round
+      operator: ==
+      value: true
+    steps:
+      - kind: checkpoint
+        id: round-reviewed
+        message: "Round {round_count} is complete."
+        options:
+          - id: again
+            label: Run another round
+            description: Repeat the pass.
+            effect:
+              setVariable:
+                another_round: true
+          - id: stop
+            label: Stop
+            description: End the rounds.
+            effect:
+              setVariable:
+                another_round: false
+      - kind: technique
+        id: count
+        technique: count-round
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A loop's gate cites a count the body carries round to its next pass

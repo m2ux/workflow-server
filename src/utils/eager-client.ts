@@ -34,6 +34,35 @@ export interface OpeningBagFacts {
 /** Opening facts a child session inherits from its parent's bag. */
 export const INHERITED_OPENING_FACTS = ['host_repo_path', 'target_repo', 'component_path', 'is_monorepo'] as const;
 
+/** Facts a meta session gains when `start_session` opens its client in the same call. */
+export const CLIENT_OPENING_FACTS = [
+  'target_workflow_id',
+  'workflow_match_ambiguous',
+  'resume_intent_requested',
+  'is_resuming',
+  'client_session_index',
+  'client_initial_activity',
+] as const;
+
+/**
+ * Names the server seeds into every session's bag besides its declared defaults: the opening
+ * request, the planning folder, and the checkout facts. Each is present where its source is — a
+ * request passed, a durable folder, a `working_directory` — and absent otherwise. A meta session
+ * also holds `CLIENT_OPENING_FACTS` once its client is opened.
+ */
+export const SEEDED_VARIABLE_NAMES: ReadonlySet<string> = new Set([
+  'user_request',
+  'planning_folder_path',
+  ...INHERITED_OPENING_FACTS,
+]);
+
+/** The names seeded into a session of `workflowId`: the common set, and meta's client facts. */
+export function seededNamesFor(workflowId: string): ReadonlySet<string> {
+  return workflowId === META_WORKFLOW_ID
+    ? new Set([...SEEDED_VARIABLE_NAMES, ...CLIENT_OPENING_FACTS])
+    : SEEDED_VARIABLE_NAMES;
+}
+
 /** The facts that are set, as bag entries. */
 export function openingFactEntries(facts: OpeningBagFacts): Record<string, unknown> {
   return Object.fromEntries(Object.entries(facts).filter(([, value]) => value !== undefined));
@@ -87,12 +116,14 @@ export async function tryEagerClientDispatch(args: {
     draft.variables = {
       ...draft.variables,
       ...bagExtras,
-      target_workflow_id: childWorkflow.id,
-      workflow_match_ambiguous: false,
-      resume_intent_requested: false,
-      is_resuming: false,
-      client_session_index: childSessionIndex,
-      client_initial_activity: childWorkflow.initialActivity,
+      ...({
+        target_workflow_id: childWorkflow.id,
+        workflow_match_ambiguous: false,
+        resume_intent_requested: false,
+        is_resuming: false,
+        client_session_index: childSessionIndex,
+        client_initial_activity: childWorkflow.initialActivity,
+      } satisfies Record<(typeof CLIENT_OPENING_FACTS)[number], unknown>),
     };
     draft.triggeredWorkflows.push({
       workflowId: childWorkflow.id,

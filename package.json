@@ -46,6 +46,7 @@
     "check:technique-template": "tsx guards/check-technique-template.ts",
     "check:variable-model": "tsx guards/check-variable-model.ts",
     "check:activity-variables": "tsx guards/check-activity-variables.ts",
+    "check:message-binding": "tsx guards/check-message-binding.ts",
     "check:duplicate-bodies": "tsx guards/check-duplicate-bodies.ts",
     "check:review-mode": "tsx guards/check-review-mode-gating.ts",
     "check:checkpoint-entry": "tsx guards/check-checkpoint-entry.ts",
