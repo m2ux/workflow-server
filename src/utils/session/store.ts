@@ -489,8 +489,9 @@ export async function writeSeal(
 /**
  * Verify that `.session-token` in `folderAbsPath` is the HMAC of the exact
  * bytes currently in `session.json`. Returns the parsed state on success;
- * throws `SessionStoreError(SEAL_MISMATCH)` on any drift (hand-edit,
- * whitespace change, torn write).
+ * throws `SessionStoreError(SEAL_MISMATCH)` when the seal is missing or the
+ * bytes drifted from it (hand-edit, whitespace change, a write torn between
+ * the two files). Bytes that are not JSON raise `SESSION_INVALID` first.
  *
  * The comparison uses `timingSafeEqual` over the hex strings; the seal is
  * not secret per se, but a constant-time check costs nothing and keeps the

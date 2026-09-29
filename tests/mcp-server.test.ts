@@ -1933,6 +1933,14 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
       expect(response.dismissed).toBe(true);
+
+      // Status reports the dismissal as one, not as an option chosen.
+      const status = parseToolResponse(await client.callTool({
+        name: 'get_workflow_status',
+        arguments: { session_index: cpHandle },
+      }));
+      expect(status.last_checkpoint).toEqual(expect.objectContaining({ checkpoint_id: conditionalCpId, dismissed: true }));
+      expect(status.last_checkpoint).not.toHaveProperty('option_id');
     });
 
     it('respond_checkpoint should return effects from selected option', async () => {

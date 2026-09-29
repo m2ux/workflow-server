@@ -759,6 +759,9 @@ export function projectSessionView(
 }
 
 
+/** The option id a `condition_not_met` dismissal is recorded under, which selects no option. */
+const DISMISSED_OPTION_ID = '__condition_not_met__';
+
 /** A checkpoint answer's exit as the worker and the user-facing agent read it. */
 interface ExitReport { id: string; next_activity?: string | string[]; ends_activity?: true }
 
@@ -2858,7 +2861,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // CheckpointResponseSchema requires `optionId` + `respondedAt`; for
         // `condition_not_met` dismissals we still record the resolution with
         // a sentinel option id so the on-disk schema stays valid.
-        const recordedOptionId = resolvedOptionId ?? (condition_not_met ? '__condition_not_met__' : '__unknown__');
+        const recordedOptionId = resolvedOptionId ?? (condition_not_met ? DISMISSED_OPTION_ID : '__unknown__');
         // Unwrap the response effect into the schema-flat shape: the encoded effect gives
         // { setVariable: {...}, exit: '...' } and the schema stores variablesSet / exit.
         const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; exit?: string };
@@ -2999,7 +3002,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered (its activity, checkpoint, option and time), and the variable bag.',
+    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered (its activity, checkpoint, the option chosen or `dismissed`, and time), and the variable bag.',
     {
       ...sessionIndexParam,
     },
@@ -3043,7 +3046,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         response['last_checkpoint'] = {
           activity_id: lastAnswer.activity,
           checkpoint_id: lastAnswer.checkpoint,
-          option_id: lastAnswer.data?.['optionId'],
+          ...(lastAnswer.data?.['optionId'] === DISMISSED_OPTION_ID
+            ? { dismissed: true }
+            : { option_id: lastAnswer.data?.['optionId'] }),
           timestamp: lastAnswer.timestamp,
         };
       }

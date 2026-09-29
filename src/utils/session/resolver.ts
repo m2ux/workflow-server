@@ -353,7 +353,7 @@ export function describeSessionStoreError(err: unknown): string {
     case 'COLLISION':
       return `${err.message}. Two planning folders hashed to the same session_index — recreate the colliding session(s) or remove a stale folder under the active planning root (legacy: .engineering/artifacts/planning/; repo mode: artifacts/planning/ under the engineering checkout).`;
     case 'SEAL_MISMATCH':
-      return `${err.message}. The session.json does not match the seal recorded in .session-token: it was changed outside the server, or a rotated signing key no longer verifies it. Restore the folder from its most recent commit, or restart the server with the key that sealed it, before retrying. Nothing was written.`;
+      return `${err.message}. The session.json has no seal in .session-token, or does not match the one recorded there: it was changed outside the server, or a rotated signing key no longer verifies it. Restore the folder from its most recent commit, or restart the server with the key that sealed it, before retrying. Nothing was written.`;
     case 'SESSION_INVALID':
       return `${err.message}. The file cannot be read as a session, so the run cannot resume from it. Restore the folder from its most recent commit, or start a fresh session. Nothing was written.`;
     case 'SESSION_OUTDATED':
