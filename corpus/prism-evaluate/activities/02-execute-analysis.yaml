@@ -18,7 +18,7 @@ variables:
       description: Completed analysis runs, each { report_path, definitive_findings_path, status }
     - name: current_activity
       type: string
-      description: The prism activity the walk holds, and null once the advance onto `__terminal__` has completed the prism session
+      description: The prism activity the walk holds
     - name: from_activity
       type: string
       description: The prism activity an advance retires

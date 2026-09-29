@@ -31,7 +31,7 @@ The exit that activity took.
 
 ### variables_changed
 
-*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where that activity changed nothing.
+*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where this call retires no activity, or where that activity changed nothing.
 
 ### planning_folder_path
 
@@ -41,11 +41,11 @@ The exit that activity took.
 
 ### branch_activities
 
-Every branch the destination opened, each as the id that addresses it: the `branches` of every `_meta.fan` entry, concatenated in the order the server gave the entries.
+Every branch the destination opened, each as the id that addresses it, in the order the server gave them.
 
 ### barrier_destination
 
-The activity the branches converge on, as `_meta.barrier.destination` names it on the call that opens them — what the run continues from once every branch has been retired.
+The activity the branches converge on — what the run continues from once every branch has been retired.
 
 ## Protocol
 
@@ -56,6 +56,5 @@ The activity the branches converge on, as `_meta.barrier.destination` names it o
 
 ### 2. Open every branch with one call
 
-- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read `{branch_activities}` from `_meta.fan` and `{barrier_destination}` from `_meta.barrier.destination`. The call retires the exiting activity and opens every branch
-  > The fan reads its collection from the bag this call's `variables_changed` lands in, so a collection the retiring activity wrote reaches the fan on this same call.
+- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read from the response body `{branch_activities}`, the `branches` of every `fan` entry concatenated in the order the entries come, and `{barrier_destination}`, the `barrier`'s `destination`. The call retires the exiting activity and opens every branch
 

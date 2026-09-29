@@ -519,7 +519,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "walk-prism-child.activity-cycle.resume-yielded-worker:worker_result",
         "walk-prism-child.activity-cycle.retire-fan-envelope:post_impl_review_walk_prism_child_fan_convergence_activity",
         "walk-prism-child.activity-cycle.spawn-branches:worker_result",
-        "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_activity_entered",
+        "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_stands_on_activity",
       ],
       "lazyGates": {
         "pending": 12,
@@ -1918,7 +1918,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "walk-prism-child.activity-cycle.resume-yielded-worker:worker_result",
         "walk-prism-child.activity-cycle.retire-fan-envelope:post_impl_review_walk_prism_child_fan_convergence_activity",
         "walk-prism-child.activity-cycle.spawn-branches:worker_result",
-        "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_activity_entered",
+        "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_stands_on_activity",
       ],
       "lazyGates": {
         "pending": 12,
@@ -3862,7 +3862,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 341,
+  "declaredTotal": 343,
   "executedTotal": 190,
   "perActivity": [
     {
@@ -3907,7 +3907,7 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "post-impl-review",
-      "declared": 54,
+      "declared": 56,
       "executed": 16,
     },
     {

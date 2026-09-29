@@ -4,26 +4,27 @@ name: End Workflow
 description: Close out the client workflow.
 variables:
   reads:
+    - client_session_index
     - client_workflow_completed
     - component_path
     - host_repo_path
     - planning_folder_path
     - target_workflow_id
     - target_workflow_outcomes
+    - worker_result
   writes:
-    - name: client_workflow_completed
+    - name: client_walk_resumes
       type: boolean
-      description: Whether the client workflow walk ended on the advance onto `__terminal__`, which completes the client session.
+      description: Whether close-out returned the client session to its walk, which resumes on the activity the session stands on.
       defaultValue: false
+    - name: worker_result
+      type: object
+      description: The envelope the advance onto `__terminal__` closed on
 required: true
 steps:
   - kind: technique
     id: read-session
     technique: workflow-engine::read-session
-  - kind: technique
-    id: revise-session-metrics
-    technique: workflow-engine::revise-session-metrics
-    when: client_workflow_completed == true && planning_folder_path != ''
   - kind: technique
     id: verify-outcomes
     technique:
@@ -48,8 +49,24 @@ steps:
         description: Some outcomes are unmet — re-dispatch the orchestrator to address them
         effect:
           setVariable:
-            client_workflow_completed: false
+            client_walk_resumes: true
           exit: return
+  - kind: technique
+    id: complete-client-session
+    when: client_workflow_completed == true
+    technique:
+      name: workflow-engine::dispatch-activity
+      inputs:
+        session_index: client_session_index
+        activity_id: __terminal__
+        agent_technique: workflow-engine::activity-worker
+        exit_id: "{worker_result.activity_exit}"
+        step_manifest: "{worker_result.steps_completed}"
+        variables_changed: "{worker_result.variables_changed}"
+  - kind: technique
+    id: revise-session-metrics
+    technique: workflow-engine::revise-session-metrics
+    when: client_workflow_completed == true && planning_folder_path != ''
   - kind: action
     id: announce-completion
     actions:
@@ -57,6 +74,7 @@ steps:
         message: Workflow session closed
 outcome:
   - The user can decide whether the work is truly done — every target outcome is shown as met or flagged as a gap to address
+  - Confirming closure completes a client session whose walk reached `__terminal__`, carrying its last activity's exit, steps and bag writes
   - Session-trace and token-usage artifacts include the client terminal activity after that activity has exited
   - The completed session can be resumed or audited later because its final state is durably preserved
 exits:

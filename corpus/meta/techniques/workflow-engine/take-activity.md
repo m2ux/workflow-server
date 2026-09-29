@@ -13,7 +13,11 @@ Advance a session this context owns onto an activity and carry that activity her
 
 *(optional)* The activity this call retires — the one `{exit_id}`, `{step_manifest}` and `{variables_changed}` belong to. Unset where the session holds nothing to retire, which is the first entry of a walk.
 
-### activity_entered
+### variables_changed
+
+*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where this call retires no activity, or where that activity changed nothing.
+
+### stands_on_activity
 
 *(optional)* True where the session already stands on `{activity_id}`, the advance that entered it having been made. False or unset where this entry makes that advance.
 
@@ -34,7 +38,7 @@ The envelope this entry closes on — one of three tagged result types. The `che
 - Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`
   > - A first entry has no prior activity to retire, so `{from_activity}`, `{exit_id}`, `{step_manifest}` and `{variables_changed}` are all unset together.
   > - When `{activity_id}` is `__terminal__`, this advance completes the session: hold the `workflow_complete` envelope as `{worker_result}`, and end here.
-  > - When `{activity_entered}` is true, skip this phase: the advance that entered `{activity_id}` carried the exit, step manifest and bag writes of what it retired, so this entry passes none.
+  > - When `{stands_on_activity}` is true, skip this phase.
 
 ### 2. Carry the activity
 

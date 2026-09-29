@@ -116,7 +116,7 @@ steps:
             intent_needs_confirmation: false
       - id: wrong-review-target
         label: Wrong review target set
-        description: Rejects the review target set, and intake runs again to establish it from the request.
+        description: Rejects the review target set.
         effect:
           setVariable:
             review_scope_confirmed: false

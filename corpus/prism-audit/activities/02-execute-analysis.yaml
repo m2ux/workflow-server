@@ -14,7 +14,7 @@ variables:
       description: Accumulated paths to all analysis artifacts across triggered prism workflows, taken from each run's manifest
     - name: current_activity
       type: string
-      description: The prism activity the walk holds, and null once the advance onto `__terminal__` has completed the prism session
+      description: The prism activity the walk holds
     - name: from_activity
       type: string
       description: The prism activity an advance retires

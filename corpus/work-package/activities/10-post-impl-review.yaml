@@ -46,7 +46,7 @@ variables:
       defaultValue: false
     - name: current_activity
       type: string
-      description: The prism activity the walk holds, and null once the advance onto `__terminal__` has completed the prism session.
+      description: The prism activity the walk holds.
     - name: current_block_index
       type: number
       description: Current block index during manual diff review loop (from flagged_block_indices).

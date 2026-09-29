@@ -13,6 +13,10 @@ Advance the session to the next activity and continue the worker already carryin
 
 The activity this advance retires — the one `{exit_id}`, `{step_manifest}` and `{variables_changed}` belong to.
 
+### variables_changed
+
+*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where this call retires no activity, or where that activity changed nothing.
+
 ### worker_agent_id
 
 Server-side worker identity the batch is carried under — the identity the delivery ledger is keyed on.
@@ -61,4 +65,4 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 This technique advances the session pointer, so it owns getting a worker onto the activity it advanced to — the held one, or a replacement it spawns itself. It does not hand that job back to [dispatch-activity](./dispatch-activity.md), which advances the pointer of its own accord: a second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it.
 
-So a batch that cannot continue ends inside this technique, and the paths that reach `dispatch-activity` are the ones this technique made no advance on: the first activity of a walk, the activity after the orchestrator released a spent batch's identity (`dispatch-activity.delivery-keys-on-agent-context`), and the activity a fan's last branch retirement entered, which that dispatch carries without a second advance.
+So a batch that cannot continue ends inside this technique.

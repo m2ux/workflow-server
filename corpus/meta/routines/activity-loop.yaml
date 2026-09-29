@@ -4,7 +4,7 @@ name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
   checkpoint it yields, commit what it produced, and advance onto what its exit routes to — until
-  the advance onto `__terminal__` completes the session.
+  the walk reaches `__terminal__`.
 
 inputs:
   - id: session_index
@@ -25,11 +25,17 @@ inputs:
     description: Path kind of the engineering checkout. `worktree` selects the worktree commit; any other value selects an ordinary commit of the host checkout. A caller that binds nothing supplies the host's own kind.
   - id: target_status
     description: The Progress status an entry publishes for the activity it marks.
+  - id: completes_session
+    default: true
+    description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
+  - id: resumes_walk
+    default: false
+    description: Whether the session stands on `from_activity`, where an earlier walk left it. The walk then opens on that activity and carries it without an advance.
 
 outputs:
   - id: current_activity
     type: string
-    description: The activity the walk holds, and null once the advance onto `__terminal__` has completed the session.
+    description: The activity the walk holds, and null once the walk reaches `__terminal__`.
   - id: from_activity
     type: string
     description: The activity an advance retires, which every entry names as the one its exit belongs to.
@@ -37,8 +43,8 @@ outputs:
 internals:
   - id: fan_convergence_activity
     description: The activity a fan's branches converge on, which the walk resumes from once the fan is opened.
-  - id: activity_entered
-    description: Whether the session already stands on the activity the next entry carries, the advance that entered it having been made. True from the last branch retirement of a fan, which entered the convergence activity, until that activity's entry.
+  - id: stands_on_activity
+    description: Whether the session already stands on the activity the next entry carries, the advance that entered it having been made.
 
 steps:
   - kind: action
@@ -53,6 +59,16 @@ steps:
       - action: set
         target: current_activity
         value: "{initial_activity}"
+  - kind: action
+    id: resume-standing-activity
+    when: resumes_walk == true
+    actions:
+      - action: set
+        target: current_activity
+        value: "{from_activity}"
+      - action: set
+        target: stands_on_activity
+        value: true
   - kind: loop
     id: activity-cycle
     name: Activity Cycle
@@ -89,15 +105,15 @@ steps:
             agent_technique: workflow-engine::activity-worker
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
-            activity_entered: activity_entered
+            stands_on_activity: stands_on_activity
             variable_bag: variables
       - kind: action
         id: spend-entered-activity
-        when: activity_entered
+        when: stands_on_activity
         actions:
-          # The entry just made carried the activity the fan entered; every later entry advances.
+          # The entry just made carried the activity the session stood on; every later entry advances.
           - action: set
-            target: activity_entered
+            target: stands_on_activity
             value: false
       - kind: action
         id: end-walk
@@ -169,7 +185,7 @@ steps:
             value: "{fan_convergence_activity}"
           # The last branch retirement entered the convergence activity, so its entry makes no advance.
           - action: set
-            target: activity_entered
+            target: stands_on_activity
             value: true
       - kind: action
         id: retire-fan-envelope
@@ -248,4 +264,12 @@ steps:
         actions:
           - action: set
             target: worker_agent_id
+            value: null
+      - kind: action
+        id: stop-before-terminal
+        when: completes_session == false && current_activity == "__terminal__"
+        actions:
+          # The walk ends on the envelope naming `__terminal__`, and the advance onto it is the caller's.
+          - action: set
+            target: current_activity
             value: null

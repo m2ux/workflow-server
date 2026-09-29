@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Transition the session to a target activity and spawn a worker to carry it, and the bounded run of activities behind it. A target of `__terminal__` completes the session, and no worker is spawned.
+Transition the session to a target activity and spawn a worker to carry it, and the bounded run of activities behind it.
 
 ## Inputs
 
@@ -13,7 +13,11 @@ Transition the session to a target activity and spawn a worker to carry it, and 
 
 *(optional)* The activity this call retires — the one `{exit_id}`, `{step_manifest}` and `{variables_changed}` belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
 
-### activity_entered
+### variables_changed
+
+*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where this call retires no activity, or where that activity changed nothing.
+
+### stands_on_activity
 
 *(optional)* True where the session already stands on `{activity_id}`, the advance that entered it having been made. False or unset where this dispatch makes that advance.
 
@@ -53,7 +57,7 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
   > - A dispatch whose activity ran steps carries one `step_manifest` entry per completed step; the server validates step completion against it and reports a gap when it is absent.
   > - A first dispatch has no prior worker context to attribute the manifest to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
   > - When `{activity_id}` is `__terminal__`, this advance completes the session: return the `workflow_complete` envelope as `{worker_result}`, and end here.
-  > - When `{activity_entered}` is true, skip this phase: the advance that entered `{activity_id}` carried the exit, step manifest and bag writes of what it retired, so this dispatch passes none.
+  > - When `{stands_on_activity}` is true, skip this phase.
 
 ### 3. Compose Worker Stub
 
