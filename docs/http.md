@@ -28,7 +28,7 @@ curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/docker/scripts
 
 Binds `$HOST_PROJECTS_ROOT` (default `~/projects/dev`) and `$INSTALL/state`. Planning
 for a `start_session` that carries `working_directory` is under
-`<checkout>/.engineering/artifacts/planning/<slug>/` of that checkout on the host
+`<project>/.engineering/artifacts/planning/<slug>/` of the top-level project folder holding that checkout, on the host
 when `HOST_PROJECTS_ROOT` is set. The server derives `owner/repo` from that checkout's origin.
 
 Compose alternative: [`docker-compose.yml` on the `docker` branch](https://github.com/m2ux/workflow-server/blob/docker/docker-compose.yml) pulls `ghcr.io/m2ux/workflow-server:main`. `HOST_PORT` selects the published port. Schemas are the copy baked into that image.
@@ -78,7 +78,7 @@ curl -fsS http://127.0.0.1:32772/ready
 
 **Cite the pin, not the path.** A corpus is usually served from a worktree under `.worktrees/`, which exists to be removed — a host path names where the tree stood on one machine at one time, and names nothing once the worktree is gone. The container label `workflow-server.corpus.pin` is a commit, and stays resolvable from the repository for as long as the branch holding it does, so it is the handle a record of a run should carry. Whenever a mounted tree stops holding a workflow, readiness reports `corpusServes: false`, and tool calls against it miss.
 
-**Keeping a walk out of live planning.** Planning resolves at `<checkout>/.engineering/artifacts/planning` of the checkout a walk opens from, so a sidecar walking a checkout under the install projects root writes a dated folder beside real work on every run. `--projects-root=DIR` gives an experiment a root of its own, holding its own checkout of the target repo, and the whole run can then be thrown away.
+**Keeping a walk out of live planning.** Planning resolves at `<project>/.engineering/artifacts/planning` of the project folder a walk opens from, so a sidecar walking a checkout under the install projects root writes a dated folder beside real work on every run. `--projects-root=DIR` gives an experiment a root of its own, holding its own checkout of the target repo, and the whole run can then be thrown away.
 
 <a id="3-verify"></a>
 

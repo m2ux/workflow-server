@@ -126,6 +126,28 @@ function openingBagFacts(
   };
 }
 
+/**
+ * The embedded sessions of a moved folder, each bag naming the folder the session is read from now.
+ * Every embedded session shares its top-level folder, so each carries the same path.
+ */
+function restampFolderFact(
+  children: SessionFile['triggeredWorkflows'],
+  folder: string,
+): SessionFile['triggeredWorkflows'] {
+  return children.map((child) => {
+    const state = child.state;
+    if (state === undefined) return child;
+    return {
+      ...child,
+      state: {
+        ...state,
+        variables: { ...state.variables, planning_folder_path: folder },
+        triggeredWorkflows: restampFolderFact(state.triggeredWorkflows, folder),
+      },
+    };
+  });
+}
+
 /** Named so the catalog ranker is a graph node, not a tool-handler lambda. */
 async function resolveStartSessionOpening(
   args: Parameters<typeof resolveOpeningIntent>[0],
@@ -169,12 +191,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
         'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
-        'Pass `planning_folder` as an absolute path to resume the session that folder holds, or to pin a new folder, named by its basename, directly under the planning root of the session\'s checkout; a new folder anywhere else is refused, naming that root. ' +
+        'Pass `planning_folder` as an absolute path to resume the session that folder holds, or to pin a new folder, named by its basename, directly under the session\'s planning root; a new folder anywhere else is refused, naming that root. ' +
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
-        'A meta session without `working_directory` is a transient bootstrap in a temp folder, unless `planning_folder` names a folder that already holds a session; `dispatch_child` promotes it later. Children use `dispatch_child`, not this tool. ' +
+        'A meta session without `working_directory` is a transient bootstrap in a temp folder, unless `planning_folder` names a folder that already holds a session; `dispatch_child` promotes it later. `resumed` says whether the call opened a session that already existed, so a resume by path that missed reads false. Children use `dispatch_child`, not this tool. ' +
         'Every session records `execution_path`, `agent`: a caller walks the definition. The session records it and this response echoes it. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks. ' +
-        'With `working_directory`, planning lives under that checkout: `<checkout>/.engineering/artifacts/planning/`. A derived dated slug that already holds a session there opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call. ' +
+        'With `working_directory`, planning lives under the top-level project folder holding that checkout, `<project>/.engineering/artifacts/planning/`, shared by every clone and worktree inside it. A derived dated slug that already holds a session there opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call. ' +
         'The bag is seeded with `user_request`, `planning_folder_path`, and the checkout facts `host_repo_path`, `target_repo`, `component_path`, `is_monorepo`, as host paths; a client this call opens and a child `dispatch_child` opens carry the same facts. ' +
         'A fresh durable meta session that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client in this call and returns `client.session_index` plus `client.workflow.initialActivity`. ' +
         'A durable meta start that cannot uniquely open a client returns a `decision` with no `session_index`; retry with `user_request`, `target_workflow_id`, `planning_folder`, or `fresh`. ' +
@@ -209,8 +231,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       //
       // `working_directory` is the checkout under work. The server inverts
       // path presentation, derives owner/repo from that checkout's origin, and
-      // creates a durable planning folder under that checkout. A derived slug
-      // that already holds a session there is occupancy, not resume.
+      // creates a durable planning folder under the project folder holding it.
+      // A derived slug that already holds a session there is occupancy, not resume.
       if (working_directory !== undefined && !isAbsolute(working_directory)) {
         throw new Error(
           `start_session: when supplied, working_directory must be an absolute path, got '${working_directory}'. ` +
@@ -284,7 +306,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         ? pinnedFolder
         : undefined;
 
-      // A fresh durable session plans under the checkout it was opened from. A
+      // A fresh durable session plans under the project the checkout belongs to. A
       // pinned new folder sits in that root; otherwise the dated slug takes the
       // first number free in that root alone.
       let durableRoot: ResolvedSessionRoot | undefined;
@@ -401,6 +423,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let sessionIndex: string;
       let state: SessionFile;
       let eagerClient: EagerClient | undefined;
+      const resumedSession = await sessionFileExists(folder);
       // Canonical absolute path of the folder we resolved to — recorded in
       // session.json so the agent can read it back and the server can detect
       // drift on resume. Skipped for transient (tmp) sessions.
@@ -479,6 +502,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
                   ...(folderFactDrift ? { planning_folder_path: presentedFolder } : {}),
                 },
               }
+              : {}),
+            ...(folderFactDrift && presentedFolder !== undefined
+              ? { triggeredWorkflows: restampFolderFact(nextState.triggeredWorkflows, presentedFolder) }
               : {}),
           };
         }
@@ -584,6 +610,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         },
         session_index: sessionIndex,
         planning_slug: slug,
+        resumed: resumedSession,
       };
       {
         const presented = presentPlanningPath(state.planningFolderPath);

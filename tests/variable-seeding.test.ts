@@ -409,6 +409,11 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const resumed = await call('resume_checkpoint', { session_index: sessionIndex });
       const body = JSON.parse((resumed.content as { text: string }[])[0]!.text);
       expect(body.variables_changed).toEqual({ unset_marker: 'docs/spec.md' });
+      // A replacement worker re-crossing the answered gate is handed the reply with the answer.
+      const replayed = await call('yield_checkpoint', { session_index: sessionIndex, checkpoint_id: 'type-check' });
+      const replay = JSON.parse((replayed.content as { text: string }[])[0]!.text);
+      expect(replay.status).toBe('replayed');
+      expect(JSON.stringify(replay)).toContain('docs/spec.md');
     });
 
     it('refuses an option that records a reply when no reply is passed, and leaves the gate open', async () => {

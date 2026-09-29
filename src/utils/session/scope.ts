@@ -1,5 +1,5 @@
 import { readdir, stat } from 'node:fs/promises';
-import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import {
   INSTALL_PROJECTS_DIR,
   normalizeRepoPath,
@@ -19,9 +19,10 @@ export { repoCheckoutBasename } from '../../config.js';
  * - **single**: one engineering checkout (or process pinned with `--repo`).
  *   All sessions live under that checkout's planning root.
  * - **multi**: projects multi-root (`HOST_PROJECTS_ROOT` / container projects
- *   bind). A session opened with `working_directory` plans under that
- *   checkout: `<checkout>/.engineering/artifacts/planning/<slug>/`, whatever
- *   the checkout folder is named. A session bound by `repo` alone plans under
+ *   bind). A session opened with `working_directory` plans under the project
+ *   folder holding that checkout — the top-level folder under the root —
+ *   `<project>/.engineering/artifacts/planning/<slug>/`, whatever the folder is
+ *   named. A session bound by `repo` alone plans under
  *   `…/<repo-basename>/.engineering/artifacts/planning/<slug>/`.
  *   Legacy install co-location used `…/<owner>/<repo>/.engineering/…` and is
  *   still scanned on resume only.
@@ -238,7 +239,7 @@ export function resolveSessionRoot(
     throw new Error(
       'start_session: repo is required when the server is bound to a projects multi-root ' +
         '(HOST_PROJECTS_ROOT). Pass working_directory so the server derives owner/repo from that checkout\'s origin, or pass repo: "owner/repo" when creating a transient session without a working_directory. ' +
-        'Planning lives at <checkout>/.engineering/artifacts/planning/ of that checkout.',
+        'Planning lives at <project>/.engineering/artifacts/planning/ of the top-level project folder holding that checkout.',
     );
   }
 
@@ -249,17 +250,30 @@ export function resolveSessionRoot(
 }
 
 /**
- * Engineering root of the checkout a session is opened from. Under a projects
- * multi-root the planning tree belongs to that checkout, so two clones of one
- * repository plan apart. A single-root process keeps its one engineering root.
+ * The project folder a checkout belongs to: the top-level folder under the
+ * projects multi-root that holds it. A nested clone, a branch worktree, and the
+ * project checkout itself all name the same one.
+ */
+export function projectFolderOf(multiRoot: string, checkout: string): string {
+  const top = relative(resolve(multiRoot), resolve(checkout)).split(sep)[0];
+  if (!top || top === '..' || isAbsolute(top)) return resolve(checkout);
+  return resolve(multiRoot, top);
+}
+
+/**
+ * Engineering root of the project a session is opened from. Under a projects
+ * multi-root it is the `.engineering` of the top-level project folder holding the
+ * checkout, shared by every clone and worktree inside that folder and kept apart
+ * from other top-level folders, whatever their origin. A single-root process
+ * keeps its one engineering root.
  */
 export function resolveCheckoutSessionRoot(
   scope: SessionScope,
   checkout: { hostRepoPath: string; repo: string },
 ): ResolvedSessionRoot {
-  if (scope.mode === 'multi') {
+  if (scope.mode === 'multi' && scope.engineeringMultiRoot) {
     return {
-      engineeringDir: resolve(checkout.hostRepoPath, '.engineering'),
+      engineeringDir: resolve(projectFolderOf(scope.engineeringMultiRoot, checkout.hostRepoPath), '.engineering'),
       planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
       repo: checkout.repo,
     };
