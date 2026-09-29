@@ -8,7 +8,7 @@
 
 ## Proposal
 
-{{The design, in bolded paragraphs or bullets.}}
+{{The design, in bullets or paragraphs, each opening with a bold statement whose body starts on the next line.}}
 
 ## Acceptance Criteria
 

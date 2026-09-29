@@ -8,7 +8,7 @@
 
 ## Proposal
 
-{{The design, in bolded paragraphs or bullets. State ownership boundaries with sibling epics where they could overlap.}}
+{{The design, in bullets or paragraphs, each opening with a bold statement whose body starts on the next line. State ownership boundaries with sibling epics where they could overlap.}}
 
 ## Work Breakdown
 
