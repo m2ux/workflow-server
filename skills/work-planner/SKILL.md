@@ -12,9 +12,14 @@ description: >-
 
 # Work Planner
 
-Work Planner plans agent-engineering work as GitHub issues and keeps the plan current until the work is delivered.
+Work Planner plans agent-engineering work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan:
 
-The plan has three levels. An initiative issue states a goal and lists its epics. Each epic is an issue whose Work Breakdown table lists its tasks. A task is one pull request's worth of work: a row in its epic, with an issue of its own only when it needs discussion or evidence. The issues are the plan, and the initiative's project board shows where each item stands. A planning record on the `engineering` branch holds what the issues leave out: the evidence, the decisions and each review.
+- **Initiative** — states a goal and lists its epics.
+- **Epic** — lists its tasks in a Work Breakdown table.
+- **Task** — one pull request's worth of work: a row in its epic, with an issue of its own only when it needs discussion or evidence.
+- **Standalone issue** — work outside any initiative.
+
+The initiative's project board shows where each item stands. A planning record on the `engineering` branch holds what the issues leave out: the evidence, the decisions and each review.
 
 The modes follow the plan through its life: Plan writes it, Review keeps its issues to the templates, Update records work as it lands, Hoist brings stray issues into it, and Progress reports on it.
 
@@ -40,7 +45,7 @@ Read the file for the mode the request calls for:
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task
   - Migration or subsumption of the orphans the user places
-  - Formatting of each migrated or left orphan by its target's rules, with its original body kept as a comment
+  - Formatting of orphans with target's rules and deprecating body
 - **[Progress](references/progress-mode.md)**
   - Standup summaries of the project board for a Slack channel
   - A paragraph for management on what the window accomplished
