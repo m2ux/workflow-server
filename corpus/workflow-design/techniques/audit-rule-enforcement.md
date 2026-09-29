@@ -34,8 +34,7 @@ Count of entries in `{enforcement_findings}`.
 
 ### 2. Apply structure-backed-constraints
 
-- Walk every `rules[]` entry in `workflow.yaml` and activity files
-  > Walk technique `## Rules` too when the entry's scope implies it.
+- Walk every rule site the entry's Detect names
 - Apply Detect / Do not flag / Fix from `structure-backed-constraints`
 - For each finding record into `{enforcement_findings}`: file, rule content, criticality, recommended structural mechanism
 

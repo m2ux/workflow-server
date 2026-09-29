@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ The manifest entry just drafted — full path, action, kind and the one-line sta
 ### yaml_file
 
 The authored file at that entry's path, as just written.
-
-### operation_type
-
-The classified technique for the request — create, update or review.
 
 ### impact_analysis_path
 

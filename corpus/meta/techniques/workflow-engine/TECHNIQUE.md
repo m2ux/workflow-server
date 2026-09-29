@@ -15,7 +15,7 @@ The session every authenticated tool call names — the 6-character base32 index
 
 ### activity_id
 
-*(optional)* The activity the operation acts on: the one it enters, carries or continues, or the one whose completion it records. One id for an operation on a single activity, and the list of branches retired for a fan's convergence. Unset for an operation that acts on no activity.
+*(optional)* The activity the operation acts on: the one it enters, carries or continues, or the one whose completion it records. Every operation on a single activity takes exactly one id, and cannot run without it. A fan's convergence takes the list of branches it retired. Unset only for an operation that acts on no activity.
 
 ### exit_id
 

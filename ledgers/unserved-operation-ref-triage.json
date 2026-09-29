@@ -548,12 +548,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/finalize-activity.md:91",
-      "op": "sync-progress-status",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/handle-sub-workflow.md:38",
       "op": "create-session",
       "verdict": "fix-later",
@@ -2072,38 +2066,8 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/workflow-design/techniques/context-loading.md:40",
-      "op": "resource-loading-via-tool",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/context-loading.md:50",
-      "op": "list-workflows",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/context-loading.md:50",
-      "op": "no-domain-work",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/workflow-design/techniques/context-loading.md:54",
       "op": "yaml-authoring",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/intake-classification.md:81",
-      "op": "list-workflows",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/intake-classification.md:81",
-      "op": "no-domain-work",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

@@ -35,7 +35,7 @@ The identity now holding the activity: the one the worker was continued under wh
 
 ### 2. Continue the worker
 
-- Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with the composed prompt and `{session_index}`.
+- Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with `agent_id` the harness identifier of the agent carrying `{worker_agent_id}`, the composed prompt as `composed_prompt`, and `{session_index}`.
 
 ### 3. Await the envelope
 
@@ -46,7 +46,7 @@ The identity now holding the activity: the one the worker was continued under wh
 
 - Mint a new `{worker_agent_id}` per `dispatch-activity.delivery-keys-on-agent-context`, apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, no `checkpoint_reply`, and `{variable_bag}` as substitutions with `agent_id` bound to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return `{worker_agent_id}` and the replacement's envelope as `{worker_result}`
   > - Bind `agent_id` to the minted identity rather than the one that is gone — the ledger keyed on the dead context credits the replacement with deliveries it never received.
-  > - A replacement re-crossing an answered gate takes the stored answer, which is keyed by activity and checkpoint alone, so the user is not asked twice. The steps before that gate run a second time, side effects and all.
+  > - A replacement re-crossing an answered gate takes the answer already given, whichever context crosses it, so the user is not asked twice. The steps before that gate run a second time, side effects and all.
 
 ### 5. Account for the continuation
 

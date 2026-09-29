@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -21,10 +21,6 @@ Per-principle Pass / Partial / Violation classifications with file, field, and l
 
 `human`
 
-### principle_findings_path
-
-Absolute path to the persisted principle-findings artifact.
-
 ## Protocol
 
 ### 1. Audit Principle Compliance
@@ -37,6 +33,6 @@ Absolute path to the persisted principle-findings artifact.
 
 - Cross-reference schema field usage against `workflow.schema.json`, `activity.schema.json`, `technique.schema.json`, and `condition.schema.json` when the stance requires it
 
-### 3. Persist Findings
+### 3. Assemble Findings
 
-- Persist `{principle_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{principle_findings_path}`
+- Assemble `{principle_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares

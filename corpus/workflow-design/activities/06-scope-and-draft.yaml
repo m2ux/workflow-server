@@ -1,7 +1,7 @@
 id: scope-and-draft
 version: 1.17.0
 name: Scope and Draft
-description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
+description: A complete file manifest and structural design for the target workflow, with every file drafted, reviewed and schema-valid.
 variables:
   reads:
     - impact_analysis_path
@@ -15,11 +15,11 @@ variables:
   writes:
     - name: anti_pattern_finding_count
       type: number
-      description: Count of anti-pattern violations from audit-anti-patterns.
+      description: Count of anti-pattern violations.
       defaultValue: 0
     - name: anti_pattern_findings_path
       type: string
-      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      description: Absolute path to the persisted anti-pattern-findings artifact.
       defaultValue: ""
     - name: component_git_dir
       type: string
@@ -79,13 +79,13 @@ variables:
       defaultValue: false
     - name: principle_finding_count
       type: number
-      description: Count of design-principle findings from audit-principles.
+      description: Count of design-principle findings.
       defaultValue: 0
     - name: principle_findings_path
       type: string
-      description: Absolute path to the persisted principle-findings artifact (review mode).
+      description: Absolute path to the persisted principle-findings artifact.
       defaultValue: ""
-    - name: scope_manifest
+    - name: manifest_entries
       type: array
       description: List of files to create, modify, or remove with full paths and actions.
     - name: scope_manifest_confirmed
@@ -130,7 +130,6 @@ steps:
       inputs:
         bare_filename: scope-manifest.md
         artifact_content: scope_manifest_report
-        target_dir: planning_folder_path
       outputs:
         written_artifact: scope_manifest_path
   - kind: checkpoint
@@ -163,7 +162,7 @@ steps:
     name: File Drafting Loop
     loopType: forEach
     variable: current_file
-    over: scope_manifest
+    over: manifest_entries
     maxIterations: 50
     when: scope_manifest_confirmed == true
     steps:
@@ -181,7 +180,6 @@ steps:
           inputs:
             bare_filename: drafting-plan.md
             artifact_content: drafting_plan
-            target_dir: planning_folder_path
           outputs:
             written_artifact: drafting_plan_path
       - kind: checkpoint
@@ -212,6 +210,16 @@ steps:
         technique: assemble-file-approach
         when: file_approach_disposition == 'revise'
       - kind: technique
+        id: persist-revised-drafting-plan
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: drafting-plan.md
+            artifact_content: drafting_plan
+          outputs:
+            written_artifact: drafting_plan_path
+        when: file_approach_disposition == 'revise'
+      - kind: technique
         id: yaml-authoring
         technique:
           name: yaml-authoring
@@ -227,7 +235,6 @@ steps:
           inputs:
             bare_filename: file-review-note.md
             artifact_content: file_review_note
-            target_dir: planning_folder_path
           outputs:
             written_artifact: file_review_note_path
       - kind: checkpoint
@@ -316,7 +323,6 @@ steps:
       inputs:
         bare_filename: draft-attestation.md
         artifact_content: reviewed_blocks
-        target_dir: planning_folder_path
       outputs:
         written_artifact: draft_attestation_path
   - kind: technique
@@ -331,8 +337,28 @@ steps:
     technique: audit-principles
     when: operation_type == 'update'
   - kind: technique
+    id: persist-principle-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: principle-findings.md
+        artifact_content: principle_findings
+      outputs:
+        written_artifact: principle_findings_path
+    when: operation_type == 'update'
+  - kind: technique
     id: pre-attestation-audit-anti-patterns
     technique: audit-anti-patterns
+    when: operation_type == 'update'
+  - kind: technique
+    id: persist-anti-pattern-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: anti-pattern-findings.md
+        artifact_content: anti_pattern_findings
+      outputs:
+        written_artifact: anti_pattern_findings_path
     when: operation_type == 'update'
   - kind: action
     id: classify-pre-attestation-findings
@@ -368,8 +394,26 @@ steps:
         id: re-audit-principles
         technique: audit-principles
       - kind: technique
+        id: refresh-principle-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: principle-findings.md
+            artifact_content: principle_findings
+          outputs:
+            written_artifact: principle_findings_path
+      - kind: technique
         id: re-audit-anti-patterns
         technique: audit-anti-patterns
+      - kind: technique
+        id: refresh-anti-pattern-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: anti-pattern-findings.md
+            artifact_content: anti_pattern_findings
+          outputs:
+            written_artifact: anti_pattern_findings_path
       - kind: action
         id: reassess-pre-attestation-findings
         actions:

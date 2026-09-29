@@ -8,15 +8,15 @@ This workflow guides the complete lifecycle of a security audit:
 
 1. **Scope Setup** — Confirm target, checkout at commit, run dependency scanning, create planning folder
 2. **Reconnaissance** — Map architecture, identify crates, trust boundaries, consensus paths, build function registry, assign agent groups
-3. **Primary Audit** — Concurrent dispatch of all specialized agent groups, verification sub-agent validates output completeness, finding consolidation
+3. **Primary Audit** — Gather the agent groups reconnaissance opens as concurrent branches, verification sub-agent validates output completeness, finding consolidation
 4. **Adversarial Verification** — Decompose and independently verify every PASS item from agent scratchpads
 5. **Report Generation** — Consolidate all phases, apply severity scoring with calibration cross-check, produce report
 6. **Ensemble Pass** (optional) — Second-model run on priority-1/2 components, union-merge with primary results
 7. **Gap Analysis** (optional) — Compare against a professional audit report for benchmarking
 
 **Design characteristics:**
-- Fully automated sequential flow whose phase gates are structurally enforced — report generation is entered only when the dispatch, verification, and merge gates are set
-- Single-batch concurrent dispatch of all primary agents (A1-A7, B, D1, D2), with fresh-context verification (V) and merge (M) sub-agents before and during finding consolidation
+- Fully automated sequential flow whose phase gates are structurally enforced
+- All primary agents (A1-A7, B, D1, D2) run concurrently as branches reconnaissance opens, with fresh-context verification (V) and merge (M) sub-agents before and during finding consolidation
 - Node binary scope split (A3 startup/config + A4 consensus/network) to prevent prompt saturation on the largest single-agent scope
 - Impact × Feasibility severity scoring with target-profile-backed calibration benchmarks
 - Contamination prevention — the reference report is quarantined until the gap-analysis phase
@@ -25,7 +25,7 @@ This workflow guides the complete lifecycle of a security audit:
 
 The role split (orchestrator coordinates and dispatches; sub-agents perform deep crate-level review) and the verification/merge gates are workflow invariants — see the `rules` in [`workflow.yaml`](./workflow.yaml).
 
-**Relationship to `prism-audit`.** This workflow and [`prism-audit`](/prism-audit/README.md) are two deliberately different-philosophy security audits. `prism-audit` composes a codebase-tailored prompt and triggers the generic [`prism`](/prism/README.md) lens engine, reusing prism's analysis, adversarial pass, and report contract. This workflow is a bespoke deep multi-agent review tuned to Substrate node internals — a fixed §3 checklist, per-crate concurrent context windows, a coverage gate, and merge/reconciliation — none of which prism packages. The two share the Impact × Feasibility severity model and (now) the `gitnexus` capability, but not an analysis spine; this workflow does not build on prism by design.
+**Relationship to `prism-audit`.** This workflow and [`prism-audit`](/prism-audit/README.md) are two deliberately different-philosophy security audits. `prism-audit` composes a codebase-tailored prompt and triggers the generic [`prism`](/prism/README.md) lens engine, reusing prism's analysis, adversarial pass, and report contract. This workflow is a bespoke deep multi-agent review tuned to Substrate node internals — a fixed §3 checklist, per-crate concurrent context windows, a coverage gate, and merge/reconciliation — none of which prism packages. The two share the Impact × Feasibility severity model and the `gitnexus` capability, but not an analysis spine; this workflow does not build on prism by design.
 
 ---
 
@@ -76,9 +76,9 @@ graph TD
 
 ---
 
-## Primary Audit — Concurrent Agent Dispatch
+## Primary Audit — Concurrent Agent Groups
 
-The primary audit dispatches all specialized agent groups concurrently in a single batch, collects their structured output, runs a dedicated verification sub-agent (V), acts on the gap report, then dispatches a dedicated merge sub-agent (M) to perform structured merge and reconciliation.
+Reconnaissance opens every specialized agent group as a concurrent branch ([activities README](./activities/README.md)). The primary audit gathers their structured output, runs a dedicated verification sub-agent (V), acts on the gap report, then dispatches a dedicated merge sub-agent (M) to perform structured merge and reconciliation.
 
 ### Agent Groups
 
@@ -124,54 +124,19 @@ graph LR
     M --> RECONCILE["Reconciliation Gate"]
 ```
 
-All 10 primary agents (A1-A7, B, D1, D2) dispatch concurrently. After all agents return and persist their output files, the verification sub-agent (V) mechanically validates output completeness and produces a gap report. The orchestrator re-dispatches targeted follow-up agents for any gaps. The merge sub-agent (M) then performs structured merge, deduplication, severity scoring, and reconciliation into the final finding set.
+All 10 primary agents (A1-A7, B, D1, D2) run concurrently. After all agents return and persist their output files, the verification sub-agent (V) mechanically validates output completeness and produces a gap report. The orchestrator re-dispatches targeted follow-up agents for any gaps. The merge sub-agent (M) then performs structured merge, deduplication, severity scoring, and reconciliation into the final finding set.
 
 ### Verification Gates
 
 After agent collection, a dedicated verification sub-agent (V) runs all verification checks in a fresh context window. Any failure triggers targeted follow-up agent dispatch before proceeding. The authoritative gate set lives in the [`verify-sub-agent-output`](./techniques/verify-sub-agent-output.md) technique and [`sub-output-verification`](./activities/14-sub-output-verification.yaml) activity.
 
-Each sub-agent bootstraps the workflow-server, loads its assigned activity and the [`execute-sub-agent`](./techniques/execute-sub-agent.md) technique, then follows its steps sequentially with verifiable outputs. The structured sub-agent flows are defined in [`sub-crate-review`](./activities/10-sub-crate-review.yaml), [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml), and [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml).
-
-### Sub-Agent Activity Flows
-
-#### [`sub-crate-review`](./activities/10-sub-crate-review.yaml) (Group A — one per crate)
-
-```mermaid
-graph LR
-    CR1[Read all files] --> CR2[Build function registry]
-    CR2 --> CR3[Extract invariants]
-    CR3 --> CR4[Apply checklist]
-    CR4 --> CR5[Produce analysis tables]
-    CR5 --> CR6[Cross-function comparison]
-    CR6 --> CR7[Verify completeness]
-    CR7 --> CR8[Format output]
-```
-
-#### [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml) (Group B)
-
-```mermaid
-graph LR
-    SA1[Run grep patterns] --> SA2[Run mechanical checks]
-    SA2 --> SA3[Storage lifecycle scan]
-    SA3 --> SA4[Zero-hit audit]
-    SA4 --> SA5[Aggregate findings]
-    SA5 --> SA6[Format output]
-```
-
-#### [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml) (Group D)
-
-```mermaid
-graph LR
-    TK1[Enumerate functions] --> TK2[Apply checklist per function]
-    TK2 --> TK3[Verify function coverage]
-    TK3 --> TK4[Format output]
-```
+The steps each sub-agent follows live in [`sub-crate-review`](./activities/10-sub-crate-review.yaml), [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml), and [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml).
 
 ---
 
 ## Activities
 
-The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) technique governs how steps read and write workflow variables across every activity. Each activity's artifact contract is synthesized by `get_activity` from the outputs of the techniques its steps bind — see the [`activities/` README](./activities/README.md) and the per-activity YAML for the authoritative artifact set.
+The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) technique governs how steps read and write workflow variables across every activity. Each activity's artifact set lives in its YAML; see the [`activities/` README](./activities/README.md).
 
 ### 1. [Scope Setup](./activities/01-scope-setup.yaml)
 
@@ -225,7 +190,7 @@ The [activities README](./activities/README.md) states which of these the graph 
 | [`sub-architectural-analysis`](./activities/13-sub-architectural-analysis.yaml) | S | Reconnaissance | Security-oriented architectural decomposition surfacing vulnerability domains beyond the [§3 checklist](./resources/audit-prompt-template.md#3-systematic-manual-review-strategies) |
 | [`sub-crate-review`](./activities/10-sub-crate-review.yaml) | Group A | Primary Audit | Deep, evidence-backed [§3 review](./resources/audit-prompt-template.md#3-systematic-manual-review-strategies) of an entire priority crate |
 | [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml) | Group B | Primary Audit | Pattern-based and mechanical analysis across the whole scope, with zero-hit cases verified rather than assumed clean |
-| [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml) | Group D | Primary Audit | Per-function toolkit review so benign-looking helpers can no longer be skimmed past |
+| [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml) | Group D | Primary Audit | Per-function toolkit review so no benign-looking helper is skimmed past |
 | [`sub-output-verification`](./activities/14-sub-output-verification.yaml) | V | Primary Audit | Fresh-context validation that every required agent ran and every mandatory table is present, stabilizing finding counts across runs |
 | [`sub-structured-merge`](./activities/15-sub-structured-merge.yaml) | M | Primary Audit | Fresh-context, provably-lossless merge into a single canonical, deduplicated, severity-scored finding set |
 
@@ -287,4 +252,4 @@ Resources contain detailed reference content loaded on demand by techniques.
 | [`vulnerability-pattern-vocabulary.md`](./resources/vulnerability-pattern-vocabulary.md) | Known cross-project vulnerability patterns for architectural analysis |
 | [`gap-analysis-template.md`](./resources/gap-analysis-template.md) | Document skeleton for the gap-analysis report |
 
-Resources are addressed by bare slug via `get_resource` (e.g. `resource_id: static-analysis-patterns`); see the [`resources/` README](./resources/README.md).
+See the [`resources/` README](./resources/README.md).

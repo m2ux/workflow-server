@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Update-mode design specification covering only dimensions that change.
 
 ## Inputs
-
-### operation_type
-
-The classified technique type (`update`).
 
 ### change_category
 

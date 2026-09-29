@@ -76,6 +76,6 @@ Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml).
 
 ### 11. Retrospective
 
-Terminal activity for every mode. In create/update modes it records a `COMPLETE.md` completion summary (`create-completion-doc`) — what was delivered, the design decisions and alternatives rejected, scope outcome, and known limitations — then conducts a session retrospective (`conduct-retrospective`) that records prioritized workflow improvements, and optionally tears down the session worktree the run created.
+Terminal activity for every mode. It conducts a session retrospective (`conduct-retrospective`) of prioritized workflow improvements and writes one `COMPLETE.md` close-out document. In create/update modes that document is the completion summary (`create-completion-doc`) — what was delivered, links to the design decisions, scope outcome, and known limitations — with the retrospective as its section; in review mode it is the retrospective alone. The activity optionally tears down the session worktree the run created.
 
 Definition: [`11-retrospective.yaml`](./11-retrospective.yaml). Terminal in all modes.

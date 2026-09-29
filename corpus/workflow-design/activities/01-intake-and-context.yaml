@@ -28,14 +28,18 @@ variables:
       defaultValue: true
     - name: intent_needs_confirmation
       type: boolean
-      description: Composite gap flag for Gate 1 (`design-intent-batch`) — true when mode is ambiguous, the update change request is unclear, and/or review.
+      description: Whether the classified intent needs the reader's confirmation.
       defaultValue: false
     - name: operation_type
       type: string
-      description: The classified operation for the request — create, update, or review.
+      description: The classified operation for the request.
+      values:
+        - create
+        - update
+        - review
     - name: operation_type_ambiguous
       type: boolean
-      description: True when intake cannot confidently classify create vs update vs review from the request alone — contributes to Gate 1.
+      description: True when intake cannot confidently classify create vs update vs review from the request alone.
       defaultValue: false
     - name: planning_folder_path
       type: string
@@ -68,7 +72,7 @@ steps:
     actions:
       - action: set
         target: planning_folder_path
-        message: Server-resolved canonical absolute planning folder from the start_session / get_workflow summary (under the server's workspace .engineering planning root). Write location for ALL of this design session's planning artifacts.
+        message: Absolute planning folder this session writes its artifacts into, as reported in the server session summary.
   - kind: technique
     id: intake-classification
     technique: intake-classification
@@ -132,14 +136,13 @@ steps:
       inputs:
         bare_filename: structural-inventory.json
         artifact_content: structural_inventory
-        target_dir: planning_folder_path
     when: operation_type == "update" || operation_type == "review"
   - kind: action
     id: announce-certain-intent
     when: intent_needs_confirmation == false && update_seeded_from_review != true && operation_type != 'review'
     actions:
       - action: message
-        message: "Classified as a {operation_type} operation for workflow `{workflow_id}` — proceeding without Gate 1."
+        message: "Classified as a {operation_type} operation for workflow `{workflow_id}`."
   - kind: action
     id: announce-certain-review-scope
     when: operation_type == 'review' && intent_needs_confirmation == false
@@ -186,7 +189,6 @@ steps:
       inputs:
         bare_filename: format-conventions.md
         artifact_content: format_conventions
-        target_dir: planning_folder_path
     when: operation_type != 'review'
   - kind: technique
     id: persist-applicable-constructs
@@ -195,7 +197,6 @@ steps:
       inputs:
         bare_filename: applicable-constructs.md
         artifact_content: applicable_constructs
-        target_dir: planning_folder_path
     when: operation_type != 'review'
   - kind: technique
     id: present-problem-overview
@@ -233,6 +234,6 @@ exits:
     isDefault: true
 outcome:
   - The workflow knows whether it is creating, updating, or reviewing, and against which target — every downstream branch can route on a derived operation
-  - Derive-first intent lands gap flags and `{headless_mode}` (default true; false on interactive opt-out); Gate 1 fires only when intent needs confirmation
+  - Intent, its gap flags and `{headless_mode}` are derived from the request, and only uncertain intent reaches the reader
   - The agent can author schema-correct YAML without re-deriving syntax or guessing which constructs apply
-  - Format literacy and schema constructs are auto-confirmed for create/update so drafting reaches for the right construct instead of falling back to prose
+  - Create and update drafting starts with format literacy and the applicable schema constructs confirmed

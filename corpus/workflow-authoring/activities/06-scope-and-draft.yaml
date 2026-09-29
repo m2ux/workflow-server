@@ -1,7 +1,7 @@
 id: scope-and-draft
 version: 1.9.0
 name: Scope and Draft
-description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
+description: "A confirmed file manifest for the change, with every file it names authored against its schema."
 variables:
   reads:
     - component_git_dir
@@ -34,15 +34,15 @@ variables:
       type: string
       description: Absolute path to the persisted impact-analysis artifact.
       defaultValue: ""
+    - name: manifest_entries
+      type: array
+      description: List of files to create, modify or remove with full paths and actions.
     - name: removal_disposition
       type: string
       description: What the review decided about an unflagged removal. Absent until one is reviewed.
       values:
         - flagged
         - restored
-    - name: scope_manifest
-      type: array
-      description: List of files to create, modify or remove with full paths and actions.
     - name: scope_manifest_confirmed
       type: boolean
       description: Whether the complete file manifest has been confirmed.
@@ -128,7 +128,7 @@ steps:
     name: File Drafting Loop
     loopType: forEach
     variable: current_file
-    over: scope_manifest
+    over: manifest_entries
     maxIterations: 50
     when: scope_manifest_confirmed == true
     steps:

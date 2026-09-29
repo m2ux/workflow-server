@@ -78,7 +78,7 @@ While a step of this activity holds work still running outside this context — 
 
 ### final-message-is-an-envelope
 
-The last thing this context emits is the envelope this activity owes — the `checkpoint_pending` yield, or the `activity_complete` result. Anything emitted in its place ends the context with the envelope still owed, and is not an accepted result (`dispatch-activity.reject-partial-worker-result`).
+The last thing this context emits is the envelope this activity owes — the `checkpoint_pending` yield, or the `activity_complete` result. Anything emitted in its place ends the context with the envelope still owed, and is not an accepted result: an interim status report, a progress table, or prose describing an envelope without being one.
 
 ### verify-dispatched-activity
 

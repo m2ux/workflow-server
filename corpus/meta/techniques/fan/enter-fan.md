@@ -15,7 +15,7 @@ Publish the in-progress mark for every branch a graph destination fans, then ope
 
 ### fan_destination
 
-The destination exactly as the graph names it — a list of members, or one activity together with the collection to run it over. Passed through unread: the server expands it, so this technique never learns which construct produced the branches and never computes a width.
+The destination exactly as the graph names it — a list of members, or one activity together with the collection to run it over. Passed through unread.
 
 ### from_activity
 
@@ -23,7 +23,7 @@ The activity this call retires — the one its exit and step manifest belong to,
 
 ### exit_id
 
-The exit that activity took. Required: an exit the graph fans has to say which destination it takes.
+The exit that activity took.
 
 ### step_manifest
 
@@ -37,7 +37,7 @@ The exit that activity took. Required: an exit the graph fans has to say which d
 
 ### branch_activities
 
-The branches the destination opened, in the order the server gave them. The order every later pass over them follows.
+The branches the destination opened, in the order the server gave them.
 
 ### barrier_destination
 
@@ -47,7 +47,7 @@ The activity the branches converge on, as the barrier reported it — what the r
 
 ### 1. Publish one in-progress mark for every branch
 
-- Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress — see `one-commit-before-the-spawn`
+- Apply [sync-progress-status](../workflow-engine/sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress — see `one-commit-before-the-spawn`
   > When `{planning_folder_path}` is unset, skip this phase.
 
 ### 2. Open every branch with one call

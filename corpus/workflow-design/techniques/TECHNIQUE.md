@@ -21,6 +21,14 @@ Free-form description of the workflow the user wants to create or modify
 
 *(optional)* Ordered list of workflow ids to audit in review mode. Single-target review uses a one-element list. Update/create modes leave this unset and use `{target_workflow_id}` alone.
 
+### operation_type
+
+*(optional)* The classified operation for the request. Absent until the request is classified.
+
+### planning_folder_path
+
+Absolute path to this session's planning folder.
+
 ## Outputs
 
 ### workflow_files
@@ -82,7 +90,7 @@ The canonical home for each shared design-session fact category. Templates carry
 | Compliance / audit findings | `compliance-report.md` (and findings satellites) |
 | In-task follow-ups | `follow-ups.md` (see [follow-ups](../resources/follow-ups.md)) |
 | Out-of-scope deferred items | `deferred-items.md` |
-| Session index (Progress, Links, Design Decisions pointers) | `README.md` |
+| Session index (Progress, Links) | `README.md` |
 
 README Problem Overview and Solution Overview are link-only slots pointing at `design-specification.md` (Solution also links `scope-manifest.md` for the file breakdown).
 

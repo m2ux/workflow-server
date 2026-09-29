@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -9,9 +9,9 @@ The publication payload for a definition change — what to stage, the commit me
 
 ## Inputs
 
-### scope_manifest
+### manifest_entries
 
-The confirmed file manifest for this run, whose entries name every file the change touches.
+The confirmed file manifest for this run — one entry per file to create, modify or remove, each with its path, its action and a one-line statement of the change.
 
 ### change_brief
 
@@ -21,7 +21,7 @@ The change brief for this run — purpose and the dimensions the change alters.
 
 ### paths
 
-The file paths to stage: every path `{scope_manifest}` names, resolved under the run's edit worktree, with entries the manifest records as removals included so the removal is committed rather than left in the tree.
+The file paths to stage: every path `{manifest_entries}` names, resolved under the run's edit worktree, with entries the manifest records as removals included so the removal is committed rather than left in the tree.
 
 ### commit_message
 
@@ -39,7 +39,7 @@ Pull-request body: the change stated in a short paragraph, the manifest's entrie
 
 ### 1. Resolve What to Stage
 
-- Take every entry of `{scope_manifest}` and resolve its path under the run's edit worktree into `{paths}`, keeping removal entries so the deletion is part of the commit
+- Take every entry of `{manifest_entries}` and resolve its path under `{target_path}` into `{paths}`, keeping removal entries so the deletion is part of the commit
 
 ### 2. Compose the Commit Message
 
@@ -53,4 +53,4 @@ Pull-request body: the change stated in a short paragraph, the manifest's entrie
 
 ### payload-describes-the-change-not-the-diff
 
-Every field here states what the change does. A message or body assembled from the file list describes the diff a reader can already see, and says nothing about why the change exists.
+Every field here states what the change does and why it exists. No message or body is assembled from the file list.

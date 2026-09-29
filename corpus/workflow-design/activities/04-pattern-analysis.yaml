@@ -34,7 +34,6 @@ steps:
       inputs:
         bare_filename: pattern-analysis.md
         artifact_content: pattern_analysis
-        target_dir: planning_folder_path
       outputs:
         written_artifact: pattern_analysis_path
   - kind: checkpoint

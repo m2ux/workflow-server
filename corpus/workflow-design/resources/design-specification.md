@@ -2,7 +2,7 @@
 name: design-specification
 description: Guidelines for creating the design-specification planning artifact (purpose + dimension deltas).
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 14
 ---
 
@@ -84,5 +84,5 @@ Confirmed design surface for create/update. Answers: what stays the same, and wh
 - **Purpose + dimension deltas only.** Omit encyclopedia restatement of unchanged dimensions.
 - **Tables over narrative.** Unchanged mode branches get one line, not a reprint of the workflow.
 - **Own facts only.** Assumptions, impact, inventory, and scope live in their homes — link, do not restate ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
-- **Single-source:** README Problem/Solution and Design Decisions link here; do not restate the body in README or COMPLETE.
+- **Single-source:** README Problem/Solution and COMPLETE link here; do not restate the body in either.
 - **Line budget:** ~120 lines for update; create may run longer but still delta-shaped.

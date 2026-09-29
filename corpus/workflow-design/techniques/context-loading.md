@@ -7,12 +7,6 @@ metadata:
 
 Schema-system and YAML-convention literacy for the design intent.
 
-## Inputs
-
-### operation_type
-
-The classified operation — `create`, `update` or `review`. Selects whether the literacy artifacts are assembled.
-
 ## Outputs
 
 ### format_conventions
@@ -43,7 +37,8 @@ The applicable-constructs list for this change, at the shape [Template](../resou
 
 ### 1. Load Schemas
 
-- Load all five JSON schema definitions from `workflow-server://schemas` (workflow, activity, technique, condition, state) — conformance reference for drafted content. Delivery: [resource-loading-via-tool](/meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool).
+- Load the JSON schema definitions the [schema-construct-inventory](/canon/resources/schema-construct-inventory.md#universal-obligation) names as served at `workflow-server://schemas` — the conformance reference for drafted content. That URI is an MCP resource, read as a resource rather than by resource id.
+
 ### 2. Load Design-Time Canon
 
 - Load [anti-patterns](/canon/resources/anti-patterns.md) and [schema-construct-inventory](/canon/resources/schema-construct-inventory.md) once for literacy and later authoring (write-time application is the inherited `apply-anti-patterns-when-authoring` rule — do not restate Detect here)
@@ -51,7 +46,7 @@ The applicable-constructs list for this change, at the shape [Template](../resou
 
 ### 3. Survey Reference Workflows
 
-- Refresh the catalog via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md) and survey 2+ similar-type workflows from orchestrator-supplied definitions ([no-domain-work](/meta/techniques/orchestrator-conduct.md#no-domain-work) — workers do not load full workflow definitions)
+- Survey 2+ similar-type workflows from the catalog and the definitions the orchestrator supplies; a worker does not load full workflow definitions itself
 
 ### 4. Ground YAML Syntax
 

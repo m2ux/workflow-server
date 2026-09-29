@@ -7,7 +7,7 @@ metadata:
 
 # Applicable Constructs Guide
 
-Literacy surface for create/update drafting. Answers: which schema constructs apply to this change, and why? Agent-facing; short enough for a gate skim.
+Literacy surface for create/update drafting. Answers: which schema constructs apply to this change, and why? Agent-facing and short.
 
 ## Template
 

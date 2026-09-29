@@ -15,13 +15,6 @@ variables:
       type: string
       description: Absolute path to the persisted impact-analysis artifact.
       defaultValue: ""
-    - name: impact_correction
-      type: string
-      description: The reader's corrections to the impact scope, from each `revise-impact` reply in order. Absent until the reader revises the scope.
-    - name: impact_revision_requested
-      type: boolean
-      description: True between the reader asking to revise the impact scope and that reply's correction landing in `impact_correction`.
-      defaultValue: false
     - name: preservation_required
       type: boolean
       description: Whether the reader asked for flagged content to survive the change.
@@ -43,7 +36,6 @@ steps:
       inputs:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis
-        target_dir: planning_folder_path
       outputs:
         written_artifact: impact_analysis_path
     when: operation_type == 'update'
@@ -72,10 +64,8 @@ steps:
             preservation_required: false
       - id: revise-impact
         label: Revise impact scope
-        description: Impact scope is incomplete or over-inclusive, and the reply carries the correction.
+        description: Impact scope is incomplete or over-inclusive.
         effect:
-          setVariable:
-            impact_revision_requested: true
           exit: revise
       - id: preserve
         label: Preserve some flagged content
@@ -83,16 +73,6 @@ steps:
         effect:
           setVariable:
             preservation_required: true
-  - kind: action
-    id: record-impact-correction
-    when: impact_revision_requested == true
-    actions:
-      - action: set
-        target: impact_correction
-        message: The correction the reader's reply to the impact review carries, appended to any earlier correction, so the next impact pass reads it from the bag.
-      - action: set
-        target: impact_revision_requested
-        value: false
 exits:
   - id: done
     isDefault: true

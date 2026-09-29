@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -12,10 +12,6 @@ Feature branch name in the workflows repo for this run's change.
 ### workflow_id
 
 Id of the workflow this run authors or changes — the branch name's distinguishing segment.
-
-### operation_type
-
-The classified technique for the request — create, update or review.
 
 ## Outputs
 

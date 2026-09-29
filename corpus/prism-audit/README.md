@@ -45,7 +45,7 @@ graph TD
     DA --> Done([End])
 ```
 
-The spine is linear — scope, prompt, analyse, finalize, deliver — with two branches: the `confirm-scope` checkpoint can loop back to re-scope, and a target with no security-relevant patterns can abort straight to delivery. The `execute-analysis` activity is a loop: each entry in `audit_scopes` triggers its own prism run.
+The spine is linear — scope, prompt, analyse, finalize, deliver — with a re-scope path, and a target with no security-relevant patterns goes straight to delivery. The `execute-analysis` activity runs prism once per entry in `audit_scopes`.
 
 ---
 

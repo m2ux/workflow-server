@@ -57,7 +57,7 @@ Boolean — true while open audit-resolvable assumptions remain; false once no o
 
 ### 5. Record Open Rationales
 
-- For each remaining open assumption, record why no audit can settle it — durable evidence for Gate 2 batch disposition
+- For each remaining open assumption, record why no audit can settle it
 
 ## Rules
 
@@ -68,7 +68,3 @@ Reconciliation runs autonomously, without user interaction — emit `{assumption
 ### convergence-definition
 
 Convergence means no open assumption remains audit-resolvable. Stakeholder-dependent judgements may still be open in `{open_assumptions}`.
-
-### no-sibling-audit-invoke
-
-Do not Apply / `::`-invoke `audit-*` techniques. Quality-review audit steps remain activity-bound elsewhere; this technique settles assumptions against criteria resources only.

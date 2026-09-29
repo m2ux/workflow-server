@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,6 +16,14 @@ Free-form statement of the workflow the user wants created, changed or audited.
 ### planning_folder_path
 
 Absolute path to this run's planning folder — the write location for every planning artifact.
+
+### target_path
+
+Absolute path of the run's edit worktree, where definition files are read and create and update edits land.
+
+### operation_type
+
+*(optional)* The classified operation — `create`, `update` or `review`. Absent until the request is classified.
 
 ### target_workflow_id
 

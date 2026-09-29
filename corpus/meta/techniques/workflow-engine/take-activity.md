@@ -28,7 +28,7 @@ The envelope the activity produced — one of two tagged result types: the `chec
 ### 1. Advance the session
 
 - Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`
-  > A first entry has no prior activity to retire, so `from_activity`, `exit_id` and `step_manifest` are all unset together.
+  > A first entry has no prior activity to retire, so `{from_activity}`, `{exit_id}` and `{step_manifest}` are all unset together.
 
 ### 2. Carry the activity
 

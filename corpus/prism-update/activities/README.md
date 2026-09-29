@@ -34,11 +34,11 @@ Produces the user-approved change set the import works from.
 
 ### 02 — [Apply Updates](02-apply-updates.yaml)
 
-Applies the approved change set across resources, skill routing, and documentation, in that order, so the catalog, every routing table, and all docs reflect the current resource state with no stale prism name references.
+Applies the approved change set so the catalog, every routing table, and all docs reflect the current resource state with no stale prism name references.
 
 ### 03 — [Verify Consistency](03-verify.yaml)
 
-Checks content integrity against upstream, stale name references, prompt-guide routing accuracy, resource count alignment, and duplicate indices. Remaining issues route back to apply-updates.
+Checks that the applied update is consistent with upstream and across the workflow's resources, routing, and docs. Remaining issues route back to apply-updates.
 
 ### 04 — [Commit and Submit](04-commit-and-submit.yaml)
 

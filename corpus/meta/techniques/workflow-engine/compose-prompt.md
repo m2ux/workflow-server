@@ -40,8 +40,8 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### 2. Emit entry tools
 
-- When `{checkpoint_reply}` is bound, and `{agent_technique}` is activity-worker: instruct `resume_checkpoint { session_index }` FIRST, carrying the `checkpoint_reply` substitution, then the activity-worker line below
-- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise
+- When `{checkpoint_reply}` is bound, and `{agent_technique}` is activity-worker: instruct `resume_checkpoint { session_index }` FIRST, carrying `{checkpoint_reply}`, then the activity-worker line below
+- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `get_workflow { session_index }`, which delivers the techniques bundle the Direct Apply phase names. Its session is already open and its identity is bound in the block above; this call scopes to neither, and the orchestrator spends `agent_id` on the delivery calls that take one
 
 ### 3. Direct Apply
@@ -57,4 +57,4 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### context-travels-as-state
 
-Prior-activity context reaches a worker as state, not as prose in the stub. Artifact paths, decisions, and measurements already live in the session bag and in the artifacts those bag variables point at; the worker binds them through its activity's step inputs. Do not restate artifact content, decisions, or scope lists in `{composed_prompt}` — a paraphrase drifts from the artifact that records it, and the worker cannot tell which is authoritative. A fact the worker needs and no variable carries is a missing declaration, not a licence to inline.
+Prior-activity context reaches a worker as state, not as prose in the stub. Artifact paths, decisions, and measurements already live in the session bag and in the artifacts those bag variables point at; the worker binds them through its activity's step inputs. Do not restate artifact content, decisions, or scope lists in `{composed_prompt}`. A fact the worker needs and no variable carries is a missing declaration, not a licence to inline.

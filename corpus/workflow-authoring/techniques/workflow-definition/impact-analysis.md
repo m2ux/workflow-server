@@ -77,10 +77,10 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 ### 8. Compose the Impact Report
 
 - Assemble `{impact_analysis}` from the classification, the integrity verdicts and the removals inventory, at the shape [Template](../../resources/impact-analysis.md#template) declares
-- Link `{change_brief}` for purpose and `{structural_inventory}` for the baseline rather than restating either
+- Link `{change_brief}` on the Change source line and `{structural_inventory}` on the Baseline line
 
 ## Rules
 
 ### content-preservation
 
-A reduction is a decision, not a side-effect of an edit. Prefer additive change, and treat a reduction that no inventory row names as unapproved regardless of how small it is.
+A reduction is a decision, not a side-effect of an edit. Prefer additive change.

@@ -38,7 +38,7 @@ Four technique-groups (one per authoring activity) plus one standalone technique
 | Technique | Capability |
 |-----------|------------|
 | [`survey-structure`](compose-audit-prompt/survey-structure.md) | Survey the module layout and total lines of code |
-| [`identify-security-characteristics`](compose-audit-prompt/identify-security-characteristics.md) | Scan for security-relevant patterns (gates the no-security-characteristics checkpoint) |
+| [`identify-security-characteristics`](compose-audit-prompt/identify-security-characteristics.md) | Scan for security-relevant patterns |
 | [`map-trust-boundaries`](compose-audit-prompt/map-trust-boundaries.md) | Map cross-community call edges and security-critical symbol blast radii (GitNexus only) |
 | [`map-audit-domains`](compose-audit-prompt/map-audit-domains.md) | Derive the evidence-based audit domains with risk levels and focus areas |
 | [`identify-cross-cutting-concerns`](compose-audit-prompt/identify-cross-cutting-concerns.md) | Identify cross-cutting concerns — error handling, feature flags, dependencies |

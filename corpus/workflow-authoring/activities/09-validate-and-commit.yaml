@@ -1,7 +1,7 @@
 id: validate-and-commit
-version: 1.5.0
+version: 1.6.0
 name: Validate and Commit
-description: "Re-derive the high-severity findings independently, persist the register, take the operator's disposition, then re-verify scope, commit, publish and close out. Terminal."
+description: "A verified findings register with the operator's disposition, and for an authored change its commit, pull request and close-out record."
 variables:
   reads:
     - audit_findings
@@ -12,13 +12,13 @@ variables:
     - host_repo_path
     - judgements_disposition
     - known_finding_keys
+    - manifest_entries
     - operation_type
     - planning_folder_path
     - pr_number
     - register_sections
     - remediation_round
     - removals_approved
-    - scope_manifest
     - scope_manifest_path
     - target_path
     - target_workflow_ids
@@ -270,7 +270,6 @@ steps:
 exits:
   - id: remediation-selected
     when: remediation_selected == true && remediation_round < 3
-    immediate: true
   - id: committed
     isDefault: true
   - id: fix-issues

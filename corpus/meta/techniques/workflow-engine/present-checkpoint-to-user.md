@@ -23,7 +23,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 1. Load Active Checkpoint
 
-- Call `present_checkpoint { session_index }` for the active checkpoint, whose softness phase 2 reads and whose message and options phase 5 puts to the user.
+- Call `present_checkpoint { session_index }` for the active checkpoint. It returns the checkpoint's definition, its soft-gate declaration and each option's effects included, with the message and each option's label and description rendered from the variable bag; each option that names an exit also carries a `consequence`: that `exit`, the `next_activity` it leads to, and `ends_activity` where selecting it ends the activity at this gate.
   > If this returns `no active checkpoint on session`, no checkpoint has been yielded yet or the previous one was already resolved: re-check that you are presenting against the correct `{session_index}`.
 
 ### 2. Establish Gate Softness

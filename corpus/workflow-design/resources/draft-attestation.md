@@ -7,7 +7,7 @@ metadata:
 
 # Draft Attestation Guide
 
-Batch review surface before quality-review / commit. Answers: is every drafted block understood and intentional?
+Block-indexed batch review of the drafted content. Answers: is every drafted block understood and intentional?
 
 ## Template
 
@@ -29,5 +29,5 @@ Batch review surface before quality-review / commit. Answers: is every drafted b
 
 - **One row per drafted construct** (activity, technique, resource, workflow metadata).
 - **Update mode:** mark added / modified / unchanged against committed target.
-- **No unflagged-removal silence** — if review-drafted-file found any, state them here.
+- **No unflagged-removal silence** — state every unflagged removal here.
 - **Line budget:** ~50 lines plus one row per block.

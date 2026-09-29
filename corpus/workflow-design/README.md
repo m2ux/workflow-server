@@ -5,10 +5,9 @@
 > remain. Do not start a new session against it. Its version is deliberately frozen: a bump would
 > emit a version-mismatch warning on every call for every in-flight session.
 >
-> A session already under way can be finished here. The defects the replacement exists to fix are
-> still present in this tree and are not being repaired — including two thirty-second auto-advances
-> at the commit gates that select *proceed to commit* even when files are failing schema validation.
-> Prefer finishing promptly over resuming late.
+> A session already under way can be finished here. At the commit gates, thirty-second
+> auto-advances accept the result as it stands, including *proceed to commit* when files fail
+> schema validation. Prefer finishing promptly over resuming late.
 
 > Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, it derives intent from a free-form user description, reconciles design assumptions, and collects the stakeholder decisions into one approval before commit; it runs headless by default (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
@@ -102,7 +101,7 @@ Positive design-time framing — see [design-principles](/canon/resources/design
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) holding shared Inputs, Outputs, and Rules for every technique here. Each activity step binds exactly one technique via `step.technique`. Cross-cutting meta [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` and inherited by every activity. Commits go through meta [`git::commit-regular-files`](/git/techniques/commit-regular-files.md). Planning-folder report artifacts use [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md); the planning-folder `README.md` is seeded and verified via meta [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) (universal [planning-readme](/meta/resources/planning-readme.md) Template + [readme-seed](./resources/readme-seed.md)). The design-assumption lifecycle reuses [`work-package::review-assumptions`](/work-package/techniques/review-assumptions/TECHNIQUE.md) (`collect`, `record`), with workflow-local `reconcile-design-assumptions` (while-loop via `has_resolvable_assumptions`); open judgements batch into Gate 2. A workflow-local `conduct-retrospective` covers the session retrospective.
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) holding shared Inputs, Outputs, and Rules for every technique here. Each activity step binds exactly one technique via `step.technique`. Cross-cutting meta [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` and inherited by every activity. Commits go through meta [`git::commit-regular-files`](/git/techniques/commit-regular-files.md). Planning-folder report artifacts use [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md); the planning-folder `README.md` is seeded and verified via meta [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) (universal [planning-readme](/meta/resources/planning-readme.md) Template + [readme-seed](./resources/readme-seed.md)). The design-assumption lifecycle reuses [`work-package::review-assumptions`](/work-package/techniques/review-assumptions/TECHNIQUE.md) (`collect`, `record`), with workflow-local `reconcile-design-assumptions`. A workflow-local `conduct-retrospective` covers the session retrospective.
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
@@ -112,8 +111,8 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`prepare-dimension`](./techniques/prepare-dimension.md) | Assemble elicitation questions for one design dimension | Requirements Refinement |
 | [`capture-dimension`](./techniques/capture-dimension.md) | Record answers for one design dimension and fold into accumulated design | Requirements Refinement |
 | [`synthesize-update-specification`](./techniques/synthesize-update-specification.md) | Assemble the update-mode specification from changed dimensions only (no per-dimension elicitation) | Requirements Refinement |
-| [`persist-design-specification`](./techniques/persist-design-specification.md) | Assemble the elicited design specification for linked review | Requirements Refinement |
-| [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Resolve audit-resolvable assumptions and emit `has_resolvable_assumptions` for while-loop convergence | Requirements Refinement |
+| [`assemble-design-specification`](./techniques/assemble-design-specification.md) | Assemble the elicited design specification for linked review | Requirements Refinement |
+| [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Resolve audit-resolvable assumptions and report whether any remain | Requirements Refinement |
 | [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows into the comparison | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, exits and graph, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the file manifest with lean structural design and drafting order | Scope and Draft |
@@ -140,8 +139,8 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |
 | [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Record selected audit findings as `{fixes_applied}` after activity-bound edit and re-validation | Quality Review, Post-Update Review |
 | [`scope-audit`](./techniques/scope-audit.md) | Audit the committed change set against the scope manifest for drift | Post-Update Review |
-| [`create-completion-doc`](./techniques/create-completion-doc.md) | Record the `COMPLETE.md` completion summary in the planning folder | Retrospective |
-| [`conduct-retrospective`](./techniques/conduct-retrospective.md) | Analyse non-checkpoint interactions and record a prioritized session retrospective | Retrospective |
+| [`create-completion-doc`](./techniques/create-completion-doc.md) | Assemble the `COMPLETE.md` close-out document, with the session retrospective as its section | Retrospective |
+| [`conduct-retrospective`](./techniques/conduct-retrospective.md) | Analyse non-checkpoint interactions and assemble a prioritized session retrospective | Retrospective |
 
 ---
 
@@ -157,7 +156,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | 05 | [README Seed](./resources/readme-seed.md) | Progress inventory + mode map for planning-folder README |
 | 06 | [Completion Artifact](./resources/completion-artifact.md) | Creation guide: `COMPLETE.md` |
 | 07 | [Design Assumptions](./resources/design-assumptions.md) | Creation guide: `assumptions-log.md` |
-| 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Audit vs open resolvability + while-loop / Gate 2 handoff |
+| 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Audit vs open resolvability of design assumptions |
 | 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Mode dimension sets + per-dimension question bank |
 | 10 | [Convention Conformance](/canon/resources/convention-conformance.md) | Reference conventions vs sibling workflows |
 | 11–21 | [Artifact creation guides](./resources/README.md#planning-artifact-to-guide-map) | Template + Rules for every planning artifact |
@@ -174,7 +173,7 @@ In create and update modes the workflow seeds and maintains a **planning folder*
 
 **Review mode:** A compliance report committed in the planning folder.
 
-Every mode ends with the [Retrospective](./activities/README.md#11-retrospective) activity, which records a session retrospective in the planning folder; create and update modes also produce a `COMPLETE.md` completion summary there.
+Every mode ends with the [Retrospective](./activities/README.md#11-retrospective) activity, which writes one close-out document, `COMPLETE.md`, to the planning folder: the session retrospective, and in create and update modes the completion summary it is a section of.
 
 ---
 
@@ -203,7 +202,7 @@ corpus/workflow-design/
 │   ├── prepare-dimension.md
 │   ├── capture-dimension.md
 │   ├── synthesize-update-specification.md
-│   ├── persist-design-specification.md
+│   ├── assemble-design-specification.md
 │   ├── pattern-analysis.md
 │   ├── impact-analysis.md
 │   ├── scope-definition.md

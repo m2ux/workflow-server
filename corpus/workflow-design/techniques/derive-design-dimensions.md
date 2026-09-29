@@ -1,17 +1,11 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
 
 Ordered design-dimension set for the current technique from the elicitation-guide mode dimension sets.
-
-## Inputs
-
-### operation_type
-
-The classified technique. Selects the update dimension set when `update`; otherwise the create dimension set.
 
 ## Outputs
 

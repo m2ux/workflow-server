@@ -61,15 +61,15 @@ optional — the exit id a checkpoint option named, set when a checkpoint effect
 
 #### next_activity_id
 
-Where the worker resolved the run goes next, as the `exit_destinations` block gave it for the exit taken: one activity id, `__terminal__` where that exit ends the run, or the fan destination where it is bound to several branches. Null where the activity declares no exit.
+The `next_activity_id` output of [evaluate-transition](./evaluate-transition.md), carried unread.
 
 #### next_activity_fans
 
-Whether that destination opens several branches rather than one activity — true where the `exit_destinations` block gave the exit taken anything other than a single activity id: a list of members, or one activity together with the collection it runs over. A string is one activity (or `__terminal__`); anything else is a fan.
+The `next_activity_fans` output of evaluate-transition.
 
 #### activity_exit
 
-The exit id this activity took; unset where it declares none.
+The `activity_exit` output of evaluate-transition.
 
 #### batch_may_continue
 
@@ -79,7 +79,8 @@ Whether this context may take another activity, folded from the input of the sam
 
 ### 1. Fold Activity Results
 
-- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Include `{selected_exit}` if a checkpoint effect named an exit. Carry `{batch_may_continue}` unchanged: every successful envelope carries it.
+- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Carry `{batch_may_continue}` unchanged: every successful envelope carries it.
+  > Where a checkpoint effect named an exit, include `{selected_exit}`.
 
 ### 2. Read Routing Destination
 
@@ -92,4 +93,4 @@ Whether this context may take another activity, folded from the input of the sam
 
 ### no-readme-persist-on-worker
 
-Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties, and are done elsewhere once the envelope is returned — do not do them here, and do not wait for them. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status writes go through [sync-progress-status](./sync-progress-status.md) by owning activity, not per envelope artifact entry.
+Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties, and are done elsewhere once the envelope is returned — do not do them here, and do not wait for them. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status is written per owning activity, not per envelope artifact entry.

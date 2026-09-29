@@ -66,7 +66,7 @@ Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
 ### 07. Assumptions Review
 
-Reviews each open assumption with the user and posts deferred assumptions to the issue tracker for stakeholder attention, ensuring the plan rests on confirmed ground before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
+Settles the open assumptions the plan rests on before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
 
 Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 
@@ -74,7 +74,7 @@ Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 
 ### 08. Implement
 
-Executes the implementation plan task by task, each task following an implement-test-commit-log-self-review cycle and accumulating per-task outputs across the work. Skipped in review mode (the code already exists). Leads to lean-coding-audit.
+Executes the implementation plan task by task, turning the plan into committed, tested work. Skipped in review mode (the code already exists). Leads to lean-coding-audit.
 
 Definition: [`08-implement.yaml`](./08-implement.yaml)
 
@@ -82,7 +82,7 @@ Definition: [`08-implement.yaml`](./08-implement.yaml)
 
 ### 09. Lean-Coding Audit
 
-Applies the ponytail lean-coding lens to the just-implemented change: tags it against the over-engineering taxonomy (delete / stdlib / native / yagni / shrink) with a net-lines scoreboard, harvests deliberate-simplification `ponytail:` markers into a tracked debt ledger, and records the honest gain. Accepted simplifications land without breaching the safety floor. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode the apply path is gated out — findings are documented, not applied. Leads to post-impl-review.
+Applies the ponytail lean-coding lens to the just-implemented change, so accepted simplifications land without breaching the safety floor and deliberate ones are tracked as debt. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode findings are documented, not applied. Leads to post-impl-review.
 
 Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
@@ -90,7 +90,7 @@ Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
 ### 10. Post-Implementation Review
 
-Reviews implementation quality through manual diff review, code review, structural analysis and test-suite review, catching issues before validation. Each review states its findings in one report and records what it walked in a companion method record. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. When no critical blocker is found it closes by settling whether the environment can run the validation suite. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
+Reviews implementation quality, catching issues before validation. Each review states its findings in one report and records what it walked in a companion method record. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
@@ -98,7 +98,7 @@ Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
 ### 11. Validate
 
-Validates the implementation against tests, build, format, and lint checks when `{run_local_validation}` says the local environment can run them, as post-impl-review determined. When it cannot, Progress for this activity is marked cancelled/N/A and the suite is skipped. In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
+Validates the implementation against tests, build, format, and lint checks when the local environment can run them. In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
 
 Definition: [`11-validate.yaml`](./11-validate.yaml)
 
@@ -106,7 +106,7 @@ Definition: [`11-validate.yaml`](./11-validate.yaml)
 
 ### 12. Strategic Review
 
-Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document, its method record and the architecture summary. The scope review also scans the branch range for unsigned commits and, on the authoring path, offers a re-sign pass. In review mode it documents cleanup recommendations without applying them, and its findings gate decides which of them the posted review carries to the author. In stealth mode the fragment issue-reference check is skipped. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
+Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document, its method record and the architecture summary. In review mode it documents cleanup recommendations for the posted review without applying them. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
 Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 

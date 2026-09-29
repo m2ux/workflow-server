@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ Absolute filesystem path of the dedicated workflows edit-root worktree for this 
 ### workflow_id
 
 Workflow id used to name the feature branch (`workflow/{workflow_id}`, with an intent suffix when an update needs a distinct branch).
-
-### operation_type
-
-Create or update.
 
 ### host_repo_path
 

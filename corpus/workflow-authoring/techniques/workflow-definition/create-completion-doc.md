@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -9,13 +9,9 @@ The run's single terminal record: what was delivered, what was decided, what sta
 
 ## Inputs
 
-### operation_type
+### manifest_entries
 
-The classified technique for the request — create, update or review.
-
-### scope_manifest
-
-The confirmed file manifest for this run, against which delivery is stated.
+The confirmed file manifest for this run — one entry per file to create, modify or remove, each with its path, its action and a one-line statement of the change.
 
 ### open_finding_count
 
@@ -59,7 +55,7 @@ The close-out record: what the run delivered, links to where its decisions live,
 
 ### 3. State the Scope Outcome and What Stays Open
 
-- State delivery against `{scope_manifest}` as exceptions only: a manifest delivered exactly is one line, and rows appear only for drift
+- State delivery against `{manifest_entries}` as exceptions only: a manifest delivered exactly is one line, and rows appear only for drift
 - Record the limitations and deferrals the run leaves behind, including any enumeration unit `{coverage_ledger}` shows as blocked, any finding left open by `{open_finding_count}`, any content preserved because `{removals_approved}` was withheld, and, where `{judgements_disposition}` records that the operator left the brief's judgements unresolved rather than settling them, every judgement the brief's Outcome column shows as still open — each named, so a reader learns which questions the run closed over
 
 ### 4. Record the Retrospective on the Run
@@ -71,8 +67,8 @@ The close-out record: what the run delivered, links to where its decisions live,
 
 ### one-terminal-document
 
-This is the run's only close-out artifact. There is no separate retrospective and no session summary beside it: a second terminal document splits the record a reader has to find.
+This is the run's only close-out artifact. There is no separate retrospective and no session summary beside it.
 
 ### link-rather-than-restate
 
-Delivery, links and limitations — nothing here restates an artifact it links. A close-out that reprints the decisions is the artifact that goes stale first.
+Delivery, links and limitations — nothing here restates an artifact it links.

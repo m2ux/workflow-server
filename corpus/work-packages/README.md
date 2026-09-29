@@ -62,7 +62,7 @@ Establishes a validated understanding of the initiative's starting point — eit
 
 ### 4. [Package Planning](activities/04-package-planning.yaml)
 
-Defines scope, dependencies, effort, and success criteria for each package, fanning out over the identified work packages so every one is detailed enough to be prioritized and executed independently.
+Defines scope, dependencies, effort, and success criteria for each package, working through each identified work package in a loop so every one is detailed enough to be prioritized and executed independently.
 
 ### 5. [Prioritization](activities/05-prioritization.yaml)
 
@@ -82,7 +82,7 @@ The workflow produces planning documentation under the planning folder: `START-H
 
 ## Techniques Summary
 
-Workflow-specific techniques live under `techniques/`. Three are **technique groups** (a `TECHNIQUE.md` contract plus one file per technique, referenced as `<group>::<op>`); the rest are standalone techniques. All share the base contract in `techniques/TECHNIQUE.md`.
+Workflow-specific techniques live under `techniques/`. Some are **technique groups** (a `TECHNIQUE.md` contract plus one file per technique, referenced as `<group>::<op>`); the rest are standalone techniques. All share the base contract in `techniques/TECHNIQUE.md`.
 
 | Technique / Technique | Type | Capability | Used By |
 |-----------------------|------|------------|---------|

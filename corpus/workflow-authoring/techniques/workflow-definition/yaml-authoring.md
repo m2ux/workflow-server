@@ -45,7 +45,7 @@ True when `{yaml_file}` parses and conforms to the schema its kind selects. Fals
 
 - Identify which fields the content needs from the JSON schema for that kind
 - When `{selected_findings}` is present, the files to author are the ones those findings cite, and the planned change is exactly what each finding's fix prescribes
-- Map the content onto formal constructs, taking the table for its own level from [Activity-Level Constructs](/canon/resources/schema-construct-inventory.md#activity-level-constructs-activityschemajson), [Workflow-Level Constructs](/canon/resources/schema-construct-inventory.md#workflow-level-constructs-workflowschemajson) or [Technique-Level Constructs](/canon/resources/schema-construct-inventory.md#technique-level-constructs-techniqueschemajson) or [Routine-Level Constructs](/canon/resources/schema-construct-inventory.md#routine-level-constructs-routineschemajson), plus [Condition Constructs](/canon/resources/schema-construct-inventory.md#condition-constructs-conditionschemajson) wherever a gate is authored
+- Map the content onto formal constructs, taking the table for its own level from [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md), plus its condition table wherever a gate is authored
 - Cross-check required against optional properties before drafting rather than after validation fails
 
 ### 4. Draft the Content

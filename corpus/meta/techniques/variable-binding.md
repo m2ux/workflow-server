@@ -40,13 +40,13 @@ A step's consumed and produced data is exactly the bound technique's composed `i
 
 ### an-argument-position-sets-its-own-default
 
-Three positions in the language take an argument, and a bare word means something different in each. This rule scopes itself to the first; the other two are named so a reader who meets them knows they are reading a different position rather than a contradiction.
+Three positions in the language take an argument, and a bare word means something different in each. This rule scopes itself to the first.
 
-- **A step input deviation** — `step.technique.inputs` — is what Phase 2's disambiguation rule governs: a bare word that matches the bag-name grammar and resolves in the bag is a reference, and anything else is a literal.
+- **A step input deviation** — `step.technique.inputs` — is what the disambiguation rule for a string deviation governs: a bare word that matches the bag-name grammar and resolves in the bag is a reference, and anything else is a literal.
 - **A routine argument** — a reference step's `.with` — reads the opposite way: a braced word is a reference to a host variable and a bare word is always a literal, because a routine is expanded before any bag exists to resolve a name against.
 - **A harness invocation** — an adapter's call template — reads a braced word as a reference and an angle-bracketed word as a value the invoking agent supplies from what it can see of its own host.
 
-The two readings that could meet — a step's and a routine's — do not: expansion resolves a routine argument and emits the resolved reference as a bare name, so a braced reference in a routine file reaches a step as the bare form this rule reads as a reference.
+Expansion resolves a routine argument and emits the resolved reference as a bare name, so a braced reference in a routine file reaches a step as the bare form this rule reads as a reference.
 
 ### a-branch-lands-under-its-own-derived-key
 

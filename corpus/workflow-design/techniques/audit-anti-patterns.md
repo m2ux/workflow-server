@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.13.0
+  version: 1.14.0
 ---
 
 ## Capability
@@ -21,10 +21,6 @@ Findings grouped by catalog entry **name** / **designator**: file path, offendin
 
 `human`
 
-### anti_pattern_findings_path
-
-Absolute path to the persisted anti-pattern-findings artifact.
-
 ## Protocol
 
 ### 1. Load Catalog
@@ -41,6 +37,6 @@ Absolute path to the persisted anti-pattern-findings artifact.
 - Prefer structural evidence (fields, shapes, phrases named by the entry) over inferred intent
 - Do not cite or depend on the catalog's total entry count
 
-### 3. Persist Findings
+### 3. Assemble Findings
 
-- Persist `{anti_pattern_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{anti_pattern_findings_path}`
+- Assemble `{anti_pattern_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares

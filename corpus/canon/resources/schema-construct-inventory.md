@@ -200,7 +200,7 @@ A `graph` destination naming the activity, the collection, and the per-instance 
 
 ## Routine-Level Constructs (routine.schema.json)
 
-Each entry maps a phrase onto a routine. The file shape is `schemas/routine.schema.json`. Layout: [On-disk layout](/meta/resources/workflow-canonical.md#on-disk-layout).
+Each entry maps a phrase onto a routine.
 
 ### Accepted, codified, consistent application of a judgement
 
@@ -212,31 +212,21 @@ A routine.
 
 The routine file at `routines/<name>.yaml`. The filename is the name every reference resolves.
 
-Fields: `schemas/routine.schema.json`.
-
 ### The run needs a value its host holds
 
 A routine input.
-
-Fields: `schemas/routine.schema.json`.
 
 ### The same run, differing only in the technique it binds
 
 A routine input with `kind: technique`.
 
-Fields: `schemas/routine.schema.json`.
-
 ### The run produces a value the host reads afterwards
 
 A routine output.
 
-Fields: `schemas/routine.schema.json`.
-
 ### A value the run's own steps pass between themselves
 
 A routine internal.
-
-Fields: `schemas/routine.schema.json`.
 
 ## Technique-Level Constructs (technique.schema.json)
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -25,10 +25,6 @@ Conformance divergences — each a divergence with its file, the diverging const
 
 Count of entries in `{conformance_findings}`.
 
-### conformance_findings_path
-
-Absolute path to the persisted findings artifact when `{conformance_finding_count}` is greater than zero; empty otherwise.
-
 ## Protocol
 
 ### 1. Load Conventions
@@ -46,8 +42,7 @@ Absolute path to the persisted findings artifact when `{conformance_finding_coun
 - For each divergence: record file, construct, reference convention, and disposition (justified vs bring into conformance) into `{conformance_findings}`
 - Definition prose voice is out of scope for this pass
 
-### 4. Persist Findings
+### 4. Assemble Findings
 
 - Set `{conformance_finding_count}` to the number of findings
-- When `{conformance_finding_count}` is greater than zero: persist `{conformance_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{conformance_findings_path}`
-- When `{conformance_finding_count}` is zero: leave `{conformance_findings_path}` empty
+- Assemble `{conformance_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares

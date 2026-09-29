@@ -70,12 +70,6 @@ Update-mode decision surface. Answers: what is touched, is integrity intact, and
 | # | Location | Removed | Preserved |
 |---|----------|---------|-----------|
 | 1 | `path` or gate | what drops | what stays |
-
----
-
-## Decision ask
-
-Confirm impact scope and intentional removals — or revise / preserve.
 ```
 
 ## Rules

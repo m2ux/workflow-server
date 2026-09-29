@@ -2,7 +2,7 @@
 name: workflow-retrospective
 description: Methodology and section template for the workflow retrospective.
 metadata:
-  version: 2.2.0
+  version: 2.3.0
   order: 20
   legacy_id: 20
 ---
@@ -39,7 +39,7 @@ Priority: **high** = repeated corrections, frustration, missing guidance that ca
 
 ## Item Budget
 
-The section is composed from the message history and the resolved trace, then reviewed as a whole at the close-out gate — there is no per-item interview, because the only interaction primitive the close-out path has is that one gate.
+The section is composed from the message history and the resolved trace, and is reviewed as a whole.
 
 A whole-section review is readable only while the section is short, so the item count is the constraint that makes it work:
 
@@ -83,7 +83,7 @@ Items above the budget are cut, not compressed: an observation that does not mak
 
 ## Rules
 
-- **Within the item budget** — the section holds at most the counts in [Item Budget](#item-budget), reviewed whole at the close-out gate. Overflow goes to the follow-ups register, linked.
+- **Within the item budget** — the section holds at most the counts in [Item Budget](#item-budget). Overflow goes to the follow-ups register, linked.
 - **Workflow improvements, never user or agent error:** users and mechanical traces reveal workflow gaps — analyze as defects in instructions, not blame.
 - **Exception-only:** include only signal categories with content; a smooth session's retrospective is the message counts, a takeaway, and "action required: no".
 - **State each lesson once.** No Summary/Lessons/Takeaway triple-statement — the takeaway line is the recap.
