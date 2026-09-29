@@ -1,33 +1,42 @@
 id: dispatch-client-workflow
-version: 6.1.0
+version: 6.2.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
   reads:
     - client_initial_activity
     - client_session_index
+    - client_walk_resumes
     - component_path
     - host_repo_path
     - planning_folder_path
   writes:
     - name: client_workflow_completed
       type: boolean
-      description: Whether the client workflow walk ended with no further activity routed.
+      description: Whether the client walk reached an exit leading to `__terminal__`. The client session then stands on the activity that took it, and completes on the advance close-out makes on confirmation.
       defaultValue: false
     - name: current_activity
       type: string
-      description: The client activity the walk holds, and null once the client graph routes to none
+      description: The client activity the walk holds
     - name: from_activity
       type: string
       description: The client activity an advance retires
 required: true
 steps:
+  - kind: action
+    id: open-client-walk
+    actions:
+      - action: set
+        target: client_workflow_completed
+        value: false
   - kind: routine
     id: client-activity-loop
     routine: activity-loop
     with:
       session_index: client_session_index
       initial_activity: client_initial_activity
+      completes_session: false
+      resumes_walk: "{client_walk_resumes}"
     outputs:
       current_activity: current_activity
       from_activity: from_activity
@@ -41,9 +50,10 @@ steps:
 exits:
   - id: "null"
     when: current_activity == null
+    isDefault: true
 outcome:
   - The client workflow has executed end to end with its artifacts committed and state persisted at every activity boundary
   - Each worker carried a bounded run of activities in one context, paying the harness baseline once for the run
   - The user retained control over every decision point — checkpoints surfaced to them and their selections steered the workflow
-  - The client workflow has no further activities to run, so the meta can proceed to close it out
+  - The client session stands on its last activity, and the advance onto `__terminal__` that completes it is left to close-out
   - Reaching the end of the activity loop is recorded, so close-out can tell a completed run from one that stopped at the iteration bound

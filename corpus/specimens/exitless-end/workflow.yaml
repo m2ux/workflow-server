@@ -1,0 +1,15 @@
+$schema: ../../../schemas/workflow.schema.json
+id: exitless-end
+version: 1.0.0
+title: Exitless End Workflow
+description: >-
+  A graph that ends on an activity declaring no exits: evidence that a walk completes its session
+  when the last activity names nowhere to go.
+author: m2ux
+tags:
+  - specimen
+  - terminal
+initialActivity: open
+graph:
+  open:
+    opened: close

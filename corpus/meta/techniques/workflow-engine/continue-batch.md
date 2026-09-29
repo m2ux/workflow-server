@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -11,7 +11,11 @@ Advance the session to the next activity and continue the worker already carryin
 
 ### from_activity
 
-The activity this advance retires — the one `{exit_id}` and `{step_manifest}` belong to.
+The activity this advance retires — the one `{exit_id}`, `{step_manifest}` and `{variables_changed}` belong to.
+
+### variables_changed
+
+*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where this call retires no activity, or where that activity changed nothing.
 
 ### worker_agent_id
 
@@ -31,7 +35,7 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed, agent_id: worker_agent_id }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`.
   > This call is the transition a commit has to precede (`commit-and-persist.commit-after-activity`). Where the finished activity has not landed, commit it first.
 
 ### 2. Compose the continuation stub
@@ -61,4 +65,4 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 This technique advances the session pointer, so it owns getting a worker onto the activity it advanced to — the held one, or a replacement it spawns itself. It does not hand that job back to [dispatch-activity](./dispatch-activity.md), which advances the pointer of its own accord: a second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it.
 
-So a batch that cannot continue ends inside this technique, and the only paths that reach `dispatch-activity` are the ones where no advance has happened yet: the first activity of a walk, and the activity after the orchestrator released a spent batch's identity (`dispatch-activity.delivery-keys-on-agent-context`).
+So a batch that cannot continue ends inside this technique.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.28.0
+  version: 1.29.0
 ---
 
 ## Capability
@@ -11,7 +11,15 @@ Transition the session to a target activity and spawn a worker to carry it, and 
 
 ### from_activity
 
-*(optional)* The activity this call retires — the one `{exit_id}` and `{step_manifest}` belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
+*(optional)* The activity this call retires — the one `{exit_id}`, `{step_manifest}` and `{variables_changed}` belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
+
+### variables_changed
+
+*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where this call retires no activity, or where that activity changed nothing.
+
+### stands_on_activity
+
+*(optional)* True where the session already stands on `{activity_id}`, the advance that entered it having been made. False or unset where this dispatch makes that advance.
 
 ### agent_technique
 
@@ -25,11 +33,11 @@ Canonical agent technique for the worker — default workflow-engine::activity-w
 
 ### worker_result
 
-The envelope the worker returned, passed through unchanged — one of two tagged result types: the `checkpoint_pending` envelope, or the `activity_complete` envelope.
+The envelope this entry closes on — one of three tagged result types. The `checkpoint_pending` envelope or the `activity_complete` envelope is the one the worker returned, passed through unchanged. The `workflow_complete` envelope, `{ result_type: "workflow_complete" }`, is the one an advance onto `__terminal__` closes on: the session is completed, and no worker ran.
 
 ### worker_agent_id
 
-Server-side worker identity this dispatch bound — the identity the delivery ledger is keyed on.
+Server-side worker identity this dispatch bound — the identity the delivery ledger is keyed on. Unset on the `workflow_complete` envelope, which no worker returned.
 
 ### trace_tokens
 
@@ -40,14 +48,16 @@ The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_act
 ### 1. Mark Activity Entering
 
 - Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
-  > - When `{planning_folder_path}` is unset, skip this phase.
+  > - When `{planning_folder_path}` is unset, or `{activity_id}` is `__terminal__`, skip this phase.
   > - Publish the mark before the worker spawns, per `dispatch-mark-reaches-the-remote`: apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
 
 ### 2. Advance Session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `accumulate-trace-per-advance`.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` per `accumulate-trace-per-advance`.
   > - A dispatch whose activity ran steps carries one `step_manifest` entry per completed step; the server validates step completion against it and reports a gap when it is absent.
   > - A first dispatch has no prior worker context to attribute the manifest to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
+  > - When `{activity_id}` is `__terminal__`, this advance completes the session: return the `workflow_complete` envelope as `{worker_result}`, and end here.
+  > - When `{stands_on_activity}` is true, skip this phase.
 
 ### 3. Compose Worker Stub
 

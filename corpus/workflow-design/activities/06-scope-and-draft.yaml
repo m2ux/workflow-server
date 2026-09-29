@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.17.0
+version: 1.18.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, with every file drafted, reviewed and schema-valid.
 variables:
@@ -147,6 +147,8 @@ steps:
       - id: revise
         label: Needs revision
         description: File manifest or implementation order requires adjustment.
+        effect:
+          exit: redraft
   - kind: technique
     id: present-solution-overview
     technique:

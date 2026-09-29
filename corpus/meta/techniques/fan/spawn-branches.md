@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Give every branch an identity and a stub, emit them all in one turn, and hand ba
 
 ### branch_activities
 
-The branches the fan opened, in the order the server gave them.
+The branches the fan opened, each as the id that addresses it, in the order the server gave them.
 
 ### agent_technique
 

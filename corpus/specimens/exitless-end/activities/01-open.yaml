@@ -1,0 +1,10 @@
+id: open
+version: 1.0.0
+name: Open
+description: Open the walk, and exit to the activity that ends it.
+required: true
+exits:
+  - id: opened
+    isDefault: true
+outcome:
+  - The walk has left its first activity for the one that ends it

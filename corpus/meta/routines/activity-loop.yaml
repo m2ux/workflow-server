@@ -1,10 +1,10 @@
 id: activity-loop
-version: 1.1.0
+version: 1.2.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
   checkpoint it yields, commit what it produced, and advance onto what its exit routes to — until
-  no activity follows.
+  the walk reaches `__terminal__`.
 
 inputs:
   - id: session_index
@@ -14,7 +14,7 @@ inputs:
   - id: enter_activity
     kind: technique
     default: workflow-engine::dispatch-activity
-    description: The operation that enters an activity and carries it to the envelope it returns.
+    description: The operation that enters an activity and carries it to the envelope it returns, or, entering `__terminal__`, completes the session.
   - id: planning_folder_path
     description: Absolute path to the walked session's planning folder, whose Progress surface each entry marks.
   - id: component_path
@@ -25,11 +25,17 @@ inputs:
     description: Path kind of the engineering checkout. `worktree` selects the worktree commit; any other value selects an ordinary commit of the host checkout. A caller that binds nothing supplies the host's own kind.
   - id: target_status
     description: The Progress status an entry publishes for the activity it marks.
+  - id: completes_session
+    default: true
+    description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
+  - id: resumes_walk
+    default: false
+    description: Whether the session stands on `from_activity`, where an earlier walk left it. The walk then opens on that activity and carries it without an advance.
 
 outputs:
   - id: current_activity
     type: string
-    description: The activity the walk holds, and null once the graph routes to none.
+    description: The activity the walk holds, and null once the walk reaches `__terminal__`.
   - id: from_activity
     type: string
     description: The activity an advance retires, which every entry names as the one its exit belongs to.
@@ -37,6 +43,8 @@ outputs:
 internals:
   - id: fan_convergence_activity
     description: The activity a fan's branches converge on, which the walk resumes from once the fan is opened.
+  - id: stands_on_activity
+    description: Whether the session already stands on the activity the next entry carries, the advance that entered it having been made.
 
 steps:
   - kind: action
@@ -51,6 +59,16 @@ steps:
       - action: set
         target: current_activity
         value: "{initial_activity}"
+  - kind: action
+    id: resume-standing-activity
+    when: resumes_walk == true
+    actions:
+      - action: set
+        target: current_activity
+        value: "{from_activity}"
+      - action: set
+        target: stands_on_activity
+        value: true
   - kind: loop
     id: activity-cycle
     name: Activity Cycle
@@ -64,7 +82,7 @@ steps:
     steps:
       - kind: technique
         id: continue-batched-worker
-        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id && !worker_result.next_activity_fans
+        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
         technique:
           name: workflow-engine::continue-batch
           inputs:
@@ -73,6 +91,7 @@ steps:
             session_index: session_index
             worker_agent_id: worker_agent_id
             step_manifest: "{worker_result.steps_completed}"
+            variables_changed: "{worker_result.variables_changed}"
             variable_bag: variables
       - kind: technique
         id: enter-activity
@@ -81,9 +100,29 @@ steps:
           name: enter_activity
           inputs:
             activity_id: current_activity
+            exit_id: "{worker_result.activity_exit}"
             session_index: session_index
             agent_technique: workflow-engine::activity-worker
+            step_manifest: "{worker_result.steps_completed}"
+            variables_changed: "{worker_result.variables_changed}"
+            stands_on_activity: stands_on_activity
             variable_bag: variables
+      - kind: action
+        id: spend-entered-activity
+        when: stands_on_activity
+        actions:
+          # The entry just made carried the activity the session stood on; every later entry advances.
+          - action: set
+            target: stands_on_activity
+            value: false
+      - kind: action
+        id: end-walk
+        when: worker_result.result_type == "workflow_complete"
+        actions:
+          # The advance onto `__terminal__` completed the session, so the walk ends on this iteration.
+          - action: set
+            target: current_activity
+            value: null
       - kind: technique
         id: enter-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -93,6 +132,8 @@ steps:
             fan_destination: current_activity
             exit_id: "{worker_result.activity_exit}"
             session_index: session_index
+            step_manifest: "{worker_result.steps_completed}"
+            variables_changed: "{worker_result.variables_changed}"
           outputs:
             barrier_destination: fan_convergence_activity
       - kind: technique
@@ -142,13 +183,17 @@ steps:
           - action: set
             target: current_activity
             value: "{fan_convergence_activity}"
+          # The last branch retirement entered the convergence activity, so its entry makes no advance.
+          - action: set
+            target: stands_on_activity
+            value: true
       - kind: action
         id: retire-fan-envelope
         when: fan_convergence_activity
         actions:
           # After the fan is opened the walk holds the convergence as current_activity.
           # The envelope and the convergence name stay unset so later steps in this
-          # iteration, and the next iteration, treat that activity as an ordinary next step.
+          # iteration, and the next iteration, treat that activity as the next one to carry.
           - action: set
             target: worker_result
             value: null
@@ -215,8 +260,16 @@ steps:
             value: "{worker_result.next_activity_id}"
       - kind: action
         id: release-spent-worker
-        when: worker_result.result_type == "activity_complete" && (!worker_result.batch_may_continue || !worker_result.next_activity_id || worker_result.next_activity_fans)
+        when: worker_result.result_type == "activity_complete" && (!worker_result.batch_may_continue || worker_result.next_activity_id == "__terminal__" || worker_result.next_activity_fans)
         actions:
           - action: set
             target: worker_agent_id
+            value: null
+      - kind: action
+        id: stop-before-terminal
+        when: completes_session == false && current_activity == "__terminal__"
+        actions:
+          # The walk ends on the envelope naming `__terminal__`, and the advance onto it is the caller's.
+          - action: set
+            target: current_activity
             value: null

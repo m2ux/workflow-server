@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 3.0.0
+version: 3.1.0
 name: Execute Prism Analyses
 description: Trigger the prism workflow for each execution group.
 variables:
@@ -18,7 +18,7 @@ variables:
       description: Completed analysis runs, each { report_path, definitive_findings_path, status }
     - name: current_activity
       type: string
-      description: The prism activity the walk holds, and null once the prism graph routes to none
+      description: The prism activity the walk holds
     - name: from_activity
       type: string
       description: The prism activity an advance retires
