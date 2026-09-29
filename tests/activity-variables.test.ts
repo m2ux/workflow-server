@@ -251,7 +251,7 @@ describe('activity-variables guard', () => {
         + 'activities:\n  - library/01-shared.yaml\n');
       const findings = await collectFindings(root);
       // The borrower supplies it nowhere, and the walk confirms no path reaches the read with a
-      // value; the workflow that authored the activity declares it and is clean.
+      // value; the workflow that authored the activity declares it, and nothing there sets it.
       expect(findings.filter((f) => f.site.startsWith('borrower'))).toEqual([
         {
           check: 'unwritten-read',
@@ -264,7 +264,69 @@ describe('activity-variables guard', () => {
           detail: "reads 'target_path' on a path that reaches it before anything writes it",
         },
       ]);
-      expect(findings.filter((f) => f.site.startsWith('library'))).toEqual([]);
+      expect(findings.filter((f) => f.site.startsWith('library')).map((f) => f.check)).toEqual(['unproduced-read']);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('unproduced reads', () => {
+  /** One workflow declaring `variables`, whose one activity reads `reads` and writes `writes`. */
+  function corpus(variables: string, reads: string[], writes = ''): string {
+    const root = mkdtempSync(join(tmpdir(), 'wf-unproduced-'));
+    mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
+    writeFileSync(join(root, 'wf', 'workflow.yaml'),
+      `id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\nvariables:\n${variables}`);
+    const conditions = reads.map((name, i) => `  - kind: action\n    id: use-${i}\n    when: ${name} != ""\n`).join('');
+    writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'),
+      `id: thing\nversion: 1.0.0\nname: Thing\nvariables:\n  reads:\n${reads.map((r) => `    - ${r}\n`).join('')}${writes}`
+      + `steps:\n${conditions}`);
+    return root;
+  }
+
+  it('reports a declared read nothing sets: no default, no producing step, not seeded', async () => {
+    const root = corpus('  - name: target_doc_path\n    type: string\n', ['target_doc_path']);
+    try {
+      expect(await collectFindings(root)).toEqual([{
+        check: 'unproduced-read',
+        site: 'wf :: thing',
+        detail: "reads 'target_doc_path', which the workflow file declares with no defaultValue, no step produces, and the server does not seed — every run reads it unset",
+      }]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('holds a seeded name, a declared default, and a name a step produces to be set', async () => {
+    const root = corpus(
+      '  - name: user_request\n    type: string\n'
+      + '  - name: planning_folder_path\n    type: string\n'
+      + '  - name: mode_label\n    type: string\n    defaultValue: standard\n',
+      ['user_request', 'planning_folder_path', 'mode_label'],
+    );
+    try {
+      expect((await collectFindings(root)).filter((f) => f.check === 'unproduced-read')).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('suppresses a read the ledger classifies, and reports an entry matching no finding as stale', async () => {
+    const root = corpus('  - name: target_doc_path\n    type: string\n', ['target_doc_path']);
+    try {
+      mkdirSync(join(root, 'ledgers'), { recursive: true });
+      writeFileSync(join(root, 'ledgers', 'unproduced-read-triage.json'), JSON.stringify({
+        entries: [
+          { site: 'wf :: thing', name: 'target_doc_path', verdict: 'fix-later', rationale: 'input-without-a-producer' },
+          { site: 'wf :: thing', name: 'source_paths', verdict: 'fix-later', rationale: 'input-without-a-producer' },
+        ],
+      }));
+      expect(await collectFindings(root)).toEqual([{
+        check: 'stale-triage',
+        site: 'wf :: thing',
+        detail: "unproduced-read-triage.json classifies an unproduced read of 'source_paths' this activity no longer makes — delete the entry with the change that closed it",
+      }]);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

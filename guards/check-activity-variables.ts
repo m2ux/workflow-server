@@ -6,7 +6,7 @@
  * activities a workflow includes from another workflow, which are checked in the scope they RUN
  * in rather than the scope they were authored in (#491 finding 1).
  *
- * Five finding families:
+ * Six finding families:
  *
  *   undeclared-use     — the activity reads or writes a name its contract omits. Derivation is
  *                        the same name-match convention `binding-provenance` resolves a step's
@@ -14,6 +14,9 @@
  *   unused-declaration — the contract declares a name the activity neither reads nor writes.
  *   unwritten-read     — a declared read no activity in the graph writes, and the workflow file
  *                        does not own. The value would have to be improvised at the step.
+ *   unproduced-read    — a declared read of a name the workflow file owns with no defaultValue,
+ *                        that no step of any activity produces and the server does not seed.
+ *                        Nothing ever sets it, so every run reads it unset.
  *   unread-write       — a declared write nothing reads: neither another activity's contract nor
  *                        the workflow file's own prose.
  *   unreachable-read   — a read no path satisfies. `entry` means some path from the initial
@@ -22,12 +25,16 @@
  *                        previous pass's value and a route testing for the other value cannot be
  *                        taken.
  *
- * Hard zero, no ledger: every finding named a definition defect and each was fixed in the corpus.
+ * Hard zero, with one ledger: an unproduced read present when that family landed is classified in
+ * `ledgers/unproduced-read-triage.json`, one entry per activity and name, and is suppressed there.
+ * An unproduced read no entry covers fails the guard, and an entry matching no finding is reported
+ * stale, so the fix that gives a value its producer takes the entry with it. Every other family
+ * named a definition defect, and each was fixed in the corpus.
  *
  *   npx tsx guards/check-activity-variables.ts [--root <workflows-dir>] [--json]
  *   npx tsx guards/check-activity-variables.ts --emit-contracts   # derived contracts, as JSON
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
@@ -35,6 +42,7 @@ import { type WorkflowWithDiagnostics, fanGroups, loadWorkflowWithDiagnostics } 
 import { buildRoutineLookup } from '../src/loaders/routine-loader.js';
 import { type RoutineLookup, collectRoutineRefs } from '../src/loaders/routine-resolver.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN } from '../src/utils/binding-provenance.js';
+import { SEEDED_VARIABLE_NAMES } from '../src/utils/eager-client.js';
 import {
   activityGraph,
   bagName,
@@ -48,7 +56,7 @@ import {
 import { branchKey, instanceFans } from '../src/schema/workflow.schema.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusWorkflows, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest, ledgerPath } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -84,6 +92,48 @@ interface ActivityRecord {
   derived: DerivedContract;
 }
 
+const UNPRODUCED_LEDGER = 'unproduced-read-triage.json';
+
+/** A judgement on an unproduced read: the activity that reads it, and the name nothing sets. */
+export interface UnproducedTriageEntry {
+  /** `<workflow> :: <activity>`, as the finding's site reads. */
+  site: string;
+  name: string;
+  verdict: 'fix-later';
+  rationale: string;
+}
+
+function readUnproducedLedger(root: string): UnproducedTriageEntry[] {
+  const path = ledgerPath(root, UNPRODUCED_LEDGER);
+  if (!existsSync(path)) return [];
+  const entries = (JSON.parse(readFileSync(path, 'utf-8')) as { entries?: UnproducedTriageEntry[] }).entries;
+  return Array.isArray(entries) ? entries : [];
+}
+
+/** The name each unproduced-read finding is about, so the ledger keys on it rather than on prose. */
+const unproducedName = new WeakMap<Finding, string>();
+
+/** Suppress each unproduced read the ledger classifies, and report an entry that matches none. */
+function applyUnproducedLedger(root: string, findings: Finding[]): Finding[] {
+  const triaged = new Map(readUnproducedLedger(root).map((entry) => [`${entry.site} ${entry.name}`, entry]));
+  const seen = new Set<string>();
+  const kept = findings.filter((finding) => {
+    const name = unproducedName.get(finding);
+    if (name === undefined) return true;
+    const key = `${finding.site} ${name}`;
+    seen.add(key);
+    return !triaged.has(key);
+  });
+  for (const [key, entry] of triaged) {
+    if (seen.has(key)) continue;
+    kept.push({
+      check: 'stale-triage', site: entry.site,
+      detail: `${UNPRODUCED_LEDGER} classifies an unproduced read of '${entry.name}' this activity no longer makes — delete the entry with the change that closed it`,
+    });
+  }
+  return kept;
+}
+
 /** Bag names a workflow file's own prose interpolates — its rules and descriptions read too. */
 function workflowProseReads(workflowYaml: string): Set<string> {
   const token = new RegExp(`\\{(${IDENTIFIER_PATTERN})(?:\\.[a-zA-Z0-9_]+)*\\}`, 'g');
@@ -117,7 +167,9 @@ export async function collectFindings(root: string): Promise<Finding[]> {
     }
     const { workflow, activitySourceWorkflow } = loaded.value;
     const rawWorkflowYaml = readFileSync(workflowSubdir(index, workflowId, 'workflow.yaml')!, 'utf-8');
-    const owned = new Set(ownDeclarations(rawWorkflowYaml).map((declaration) => declaration.name));
+    const ownDeclared = ownDeclarations(rawWorkflowYaml);
+    const owned = new Set(ownDeclared.map((declaration) => declaration.name));
+    const ownDefaulted = new Set(ownDeclared.filter((d) => d.defaultValue !== undefined).map((d) => d.name));
     const proseReads = workflowProseReads(rawWorkflowYaml);
 
     // The namespace a contract entry can name: the workflow's variable set (the file's own
@@ -317,12 +369,25 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       }
     }
 
+    // Every name some step produces, declared or not: an output, an artifact, a gate's effect.
+    const producedAnywhere = new Set(records.flatMap((record) => [...record.derived.produces]));
     for (const record of records) {
       const ownParameter = fanParameterOf.get(record.id);
       for (const name of record.declaredReads) {
         // The parameter is ambient to the activity the fan runs and unwritten everywhere else.
         if (name === ownParameter) continue;
-        if (owned.has(name) || writersOf.has(name) || AMBIENT_CONTEXT_IDS.has(name)) continue;
+        if (writersOf.has(name) || AMBIENT_CONTEXT_IDS.has(name)) continue;
+        if (owned.has(name)) {
+          if (!ownDefaulted.has(name) && !SEEDED_VARIABLE_NAMES.has(name) && !producedAnywhere.has(name)) {
+            const finding: Finding = {
+              check: 'unproduced-read', site: site(record),
+              detail: `reads '${name}', which the workflow file declares with no defaultValue, no step produces, and the server does not seed — every run reads it unset`,
+            };
+            unproducedName.set(finding, name);
+            findings.push(finding);
+          }
+          continue;
+        }
         const suppliedTo = [...fanParameterOf].find(([, parameter]) => parameter === name)?.[0];
         findings.push({
           check: 'unwritten-read', site: site(record),
@@ -474,7 +539,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       });
     }
   }
-  return findings;
+  return applyUnproducedLedger(root, findings);
 }
 
 /**
