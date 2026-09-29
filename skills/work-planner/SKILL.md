@@ -82,6 +82,13 @@ Read the file for the mode the request calls for:
   A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
 - **Succinct items.**
   Each Problem and Proposal item is one or two sentences. Several things go in a bulleted list, with sub-bullets as needed, never packed into one sentence.
+- **Bold leads.**
+  A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
+
+  ```markdown
+  - **Length is the only check on entry.**
+    The data source decodes the key and never checks its value.
+  ```
 - **Next number.**
   Find the next initiative number with [List initiative titles](references/commands.md#list-initiative-titles).
 - **Labels.**
@@ -120,3 +127,6 @@ Every command the skill runs has one spec in [commands.md](references/commands.m
   - How the plan evolved goes in the planning record and in commit and pull request bodies.
 - **Other initiatives.**
   Editing another initiative's issue needs the user's explicit approval.
+- **Replies to feedback.**
+  - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on issue](references/commands.md#comment-on-issue).
+  - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.
