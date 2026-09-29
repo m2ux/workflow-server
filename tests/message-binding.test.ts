@@ -42,7 +42,28 @@ describe('check-message-binding', () => {
     expect(sites.filter((s) => s.endsWith('::announce') || s.endsWith('::announce-mode') || s.endsWith('::announce-prior'))).toEqual([]);
   });
 
-  it('reports nothing beyond the gate that shows a later value', () => {
-    expect(new Set(sites)).toEqual(new Set(['binding-fixture/produce-then-render::cites-later-output']));
+  it('stays silent on a name more than one activity produces', () => {
+    expect(sites).not.toContain('binding-fixture/shared-before::shows-shared');
+  });
+
+  it('fires on a loop-body value with no default, which its first pass has not produced', () => {
+    expect(findings.filter((f) => f.site === 'binding-fixture/loop-undefaulted::shows-loop-note').map((f) => f.check))
+      .toEqual(['renders-placeholder']);
+  });
+
+  it('fires on a top-level gate whose id a later loop-body step reuses', () => {
+    expect(sites).toContain('binding-fixture/repeated-id::review');
+  });
+
+  it('stays silent on a defaulted count an enclosing loop carries round a nested gate', () => {
+    expect(sites).not.toContain('binding-fixture/nested-loops::inner-reviewed');
+  });
+
+  it('reports nothing beyond the gates that show a later value', () => {
+    expect(new Set(sites)).toEqual(new Set([
+      'binding-fixture/produce-then-render::cites-later-output',
+      'binding-fixture/loop-undefaulted::shows-loop-note',
+      'binding-fixture/repeated-id::review',
+    ]));
   });
 });

@@ -15,8 +15,8 @@
  *   unwritten-read     — a declared read no activity in the graph writes, and the workflow file
  *                        does not own. The value would have to be improvised at the step.
  *   unproduced-read    — a declared read of a name the workflow file owns with no defaultValue,
- *                        that no step of any activity produces and the server does not seed.
- *                        Nothing ever sets it, so every run reads it unset.
+ *                        or an empty one, that no step of any activity produces and the server
+ *                        does not seed. Nothing ever sets it, so every run reads it unset or empty.
  *   unread-write       — a declared write nothing reads: neither another activity's contract nor
  *                        the workflow file's own prose.
  *   unreachable-read   — a read no path satisfies. `entry` means some path from the initial
@@ -26,10 +26,11 @@
  *                        taken.
  *
  * Hard zero, with one ledger: an unproduced read present when that family landed is classified in
- * `ledgers/unproduced-read-triage.json`, one entry per activity and name, and is suppressed there.
- * An unproduced read no entry covers fails the guard, and an entry matching no finding is reported
- * stale, so the fix that gives a value its producer takes the entry with it. Every other family
- * named a definition defect, and each was fixed in the corpus.
+ * `ledgers/unproduced-read-triage.json`, one entry per activity and name. A `fix-later` entry
+ * suppresses it; a `live-bug` entry keeps it reported. An unproduced read no entry covers fails the
+ * guard, and an entry matching no finding is reported stale, so the fix that gives a value its
+ * producer takes the entry with it. Every other family named a definition defect, and each was
+ * fixed in the corpus.
  *
  *   npx tsx guards/check-activity-variables.ts [--root <workflows-dir>] [--json]
  *   npx tsx guards/check-activity-variables.ts --emit-contracts   # derived contracts, as JSON
@@ -42,7 +43,7 @@ import { type WorkflowWithDiagnostics, fanGroups, loadWorkflowWithDiagnostics } 
 import { buildRoutineLookup } from '../src/loaders/routine-loader.js';
 import { type RoutineLookup, collectRoutineRefs } from '../src/loaders/routine-resolver.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN } from '../src/utils/binding-provenance.js';
-import { SEEDED_VARIABLE_NAMES } from '../src/utils/eager-client.js';
+import { seededNamesFor } from '../src/utils/eager-client.js';
 import {
   activityGraph,
   bagName,
@@ -94,12 +95,15 @@ interface ActivityRecord {
 
 const UNPRODUCED_LEDGER = 'unproduced-read-triage.json';
 
-/** A judgement on an unproduced read: the activity that reads it, and the name nothing sets. */
+/**
+ * A judgement on an unproduced read: the activity that reads it, and the name nothing sets.
+ * `fix-later` suppresses the finding as known debt; `live-bug` keeps it reported.
+ */
 export interface UnproducedTriageEntry {
   /** `<workflow> :: <activity>`, as the finding's site reads. */
   site: string;
   name: string;
-  verdict: 'fix-later';
+  verdict: 'fix-later' | 'live-bug';
   rationale: string;
 }
 
@@ -110,22 +114,44 @@ function readUnproducedLedger(root: string): UnproducedTriageEntry[] {
   return Array.isArray(entries) ? entries : [];
 }
 
+/** Whether a declared default is absent or empty — a placeholder, not a value a read can use. */
+function isEmptyDefault(value: unknown): boolean {
+  return value === undefined || value === '' || (Array.isArray(value) && value.length === 0);
+}
+
 /** The name each unproduced-read finding is about, so the ledger keys on it rather than on prose. */
 const unproducedName = new WeakMap<Finding, string>();
 
-/** Suppress each unproduced read the ledger classifies, and report an entry that matches none. */
-function applyUnproducedLedger(root: string, findings: Finding[]): Finding[] {
-  const triaged = new Map(readUnproducedLedger(root).map((entry) => [`${entry.site} ${entry.name}`, entry]));
+/**
+ * Suppress each unproduced read the ledger classifies `fix-later`, and report an entry that
+ * matches none, or that repeats another's key. An entry for a workflow that did not load is left
+ * alone: the load failure is the finding, and the read cannot be measured until it is fixed.
+ */
+function applyUnproducedLedger(root: string, findings: Finding[], unloaded: ReadonlySet<string>): Finding[] {
+  const triaged = new Map<string, UnproducedTriageEntry>();
+  const kept: Finding[] = [];
+  for (const entry of readUnproducedLedger(root)) {
+    const key = `${entry.site} ${entry.name}`;
+    if (triaged.has(key)) {
+      kept.push({
+        check: 'duplicate-triage', site: entry.site,
+        detail: `${UNPRODUCED_LEDGER} classifies the unproduced read of '${entry.name}' more than once — keep one entry`,
+      });
+      continue;
+    }
+    triaged.set(key, entry);
+  }
   const seen = new Set<string>();
-  const kept = findings.filter((finding) => {
+  for (const finding of findings) {
     const name = unproducedName.get(finding);
-    if (name === undefined) return true;
+    if (name === undefined) { kept.push(finding); continue; }
     const key = `${finding.site} ${name}`;
     seen.add(key);
-    return !triaged.has(key);
-  });
+    if (triaged.get(key)?.verdict !== 'fix-later') kept.push(finding);
+  }
   for (const [key, entry] of triaged) {
     if (seen.has(key)) continue;
+    if (unloaded.has(entry.site.split(' :: ')[0] ?? '')) continue;
     kept.push({
       check: 'stale-triage', site: entry.site,
       detail: `${UNPRODUCED_LEDGER} classifies an unproduced read of '${entry.name}' this activity no longer makes — delete the entry with the change that closed it`,
@@ -155,10 +181,13 @@ export async function collectFindings(root: string): Promise<Finding[]> {
   const engineInputs = await orchestratorInputs(root);
   const workflows = corpusWorkflows(root, index).map(({ id }) => id);
   assertScanned(workflows.length, 'workflows with a workflow.yaml', root);
+  /** Workflows that failed to load, whose ledger entries cannot be measured this run. */
+  const unloaded = new Set<string>();
 
   for (const workflowId of workflows) {
     const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
     if (!loaded.success) {
+      unloaded.add(workflowId);
       findings.push({
         check: 'workflow-load', site: `${workflowId}/workflow.yaml`,
         detail: loaded.error.message,
@@ -169,7 +198,10 @@ export async function collectFindings(root: string): Promise<Finding[]> {
     const rawWorkflowYaml = readFileSync(workflowSubdir(index, workflowId, 'workflow.yaml')!, 'utf-8');
     const ownDeclared = ownDeclarations(rawWorkflowYaml);
     const owned = new Set(ownDeclared.map((declaration) => declaration.name));
-    const ownDefaulted = new Set(ownDeclared.filter((d) => d.defaultValue !== undefined).map((d) => d.name));
+    // An empty default ("" or []) is a placeholder rather than a value: read where nothing sets it,
+    // it is empty on every run, which is the unset read this family reports.
+    const ownDefaulted = new Set(ownDeclared.filter((d) => !isEmptyDefault(d.defaultValue)).map((d) => d.name));
+    const seeded = seededNamesFor(workflowId);
     const proseReads = workflowProseReads(rawWorkflowYaml);
 
     // The namespace a contract entry can name: the workflow's variable set (the file's own
@@ -378,10 +410,10 @@ export async function collectFindings(root: string): Promise<Finding[]> {
         if (name === ownParameter) continue;
         if (writersOf.has(name) || AMBIENT_CONTEXT_IDS.has(name)) continue;
         if (owned.has(name)) {
-          if (!ownDefaulted.has(name) && !SEEDED_VARIABLE_NAMES.has(name) && !producedAnywhere.has(name)) {
+          if (!ownDefaulted.has(name) && !seeded.has(name) && !producedAnywhere.has(name)) {
             const finding: Finding = {
               check: 'unproduced-read', site: site(record),
-              detail: `reads '${name}', which the workflow file declares with no defaultValue, no step produces, and the server does not seed — every run reads it unset`,
+              detail: `reads '${name}', which the workflow file declares with no defaultValue or an empty one, no step produces, and the server does not seed — every run reads it unset`,
             };
             unproducedName.set(finding, name);
             findings.push(finding);
@@ -539,7 +571,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       });
     }
   }
-  return applyUnproducedLedger(root, findings);
+  return applyUnproducedLedger(root, findings, unloaded);
 }
 
 /**

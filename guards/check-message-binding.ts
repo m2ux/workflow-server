@@ -33,6 +33,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { buildProducerIndex } from '../src/utils/binding-provenance.js';
 import { flattenActivitySteps, type Step } from '../src/schema/activity.schema.js';
+import { seededNamesFor } from '../src/utils/eager-client.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusWorkflows, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
@@ -68,14 +69,17 @@ function gateTexts(step: { message?: string | undefined; options?: { id: string;
   return out;
 }
 
-/** For each loop, the ids of every step its body holds, nested loops included. */
-function loopBodies(steps: Step[] | undefined, out: Set<string>[] = []): Set<string>[] {
+/**
+ * For each loop, every step its body holds, nested loops included. Held by object: a step id is
+ * unique only within one step list, so a loop-body step and a top-level one can share it.
+ */
+function loopBodies(steps: Step[] | undefined, out: Set<Step>[] = []): Set<Step>[] {
   for (const step of steps ?? []) {
     if (step.kind !== 'loop') continue;
-    const body = new Set<string>();
+    const body = new Set<Step>();
     const collect = (inner: Step[] | undefined): void => {
       for (const s of inner ?? []) {
-        if (s.id !== undefined) body.add(s.id);
+        body.add(s);
         if (s.kind === 'loop') collect(s.steps as Step[]);
       }
     };
@@ -92,8 +96,15 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
   const index = indexCorpus(root);
   for (const { id: workflowId } of corpusWorkflows(root, index)) {
     const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
-    if (!loaded.success) continue;
-    const { workflow, activitySourceWorkflow } = loaded.value;
+    if (!loaded.success) {
+      findings.push({ check: 'unmeasured', site: `${workflowId}/workflow.yaml`, detail: `the workflow does not load, so its gates are unmeasured: ${loaded.error.message}` });
+      continue;
+    }
+    const { workflow, activitySourceWorkflow, activityLoadErrors } = loaded.value;
+    for (const excluded of activityLoadErrors) {
+      findings.push({ check: 'unmeasured', site: `${workflowId}/${excluded.file}`, detail: `the activity is excluded from the load, so its gates are unmeasured: ${excluded.error}` });
+    }
+    const seeded = seededNamesFor(workflowId);
     const producerIndex = await buildProducerIndex({ workflow, workflowDir: root, activitySourceWorkflow });
     const producingActivities = new Map<string, Set<string>>();
     for (const producer of producerIndex.producers) {
@@ -112,21 +123,23 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
       const loops = loopBodies(activity.steps);
       for (const step of flattenActivitySteps(activity)) {
         if (step.kind !== 'checkpoint' || step.id === undefined) continue;
-        const position = producerIndex.positions.get(`${activity.id}|${step.id}`) ?? -1;
-        const gateId = step.id;
-        const enclosing = loops.filter((body) => body.has(gateId));
+        const position = producerIndex.steps.indexOf(step);
+        const enclosing = loops.filter((body) => body.has(step));
         for (const { where, template } of gateTexts(step)) {
           for (const name of new Set(interpolations(template))) {
             const activities = producingActivities.get(name);
             // Prior state, a session fact, or a name another activity may have produced first.
             if (activities === undefined || !activities.has(activity.id) || activities.size > 1) continue;
+            if (seeded.has(name)) continue;
             const producedBefore = producerIndex.producers.some(
               (p) => p.name === name && p.activityId === activity.id && p.ordinal < position,
             );
             if (producedBefore) continue;
-            const loopCarried = defaulted.has(name) && producerIndex.producers.some(
-              (p) => p.name === name && p.activityId === activity.id && enclosing.some((body) => body.has(p.stepId)),
-            );
+            const loopCarried = defaulted.has(name) && producerIndex.producers.some((p) => {
+              const producing = producerIndex.steps[p.ordinal];
+              return p.name === name && p.activityId === activity.id && producing !== undefined
+                && enclosing.some((body) => body.has(producing));
+            });
             if (loopCarried) continue;
             const rendersDefault = defaulted.has(name);
             findings.push({

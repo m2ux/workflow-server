@@ -1,0 +1,26 @@
+id: shared-before
+version: 1.0.0
+name: Shared Before
+description: A gate shows a note a later step produces, which another activity also produces.
+variables:
+  writes:
+    - name: shared_note
+      type: string
+      description: A note two activities produce
+required: true
+steps:
+  - kind: checkpoint
+    id: shows-shared
+    message: "The shared note reads {shared_note}."
+    options:
+      - id: ok
+        label: Proceed
+        description: The note is right.
+  - kind: technique
+    id: produce
+    technique: produce-shared
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A gate shows a name more than one activity produces

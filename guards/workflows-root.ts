@@ -251,7 +251,7 @@ export function definitionsUnder(dir: string): DefinitionFile[] {
  *
  * A rule that grades a definition AGAINST the workflow around it takes this walk — the seeded
  * variable model, the set of defaults that suppresses a finding, the reachability of an activity
- * from `initialActivity`, the producers a message binding resolves against. A library activity a
+ * from `initialActivity`. A library activity a
  * subdirectory holds runs under whichever workflow borrows it, and takes that workflow's model,
  * graph and producers; graded here it would be graded against a workflow it never runs under.
  *

@@ -272,18 +272,24 @@ describe('activity-variables guard', () => {
 });
 
 describe('unproduced reads', () => {
-  /** One workflow declaring `variables`, whose one activity reads `reads` and writes `writes`. */
-  function corpus(variables: string, reads: string[], writes = ''): string {
+  /**
+   * One workflow `id` declaring `variables`, whose one activity reads `reads` in `when` gates,
+   * declares `writes`, and runs `steps` before the reads.
+   */
+  function corpus(variables: string, reads: string[], writes = '', steps = '', id = 'wf'): string {
     const root = mkdtempSync(join(tmpdir(), 'wf-unproduced-'));
-    mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
-    writeFileSync(join(root, 'wf', 'workflow.yaml'),
-      `id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\nvariables:\n${variables}`);
+    mkdirSync(join(root, id, 'activities'), { recursive: true });
+    writeFileSync(join(root, id, 'workflow.yaml'),
+      `id: ${id}\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\nvariables:\n${variables}`);
     const conditions = reads.map((name, i) => `  - kind: action\n    id: use-${i}\n    when: ${name} != ""\n`).join('');
-    writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'),
+    writeFileSync(join(root, id, 'activities', '01-thing.yaml'),
       `id: thing\nversion: 1.0.0\nname: Thing\nvariables:\n  reads:\n${reads.map((r) => `    - ${r}\n`).join('')}${writes}`
-      + `steps:\n${conditions}`);
+      + `steps:\n${steps}${conditions}`);
     return root;
   }
+
+  const unproduced = async (root: string): Promise<string[]> =>
+    (await collectFindings(root)).filter((f) => f.check === 'unproduced-read').map((f) => f.detail.split("'")[1]!);
 
   it('reports a declared read nothing sets: no default, no producing step, not seeded', async () => {
     const root = corpus('  - name: target_doc_path\n    type: string\n', ['target_doc_path']);
@@ -291,22 +297,90 @@ describe('unproduced reads', () => {
       expect(await collectFindings(root)).toEqual([{
         check: 'unproduced-read',
         site: 'wf :: thing',
-        detail: "reads 'target_doc_path', which the workflow file declares with no defaultValue, no step produces, and the server does not seed — every run reads it unset",
+        detail: "reads 'target_doc_path', which the workflow file declares with no defaultValue or an empty one, no step produces, and the server does not seed — every run reads it unset",
       }]);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   });
 
-  it('holds a seeded name, a declared default, and a name a step produces to be set', async () => {
+  it('holds a seeded name, a checkout fact, and a declared default to be set', async () => {
     const root = corpus(
       '  - name: user_request\n    type: string\n'
       + '  - name: planning_folder_path\n    type: string\n'
+      + '  - name: host_repo_path\n    type: string\n'
+      + '  - name: target_repo\n    type: string\n'
       + '  - name: mode_label\n    type: string\n    defaultValue: standard\n',
-      ['user_request', 'planning_folder_path', 'mode_label'],
+      ['user_request', 'planning_folder_path', 'host_repo_path', 'target_repo', 'mode_label'],
     );
     try {
-      expect((await collectFindings(root)).filter((f) => f.check === 'unproduced-read')).toEqual([]);
+      expect(await unproduced(root)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('holds a name a step produces to be set', async () => {
+    const root = corpus(
+      '  - name: chosen_path\n    type: string\n', ['chosen_path'],
+      '  writes:\n    - name: chosen_path\n      type: string\n      description: the chosen path\n',
+      '  - kind: action\n    id: choose\n    actions:\n      - action: set\n        target: chosen_path\n        value: docs/spec.md\n',
+    );
+    try {
+      expect(await unproduced(root)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('reports a read whose only default is empty', async () => {
+    const root = corpus(
+      '  - name: source_document_path\n    type: string\n    defaultValue: ""\n'
+      + '  - name: extra_paths\n    type: array\n    defaultValue: []\n',
+      ['source_document_path', 'extra_paths'],
+    );
+    try {
+      expect((await unproduced(root)).sort()).toEqual(['extra_paths', 'source_document_path']);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('holds a meta session\'s client facts to be seeded in meta alone', async () => {
+    const declared = '  - name: target_workflow_id\n    type: string\n';
+    const other = corpus(declared, ['target_workflow_id']);
+    const meta = corpus(declared, ['target_workflow_id'], '', '', 'meta');
+    try {
+      expect(await unproduced(other)).toEqual(['target_workflow_id']);
+      expect(await unproduced(meta)).toEqual([]);
+    } finally {
+      rmSync(other, { recursive: true, force: true });
+      rmSync(meta, { recursive: true, force: true });
+    }
+  });
+
+  function ledger(root: string, entries: object[]): void {
+    mkdirSync(join(root, 'ledgers'), { recursive: true });
+    writeFileSync(join(root, 'ledgers', 'unproduced-read-triage.json'), JSON.stringify({ entries }));
+  }
+
+  it('keeps a read the ledger classifies live-bug reported, and reports a repeated entry', async () => {
+    const root = corpus('  - name: target_doc_path\n    type: string\n', ['target_doc_path']);
+    try {
+      const entry = { site: 'wf :: thing', name: 'target_doc_path', verdict: 'live-bug', rationale: 'input-without-a-producer' };
+      ledger(root, [entry, entry]);
+      expect((await collectFindings(root)).map((f) => f.check).sort()).toEqual(['duplicate-triage', 'unproduced-read']);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('leaves the entries of a workflow that fails to load alone', async () => {
+    const root = corpus('  - name: target_doc_path\n    type: string\n', ['target_doc_path']);
+    try {
+      writeFileSync(join(root, 'wf', 'workflow.yaml'), 'id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: missing\n');
+      ledger(root, [{ site: 'wf :: thing', name: 'target_doc_path', verdict: 'fix-later', rationale: 'input-without-a-producer' }]);
+      expect((await collectFindings(root)).map((f) => f.check)).not.toContain('stale-triage');
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

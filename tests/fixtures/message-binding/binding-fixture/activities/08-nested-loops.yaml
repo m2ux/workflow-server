@@ -1,0 +1,60 @@
+id: nested-loops
+version: 1.0.0
+name: Nested Loops
+description: A gate in an inner loop shows a count the outer loop body produces after the inner loop.
+variables:
+  writes:
+    - name: outer_count
+      type: number
+      description: Outer passes completed
+      defaultValue: 0
+    - name: outer_flag
+      type: boolean
+      description: True when the outer pass repeats
+      defaultValue: false
+    - name: inner_flag
+      type: boolean
+      description: True when the inner pass repeats
+      defaultValue: false
+required: true
+steps:
+  - kind: loop
+    id: outer
+    name: Outer
+    loopType: doWhile
+    maxIterations: 2
+    continueWhile:
+      type: simple
+      variable: outer_flag
+      operator: ==
+      value: true
+    steps:
+      - kind: loop
+        id: inner
+        name: Inner
+        loopType: doWhile
+        maxIterations: 2
+        continueWhile:
+          type: simple
+          variable: inner_flag
+          operator: ==
+          value: true
+        steps:
+          - kind: checkpoint
+            id: inner-reviewed
+            message: "Outer pass {outer_count} is under way."
+            options:
+              - id: stop
+                label: Stop
+                description: End the inner pass.
+                effect:
+                  setVariable:
+                    inner_flag: false
+      - kind: technique
+        id: count
+        technique: count-outer
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A nested gate shows a count its enclosing loop carries round

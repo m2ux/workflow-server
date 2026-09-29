@@ -60,7 +60,7 @@ A finding absent from the file is *untriaged* and reported; an entry matching no
 
 ### A ledger is the exception
 
-It is not the shape a new guard starts from. `check:activity-variables` has none: each of its findings named a definition defect, and the corpus was fixed rather than classified. `check:review-mode` follows the ledger shape with a smaller list — `ACCEPTED_HEADLESS_AUTO_ADVANCE` in [`check-review-mode-gating.ts`](check-review-mode-gating.ts), one reason per accepted checkpoint.
+It is not the shape a new guard starts from. `check:activity-variables` carries one for a single family: the unproduced reads present when that family landed, each a real defect with an issue, classified in `ledgers/unproduced-read-triage.json` so a new one fails; every other family's findings were fixed rather than classified. `check:review-mode` follows the ledger shape with a smaller list — `ACCEPTED_HEADLESS_AUTO_ADVANCE` in [`check-review-mode-gating.ts`](check-review-mode-gating.ts), one reason per accepted checkpoint.
 
 ### Coupling to the corpus
 
