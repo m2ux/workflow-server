@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.7.0
+version: 4.8.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
@@ -13,7 +13,7 @@ variables:
   writes:
     - name: client_workflow_completed
       type: boolean
-      description: Whether the dispatched client workflow has reached workflow_complete
+      description: Whether the dispatched client workflow's session reports completed.
       defaultValue: false
 required: true
 steps:

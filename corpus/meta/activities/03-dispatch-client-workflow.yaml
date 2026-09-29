@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 6.0.0
+version: 6.1.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -12,7 +12,7 @@ variables:
   writes:
     - name: client_workflow_completed
       type: boolean
-      description: Whether the dispatched client workflow has reached workflow_complete
+      description: Whether the dispatched client workflow's session reports completed.
       defaultValue: false
     - name: current_activity
       type: string

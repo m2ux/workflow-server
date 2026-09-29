@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.2.0
+  version: 3.3.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ Whether that destination opens several branches rather than one activity. True w
 
 ### activity_exit
 
-The exit id taken, passed to `next_activity` as `exit` — or `workflow_complete` where the activity declared no exit to take.
+The exit id taken, passed to `next_activity` as `exit`. Unset where the activity declares no exit, and the call then carries no `exit`.
 
 ## Protocol
 
@@ -59,5 +59,5 @@ The exit id taken, passed to `next_activity` as `exit` — or `workflow_complete
 
 ### 5. Record Missing Exit
 
-- Where no exit was taken — the activity declares none — set `{next_activity_id}` to null, `{next_activity_fans}` to false, and `{activity_exit}` to `workflow_complete`.
+- Where no exit was taken — the activity declares none — set `{next_activity_id}` to null and `{next_activity_fans}` to false, and leave `{activity_exit}` unset.
 

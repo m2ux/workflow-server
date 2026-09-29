@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -69,7 +69,7 @@ Whether that destination opens several branches rather than one activity — tru
 
 #### activity_exit
 
-The exit id this activity took, from evaluate-transition, or `workflow_complete` where it declared none. The orchestrator passes it to `next_activity` as `exit`.
+The exit id this activity took, from evaluate-transition; unset where it declares none. The orchestrator passes it to `next_activity` as `exit`, and passes no `exit` where it is unset.
 
 #### batch_may_continue
 

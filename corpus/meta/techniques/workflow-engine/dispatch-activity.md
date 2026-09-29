@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.27.1
+  version: 1.28.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Activity ID to enter.
 
 ### exit_id
 
-*(optional)* The exit that activity took, which the server checks against the destination this call enters. Unset alongside `{from_activity}`.
+*(optional)* The exit that activity took, which the server checks against the destination this call enters. Unset alongside `{from_activity}`, and where that activity declares no exit.
 
 ### agent_technique
 

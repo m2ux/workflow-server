@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ The activity this advance retires — the one `{exit_id}` and `{step_manifest}` 
 
 ### exit_id
 
-The exit that activity took, which the server checks against the destination this advance enters.
+*(optional)* The exit that activity took, which the server checks against the destination this advance enters. Unset where that activity declares no exit.
 
 ### worker_agent_id
 
