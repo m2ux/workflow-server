@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.0.0
+version: 1.1.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -179,7 +179,7 @@ steps:
             session_index: session_index
             activity_id: current_activity
             worker_agent_id: worker_agent_id
-            effects: effects
+            checkpoint_reply: checkpoint_reply
             state: variables
       - kind: technique
         id: commit-activity-artifacts

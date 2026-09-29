@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ Workflow the worker is executing an activity for.
 
 Activity id the worker's current dispatch or continuation bound — must match the activity returned by `get_activity`.
 
-### effects
+### checkpoint_reply
 
 *(optional)* The reply a checkpoint this context yielded received when the orchestrator resolved it. Present only on a continuation, and its presence is what distinguishes one from a first dispatch.
 
@@ -45,7 +45,7 @@ Worker agent identity for this dispatch.
 ### 3. Take the walk position
 
 - Open the activity at its first step
-  > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) in place of opening at the first step. The envelope is owed either way.
+  > When `{checkpoint_reply}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) in place of opening at the first step. The envelope is owed either way.
 
 ### 4. Execute steps
 

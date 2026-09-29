@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -13,7 +13,7 @@ Continue execution after the orchestrator resolves a checkpoint.
 
 `session_index` of the worker whose checkpoint was resolved.
 
-### effects
+### checkpoint_reply
 
 The resolved checkpoint's reply.
 
@@ -32,7 +32,7 @@ The exit the answer selected (only when the `resume_checkpoint` response carries
 
 ### 2. Apply Effects
 
-- Apply `{effects}`, and the `variables_changed` the `resume_checkpoint` response returns, to local state.
+- Apply `{checkpoint_reply}`, and the `variables_changed` the `resume_checkpoint` response returns, to local state.
 
 ### 3. Continue Or Finalize
 
