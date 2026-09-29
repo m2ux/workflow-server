@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.1.0
+version: 2.2.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -46,7 +46,7 @@ variables:
       defaultValue: false
     - name: current_activity
       type: string
-      description: The prism activity the walk holds, and null once the prism graph routes to none.
+      description: The prism activity the walk holds, and null once the advance onto `__terminal__` has completed the prism session.
     - name: current_block_index
       type: number
       description: Current block index during manual diff review loop (from flagged_block_indices).

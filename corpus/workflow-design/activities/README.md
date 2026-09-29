@@ -14,7 +14,7 @@ This file is an orientation map. Authoritative definitions live in the per-activ
 
 Classify the request as create, update or review, identify the target workflows, confirm intent with the user when the request leaves it unclear, seed the planning folder (create/update), and internalize the schemas and YAML conventions the drafting needs.
 
-Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads to [Requirements Refinement](#03-requirements-refinement), or directly to [Quality Review](#08-quality-review) in review mode.
+Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads to [Requirements Refinement](#03-requirements-refinement), or directly to [Quality Review](#08-quality-review) in review mode; a rejected review target set runs it again.
 
 ---
 

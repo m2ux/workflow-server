@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 6.1.0
+version: 6.2.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -12,11 +12,11 @@ variables:
   writes:
     - name: client_workflow_completed
       type: boolean
-      description: Whether the client workflow walk ended with no further activity routed.
+      description: Whether the client workflow walk ended on the advance onto `__terminal__`, which completes the client session.
       defaultValue: false
     - name: current_activity
       type: string
-      description: The client activity the walk holds, and null once the client graph routes to none
+      description: The client activity the walk holds, and null once the advance onto `__terminal__` has completed the client session
     - name: from_activity
       type: string
       description: The client activity an advance retires
@@ -45,5 +45,5 @@ outcome:
   - The client workflow has executed end to end with its artifacts committed and state persisted at every activity boundary
   - Each worker carried a bounded run of activities in one context, paying the harness baseline once for the run
   - The user retained control over every decision point — checkpoints surfaced to them and their selections steered the workflow
-  - The client workflow has no further activities to run, so the meta can proceed to close it out
+  - The client session is completed, so the meta can proceed to close it out
   - Reaching the end of the activity loop is recorded, so close-out can tell a completed run from one that stopped at the iteration bound

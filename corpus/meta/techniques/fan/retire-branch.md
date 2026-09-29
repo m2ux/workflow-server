@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ What the branches returned, in the order the fan opened them. This call reads th
 
 ### 1. Retire the branch
 
-- Take the entry of `{branch_envelopes}` belonging to `{branch_activity}` — the returns are in the order the fan opened the branches, and that order is the correspondence. Call `next_activity { session_index, activity_id: barrier_destination, from_activity: branch_activity, exit, step_manifest, variables_changed, artifacts_produced }`, taking every field after the destination from that entry; append the `_meta.trace_token` it returns to the run's accumulated tokens per `dispatch-activity.accumulate-trace-per-advance`
+- Take the entry of `{branch_envelopes}` belonging to `{branch_activity}` — the returns are in the order the fan opened the branches, and that order is the correspondence. Call `next_activity { session_index, activity_id: barrier_destination, from_activity: branch_activity, exit, step_manifest, variables_changed, artifacts_produced }`, taking from that entry `exit` as its `activity_exit`, omitted where unset, `step_manifest` as its `steps_completed`, and `variables_changed` and `artifacts_produced` as its fields of those names; append the `_meta.trace_token` it returns to the run's accumulated tokens per `dispatch-activity.accumulate-trace-per-advance`
   > The server checks the exit against the destination, not against the branch: an exit taken from another branch's entry passes unchecked.
   > The call reports what is still outstanding at `outstanding`, each branch as the id that addresses it. The one that empties the frontier is the one that enters the convergence activity, and only that one — see `the-barrier-is-a-reading`.
 

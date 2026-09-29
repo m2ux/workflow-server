@@ -1,0 +1,7 @@
+id: close
+version: 1.0.0
+name: Close
+description: End the walk on an activity that declares no exits.
+required: true
+outcome:
+  - The walk has reached an activity with nowhere to go, so the advance after it completes the session

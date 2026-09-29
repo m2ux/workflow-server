@@ -509,6 +509,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "walk-prism-child.activity-cycle.commit-activity-artifacts:worker_result",
         "walk-prism-child.activity-cycle.continue-batched-worker:worker_agent_id",
         "walk-prism-child.activity-cycle.continue-batched-worker:worker_result",
+        "walk-prism-child.activity-cycle.end-walk:worker_result",
         "walk-prism-child.activity-cycle.enter-fan:worker_result",
         "walk-prism-child.activity-cycle.note-exiting-activity:worker_result",
         "walk-prism-child.activity-cycle.persist-the-fan:worker_result",
@@ -518,6 +519,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "walk-prism-child.activity-cycle.resume-yielded-worker:worker_result",
         "walk-prism-child.activity-cycle.retire-fan-envelope:post_impl_review_walk_prism_child_fan_convergence_activity",
         "walk-prism-child.activity-cycle.spawn-branches:worker_result",
+        "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_activity_entered",
       ],
       "lazyGates": {
         "pending": 12,
@@ -1906,6 +1908,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "walk-prism-child.activity-cycle.commit-activity-artifacts:worker_result",
         "walk-prism-child.activity-cycle.continue-batched-worker:worker_agent_id",
         "walk-prism-child.activity-cycle.continue-batched-worker:worker_result",
+        "walk-prism-child.activity-cycle.end-walk:worker_result",
         "walk-prism-child.activity-cycle.enter-fan:worker_result",
         "walk-prism-child.activity-cycle.note-exiting-activity:worker_result",
         "walk-prism-child.activity-cycle.persist-the-fan:worker_result",
@@ -1915,6 +1918,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "walk-prism-child.activity-cycle.resume-yielded-worker:worker_result",
         "walk-prism-child.activity-cycle.retire-fan-envelope:post_impl_review_walk_prism_child_fan_convergence_activity",
         "walk-prism-child.activity-cycle.spawn-branches:worker_result",
+        "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_activity_entered",
       ],
       "lazyGates": {
         "pending": 12,
@@ -3858,7 +3862,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 339,
+  "declaredTotal": 341,
   "executedTotal": 190,
   "perActivity": [
     {
@@ -3903,7 +3907,7 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "post-impl-review",
-      "declared": 52,
+      "declared": 54,
       "executed": 16,
     },
     {

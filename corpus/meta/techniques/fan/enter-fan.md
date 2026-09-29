@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,6 +29,10 @@ The exit that activity took.
 
 *(optional)* One entry per step of the activity this call retires: `steps_completed` from the `activity_complete` envelope that activity returned.
 
+### variables_changed
+
+*(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where that activity changed nothing.
+
 ### planning_folder_path
 
 *(optional)* Path to the planning folder whose `README.md` Progress surface is updated. Unset until the folder exists.
@@ -37,11 +41,11 @@ The exit that activity took.
 
 ### branch_activities
 
-The branches the destination opened, in the order the server gave them.
+Every branch the destination opened, each as the id that addresses it: the `branches` of every `_meta.fan` entry, concatenated in the order the server gave the entries.
 
 ### barrier_destination
 
-The activity the branches converge on, as the barrier reported it — what the run continues from once every branch has been retired.
+The activity the branches converge on, as `_meta.barrier.destination` names it on the call that opens them — what the run continues from once every branch has been retired.
 
 ## Protocol
 
@@ -52,5 +56,6 @@ The activity the branches converge on, as the barrier reported it — what the r
 
 ### 2. Open every branch with one call
 
-- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read `_meta.fan` as `{branch_activities}` and `_meta.barrier.destination` as `{barrier_destination}`. The call retires the exiting activity and opens every branch
+- Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and read `{branch_activities}` from `_meta.fan` and `{barrier_destination}` from `_meta.barrier.destination`. The call retires the exiting activity and opens every branch
+  > The fan reads its collection from the bag this call's `variables_changed` lands in, so a collection the retiring activity wrote reaches the fan on this same call.
 

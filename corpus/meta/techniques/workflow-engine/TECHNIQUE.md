@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.15.0
+  version: 6.16.0
 ---
 
 ## Capability
@@ -24,6 +24,10 @@ The session every authenticated tool call names — the 6-character base32 index
 ### step_manifest
 
 *(optional)* One entry per step of the activity an advance retires: `steps_completed` from the `activity_complete` envelope that activity returned. Unset where the advance retires no activity.
+
+### variables_changed
+
+*(optional)* The bag writes of the activity an advance retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where the advance retires no activity, or where that activity changed nothing.
 
 ### variable_bag
 

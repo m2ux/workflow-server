@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.3.0
+  version: 3.4.0
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ Optional exit id a checkpoint option named, from its effect.
 
 ### next_activity_id
 
-Where the run goes next, copied unread from `{exit_destinations}`: an activity id, `__terminal__` where the exit ends the run, a list of members, one activity together with the collection it runs over, or null if the activity declares no exit to take.
+Where the run goes next: an activity id, a list of members, or one activity together with the collection it runs over, copied unread from `{exit_destinations}`; or `__terminal__`, where the exit taken ends the run or the activity declares no exit to take.
 
 ### next_activity_fans
 
@@ -55,5 +55,5 @@ The exit id this activity took; unset where it declares none.
 
 ### 5. Record Missing Exit
 
-- Where no exit was taken — the activity declares none — set `{next_activity_id}` to null and `{next_activity_fans}` to false, and leave `{activity_exit}` unset.
+- Where no exit was taken — the activity declares none — set `{next_activity_id}` to `__terminal__` and `{next_activity_fans}` to false, and leave `{activity_exit}` unset. The activity ends the run, as an exit bound to `__terminal__` does.
 

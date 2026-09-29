@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.12.0
+version: 1.13.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 variables:
@@ -116,11 +116,12 @@ steps:
             intent_needs_confirmation: false
       - id: wrong-review-target
         label: Wrong review target set
-        description: Rejects the review target set; supply a corrected `target_workflow_ids` list.
+        description: Rejects the review target set, and intake runs again to establish it from the request.
         effect:
           setVariable:
             review_scope_confirmed: false
             intent_needs_confirmation: true
+          exit: retarget
       - id: cancel-as-create
         label: Cancel update — create new instead
         description: Abandon the update path; flip mode to create.
@@ -232,6 +233,8 @@ exits:
   - id: context-established
     when: format_literacy_confirmed == true && schema_constructs_confirmed == true
     isDefault: true
+  - id: retarget
+    immediate: true
 outcome:
   - The workflow knows whether it is creating, updating, or reviewing, and against which target — every downstream branch can route on a derived operation
   - Intent, its gap flags and `{headless_mode}` are derived from the request, and only uncertain intent reaches the reader

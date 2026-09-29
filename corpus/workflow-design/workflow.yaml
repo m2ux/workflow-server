@@ -44,6 +44,7 @@ graph:
   intake-and-context:
     review-scope-confirmed: quality-review
     context-established: requirements-refinement
+    retarget: intake-and-context
   requirements-refinement:
     update: impact-analysis
     create: pattern-analysis

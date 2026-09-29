@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.8.0
+version: 4.9.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
@@ -13,7 +13,7 @@ variables:
   writes:
     - name: client_workflow_completed
       type: boolean
-      description: Whether the client workflow walk ended with no further activity routed.
+      description: Whether the client workflow walk ended on the advance onto `__terminal__`, which completes the client session.
       defaultValue: false
 required: true
 steps:

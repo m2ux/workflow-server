@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -11,7 +11,11 @@ Advance a session this context owns onto an activity and carry that activity her
 
 ### from_activity
 
-*(optional)* The activity this call retires — the one `{exit_id}` and `{step_manifest}` belong to. Unset where the session holds nothing to retire, which is the first entry of a walk.
+*(optional)* The activity this call retires — the one `{exit_id}`, `{step_manifest}` and `{variables_changed}` belong to. Unset where the session holds nothing to retire, which is the first entry of a walk.
+
+### activity_entered
+
+*(optional)* True where the session already stands on `{activity_id}`, the advance that entered it having been made. False or unset where this entry makes that advance.
 
 ### agent_technique
 
@@ -21,14 +25,16 @@ Canonical agent technique this context follows for the activity — default work
 
 ### worker_result
 
-The envelope the activity produced — one of two tagged result types: the `checkpoint_pending` envelope, or the `activity_complete` envelope. This context carried the activity, so it composes that envelope rather than receiving one.
+The envelope this entry closes on — one of three tagged result types. The `checkpoint_pending` or `activity_complete` envelope is the one the activity produced, which this context composes because it carried the activity. The `workflow_complete` envelope, `{ result_type: "workflow_complete" }`, is the one an advance onto `__terminal__` closes on: the session is completed, and no activity was carried.
 
 ## Protocol
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`
-  > A first entry has no prior activity to retire, so `{from_activity}`, `{exit_id}` and `{step_manifest}` are all unset together.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`
+  > - A first entry has no prior activity to retire, so `{from_activity}`, `{exit_id}`, `{step_manifest}` and `{variables_changed}` are all unset together.
+  > - When `{activity_id}` is `__terminal__`, this advance completes the session: hold the `workflow_complete` envelope as `{worker_result}`, and end here.
+  > - When `{activity_entered}` is true, skip this phase: the advance that entered `{activity_id}` carried the exit, step manifest and bag writes of what it retired, so this entry passes none.
 
 ### 2. Carry the activity
 
@@ -47,4 +53,4 @@ This call moves a session pointer from inside the context that then carries the 
 
 ### no-session-left-running
 
-A session nothing else can advance is one that reaches its end here or never. Take its activities until `get_workflow_status` reports the session `completed` — a context that stops partway leaves a session recorded as running that nothing will ever reach, and the results it was opened for unread (`activity-worker.outlive-dispatched-children`).
+A session nothing else can advance is one that reaches its end here or never. Take its activities until the advance onto `__terminal__`, which completes the session — a context that stops partway leaves a session recorded as running that nothing will ever reach, and the results it was opened for unread (`activity-worker.outlive-dispatched-children`).
