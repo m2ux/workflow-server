@@ -1,0 +1,392 @@
+{
+  "note": "One judgement per activity and variable the activity-variables guard reports as an unproduced read: a name the workflow file declares with no defaultValue, that no step produces and the server does not seed, so every run reads it unset. An unproduced read no entry covers fails the guard; an entry matching no finding is reported stale and leaves with the change that gives the value its producer. There is no regeneration command.",
+  "rationales": {
+    "input-without-a-producer": "A value the run needs from outside — usually from the user's request — that no step reads out of the request, asks for at a gate, or derives. Fixed by binding it the way the workflow's first activity binds its other inputs."
+  },
+  "entries": [
+    {
+      "site": "cicd-pipeline-security-audit :: reconnaissance",
+      "name": "target_submodules",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "cicd-pipeline-security-audit :: scope-setup",
+      "name": "target_submodules",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "meta :: end-workflow",
+      "name": "target_workflow_outcomes",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: area-derivation",
+      "name": "target_repo_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: consolidate-evidence",
+      "name": "target_repo_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: finding-adjudication",
+      "name": "target_repo_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: probe-area",
+      "name": "target_repo_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: publish-review",
+      "name": "target_repo_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: scope-intake",
+      "name": "review_target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: scope-intake",
+      "name": "target_repo_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "midnight-system-review :: verdict-and-report",
+      "name": "target_repo_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "ponytail :: apply-ladder",
+      "name": "task_description",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "ponytail :: harvest-debt-and-report",
+      "name": "task_description",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "ponytail :: intake-and-scope",
+      "name": "task_description",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "ponytail :: over-engineering-review",
+      "name": "task_description",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "ponytail :: repo-audit",
+      "name": "task_description",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: adaptive-pass",
+      "name": "target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: dispute-pass",
+      "name": "target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: generate-report",
+      "name": "target_description",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: reflect-pass",
+      "name": "target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: select-mode",
+      "name": "target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: smart-pass",
+      "name": "analysis_focus",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: smart-pass",
+      "name": "target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: structural-pass",
+      "name": "lens_name",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: subsystem-pass",
+      "name": "target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism :: verified-pass",
+      "name": "target",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism-update :: apply-updates",
+      "name": "upstream_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism-update :: commit-and-submit",
+      "name": "upstream_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism-update :: discover-changes",
+      "name": "upstream_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism-update :: review-changes",
+      "name": "upstream_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "prism-update :: verify",
+      "name": "upstream_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: start",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/assumptions-review",
+      "name": "issue_platform",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/assumptions-review",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/complete",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/design-philosophy",
+      "name": "issue_record",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/design-philosophy",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/implement",
+      "name": "implementation_plan",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/implement",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/implementation-analysis",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/plan-prepare",
+      "name": "default_branch",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/plan-prepare",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/post-impl-review",
+      "name": "issue_title",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/post-impl-review",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/requirements-elicitation",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/research",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/strategic-review",
+      "name": "issue_platform",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/strategic-review",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/submit-for-review",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/validate",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: ensemble-pass",
+      "name": "target_submodule",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: report-generation",
+      "name": "target_submodule",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: scope-setup",
+      "name": "target_submodule",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: scope-setup",
+      "name": "workspace_root",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: sub-reconnaissance",
+      "name": "in_scope",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: sub-reconnaissance",
+      "name": "workspace_root",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: implement",
+      "name": "implementation_plan",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: post-impl-review",
+      "name": "issue_title",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: start-work-package",
+      "name": "issue_title",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-packages :: finalize-roadmap",
+      "name": "package_plans",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-packages :: implementation",
+      "name": "parent_workflow",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-packages :: prioritization",
+      "name": "dependency_map",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-packages :: prioritization",
+      "name": "package_plans",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    }
+  ]
+}
