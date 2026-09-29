@@ -24,7 +24,7 @@ Create-mode comparison surface. Answers: which reference patterns do we align wi
 |---------|----------|------|
 | Activity naming | … | align / diverge — one line |
 | Step / checkpoint ratio | … | … |
-| Transitions | … | … |
+| Exits and graph | … | … |
 | Technique assignment | … | … |
 | Artifact naming | … | … |
 | Resource organization | … | … |

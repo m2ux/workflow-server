@@ -1,7 +1,7 @@
 id: impact-analysis
-version: 1.7.0
+version: 1.8.0
 name: Impact Analysis
-description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
+description: Impact assessment of proposed changes against an existing workflow's files, exits and graph, and references.
 variables:
   reads:
     - component_git_dir
@@ -74,5 +74,5 @@ exits:
     isDefault: true
 outcome:
   - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
-  - Transition chains and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
+  - Exit bindings and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
   - No content disappears by accident — every flagged removal is one the user consciously approved (or there were none)

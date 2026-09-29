@@ -94,7 +94,7 @@ A symbol id states what the value is: affirmative, head noun last, `snake_case`.
 
 ## 20. Keep Orchestration in Structure
 
-An activity owns stage, checkpoints, transitions, and graph progress. A technique produces values and durable evidence, and does not name the activity flow or the gates that consume its outputs.
+An activity owns its stage, checkpoints, and exits, and the workflow graph binds each exit to what runs next. A technique produces values and durable evidence, and does not name the activity flow or the gates that consume its outputs.
 
 ## 21. Match the Harness Surface
 

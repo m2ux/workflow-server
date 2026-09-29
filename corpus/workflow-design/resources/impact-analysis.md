@@ -55,7 +55,7 @@ Update-mode decision surface. Answers: what is touched, is integrity intact, and
 
 | Check | Verdict |
 |-------|---------|
-| Transitions / `initialActivity` / reachability | Pass / Fail — [one line] |
+| Exits and graph / `initialActivity` / reachability | Pass / Fail — [one line] |
 | Technique / resource references | Pass / Fail — [one line] |
 | Variables / `setVariable` / step conditions | Pass / Fail — [one line] |
 

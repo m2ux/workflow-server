@@ -115,7 +115,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Resolve audit-resolvable assumptions and emit `has_resolvable_assumptions` for while-loop convergence | Requirements Refinement |
 | [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison | Pattern Analysis |
-| [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
+| [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, exits and graph, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the file manifest with lean structural design and drafting order | Scope and Draft |
 | [`prepare-workflow-branch`](./techniques/prepare-workflow-branch.md) | Ensure dedicated `{target_path}` worktree on `{workflow_branch}` (compose WP create-worktree) | Scope and Draft |
 | [`assemble-file-approach`](./techniques/assemble-file-approach.md) | Assemble and persist the per-file drafting plan | Scope and Draft |

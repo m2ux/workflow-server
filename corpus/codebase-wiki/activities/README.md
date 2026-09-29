@@ -4,7 +4,7 @@
 
 Activities that take a codebase from a confirmed ingest scope to a finalized, citation-backed wiki. The spine is linear — `confirm-scope` → `build-wiki` → `lint-wiki` → `publish` — with a single rework back-edge from `lint-wiki` to `build-wiki` when the user opts to fix lint findings by re-ingesting. There is no mode split and no review-only path; every run follows that spine.
 
-This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, decisions, loops, and transitions — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
+This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, loops, and exits — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
 
 ---
 

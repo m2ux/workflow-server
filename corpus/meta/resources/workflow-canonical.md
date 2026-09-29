@@ -88,7 +88,7 @@ technique; agents do not assemble it by hand.
 ## Roles
 
 A persona contract: responsibilities, authority, refusals, qualified techniques.
-Roles have **no on-disk file**. `workflow.yaml` holds no activities; it scopes rules
+Roles have **no on-disk file**. `workflow.yaml` defines no activity, listing only the activity files it borrows; it scopes rules
 and techniques to the orchestrator and the activity worker (`rules.workflow` /
 `rules.activity`, `techniques.workflow` / `techniques.activity`). Role-to-technique
 binding lives in the activity files' `steps[]` and in the workflow's

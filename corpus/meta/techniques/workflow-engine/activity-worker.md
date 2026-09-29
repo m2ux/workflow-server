@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ Worker agent identity for this dispatch.
 ### 3. Take the walk position
 
 - Open the activity at its first step
-  > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) and carry on from the paused step instead. The remaining steps and the envelope are owed either way — a gate pauses the walk, it does not end it.
+  > When `{effects}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) and carry on from the paused step instead, or finalize there where the answer's exit ends the activity. The envelope is owed either way, and so are the remaining steps unless that exit ends the activity at the gate.
 
 ### 4. Execute steps
 

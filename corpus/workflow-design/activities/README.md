@@ -36,7 +36,7 @@ Definition: [`04-pattern-analysis.yaml`](./04-pattern-analysis.yaml). Leads to [
 
 ### 05. Impact Analysis
 
-Assess the impact of proposed changes against an existing workflow's files, transitions, and references, and flag any content that will be removed so removals are deliberate rather than silent. When `removal_count` is zero the activity messages and continues; otherwise one soft `impact-and-preservation-confirmed` gate covers both blast radius and removals. Update mode only.
+Assess the impact of proposed changes against an existing workflow's files, exits and graph, and references, and flag any content that will be removed so removals are deliberate rather than silent. When `removal_count` is zero the activity messages and continues; otherwise one soft `impact-and-preservation-confirmed` gate covers both blast radius and removals. Update mode only.
 
 Definition: [`05-impact-analysis.yaml`](./05-impact-analysis.yaml). Leads to [Scope and Draft](#06-scope-and-draft).
 

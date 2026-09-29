@@ -18,7 +18,7 @@ Creation guide for bare filename `assumptions-log.md`. Design-time assumption ca
 | **Technique Selection** | Which technique a step binds, and reuse vs author | Cross-workflow reference vs workflow-local; an existing op vs a new one |
 | **Rule Scope** | Whether a constraint is workflow- or activity-level, and its enforcement | Text-only guidance vs structural (checkpoint / condition / validate) |
 | **Variable State** | What state the workflow must track, and its lifecycle | A new variable vs reusing one; default value; producer / consumer |
-| **Schema Construct Choice** | Which schema construct expresses a piece of logic | A decision vs a transition; a loop type; an inline checkpoint vs a gate |
+| **Schema Construct Choice** | Which schema construct expresses a piece of logic | A checkpoint option's exit vs an exit `when`; a loop type; an inline checkpoint vs a gate |
 
 ## Resolvability
 

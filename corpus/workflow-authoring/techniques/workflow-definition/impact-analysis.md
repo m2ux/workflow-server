@@ -47,7 +47,7 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 ### 2. Classify Impact
 
-- Classify each file as unaffected, directly modified (the change explicitly affects it), indirectly affected (a side-effect such as a broken transition chain), or removed (the change makes it obsolete), with a one-line justification
+- Classify each file as unaffected, directly modified (the change explicitly affects it), indirectly affected (a side-effect such as an exit the graph no longer binds), or removed (the change makes it obsolete), with a one-line justification
 
 ### 3. Check Exit Integrity
 
@@ -86,4 +86,4 @@ A reduction is a decision, not a side-effect of an edit. Prefer additive change,
 
 ### side-effect-detection
 
-Each change class implies side-effects the change request does not state: adding an activity may need new upstream transitions, techniques or resources; removing one breaks incoming transitions and may orpha techniques; renaming an activity id breaks every transition reference and `initialActivity`; adding a checkpoint may need new variables; changing checkpoint options may invalidate downstream conditions; adding or removing a mode affects the mode variable and every gate that branches on it; changing a variable's type affects every condition comparing it.
+Each change class implies side-effects the change request does not state: adding an activity may need new graph bindings upstream, techniques or resources; removing one breaks the graph bindings that lead into it and may orphan techniques; renaming an activity id breaks every graph binding naming it and `initialActivity`; adding a checkpoint may need new variables; changing checkpoint options may invalidate downstream conditions; adding or removing a mode affects the mode variable and every gate that branches on it; changing a variable's type affects every condition comparing it.

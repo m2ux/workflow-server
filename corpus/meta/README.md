@@ -6,7 +6,7 @@
 
 ## Overview
 
-The meta workflow is the structural home for the session's orchestration logic. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique via `step.technique`), checkpoints, transitions, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
+The meta workflow is the structural home for the session's orchestration logic. Every meta activity runs in the meta session as a real activity with formal steps (each binding a technique via `step.technique`), checkpoints, exits, and — for `dispatch-client-workflow` — a reference to the [`activity-loop`](routines/activity-loop.yaml) run, which holds the `while` loop that walks a session one activity at a time. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
 
 **Key characteristics:**
 

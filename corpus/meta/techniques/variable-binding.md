@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -30,7 +30,7 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
 ### 4. Land the Outputs
 
 - Land outputs. For each declared output id `O`, take the produced value and commit it to the variable bag under `O` (or under the remapped bag name when `step.technique.outputs` maps `O` to a different name). Nested-object outputs land whole, so a dotted-path read downstream resolves against the landed object.
-- Read downstream by name or path. A later `when`/`condition`/`transition` reads `{O}` or `{O}.field.subfield` directly; the structured-condition evaluator walks the dotted path, so no flattening step is needed.
+- Read downstream by name or path. A later `when` or `condition` reads `{O}` or `{O}.field.subfield` directly; the structured-condition evaluator walks the dotted path, so no flattening step is needed.
 
 ## Rules
 
@@ -54,7 +54,7 @@ The two readings that could meet — a step's and a routine's — do not, and wh
 
 ### outputs-by-name-and-path
 
-Downstream `when`/`condition`/`transition` reference a technique's output by its declared name or a dotted path into it (`validation_results.validation_passed`) — never via a redundant flattened flag or a prose glue step that only re-expresses a field. A nested-object output lands whole and resolves by path directly.
+Downstream `when` and `condition` gates reference a technique's output by its declared name or a dotted path into it (`validation_results.validation_passed`) — never via a redundant flattened flag or a prose glue step that only re-expresses a field. A nested-object output lands whole and resolves by path directly.
 
 ### a-branch-lands-under-its-own-derived-key
 
@@ -64,7 +64,7 @@ Downstream, a member is read at `{<key>.<instance>.result.<member>}`; the index 
 
 ### outputs-mutate-state-only-via-sanctioned-path
 
-Outputs land in the bag through the `variables-changed` channel of the worker's `activity_complete` result — one of the two sanctioned variable-mutation sources — never through ad-hoc reasoning. This honours the engine's `variable-mutation-source` rule.
+Outputs land in the bag through the `variables-changed` channel of the worker's `activity_complete` result — one of the sanctioned variable-mutation sources — never through ad-hoc reasoning. This honours the engine's `variable-mutation-source` rule.
 
 ### generic-not-overfit
 
