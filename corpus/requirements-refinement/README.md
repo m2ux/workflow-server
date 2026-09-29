@@ -19,9 +19,10 @@ matrix names the source each section came from and records that section as the h
 passage. Each new or updated requirement carries those headings so the specification's source list
 can link to them.
 
-It is parameterized: the source documents and the target specification are supplied as inputs, so the
-workflow both **augments** an existing specification and **creates** one from scratch. Every
-intermediate and final artifact lives in the run's planning folder.
+The request names the source documents, and usually the target specification too. When the request
+names no target, the run asks for its path. The target may be an existing specification, which the run
+**augments**, or a new path, where it **creates** one from scratch. Every intermediate and final
+artifact lives in the run's planning folder.
 
 **Use this workflow when you want to:**
 
@@ -34,21 +35,26 @@ intermediate and final artifact lives in the run's planning folder.
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 01 | [Intake and Analyze](activities/01-intake-and-analyze.yaml) | Establish readable, classified sources and a confirmed analysis of the requirement changes they imply |
+| 01 | [Intake](activities/01-intake.yaml) | Establish readable, classified sources and the target specification |
+| 02 | [Analyze Sources](activities/02-analyze-sources.yaml) | Produce a confirmed analysis of the requirement changes the sources imply |
 | 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
 | 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage) and categorize issues |
 | 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary |
-| 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when critical issues or the correction budget stop refinement |
+| 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when a critical issue or the correction limit stops refinement |
 
 ## Flow
 
 ```
-intake-and-analyze → update-specification → validate-specification
-        │                     ▲                        │
-        │                     │                        ├─ validation passed → finalize-specification
-        │                     │                        ├─ critical / cap reached → report-failure
-        │                     └────────────────────────┘  (correctable & under the cap)
-        └─ source unreadable → end
+intake ── sources confirmed ──→ analyze-sources ── analysis confirmed ──→ update-specification
+ │  ▲                             │  ▲                                        ▲  ▲         │
+ │  └─ revise                     │  └─ revise                                │  │         ▼
+ └─ source unreadable → end       │                                         │  │   validate-specification
+                                  │                                         │  │     │  │  │
+                                  │    revision requested ──────────────────┘  │     │  │  └─ critical / limit reached → report-failure
+                                  │         ▲                                  └─────┘  │     (correctable & under the limit)
+                                  │         │                                           │
+                                  │   finalize-specification ←── validation passed ─────┘
+                                  │         └─ accepted → end
 ```
 
 The staged specification sits in the planning folder.

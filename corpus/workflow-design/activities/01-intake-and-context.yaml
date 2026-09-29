@@ -6,6 +6,7 @@ variables:
   reads:
     - component_git_dir
     - host_repo_path
+    - planning_folder_path
     - pr_number
     - report_path
     - target_path
@@ -41,9 +42,6 @@ variables:
       type: boolean
       description: True when intake cannot confidently classify create vs update vs review from the request alone.
       defaultValue: false
-    - name: planning_folder_path
-      type: string
-      description: Absolute path to this workflow planning folder.
     - name: review_scope_confirmed
       type: boolean
       description: "In review mode: whether the user confirmed the audit target set in intake."
@@ -67,12 +65,6 @@ variables:
       description: The ID of the workflow being created or updated.
 required: true
 steps:
-  - kind: action
-    id: bind-planning-folder-path
-    actions:
-      - action: set
-        target: planning_folder_path
-        message: Absolute planning folder this session writes its artifacts into, as reported in the server session summary.
   - kind: technique
     id: intake-classification
     technique: intake-classification

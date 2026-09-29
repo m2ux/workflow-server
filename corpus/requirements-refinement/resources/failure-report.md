@@ -7,14 +7,14 @@ metadata:
 
 # Failure Report
 
-Creation guide for bare filename `failure-report.md`. Written when the run stops with unresolved critical issues. Answers: what remains unresolved after the correction passes, and the manual resolution each issue needs. It stands alone for a reader who never saw the validation reports.
+Creation guide for bare filename `failure-report.md`. Written when the run stops with unresolved issues: a critical issue, or correctable issues left when the correction passes run out. Answers: what remains unresolved after the correction passes, and the manual resolution each issue needs. It stands alone for a reader who never saw the validation reports.
 
 ## Template
 
 ```markdown
 # Failure Report — {spec basename}
 
-**Verdict:** critical · **Correction passes attempted:** {n}
+**Verdict:** critical | correction limit reached · **Correction passes attempted:** {n}
 
 **Validation report:** [final pass]({path})
 

@@ -1,9 +1,10 @@
 id: intake-and-profile
-version: 1.2.0
+version: 1.3.0
 name: Intake and Profile
 description: "Classify the request as author, rewrite or audit, settle the reader profile and content selection, and persist the document profile the rest of the run is built on."
 variables:
   reads:
+    - planning_folder_path
     - user_request
   writes:
     - name: controlled_language
@@ -24,17 +25,8 @@ variables:
     - name: operation_type
       type: string
       description: The classified operation for the request — author, rewrite, or audit.
-    - name: planning_folder_path
-      type: string
-      description: Absolute path to this run's planning folder — the write location for every working artifact.
 required: true
 steps:
-  - kind: action
-    id: bind-planning-folder-path
-    actions:
-      - action: set
-        target: planning_folder_path
-        message: Absolute planning folder this session writes its working artifacts into, as reported in the server session summary.
   - kind: technique
     id: intake-and-profile
     technique: intake-and-profile

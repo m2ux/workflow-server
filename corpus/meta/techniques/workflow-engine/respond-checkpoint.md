@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -11,13 +11,13 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 ### checkpoint_resolution
 
-`{ option_id }` | `{ auto_advance: true }` | `{ condition_not_met: true }`
+`{ option_id, reply }` | `{ auto_advance: true }` | `{ condition_not_met: true }`. `reply` is the text the user typed with an option whose effect declares `recordReply`, and is absent for any other option.
 
 ## Outputs
 
 ### checkpoint_reply
 
-The reply the server returns on clearing the active checkpoint: `resolved_option`, the option taken; `effect`, its `setVariable` assignments and `exit`; `exit`, the selected exit with its `next_activity`, carrying `ends_activity` where selecting it ends the activity at this gate; and `dismissed`, set on a `condition_not_met` resolution, which selects no option.
+The reply the server returns on clearing the active checkpoint: `resolved_option`, the option taken; `effect`, its `setVariable` assignments, the variable `recordReply` stored the reply in, and `exit`; `exit`, the selected exit with its `next_activity`, carrying `ends_activity` where selecting it ends the activity at this gate; and `dismissed`, set on a `condition_not_met` resolution, which selects no option.
 
 ## Protocol
 
@@ -31,6 +31,7 @@ The reply the server returns on clearing the active checkpoint: `resolved_option
 - Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns its reply. Capture the reply as `{checkpoint_reply}` and propagate it to the worker on resume.
   > - When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
   > - When the call returns `Invalid option`, STOP. Apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to retrieve the valid options. Never guess.
+  > - When the call refuses an option that records the user's typed reply, the reply was not captured: apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to ask for it. Never compose it.
 
 ## Rules
 

@@ -14,7 +14,7 @@ The structure for the human-readable summary that accompanies a finalized specif
 ```markdown
 # Change Summary — [specification name]
 
-**Source**: SRC-MTG### — [meeting title / date]  ·  or  SRC-DOC### — [document title] (Author Name)
+**Sources**: SRC-MTG### — [meeting title / date]; SRC-DOC### — [document title] (Author Name) — one entry per source
 **Validation**: [passed | passed after N correction passes]
 
 ## New Requirements

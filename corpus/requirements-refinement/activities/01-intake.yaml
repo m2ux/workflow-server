@@ -1,0 +1,100 @@
+id: intake
+version: 2.0.0
+name: Intake
+description: Establish the run's readable, classified source documents and its target specification.
+variables:
+  reads:
+    - host_repo_path
+    - planning_folder_path
+    - user_request
+  writes:
+    - name: source_paths
+      type: array
+      description: Filesystem paths of the local source documents being processed, each a meeting transcript or an unstructured document
+    - name: target_doc_path
+      type: string
+      description: Filesystem path to the canonical requirements specification being augmented or created
+    - name: source_readable
+      type: boolean
+      description: True when every source document exists and carries content
+      defaultValue: false
+    - name: intake_record_path
+      type: string
+      description: Absolute path to the written intake record
+      defaultValue: ""
+    - name: classified_sources
+      type: array
+      description: Source documents paired with their classifications, each { path, type } where type is meeting or document
+      defaultValue: []
+    - name: spec_basename
+      type: string
+      description: Basename of the target specification
+      defaultValue: ""
+    - name: target_doc_exists
+      type: boolean
+      description: True when the target specification already exists and is being augmented; false when it is created from scratch
+      defaultValue: false
+    - name: intake_correction
+      type: string
+      description: Text the user typed to correct the sources, a source's classification, or the target specification
+required: true
+steps:
+  - kind: technique
+    id: resolve-inputs
+    technique: resolve-inputs
+  - kind: technique
+    id: intake-sources
+    technique: intake-sources
+  - kind: action
+    id: source-unreadable-diagnostic
+    when: source_readable == false
+    actions:
+      - action: message
+        message: "The run has no readable source: a document named for it is missing or empty, or the request names none (sources: {source_paths})."
+  - kind: checkpoint
+    id: target-doc-named
+    when: source_readable == true
+    condition:
+      type: simple
+      variable: target_doc_path
+      operator: notExists
+    message: "The request names no target specification."
+    options:
+      - id: named
+        label: Name the specification
+        description: The reply is the specification's path. An existing file is augmented; a new path is created.
+        effect:
+          recordReply: target_doc_path
+  - kind: technique
+    id: record-intake
+    technique: record-intake
+    when: source_readable == true
+    actions:
+      - action: message
+        message: "The source set and the target specification are captured, each source with its own classification ([intake record]({intake_record_path}))."
+  - kind: checkpoint
+    id: sources-confirmed
+    when: source_readable == true
+    message: "The source set and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured, each source with its own classification ([intake record]({intake_record_path}))."
+    options:
+      - id: confirmed
+        label: Yes, proceed
+        description: The source set, the classification each source carries, and the mode are correct.
+      - id: revise
+        label: Correct the sources
+        description: The reply names what to change — a source path, a source's classification, the target specification, or a document the set omits.
+        effect:
+          recordReply: intake_correction
+          exit: revise
+exits:
+  - id: source-unreadable
+    when: source_readable == false
+  - id: sources-confirmed
+    isDefault: true
+  - id: revise
+    immediate: true
+outcome:
+  - The run names its source documents and a target specification, taken from the request or supplied by the user
+  - Each source carries its classification, and whether the specification is being augmented or created is recorded
+  - A source with nothing to read is settled at the boundary
+  - A correction the user types reaches the next intake as recorded text, over the paths and classifications already settled

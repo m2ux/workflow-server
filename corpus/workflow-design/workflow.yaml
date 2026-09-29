@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.39.0
+version: 1.40.0
 title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
 description: >-
   DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already in flight can finish; it is removed once none remain. Guide agents through creating, updating, or reviewing workflow definitions.
@@ -21,6 +21,9 @@ techniques:
   activity:
     - variable-binding
 variables:
+  - name: planning_folder_path
+    type: string
+    description: Absolute path to this run's planning folder, seeded when the session opens.
   # This workflow batches its open judgements into the commit gate rather than interviewing them
   # mid-flow, so the borrowed record operation's per-assumption outcome has no producer here. It is a
   # constant, owned by the file that runs the borrowed operation.

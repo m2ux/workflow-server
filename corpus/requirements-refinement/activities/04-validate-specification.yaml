@@ -1,12 +1,14 @@
 id: validate-specification
-version: 1.8.0
+version: 1.9.0
 name: Validate Specification
 description: Validate the working specification and categorize each finding as critical or correctable.
 variables:
   reads:
     - correction_iteration
+    - planning_folder_path
     - source_paths
     - target_doc_path
+    - update_pass
   writes:
     - name: has_correctable_issues
       type: boolean
@@ -39,7 +41,7 @@ steps:
     technique: validate-specification
     actions:
       - action: message
-        message: "Validation of pass {correction_iteration} categorizes each finding as critical or correctable and records the source-coverage result ([validation report]({validation_report_path}))."
+        message: "Validation of pass {update_pass} categorizes each finding as critical or correctable and records the source-coverage result ([validation report]({validation_report_path}))."
 exits:
   - id: validation-passed
     when: validation_passed == true

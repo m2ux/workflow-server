@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The source documents paired with their classifications, each `{ path, type }`.
 ### target_doc_exists
 
 `true` when the target specification already exists and is being augmented; `false` when it is created from scratch.
+
+### analysis_feedback
+
+*(optional)* Text the user typed naming what an earlier analysis of these sources misread, missed, or left unread. Unset on a first analysis.
 
 ## Outputs
 
@@ -52,6 +56,7 @@ Absolute path to the written analysis report.
 - Map each change to an existing requirement identifier where one applies; otherwise mark it as a new requirement, per [Identifier Schemes](../resources/specification-protocol.md#identifier-schemes).
 - For each new or updated requirement, record each contributing passage the [Rules](../resources/requirements-analysis-report.md#rules) require in `{requirements_analysis}`.
 - Note ambiguities and conflicts in `{requirements_analysis}`.
+  > When `{analysis_feedback}` is bound, the analysis addresses each point it names: a misreading is corrected, and a missed or unread passage is read and mapped.
 
 ### 3. Create Source References
 

@@ -1,0 +1,65 @@
+id: analyze-sources
+version: 1.0.0
+name: Analyze Sources
+description: Produce a confirmed requirements analysis of the changes the classified sources imply for the target specification.
+variables:
+  reads:
+    - classified_sources
+    - planning_folder_path
+    - source_paths
+    - target_doc_exists
+    - target_doc_path
+  writes:
+    - name: analysis_confirmed
+      type: boolean
+      description: True when the requirements analysis is approved
+      defaultValue: false
+    - name: requirements_analysis_path
+      type: string
+      description: Absolute path to the written requirements analysis report
+      defaultValue: ""
+    - name: analysis_feedback
+      type: string
+      description: Text the user typed naming what a requirements analysis misread or missed
+    - name: update_pass_kind
+      type: string
+      description: Which apply this pass performs
+      values:
+        - initial
+        - correction
+        - revision
+      defaultValue: initial
+required: true
+steps:
+  - kind: technique
+    id: analyze-source
+    technique: analyze-source
+    actions:
+      - action: message
+        message: "The source documents are parsed into new, updated, and deprecated requirements with a source-coverage matrix ([analysis report]({requirements_analysis_path}))."
+  - kind: checkpoint
+    id: analysis-confirmed
+    message: "The requirements analysis derived from the source set is on record ([analysis report]({requirements_analysis_path}))."
+    options:
+      - id: confirmed
+        label: Yes, apply this analysis
+        description: Analysis is accurate and reflects every source faithfully.
+        effect:
+          setVariable:
+            analysis_confirmed: true
+            update_pass_kind: initial
+      - id: revise
+        label: Revise the analysis
+        description: The reply names what the analysis misreads, misses, or leaves unread.
+        effect:
+          recordReply: analysis_feedback
+          exit: revise
+exits:
+  - id: analysis-confirmed
+    when: analysis_confirmed == true
+    isDefault: true
+  - id: revise
+    immediate: true
+outcome:
+  - Every requirement change the sources imply is pinned to a stable identifier the specification can be updated against
+  - The analysis faithfully reflects every source, and a revision the user asks for reaches the next analysis as recorded text

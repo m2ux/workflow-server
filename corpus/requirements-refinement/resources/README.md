@@ -21,8 +21,8 @@ and a creation guide for each artifact a run persists.
 |---------------|-------|
 | `intake.md` | [intake-record](intake-record.md) |
 | `requirements-analysis.md` | [requirements-analysis-report](requirements-analysis-report.md) |
-| `working-spec-{correction_iteration}.md` | [specification-protocol](specification-protocol.md) |
-| `validation-report-{correction_iteration}.md` | [validation-report](validation-report.md) |
+| `working-spec-{update_pass}.md` | [specification-protocol](specification-protocol.md) |
+| `validation-report-{update_pass}.md` | [validation-report](validation-report.md) |
 | `final-spec.md` | [specification-protocol](specification-protocol.md) |
 | `change-summary.md` | [change-summary](change-summary.md) |
 | `failure-report.md` | [failure-report](failure-report.md) |
