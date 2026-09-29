@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
+import { join, dirname, basename } from 'node:path';
 import {
   type Destination,
   type InstanceFan,
@@ -101,9 +101,22 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activiti
   const loadedFiles = new Map<string, ActivityFile>();
   if (!existsSync(activitiesPath)) return { activities: [], errors: [], files: loadedFiles };
 
-  const files = await readdir(activitiesPath);
+  const files = (await readdir(activitiesPath)).sort();
   const activities: Activity[] = [];
   const errors: DefinitionLoadError[] = [];
+
+  // A filename carries its activity's id, so two files naming one id define one activity twice and
+  // neither is the author's choice; the load fails.
+  const fileById = new Map<string, string>();
+  for (const file of files) {
+    const id = parseActivityFilename(file)?.id;
+    if (id === undefined) continue;
+    const prior = fileById.get(id);
+    if (prior !== undefined) {
+      throw new Error(`Activity '${id}' is defined by both activities/${prior} and activities/${file}. An activity identifier appears once in a workflow.`);
+    }
+    fileById.set(id, file);
+  }
 
   for (const file of files) {
     const parsed = parseActivityFilename(file);
@@ -358,9 +371,12 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     // The exits and the graph that binds them are authored in different files, so the load is where
     // they have to agree. Checked after materialisation: a checkpoint a routine contributed carries
     // its own options, and the exit each selects has to be one the activity running it declares.
+    // An excluded file counts under both the id it declares and the one its filename carries, which
+    // differ where their disagreeing is why it was excluded.
     const knownActivityIds = new Set([
       ...(workflow.activities ?? []).map(a => a.id),
-      ...activityLoadErrors.map(e => e.activity_id).filter((id): id is string => id !== undefined),
+      ...activityLoadErrors.flatMap(e => [e.activity_id, parseActivityFilename(basename(e.file))?.id])
+        .filter((id): id is string => id !== undefined),
     ]);
     const bindingErrors = [
       ...validateInitialActivity(workflow, knownActivityIds),
@@ -974,22 +990,20 @@ function instanceFanErrors(
 export const TERMINAL_SENTINEL = '__terminal__';
 
 /**
- * The activity file as authored, for delivery. Served from the load, so it holds exactly the
- * activities the workflow contains: an activity the load excluded, own or borrowed, is not found
- * here either, and a borrowed one reports the workflow it was authored in.
+ * The activity file as authored, for delivery. Read from a load, so it holds exactly the activities
+ * the workflow contains: an activity the load excluded, own or borrowed, is not found here either,
+ * and a borrowed one reports the workflow it was authored in.
  */
 export async function readActivityRaw(
-  workflowDir: string,
-  workflowId: string,
+  loaded: WorkflowWithDiagnostics,
   activityId: string,
 ): Promise<Result<{ content: string; sourceWorkflowId: string }, ActivityNotFoundError>> {
-  const loaded = await loadWorkflowWithDiagnostics(workflowDir, workflowId);
-  if (!loaded.success) return err(new ActivityNotFoundError(activityId, workflowId));
-  const file = loaded.value.activityFiles.get(activityId);
+  const workflowId = loaded.workflow.id;
+  const file = loaded.activityFiles.get(activityId);
   if (!file) return err(new ActivityNotFoundError(activityId, workflowId));
   try {
     const content = await readFile(file.path, 'utf-8');
-    return ok({ content, sourceWorkflowId: loaded.value.activitySourceWorkflow.get(activityId) ?? workflowId });
+    return ok({ content, sourceWorkflowId: loaded.activitySourceWorkflow.get(activityId) ?? workflowId });
   } catch (error) {
     logWarn('Failed to read activity raw', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return err(new ActivityNotFoundError(activityId, workflowId));

@@ -271,9 +271,25 @@ describe('a routine file that fails to load costs only the references to it', ()
     expect(errors[0]).toMatch(/routine 'broken-run' failed to load.*routines\/broken-run\.yaml/s);
   });
 
+  it('holds for a routine file that does not parse, wherever it sits', async () => {
+    const { corpus, id } = writeTree({
+      activities: [host({ routine: 'shared-run' }), host({ routine: 'garbled-run' }, 'garbled-host')],
+      routines: [routine('shared-run')],
+      metaRoutines: [routine('unrelated-run')],
+    });
+    writeFileSync(join(corpus, 'meta', 'routines', 'garbled-run.yaml'), 'steps: [unclosed\n');
+    const result = await loadWorkflowWithDiagnostics(corpus, id);
+    if (!result.success) throw new Error(`load failed: ${result.error.message}`);
+    expect(result.value.workflow.activities!.map((a) => a.id)).toEqual(['host']);
+    expect(result.value.activityLoadErrors.map((e) => e.error))
+      .toEqual([expect.stringMatching(/routine 'garbled-run' failed to load.*routines\/garbled-run\.yaml\) does not parse/s)]);
+  });
+
   it('leaves the excluded activity out of the raw read get_activity serves', async () => {
     const { corpus, id } = writeTree({ activities: [host({ routine: 'broken-run' })], routines: [{ id: 'broken-run', steps: [] }] });
-    expect((await readActivityRaw(corpus, id, 'host')).success).toBe(false);
+    const loaded = await loadWorkflowWithDiagnostics(corpus, id);
+    if (!loaded.success) throw new Error(`load failed: ${loaded.error.message}`);
+    expect((await readActivityRaw(loaded.value, 'host')).success).toBe(false);
   });
 
   it('does not fall through to a same-named meta routine', async () => {

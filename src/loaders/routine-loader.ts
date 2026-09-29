@@ -71,8 +71,13 @@ async function readRoutineFiles(
     const name = /^(.+)\.ya?ml$/.exec(file)?.[1];
     if (!name) continue;
     const site = `Routine '${workflowId}::${name}' (${ROUTINES_DIR}/${file})`;
-    const content = await readFile(join(routinesPath, file), 'utf-8');
-    const validation = safeValidateRoutine(parseDefinition(content));
+    let validation: ReturnType<typeof safeValidateRoutine>;
+    try {
+      validation = safeValidateRoutine(parseDefinition(await readFile(join(routinesPath, file), 'utf-8')));
+    } catch (error) {
+      invalid.set(name, `${site} does not parse: ${error instanceof Error ? error.message : String(error)}`);
+      continue;
+    }
     if (!validation.success) {
       invalid.set(name, `${site} is not a valid routine: ${formatZodIssues(validation.error.issues)}`);
       continue;

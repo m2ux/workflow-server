@@ -294,7 +294,7 @@
             "description": "Borrowed activity file, `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` (or `.yml`): a file under that workflow's `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`. The borrowed activity resolves its unqualified technique and routine references in the workflow it is borrowed from. A reference naming no file fails the workflow load; a file that fails validation is excluded from the load, as an activity file of the workflow's own is."
           },
           "minItems": 1,
-          "description": "Activities borrowed from other workflows, each named by its file; the workflow's own activities are the files in its `activities/` folder. An activity identifier appears once in a workflow: a borrowed activity sharing its identifier with one of the workflow's own, or with another borrowed activity, fails the workflow load."
+          "description": "Activities borrowed from other workflows, each named by its file; the workflow's own activities are the files in its `activities/` folder. An activity identifier appears once in a workflow: two of the workflow's own files carrying one identifier, or a borrowed activity sharing its identifier with one of the workflow's own or with another borrowed activity, fails the workflow load."
         }
       },
       "required": [

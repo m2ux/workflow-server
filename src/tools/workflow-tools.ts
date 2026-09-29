@@ -1749,8 +1749,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const workflow_id = state.workflowId;
+      const diagResult = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
+      if (!diagResult.success) throw diagResult.error;
+      const workflow = diagResult.value.workflow;
+      const activitySourceWorkflow = diagResult.value.activitySourceWorkflow;
       // N instances of one fanned activity share one definition file, so the read takes the base.
-      const rawResult = await readActivityRaw(config.workflowDir, workflow_id, baseId(activity_id));
+      const rawResult = await readActivityRaw(diagResult.value, baseId(activity_id));
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
       const { content: rawActivity, sourceWorkflowId } = rawResult.value;
       let activityBody = injectResolvedStepIds(rawActivity);
@@ -1766,20 +1770,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const view = sessionView(state, activity_id);
-      const diagResult = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
-      const result = diagResult.success
-        ? { success: true as const, value: diagResult.value.workflow }
-        : diagResult;
-      const activitySourceWorkflow = diagResult.success
-        ? diagResult.value.activitySourceWorkflow
-        : new Map<string, string>();
 
       // The one value this instance is working on. The shared bag is one flat record, so N
       // instances cannot read different values at one bare name, and no grammar in the tree admits
       // the indirection that would let an instance spell its own read — so it arrives here.
-      const fanInstance = diagResult.success
-        ? fanProjection(diagResult.value.workflow, state.variables, activity_id, state.completedActivities)
-        : undefined;
+      const fanInstance = fanProjection(workflow, state.variables, activity_id, state.completedActivities);
       // Overlaid onto the bag the eager-bundling decision reads (`bagAtOpen`), which reads state as
       // it stands at the moment of delivery.
       const deliveryVariables = fanInstance === undefined
@@ -1804,15 +1799,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Bundle the techniques the activity references (delivered as full protocols), deduped with
       // the workflow-level techniques inherited by every activity (`techniques.activity`, injected
       // here so a common technique is declared once on the workflow) and the core worker techniques.
-      const activity = result.success ? getActivity(result.value, activity_id) : undefined;
+      const activity = getActivity(workflow, activity_id);
       const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
-      const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
+      const inheritedTechRefs = (workflow as { techniques?: { activity?: string[] } }).techniques?.activity ?? [];
 
       // The part of this response that does not vary with what the bundle carries: the activity the
       // call is for, and the rules the worker is held to.
       const responseBound = config.maxResponseChars ?? DEFAULT_MAX_RESPONSE_CHARS;
       const fixed = await fixedResponseParts({
-        activity, workflow: result.success ? result.value : undefined, activityId: activity_id,
+        activity, workflow, activityId: activity_id,
         sessionIndex: session_index, fanInstance, workflowDir: config.workflowDir, workflowId: workflow_id,
         activityBody, state, newDeliveries, scope, mayReferBack,
       });
@@ -1826,7 +1821,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // activity would re-deliver the whole rules list at every activity whose set differed —
       // measured at twenty thousand characters against the four and a half thousand the narrower
       // reading saves. One set for one walk collapses, which is the mechanism this rides on.
-      const runDeclaresGate = result.success && (result.value.activities ?? []).some(
+      const runDeclaresGate = (workflow.activities ?? []).some(
         (a) => flattenActivitySteps(a).some((s) => s.kind === 'checkpoint'),
       );
       const workerTechniques = Array.from(new Set([
@@ -1841,8 +1836,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // controls describe a step kind none of them is. Both are read over the whole graph rather
       // than over this activity's own position in it, for the reason the gate reading is: a rules
       // list that differed between activities would deliver whole at each change.
-      const graphFans = result.success && fanGroups(result.value).length > 0;
-      const runDeclaresLoop = result.success && (result.value.activities ?? []).some(
+      const graphFans = fanGroups(workflow).length > 0;
+      const runDeclaresLoop = (workflow.activities ?? []).some(
         (a) => flattenActivitySteps(a).some((s) => s.kind === 'loop'),
       );
       const withheldRules = [
@@ -1961,14 +1956,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
        */
       let lazyFalseGates = 0;
       const lazyUnanswered: GateUnansweredCounts = { pending: 0, unbound: 0, unparsed: 0 };
-      if (!optedOut && result.success && activity) {
+      if (!optedOut && activity) {
         // One pass serves both the gate reading (which bag entries this activity produces) and the
         // provenance decoration further down.
         const bindsTechnique = flattenActivitySteps(activity as Activity)
           .some((s) => s.kind === 'technique' && s.id !== undefined);
         if (bindsTechnique) {
           producerIndex = await buildProducerIndex({
-            workflow: result.value,
+            workflow,
             workflowDir: config.workflowDir,
             activitySourceWorkflow,
           });
@@ -2224,7 +2219,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const validation = buildValidation(
-        result.success ? validateWorkflowVersion(view, result.value) : null,
+        validateWorkflowVersion(view, workflow),
         ...bundlingWarnings,
       );
 
