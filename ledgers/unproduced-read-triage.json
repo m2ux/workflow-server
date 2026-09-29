@@ -1,7 +1,10 @@
 {
-  "note": "One judgement per activity and variable the activity-variables guard reports as an unproduced read: a name the workflow file declares with no defaultValue, that no step produces and the server does not seed, so every run reads it unset. An unproduced read no entry covers fails the guard; an entry matching no finding is reported stale and leaves with the change that gives the value its producer. There is no regeneration command.",
+  "note": "One judgement per activity and variable the activity-variables guard reports as an unproduced read: a name the workflow file declares with no defaultValue or an empty one, that no step produces and the server does not seed, so every run reads it unset or empty. A fix-later entry suppresses the finding; a live-bug entry keeps it reported. An unproduced read no entry covers fails the guard; an entry matching no finding is reported stale and leaves with the change that gives the value its producer. There is no regeneration command.",
   "rationales": {
-    "input-without-a-producer": "A value the run needs from outside — usually from the user's request — that no step reads out of the request, asks for at a gate, or derives. Fixed by binding it the way the workflow's first activity binds its other inputs."
+    "input-without-a-producer": "A value the run needs from outside — usually from the user's request — that no step reads out of the request, asks for at a gate, or derives. Fixed by binding it the way the workflow's first activity binds its other inputs.",
+    "placeholder-default-without-a-producer": "As input-without-a-producer, with a declared empty default (\"\" or []) standing in for the value, so every run reads it empty rather than unset. Fixed the same way; the empty default goes once the value has a producer.",
+    "relayed-by-a-parent-trigger": "A parent workflow's trigger lists the value in passContext, which the agent relays into this session; the server seeds nothing, and a run started on its own never receives it. Fixed by binding it from the request when absent, so both kinds of run carry it.",
+    "derived-value-never-gathered": "A value the activity reads as a summary of another session's results, which no step gathers. Fixed by gathering it at the step that has those results, or by dropping the read where the consumer already falls back to the per-activity record."
   },
   "entries": [
     {
@@ -17,10 +20,94 @@
       "rationale": "input-without-a-producer"
     },
     {
+      "site": "gitnexus-guarded-rename-conformance :: ambiguous-name-case",
+      "name": "ambiguous_name_file_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-guarded-rename-conformance :: negative-case",
+      "name": "negative_file_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-guarded-rename-conformance :: positive-case",
+      "name": "positive_file_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-guarded-rename-conformance :: report-cases",
+      "name": "ambiguous_name_file_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-guarded-rename-conformance :: report-cases",
+      "name": "negative_file_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-guarded-rename-conformance :: report-cases",
+      "name": "positive_file_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-radius-conformance :: measure-reach",
+      "name": "concern_symbol",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-radius-conformance :: measure-reach",
+      "name": "concern_uid",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-radius-conformance :: measure-reach",
+      "name": "group_name",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-radius-conformance :: measure-reach",
+      "name": "home_repo",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-radius-conformance :: report-conformance",
+      "name": "concern_symbol",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-radius-conformance :: report-conformance",
+      "name": "home_repo",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-scope-discipline-check-conformance :: negative-case",
+      "name": "negative_requirements_scope",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "gitnexus-scope-discipline-check-conformance :: positive-case",
+      "name": "positive_requirements_scope",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
       "site": "meta :: end-workflow",
       "name": "target_workflow_outcomes",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "derived-value-never-gathered"
     },
     {
       "site": "midnight-system-review :: area-derivation",
@@ -71,6 +158,18 @@
       "rationale": "input-without-a-producer"
     },
     {
+      "site": "plain-language :: deliver",
+      "name": "output_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "plain-language :: source-analysis",
+      "name": "source_document_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
       "site": "ponytail :: apply-ladder",
       "name": "task_description",
       "verdict": "fix-later",
@@ -104,43 +203,43 @@
       "site": "prism :: adaptive-pass",
       "name": "target",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: dispute-pass",
       "name": "target",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: generate-report",
       "name": "target_description",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: reflect-pass",
       "name": "target",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: select-mode",
       "name": "target",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: smart-pass",
       "name": "analysis_focus",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: smart-pass",
       "name": "target",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: structural-pass",
@@ -152,13 +251,13 @@
       "site": "prism :: subsystem-pass",
       "name": "target",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism :: verified-pass",
       "name": "target",
       "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
+      "rationale": "relayed-by-a-parent-trigger"
     },
     {
       "site": "prism-update :: apply-updates",
@@ -192,9 +291,21 @@
     },
     {
       "site": "remediate-vuln :: start",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: start",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/assumptions-review",
+      "name": "issue_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/assumptions-review",
@@ -204,15 +315,39 @@
     },
     {
       "site": "remediate-vuln :: work-package/assumptions-review",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/assumptions-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/codebase-comprehension",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/complete",
+      "name": "issue_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/complete",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/complete",
@@ -228,6 +363,12 @@
     },
     {
       "site": "remediate-vuln :: work-package/design-philosophy",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/design-philosophy",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
@@ -240,9 +381,21 @@
     },
     {
       "site": "remediate-vuln :: work-package/implement",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/implement",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/implementation-analysis",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/implementation-analysis",
@@ -258,9 +411,27 @@
     },
     {
       "site": "remediate-vuln :: work-package/plan-prepare",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/plan-prepare",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/post-impl-review",
+      "name": "block_line_range",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/post-impl-review",
+      "name": "block_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/post-impl-review",
@@ -270,9 +441,21 @@
     },
     {
       "site": "remediate-vuln :: work-package/post-impl-review",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/post-impl-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/requirements-elicitation",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/requirements-elicitation",
@@ -282,9 +465,21 @@
     },
     {
       "site": "remediate-vuln :: work-package/research",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/research",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/strategic-review",
+      "name": "issue_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/strategic-review",
@@ -294,15 +489,57 @@
     },
     {
       "site": "remediate-vuln :: work-package/strategic-review",
+      "name": "issue_url",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/strategic-review",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/strategic-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/submit-for-review",
+      "name": "issue_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/submit-for-review",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/submit-for-review",
+      "name": "provenance_log_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/submit-for-review",
+      "name": "rating_cap",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/submit-for-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/validate",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/validate",
@@ -354,15 +591,45 @@
     },
     {
       "site": "work-package :: post-impl-review",
+      "name": "block_line_range",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "work-package :: post-impl-review",
+      "name": "block_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "work-package :: post-impl-review",
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
       "site": "work-package :: start-work-package",
+      "name": "issue_request",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "work-package :: start-work-package",
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: start-work-package",
+      "name": "jira_issue_key",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "work-package :: submit-for-review",
+      "name": "provenance_log_path",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "work-packages :: finalize-roadmap",
@@ -387,6 +654,12 @@
       "name": "package_plans",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "workflow-design :: requirements-refinement",
+      "name": "assumption_outcome",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
     }
   ]
 }

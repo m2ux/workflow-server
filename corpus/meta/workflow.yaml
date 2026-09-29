@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 7.1.0
+version: 7.1.1
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -43,7 +43,7 @@ variables:
     description: Repository named in the user's request, such as the owner/repo of a PR or issue URL.
   - name: target_workflow_outcomes
     type: string
-    description: The client workflow's own outcome list, seeded in its bag
+    description: The client workflow's own outcome list
   - name: planning_folder_path
     type: string
     description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root.
