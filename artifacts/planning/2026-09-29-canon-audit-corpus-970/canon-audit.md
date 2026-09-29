@@ -93,6 +93,44 @@ read 54 · unread 0.
   - The one-step rules in `yield-checkpoint` and `respond-checkpoint`.
 - **Pre-existing on the newly surfaced files:** about 30 Hygiene findings and 4 Contract findings (fan-conformance README steps, activity-worker applying techniques without their inputs, resume-from-checkpoint's two answer sources, README pass inventories). They are itemised in `walk2-A.md` to `walk2-F.md`.
 
+## Residuals — PR #976
+
+The findings the first two passes left open are fixed on `workflow/canon-audit-residuals` (PR #976 into `workflows`). Its base is #970's head, `166718d6`.
+
+**Third pass** (`walk3-A.md` … `walk3-F.md`; surface `res-surface.txt`)
+- **Walked over:** the first residual commits, `33134bdd` … `bcf31337`.
+- **High, Live:** `checkpoint_reply` was hoisted to the workflow-engine container. A bag value of that name then bound into every later dispatch, so a fresh activity read as a continuation.
+- **Also found:** about 37 other findings the branch introduced.
+- **Fixed in:** `83d6f046`, `0e764ad3`, `c1ae16f8`.
+
+**Fourth pass** (`walk4-A.md` … `walk4-F.md`; surface `r4-surface.txt`: 56 touched, 24 closure)
+- **Walked over:** the round-3 commits.
+- **Findings:** 109 rows.
+  - The one High Live finding was the workflow-design 05 correction step, which read reply text that no checkpoint tool carries. Three slices re-derived it from `respond_checkpoint`'s schema.
+  - Live Mediums:
+    - the retrospective overwrote `completion.md`;
+    - workflow-authoring 09's `immediate` remediation exit skipped the round counter;
+    - revise re-runs left their reports unsaved.
+- **False positive:** `yield-checkpoint.md:25`, which reads a bound local bare as AP-62 prescribes.
+- **Fixed in:** `e462a6a1`, and `133cb709`, which includes the AP-70 flatten of workflow-authoring's techniques.
+- **Left open:** workflow-design 08's value-less critical-finding set. It needs an any-of `value:` expression or a verification re-run inside the fix loop.
+
+**Checks at `133cb709`**
+- Guards: 56 of 56 pass.
+- Engine suite: 2162 pass and 6 fail.
+  - 3 are the `reload-exp-sidecar` sandbox tests.
+  - 3 are the work-package walk snapshots, which gain the `clear-checkpoint-reply` step.
+
+**Carried to issues**
+- #973: the meta walk protocol.
+- #974: a checkpoint reply that carries a correction into the bag.
+
+**Engine follow-ups**
+- Re-record the work-package snapshot with the corpus-pointer bump.
+- `tests/batch-loop-walk.test.ts` names `branch_list`.
+- The inventory guard passes when no section heading matches.
+- `check-inherited-inputs` refuses a leaf that makes an optional inherited input required, which `inherited-input-re-declared` admits.
+
 ## Notes
 
 - The #970 body, read as the scope manifest (AP-03), claims an exits-for-transitions sweep; the surviving "transition" wording above is the unfinished part. The body predates commits `3261c0d8` and `0d56c951`: it gives `yield-checkpoint` as 1.5.0 (the branch has 1.4.0) and omits activity-worker 1.10.0, the undeclared-yield and per-visit replay text, the variable-binding, pattern-analysis and 05-impact-analysis edits, the README sweep and the two resource bumps.
