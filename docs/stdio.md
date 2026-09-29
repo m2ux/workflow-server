@@ -44,7 +44,7 @@ A separate engineering checkout uses `WORKFLOW_SERVER_ENGINEERING_DIR`. Planning
 
 ### Several checkouts
 
-`--workspace` is a directory named `projects`, or `$INSTALL/projects`. Each session lands at `<root>/<repo>/.engineering/artifacts/planning/<slug>`. The repo is chosen on `start_session`, from `working_directory`.
+`--workspace` is a directory named `projects`, or `$INSTALL/projects`. A session opened with `working_directory` lands at `<checkout>/.engineering/artifacts/planning/<slug>`, under that checkout whatever its folder is named, so two clones of one repository plan apart. The repo is derived from that checkout's origin. A session bound by `repo` alone lands at `<root>/<repo>/.engineering/artifacts/planning/<slug>`.
 
 ```json
 {

@@ -19,11 +19,12 @@ export { repoCheckoutBasename } from '../../config.js';
  * - **single**: one engineering checkout (or process pinned with `--repo`).
  *   All sessions live under that checkout's planning root.
  * - **multi**: projects multi-root (`HOST_PROJECTS_ROOT` / container projects
- *   bind). Canonical checkouts are **basename only**:
- *   `…/<repo>/.engineering/artifacts/planning/<slug>/`.
+ *   bind). A session opened with `working_directory` plans under that
+ *   checkout: `<checkout>/.engineering/artifacts/planning/<slug>/`, whatever
+ *   the checkout folder is named. A session bound by `repo` alone plans under
+ *   `…/<repo-basename>/.engineering/artifacts/planning/<slug>/`.
  *   Legacy install co-location used `…/<owner>/<repo>/.engineering/…` and is
- *   still scanned on resume only. The agent supplies `repo: "owner/repo"`
- *   (or a path that embeds the checkout) at `start_session`.
+ *   still scanned on resume only.
  */
 export interface SessionScope {
   mode: 'single' | 'multi';
@@ -68,8 +69,8 @@ export function isEngineeringMultiRoot(
 }
 
 /**
- * Absolute eng checkout for a repo under a projects multi-root.
- * Canonical: `$ROOT/<repo-basename>/.engineering` (not owner/repo).
+ * Absolute eng checkout for a repo under a projects multi-root, for a session
+ * bound by `repo` with no checkout: `$ROOT/<repo-basename>/.engineering`.
  */
 export function resolveMultiRootEngineeringDir(
   multiRoot: string,
@@ -237,7 +238,7 @@ export function resolveSessionRoot(
     throw new Error(
       'start_session: repo is required when the server is bound to a projects multi-root ' +
         '(HOST_PROJECTS_ROOT). Pass working_directory so the server derives owner/repo from that checkout\'s origin, or pass repo: "owner/repo" when creating a transient session without a working_directory. ' +
-        'Planning lives at <repo>/.engineering/artifacts/planning/ under that root.',
+        'Planning lives at <checkout>/.engineering/artifacts/planning/ of that checkout.',
     );
   }
 
@@ -245,6 +246,25 @@ export function resolveSessionRoot(
     engineeringDir: scope.engineeringDir,
     planningRelativeDir: scope.planningRelativeDir,
   };
+}
+
+/**
+ * Engineering root of the checkout a session is opened from. Under a projects
+ * multi-root the planning tree belongs to that checkout, so two clones of one
+ * repository plan apart. A single-root process keeps its one engineering root.
+ */
+export function resolveCheckoutSessionRoot(
+  scope: SessionScope,
+  checkout: { hostRepoPath: string; repo: string },
+): ResolvedSessionRoot {
+  if (scope.mode === 'multi') {
+    return {
+      engineeringDir: resolve(checkout.hostRepoPath, '.engineering'),
+      planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
+      repo: checkout.repo,
+    };
+  }
+  return resolveSessionRoot(scope, { repo: checkout.repo });
 }
 
 async function isDirectory(path: string): Promise<boolean> {

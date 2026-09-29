@@ -79,6 +79,8 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
   let client: Client;
   const planningFolder = (slug: string) => planningFolderPath(harness.workspaceDir, slug);
   const readSession = (slug: string) => JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
+  /** The fixture's seeded bag: its declared defaults and the folder the session is stored in. */
+  const bagFor = (slug: string) => ({ ...SEEDED_FIXTURE_BAG, planning_folder_path: planningFolder(slug) });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function call(name: string, args: Record<string, unknown>): Promise<any> {
@@ -107,11 +109,11 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const slug = '2026-07-07-seed-basic';
     await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(stored.variables).toEqual(bagFor(slug));
     expect('unset_marker' in stored.variables).toBe(false);
     const seededEvents = stored.history.filter((h: { type: string }) => h.type === 'variables_seeded');
     expect(seededEvents).toHaveLength(1);
-    expect(seededEvents[0].data).toEqual({ variables: SEEDED_FIXTURE_BAG });
+    expect(seededEvents[0].data).toEqual({ variables: bagFor(slug) });
   });
 
   it('yield_checkpoint publishes the steps-before-the-gate values into the bag', async () => {
@@ -159,16 +161,16 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
   it('yield_checkpoint without variables_changed leaves the bag as seeded', async () => {
     const slug = '2026-07-07-yield-nothing';
     const sessionIndex = await startAtCheckpoint(slug);
-    expect(readSession(slug).variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(readSession(slug).variables).toEqual(bagFor(slug));
     expect(sessionIndex).toMatch(/^[A-Z2-7]{6}$/);
   });
 
-  it('start_session with a no-defaults workflow leaves the bag empty with no seeding event', async () => {
+  it('start_session with a no-defaults workflow seeds only the planning folder', async () => {
     const slug = '2026-07-07-seed-bare';
     await call('start_session', { workflow_id: 'bare-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual({});
-    expect(stored.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(0);
+    expect(stored.variables).toEqual({ planning_folder_path: planningFolder(slug) });
+    expect(stored.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(1);
   });
 
   it('resume preserves the mutated bag and does not re-seed', async () => {
@@ -189,9 +191,9 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
     await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture' });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(stored.variables).toEqual(bagFor(slug));
     const child = stored.triggeredWorkflows[0].state;
-    expect(child.variables).toEqual({ child_ready: false, child_label: 'seeded' });
+    expect(child.variables).toEqual({ child_ready: false, child_label: 'seeded', planning_folder_path: planningFolder(slug) });
     expect(child.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(1);
   });
 
@@ -238,7 +240,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const stored = readSession(slug);
     // Worker outputs land alongside the seeded defaults, including a variable
     // that had no default and was therefore absent from the bag.
-    expect(stored.variables).toEqual({ ...SEEDED_FIXTURE_BAG, review_needed: true, retry_count: 2, unset_marker: 'produced' });
+    expect(stored.variables).toEqual({ ...bagFor(slug), review_needed: true, retry_count: 2, unset_marker: 'produced' });
 
     const events = stored.history.filter((h: { type: string }) => h.type === 'variable_set');
     expect(events).toHaveLength(3);
@@ -293,7 +295,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
     await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity', from_activity: 'checkpoint-activity' });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(stored.variables).toEqual(bagFor(slug));
     expect(stored.history.filter((h: { type: string }) => h.type === 'variable_set')).toHaveLength(0);
   });
 
@@ -340,8 +342,10 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const slug = '2026-07-07-seed-promoted';
     await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture', planning_slug: slug });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual({ bootstrap_ready: false });
-    expect(stored.triggeredWorkflows[0].state.variables).toEqual({ child_ready: false, child_label: 'seeded' });
+    expect(stored.variables).toEqual({ bootstrap_ready: false, planning_folder_path: planningFolder(slug) });
+    expect(stored.triggeredWorkflows[0].state.variables).toEqual({
+      child_ready: false, child_label: 'seeded', planning_folder_path: planningFolder(slug),
+    });
   });
 
   it('respond_checkpoint stores a type-mismatched value as written and warns in _meta.validation and history', async () => {
@@ -406,7 +410,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
         workflow_id: 'seed-fixture', agent_id: 'orchestrator',
         planning_folder: planningFolder(slug), user_request: 'review PR 49',
       });
-      expect(readSession(slug).variables).toEqual({ ...SEEDED_FIXTURE_BAG, user_request: 'review PR 49' });
+      expect(readSession(slug).variables).toEqual({ ...bagFor(slug), user_request: 'review PR 49' });
     });
 
     it('omitting user_request leaves it absent, so exists gates stay meaningful', async () => {
@@ -431,7 +435,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const stored = readSession(slug);
       expect(stored.variables.user_request).toBe('plan issue 141');
       expect(stored.triggeredWorkflows[0].state.variables).toEqual({
-        child_ready: false, child_label: 'seeded', user_request: 'plan issue 141',
+        child_ready: false, child_label: 'seeded', user_request: 'plan issue 141', planning_folder_path: planningFolder(slug),
       });
     });
   });

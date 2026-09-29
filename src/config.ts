@@ -42,6 +42,7 @@ export interface ServerConfig {
    * missing value as `workspaceDir` (single-root layout).
    * With `--repo=owner/repo` (pinned), this is
    * `$HOST_PROJECTS_ROOT/<repo>/.engineering` (basename checkout — not owner/repo).
+   * Unpinned, a multi-root session plans under the checkout it was opened from.
    */
   engineeringDir?: string;
   /**

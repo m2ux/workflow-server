@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse } from 'yaml';
 import { createHarness, parseToolResponse, parseWorkflowResponse, rawText, type Harness, type ParsedResponse } from './e2e/harness.js';
@@ -2222,22 +2222,20 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(text).toMatch(/must be an absolute path/);
     });
 
-    it('treats an off-workspace planning_folder as a slug hint — basename is used, server resolves under its own workspace', async () => {
-      // The agent supplies a path that points at a totally different workspace
-      // (or a stale location). The server must NOT reject — it should consume
-      // only the basename and resolve against its own planning root.
-      const slug = '2026-05-31-off-workspace-hint';
+    it('refuses a new planning_folder outside the planning root, naming the root, and creates nothing', async () => {
+      // A pinned path names one folder exactly. A new one elsewhere would be
+      // created somewhere the caller did not name, so the call is refused.
+      const slug = '2026-05-31-off-workspace-pin';
       const offWorkspacePath = `/totally/different/workspace/.engineering/artifacts/planning/${slug}`;
       const result = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: offWorkspacePath },
       });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.planning_slug).toBe(slug);
-      // The recorded planning_folder_path is the canonical SERVER-side path,
-      // not what the agent supplied.
-      expect(response.planning_folder_path).toBe(join(workspaceDir, '.engineering/artifacts/planning', slug));
+      expect(result.isError).toBeTruthy();
+      const text = (result.content as { text: string }[])[0]?.text ?? '';
+      expect(text).toMatch(/not in the planning root/);
+      expect(text).toContain(join(workspaceDir, '.engineering/artifacts/planning'));
+      expect(existsSync(join(workspaceDir, '.engineering/artifacts/planning', slug))).toBe(false);
     });
 
     it('rejects a relative-path planning_folder (ambiguous)', async () => {
