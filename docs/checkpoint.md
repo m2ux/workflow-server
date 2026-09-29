@@ -109,7 +109,7 @@ A worker that meets a decision its activity never declared may yield one anyway,
 
 ### One Pause per Session
 
-A second pause is refused on a session that already has one, while a parent and a child each keep their own (Figure 5). Every session in the tree has that slot, and a replacement worker replays by the answer key (Figure 6).
+A second pause is refused on a session that already has one, while a parent and a child each keep their own (Figure 5). Every session in the tree has that slot, and a replacement worker replays by the answer key (Figure 6). An answer lasts one visit: entering an activity clears the answers its earlier visits recorded, so a revisit asks again.
 
 ```mermaid
 sequenceDiagram

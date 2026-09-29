@@ -561,6 +561,38 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(validation.warnings.some(w => w.includes('Missing steps'))).toBe(false);
     });
 
+    it('asks again on a revisit rather than replaying the answer an earlier visit gave', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'submit-for-review');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      });
+      await new Promise(r => setTimeout(r, 3100));
+      await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'provide-input' },
+      });
+      await client.callTool({ name: 'resume_checkpoint', arguments: { session_index: nextToken } });
+
+      // provide-input ends the activity and leads back into it: the revisit's gate is a new pause.
+      const reentered = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: nextToken,
+          from_activity: 'submit-for-review',
+          activity_id: 'submit-for-review',
+          exit: 'provide-input',
+          step_manifest: RAN_BEFORE_ABORT,
+        },
+      });
+      expect(reentered.isError).toBeFalsy();
+      const again = parseToolResponse(await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      }));
+      expect(again.status).toBe('yielded');
+    });
+
     it('reports the tail missing when the same manifest arrives with no immediate exit taken', async () => {
       const { nextToken } = await transitionToActivity(client, sessionToken, 'submit-for-review');
 

@@ -197,7 +197,7 @@
             "description": "Recorded checkpoint choice, response time, and effects."
           },
           "default": {},
-          "description": "Checkpoint decisions keyed by `activityId-checkpointId`."
+          "description": "Checkpoint decisions keyed by `activityId-checkpointId`, holding the answers of each activity's current visit: entering an activity clears the ones an earlier visit recorded."
         },
         "history": {
           "type": "array",

@@ -87,9 +87,9 @@ export function isEmptyStepOutput(output: StepManifestEntry['output'] | undefine
  * Where an immediate exit ended the step sequence, as the index in the activity's top-level steps
  * of the checkpoint that selected it — or -1 when the sequence ran to its end. A checkpoint
  * response records the exit the user's option named, so the fact is already on the session and
- * needs no second record. A revisit needs no visit-scoping either: `yield_checkpoint` replays a
- * recorded response, so an activity re-entered takes the same immediate exit again, and a loop-body
- * checkpoint yielded as `<base>#<instance>` records one response per iteration.
+ * needs no second record. Entering an activity clears the answers an earlier visit recorded, so the
+ * responses read here are this visit's, and a loop-body checkpoint yielded as `<base>#<instance>`
+ * records one response per iteration.
  */
 export function immediateExitCut(
   workflow: Workflow,

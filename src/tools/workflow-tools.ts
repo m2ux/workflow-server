@@ -776,6 +776,19 @@ function exitReport(workflow: Workflow, activityId: string, exit: string): ExitR
   };
 }
 
+/**
+ * Clear the answers an activity's earlier visits recorded, as the activity is entered. An answer
+ * replays to a worker resuming the same visit; a revisit asks again, so an answer whose exit leads
+ * back into its own activity cannot replay itself round the loop. The history names each answer's
+ * activity and checkpoint apart, which the joined key cannot do for ids that themselves hold a hyphen.
+ */
+function forgetEarlierVisitAnswers(draft: SessionFile, activityId: string): void {
+  for (const event of draft.history) {
+    if (event.type !== 'checkpoint_response' || event.activity !== activityId || event.checkpoint === undefined) continue;
+    delete draft.checkpointResponses[`${activityId}-${event.checkpoint}`];
+  }
+}
+
 /** The instruction a worker follows when an answer's exit ends its activity. */
 const endsActivityInstruction = (exit: string): string =>
   `Exit '${exit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator.`;
@@ -1485,6 +1498,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             });
           }
           for (const branch of fanEnter.branches) {
+            forgetEarlierVisitAnswers(draft, branch.entry);
             draft.frontier.push(branch.entry);
             draft.history.push({ timestamp: now, type: 'activity_entered', activity: branch.entry });
             if (progress_published !== undefined) {
@@ -1499,6 +1513,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
         const target = targets[0]!;
         if (!isTerminal) {
+          forgetEarlierVisitAnswers(draft, target);
           draft.frontier.push(target);
           draft.history.push({ timestamp: now, type: 'activity_entered', activity: target });
           // Whether the dispatch published this activity's in-progress mark. The mark lives

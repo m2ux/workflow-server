@@ -85,7 +85,7 @@ const SessionFileBaseSchema = z.object({
 
   completedActivities: z.array(z.string().describe('Identifier of a completed activity.')).default([]).describe('Identifiers of completed activities.'),
 
-  checkpointResponses: z.record(CheckpointResponseSchema).default({}).describe('Checkpoint decisions keyed by `activityId-checkpointId`.'),
+  checkpointResponses: z.record(CheckpointResponseSchema).default({}).describe('Checkpoint decisions keyed by `activityId-checkpointId`, holding the answers of each activity\'s current visit: entering an activity clears the ones an earlier visit recorded.'),
 
   history: z.array(HistoryEntrySchema).default([]).describe('Chronological record of session progress.'),
 
