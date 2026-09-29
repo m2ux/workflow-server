@@ -19,19 +19,18 @@ decisions and each review.
 
 Read the file for the mode the request calls for:
 
-- **Plan mode** — raise, plan or restructure an initiative or epic; review a plan against its goal;
-  check dependencies; renumber; fold findings in: [plan-mode.md](references/plan-mode.md).
-- **Review mode** — check existing issues against the templates and fix them:
-  [review-mode.md](references/review-mode.md).
-- **Update mode** — record delivered work: link tasks to their pull requests, tick criteria that
-  hold, close complete task issues, epics and initiatives, and update the initiative's project
-  board: [update-mode.md](references/update-mode.md).
-- **Hoist mode** — find orphan issues, offer each a placement in an existing or new initiative,
-  epic or task, and migrate or subsume the ones the user places:
-  [hoist-mode.md](references/hoist-mode.md).
-- **Progress mode** — summarise the project board as a standup for a Slack channel: a paragraph
-  for management on what the window accomplished, then what completed, what is in progress and
-  what is next: [progress-mode.md](references/progress-mode.md).
+- **[Plan mode](references/plan-mode.md)** — raise, plan or restructure an initiative or epic;
+  review a plan against its goal; check dependencies; renumber; fold findings in.
+- **[Review mode](references/review-mode.md)** — check existing issues against the templates and
+  fix them.
+- **[Update mode](references/update-mode.md)** — record delivered work: link tasks to their pull
+  requests, tick criteria that hold, close complete task issues, epics and initiatives, and update
+  the initiative's project board.
+- **[Hoist mode](references/hoist-mode.md)** — find orphan issues, offer each a placement in an
+  existing or new initiative, epic or task, and migrate or subsume the ones the user places.
+- **[Progress mode](references/progress-mode.md)** — summarise the project board as a standup for
+  a Slack channel: a paragraph for management on what the window accomplished, then what
+  completed, what is in progress and what is next.
 
 Every mode also reads [work-breakdown.md](references/work-breakdown.md), the guide to the Work
 Breakdown tables: their columns, numbering, references and delivery.
