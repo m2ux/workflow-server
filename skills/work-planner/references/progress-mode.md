@@ -11,8 +11,7 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
 3. **Fetch.**
    - [Find Status field](commands.md#find-status-field) on the chosen board, then [Fetch board items with Status](commands.md#fetch-board-items-with-status).
    - [Fetch all initiative pull requests](commands.md#fetch-all-initiative-pull-requests), appending those of each further repository the board's issues live in.
-4. **Summarise.**
-   Run [Summarise progress](commands.md#summarise-progress).
+4. **Summarise.**  Run [Summarise progress](commands.md#summarise-progress).
    - **Window.**
      The window opens a week before today. Give `--since` for another, such as the previous working day for a daily standup.
    - **One initiative.**

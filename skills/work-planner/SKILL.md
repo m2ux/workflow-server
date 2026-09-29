@@ -104,8 +104,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
   Standard library only, for the scripts in `scripts/` and their tests in `test/`.
 - **git.**
   For the planning record: a worktree of the `engineering` branch, whose records live under `artifacts/planning/`.
-- **Sub-agents.**
-  Where the harness has them, for plan mode's broad evidence sweeps.
+- **Sub-agents.**  Where the harness has them, for plan mode's broad evidence sweeps.
 
 ## Commands
 
@@ -118,13 +117,11 @@ Every command the skill runs has one spec in [commands.md](references/commands.m
 - **Decisions.**
   - Ask them one at a time, each with a recommended option.
   - Record each answer in the affected issues and, when there is one, the planning record.
-- **Measured claims.**
-  A count or a chain comes from a command's output, never from a hand count.
+- **Measured claims.**  A count or a chain comes from a command's output, never from a hand count.
 - **Bodies state the plan as it is.**
   - No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything.
   - How the plan evolved goes in the planning record and in commit and pull request bodies.
-- **Other initiatives.**
-  Editing another initiative's issue needs the user's explicit approval.
+- **Other initiatives.**  Editing another initiative's issue needs the user's explicit approval.
 - **Replies to feedback.**
   - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on issue](references/commands.md#comment-on-issue).
   - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.

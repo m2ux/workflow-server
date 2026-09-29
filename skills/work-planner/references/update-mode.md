@@ -32,17 +32,14 @@ Records delivered work on an initiative, its epics and their task issues: links 
      Merged pull requests still linked from no row. Match them as in step 4; one that delivered a task issue stays unmatched here, since its issue records it.
    - **open questions.**
      Work on the epic has started while its Open questions section remains. Stop and ready the epic in plan mode, since the answers may reshape it.
-   - **in flight.**
-     Open pull requests naming the epic.
-   - **ready to verify.**
-     Criteria whose delivering rows are all delivered.
+   - **in flight.**  Open pull requests naming the epic.
+   - **ready to verify.**  Criteria whose delivering rows are all delivered.
    - **ticked early.**
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names or implies: run the test, guard or command, or read the code at the file and line it concerns.
    - A criterion that cannot be confirmed stays unticked and is reported with what is missing.
-8. **Tick.**
-   Tick the confirmed criteria with [Tick criteria](commands.md#tick-criteria).
+8. **Tick.**  Tick the confirmed criteria with [Tick criteria](commands.md#tick-criteria).
 9. **Patch.**
    Patch each changed body from its `--fix` file with [Patch body](commands.md#patch-body).
 10. **Close.**

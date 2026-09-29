@@ -13,8 +13,7 @@ Every command the skill runs, one spec per operation. The mode files name a spec
   Scripts run under `sbx`, invoked by its absolute path from `<workspace>`, the checkout holding this skill.
 - **Boards.**
   A project board sits under `users/{owner}`, or `orgs/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`.
-- **Example values.**
-  Substitute the real ones:
+- **Example values.**  Substitute the real ones:
   - `936` an initiative issue, `943` and `937` its epics, `637` a task issue, `874` an orphan, `946` an initiative off the board;
   - `950` a pull request, `I07` and `I08` initiative numbers;
   - board `2`, and `411749936` its Status field id.

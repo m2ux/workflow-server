@@ -4,8 +4,7 @@ Checks existing initiative, epic, task and standalone issues against the templat
 
 ## Procedure
 
-1. **Select.**
-   Review the issues the user names, or an initiative with its open epics.
+1. **Select.**  Review the issues the user names, or an initiative with its open epics.
    - Review covers open issues only. A closed issue is reviewed only when named.
    - Naming another initiative's issue approves format edits to it.
    - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
@@ -15,16 +14,13 @@ Checks existing initiative, epic, task and standalone issues against the templat
    Check each issue with [Check format](commands.md#check-format): an epic with its initiative's JSON, an initiative with each of its epics'. It reports three kinds of finding:
    - **fixed.**
      Structural changes that keep the wording, already made in `fixed-943.md`, with the body diff printed.
-   - **apply.**
-     A title or label change to make on the issue.
-   - **decide.**
-     Anything needing new content or a judgement.
+   - **apply.**  A title or label change to make on the issue.
+   - **decide.**  Anything needing new content or a judgement.
 4. **Apply the mechanical fixes.**
    - Apply them without asking.
    - Read the diff to confirm it changes structure only, then [Patch body](commands.md#patch-body) from `fixed-943.md`.
    - Make the title and label changes the check names, with [Retitle issue](commands.md#retitle-issue), [Add labels](commands.md#add-labels) and [Remove label](commands.md#remove-label).
-5. **Decide the rest.**
-   Decide each remaining finding with the user, with its content drafted:
+5. **Decide the rest.**  Decide each remaining finding with the user, with its content drafted:
    - a missing section: draft it from the issue and its epics;
    - Non-goals in an epic or task: lift any that bound the initiative into the initiative's Non-goals, then remove the section; in a standalone issue, fold them into the Proposal as a closing boundary;
    - an extra section: keep it, fold it into a template section, or remove it;

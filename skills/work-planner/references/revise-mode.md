@@ -4,8 +4,7 @@ Changes the skill itself: SKILL.md, its references, templates and scripts. Every
 
 ## Procedure
 
-1. **Read the guidelines.**
-   Read [guidelines.md](guidelines.md) whole before the first edit.
+1. **Read the guidelines.**  Read [guidelines.md](guidelines.md) whole before the first edit.
 2. **Understand the request.**
    - Interview the user until the change and its scope are clear.
    - Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
@@ -24,7 +23,6 @@ Changes the skill itself: SKILL.md, its references, templates and scripts. Every
 6. **Verify.**
    - [Run tests](commands.md#run-tests) when a script, template or test changed.
    - Confirm SKILL.md's frontmatter still opens and closes with `---` and holds `name` and `description`.
-7. **Deliver.**
-   Commit, push, and report what changed in each file.
+7. **Deliver.**  Commit, push, and report what changed in each file.
 8. **Revise the guidelines.**
    When the user states a new rule for how the skill is written, add it to [guidelines.md](guidelines.md) in the same change.

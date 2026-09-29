@@ -32,8 +32,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    3. a [Patch body](commands.md#patch-body) replacing every remaining placeholder, in the initiative and in any epic that holds one. Grep the local files for `#E[0-9]` until none is left;
    4. a task issue from `templates/task.md` for each task that needs one, citing its epic, with the row id then linking the issue;
    5. [Check format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch body](commands.md#patch-body) from each fixed body.
-7. **Review.**
-   Run the passes in `review-passes.md`:
+7. **Review.**  Run the passes in `review-passes.md`:
    - the goal pass, whenever the goal, a criterion or an epic changes;
    - the consistency pass, after every round of edits;
    - the ordering pass, whenever tasks or dependencies change.
@@ -54,8 +53,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
      - A condition over a list of subjects ("every reader reads `when` alone: the validator, the guards …") is one condition.
 
    Run the goal pass, and the ordering pass when tasks or dependencies change.
-10. **Deliver.**
-    As work lands, run update mode (`update-mode.md`).
+10. **Deliver.**  As work lands, run update mode (`update-mode.md`).
 
 ## Rules
 

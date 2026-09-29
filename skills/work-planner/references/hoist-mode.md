@@ -2,8 +2,7 @@
 
 Brings the tracker's standalone issues into the agent-engineering structure: each one the user chooses joins an existing initiative, epic or task, or a new one. Every open issue with no agent-engineering prefix is a candidate, in two groups:
 
-- **Orphans.**
-  No open initiative, epic or task links them.
+- **Orphans.**  No open initiative, epic or task links them.
 - **Cited standalone issues.**
   - Open agent-engineering issues link them, as a reference or in prose, yet they sit outside the structure. An investigation an epic cites is one.
   - When the citing epic's criteria already carry its work, the investigation is subsumed into that epic.
@@ -45,10 +44,8 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 
 ## Procedure
 
-1. **Fetch.**
-   Fetch every issue with [Fetch all issues](commands.md#fetch-all-issues).
-2. **List candidates.**
-   Run [List orphans](commands.md#list-orphans). It prints:
+1. **Fetch.**  Fetch every issue with [Fetch all issues](commands.md#fetch-all-issues).
+2. **List candidates.**  Run [List orphans](commands.md#list-orphans). It prints:
    - the orphans;
    - the cited standalone issues, each with its labels, the agent-engineering issues citing it and any planning folder it links;
    - the open initiatives and epics a placement can name.
@@ -62,8 +59,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 4. **Offer.**
    - Offer each orphan to the user: a plain paragraph on what the orphan asks and where it fits, then the placements as options with the recommended one first, and Leave last.
    - Placing an orphan in another initiative's issue needs that answer as its approval.
-5. **Apply.**
-   Apply each choice in turn:
+5. **Apply.**  Apply each choice in turn:
    - **Existing task.**
      - Add the orphan's outcomes to the task issue's criteria and its design to the Proposal.
      - Where they reach past the epic's criteria, add epic criteria too, cited by the task's row.
@@ -76,8 +72,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
      - Draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves.
      - Follow plan mode's steps for creating and linking an epic.
      - Keep or subsume the orphan.
-   - **New initiative.**
-     Run plan mode with the orphan as its input. Keep or subsume the orphan.
+   - **New initiative.**  Run plan mode with the orphan as its input. Keep or subsume the orphan.
    - **Kept.**
      Post the original-body comment, then rewrite the orphan by its kind's rules with [Retitle issue](commands.md#retitle-issue), [Add labels](commands.md#add-labels) and [Patch body](commands.md#patch-body), carrying its evidence into Problem and its design into Proposal.
    - **Leave.**

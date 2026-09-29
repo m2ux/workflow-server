@@ -17,8 +17,7 @@ Tests the initiative's and the epics' acceptance criteria against the goal the u
    - An epic criterion no task row delivers is a gap; [Check format](commands.md#check-format) finds these.
 3. **Trace up.**
    Every criterion traces to a clause. One that traces to none is scope the user did not ask for: remove it, or put it to the user.
-4. **Each criterion.**
-   Each criterion:
+4. **Each criterion.**  Each criterion:
    - states an end state, not an activity;
    - names or implies the instrument that observes it: a test, a guard, a command or a measure;
    - is unambiguous, so two readers agree on whether it holds.
@@ -38,18 +37,15 @@ Tests the initiative's and the epics' acceptance criteria against the goal the u
      - A named test that does not exist yet is work the plan holds: a task in the epic whose subject it tests, or a discrete test-infrastructure epic when the tests serve several criteria. That epic's row cites the criteria its tests verify.
    - **Whole.**
      An initiative criterion states what the initiative achieves as a whole. One that restates a single epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to the epic.
-5. **Outside threats.**
-   Look past the clauses for what defeats the goal from outside:
+5. **Outside threats.**  Look past the clauses for what defeats the goal from outside:
    - **Consumers.**
      Anything outside the plan that reads, builds or ships what the plan changes or removes.
-   - **Silent failures.**
-     Skips, fallbacks and fail-closed paths that hide a violation.
+   - **Silent failures.**  Skips, fallbacks and fail-closed paths that hide a violation.
    - **Measurement.**
      Whether "done" has a threshold, a baseline, and an instrument that is independent of the thing measured. A baseline is fixed before the plan changes what it measures.
    - **Version skew.**
      Between the artifacts the plan produces and the implementations that read them.
-   - **In-flight work.**
-     Changes elsewhere that alter the ground the plan stands on.
+   - **In-flight work.**  Changes elsewhere that alter the ground the plan stands on.
 6. **Rank.**
    - Rank the gaps, and flag the few that most threaten the goal.
    - Record the trace table in the planning record, or give it to the user when the change has none.
@@ -58,8 +54,7 @@ Tests the initiative's and the epics' acceptance criteria against the goal the u
 
 Runs after every round of edits.
 
-- **Stale references.**
-  Task and epic numbers, issue links, and wording from a superseded decision.
+- **Stale references.**  Task and epic numbers, issue links, and wording from a superseded decision.
 - **Titles.**
   - Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown table.
   - Its title has the agent-engineering form.
