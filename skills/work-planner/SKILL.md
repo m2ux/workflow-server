@@ -49,7 +49,7 @@ Read the file for the mode the request calls for:
   - A paragraph for management on what the window accomplished
   - What completed, what is in progress and what is next
 - **[Revise](references/revise-mode.md)**
-  - Make changes to this skill's own files
+  - To make changes to this skill's own files
   - Conformance with the skill's [guidelines](references/guidelines.md)
 
 ## Formatting Scheme
@@ -106,10 +106,6 @@ Every issue the skill writes follows this scheme: its title, labels and body.
   For the planning record: a worktree of the `engineering` branch, whose records live under `artifacts/planning/`.
 - **Sub-agents.**  Where the harness has them, for plan mode's broad evidence sweeps.
 
-## Commands
-
-Every command the skill runs has one spec in [commands.md](references/commands.md), with the conventions they share: session setup, where `gh` runs, bodies through files, and the example values to substitute. Prose names a spec by linking to it.
-
 ## Rules
 
 - **Work Breakdown guide.**
@@ -125,3 +121,5 @@ Every command the skill runs has one spec in [commands.md](references/commands.m
 - **Replies to feedback.**
   - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on issue](references/commands.md#comment-on-issue).
   - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.
+- **Commands**
+  Every command one spec in [commands.md](references/commands.md), with the conventions they share.
