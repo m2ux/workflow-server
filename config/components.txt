@@ -1,0 +1,14 @@
+midnightntwrk/midnight-js
+midnightntwrk/midnight-zk
+midnightntwrk/compact
+midnightntwrk/midnight-docs
+midnightntwrk/midnight-ledger
+midnightntwrk/compact-export
+midnightntwrk/midnight-indexer
+midnightntwrk/midnight-reserve-contracts
+midnightntwrk/midnight-architecture
+IntersectMBO/cardano-node
+midnightntwrk/midnight-node
+midnightntwrk/midnight-wallet
+midnightntwrk/midnight-improvement-proposals
+shieldedtech/shielded-qa
