@@ -4,7 +4,7 @@
 
 ## Problem
 
-{{One sentence on the gap, then one bullet per facet. Each bullet opens with a bold statement, its body on the next line, carries measured evidence (counts, and code linked from the words it supports), and says why it matters.}}
+{{One sentence on the gap, then one bullet per facet. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule, carries measured evidence (counts, and code linked from the words it supports), and says why it matters.}}
 
 - **{{Facet}}.**
   {{Evidence and consequence.}}
