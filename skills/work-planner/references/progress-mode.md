@@ -4,16 +4,23 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
 
 ## Procedure
 
-1. **Bring the board current.** When issues have closed or pull requests have merged since the board was last updated, run update mode first: the summary reads each item's Status as it stands.
+1. **Bring the board current.**
+   When issues have closed or pull requests have merged since the board was last updated, run update mode first: the summary reads each item's Status as it stands.
 2. **Find the board** by listing the owner's open boards. With several, ask the user which one.
 3. **Fetch** the chosen board's Status field id, then its items with that field, which carry each issue whole. Fetch the pull requests that name an initiative, appending those of each further repository the board's issues live in with `>>`. The Commands below use board 2 and its Status field id; substitute the chosen board's.
 4. **Summarise** with `scripts/progress.py --items items.json --prs prs.json`. The window opens a week before today. Give `--since` for another, such as the previous working day for a daily standup, and `--initiative I08` when the user names one initiative, or `owner/repo:I08` where that number names initiatives in several repositories. Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories, so each item's place follows the Work Breakdown links, and a pull request counts towards the epic of its reference in the epic's repository or its initiative's. It prints the `--summary` paragraph, set off by blank lines, and the board's link beneath the heading, then:
-   - **Initiatives:** one line for each initiative with work under Completed or In progress, its title's name and subtitle, for context, opening with the mark of its state; one off the board is done when closed, else in progress. An item works for the initiative whose table links its epic and for the one its epic's title names;
-   - **Completed:** items Done whose issue closed in the window, grouped under their epic, and the tasks whose pull requests merged in it. Closing is when an issue became Done, so one the board caught up with later still falls on its closing date;
-   - **In progress:** epics and task issues In Progress or In Review, each epic with its open pull requests, or else its next task;
-   - **Next:** the five Ready items ranked by priority label, each epic with its next task, and a count of the rest;
-   - **Key:** what the reference letters stand for, I Initiative, E Epic and W Work Item, and what each line's opening mark says of its state: ✅ done, 🔄 in progress (an initiative or epic open and not In Review), 👀 in review, 📝 draft, ▶️ ready.
-5. **Give the initiatives off the board.** For each `unresolved` line naming an initiative not on the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch it, and re-run with `--initiatives issue-946.json …`.
+   - **Initiatives:**
+     One line for each initiative with work under Completed or In progress, its title's name and subtitle, for context, opening with the mark of its state; one off the board is done when closed, else in progress. An item works for the initiative whose table links its epic and for the one its epic's title names;
+   - **Completed:**
+     Items Done whose issue closed in the window, grouped under their epic, and the tasks whose pull requests merged in it. Closing is when an issue became Done, so one the board caught up with later still falls on its closing date;
+   - **In progress:**
+     Epics and task issues In Progress or In Review, each epic with its open pull requests, or else its next task;
+   - **Next:**
+     The five Ready items ranked by priority label, each epic with its next task, and a count of the rest;
+   - **Key:**
+     What the reference letters stand for, I Initiative, E Epic and W Work Item, and what each line's opening mark says of its state: ✅ done, 🔄 in progress (an initiative or epic open and not In Review), 👀 in review, 📝 draft, ▶️ ready.
+5. **Give the initiatives off the board.**
+   For each `unresolved` line naming an initiative not on the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch it, and re-run with `--initiatives issue-946.json …`.
 6. **Write the paragraph for management** from the Initiatives and Completed sections, and re-run with the same arguments and `--summary summary.txt`. One paragraph in plain language: what the window delivered, as outcomes for the initiatives it serves, with no references, links, task ids or tool names. Leave out work in progress and next. With nothing completed, say so in one sentence.
 7. **Report** the summary verbatim in a fenced block, so the user copies it unaltered, with any `unresolved` line it prints to stderr beneath: a dependency on an issue off the board, which reads as blocked, or an epic whose Work Breakdown cannot be read, summarised without its tasks; review mode fixes its body.
 

@@ -4,15 +4,19 @@ Checks existing initiative, epic, task and standalone issues against the templat
 
 ## Procedure
 
-1. **Select.** Review the issues the user names, or an initiative with its open epics.
+1. **Select.**
+   Review the issues the user names, or an initiative with its open epics.
    - Review covers open issues only. A closed issue is reviewed only when named.
    - Naming another initiative's issue approves format edits to it.
    - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
 2. **Fetch** each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites: `gh api repos/{owner}/{repo}/issues/943 > issue-943.json`.
 3. **Check** with `scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md`, and an initiative with `--epic issue-943.json` for each of its epics. The initiative's table lists the epic issues that the epic's references link to, and each epic's title names its row. The check reads the format from `templates/`, and reports three kinds of finding:
-   - **fixed:** structural changes that keep the wording, already made in `fixed-943.md`, with the body diff printed;
-   - **apply:** a title or label change to make on the issue;
-   - **decide:** anything needing new content or a judgement.
+   - **fixed:**
+     Structural changes that keep the wording, already made in `fixed-943.md`, with the body diff printed;
+   - **apply:**
+     A title or label change to make on the issue;
+   - **decide:**
+     Anything needing new content or a judgement.
 4. **Apply the mechanical fixes** without asking. Read the diff to confirm it changes structure only, then patch the body from `fixed-943.md`, along with the title and labels the check names.
 5. **Decide the rest** with the user, each finding with its content drafted:
    - a missing section: draft it from the issue and its epics;

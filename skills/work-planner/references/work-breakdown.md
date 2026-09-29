@@ -9,15 +9,20 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 | Initiative | `Epic \| Description \| Depends on` |
 | Epic | `Task \| Description \| Depends on \| Join` |
 
-- **Row id.** An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`. An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task. A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion or evidence of its own.
-- **Description.** A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail, ending with the acceptance criteria the row delivers. Every criterion is delivered by at least one row.
+- **Row id.**
+  An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`. An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task. A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion or evidence of its own.
+- **Description.**
+  A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail, ending with the acceptance criteria the row delivers. Every criterion is delivered by at least one row.
   - In an epic: the row cites the epic's acceptance criteria (`… → AC2, AC5`), so an agent working the task knows which criteria it must meet. Each detail is a criterion stating one invariant.
   - In an initiative: the phrase is the epic's title name, the part before the colon (`[I07:E01] Formal Specification: …` gives `Formal Specification → AC4, AC5`), so the table and the epic name the work alike. The row cites the initiative's criteria the epic serves, so each traces to its epics.
-- **Depends on.** References only, with no prose, and only what no other entry in the cell already implies.
+- **Depends on.**
+  References only, with no prose, and only what no other entry in the cell already implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
   - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). `deps.py` derives it from the epic tables.
-- **Task grain.** A task is one pull request's worth of work. A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver. A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
-- **Join.** The tasks that can land in the same pull request as this one. Each lists the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
+- **Task grain.**
+  A task is one pull request's worth of work. A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver. A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
+- **Join.**
+  The tasks that can land in the same pull request as this one. Each lists the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
 
 ## Numbering
 
