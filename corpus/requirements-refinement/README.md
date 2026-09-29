@@ -19,8 +19,9 @@ matrix names the source each section came from and records that section as the h
 passage. Each new or updated requirement carries those headings so the specification's source list
 can link to them.
 
-It is parameterized: the source documents and the target specification are supplied as inputs, so the
-workflow both **augments** an existing specification and **creates** one from scratch. Every
+The request names the source documents and, where it states one, the target specification; when it
+names none, the run asks for its path. So the workflow both **augments** an existing specification and
+**creates** one from scratch. Every
 intermediate and final artifact lives in the run's planning folder.
 
 **Use this workflow when you want to:**
@@ -38,17 +39,20 @@ intermediate and final artifact lives in the run's planning folder.
 | 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
 | 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage) and categorize issues |
 | 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary |
-| 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when critical issues or the correction budget stop refinement |
+| 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when a critical issue or the correction limit stops refinement |
 
 ## Flow
 
 ```
 intake-and-analyze → update-specification → validate-specification
-        │                     ▲                        │
-        │                     │                        ├─ validation passed → finalize-specification
-        │                     │                        ├─ critical / cap reached → report-failure
-        │                     └────────────────────────┘  (correctable & under the cap)
-        └─ source unreadable → end
+   │  ▲                    ▲  ▲                     │
+   │  └─ revise            │  │                     ├─ validation passed → finalize-specification
+   │                       │  │                     │                        │
+   │                       │  │                     │                        ├─ accepted → end
+   │                       │  └─────────────────────┼────────────────────────┘ revision requested
+   │                       └────────────────────────┤  (correctable & under the limit)
+   │                                                └─ critical / limit reached → report-failure
+   └─ source unreadable → end
 ```
 
 The staged specification sits in the planning folder.

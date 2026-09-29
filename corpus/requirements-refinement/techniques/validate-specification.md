@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.1
+  version: 1.9.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ The updated specification document.
 
 The structured analysis carrying the source-coverage matrix and, on each new or updated requirement, the source identifier and verbatim heading of each contributing passage.
 
+### update_pass
+
+Number of the pass whose working specification this validates.
+
 ## Outputs
 
 ### validation_report
@@ -25,7 +29,7 @@ Categorized validation findings with an overall verdict and the source-coverage 
 
 #### artifact
 
-`validation-report-{correction_iteration}.md`
+`validation-report-{update_pass}.md`
 
 #### audience
 
@@ -67,5 +71,5 @@ Overall verdict — `true` when the specification is conformant and covers every
 
 ### 4. Compile Verdict
 
-- Write `{validation_report}` to `{planning_folder_path}` per [validation-report](../resources/validation-report.md#template) and its [Rules](../resources/validation-report.md#rules); capture its written location as `{validation_report_path}`.
+- Write `{validation_report}` for pass `{update_pass}` to `{planning_folder_path}` per [validation-report](../resources/validation-report.md#template) and its [Rules](../resources/validation-report.md#rules); capture its written location as `{validation_report_path}`.
 - Emit `{has_critical_issues}`, `{has_correctable_issues}`, `{validation_passed}`, and `{update_pass_kind}` from the categorized issues, each as its declared contract defines it. The source-coverage result is recorded in `{validation_report}` alongside them, per that output's contract.

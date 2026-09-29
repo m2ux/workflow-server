@@ -1,9 +1,10 @@
 id: finalize-specification
-version: 1.8.0
+version: 1.9.0
 name: Finalize Specification
 description: Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts.
 variables:
   reads:
+    - planning_folder_path
     - source_paths
     - spec_basename
     - target_doc_path
@@ -16,6 +17,9 @@ variables:
       type: string
       description: Absolute path to the staged final specification
       defaultValue: ""
+    - name: revision_request
+      type: string
+      description: Text the user typed naming the revisions a staged specification or change summary needs
     - name: finalization_accepted
       type: boolean
       description: Whether the staged specification and change summary are accepted
@@ -60,11 +64,12 @@ steps:
             finalization_accepted: true
       - id: revise
         label: Revise
-        description: The final specification or change summary needs revision.
+        description: The reply names the revisions the final specification or change summary needs.
         effect:
           setVariable:
             finalization_accepted: false
             update_pass_kind: revision
+          recordReply: revision_request
 exits:
   - id: accepted
     when: finalization_accepted == true

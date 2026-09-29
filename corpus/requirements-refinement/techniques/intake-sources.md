@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Record the source paths, whether every source is readable, each source's type, a
 
 ### source_readable
 
-`true` when every document named in `{source_paths}` exists and carries content; `false` when any of them is missing or empty.
+`true` when `{source_paths}` names at least one document and every document it names exists and carries content; `false` when it names none, or when any of them is missing or empty.
 
 ### classified_sources
 

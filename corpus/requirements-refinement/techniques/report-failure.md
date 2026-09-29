@@ -1,17 +1,21 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-Compile a failure report of the unresolved critical issues, the correction history, and the manual resolution each issue needs.
+Compile a failure report of the issues refinement leaves unresolved, the correction history, and the manual resolution each issue needs.
 
 ## Inputs
 
+### spec_basename
+
+Basename of the target specification.
+
 ### validation_report
 
-Categorized validation findings carrying the critical or unresolved issues.
+Categorized validation findings carrying the unresolved issues.
 
 ### validation_report_path
 
@@ -40,6 +44,7 @@ Absolute path to the written failure report.
 ### 1. Summarize Failure
 
 - Record the verdict, the number of correction passes attempted (`{correction_iteration}`), and a link to `{validation_report}` at `{validation_report_path}`.
+  > The verdict is `critical` when `{validation_report}` carries a critical issue, and `correction limit reached` when only correctable issues remain.
 
 ### 2. Provide Resolution Guidance
 
@@ -47,7 +52,7 @@ Absolute path to the written failure report.
 
 ### 3. Write Failure Report
 
-- Write `{failure_report}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules), filling the template's path slot from `{validation_report_path}`; capture its written location as `{failure_report_path}`.
+- Write `{failure_report}` for `{spec_basename}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules), filling the template's path slot from `{validation_report_path}`; capture its written location as `{failure_report_path}`.
 
 ## Rules
 

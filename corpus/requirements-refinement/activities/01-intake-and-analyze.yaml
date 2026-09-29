@@ -1,12 +1,18 @@
 id: intake-and-analyze
-version: 1.5.0
+version: 1.6.0
 name: Intake and Analyze
 description: Produce a confirmed requirements analysis from classified, readable source documents against the target specification.
 variables:
   reads:
-    - source_paths
-    - target_doc_path
+    - planning_folder_path
+    - user_request
   writes:
+    - name: source_paths
+      type: array
+      description: Filesystem paths of the local source documents being processed, each a meeting transcript or an unstructured document
+    - name: target_doc_path
+      type: string
+      description: Filesystem path to the canonical requirements specification being augmented or created
     - name: analysis_confirmed
       type: boolean
       description: True when the requirements analysis is approved
@@ -35,6 +41,12 @@ variables:
       type: boolean
       description: True when the target specification already exists and is being augmented; false when it is created from scratch
       defaultValue: false
+    - name: intake_correction
+      type: string
+      description: Text the user typed to correct the sources, a source's classification, or the target specification
+    - name: analysis_feedback
+      type: string
+      description: Text the user typed naming what a requirements analysis misread or missed
     - name: update_pass_kind
       type: string
       description: Which apply this pass performs
@@ -45,6 +57,22 @@ variables:
       defaultValue: initial
 required: true
 steps:
+  - kind: technique
+    id: resolve-inputs
+    technique: resolve-inputs
+  - kind: checkpoint
+    id: target-doc-named
+    condition:
+      type: simple
+      variable: target_doc_path
+      operator: notExists
+    message: "The request names no target specification."
+    options:
+      - id: named
+        label: Name the specification
+        description: The reply is the specification's path. An existing file is augmented; a new path is created.
+        effect:
+          recordReply: target_doc_path
   - kind: technique
     id: intake-sources
     technique: intake-sources
@@ -61,7 +89,7 @@ steps:
     when: source_readable == false
     actions:
       - action: message
-        message: "A source document named for this run is missing or empty; the intake record names which ([intake record]({intake_record_path}))."
+        message: "A source document named for this run is missing or empty, or the request names none; the intake record names which ([intake record]({intake_record_path}))."
   - kind: checkpoint
     id: sources-confirmed
     when: source_readable == true
@@ -72,8 +100,9 @@ steps:
         description: The source set, the classification each source carries, and the mode are correct.
       - id: revise
         label: Correct the sources
-        description: A source path, a source's classification, or the augment/create mode is wrong, or the set omits a document it should carry.
+        description: The reply names what to change — a source path, a source's classification, the target specification, or a document the set omits.
         effect:
+          recordReply: intake_correction
           exit: revise
   - kind: technique
     id: analyze-source
@@ -96,8 +125,9 @@ steps:
             update_pass_kind: initial
       - id: revise
         label: Revise the analysis
-        description: Analysis misreads a source, misses changes, or leaves a source unread.
+        description: The reply names what the analysis misreads, misses, or leaves unread.
         effect:
+          recordReply: analysis_feedback
           exit: revise
 exits:
   - id: source-unreadable
@@ -108,8 +138,9 @@ exits:
   - id: revise
     immediate: true
 outcome:
-  - Both the source-document paths and the target-specification path exist and are confirmed
+  - The run names its source documents and a target specification, taken from the request or supplied by the user
   - Each source carries its classification, and whether the specification is being augmented or created is recorded
   - A source with nothing to read is settled at the boundary
+  - A correction or a revision request the user gives reaches the next pass as recorded text
   - Every requirement change the sources imply is pinned to a stable identifier the specification can be updated against
   - The analysis faithfully reflects every source
