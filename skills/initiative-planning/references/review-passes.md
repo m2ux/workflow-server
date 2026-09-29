@@ -74,7 +74,8 @@ Runs after every round of edits.
 - **Stale references.** Task and epic numbers, issue links, and wording from a superseded
   decision.
 - **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown
-  table, its title has the house form, and the initiative row carries the epic's title name.
+  table, its title has the agent-engineering form, and the initiative row carries the epic's title
+  name.
 - **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed. It
   confirms that each Description cell cites criteria that exist, and that every one has a
   row.

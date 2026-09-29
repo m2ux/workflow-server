@@ -26,8 +26,8 @@ first link read deciding where more than one does. Repository names match in any
     request reads it by URL, whatever its title or repository.
 Sections, lines grouped under the epic they belong to:
   Initiatives  each initiative an item under Completed or In progress works for: its title's name
-               and subtitle, the one-line outcome the house title states. One neither on the board
-               nor given with --initiatives is reported, to be fetched and given.
+               and subtitle, the one-line outcome the agent-engineering title states. One neither
+               on the board nor given with --initiatives is reported, to be fetched and given.
 An item works for the initiative its epic belongs to and for the one its epic's title names in the
 epic's repository.
   Completed    items Done whose issue closed in the window: an initiative, an epic, or a task issue
@@ -100,7 +100,7 @@ def reference(i: str, e: str = '', w: str = '') -> str:
 
 
 def subtitle(title: str) -> str:
-    """A house title's subtitle: the outcome after the name's colon."""
+    """An agent-engineering title's subtitle: the outcome after the name's colon."""
     rest = PREFIX.sub('', title).strip()
     return rest.split(': ', 1)[1].strip() if ': ' in rest else ''
 

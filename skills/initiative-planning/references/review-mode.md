@@ -1,8 +1,8 @@
 # Review mode
 
-Checks existing initiative, epic, task and standalone issues against the templates, and fixes
-them. A standalone issue has no house prefix and belongs to no initiative; hoist mode leaves such
-issues in place.
+Checks existing initiative, epic, task and standalone issues against the templates, and fixes them.
+A standalone issue has no agent-engineering prefix and belongs to no initiative; hoist mode leaves
+such issues in place.
 
 ## Procedure
 
@@ -54,7 +54,7 @@ issues in place.
    - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics
      `deps.py` derives with `I=`;
    - a title whose name is not two or three words or whose subtitle runs past ten: draft a title of
-     the house form, and give the initiative row the new name;
+     the agent-engineering form, and give the initiative row the new name;
    - an issue several row ids link: unlink the ids and cite the issue under References, since it
      backs several tasks, or give each task its own issue.
 6. **Check dependencies** whenever an initiative or epic is reviewed: fetch the initiative's and

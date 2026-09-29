@@ -8,7 +8,8 @@ pull requests name tasks and how delivery is recorded.
 ## Procedure
 
 1. **Select** an initiative with its open epics, or the epics the user names. Run review mode first
-   on any issue whose format `format.py` rejects, since the update reads the house table.
+   on any issue whose format `format.py` rejects, since the update reads the agent-engineering
+   table.
 2. **Fetch** each issue whole, including the task issues that epic row ids link, and the pull
    requests that name the initiative:
    `gh api repos/{owner}/{repo}/issues/943 > issue-943.json` and

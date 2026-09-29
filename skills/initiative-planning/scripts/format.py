@@ -1,5 +1,5 @@
-"""Check an initiative, epic, task or standalone issue against its house template, and fix what is
-mechanical.
+"""Check an initiative, epic, task or standalone issue against its agent-engineering template, and
+fix what is mechanical.
 
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]

@@ -65,7 +65,7 @@ every epic reference to its epic's issue: `[E01:W03](…/issues/937)`. Prose use
 - **A task with its own issue** keeps its id linked to that issue. The issue records the pull
   request that delivers it, and the task is delivered when the issue is closed as completed.
 - **An issue backing several tasks**, such as an investigation, is a reference: the epic cites it
-  under References, no row id links it, and its title carries no house prefix.
+  under References, no row id links it, and its title carries no agent-engineering prefix.
 - **Work another issue takes** leaves the table. Its criteria go with it, or to another row that
   delivers them.
 

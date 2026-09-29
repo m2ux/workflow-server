@@ -3,7 +3,7 @@
 Usage:
   python3 deps.py [I=bodies/initiative.md] E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
-Each file is an epic issue body holding the house Work Breakdown table:
+Each file is an epic issue body holding the agent-engineering Work Breakdown table:
   | Task | Description | Depends on | Join |
 A delivered task's id links its pull request: | [W01](https://…/pull/950) |.
 Cells are read by column name, so the column order does not matter.

@@ -1,12 +1,12 @@
 ---
 name: initiative-planning
 description: >-
-  Plans and maintains house initiatives on GitHub: [Ixx] initiative issues, their [Ixx:Eyy] epics
-  and [Ixx:Eyy:Wzz] tasks, and the initiative's project board. Use to raise, plan, restructure,
-  review or renumber an initiative or epic; to check an issue's format or dependency order; to fold
-  review findings into issues; to update an initiative or epic with completed work; to hoist or
-  triage orphan issues into an initiative; or for a progress summary, standup or status update in
-  Slack.
+  Plans and maintains agent-engineering initiatives on GitHub: [Ixx] initiative issues, their
+  [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, and the initiative's project board. Use to raise, plan,
+  restructure, review or renumber an initiative or epic; to check an issue's format or dependency
+  order; to fold review findings into issues; to update an initiative or epic with completed work;
+  to hoist or triage orphan issues into an initiative; or for a progress summary, standup or status
+  update in Slack.
 ---
 
 # Initiative Planning
@@ -36,7 +36,7 @@ Read the file for the mode the request calls for:
 Every mode also reads [work-breakdown.md](references/work-breakdown.md), the guide to the Work
 Breakdown tables: their columns, numbering, references and delivery.
 
-## House scheme
+## Agent-engineering scheme
 
 | Level | Title | Labels |
 | --- | --- | --- |

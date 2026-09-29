@@ -1,13 +1,13 @@
 # Hoist mode
 
-Brings the tracker's standalone issues into the house structure: each one the user chooses joins
-an existing initiative, epic or task, or a new one. Every open issue with no house prefix is a
-candidate, in two groups:
+Brings the tracker's standalone issues into the agent-engineering structure: each one the user
+chooses joins an existing initiative, epic or task, or a new one. Every open issue with no
+agent-engineering prefix is a candidate, in two groups:
 
 - **Orphans:** no open initiative, epic or task links them.
-- **Cited standalone issues:** open house issues link them, as a reference or in prose, yet they
-  sit outside the structure. An investigation an epic cites is one. When the citing epic's criteria
-  already carry its work, the investigation is subsumed into that epic.
+- **Cited standalone issues:** open agent-engineering issues link them, as a reference or in prose,
+  yet they sit outside the structure. An investigation an epic cites is one. When the citing epic's
+  criteria already carry its work, the investigation is subsumed into that epic.
 
 The Work Breakdown guide (`work-breakdown.md`) states how rows, criteria and references are
 written.
@@ -22,9 +22,9 @@ written.
 | **New initiative** | an initiative, raised in plan mode | kept as the initiative's issue, or subsumed |
 | **Leave** | nothing; the orphan is not initiative work | stays open, in the standalone layout |
 
-- **Kept.** The orphan becomes the new task, epic or initiative issue. It is retitled with its house
-  prefix, labelled, and rewritten from its template, and the issue that lists it links it: a task's
-  row id, or an epic's row in its initiative.
+- **Kept.** The orphan becomes the new task, epic or initiative issue. It is retitled with its
+  agent-engineering prefix, labelled, and rewritten from its template, and the issue that lists it
+  links it: a task's row id, or an epic's row in its initiative.
 - **Subsumed.** The orphan's work folds into the issue that takes it: its outcomes become criteria of
   one invariant each, and its design goes into the Proposal. That issue's References cite the
   orphan for the detail it holds, so nothing it recorded is lost. The orphan is then closed with a
@@ -34,8 +34,8 @@ written.
   issue's References cite that folder beside the orphan, and the orphan closes. Otherwise keep the
   orphan when its work needs discussion or evidence of its own, as a task with its own issue does,
   and subsume it when its detail fits in rows, criteria and a reference.
-- **Left.** An orphan left in place keeps no house prefix, and its body takes the standalone
-  layout, `templates/issue.md`, when it does not already follow it.
+- **Left.** An orphan left in place keeps no agent-engineering prefix, and its body takes the
+  standalone layout, `templates/issue.md`, when it does not already follow it.
 - **Bodies state the result,** as every body does: none says work was hoisted, migrated or
   subsumed, or names where it came from. A reference to the orphan says what detail it holds
   (`The evidence walks and the carve-outs.`), and a kept orphan's body reads as if it had always
@@ -45,8 +45,8 @@ written.
 
 1. **Fetch** every issue: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" >
    issues.json`.
-2. **List candidates** with `scripts/orphans.py issues.json`. It prints the orphans, then the
-   cited standalone issues, each with its labels, the house issues citing it and any planning
+2. **List candidates** with `scripts/orphans.py issues.json`. It prints the orphans, then the cited
+   standalone issues, each with its labels, the agent-engineering issues citing it and any planning
    folder it links, then the open initiatives and epics a placement can name.
 3. **Triage** each orphan. Read it whole, with its comments
    (`gh api --paginate repos/{owner}/{repo}/issues/874/comments`), and the bodies of the
@@ -72,10 +72,10 @@ written.
    - **New epic:** draft the epic from `templates/epic.md` and its row in the initiative, with the
      initiative criteria it serves; follow plan mode's steps for creating and linking an epic. Keep or subsume.
    - **New initiative:** run plan mode with the orphan as its input. Keep or subsume.
-   - **Kept:** retitle the orphan with its house prefix and a title of the house form, label it
-     with its `type:*` (and a `theme:*` for an initiative or epic), and rewrite its body from its
-     template, carrying its evidence into
-     Problem and its design into Proposal.
+   - **Kept:** retitle the orphan with its agent-engineering prefix and a title of the
+     agent-engineering form, label it with its `type:*` (and a `theme:*` for an initiative or epic),
+     and rewrite its body from its template, carrying its evidence into Problem and its design into
+     Proposal.
    - **Leave:** run review mode's check (`format.py`) on the orphan and bring its body into the
      standalone layout, carrying its content into the template's sections.
    - **Subsumed:** cite the orphan under the taking issue's References
