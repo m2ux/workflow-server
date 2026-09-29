@@ -39,15 +39,6 @@ Creation guide for bare filename `assumptions-log.md`. Design-time assumption ca
 
 ---
 
-## Summary
-
-| Category | Surfaced | Audit-resolved | Confirmed | Corrected | Deferred |
-|----------|----------|----------------|-----------|-----------|----------|
-| ... | X | Y | ... | ... | ... |
-| **Total** | **X** | **Y** | ... | ... | ... |
-
----
-
 ## Log
 
 One row per assumption, updated in place across its lifecycle — surfaced, reconciled, and resolved.
@@ -59,9 +50,9 @@ One row per assumption, updated in place across its lifecycle — surfaced, reco
 
 ## Rules
 
-- **Bare filename** `assumptions-log.md` — design sessions fill **this** template (not the work-package assumptions-review shape), including when collect/record ops are borrowed from work-package.
+- **Bare filename** `assumptions-log.md` — design sessions fill **this** template (not the work-package assumptions-review shape).
 - **Table is the record** — no prose duplicate of the log elsewhere (README / COMPLETE link here).
 - **One row per assumption**, updated in place through reconcile.
 - **Null row format:** if none significant, one row stating that (same shape as a normal log row).
 - **Categories** use the design set in [Assumption Categories](#assumption-categories).
-- **Line budget:** summary + log rows only; keep under ~80 lines unless the open-judgement set is large.
+- **Line budget:** log rows only; keep under ~80 lines unless the open-judgement set is large.

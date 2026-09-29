@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -38,8 +38,6 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 ### 1. Load Schemas
 
 - Load all five JSON schema definitions from `workflow-server://schemas` (workflow, activity, technique, condition, state) — conformance reference for drafted content. Delivery: [resource-loading-via-tool](/meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool).
-- Read `schemas/README.md` for ontology, field tables, examples, and validation guidance
-
 ### 2. Load Design-Time Canon
 
 - Load [anti-patterns](/canon/resources/anti-patterns.md) and [schema-construct-inventory](/canon/resources/schema-construct-inventory.md) once for literacy and later authoring (write-time application is the inherited `apply-anti-patterns-when-authoring` rule — do not restate Detect here)

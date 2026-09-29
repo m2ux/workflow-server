@@ -10,7 +10,7 @@
 > at the commit gates that select *proceed to commit* even when files are failing schema validation.
 > Prefer finishing promptly over resuming late.
 
-> Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, it derives intent from a free-form user description, reconciles design assumptions, and collects the stakeholder decisions into one approval before commit; it runs headless by default (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -20,14 +20,14 @@ This workflow manages the complete lifecycle of workflow definition authoring, w
 
 | # | Activity | Mode | Purpose |
 |---|----------|------|---------|
-| 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Derive create/update/review + gap flags + `{headless_mode}` (default true), Gate 1 when needed, internalize schemas and YAML format |
-| 03 | [**Requirements Refinement**](./activities/README.md#03-requirements-refinement) | Create, Update | Elicit or synthesize the spec, soft-confirm, then surface and while-loop reconcile design assumptions (open judgements → Gate 2) |
+| 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Derive create/update/review, gap flags and `{headless_mode}`, and internalize schemas and YAML format |
+| 03 | [**Requirements Refinement**](./activities/README.md#03-requirements-refinement) | Create, Update | Elicit or synthesize the spec, then surface and reconcile design assumptions |
 | 04 | [**Pattern Analysis**](./activities/README.md#04-pattern-analysis) | Create only | Audit 2+ reference workflows for reusable patterns |
 | 05 | [**Impact Analysis**](./activities/README.md#05-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
 | 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Ensure dedicated `{target_path}` worktree, define file manifest, draft and validate each file, then verify planning artifacts against the design canonical-home map |
-| 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode; forEach over `target_workflow_ids`) |
-| 09 | [**Validate and Commit**](./activities/README.md#09-validate-and-commit) | All | Schema validation, Gate 2 `approve-to-commit`, then commit from `{target_path}` on `{workflow_branch}` + open a PR against `workflows` (create/update) or save the compliance report (review) |
-| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Post-commit compliance audit with automatic remedia when findings remain (never asks disposition), publishing the remediation to the open pull request |
+| 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | Audit the drafted or target workflows and remediate findings; the passes live in [`08-quality-review.yaml`](./activities/08-quality-review.yaml) |
+| 09 | [**Validate and Commit**](./activities/README.md#09-validate-and-commit) | All | Validate schemas, then commit from `{target_path}` on `{workflow_branch}` and open a PR against `workflows` (create/update), or save the compliance report (review) |
+| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Post-commit compliance audit that remediates remaining findings automatically and publishes the remediation to the open pull request |
 | 11 | [**Retrospective**](./activities/README.md#11-retrospective) | All | Record a completion summary (create/update) and conduct a session retrospective |
 
 **Detailed documentation:**
@@ -84,13 +84,13 @@ graph TD
 
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md) (agent stubs via [compose-prompt](/meta/techniques/workflow-engine/compose-prompt.md)). Do not restate engine dispatch/checkpoint HOW here.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md) (agent stubs via [compose-prompt](/meta/techniques/workflow-engine/compose-prompt.md)).
 
 ---
 
 ## Review Mode
 
-Review mode audits one or more existing workflows (`target_workflow_ids`, with each iteration binding `target_workflow_id`) against the design principles, anti-pattern catalog, and schema validation. Pass inventory, severity disposition, and where a failing pass routes live in [`08-quality-review.yaml`](./activities/08-quality-review.yaml) — do not restate that inventory here. The output is a severity-rated compliance report in the session planning folder.
+Review mode audits one or more existing workflows (`target_workflow_ids`, with each iteration binding `target_workflow_id`) against the design principles, anti-pattern catalog, and schema validation. Pass inventory, severity disposition, and where a failing pass routes live in [`08-quality-review.yaml`](./activities/08-quality-review.yaml). The output is a severity-rated compliance report in the session planning folder.
 
 ---
 
@@ -203,6 +203,7 @@ corpus/workflow-design/
 │   ├── prepare-dimension.md
 │   ├── capture-dimension.md
 │   ├── synthesize-update-specification.md
+│   ├── persist-design-specification.md
 │   ├── pattern-analysis.md
 │   ├── impact-analysis.md
 │   ├── scope-definition.md
@@ -233,9 +234,6 @@ corpus/workflow-design/
 │   └── publish-workflow-pr.md
 └── resources/
     ├── README.md                         # Resource index + artifact→guide map
-    ├── design-principles.md              # Positive framing principles
-    ├── schema-construct-inventory.md     # Informal phrase to formal construct
-    ├── anti-patterns.md                  # anti-pattern catalog (AP-XX + names)
     ├── update-mode-guide.md              # Update mode guide
     ├── compliance-report.md              # Creation guide: compliance / post-update
     ├── readme-seed.md                    # Progress inventory + mode map for planning README
@@ -243,7 +241,6 @@ corpus/workflow-design/
     ├── design-assumptions.md             # Creation guide: assumptions-log.md
     ├── design-assumption-reconciliation.md  # Audit-based reconciliation guide
     ├── elicitation-guide.md              # Mode sets + per-dimension question bank
-    ├── convention-conformance.md         # Reference conventions vs siblings
     ├── structural-inventory.md           # Creation guide
     ├── format-conventions.md             # Creation guide
     ├── applicable-constructs.md          # Creation guide
@@ -253,6 +250,7 @@ corpus/workflow-design/
     ├── scope-manifest.md                 # Creation guide
     ├── drafting-plan.md                  # Creation guide
     ├── file-review-note.md               # Creation guide
+    ├── follow-ups.md                     # Creation guide
     ├── draft-attestation.md              # Creation guide
     └── findings-satellite.md             # Shared audit-satellite creation guide
 ```

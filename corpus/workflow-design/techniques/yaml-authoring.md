@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ The set of files drafted for this workflow so far, extended with the one just wr
 
 ### 2. Read Schema Field Tables
 
-- Read `schemas/README.md` for the field tables, required properties, and valid values for the `{schema_type}`
+- Read `schemas/{schema_type}.schema.json` for the fields, required properties, and valid values of the `{schema_type}`
 
 ### 3. Plan Content
 

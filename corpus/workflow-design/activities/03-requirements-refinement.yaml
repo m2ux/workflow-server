@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.16.0
+version: 1.17.0
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
 variables:
@@ -12,6 +12,9 @@ variables:
     - pr_number
     - target_path
   writes:
+    - name: accumulated_design
+      type: string
+      description: The assembled design specification across the design dimensions that ran.
     - name: assumptions_log
       type: object
       description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.

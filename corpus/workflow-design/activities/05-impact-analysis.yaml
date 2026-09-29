@@ -4,6 +4,7 @@ name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, exits and graph, and references.
 variables:
   reads:
+    - accumulated_design
     - component_git_dir
     - operation_type
     - planning_folder_path
@@ -16,11 +17,11 @@ variables:
       defaultValue: ""
     - name: preservation_required
       type: boolean
-      description: Whether the reader asked for flagged content to survive the change, so drafting frames each file to keep it. False while no removal has been reviewed, which is the whole of the create path — that route reaches drafting without visiting this activity.
+      description: Whether the reader asked for flagged content to survive the change.
       defaultValue: false
     - name: removal_count
       type: number
-      description: Count of content removals inventoried by impact-analysis.
+      description: Count of inventoried content removals.
       defaultValue: 0
 required: false
 steps:

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -43,7 +43,7 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 ### 1. Enumerate Files
 
-- Build a full inventory of the target's files with paths and purposes: the root definition, `activities/*.yaml`, techniques (`<slug>.md` standalone, `<group>/TECHNIQUE.md` container contracts, `<group>/<op>.md` nested), `resources/*.md` and the README
+- Build a full inventory of the target's files with paths and purposes: the root definition, `activities/*.yaml`, `routines/*.yaml`, techniques (`<slug>.md` standalone, `<group>/TECHNIQUE.md` container contracts, `<group>/<op>.md` nested), `resources/*.md` and the README
 
 ### 2. Classify Impact
 
@@ -51,7 +51,7 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 ### 3. Check Exit Integrity
 
-- Where activities are added, removed or reordered: verify the workflow's `graph` binds every exit of every activity and sends each to an existing activity id or `__terminal__`, verify `initialActivity` still names a valid activity, and verify no activity is left with nothing bound to it
+- Verify the workflow's `graph` binds every exit of every activity and sends each to an existing activity id or `__terminal__`, verify `initialActivity` still names a valid activity, and verify no activity is left with nothing bound to it
 
 ### 4. Check Reference Integrity
 

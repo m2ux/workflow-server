@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -54,7 +54,7 @@ Number of entries in `{scope_manifest}`.
 
 ### 3. Assemble the Structural Design
 
-- Assemble the structural-design section the guide declares: the directory tree, or an explicit statement that the layout is unchanged; a short note wherever the transition topology changes; and a compact alignment table against the conventions — not a comparison essay
+- Assemble the structural-design section the guide declares: the directory tree, or an explicit statement that the layout is unchanged; a short note on changed graph bindings wherever the topology changes; and a compact alignment table against the conventions — not a comparison essay
 
 ### 4. Assemble the Drafting Order
 

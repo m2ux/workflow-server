@@ -1,5 +1,5 @@
 id: quality-review
-version: 2.1.0
+version: 2.2.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 variables:
@@ -252,6 +252,8 @@ steps:
         bare_filename: enforcement-findings.md
         artifact_content: enforcement_findings
         target_dir: planning_folder_path
+      outputs:
+        written_artifact: enforcement_findings_path
     when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count > 0
   - kind: action
     id: enforcement-clean

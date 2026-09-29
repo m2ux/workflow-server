@@ -1,17 +1,31 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
 
 Complete scope and structure definition as a lean scope manifest.
 
+## Inputs
+
+### target_path
+
+Absolute filesystem path of the dedicated workflows edit-root worktree for this session — where create/update edits land.
+
+### workflow_branch
+
+Feature branch the edit-root worktree has checked out.
+
+### workflow_id
+
+The id of the workflow being created or updated.
+
 ## Outputs
 
 ### scope_manifest
 
-The complete file manifest: one entry per file to create/modify/remove with its full path, action, type, and one-line description.
+The complete file manifest: one entry per file to create/modify/remove with its full path, action, type, and one-line description. Carries the structural design and drafting order sections alongside the table.
 
 #### artifact
 
@@ -25,15 +39,11 @@ The complete file manifest: one entry per file to create/modify/remove with its 
 
 Number of files in `{scope_manifest}`.
 
-### scope_manifest_path
-
-Absolute path to the written scope-manifest artifact (includes structural design and drafting order sections).
-
 ## Protocol
 
 ### 1. Verify Edit Root
 
-- Verify `{target_path}` is present and checked out on `{workflow_branch}` (the dedicated session worktree from prepare-workflow-branch / ensure) before any path definitions proceed
+- Verify `{target_path}` is present and checked out on `{workflow_branch}` before any path definitions proceed
 - Do not treat the shared workflows library checkout as the edit root
 
 ### 2. Design Folder Structure
@@ -52,8 +62,7 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 - Assemble `{$drafting_order}` for the Drafting order section of [scope-manifest](../resources/scope-manifest.md#template): drafting order (`workflow.yaml`, activities, techniques, resources, README) with a one-line rationale per tier
 
-### 6. Persist Scope Manifest
+### 6. Compose Scope Manifest
 
-- Persist `{scope_manifest}` together with `{$structural_design}` and `{$drafting_order}`, following [scope-manifest](../resources/scope-manifest.md#template)
+- Fold the file table, `{structural_design}` and `{drafting_order}` into `{scope_manifest}` at the shape [scope-manifest](../resources/scope-manifest.md#template) declares
 - Own facts only: link impact analysis and design specification rather than restating them
-- Capture `{scope_manifest_path}`

@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.11.0
+version: 1.12.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 variables:
@@ -195,6 +195,7 @@ steps:
         bare_filename: format-conventions.md
         artifact_content: format_conventions
         target_dir: planning_folder_path
+    when: operation_type != 'review'
   - kind: technique
     id: persist-applicable-constructs
     technique:

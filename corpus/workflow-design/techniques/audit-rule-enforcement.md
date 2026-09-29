@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -25,10 +25,6 @@ Text-only rules found — each with its file, rule content, whether it is critic
 
 Count of entries in `{enforcement_findings}`.
 
-### enforcement_findings_path
-
-Absolute path to the persisted findings artifact when `{enforcement_finding_count}` is greater than zero; empty otherwise.
-
 ## Protocol
 
 ### 1. Load Criterion
@@ -38,12 +34,12 @@ Absolute path to the persisted findings artifact when `{enforcement_finding_coun
 
 ### 2. Apply structure-backed-constraints
 
-- Walk every `rules[]` entry in `workflow.yaml` and activity files (and technique `## Rules` when the entry's scope implies)
+- Walk every `rules[]` entry in `workflow.yaml` and activity files
+  > Walk technique `## Rules` too when the entry's scope implies it.
 - Apply Detect / Do not flag / Fix from `structure-backed-constraints`
 - For each finding record into `{enforcement_findings}`: file, rule content, criticality, recommended structural mechanism
 
-### 3. Persist Findings
+### 3. Assemble Findings
 
 - Set `{enforcement_finding_count}` to the number of findings
-- When `{enforcement_finding_count}` is greater than zero: persist `{enforcement_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{enforcement_findings_path}`
-- When `{enforcement_finding_count}` is zero: leave `{enforcement_findings_path}` empty
+- Assemble `{enforcement_findings}` at the shape the [Findings Satellite Guide](../resources/findings-satellite.md#template) declares

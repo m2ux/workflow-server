@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -21,10 +21,6 @@ Lean alignment / divergence table following the [Pattern Analysis Guide](../reso
 
 `human`
 
-### pattern_analysis_path
-
-Absolute path to the written pattern-analysis artifact.
-
 ## Protocol
 
 ### 1. Select References
@@ -39,8 +35,3 @@ Absolute path to the written pattern-analysis artifact.
 ### 3. Assemble Comparison
 
 - Assemble `{pattern_analysis}` following the [Pattern Analysis Guide](../resources/pattern-analysis.md#template)
-
-### 4. Persist Pattern Analysis
-
-- Persist per [pattern-analysis](../resources/pattern-analysis.md#template)
-- Capture the written location as `{pattern_analysis_path}`

@@ -2,7 +2,7 @@
 name: impact-analysis
 description: Creation guide for the impact-analysis planning artifact — classification, integrity verdicts, removals inventory.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 11
 ---
 
@@ -53,11 +53,13 @@ The update-mode decision surface. Answers: what is touched, is topology intact, 
 
 ## 2. Integrity checks
 
-| Check | Verdict |
-|-------|---------|
-| Exits and graph, entry activity, reachability | Pass / Fail — [one line] |
-| Technique and resource references | Pass / Fail — [one line] |
-| Variables, checkpoint effects, step gates | Pass / Fail — [one line] |
+**All integrity checks pass:** exits and graph, entry activity, reachability; technique and resource references; variables, checkpoint effects, step gates.
+
+[Replace the line above with the divergences table when any check fails.]
+
+| Check | Divergence |
+|-------|------------|
+| check that fails | one line |
 
 ---
 
@@ -69,10 +71,7 @@ The update-mode decision surface. Answers: what is touched, is topology intact, 
 
 [Omit the section when nothing is removed.]
 
-The inventory is the approval basis, so it is a complete list of what the run removed rather than what
-it set out to remove. A reduction observed later — while a file is drafted, or while an audit fix is
-applied — is added as a row naming the stage that raised it, so a reader can tell a removal the
-operator approved at the impact gate from one approved at the gate that observed it.
+The inventory lists everything the run removed. A later reduction is a row naming the stage that raised it.
 
 ---
 

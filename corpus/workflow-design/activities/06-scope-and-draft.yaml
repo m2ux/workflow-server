@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.16.0
+version: 1.17.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 variables:
@@ -131,6 +131,8 @@ steps:
         bare_filename: scope-manifest.md
         artifact_content: scope_manifest
         target_dir: planning_folder_path
+      outputs:
+        written_artifact: scope_manifest_path
   - kind: checkpoint
     id: scope-and-structure-confirmed
     message: "Complete file manifest, structural design, and drafting order ([scope manifest]({scope_manifest_path}))."
