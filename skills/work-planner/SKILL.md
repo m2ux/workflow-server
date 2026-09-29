@@ -1,6 +1,5 @@
 ---
-
-## name: work-planner
+name: work-planner
 description: >-
   Plans and maintains agent-engineering work on GitHub: [Ixx] initiative issues, their [Ixx:Eyy]
   epics and [Ixx:Eyy:Wzz] tasks, and the initiative's project board. Use to plan the work, plan out,
@@ -9,8 +8,7 @@ description: >-
   review findings into issues; to update an initiative or epic with completed work; to hoist or
   triage orphan issues into an initiative; or for a progress summary, standup or status update in
   Slack.
-
-
+---
 
 # Work Planner
 
@@ -21,9 +19,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
 - **Task** — one pull request's worth of work: a row in its epic, with an issue of its own only when it needs discussion or evidence.
 - **Standalone issue** — work outside any initiative.
 
-The initiative's project board shows where each item stands. A planning record  holds what the issues leave out: the evidence, the decisions and each review.
-
-The modes follow the plan through its life: Plan writes it, Review keeps its issues to the templates, Update records work as it lands, Hoist brings stray issues into it, and Progress reports on it.
+The initiative's project board shows where each item stands. A planning record holds what the issues leave out: the evidence, the decisions and each review.
 
 ## Modes
 
@@ -53,18 +49,14 @@ Read the file for the mode the request calls for:
   - A paragraph for management on what the window accomplished
   - What completed, what is in progress and what is next
 
-
-
 ## Formatting Scheme
 
-
-| Level            | Title                            | Labels                         |
-| ---------------- | -------------------------------- | ------------------------------ |
-| Initiative       | `[I07] Name: Subtitle`           | `type:initiative`, a `theme:*` |
-| Epic             | `[I07:E00] Name: Subtitle`       | `type:epic`, a `theme:*`       |
-| Task             | `[I07:E00:W01] Name: Subtitle`   | `type:task`                    |
-| Standalone issue | `Name: Subtitle`, with no prefix | no `type:*`                    |
-
+| Level | Title | Labels |
+| --- | --- | --- |
+| Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
+| Epic | `[I07:E00] Name: Subtitle` | `type:epic`, a `theme:*` |
+| Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
+| Standalone issue | `Name: Subtitle`, with no prefix | no `type:*` |
 
 - **Numbers.** `I` is the initiative number, `E` the epic within it, and `W` the task within the epic. Initiatives and epics count from `00`, and tasks from `W01`.
 - **Titles.** The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a colon, and a subtitle stating the outcome; a standalone issue's title is the same without the prefix. The name is two or three words and the subtitle a succinct summary of at most ten, both in title case: `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define Reliable`.
@@ -72,13 +64,19 @@ Read the file for the mode the request calls for:
 - **Code references.** A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
 - **Succinct items.** Each Problem and Proposal item is one or two sentences. Several things go in a bulleted list, with sub-bullets as needed, never packed into one sentence.
 - **Next number.** Find the next initiative number by listing titles: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
-- **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a `priority: `* as they apply. Only labels that exist: `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
+- **Labels.** Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a `priority: *` as they apply. Only labels that exist: `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
 
+## Dependencies
 
+- **GitHub CLI (`gh`).** Logged in through its keyring with the `repo` scope for issues and pull requests and the `project` scope for project boards. Every call goes through REST (`gh api`), never GraphQL, and needs full host permissions.
+- **Sandbox.** `scripts/sbx` in the workspace checkout, the one holding this skill, runs the skill's scripts under bubblewrap with no network. `<workspace>` in the mode files stands for that checkout.
+- **Python 3.10 or later.** Standard library only, for the scripts in `scripts/` and their tests in `test/`.
+- **git.** For the planning record: a worktree of the `engineering` branch, whose records live under `artifacts/planning/`.
+- **Sub-agents.** Where the harness has them, for plan mode's broad evidence sweeps.
 
 ## Commands
 
-GitHub goes through REST only, with full host permissions. Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of the repository that holds the issues:
+Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of the repository that holds the issues. A project board sits under `users/{owner}`, or `orgs/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`:
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
@@ -91,9 +89,9 @@ gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --
 gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
 ```
 
-Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the workspace's dynamic-shell restrictions. Keep these files in a working directory outside the repository.
+Bodies always go through a file (`-F body=@file`), never inline, which avoids quoting and the workspace's dynamic-shell restrictions. Keep these files in a working directory outside the repository.
 
-The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout. Their tests are in `test/`: `cd <workspace>/skills/work-planner && <workspace>/scripts/sbx python3 -m unittest discover -s test`.
+Invoke `sbx` by its absolute path. The tests run with `cd <workspace>/skills/work-planner && <workspace>/scripts/sbx python3 -m unittest discover -s test`.
 
 ## Rules
 
@@ -102,4 +100,3 @@ The scripts in `scripts/` run under the sandbox, invoked by the absolute path of
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
 - **Bodies state the plan as it is.** No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything. How the plan evolved goes in the planning record and in commit and pull request bodies.
 - **Other initiatives.** Editing another initiative's issue needs the user's explicit approval.
-
