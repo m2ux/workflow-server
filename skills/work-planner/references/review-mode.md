@@ -37,7 +37,7 @@ Checks existing initiative, epic, task and standalone issues against the templat
 ## Commands
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/format.py issue-936.json --epic issue-943.json --epic issue-937.json --fix fixed-936.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/deps.py I=live-936.md E00=live-943.md E01=live-937.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/format.py issue-943.json --initiative issue-936.json --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/format.py issue-936.json --epic issue-943.json --epic issue-937.json --fix fixed-936.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deps.py I=live-936.md E00=live-943.md E01=live-937.md
 ```

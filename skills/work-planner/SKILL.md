@@ -1,15 +1,16 @@
 ---
-name: initiative-planning
+name: work-planner
 description: >-
-  Plans and maintains agent-engineering initiatives on GitHub: [Ixx] initiative issues, their
-  [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, and the initiative's project board. Use to raise, plan,
-  restructure, review or renumber an initiative or epic; to check an issue's format or dependency
-  order; to fold review findings into issues; to update an initiative or epic with completed work;
-  to hoist or triage orphan issues into an initiative; or for a progress summary, standup or status
-  update in Slack.
+  Plans and maintains agent-engineering work on GitHub: [Ixx] initiative issues, their [Ixx:Eyy]
+  epics and [Ixx:Eyy:Wzz] tasks, and the initiative's project board. Use to plan the work, plan out,
+  scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure,
+  review or renumber an initiative or epic; to check an issue's format or dependency order; to fold
+  review findings into issues; to update an initiative or epic with completed work; to hoist or
+  triage orphan issues into an initiative; or for a progress summary, standup or status update in
+  Slack.
 ---
 
-# Initiative Planning
+# Work Planner
 
 An initiative is one issue that states a goal and lists its epics. Each epic is an issue with its own tasks. Issues are the plan. A planning record on the `engineering` branch holds the evidence, the decisions and each review.
 
@@ -75,7 +76,7 @@ gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_r
 
 Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the workspace's dynamic-shell restrictions. Keep these files in a working directory outside the repository.
 
-The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout. Their tests are in `test/`: `cd <workspace>/skills/initiative-planning && <workspace>/scripts/sbx python3 -m unittest discover -s test`.
+The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout. Their tests are in `test/`: `cd <workspace>/skills/work-planner && <workspace>/scripts/sbx python3 -m unittest discover -s test`.
 
 ## Rules
 

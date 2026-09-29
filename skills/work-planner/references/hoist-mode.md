@@ -47,7 +47,7 @@ The Work Breakdown guide (`work-breakdown.md`) states how rows, criteria and ref
 ## Commands
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/orphans.py issues.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/orphans.py issues.json
 gh api repos/{owner}/{repo}/issues/874 --jq .body > body-874.md
 gh api --method POST repos/{owner}/{repo}/issues/874/comments -F body=@comment-874.md --jq .html_url
 ```

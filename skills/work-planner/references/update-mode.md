@@ -30,17 +30,17 @@ Records delivered work on an initiative, its epics and their task issues: links 
 ## Commands
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-637.json --prs prs.json --pr 950 --tick AC1 --fix fixed-637.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/update.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-943.json --prs prs.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-637.json --prs prs.json --pr 950 --tick AC1 --fix fixed-637.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
 gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | .number'
 gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100" > items-2.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json
 gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" > fields.json
 gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
 gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=411749936" > items.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/
 ```

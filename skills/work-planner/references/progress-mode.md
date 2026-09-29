@@ -25,10 +25,10 @@ gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" --jq '.[] | s
 gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=411749936" > items.json
 gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' > prs.json
 gh api --paginate "repos/{owner}/{other}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' >> prs.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json
 gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("[I08]")) | .number'
 gh api repos/{owner}/{repo}/issues/946 > issue-946.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --initiatives issue-946.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08
-cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08 --summary summary.txt
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --initiatives issue-946.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08 --summary summary.txt
 ```
