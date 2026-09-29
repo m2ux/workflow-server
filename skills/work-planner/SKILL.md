@@ -80,10 +80,10 @@ Read the file for the mode the request calls for:
 - **Succinct items.**
   Each Problem and Proposal item is one or two sentences. Several things go in a bulleted list, with sub-bullets as needed, never packed into one sentence.
 - **Next number.**
-  Find the next initiative number by listing titles: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'`.
+  Find the next initiative number with [List initiative titles](references/commands.md#list-initiative-titles).
 - **Labels.**
   - Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a `priority: *` as they apply.
-  - Only labels that exist: `gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'`.
+  - Only labels that exist, as [List labels](references/commands.md#list-labels) shows.
 
 ## Dependencies
 
@@ -101,22 +101,7 @@ Read the file for the mode the request calls for:
 
 ## Commands
 
-Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of the repository that holds the issues. A project board sits under `users/{owner}`, or `orgs/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`:
-
-```bash
-gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
-gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
-gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
-gh api repos/{owner}/{repo}/issues/943 > issue-943.json
-gh api --method PATCH repos/{owner}/{repo}/issues/943 -f title='[I07:E00] Name: Subtitle' --jq .title
-gh api --method POST repos/{owner}/{repo}/issues/943/labels -f 'labels[]=type:epic' --jq '.[].name'
-gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --jq '.[].name'
-gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
-```
-
-Bodies always go through a file (`-F body=@file`), never inline, which avoids quoting and the workspace's dynamic-shell restrictions. Keep these files in a working directory outside the repository.
-
-Invoke `sbx` by its absolute path. The tests run with `cd <workspace>/skills/work-planner && <workspace>/scripts/sbx python3 -m unittest discover -s test`.
+Every command the skill runs has one spec in [commands.md](references/commands.md), with the conventions they share: session setup, where `gh` runs, bodies through files, and the example values to substitute. Prose names a spec by linking to it.
 
 ## Rules
 

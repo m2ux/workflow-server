@@ -25,6 +25,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 - **Original body.**
   - A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first.
   - The comment opens with a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan.
+  - Take the body live with [Fetch body](commands.md#fetch-body), since `issues.json` can be stale by the time the orphan is applied. The comment file is the lead line, a blank line, then that body word for word, posted with [Comment on issue](commands.md#comment-on-issue).
   - A subsumed orphan closes with its body as it is.
 - **Subsumed.**
   - The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, and its design goes into the Proposal.
@@ -45,14 +46,14 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 ## Procedure
 
 1. **Fetch.**
-   Fetch every issue: `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" > issues.json`.
+   Fetch every issue with [Fetch all issues](commands.md#fetch-all-issues).
 2. **List candidates.**
-   Run `scripts/orphans.py issues.json`. It prints:
+   Run [List orphans](commands.md#list-orphans). It prints:
    - the orphans;
    - the cited standalone issues, each with its labels, the agent-engineering issues citing it and any planning folder it links;
    - the open initiatives and epics a placement can name.
 3. **Triage.**
-   Read each orphan whole, with its comments (`gh api --paginate repos/{owner}/{repo}/issues/874/comments`), and the bodies of the initiatives and epics whose themes and criteria it touches. Note any planning folder it references, in its body or its comments. For each orphan, draft:
+   Read each orphan whole, with its comments from [Fetch comments](commands.md#fetch-comments), and the bodies of the initiatives and epics whose themes and criteria it touches. Note any planning folder it references, in its body or its comments. For each orphan, draft:
    - the placements that fit, best first, each naming its target and whether the orphan is kept or subsumed;
    - for a placement in an existing epic, the row it would add (Description, criteria, Depends on, Join), or the existing task that already delivers it;
    - Leave, when no initiative's goal covers it, or when it is not planned work.
@@ -69,7 +70,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
      - Subsume the orphan.
    - **New task.**
      - Draft the row and its criteria in the epic.
-     - Number it where it can start, with `scripts/renumber.py` when undelivered tasks must move.
+     - Number it where it can start, with [Renumber tasks](commands.md#renumber-tasks) when undelivered tasks must move.
      - Keep or subsume the orphan.
    - **New epic.**
      - Draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves.
@@ -78,27 +79,17 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
    - **New initiative.**
      Run plan mode with the orphan as its input. Keep or subsume the orphan.
    - **Kept.**
-     Post the original-body comment, then retitle, label and rewrite the orphan by its kind's rules, carrying its evidence into Problem and its design into Proposal.
+     Post the original-body comment, then rewrite the orphan by its kind's rules with [Retitle issue](commands.md#retitle-issue), [Add labels](commands.md#add-labels) and [Patch body](commands.md#patch-body), carrying its evidence into Problem and its design into Proposal.
    - **Leave.**
-     - Run review mode's check (`format.py`) on the orphan.
-     - When its body needs rewriting, post the original-body comment, then rewrite it by a standalone issue's rules, carrying its content into the template's sections.
+     - Run [Check format](commands.md#check-format) on the orphan.
+     - When its body needs rewriting, post the original-body comment, then rewrite it by a standalone issue's rules with [Patch body](commands.md#patch-body), carrying its content into the template's sections.
    - **Subsumed.**
      - Cite the orphan under the taking issue's References (`- **Rn.** [Element Shape](…/issues/874) — The operations surveyed and their prose entries.`), and any planning it references as its own entry.
-     - Close it: comment `Tracked in [I07:E01](…/issues/937) W04.` and `gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_reason=not_planned`.
+     - Close it: [Comment on issue](commands.md#comment-on-issue) with `Tracked in [I07:E01](…/issues/937) W04.`, then [Close as not planned](commands.md#close-as-not-planned).
      - The work stays planned in the taking issue, which is where that work is tracked.
 6. **Review.**
-   - Run review mode's check (`format.py`) on every issue the hoist changed or created.
-   - Run `deps.py` on each initiative that gained a task or epic.
+   - Run [Check format](commands.md#check-format) on every issue the hoist changed or created.
+   - Run [Check dependencies](commands.md#check-dependencies) on each initiative that gained a task or epic.
    - Fold every finding in.
 7. **Report.**
    Report each orphan's placement, the issues changed, created or closed, and the orphans left.
-
-## Commands
-
-```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/orphans.py issues.json
-gh api repos/{owner}/{repo}/issues/874 --jq .body > body-874.md
-gh api --method POST repos/{owner}/{repo}/issues/874/comments -F body=@comment-874.md --jq .html_url
-```
-
-`comment-874.md` is the lead line, a blank line, then `body-874.md` word for word. The body is fetched live, not taken from `issues.json`, which can be stale by the time the orphan is applied.

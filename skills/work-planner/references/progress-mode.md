@@ -7,13 +7,12 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
 1. **Bring the board current.**
    When issues have closed or pull requests have merged since the board was last updated, run update mode first: the summary reads each item's Status as it stands.
 2. **Find the board.**
-   List the owner's open boards. With several, ask the user which one.
+   [List boards](commands.md#list-boards). With several, ask the user which one.
 3. **Fetch.**
-   - Fetch the chosen board's Status field id, then its items with that field, which carry each issue whole.
-   - Fetch the pull requests that name an initiative, appending those of each further repository the board's issues live in with `>>`.
-   - The Commands below use board 2 and its Status field id; substitute the chosen board's.
+   - [Find Status field](commands.md#find-status-field) on the chosen board, then [Fetch board items with Status](commands.md#fetch-board-items-with-status).
+   - [Fetch all initiative pull requests](commands.md#fetch-all-initiative-pull-requests), appending those of each further repository the board's issues live in.
 4. **Summarise.**
-   Run `scripts/progress.py --items items.json --prs prs.json`.
+   Run [Summarise progress](commands.md#summarise-progress).
    - **Window.**
      The window opens a week before today. Give `--since` for another, such as the previous working day for a daily standup.
    - **One initiative.**
@@ -37,9 +36,9 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
      - The reference letters: I Initiative, E Epic and W Work Item.
      - Each line's opening mark: ✅ done, 🔄 in progress (an initiative or epic open and not In Review), 👀 in review, 📝 draft, ▶️ ready.
 5. **Give the initiatives off the board.**
-   For each `unresolved` line naming an initiative not on the board (`I08 in owner/repo`), find its issue by its title's prefix in that repository, fetch it, and re-run with `--initiatives issue-946.json …`.
+   For each `unresolved` line naming an initiative not on the board (`I08 in owner/repo`), find its issue with [Find initiative issue](commands.md#find-initiative-issue) in that repository, take it with [Fetch issue](commands.md#fetch-issue), and re-run [Summarise progress](commands.md#summarise-progress) with `--initiatives`.
 6. **Write the paragraph for management.**
-   Write it from the Initiatives and Completed sections, and re-run with the same arguments and `--summary summary.txt`. The paragraph:
+   Write it from the Initiatives and Completed sections, and re-run [Summarise progress](commands.md#summarise-progress) with the same arguments and `--summary`. The paragraph:
    - is one paragraph in plain language: what the window delivered, as outcomes for the initiatives it serves;
    - carries no references, links, task ids or tool names;
    - leaves out work in progress and next;
@@ -50,18 +49,3 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
      - a dependency on an issue off the board, which reads as blocked;
      - an epic whose Work Breakdown cannot be read, summarised without its tasks; review mode fixes its body.
 
-## Commands
-
-```bash
-gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | [.number, .title] | @tsv'
-gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
-gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=411749936" > items.json
-gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' > prs.json
-gh api --paginate "repos/{owner}/{other}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' >> prs.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json
-gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("[I08]")) | .number'
-gh api repos/{owner}/{repo}/issues/946 > issue-946.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --initiatives issue-946.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08 --summary summary.txt
-```

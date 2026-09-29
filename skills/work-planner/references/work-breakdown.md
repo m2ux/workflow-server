@@ -20,7 +20,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 - **Depends on.**
   References only, with no prose, and only what no other entry in the cell already implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
-  - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). `deps.py` derives it from the epic tables.
+  - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check dependencies](commands.md#check-dependencies) derives it from the epic tables.
 - **Task grain.**
   - A task is one pull request's worth of work.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
@@ -30,7 +30,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 
 ## Numbering
 
-Epics are numbered in the order they run, and tasks in the order they can start, so every dependency points to an earlier epic or an earlier task. `deps.py` reports numbering that does not follow start order as advisory, because older initiatives predate the rule.
+Epics are numbered in the order they run, and tasks in the order they can start, so every dependency points to an earlier epic or an earlier task. [Check dependencies](commands.md#check-dependencies) reports numbering that does not follow start order as advisory, because older initiatives predate the rule.
 
 Delivered work keeps its number: an epic once a pull request names it, and a task once its id links the pull request that delivered it. Renumbering touches only work that is not delivered yet.
 

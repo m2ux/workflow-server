@@ -1,6 +1,6 @@
 # Review passes
 
-Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which reads the local drafts. Fetch every issue first, as JSON for `format.py` and as a body for `deps.py` and `renumber.py`, with the commands in SKILL.md.
+Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which reads the local drafts. Fetch every issue first, with [Fetch issue](commands.md#fetch-issue) and [Fetch body](commands.md#fetch-body).
 
 Report findings split by area, one problem/solution pair per finding, each with a severity. Verify every finding against its source before stating it, and quote the file:line that establishes it. Put findings that need a decision to the user.
 
@@ -14,7 +14,7 @@ Tests the initiative's and the epics' acceptance criteria against the goal the u
    Build a trace table: goal clause, the initiative criteria that make it true, the epics whose Description cells cite those criteria, and the epic criteria that deliver them.
    - A clause with no initiative criterion is a gap.
    - An initiative criterion no epic delivers, or that its epics' criteria only partly make true, is a gap.
-   - An epic criterion no task row delivers is a gap; `format.py` finds these.
+   - An epic criterion no task row delivers is a gap; [Check format](commands.md#check-format) finds these.
 3. **Trace up.**
    Every criterion traces to a clause. One that traces to none is scope the user did not ask for: remove it, or put it to the user.
 4. **Each criterion.**
@@ -65,7 +65,7 @@ Runs after every round of edits.
   - Its title has the agent-engineering form.
   - The initiative row carries the epic's title name.
 - **Format.**
-  Run review mode's check, `scripts/format.py`, on every issue the round changed. It confirms that each Description cell cites criteria that exist, and that every one has a row.
+  Run [Check format](commands.md#check-format) on every issue the round changed. It confirms that each Description cell cites criteria that exist, and that every one has a row.
 - **Rows.**
   - Each row meets the Work Breakdown guide's task grain and Description rules.
   - Detail in a longer Description that no cited criterion already states becomes a new criterion of one invariant, cited by the row.
@@ -91,7 +91,7 @@ Runs after every round of edits.
 
 Checks dependencies as a graph, then renumbers.
 
-1. Run `scripts/deps.py I=<initiative body> E00=<body> E01=<body> ...` over the live bodies. It reports:
+1. Run [Check dependencies](commands.md#check-dependencies) over the live bodies. It reports:
    - unknown references;
    - backward references: a task depending on a later task in its epic, or an epic depending on a later epic;
    - cycles;
@@ -103,9 +103,9 @@ Checks dependencies as a graph, then renumbers.
 2. Read each task for dependencies the table omits. A task that measures, extends or consumes another task's output depends on it, even when the text never says so.
 3. Fix a backward reference by moving the task to the epic that owns its inputs. When the task duplicates work the later epic already does, remove it instead.
 4. Renumber so that epics run in number order and tasks are numbered in the order they can start, touching only work not yet delivered.
-   - Use `scripts/renumber.py --initiative NN --prs prs.json --map old:new,...` for epic numbers, and `--epic N --own <body> --tasks old:new,...` for one epic's tasks, with other initiatives' bodies after `--outside`.
+   - Use [Renumber epics](commands.md#renumber-epics) for epic numbers and [Renumber tasks](commands.md#renumber-tasks) for one epic's tasks, with other initiatives' bodies after `--outside`.
    - Then re-sort each table, check every range the script prints, and grep the prose for references it cannot see.
-5. Update each initiative Depends on cell to the list `deps.py` gives, and re-run it until it reports no problems.
+5. Update each initiative Depends on cell to the list [Check dependencies](commands.md#check-dependencies) gives, and re-run it until it reports no problems.
 6. Record the longest chains from its output in the planning record. Issue bodies do not narrate order or its reasons.
 
 ## Folding findings
