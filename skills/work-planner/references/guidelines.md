@@ -16,7 +16,7 @@ How the skill's own files are written. Every change to the skill follows them: S
   One sentence on what the skill does, then a bulleted list with one item for each issue type.
 - **Modes.**
   - Each mode is its bold name, without the word "mode", linking to its reference file.
-  - Beneath it, a bulleted summary of what the mode covers, in noun phrases that read as capabilities, never as instructions.
+  - Beneath it, a bulleted summary of what the mode does: each item describes an action or capability of the mode, not a procedure step.
 - **Rules.**
   A statement that binds every mode goes in Rules, never as loose prose in another section.
 - **Dependencies.**
