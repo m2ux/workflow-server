@@ -17,11 +17,28 @@ An initiative is one issue that states a goal and lists its epics. Each epic is 
 
 Read the file for the mode the request calls for:
 
-- **[Plan mode](references/plan-mode.md)** — raise, plan or restructure an initiative or epic; review a plan against its goal; check dependencies; renumber; fold findings in.
-- **[Review mode](references/review-mode.md)** — check existing issues against the templates and fix them.
-- **[Update mode](references/update-mode.md)** — record delivered work: link tasks to their pull requests, tick criteria that hold, close complete task issues, epics and initiatives, and update the initiative's project board.
-- **[Hoist mode](references/hoist-mode.md)** — find orphan issues, offer each a placement in an existing or new initiative, epic or task, and migrate or subsume the ones the user places.
-- **[Progress mode](references/progress-mode.md)** — summarise the project board as a standup for a Slack channel: a paragraph for management on what the window accomplished, then what completed, what is in progress and what is next.
+- **[Plan](references/plan-mode.md)**
+  - Raise, plan or restructure an initiative or epic
+  - Review a plan against its goal
+  - Check dependencies
+  - Renumber epics and tasks
+  - Fold review findings into issues
+- **[Review](references/review-mode.md)**
+  - Check existing issues against the templates
+  - Fix each issue that departs from its template
+- **[Update](references/update-mode.md)**
+  - Link each delivered task to its pull request
+  - Tick the criteria that hold
+  - Close complete task issues, epics and initiatives
+  - Update the initiative's project board
+- **[Hoist](references/hoist-mode.md)**
+  - Find orphan issues
+  - Offer each a placement in an existing or new initiative, epic or task
+  - Migrate or subsume the ones the user places
+- **[Progress](references/progress-mode.md)**
+  - Summarise the project board as a standup for a Slack channel
+  - Open with a paragraph for management on what the window accomplished
+  - List what completed, what is in progress and what is next
 
 Every mode also reads [work-breakdown.md](references/work-breakdown.md), the guide to the Work Breakdown tables: their columns, numbering, references and delivery.
 
