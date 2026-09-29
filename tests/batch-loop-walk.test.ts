@@ -26,11 +26,12 @@ import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
  *
  * ## What this does and does not prove
  *
- * The gates and their order come from the definition, so a change to either is picked up. The step
- * EFFECTS are declared in `EFFECTS` below — this file's reading of what each step does to the bag, not
- * something the server enforces, since the loop is executed by an agent. That reading can be wrong in
- * the same way the definition can, which is why `EFFECTS` is written as a table to be audited against
- * the techniques rather than buried in the walk.
+ * The gates and their order come from the definition, so a change to either is picked up, and so do
+ * the `set` actions of every action step, which the walk applies as the definition declares them. The
+ * effects of the technique steps are declared in `EFFECTS` below — this file's reading of what each
+ * technique does to the bag, not something the server enforces, since the loop is executed by an
+ * agent. That reading can be wrong in the same way the definition can, which is why `EFFECTS` is
+ * written as a table to be audited against the techniques rather than buried in the walk.
  */
 
 /**
@@ -64,7 +65,8 @@ interface Envelope {
 type Bag = Record<string, unknown>;
 
 /**
- * What each loop step does to the variable bag, read off the techniques the step binds.
+ * What each technique step of the loop does to the variable bag, read off the technique it binds.
+ * An action step has no row: its `set` actions are read from the definition (`applySets`).
  *
  * - `continue-batched-worker` → `workflow-engine::continue-batch`: advances the pointer, then returns
  *   an envelope and the identity now holding the activity — the held one, or a replacement it spawned.
@@ -83,8 +85,7 @@ type Bag = Record<string, unknown>;
  *   one commit, at convergence.
  * - `resume-yielded-worker` → `workflow-engine::resume-worker`: returns a fresh envelope under the
  *   identity already held. It does NOT touch the pointer.
- * - `spend-entered-activity`, `end-walk`, `advance-past-fan`, `retire-fan-envelope`,
- *   `commit-activity-artifacts`, `advance-activity`, `release-spent-worker`: as the YAML declares.
+ * - `commit-activity-artifacts` → `workflow-engine::commit-and-persist`: the activity's one commit.
  */
 const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) => void> = {
   'continue-batched-worker': (bag, next, log) => {
@@ -107,8 +108,6 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     bag['worker_agent_id'] = `worker:${activity}`;
     bag['worker_result'] = next();
   },
-  'spend-entered-activity': (bag) => { bag['activity_entered'] = false; },
-  'end-walk': (bag) => { bag['current_activity'] = null; },
   'enter-fan': (bag, _next, log) => {
     log.push('advance');
     // One call opens every branch. Branch envelopes belong to the spawn that follows; this walk
@@ -119,14 +118,6 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
   'spawn-branches': () => { /* returns branch_envelopes; no gate reads it */ },
   'branch-retirement': () => { /* the forEach whose retirements advance, one per branch */ },
   'persist-the-fan': (_bag, _next, log) => { log.push('commit'); },
-  'advance-past-fan': (bag) => {
-    bag['current_activity'] = bag['fan_convergence_activity'];
-    bag['activity_entered'] = true;
-  },
-  'retire-fan-envelope': (bag) => {
-    bag['worker_result'] = null;
-    bag['fan_convergence_activity'] = null;
-  },
   // Both declare Outputs, and both are consumed — `user_selection` by `respond-checkpoint`'s
   // `checkpoint_resolution`, `effects` by `resume-worker`'s `effects` — but no `when:` in the loop reads
   // either, so a faithful encoding and an empty one produce identical walks. Left empty, and both named
@@ -146,13 +137,9 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     bag['worker_result'] = envelope;
   },
   'commit-activity-artifacts': (_bag, _next, log) => { log.push('commit'); },
-  'advance-activity': (bag) => {
-    bag['current_activity'] = (bag['worker_result'] as Envelope).next_activity_id;
-  },
-  'release-spent-worker': (bag) => { bag['worker_agent_id'] = null; },
 };
 
-interface LoopStep { id: string; when?: string; actions?: SetAction[] }
+interface LoopStep { kind: string; id: string; when?: string; actions?: SetAction[] }
 interface SetAction { action?: string; target?: string; value?: unknown }
 interface OuterStep {
   kind: string;
@@ -165,6 +152,29 @@ interface OuterStep {
   actions?: SetAction[];
 }
 interface LoopDef extends OuterStep { steps: LoopStep[] }
+
+/** The value at a dotted path in the bag, or undefined where a segment is absent. */
+function valueAt(bag: Bag, path: string): unknown {
+  let cursor: unknown = bag;
+  for (const segment of path.split('.')) {
+    if (cursor === null || typeof cursor !== 'object') return undefined;
+    cursor = (cursor as Record<string, unknown>)[segment];
+  }
+  return cursor;
+}
+
+/**
+ * Apply an action step's `set` actions as the definition declares them. A value written `{name}` is a
+ * reference, resolved whole against the bag so an envelope's structured destination survives; any
+ * other value is the literal the definition gives.
+ */
+function applySets(step: LoopStep, bag: Bag): void {
+  for (const action of step.actions ?? []) {
+    if (action.action !== 'set' || action.target === undefined) continue;
+    const reference = typeof action.value === 'string' ? /^\{([^{}]+)\}$/.exec(action.value) : null;
+    bag[action.target] = reference ? valueAt(bag, reference[1]!) : action.value;
+  }
+}
 
 function activityDef(): { steps: OuterStep[] } {
   return parseYaml(
@@ -253,7 +263,8 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
         if (step.when !== undefined && !evaluateWhenExpression(step.when, bag)) continue;
         fired.push(step.id);
         const held = bag['worker_agent_id'];
-        EFFECTS[step.id]?.(bag, next, log);
+        if (step.kind === 'action') applySets(step, bag);
+        else EFFECTS[step.id]?.(bag, next, log);
         const holding = bag['worker_agent_id'];
         if (typeof holding === 'string' && holding !== held) minted.push(holding);
       }
@@ -385,10 +396,11 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
       // And one advance onto `__terminal__`, last, which completes the session and commits nothing.
       expect(result.log.filter((e) => e === 'terminal'), `${name}: terminal`).toHaveLength(1);
       expect(result.log.at(-1), `${name}: last`).toBe('terminal');
-      // The walk ends holding no identity: the last activity's worker is released, and none is minted
-      // for `__terminal__`.
+      // The walk ends holding no identity, the last activity's worker released before the entry onto
+      // `__terminal__`, and that entry's iteration runs nothing but the entry and the walk's end — no
+      // continuation carries a held worker into it, and no gate or commit follows it.
       expect(result.bag['worker_agent_id'], `${name}: identity`).toBeNull();
-      expect(result.minted, `${name}: minted`).not.toContain(`worker:${TERMINAL}`);
+      expect(result.iterations.at(-1), `${name}: terminal iteration`).toEqual(['enter-activity', 'end-walk']);
     }
   });
 
@@ -424,10 +436,8 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // activity, and the entry onto `__terminal__` is the walk's final advance.
     expect(result.log).toEqual(['advance', 'commit', 'advance', 'commit', 'advance', 'commit', 'terminal']);
     expect(result.bag['worker_agent_id']).toBeNull();
-    // One identity carries the whole batch. The entry onto `__terminal__` mints none, since no worker
-    // runs there.
+    // One identity carries the whole batch.
     expect(result.minted).toEqual(['worker:implementation-analysis']);
-    expect(result.minted).not.toContain(`worker:${TERMINAL}`);
   });
 
   it('carries the identity across a gate and continues on the following iteration', () => {

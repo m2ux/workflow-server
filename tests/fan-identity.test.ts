@@ -86,8 +86,8 @@ describe('get_activity while a fan is in flight', () => {
         variables_changed: { probe_targets: ['a', 'b'] },
       },
     }) as ToolResult;
-    const branches = ((opened._meta?.['fan'] as Array<{ branches: string[] }> | undefined) ?? [])
-      .flatMap((member) => member.branches);
+    const fan = (JSON.parse(textOf(opened)) as { fan?: Array<{ branches: string[] }> }).fan;
+    const branches = (fan ?? []).flatMap((member) => member.branches);
     return { idx, branches };
   }
 

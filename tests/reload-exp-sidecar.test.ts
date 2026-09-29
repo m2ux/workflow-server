@@ -33,19 +33,32 @@ function withCorpus(): string {
   return tmp;
 }
 
+/** An executable at `path` that does nothing and succeeds. */
+function writeNoop(path: string): void {
+  writeFileSync(path, '#!/usr/bin/env bash\nexit 0\n');
+  chmodSync(path, 0o755);
+}
+
 /**
- * Launchers that do nothing, named through the script's own overrides, and a readiness probe in
- * `dir` that answers at once for a caller that puts `dir` on PATH. Without the overrides the script
- * reads start.sh and stop.sh from the docker branch on origin, which a test cannot reach offline.
+ * Launchers in `dir` that do nothing, named through the script's own overrides. Without the
+ * overrides the script reads start.sh and stop.sh from the docker branch on origin, which a test
+ * cannot reach offline.
  */
 function stubLaunchers(dir: string): NodeJS.ProcessEnv {
   const start = join(dir, 'start.sh');
   const stop = join(dir, 'stop.sh');
-  for (const script of [start, stop, join(dir, 'curl')]) {
-    writeFileSync(script, '#!/usr/bin/env bash\nexit 0\n');
-    chmodSync(script, 0o755);
-  }
+  writeNoop(start);
+  writeNoop(stop);
   return { WORKFLOW_SERVER_START: start, WORKFLOW_SERVER_STOP: stop };
+}
+
+/**
+ * PATH led by `bin`, with stubbed launchers and a readiness probe in `bin` that answers at once, so
+ * a run that reaches the start step finishes without a server to wait on.
+ */
+function stubbedStart(bin: string): NodeJS.ProcessEnv {
+  writeNoop(join(bin, 'curl'));
+  return { PATH: `${bin}:${process.env.PATH ?? ''}`, ...stubLaunchers(bin) };
 }
 
 /** Whether `name` resolves on PATH — the preflight sits behind the script's own docker/curl checks. */
@@ -210,7 +223,7 @@ exit 1
           '--no-build',
           '--no-preflight',
         ],
-        { PATH: `${bin}:${process.env.PATH ?? ''}`, ...stubLaunchers(bin) },
+        stubbedStart(bin),
       );
       expect(`${result.stderr}${result.stdout}`).toMatch(
         /image\s+:\s+workflow-server:exp-from-label/,
@@ -250,7 +263,7 @@ exit 1
           '--no-build',
           '--no-preflight',
         ],
-        { PATH: `${bin}:${process.env.PATH ?? ''}`, ...stubLaunchers(bin) },
+        stubbedStart(bin),
       );
       expect(`${result.stderr}${result.stdout}`).toMatch(
         /image\s+:\s+workflow-server:explicit-tag/,
