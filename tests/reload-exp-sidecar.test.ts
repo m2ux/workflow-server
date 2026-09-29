@@ -33,6 +33,21 @@ function withCorpus(): string {
   return tmp;
 }
 
+/**
+ * Launchers that do nothing, named through the script's own overrides, and a readiness probe in
+ * `dir` that answers at once for a caller that puts `dir` on PATH. Without the overrides the script
+ * reads start.sh and stop.sh from the docker branch on origin, which a test cannot reach offline.
+ */
+function stubLaunchers(dir: string): NodeJS.ProcessEnv {
+  const start = join(dir, 'start.sh');
+  const stop = join(dir, 'stop.sh');
+  for (const script of [start, stop, join(dir, 'curl')]) {
+    writeFileSync(script, '#!/usr/bin/env bash\nexit 0\n');
+    chmodSync(script, 0o755);
+  }
+  return { WORKFLOW_SERVER_START: start, WORKFLOW_SERVER_STOP: stop };
+}
+
 /** Whether `name` resolves on PATH — the preflight sits behind the script's own docker/curl checks. */
 function onPath(name: string): boolean {
   try {
@@ -195,7 +210,7 @@ exit 1
           '--no-build',
           '--no-preflight',
         ],
-        { PATH: `${bin}:${process.env.PATH ?? ''}` },
+        { PATH: `${bin}:${process.env.PATH ?? ''}`, ...stubLaunchers(bin) },
       );
       expect(`${result.stderr}${result.stdout}`).toMatch(
         /image\s+:\s+workflow-server:exp-from-label/,
@@ -235,7 +250,7 @@ exit 1
           '--no-build',
           '--no-preflight',
         ],
-        { PATH: `${bin}:${process.env.PATH ?? ''}` },
+        { PATH: `${bin}:${process.env.PATH ?? ''}`, ...stubLaunchers(bin) },
       );
       expect(`${result.stderr}${result.stdout}`).toMatch(
         /image\s+:\s+workflow-server:explicit-tag/,
@@ -343,18 +358,23 @@ exit 1
   // nothing can be served from.
   it.skipIf(!canReachPreflight)('refuses a corpus the guard sweep cannot measure', () => {
     const corpus = withCorpus();
+    const launchers = mkdtempSync(join(tmpdir(), 'reload-launchers-'));
     try {
-      const result = run([
-        '--name=reload-exp-sidecar-absent',
-        `--workflows-dir=${corpus}`,
-        '--host-port=32772',
-        '--no-build',
-      ]);
+      const result = run(
+        [
+          '--name=reload-exp-sidecar-absent',
+          `--workflows-dir=${corpus}`,
+          '--host-port=32772',
+          '--no-build',
+        ],
+        stubLaunchers(launchers),
+      );
       expect(result.status).not.toBe(0);
       expect(`${result.stderr}${result.stdout}`).toMatch(/could not be measured \(guard sweep exit 2\)/);
       expect(`${result.stderr}${result.stdout}`).toMatch(/nothing has been stopped/);
     } finally {
       rmSync(corpus, { recursive: true, force: true });
+      rmSync(launchers, { recursive: true, force: true });
     }
   }, 120_000);
 
