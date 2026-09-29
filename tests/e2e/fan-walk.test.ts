@@ -25,6 +25,11 @@ afterAll(async () => {
   await harness.close();
 });
 
+/** The response body a tool call returned. */
+function bodyOf(result: unknown): Record<string, unknown> {
+  return JSON.parse(((result as { content: Array<{ text: string }> }).content)[0]!.text) as Record<string, unknown>;
+}
+
 async function load(id: string): Promise<Workflow> {
   const result = await loadWorkflow(FAN_CORPUS, id);
   if (!result.success) throw new Error(`${id} failed to load: ${result.error.message}`);
@@ -93,8 +98,43 @@ describe('the collection a fan runs over', () => {
         variables_changed: { probe_targets: ['reported-one', 'reported-two'] },
       },
     });
-    const fan = (opened._meta as { fan?: Array<{ branches: string[] }> } | undefined)?.fan;
+    const fan = bodyOf(opened)['fan'] as Array<{ branches: string[] }> | undefined;
     expect(fan?.flatMap((member) => member.branches)).toEqual(['probe-unit#0', 'probe-unit#1']);
+  });
+
+  it('reads the barrier on the open, on each retirement, and on a fan opened from its join', async () => {
+    // Every fan-related call carries the barrier, and `met` turns on the call that enters the
+    // destination, whose `pending` is the frontier it leaves: the destination alone. The second fan
+    // hangs off the first one's join, so its barrier names the join the graph gives that exit.
+    const start = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'chained-fan-fixture',
+        agent_id: 'orchestrator',
+        planning_folder: `${harness.workspaceDir}/.engineering/artifacts/planning/fan-barrier-reading`,
+      },
+    });
+    const sessionIndex = bodyOf(start)['session_index'] as string;
+    const advance = async (args: Record<string, unknown>): Promise<unknown> => bodyOf(
+      await harness.client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, ...args } }),
+    )['barrier'];
+
+    expect(await advance({ activity_id: 'scope-sweep' })).toBeUndefined();
+    expect(await advance({
+      activity_id: { activity: 'probe-unit', over: 'probe_targets', variable: 'probe_target' },
+      from_activity: 'scope-sweep',
+      exit: 'scoped',
+      variables_changed: { probe_targets: ['one', 'two'] },
+    })).toEqual({ destination: 'combine-probes', pending: ['probe-unit#0', 'probe-unit#1'], met: false });
+    expect(await advance({ activity_id: 'combine-probes', from_activity: 'probe-unit#0', exit: 'probed', agent_id: 'branch-0' }))
+      .toEqual({ destination: 'combine-probes', pending: ['probe-unit#1'], met: false });
+    expect(await advance({ activity_id: 'combine-probes', from_activity: 'probe-unit#1', exit: 'probed', agent_id: 'branch-1' }))
+      .toEqual({ destination: 'combine-probes', pending: ['combine-probes'], met: true });
+    expect(await advance({
+      activity_id: { activity: 'unit-review', over: 'probe_unit_outputs', variable: 'review_unit' },
+      from_activity: 'combine-probes',
+      exit: 'swept',
+    })).toEqual({ destination: 'reconcile-review', pending: ['unit-review#0', 'unit-review#1'], met: false });
   });
 });
 

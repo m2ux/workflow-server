@@ -416,13 +416,12 @@ async function transition(
     const text = content?.[0]?.text ?? JSON.stringify(content);
     throw new Error(`next_activity(${JSON.stringify(activityId)}) failed: ${text}`);
   }
-  const meta = res._meta as {
-    validation?: { status?: string };
-    fan?: Array<{ branches: string[] }>;
-  } | undefined;
+  const meta = res._meta as { validation?: { status?: string } } | undefined;
+  const content = (res as ToolResult).content as Array<{ text?: string }> | undefined;
+  const body = JSON.parse(content?.[0]?.text ?? '{}') as { fan?: Array<{ branches: string[] }> };
   // The enter hands back the branch list, so the walk never computes a width from a collection it
   // would otherwise read for that purpose alone.
-  const branches = (meta?.fan ?? []).flatMap((member) => member.branches);
+  const branches = (body.fan ?? []).flatMap((member) => member.branches);
   return { manifestStatus: meta?.validation?.status, ...(branches.length > 0 ? { branches } : {}) };
 }
 

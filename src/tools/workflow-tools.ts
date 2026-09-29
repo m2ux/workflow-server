@@ -1220,7 +1220,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     return { key: branchKey(base), slot: instanceIndex(entry) ?? 0, unit: base };
   }
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Each transition starts from where the previous one left the session, so issue it only once the previous transition has answered. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Each transition starts from where the previous one left the session, so issue it only once the previous transition has answered. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`. Where a fan is involved — the call that opens one, each branch retirement, and any call leaving several activities in flight — the response also carries `barrier`: `destination`, the activity the branches converge on; `pending`, the frontier the call leaves; and `met`, true on the call that enters the destination. The call that opens a fan carries `fan` as well: each member\'s `branches`, as the ids that address them.',
     {
       ...sessionIndexParam,
       activity_id: DestinationSchema.describe(
@@ -1632,17 +1632,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       // The barrier rides every fan-related response in one shape: a reading rather than a verdict,
-      // because there is no barrier-met call to make. `met` is true with an empty pending list on
-      // the call that enters the destination.
+      // because there is no barrier-met call to make. `met` is true on the call that enters the
+      // destination, where `pending` is the frontier that call leaves: the destination alone. The
+      // call that opens a fan names its join too: the fan hangs off the retiring activity's exit,
+      // and the graph fixes where its branches converge.
+      let barrier: { destination: string | undefined; pending: string[]; met: boolean } | undefined;
       if (openFan !== undefined || fanEnter !== undefined || next.frontier.length > 1) {
-        meta['barrier'] = {
-          destination: openFan?.join ?? (entering && !fanEnter ? targets[0] : undefined),
+        const enteredFan = fanEnter === undefined ? undefined
+          : fanGroups(result.value).find((f) => f.source === baseId(retiring ?? '') && f.exit === exit);
+        barrier = {
+          destination: openFan?.join ?? enteredFan?.join,
           pending: next.frontier,
-          met: entering,
+          met: entering && fanEnter === undefined,
         };
       }
-      // What the enter derived, so nothing downstream reads a collection to count it.
-      if (fanEnter !== undefined) meta['fan'] = fanEnter.report;
 
       if (config.traceStore) {
         const segment = config.traceStore.getSegmentAndAdvanceCursor(state.sessionIndex);
@@ -1684,6 +1687,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...(branchesInFlight
           ? { outstanding: entered }
           : { name: getActivity(result.value, entered[0] ?? '')?.name ?? 'Workflow Complete' }),
+        ...(barrier !== undefined ? { barrier } : {}),
+        // What the enter derived, so nothing downstream reads a collection to count it.
+        ...(fanEnter !== undefined ? { fan: fanEnter.report } : {}),
         session_index,
       };
 

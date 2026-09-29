@@ -97,14 +97,18 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
   });
 
   it('releases the identity on the terminal activity, whatever the batch had left', () => {
-    // The walk ends with no next activity, so the loop exits. Holding the identity past that point
-    // leaves a live worker nothing will continue, and a stale identity in the bag for a re-entry
-    // from end-workflow — which would skip the dispatch and continue on a stale result.
-    const fired = firing(complete({ next_activity_id: null, batch_may_continue: true }));
+    // The last activity routes to `__terminal__`, which no worker carries. Holding the identity past
+    // that point leaves a live worker nothing will continue, and a stale identity in the bag for a
+    // re-entry from end-workflow — which would skip the dispatch and continue on a stale result.
+    const terminal = complete({ next_activity_id: '__terminal__', batch_may_continue: true });
+    const fired = firing(terminal);
     expect(fired.release).toBe(true);
     expect(fired.commit).toBe(true);
-    // And the continuation is shut too, so it cannot be reached onto a null activity.
+    // And the continuation is shut too, so it cannot continue into `__terminal__`.
     expect(fired.continueBatch).toBe(false);
+    // With the identity released, the following iteration's entry is what advances onto `__terminal__`.
+    expect(firing({ worker_result: (terminal as { worker_result: unknown }).worker_result }))
+      .toMatchObject({ continueBatch: false, enterActivity: true, enterFan: false });
   });
 
   it('never continues and dispatches in the same iteration', () => {
@@ -115,7 +119,8 @@ describe.skipIf(!liveCorpusRoot())('client activity loop gates (#407)', () => {
       {},
       complete({}),
       complete({ batch_may_continue: false }),
-      complete({ next_activity_id: null }),
+      complete({ next_activity_id: '__terminal__' }),
+      { worker_result: { result_type: 'workflow_complete' } },
       fanComplete(),
       { worker_result: (fanComplete() as { worker_result: unknown }).worker_result },
       { worker_agent_id: 'worker-1', worker_result: { result_type: 'checkpoint_pending' } },
