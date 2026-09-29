@@ -24,7 +24,8 @@ Fixed in the body written to --fix, keeping the issue's wording:
     for each epic given with --epic
   - prose Non-goals made a bulleted list, one sentence per bullet
   - a Problem or Proposal item that opens with a bold statement given its body on the next line,
-    indented under the bullet
+    indented under the bullet, except a bulleted item with sub-bullets, whose line introducing
+    them stays on, or rejoins, its bold statement's line
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
@@ -86,6 +87,8 @@ ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
 LEAD = re.compile(r'^(\s*)(- )?(\*\*[^*]+?[.:!?]\*\*)[ \t]+(\S.*)$')
+LEAD_ALONE = re.compile(r'^(\s*)- \*\*[^*]+?[.:!?]\*\*$')
+BULLET = re.compile(r'^(\s*)[-*] ')
 SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
@@ -541,21 +544,35 @@ class Review:
         return out
 
     def fix_leads(self, lines: list[str], heading: str) -> list[str]:
-        """Put the body of each item that opens with a bold statement on the line after it."""
-        out, fence, split = [], False, 0
-        for line in lines:
+        """Put the body of each item that opens with a bold statement on the line after it, except
+        a bulleted item's line introducing its sub-bullets, which stays on the bold statement's."""
+        out, fence, split, joined = [], False, 0, 0
+        for i, line in enumerate(lines):
             if line.lstrip().startswith('```'):
                 fence = not fence
             m = None if fence else LEAD.match(line)
-            if m:
+            alone = None if fence or not i else LEAD_ALONE.match(lines[i - 1])
+            if m and not (m.group(2) and self.opens_sub_bullets(lines, i, m.group(1))):
                 indent, bullet, lead, rest = m.groups()
                 out += [f'{indent}{bullet or ""}{lead}', f'{indent}{"  " if bullet else ""}{rest}']
                 split += 1
+            elif (alone and line.startswith(f'{alone.group(1)}  ') and not BULLET.match(line)
+                  and self.opens_sub_bullets(lines, i, alone.group(1))):
+                out[-1] += f' {line.strip()}'
+                joined += 1
             else:
                 out.append(line)
         if split:
             self.fixed.append(f'{heading}: {split} bold leads given their body on the next line')
+        if joined:
+            self.fixed.append(f'{heading}: {joined} bold leads given back the line introducing their sub-bullets')
         return out
+
+    @staticmethod
+    def opens_sub_bullets(lines: list[str], i: int, indent: str) -> bool:
+        """Whether the line after lines[i] is a bullet nested deeper than indent."""
+        m = BULLET.match(lines[i + 1]) if i + 1 < len(lines) else None
+        return bool(m) and len(m.group(1)) > len(indent)
 
     def fix_bullets(self, lines: list[str], heading: str) -> list[str]:
         """Make a prose section a bulleted list, one sentence per bullet."""

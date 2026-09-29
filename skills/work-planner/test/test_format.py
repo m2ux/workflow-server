@@ -35,6 +35,19 @@ class BoldLeads(unittest.TestCase):
         _, fixed = review('Gap.', '**Validate early.** Drop the key at the boundary.')
         self.assertIn('**Validate early.**\nDrop the key at the boundary.\n', fixed)
 
+    def test_intro_to_sub_bullets_stays_on_the_lead_line(self):
+        r, _ = review('- **Framing is undocumented.** Nothing describes:\n  - the extrinsic type;')
+        self.assertEqual(r.fixed, [])
+
+    def test_intro_to_sub_bullets_rejoins_the_lead_line(self):
+        r, fixed = review('- **Framing is undocumented.**\n  Nothing describes:\n  - the extrinsic type;')
+        self.assertIn('- **Framing is undocumented.** Nothing describes:\n  - the extrinsic type;\n', fixed)
+        self.assertIn('Problem: 1 bold leads given back the line introducing their sub-bullets', r.fixed)
+
+    def test_body_before_a_paragraph_moves_to_the_next_line(self):
+        _, fixed = review('**Boundary.** It excludes:\n\n- the RPCs.')
+        self.assertIn('**Boundary.**\nIt excludes:\n', fixed)
+
     def test_body_already_on_its_own_line_is_left(self):
         r, _ = review('- **Facet.**\n  Evidence.', '- **Move.**\n  Done.')
         self.assertEqual(r.fixed, [])

@@ -8,7 +8,7 @@
 
 ## Proposal
 
-{{The design, in bullets or paragraphs, each opening with a bold statement whose body starts on the next line.}}
+{{The design, in bullets or paragraphs, each opening with a bold statement laid out by the scheme's Bold leads rule.}}
 
 ## Acceptance Criteria
 
