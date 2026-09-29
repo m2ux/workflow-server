@@ -14,7 +14,6 @@ export {
   presentPathToAgent,
   receivePathFromAgent,
   isPathUnderRoot,
-  collapseOwnerRepoUnderRoot,
 } from './utils/path-presentation.js';
 
 /**
@@ -42,6 +41,7 @@ export interface ServerConfig {
    * missing value as `workspaceDir` (single-root layout).
    * With `--repo=owner/repo` (pinned), this is
    * `$HOST_PROJECTS_ROOT/<repo>/.engineering` (basename checkout — not owner/repo).
+   * Unpinned, a multi-root session plans under the top-level project folder holding the checkout it was opened from.
    */
   engineeringDir?: string;
   /**
@@ -63,8 +63,7 @@ export interface ServerConfig {
    * Host-side bind source for the projects / engineering multi-root mount.
    * When set (Docker via `HOST_PROJECTS_ROOT`), agent-facing paths such as
    * `planning_folder_path` are rewritten from the server/container prefix to
-   * this host prefix, with deprecated `owner/repo` segments collapsed to the
-   * canonical basename checkout (`$HOST_PROJECTS_ROOT/<repo>/…`).
+   * this host prefix, every segment below it kept.
    * Session storage continues to use server-side paths.
    */
   hostProjectsRoot?: string;

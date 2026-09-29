@@ -18,11 +18,25 @@ export interface EagerOpenResult {
   client: EagerClient;
 }
 
+/**
+ * Facts a session is opened with, seeded into its bag and into every client it
+ * opens. Paths are agent-facing: the host path a worker runs git and writes
+ * artifacts against, never the server's own mount.
+ */
 export interface OpeningBagFacts {
   host_repo_path?: string;
   target_repo?: string;
   component_path?: string;
   is_monorepo?: boolean;
+  planning_folder_path?: string;
+}
+
+/** Opening facts a child session inherits from its parent's bag. */
+export const INHERITED_OPENING_FACTS = ['host_repo_path', 'target_repo', 'component_path', 'is_monorepo'] as const;
+
+/** The facts that are set, as bag entries. */
+export function openingFactEntries(facts: OpeningBagFacts): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(facts).filter(([, value]) => value !== undefined));
 }
 
 /**
@@ -54,13 +68,7 @@ export async function tryEagerClientDispatch(args: {
   const childJsonPath = ['triggeredWorkflows', 0, 'state'];
   const childSessionIndex = await computeEmbeddedSessionIndex(args.parentFolder, childJsonPath);
   const inheritedRequest = args.parent.variables?.['user_request'];
-  const facts = args.bagFacts ?? {};
-  const bagExtras: Record<string, unknown> = {
-    ...(facts.host_repo_path !== undefined ? { host_repo_path: facts.host_repo_path } : {}),
-    ...(facts.target_repo !== undefined ? { target_repo: facts.target_repo } : {}),
-    ...(facts.component_path !== undefined ? { component_path: facts.component_path } : {}),
-    ...(facts.is_monorepo !== undefined ? { is_monorepo: facts.is_monorepo } : {}),
-  };
+  const bagExtras = openingFactEntries(args.bagFacts ?? {});
   const childInitial = createInitialSessionFile({
     sessionIndex: childSessionIndex,
     workflowId: childWorkflow.id,

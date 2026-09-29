@@ -2657,7 +2657,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       await saveSessionForTool(loaded, next);
 
       // What the orchestrator's decision changed while the worker was suspended. The server applied
-      // the selected option's setVariable effect at respond_checkpoint, so the values are already in
+      // the selected option's setVariable effect and typed reply at respond_checkpoint, so the values are already in
       // the bag and the worker's own copy is behind by exactly this much. Read from the answer the
       // history recorded last, which names the activity and the checkpoint: the active checkpoint is
       // cleared by then, leaving no id on the session to key by.
@@ -2768,14 +2768,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
   server.tool('respond_checkpoint',
     'Clear the active-checkpoint gate. *MUST* present the checkpoint to the user first. ' +
-    'Provide exactly one of `option_id`, `auto_advance`, or `condition_not_met`.',
+    'Provide exactly one of `option_id`, `auto_advance`, or `condition_not_met`. ' +
+    'An option whose effect declares `recordReply` takes the text the user typed as `reply`, stored in that variable.',
     {
       ...sessionIndexParam,
       option_id: z.string().optional().describe('User-selected option id (must match a defined option).'),
+      reply: z.string().min(1).optional().describe('The text the user typed with `option_id`. Required when that option declares `recordReply`, and refused otherwise.'),
       auto_advance: z.boolean().optional().describe('Use defaultOption after autoAdvanceMs with no user input. Only valid when the checkpoint has both.'),
       condition_not_met: z.boolean().optional().describe('Dismiss a conditional checkpoint whose condition was not met.'),
     },
-    withAuditLog('respond_checkpoint', withSessionStoreErrors(async ({ session_index, option_id, auto_advance, condition_not_met }) => {
+    withAuditLog('respond_checkpoint', withSessionStoreErrors(async ({ session_index, option_id, reply, auto_advance, condition_not_met }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -2790,6 +2792,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const modeCount = [option_id, auto_advance, condition_not_met].filter(v => v !== undefined).length;
       if (modeCount !== 1) {
         throw new Error('Exactly one of option_id, auto_advance, or condition_not_met must be provided.');
+      }
+      if (reply !== undefined && option_id === undefined) {
+        throw new Error('respond_checkpoint: reply accompanies option_id; an auto-advance or a dismissal carries no typed reply.');
       }
 
       const result = await loadWorkflow(config.workflowDir, state.workflowId);
@@ -2827,6 +2832,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // options carry no effect, so a value the run must read belongs on a
         // checkpoint the activity declares, where the variable model can see it.
         effect = 'effect' in option ? option.effect as Record<string, unknown> | undefined : undefined;
+        const replyVariable = (effect as { recordReply?: string } | undefined)?.recordReply;
+        if (replyVariable !== undefined && reply === undefined) {
+          throw new Error(
+            `Option '${option_id}' of checkpoint '${checkpoint_id}' records the user's typed reply in '${replyVariable}'. ` +
+            `Pass the text the user typed as reply.`,
+          );
+        }
+        if (replyVariable === undefined && reply !== undefined) {
+          throw new Error(
+            `Option '${option_id}' of checkpoint '${checkpoint_id}' records no typed reply. Respond without reply, or choose an option that records one.`,
+          );
+        }
       } else if (auto_advance) {
         if (!checkpoint.defaultOption || !checkpoint.autoAdvanceMs) {
           throw new Error(
@@ -2870,8 +2887,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const recordedOptionId = resolvedOptionId ?? (condition_not_met ? DISMISSED_OPTION_ID : '__unknown__');
         // Unwrap the response effect into the schema-flat shape: the encoded effect gives
         // { setVariable: {...}, exit: '...' } and the schema stores variablesSet / exit.
-        const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; exit?: string };
-        const variablesSet = effectObj?.setVariable;
+        const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; recordReply?: string; exit?: string };
+        const replyWrite = effectObj?.recordReply !== undefined && reply !== undefined
+          ? { [effectObj.recordReply]: reply }
+          : undefined;
+        const variablesSet = effectObj?.setVariable || replyWrite
+          ? { ...effectObj?.setVariable, ...replyWrite }
+          : undefined;
         const selectedExit = effectObj?.exit;
         const record: { optionId: string; respondedAt: string; effects?: { variablesSet?: Record<string, unknown>; exit?: string } } = {
           optionId: recordedOptionId,
@@ -2894,11 +2916,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // as written; a declared-type mismatch is warn-only (#166 B7).
         // `{name}` template passthroughs are references resolved agent-side,
         // so their string type is exempt from validation.
-        if (variablesSet) {
-          typeWarnings.push(...applyVariableWrites(draft, variablesSet, declarations, {
+        if (effectObj?.setVariable) {
+          typeWarnings.push(...applyVariableWrites(draft, effectObj.setVariable, declarations, {
             timestamp: respondedAt,
             activity: active.activityId,
             source: 'setVariable',
+          }));
+        }
+        if (replyWrite) {
+          typeWarnings.push(...applyVariableWrites(draft, replyWrite, declarations, {
+            timestamp: respondedAt,
+            activity: active.activityId,
+            source: 'checkpoint_reply',
           }));
         }
       });

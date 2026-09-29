@@ -29,6 +29,7 @@ export interface CheckpointOption {
   description?: string;
   effect?: {
     setVariable?: Record<string, unknown>;
+    recordReply?: string;
     exit?: string;
   };
 }
@@ -542,7 +543,7 @@ async function executeActivitySteps(
 
   const fireCheckpoint = async (cp: CheckpointDef): Promise<void> => {
     const optionId = policy.choose({ activityId, checkpoint: cp, variables });
-    const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
+    const effect = await resolveCheckpoint(client, sessionIndex, cp, optionId);
     if (effect.setVariable) Object.assign(variables, effect.setVariable);
     if (effect.exit) selectedExit = effect.exit;
     cpRecords.push({
@@ -684,13 +685,19 @@ function writeArtifactStubs(act: ActivityDef, variables: Record<string, unknown>
   return written;
 }
 
-/** Run one checkpoint's yield → respond → resume cycle, returning its effect. */
+/**
+ * Run one checkpoint's yield → respond → resume cycle, returning its effect. An option that records
+ * the user's typed reply is answered with a stand-in reply, which lands in the effect's writes.
+ */
 async function resolveCheckpoint(
   client: Client,
   sessionIndex: string,
-  checkpointId: string,
+  checkpoint: CheckpointDef,
   optionId: string,
 ): Promise<{ setVariable?: Record<string, unknown> | undefined; exit?: string | undefined }> {
+  const checkpointId = checkpoint.id;
+  const replyVariable = checkpoint.options.find((o) => o.id === optionId)?.effect?.recordReply;
+  const reply = replyVariable !== undefined ? `walker reply for ${replyVariable}` : undefined;
   const y = await client.callTool({ name: 'yield_checkpoint', arguments: { session_index: sessionIndex, checkpoint_id: checkpointId } });
   if (isError(y)) throw new Error(`yield_checkpoint(${checkpointId}) failed`);
   const yieldBody = parseToolResponse(y);
@@ -707,7 +714,10 @@ async function resolveCheckpoint(
     };
   }
 
-  const r = await client.callTool({ name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId } });
+  const r = await client.callTool({
+    name: 'respond_checkpoint',
+    arguments: { session_index: sessionIndex, option_id: optionId, ...(reply !== undefined ? { reply } : {}) },
+  });
   if (isError(r)) throw new Error(`respond_checkpoint(${checkpointId}=${optionId}) failed`);
   const resp = parseToolResponse(r);
 
@@ -715,8 +725,9 @@ async function resolveCheckpoint(
   if (isError(resume)) throw new Error(`resume_checkpoint(${checkpointId}) failed`);
 
   const effect = (resp.effect ?? {}) as Record<string, unknown>;
+  const setVariable = (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined;
   return {
-    setVariable: (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined,
+    setVariable: replyVariable !== undefined ? { ...setVariable, [replyVariable]: reply } : setVariable,
     exit: effect.exit as string | undefined,
   };
 }
@@ -861,7 +872,7 @@ export async function walk(
           ?? suggested;
         const effect = opts.localCheckpoints
           ? (cp.options.find((o) => o.id === optionId)?.effect ?? {})
-          : await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
+          : await resolveCheckpoint(client, sessionIndex, cp, optionId);
         if (effect.setVariable) Object.assign(variables, effect.setVariable);
         if (effect.exit) selectedExit = effect.exit;
         cpRecords.push({

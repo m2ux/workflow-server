@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { resolve } from 'node:path';
 import {
   buildPathPresentationMap,
-  collapseOwnerRepoUnderRoot,
   isPathUnderRoot,
   loadConfig,
   presentPathToAgent,
@@ -55,51 +54,22 @@ describe('path presentation helpers', () => {
     expect(isPathUnderRoot('/other', '/var/lib/ws/projects')).toBe(false);
   });
 
-  it('collapseOwnerRepoUnderRoot maps owner/repo → basename', () => {
-    const root = '/home/mike1/projects/dev';
-    expect(
-      collapseOwnerRepoUnderRoot(
-        `${root}/m2ux/workflow-server/.engineering/artifacts/planning/slug`,
-        root,
-      ),
-    ).toBe(resolve(`${root}/workflow-server/.engineering/artifacts/planning/slug`));
-    // Already basename — unchanged
-    expect(
-      collapseOwnerRepoUnderRoot(
-        `${root}/workflow-server/.engineering/artifacts/planning/slug`,
-        root,
-      ),
-    ).toBe(resolve(`${root}/workflow-server/.engineering/artifacts/planning/slug`));
-  });
-
-  it('presentPathToAgent rewrites container path to host basename layout', () => {
+  it('presentPathToAgent rewrites the root prefix and keeps every segment below it', () => {
     const map = buildPathPresentationMap({
       serverProjectsRoot: '/var/lib/workflow-server/projects',
       hostProjectsRoot: '/home/mike1/projects/dev',
     });
     expect(map).toBeDefined();
-    // Server still holding deprecated owner/repo → agent gets basename checkout
-    expect(
-      presentPathToAgent(
-        '/var/lib/workflow-server/projects/m2ux/workflow-server/.engineering/artifacts/planning/slug',
-        map,
-      ),
-    ).toBe(
-      resolve(
-        '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/slug',
-      ),
-    );
-    // Server already on basename layout
-    expect(
-      presentPathToAgent(
-        '/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/slug',
-        map,
-      ),
-    ).toBe(
-      resolve(
-        '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/slug',
-      ),
-    );
+    for (const rest of [
+      'workflow-server/.engineering/artifacts/planning/slug',
+      'team/repo',
+      'm2ux/workflow-server/.engineering/artifacts/planning/slug',
+      'workflow-server/.project/main',
+    ]) {
+      const presented = presentPathToAgent(`/var/lib/workflow-server/projects/${rest}`, map);
+      expect(presented).toBe(resolve(`/home/mike1/projects/dev/${rest}`));
+      expect(receivePathFromAgent(presented, map)).toBe(resolve(`/var/lib/workflow-server/projects/${rest}`));
+    }
   });
 
   it('presentPathToAgent is identity without a map', () => {
@@ -129,37 +99,12 @@ describe('path presentation helpers', () => {
     expect(receivePathFromAgent(p, undefined)).toBe(resolve(p));
   });
 
-  it('receivePathFromAgent does not un-collapse owner/repo', () => {
-    const map = buildPathPresentationMap({
-      serverProjectsRoot: '/var/lib/workflow-server/projects',
-      hostProjectsRoot: '/home/mike1/projects/dev',
-    });
-    // Agent holds the basename layout; inverse must not invent owner/repo.
-    expect(
-      receivePathFromAgent(
-        '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/slug',
-        map,
-      ),
-    ).toBe(
-      resolve(
-        '/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/slug',
-      ),
-    );
-    expect(
-      receivePathFromAgent(
-        '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/slug',
-        map,
-      ),
-    ).not.toContain('/m2ux/');
-  });
-
   it('receivePathFromAgent prefers the longer host worktree prefix', () => {
     const map = buildPathPresentationMap({
       serverProjectsRoot: '/var/lib/workflow-server/projects',
       hostProjectsRoot: '/home/u/projects',
       serverWorktreeRoot: '/var/lib/workflow-server/worktrees',
       hostWorktreeRoot: '/home/u/worktrees',
-      collapseOwnerRepo: false,
     });
     expect(
       receivePathFromAgent('/home/u/worktrees/m2ux/app/feature', map),
@@ -172,7 +117,6 @@ describe('path presentation helpers', () => {
       hostProjectsRoot: '/home/u/projects',
       serverWorktreeRoot: '/var/lib/workflow-server/worktrees',
       hostWorktreeRoot: '/home/u/worktrees',
-      collapseOwnerRepo: false,
     });
     expect(
       presentPathToAgent(
@@ -188,10 +132,16 @@ describe('path presentation helpers', () => {
     ).toBe(resolve('/home/u/projects/m2ux/app/.engineering/artifacts/planning/s'));
   });
 
-  it('buildPathPresentationMap returns undefined without host root', () => {
+  it('buildPathPresentationMap returns undefined without host root, or where host and server share a namespace', () => {
     expect(
       buildPathPresentationMap({
         serverProjectsRoot: '/var/lib/workflow-server/projects',
+      }),
+    ).toBeUndefined();
+    expect(
+      buildPathPresentationMap({
+        serverProjectsRoot: '/home/u/projects',
+        hostProjectsRoot: '/home/u/projects',
       }),
     ).toBeUndefined();
   });
@@ -208,7 +158,7 @@ describe('loadConfig path presentation', () => {
     restoreEnv(envBefore);
   });
 
-  it('loads HOST_PROJECTS_ROOT and presents canonical host basename paths', () => {
+  it('loads HOST_PROJECTS_ROOT and presents host paths', () => {
     process.env['WORKTREE_ROOT'] = '/var/lib/workflow-server/projects';
     process.env['WORKFLOW_WORKSPACE'] = '/var/lib/workflow-server/projects';
     process.env['WORKFLOW_SERVER_ENGINEERING_DIR'] =
@@ -226,7 +176,7 @@ describe('loadConfig path presentation', () => {
     );
 
     const presented = presentPathToAgent(
-      '/var/lib/workflow-server/projects/m2ux/workflow-server/.engineering/artifacts/planning/2026-07-25-gate-resume-lookup-on-keyword',
+      '/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-07-25-gate-resume-lookup-on-keyword',
       config.pathPresentation,
     );
     expect(presented).toBe(

@@ -228,7 +228,7 @@ classDiagram
 
 *Figure 10. Agent, the Session, and the Effects.*
 
-An effect is applied on its own terms. A variable effect is written into the session. An exit effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back, because recording the answer does not itself move the session. Where that exit is immediate, the activity's remaining steps do not run: `resume_checkpoint`, and a replayed `yield_checkpoint`, hand the worker the exit with `ends_activity`.
+An effect is applied on its own terms. A variable effect is written into the session. A reply effect, `recordReply`, names the variable that stores the text the person typed with that option: a path, a correction, the change a revision asks for. The answer carries that text as `reply`, and the server writes it as it writes a variable effect, so the worker reads it back from `resume_checkpoint` like any other value the answer set. An exit effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back, because recording the answer does not itself move the session. Where that exit is immediate, the activity's remaining steps do not run: `resume_checkpoint`, and a replayed `yield_checkpoint`, hand the worker the exit with `ends_activity`.
 
 #### Reading the Question
 
@@ -299,7 +299,7 @@ classDiagram
 | `condition_not_met` | The prerequisite is false, so dismiss it | None                                                |
 
 
-Exactly one of the three may be supplied. Both timers run from the moment the pause was recorded, so an answer that arrives instantly is rejected.
+Exactly one of the three may be supplied. `reply` accompanies `option_id`: it is required where the option declares `recordReply` and refused elsewhere, and a soft gate's default records no reply. Both timers run from the moment the pause was recorded, so an answer that arrives instantly is rejected.
 
 #### Soft Gate and Dismissal
 

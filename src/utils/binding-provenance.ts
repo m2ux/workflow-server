@@ -24,7 +24,7 @@
  */
 import type { Workflow } from '../schema/workflow.schema.js';
 import type { TechniqueBinding, Step } from '../schema/activity.schema.js';
-import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
+import { flattenActivitySteps, optionWrites, techniqueName } from '../schema/activity.schema.js';
 import type { Technique, InputItemDefinition, OutputItemDefinition } from '../schema/technique.schema.js';
 import { readTechnique } from '../loaders/technique-loader.js';
 import { isBareName, SEGMENT_SEPARATOR } from '../loaders/technique-ref.js';
@@ -243,7 +243,7 @@ export async function buildProducerIndex(args: {
       }
       if (step.kind === 'checkpoint') {
         for (const option of step.options ?? []) {
-          for (const name of Object.keys(option.effect?.setVariable ?? {})) push(name, 'checkpoint');
+          for (const name of optionWrites(option)) push(name, 'checkpoint');
         }
       }
       if (step.kind === 'technique' || step.kind === 'action') {

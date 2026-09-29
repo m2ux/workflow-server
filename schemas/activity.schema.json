@@ -384,10 +384,14 @@
                             "exit": {
                               "type": "string",
                               "description": "Exit of the owning activity this option selects: a name from its `exits`, never an activity identifier. An option naming an exit its activity does not declare fails the workflow load. Omitted for an ad hoc checkpoint, which has no declared exits."
+                            },
+                            "recordReply": {
+                              "type": "string",
+                              "description": "Variable that stores the text the user types with this option: a path, a correction, the change a revision asks for. `respond_checkpoint` refuses this option without a `reply`, and refuses a `reply` with any option that does not declare one. A soft checkpoint's `defaultOption` records none, which the load enforces."
                             }
                           },
                           "additionalProperties": false,
-                          "description": "Variable assignments and activity exit associated with the choice."
+                          "description": "Variable assignments, the typed reply's variable, and the activity exit associated with the choice."
                         }
                       },
                       "required": [

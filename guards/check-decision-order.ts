@@ -29,7 +29,7 @@ interface Step {
   when?: string;
   condition?: unknown;
   actions?: { action?: string }[];
-  options?: { effect?: { setVariable?: Record<string, unknown>; exit?: string } }[];
+  options?: { effect?: { setVariable?: Record<string, unknown>; recordReply?: string; exit?: string } }[];
 }
 
 /** A value a gate requires of one variable. Only conjuncts a run must satisfy to reach the step. */
@@ -149,10 +149,12 @@ function decidedVariables(step: Step): Set<string> {
   const decided = new Set<string>();
   const reentrant = new Set<string>();
   for (const option of step.options ?? []) {
-    const set = option.effect?.setVariable;
-    if (set === undefined) continue;
+    const names = [
+      ...Object.keys(option.effect?.setVariable ?? {}),
+      ...(option.effect?.recordReply ? [option.effect.recordReply] : []),
+    ];
     const target = typeof option.effect?.exit === 'string' ? reentrant : decided;
-    for (const name of Object.keys(set)) target.add(name);
+    for (const name of names) target.add(name);
   }
   for (const name of reentrant) decided.delete(name);
   return decided;

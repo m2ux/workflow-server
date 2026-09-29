@@ -561,8 +561,9 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
     for (const name of expressionReads(o.when)) expressionConsumes.push({ rel, wf, stepId: here, name });
   }
   if (o.setVariable && typeof o.setVariable === 'object') Object.keys(o.setVariable).forEach((k) => produced(wf).add(k));
-  const eff = o.effect as { setVariable?: object } | undefined;
+  const eff = o.effect as { setVariable?: object; recordReply?: unknown } | undefined;
   if (eff?.setVariable) Object.keys(eff.setVariable).forEach((k) => produced(wf).add(k));
+  if (typeof eff?.recordReply === 'string') produced(wf).add(eff.recordReply);
   if (typeof o.variable === 'string') produced(wf).add(o.variable);
   // A `forEach` loop's `over` names the collection it iterates, which is the one place that
   // collection is read. Its producer has a consumer here, and a collection reaching the loop

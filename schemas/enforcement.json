@@ -158,6 +158,10 @@
       "owner": "Engine",
       "strictness": "enforced"
     },
+    "steps[].options[].effect.recordReply": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
     "steps[].options[].effect.setVariable": {
       "owner": "Engine",
       "strictness": "advisory"
@@ -289,6 +293,10 @@
       "strictness": "enforced"
     },
     "steps[].options[].effect.exit": {
+      "owner": "Engine",
+      "strictness": "enforced"
+    },
+    "steps[].options[].effect.recordReply": {
       "owner": "Engine",
       "strictness": "enforced"
     },

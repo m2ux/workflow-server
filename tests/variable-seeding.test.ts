@@ -79,6 +79,8 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
   let client: Client;
   const planningFolder = (slug: string) => planningFolderPath(harness.workspaceDir, slug);
   const readSession = (slug: string) => JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
+  /** The fixture's seeded bag: its declared defaults and the folder the session is stored in. */
+  const bagFor = (slug: string) => ({ ...SEEDED_FIXTURE_BAG, planning_folder_path: planningFolder(slug) });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function call(name: string, args: Record<string, unknown>): Promise<any> {
@@ -107,11 +109,11 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const slug = '2026-07-07-seed-basic';
     await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(stored.variables).toEqual(bagFor(slug));
     expect('unset_marker' in stored.variables).toBe(false);
     const seededEvents = stored.history.filter((h: { type: string }) => h.type === 'variables_seeded');
     expect(seededEvents).toHaveLength(1);
-    expect(seededEvents[0].data).toEqual({ variables: SEEDED_FIXTURE_BAG });
+    expect(seededEvents[0].data).toEqual({ variables: bagFor(slug) });
   });
 
   it('yield_checkpoint publishes the steps-before-the-gate values into the bag', async () => {
@@ -159,16 +161,16 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
   it('yield_checkpoint without variables_changed leaves the bag as seeded', async () => {
     const slug = '2026-07-07-yield-nothing';
     const sessionIndex = await startAtCheckpoint(slug);
-    expect(readSession(slug).variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(readSession(slug).variables).toEqual(bagFor(slug));
     expect(sessionIndex).toMatch(/^[A-Z2-7]{6}$/);
   });
 
-  it('start_session with a no-defaults workflow leaves the bag empty with no seeding event', async () => {
+  it('start_session with a no-defaults workflow seeds only the planning folder', async () => {
     const slug = '2026-07-07-seed-bare';
     await call('start_session', { workflow_id: 'bare-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual({});
-    expect(stored.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(0);
+    expect(stored.variables).toEqual({ planning_folder_path: planningFolder(slug) });
+    expect(stored.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(1);
   });
 
   it('resume preserves the mutated bag and does not re-seed', async () => {
@@ -189,9 +191,9 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
     await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture' });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(stored.variables).toEqual(bagFor(slug));
     const child = stored.triggeredWorkflows[0].state;
-    expect(child.variables).toEqual({ child_ready: false, child_label: 'seeded' });
+    expect(child.variables).toEqual({ child_ready: false, child_label: 'seeded', planning_folder_path: planningFolder(slug) });
     expect(child.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(1);
   });
 
@@ -238,7 +240,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const stored = readSession(slug);
     // Worker outputs land alongside the seeded defaults, including a variable
     // that had no default and was therefore absent from the bag.
-    expect(stored.variables).toEqual({ ...SEEDED_FIXTURE_BAG, review_needed: true, retry_count: 2, unset_marker: 'produced' });
+    expect(stored.variables).toEqual({ ...bagFor(slug), review_needed: true, retry_count: 2, unset_marker: 'produced' });
 
     const events = stored.history.filter((h: { type: string }) => h.type === 'variable_set');
     expect(events).toHaveLength(3);
@@ -293,7 +295,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
     await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity', from_activity: 'checkpoint-activity' });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(stored.variables).toEqual(bagFor(slug));
     expect(stored.history.filter((h: { type: string }) => h.type === 'variable_set')).toHaveLength(0);
   });
 
@@ -340,8 +342,10 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const slug = '2026-07-07-seed-promoted';
     await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture', planning_slug: slug });
     const stored = readSession(slug);
-    expect(stored.variables).toEqual({ bootstrap_ready: false });
-    expect(stored.triggeredWorkflows[0].state.variables).toEqual({ child_ready: false, child_label: 'seeded' });
+    expect(stored.variables).toEqual({ bootstrap_ready: false, planning_folder_path: planningFolder(slug) });
+    expect(stored.triggeredWorkflows[0].state.variables).toEqual({
+      child_ready: false, child_label: 'seeded', planning_folder_path: planningFolder(slug),
+    });
   });
 
   it('respond_checkpoint stores a type-mismatched value as written and warns in _meta.validation and history', async () => {
@@ -388,6 +392,50 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(event.data.valueOutsideSet).toBeUndefined();
   });
 
+  describe('typed reply (recordReply)', () => {
+    async function respondText(args: Record<string, unknown>): Promise<{ isError: boolean; text: string }> {
+      const result = await client.callTool({ name: 'respond_checkpoint', arguments: args });
+      return { isError: Boolean(result.isError), text: (result.content as { text: string }[])[0]?.text ?? '' };
+    }
+
+    it('stores the text the user typed in the option\'s reply variable, and resume hands it to the worker', async () => {
+      const slug = '2026-09-29-typed-reply';
+      const sessionIndex = await startAtCheckpoint(slug);
+      await call('respond_checkpoint', { session_index: sessionIndex, option_id: 'typed-reply', reply: 'docs/spec.md' });
+      const stored = readSession(slug);
+      expect(stored.variables.unset_marker).toBe('docs/spec.md');
+      const event = stored.history.find((h: { type: string; data?: Record<string, unknown> }) => h.type === 'variable_set' && h.data?.name === 'unset_marker');
+      expect(event.data.source).toBe('checkpoint_reply');
+      const resumed = await call('resume_checkpoint', { session_index: sessionIndex });
+      const body = JSON.parse((resumed.content as { text: string }[])[0]!.text);
+      expect(body.variables_changed).toEqual({ unset_marker: 'docs/spec.md' });
+      // A replacement worker re-crossing the answered gate is handed the reply with the answer.
+      const replayed = await call('yield_checkpoint', { session_index: sessionIndex, checkpoint_id: 'type-check' });
+      const replay = JSON.parse((replayed.content as { text: string }[])[0]!.text);
+      expect(replay.status).toBe('replayed');
+      expect(JSON.stringify(replay)).toContain('docs/spec.md');
+    });
+
+    it('refuses an option that records a reply when no reply is passed, and leaves the gate open', async () => {
+      const slug = '2026-09-29-typed-reply-missing';
+      const sessionIndex = await startAtCheckpoint(slug);
+      const refused = await respondText({ session_index: sessionIndex, option_id: 'typed-reply' });
+      expect(refused.isError).toBe(true);
+      expect(refused.text).toMatch(/records the user's typed reply in 'unset_marker'/);
+      expect(readSession(slug).activeCheckpoint).toBeDefined();
+    });
+
+    it('refuses a reply with an option that records none, and a reply with no option', async () => {
+      const sessionIndex = await startAtCheckpoint('2026-09-29-typed-reply-stray');
+      const stray = await respondText({ session_index: sessionIndex, option_id: 'matching-assignment', reply: 'text' });
+      expect(stray.isError).toBe(true);
+      expect(stray.text).toMatch(/records no typed reply/);
+      const bare = await respondText({ session_index: sessionIndex, condition_not_met: true, reply: 'text' });
+      expect(bare.isError).toBe(true);
+      expect(bare.text).toMatch(/reply accompanies option_id/);
+    });
+  });
+
   it('respond_checkpoint exempts {name} template passthroughs from type validation', async () => {
     const sessionIndex = await startAtCheckpoint('2026-07-07-type-template');
     const result = await call('respond_checkpoint', { session_index: sessionIndex, option_id: 'template-assignment' });
@@ -406,7 +454,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
         workflow_id: 'seed-fixture', agent_id: 'orchestrator',
         planning_folder: planningFolder(slug), user_request: 'review PR 49',
       });
-      expect(readSession(slug).variables).toEqual({ ...SEEDED_FIXTURE_BAG, user_request: 'review PR 49' });
+      expect(readSession(slug).variables).toEqual({ ...bagFor(slug), user_request: 'review PR 49' });
     });
 
     it('omitting user_request leaves it absent, so exists gates stay meaningful', async () => {
@@ -431,7 +479,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const stored = readSession(slug);
       expect(stored.variables.user_request).toBe('plan issue 141');
       expect(stored.triggeredWorkflows[0].state.variables).toEqual({
-        child_ready: false, child_label: 'seeded', user_request: 'plan issue 141',
+        child_ready: false, child_label: 'seeded', user_request: 'plan issue 141', planning_folder_path: planningFolder(slug),
       });
     });
   });

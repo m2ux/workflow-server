@@ -146,7 +146,7 @@ classDiagram
 
 *Figure 8. Declarations, and the Bag They Seed.*
 
-The server seeds every declared default from the combined set when the session opens: at `start_session` for a top-level session, and for an embedded child at `dispatch_child`, or at the `start_session` that opens a catalog-matched client, each seeding from the child workflow's own declarations. A top-level session also seeds `user_request` when one is passed, and, from a `working_directory`, the repository facts `host_repo_path`, `target_repo`, `component_path` and `is_monorepo`. A child opened by `dispatch_child` also takes the parent's `user_request`, and a client opened by `start_session` takes the repository facts. The seeded map is recorded as a single `variables_seeded` event.
+The server seeds every declared default from the combined set when the session opens: at `start_session` for a top-level session, and for an embedded child at `dispatch_child`, or at the `start_session` that opens a catalog-matched client, each seeding from the child workflow's own declarations. A top-level session also seeds `user_request` when one is passed, `planning_folder_path` when it has a durable planning folder, and, from a `working_directory`, the repository facts `host_repo_path`, `target_repo`, `component_path` and `is_monorepo`. Both paths are the host paths an agent reads and writes, never the server's own mount. A child opened by `dispatch_child` takes the parent's `user_request` and repository facts, and a client opened by `start_session` takes the repository facts; each takes `planning_folder_path` for the folder its session is stored in. The seeded map is recorded as a single `variables_seeded` event.
 
 Seeding at creation keeps the orchestrator's copy of the state and the server's bag in agreement from the first call, so `get_workflow_status` returns the seeded values rather than an empty map.
 
@@ -515,7 +515,7 @@ classDiagram
 
 `start_session` opens a top-level session, defaulting to the `meta` workflow. Pass `working_directory` as the checkout under work: the server derives `owner/repo` from that checkout's origin, even when the folder is named for a branch. `repo` is optional, and must equal the derived origin when supplied.
 
-A named `planning_folder` resumes an existing session. Where a derived dated slug already holds one, the server opens the next free numbered folder rather than joining it. `user_request` seeds the opening request into the variable bag, and children inherit it.
+A named `planning_folder` names one folder by its absolute path: one holding a session resumes, wherever it sits. A new named folder must sit directly under the planning root of the project the session opens from — `<project>/.engineering/artifacts/planning/`, where `<project>` is the top-level folder under the projects root holding the checkout, shared by every clone and worktree inside it — and a folder named anywhere else is refused, naming that root. Where a derived dated slug already holds a session in that root, the server opens the next free numbered folder there rather than joining it; folders in other projects do not count. `user_request` seeds the opening request into the variable bag, and children inherit it.
 
 ### What Comes Back Instead of a Session
 
