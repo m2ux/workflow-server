@@ -40,8 +40,6 @@ Read the file for the mode the request calls for:
   - Open with a paragraph for management on what the window accomplished
   - List what completed, what is in progress and what is next
 
-Every mode also reads [work-breakdown.md](references/work-breakdown.md), the guide to the Work Breakdown tables: their columns, numbering, references and delivery.
-
 ## Agent-engineering scheme
 
 | Level | Title | Labels |
@@ -80,6 +78,7 @@ The scripts in `scripts/` run under the sandbox, invoked by the absolute path of
 
 ## Rules
 
+- **Work Breakdown guide.** Every mode reads [work-breakdown.md](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables.
 - **Decisions.** Ask them one at a time, each with a recommended option, and record each answer in the affected issues and, when there is one, the planning record.
 - **Measured claims.** A count or a chain comes from a command's output, never from a hand count.
 - **Bodies state the plan as it is.** No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything. How the plan evolved goes in the planning record and in commit and pull request bodies.
