@@ -2,7 +2,7 @@
 name: elicitation-guide
 description: Mode dimension sets and the per-dimension question bank for eliciting a workflow specification.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 20
 ---
 

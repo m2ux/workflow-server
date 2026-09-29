@@ -2,7 +2,7 @@
 name: impact-analysis
 description: Guidelines for creating the impact-analysis planning artifact (classification, integrity, removals).
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 15
 ---
 
