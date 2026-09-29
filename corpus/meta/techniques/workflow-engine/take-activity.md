@@ -13,14 +13,6 @@ Advance a session this context owns onto an activity and carry that activity her
 
 *(optional)* The activity this call retires — the one `{exit_id}` and `{step_manifest}` belong to. Unset where the session holds nothing to retire, which is the first entry of a walk.
 
-### exit_id
-
-*(optional)* The exit that activity took, which the server checks against the destination this call enters. Unset alongside `{from_activity}`, and where that activity declares no exit.
-
-### step_manifest
-
-*(optional)* One entry per step of the activity just finished — `steps_completed` from the envelope the preceding entry returned. Unset alongside `{from_activity}`.
-
 ### agent_technique
 
 Canonical agent technique this context follows for the activity — default workflow-engine::activity-worker.

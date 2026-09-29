@@ -11,11 +11,7 @@ Transition the session to a target activity and spawn a worker to carry it, and 
 
 ### from_activity
 
-*(optional)* The activity this call retires — the one its exit and step manifest belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
-
-### exit_id
-
-*(optional)* The exit that activity took, which the server checks against the destination this call enters. Unset alongside `{from_activity}`, and where that activity declares no exit.
+*(optional)* The activity this call retires — the one `{exit_id}` and `{step_manifest}` belong to. Unset where the session holds nothing to retire, which is the first dispatch of a walk.
 
 ### agent_technique
 

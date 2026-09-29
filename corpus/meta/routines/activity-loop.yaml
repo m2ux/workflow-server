@@ -181,6 +181,14 @@ steps:
             worker_agent_id: worker_agent_id
             checkpoint_reply: checkpoint_reply
             variable_bag: variables
+      - kind: action
+        id: clear-checkpoint-reply
+        when: checkpoint_reply
+        actions:
+          # The reply belongs to the continuation just made; no later dispatch in the walk binds it.
+          - action: set
+            target: checkpoint_reply
+            value: null
       - kind: technique
         id: commit-activity-artifacts
         when: worker_result.result_type == "activity_complete"

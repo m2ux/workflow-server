@@ -33,7 +33,7 @@ Whether that destination opens several branches rather than one activity. True w
 
 ### activity_exit
 
-The exit id taken, passed to `next_activity` as `exit`. Unset where the activity declares no exit, and the call then carries no `exit`.
+The exit id this activity took; unset where it declares none.
 
 ## Protocol
 

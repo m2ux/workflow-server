@@ -21,6 +21,10 @@ Map of placeholder name → value. Must include `session_index`, `workflow_id`, 
 
 Whether `agent_id` names a context that already received content under this session — true when continuing a worker onto the next activity of its batch, false for a freshly minted identity.
 
+### checkpoint_reply
+
+*(optional)* The reply the server returned on clearing the checkpoint the worker yielded. Present only on a continuation past that gate.
+
 ## Outputs
 
 ### composed_prompt
@@ -37,7 +41,7 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 ### 2. Emit entry tools
 
 - When `{checkpoint_reply}` is bound, and `{agent_technique}` is activity-worker: instruct `resume_checkpoint { session_index }` FIRST, carrying the `checkpoint_reply` substitution, then the activity-worker line below
-- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for, which the server refuses to guess while several are in flight, so a branch worker that omits it is refused on its first call. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise, because a fresh context needs the bytes
+- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `get_workflow { session_index }`, which delivers the techniques bundle the Direct Apply phase names. Its session is already open and its identity is bound in the block above; this call scopes to neither, and the orchestrator spends `agent_id` on the delivery calls that take one
 
 ### 3. Direct Apply

@@ -13,6 +13,10 @@ Continue the worker that already holds an activity under the delivery identity i
 
 Server-side worker identity the worker's dispatch bound — the identity the delivery ledger is keyed on.
 
+### checkpoint_reply
+
+*(optional)* The reply the server returned on clearing the checkpoint the worker yielded. Present only on a continuation past that gate.
+
 ## Outputs
 
 ### worker_result

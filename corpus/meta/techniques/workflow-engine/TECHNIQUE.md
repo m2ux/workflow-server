@@ -15,15 +15,19 @@ The session every authenticated tool call names — the 6-character base32 index
 
 ### activity_id
 
-*(optional)* The activity the operation acts on: the one it enters, carries or continues, or the one whose completion it records. Where a fan converges, the branches it retired. Unset for an operation that acts on no one activity.
+*(optional)* The activity the operation acts on: the one it enters, carries or continues, or the one whose completion it records. One id for an operation on a single activity, and the list of branches retired for a fan's convergence. Unset for an operation that acts on no activity.
+
+### exit_id
+
+*(optional)* The exit the activity an advance retires took. Unset where the advance retires no activity, or where that activity declares no exit.
+
+### step_manifest
+
+*(optional)* One entry per step of the activity an advance retires: `steps_completed` from the `activity_complete` envelope that activity returned. Unset where the advance retires no activity.
 
 ### variable_bag
 
-*(optional)* The session's current variable bag (`session_index`, `workflow_id`, `activity_id`, …) — what a stub's substitutions are completed from and what a step reference or an exit's `when` resolves against. Unset for an operation that reads neither.
-
-### checkpoint_reply
-
-*(optional)* The reply the server returned on clearing a checkpoint this context yielded. Present only on a continuation past that gate, and its presence is what distinguishes one from a first dispatch.
+*(optional)* The session's current variable bag (`session_index`, `workflow_id`, `activity_id`, …). Unset for an operation that reads none of the session's variables.
 
 ## Rules
 

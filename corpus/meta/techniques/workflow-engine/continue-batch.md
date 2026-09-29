@@ -13,17 +13,9 @@ Advance the session to the next activity and continue the worker already carryin
 
 The activity this advance retires — the one `{exit_id}` and `{step_manifest}` belong to.
 
-### exit_id
-
-*(optional)* The exit that activity took, which the server checks against the destination this advance enters. Unset where that activity declares no exit.
-
 ### worker_agent_id
 
 Server-side worker identity the batch is carried under — the identity the delivery ledger is keyed on.
-
-### step_manifest
-
-One entry per step of the activity the worker just finished — `steps_completed` from the `activity_complete` envelope the preceding dispatch or continuation returned. Feeds the server's step-completion and technique-fetch validation.
 
 ## Outputs
 

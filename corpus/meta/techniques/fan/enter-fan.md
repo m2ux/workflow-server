@@ -25,6 +25,10 @@ The activity this call retires — the one its exit and step manifest belong to,
 
 The exit that activity took. Required: an exit the graph fans has to say which destination it takes.
 
+### step_manifest
+
+*(optional)* One entry per step of the activity this call retires: `steps_completed` from the `activity_complete` envelope that activity returned.
+
 ### planning_folder_path
 
 *(optional)* Path to the planning folder whose `README.md` Progress surface is updated. Unset until the folder exists.

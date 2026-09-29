@@ -24,8 +24,8 @@ The exit the answer selected (only when the `resume_checkpoint` response carries
 
 - Apply the option and the `variables_changed` the `resume_checkpoint` response returns to local state.
 
-### 3. Continue Or Finalize
+### 3. Continue Or Stop
 
 - Where the `resume_checkpoint` response carries `exit`, hold `exit.id` as `{selected_exit}`.
 - Continue from the paused step.
-  > When the response's `exit.ends_activity` is true, the answer ended the activity at this checkpoint: run none of the remaining steps, and finalize the activity with the steps you ran and `{selected_exit}`.
+  > When the response's `exit.ends_activity` is true, the answer ended the activity at this checkpoint, and none of its remaining steps runs.

@@ -17,6 +17,10 @@ Workflow the worker is executing an activity for.
 
 Worker agent identity for this dispatch.
 
+### checkpoint_reply
+
+*(optional)* The reply the server returned on clearing the checkpoint this worker yielded. Present only on a continuation past that gate.
+
 ## Protocol
 
 ### 1. Verify dispatch
@@ -46,13 +50,13 @@ Worker agent identity for this dispatch.
 
 ### 5. Finalize the activity
 
-- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the steps this activity ran as `steps_completed`, the checkpoints it answered as `checkpoints_responded`, the artifacts it wrote as `artifacts_produced`, and the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
+- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the steps this activity ran as `steps_completed`, the checkpoints it answered as `checkpoints_responded`, the artifacts it wrote as `artifacts_produced`, the `{selected_exit}` a checkpoint answer held, where one did, and the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
 
 ## Rules
 
 ### follow-bundled-rules
 
-Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically. Every rule in `agent-conduct` is one a worker can honour; the orchestrator's boundaries are not a worker's to read.
+Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically. Every rule in `agent-conduct` is one a worker can honour.
 
 ### worker-control-plane-ban
 
@@ -78,11 +82,11 @@ The last thing this context emits is the envelope this activity owes — the `ch
 
 ### verify-dispatched-activity
 
-Before executing any step, confirm the activity `id` returned by the `get_activity` call your current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned), which is the whole of the remedy available from here. Do not proceed on the wrong activity.
+Before executing any step, confirm the activity `id` returned by the `get_activity` call your current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned). Do not proceed on the wrong activity.
 
 ### progressive-step-technique-load
 
-A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered (`fetch-costs-what-it-delivers`).
+A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle, never re-fetched (`fetch-costs-what-it-delivers`).
 
 ### batch-ends-where-the-server-says
 

@@ -21,7 +21,7 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
    3. Else if the variable bag holds a variable named `I`, bind its value — the implicit same-name bind, which carries zero per-step data.
    4. Else if the input declares a `default`, use it.
    5. Else the input is unsatisfied — surface it as a binding gap (the call-site must supply it via a `step.technique.inputs` deviation, or the signature must declare a `default`).
-- Resolve a string deviation by the disambiguation rule: a string that matches the bag-name grammar (`^[a-z_][a-z0-9_]*(\.[a-z0-9_]+)*$`) AND resolves in the variable bag is a rename reference (bind the named variable's value); otherwise it is a literal; a string containing `{…}` is always a template (interpolate `{path}` against the bag, walking dotted paths into nested objects, then substitute and bind the result).
+- Resolve a string deviation by the disambiguation rule: a string that matches the bag-name grammar (`^[a-z_][a-z0-9_]*(\.[a-z0-9_]+)*$`) AND resolves in the variable bag is a rename reference, binding the named variable's value (`inputs: { check_id: failed_check_id }`); otherwise it is a literal (`inputs: { scope: '--workspace' }`); a string containing `{…}` is always a template, interpolating `{path}` against the bag, walking dotted paths into nested objects, then substituting and binding the result (`inputs: { scope: '-p {current_task.crate}' }`).
 
 ### 3. Invoke the Technique
 
@@ -29,7 +29,7 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
 
 ### 4. Land the Outputs
 
-- Land outputs. For each declared output id `O`, take the produced value and commit it to the variable bag under `O` (or under the remapped bag name when `step.technique.outputs` maps `O` to a different name). Nested-object outputs land whole, so a dotted-path read downstream resolves against the landed object.
+- Land outputs. For each declared output id `O`, take the produced value and commit it to the variable bag under `O` (or under the remapped bag name when `step.technique.outputs` maps `O` to a different name, as `outputs: { session_index: client_session_index }` does). Nested-object outputs land whole, so a dotted-path read downstream resolves against the landed object.
 - Read downstream by name or path. A later `when` or `condition` reads `{O}` or `{O}.field.subfield` directly; the structured-condition evaluator walks the dotted path, so no flattening step is needed.
 
 ## Rules
@@ -38,15 +38,11 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
 
 A step's consumed and produced data is exactly the bound technique's composed `inputs[]`/`outputs[]`. A value read or emitted outside that signature is a binding gap, not an implicit convention.
 
-### binding-carries-only-deviations
-
-The structured `step.technique` object carries what differs from the defaults; the bare-string form (`technique: group::technique`) carries no deviation. An input absent from `inputs` binds by same name or by its declared `default`. The three input-deviation forms are: a literal (`inputs: { scope: '--workspace' }`), a rename naming another bag variable (`inputs: { check_id: failed_check_id }`), and a `{var}` template including dotted projection (`inputs: { scope: '-p {current_task.crate}' }`). An `outputs` entry maps an output to the bag name it lands under (`outputs: { session_index: client_session_index }`); an output absent from `outputs` lands under its own id.
-
 ### an-argument-position-sets-its-own-default
 
 Three positions in the language take an argument, and a bare word means something different in each. This rule scopes itself to the first; the other two are named so a reader who meets them knows they are reading a different position rather than a contradiction.
 
-- **A step input deviation** — `step.technique.inputs` — is what `binding-carries-only-deviations` governs: a bare word that matches the bag-name grammar and resolves in the bag is a reference, and anything else is a literal.
+- **A step input deviation** — `step.technique.inputs` — is what Phase 2's disambiguation rule governs: a bare word that matches the bag-name grammar and resolves in the bag is a reference, and anything else is a literal.
 - **A routine argument** — a reference step's `.with` — reads the opposite way: a braced word is a reference to a host variable and a bare word is always a literal, because a routine is expanded before any bag exists to resolve a name against.
 - **A harness invocation** — an adapter's call template — reads a braced word as a reference and an angle-bracketed word as a value the invoking agent supplies from what it can see of its own host.
 

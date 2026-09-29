@@ -19,7 +19,7 @@ Canonical agent technique for each branch worker — default workflow-engine::ac
 
 ### variable_bag
 
-The session's current variable bag (`session_index`, `workflow_id`, …), which each branch's stub is completed from with its own activity and identity.
+The session's current variable bag (`session_index`, `workflow_id`, …).
 
 ## Outputs
 

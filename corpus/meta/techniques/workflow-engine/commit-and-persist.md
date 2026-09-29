@@ -47,7 +47,7 @@ Post-activity Progress mark plus commit/push of source-side changes and engineer
 
 ### commit-after-activity
 
-After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before the exit to the next activity is evaluated. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities.
+After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before the next `next_activity` call. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities.
 
 - Skip the engineering commit only where the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows its intended post-activity status on the remote — complete, or cancelled/N/A where `{mark_progress_na}` applied, per [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary).
 - Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are `git.explicit-commit`; the meta workflow's own setup sequence has its own cadence, `setup-sequence-persists-once`.

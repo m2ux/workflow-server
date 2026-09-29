@@ -61,7 +61,7 @@ optional — the exit id a checkpoint option named, set when a checkpoint effect
 
 #### next_activity_id
 
-Where the worker resolved the run goes next (or null when the workflow is complete). Ordinarily one activity id; where the exit taken is bound to several branches, the destination as the `exit_destinations` block gave it.
+Where the worker resolved the run goes next, as the `exit_destinations` block gave it for the exit taken: one activity id, `__terminal__` where that exit ends the run, or the fan destination where it is bound to several branches. Null where the activity declares no exit.
 
 #### next_activity_fans
 
@@ -83,7 +83,7 @@ Whether this context may take another activity, folded from the input of the sam
 
 ### 2. Read Routing Destination
 
-- Resolve the next activity: with the current activity definition and its `exit_destinations` both in hand from `get_activity`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope, passing `{next_activity_id}` on unread. Do not omit these fields: every successful envelope carries them.
+- Resolve the next activity: with the current activity definition and its `exit_destinations` both in hand from `get_activity`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope, passing `{next_activity_id}` on unread. Every successful envelope carries `{next_activity_id}` and `{next_activity_fans}`, and `{activity_exit}` wherever an exit was taken.
 
 ### 3. Return Envelope
 
