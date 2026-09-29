@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
 
-Record the source paths, whether every source is readable, each source's type, and whether the specification is being augmented or created.
+Record whether every source document is readable and what type each one is.
+
+## Inputs
+
+### intake_correction
+
+*(optional)* Text the user typed to correct the sources, a source's classification, or the target specification. Unset until a correction is given.
 
 ## Outputs
 
@@ -17,53 +23,17 @@ Record the source paths, whether every source is readable, each source's type, a
 
 The source documents paired with their classifications, each `{ path, type }` — `type` is `meeting` for a meeting transcript, `document` for an unstructured document. Ordered as `{source_paths}` names them.
 
-### target_doc_exists
-
-`true` when a file exists at `{target_doc_path}` (the specification is augmented); `false` when it is created from scratch.
-
-### spec_basename
-
-Basename of `{target_doc_path}` — the filename without its directory.
-
-### intake_record
-
-Record of the captured sources, the classification each carries, the detected augment/create mode, and `{spec_basename}`.
-
-#### artifact
-
-`intake.md`
-
-#### audience
-
-`human`
-
-### intake_record_path
-
-Absolute path to the written intake record.
-
 ## Protocol
 
-### 1. Capture Source Paths
-
-- Capture `{source_paths}` and `{target_doc_path}`.
-- Emit `{spec_basename}` per its output contract.
-
-### 2. Record Source Readability
+### 1. Record Source Readability
 
 - Determine `{source_readable}` per its output contract.
 
-### 3. Classify Each Source
+### 2. Classify Each Source
 
 - For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`. Each source carries its own type, so a mixed set is classified per document rather than as a whole.
-  > A source with no content to read carries no classification.
-
-### 4. Detect Target Existence
-
-- Determine `{target_doc_exists}` per its output contract.
-
-### 5. Record Intake
-
-- Write `{intake_record}` to `{planning_folder_path}` per [intake-record](../resources/intake-record.md#template) and its [Rules](../resources/intake-record.md#rules), capturing `{classified_sources}`, `{target_doc_path}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
+  > - A source with no content to read carries no classification.
+  > - When `{intake_correction}` names a source's type, that type is recorded over the inference.
 
 ## Rules
 

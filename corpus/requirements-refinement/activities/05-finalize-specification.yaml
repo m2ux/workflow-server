@@ -4,6 +4,7 @@ name: Finalize Specification
 description: Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts.
 variables:
   reads:
+    - host_repo_path
     - planning_folder_path
     - source_paths
     - spec_basename

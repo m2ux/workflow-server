@@ -9,7 +9,8 @@ specification-fidelity rules.
 | Technique | Capability |
 |-----------|-----------|
 | [resolve-inputs](resolve-inputs.md) | Read which source documents and which target specification a run is for, from the request and any correction the user typed |
-| [intake-sources](intake-sources.md) | Record the source paths, whether every source is readable, each source's type, and whether the specification is being augmented or created |
+| [intake-sources](intake-sources.md) | Record whether every source document is readable and what type each one is |
+| [record-intake](record-intake.md) | Settle the target specification — where it is, and whether it is augmented or created — and record the intake |
 | [analyze-source](analyze-source.md) | Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix and the heading of each contributing passage |
 | [update-specification](update-specification.md) | Apply the analysis, correction findings, or requested revisions to a complete updated specification |
 | [validate-specification](validate-specification.md) | Validate the updated specification and categorize each issue |

@@ -4,9 +4,9 @@ name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 variables:
   reads:
-    - planning_folder_path
     - component_git_dir
     - host_repo_path
+    - planning_folder_path
     - pr_number
     - report_path
     - target_path

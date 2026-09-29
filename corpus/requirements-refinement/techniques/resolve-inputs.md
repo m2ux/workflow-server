@@ -29,7 +29,7 @@ The user's free-form request for the run, naming the documents to refine from an
 
 ### source_paths
 
-Absolute filesystem paths of the source documents the run refines from, in the order the request names them. Empty when neither the request nor a correction names a document.
+Absolute filesystem paths of the source documents the run refines from. Empty when neither the request, a correction, nor an earlier binding names a document.
 
 ### target_doc_path
 
@@ -37,20 +37,18 @@ Absolute filesystem path of the specification the run augments or creates. Emitt
 
 ## Protocol
 
-### 1. Read the Request
+### 1. Establish the Starting Paths
 
-- Read `{user_request}` for the paths of the documents the run refines from and of the specification it refines.
+- Take the bound `{source_paths}` and `{target_doc_path}` as the starting paths.
+  > Where either is unbound, read it from `{user_request}`: the paths of the documents the run refines from, and of the specification it refines.
 
 ### 2. Apply the Correction
 
-- When `{intake_correction}` is bound, apply it over the reading of `{user_request}`: a source it adds or removes, and a target it names, replace what the request stated.
+- When `{intake_correction}` is bound, apply it over the starting paths: a source it adds is added, a source it removes is removed, and a target it names replaces the target.
 
 ### 3. Settle the Paths
 
-- Emit `{source_paths}` from the corrected reading.
-  > Where neither the request nor the correction names a source, emit the bound `{source_paths}` when there is one, and an empty list otherwise.
-- Emit `{target_doc_path}` from the corrected reading.
-  > Where neither names a target, emit the bound `{target_doc_path}` when there is one, and emit nothing otherwise.
+- Emit `{source_paths}` and `{target_doc_path}` from the corrected paths, each per its output contract.
 
 ## Rules
 

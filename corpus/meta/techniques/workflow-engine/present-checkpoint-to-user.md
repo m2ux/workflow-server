@@ -66,7 +66,7 @@ A gate is **soft** when it declares an answer the run may take where no person i
 
 ### a-correction-lands-in-the-bag
 
-A reply that corrects a value, rather than only selecting an option, is written into the variable bag against the value it corrects — so every later gate and step reads the corrected one. An option whose effect declares `recordReply` is where a gate takes that text: it travels as the reply, and the server stores it in the variable the option names. A correction held in the resolving agent's own reasoning is unreadable to the worker that acts on it next, and to anyone reading the session afterwards.
+A reply that corrects a value, rather than only selecting an option, is written into the variable bag against the value it corrects — so every later gate and step reads the corrected one. An option whose effect declares `recordReply` is where a gate takes that text, as the reply. A correction held in the resolving agent's own reasoning is unreadable to the worker that acts on it next, and to anyone reading the session afterwards.
 
 ### never-soft-when-the-answer-authorises
 

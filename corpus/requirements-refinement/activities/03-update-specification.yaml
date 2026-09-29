@@ -8,6 +8,7 @@ variables:
     - source_paths
     - target_doc_exists
     - target_doc_path
+    - update_pass
     - update_pass_kind
   writes:
     - name: update_pass
