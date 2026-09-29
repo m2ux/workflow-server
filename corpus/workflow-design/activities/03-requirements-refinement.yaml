@@ -122,6 +122,8 @@ steps:
         bare_filename: design-specification.md
         artifact_content: design_specification
         target_dir: planning_folder_path
+      outputs:
+        written_artifact: specification_path
   - kind: checkpoint
     id: spec-confirmed
     message: "Full specification across the design dimensions ({design_dimensions}): [design specification]({specification_path}). Stakeholder attestation at Gate 2."

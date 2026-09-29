@@ -2124,12 +2124,6 @@
       "op": "no-domain-work",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/workflow-design/techniques/TECHNIQUE.md:70",
-      "op": "verify-artifact-conforms",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
     }
   ]
 }

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -12,10 +12,6 @@ Independent High-tier audit-finding verification before remediation.
 ### verified_findings
 
 The recalibrated finding set after verification — each High finding marked confirmed, downgraded, or withdrawn with its re-derivation evidence, and each surviving Medium finding spot-confirmed.
-
-### verified_findings_path
-
-Absolute path to the persisted verified-findings artifact.
 
 #### artifact
 
@@ -39,10 +35,6 @@ Absolute path to the persisted verified-findings artifact.
 ### 3. Confirm Medium Findings
 
 - Run a lighter confirmation pass over surviving Medium findings: spot-confirm that the cited construct exists and the finding class is right. No full adversarial re-derivation.
-
-### 4. Persist Verified Findings
-
-- Persist `{verified_findings}` following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{verified_findings_path}`
 
 ## Rules
 

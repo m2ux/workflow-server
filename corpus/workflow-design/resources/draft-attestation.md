@@ -22,7 +22,7 @@ Batch review surface before quality-review / commit. Answers: is every drafted b
 |-------|------|--------|-----------|
 | {construct} | `path` | added \| modified \| unchanged | one line |
 
-**draft_attestation:** [One line: all blocks intentional / flags for revision.]
+**Closing attestation:** [One line: all blocks intentional / flags for revision.]
 ```
 
 ## Rules

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -39,10 +39,6 @@ The per-file delta for `{current_file}` following the [Drafting Plan Guide](../r
 
 `human`
 
-### drafting_plan_path
-
-Absolute path to the persisted drafting-plan artifact for the current file.
-
 ## Protocol
 
 ### 1. Assemble Drafting Plan
@@ -50,8 +46,3 @@ Absolute path to the persisted drafting-plan artifact for the current file.
 - Assemble `{drafting_plan}` for `{current_file}` following the [Drafting Plan Guide](../resources/drafting-plan.md#template)
 - When `{operation_type}` is `update`, frame against existing content
 - Drafting and per-file schema validation are out of scope (see [yaml-authoring](yaml-authoring.md))
-
-### 2. Persist Drafting Plan
-
-- Persist `{drafting_plan}` (updated in place each file iteration) per [drafting-plan](../resources/drafting-plan.md#template)
-- Capture the written location as `{drafting_plan_path}`

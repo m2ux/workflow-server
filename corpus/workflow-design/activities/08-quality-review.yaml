@@ -96,10 +96,6 @@ variables:
       type: array
       description: "The recalibrated finding set: each High marked confirmed, downgraded or withdrawn with the evidence of its re-derivation, and each surviving Medium spot-confirmed. Only entries in this set are eligible to drive a fix."
       defaultValue: []
-    - name: verified_findings_path
-      type: string
-      description: Absolute path to the persisted verified-findings artifact.
-      defaultValue: ""
 required: true
 steps:
   - kind: loop
@@ -322,6 +318,17 @@ steps:
       - kind: technique
         id: re-audit-rule-enforcement
         technique: audit-rule-enforcement
+      - kind: technique
+        id: refresh-enforcement-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: enforcement-findings.md
+            artifact_content: enforcement_findings
+            target_dir: planning_folder_path
+          outputs:
+            written_artifact: enforcement_findings_path
+        when: enforcement_finding_count > 0
       - kind: action
         id: reassess-audit-fixes
         actions:

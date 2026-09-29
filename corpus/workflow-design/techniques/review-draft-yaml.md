@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -21,11 +21,7 @@ The classified technique — `create` or `update`.
 
 ### reviewed_blocks
 
-The block-indexed review table following the [Draft Attestation Guide](../resources/draft-attestation.md#template).
-
-### draft_attestation_path
-
-Absolute path to the written draft-attestation artifact (includes the block-indexed review).
+The block-indexed review table following the [Draft Attestation Guide](../resources/draft-attestation.md#template), closed by the template's attestation line recording that every drafted block is understood and intentional.
 
 #### artifact
 
@@ -35,10 +31,6 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 
 `human`
 
-#### draft_attestation
-
-Closing line of the [draft-attestation](../resources/draft-attestation.md#template) template, recording that every drafted block has been reviewed and is understood and intentional.
-
 ## Protocol
 
 ### 1. Index Blocks
@@ -46,11 +38,7 @@ Closing line of the [draft-attestation](../resources/draft-attestation.md#templa
 - Build `{reviewed_blocks}` from `{drafted_files}` following the [Draft Attestation Guide](../resources/draft-attestation.md#template)
 - When `{operation_type}` is `update`, mark each block added / modified / unchanged by comparing against the committed `{target_workflow_id}`; when `create`, mark every block new
 
-### 2. Persist Reviewed Blocks
+### 2. Record Draft Attestation
 
-- Persist `{reviewed_blocks}` per [draft-attestation](../resources/draft-attestation.md#template); capture the written location as `{draft_attestation_path}`
-
-### 3. Record Draft Attestation
-
-- Record `{draft_attestation_path.draft_attestation}` in that artifact once every block is marked understood and intentional; flag any block marked for revision
+- Close `{reviewed_blocks}` with the template's attestation line once every block is marked understood and intentional; flag any block marked for revision
 - Binding-fidelity pass: for each drafted activity step that persists a planning artifact, confirm `manage-artifacts::write-artifact` (or equivalent) is a bound `steps[]` entry — not protocol-only prose — and that every technique input marked required has a producer in the same activity (or an explicit step-binding). Flag gaps for revision before attestation closes.

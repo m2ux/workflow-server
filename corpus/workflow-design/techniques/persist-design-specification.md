@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -15,9 +15,9 @@ Durable planning-folder review surface for the accumulated design specification.
 
 ## Outputs
 
-### specification_path
+### design_specification
 
-Absolute path to the written design-specification artifact.
+The design specification for this run: purpose and the dimension deltas, at the shape [Template](../resources/design-specification.md#template) declares.
 
 #### artifact
 
@@ -31,15 +31,10 @@ Absolute path to the written design-specification artifact.
 
 ### 1. Assemble Specification
 
-- Assemble the specification from `{accumulated_design}` when bound (create elicitation or update synthesis); otherwise from the elicited dimensions that ran for this mode
+- Assemble `{design_specification}` from `{accumulated_design}` when bound (create elicitation or update synthesis); otherwise from the elicited dimensions that ran for this mode
 - Include only facts this artifact homes per the `canonical-home-map` and the sections it carries, [Template](../resources/design-specification.md#template) and [Rules](../resources/design-specification.md#rules) — purpose and dimension deltas
 - Link assumptions, impact, inventory, and other non-home content; do not restate them
 
-### 2. Persist Specification Artifact
-
-- Persist it following [design-specification](../resources/design-specification.md#template)
-- Capture the written location as `{specification_path}`
-
-### 3. Mirror Decisions To README
+### 2. Mirror Decisions To README
 
 - Mirror key decisions into the planning README Design Decisions section as links to this artifact (`single-source-and-link` — do not restate the full spec in the README)

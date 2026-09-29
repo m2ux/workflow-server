@@ -107,19 +107,19 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
 | [`intake-classification`](./techniques/intake-classification.md) | Classify create/update/review, land gap flags + `{headless_mode}`, set mode + target | Intake and Context |
-| [`context-loading`](./techniques/context-loading.md) | Load schemas, survey references; persist format-conventions + applicable-constructs in create mode | Intake and Context |
+| [`context-loading`](./techniques/context-loading.md) | Load schemas, survey references; assemble format-conventions + applicable-constructs in create and update modes | Intake and Context |
 | [`derive-design-dimensions`](./techniques/derive-design-dimensions.md) | Derive the ordered design dimensions to elicit, per mode | Requirements Refinement |
 | [`prepare-dimension`](./techniques/prepare-dimension.md) | Assemble elicitation questions for one design dimension | Requirements Refinement |
 | [`capture-dimension`](./techniques/capture-dimension.md) | Record answers for one design dimension and fold into accumulated design | Requirements Refinement |
 | [`synthesize-update-specification`](./techniques/synthesize-update-specification.md) | Assemble the update-mode specification from changed dimensions only (no per-dimension elicitation) | Requirements Refinement |
-| [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review | Requirements Refinement |
+| [`persist-design-specification`](./techniques/persist-design-specification.md) | Assemble the elicited design specification for linked review | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Resolve audit-resolvable assumptions and emit `has_resolvable_assumptions` for while-loop convergence | Requirements Refinement |
-| [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison | Pattern Analysis |
+| [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows into the comparison | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, exits and graph, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the file manifest with lean structural design and drafting order | Scope and Draft |
 | [`prepare-workflow-branch`](./techniques/prepare-workflow-branch.md) | Ensure dedicated `{target_path}` worktree on `{workflow_branch}` (compose WP create-worktree) | Scope and Draft |
-| [`assemble-file-approach`](./techniques/assemble-file-approach.md) | Assemble and persist the per-file drafting plan | Scope and Draft |
-| [`review-drafted-file`](./techniques/review-drafted-file.md) | Assemble and persist a per-file review note (including update-mode removals) | Scope and Draft |
+| [`assemble-file-approach`](./techniques/assemble-file-approach.md) | Assemble the per-file drafting plan | Scope and Draft |
+| [`review-drafted-file`](./techniques/review-drafted-file.md) | Assemble a per-file review note (including update-mode removals) | Scope and Draft |
 | [`yaml-authoring`](./techniques/yaml-authoring.md) | Author syntactically valid YAML files that pass schema validation | Scope and Draft |
 | meta [`verify-artifact-conforms`](/meta/techniques/verify-artifact-conforms.md) | Verify planning artifacts against the design canonical-home map and the guide map, and fix drift in place | Scope and Draft |
 | [`audit-expressiveness`](./techniques/audit-expressiveness.md) | Walk prose against the schema construct inventory | Quality Review (create/update), Post-Update |

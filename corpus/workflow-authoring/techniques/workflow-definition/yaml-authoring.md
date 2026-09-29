@@ -78,4 +78,4 @@ Where the bag and a technique name one value differently, the caller's bag varia
 
 ### a-foreign-technique-is-qualified
 
-A technique from any other group or namespace, the shared `meta` layer included, is written qualified (`gitnexus::analyze`, `review-assumptions::reconcile`).
+A technique from any other group or namespace, a `meta` group included, is written qualified (`gitnexus::analyze`, `review-assumptions::reconcile`). A standalone `meta` technique is written bare (`verify-artifact-conforms`): a bare name resolves in the referring workflow, then in `meta`.

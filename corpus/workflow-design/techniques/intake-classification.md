@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.10.0
+  version: 2.11.0
 ---
 
 ## Capability
@@ -82,18 +82,14 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ### 4. Build Structural Inventory
 
-- Build `{structural_inventory}` for each target following the [Structural Inventory Guide](../resources/structural-inventory.md#template)
-
-### 5. Persist Structural Inventory
-
-- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` per [structural-inventory](../resources/structural-inventory.md#template)
+- When `{operation_type}` is `update` or `review`: build `{structural_inventory}` for each target following the [Structural Inventory Guide](../resources/structural-inventory.md#template)
 - When create mode: build no inventory, there being no existing definition to snapshot
 
-### 6. Parse Change Request
+### 5. Parse Change Request
 
 - When `{operation_type}` is `update`, categorize the change request derived from the `{user_description}` into `{change_category}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md))
 
-### 7. Summarize Design Intent
+### 6. Summarize Design Intent
 
 - Accept the `{user_description}` and summarize key design intent into `{$design_intent}` — purpose, domain, rough activity count, and constraints
 

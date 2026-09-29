@@ -27,7 +27,7 @@ Update-mode decision surface. Answers: what is touched, is integrity intact, and
 
 [2–3 sentences: kind of change; topology intact or not.]
 
-**removal_count:** N
+**Removals inventoried:** N
 
 ---
 
@@ -65,7 +65,7 @@ Update-mode decision surface. Answers: what is touched, is integrity intact, and
 
 ## 3. Removals inventory
 
-[Omit if none — the Summary's removal_count of 0 logs the null.]
+[Omit if none — a Summary count of 0 removals inventoried logs the null.]
 
 | # | Location | Removed | Preserved |
 |---|----------|---------|-----------|

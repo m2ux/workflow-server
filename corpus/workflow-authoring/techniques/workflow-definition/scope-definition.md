@@ -21,11 +21,23 @@ The change brief for this run — purpose and the dimensions the change alters.
 
 Whether the inventoried content removals are approved. False means the manifest preserves the flagged content instead of removing it.
 
+### target_path
+
+Absolute path of the run's edit worktree, where create and update edits land.
+
+### workflow_id
+
+The id of the workflow being created or updated.
+
 ## Outputs
 
 ### scope_manifest
 
-The complete file manifest — one entry per file to create, modify or remove, each with its full path under the target workflow directory, its action, its kind, and a one-line statement of the change. Carries the structural design and drafting order sections alongside the table. Shaped by [Template](../../resources/scope-manifest.md#template).
+The complete file manifest — one entry per file to create, modify or remove, each with its full path under the target workflow directory, its action, its kind, and a one-line statement of the change.
+
+### scope_manifest_report
+
+The rendered scope manifest: the file table from `{scope_manifest}` with the structural design and drafting order sections. Shaped by [Template](../../resources/scope-manifest.md#template).
 
 #### artifact
 
@@ -62,7 +74,7 @@ Number of entries in `{scope_manifest}`.
 
 ### 5. Compose the Manifest
 
-- Fold the table and both sections into `{scope_manifest}` at the shape [Template](../../resources/scope-manifest.md#template) declares
+- Render the file table from `{scope_manifest}` with both sections into `{scope_manifest_report}` at the shape [Template](../../resources/scope-manifest.md#template) declares
 - Link `{change_brief}` for purpose and the impact classification for removals rather than restating either
 
 ## Rules

@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.8.0
+version: 1.9.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 variables:
@@ -90,7 +90,7 @@ steps:
       name: work-package::manage-artifacts::write-artifact
       inputs:
         bare_filename: scope-manifest.md
-        artifact_content: scope_manifest
+        artifact_content: scope_manifest_report
       outputs:
         written_artifact: scope_manifest_path
     when: operation_type != 'review'

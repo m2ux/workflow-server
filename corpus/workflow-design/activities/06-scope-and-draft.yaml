@@ -129,7 +129,7 @@ steps:
       name: work-package::manage-artifacts::write-artifact
       inputs:
         bare_filename: scope-manifest.md
-        artifact_content: scope_manifest
+        artifact_content: scope_manifest_report
         target_dir: planning_folder_path
       outputs:
         written_artifact: scope_manifest_path
@@ -182,6 +182,8 @@ steps:
             bare_filename: drafting-plan.md
             artifact_content: drafting_plan
             target_dir: planning_folder_path
+          outputs:
+            written_artifact: drafting_plan_path
       - kind: checkpoint
         id: file-approach-confirmed
         condition:
@@ -226,6 +228,8 @@ steps:
             bare_filename: file-review-note.md
             artifact_content: file_review_note
             target_dir: planning_folder_path
+          outputs:
+            written_artifact: file_review_note_path
       - kind: checkpoint
         id: file-review
         condition:
@@ -313,6 +317,8 @@ steps:
         bare_filename: draft-attestation.md
         artifact_content: reviewed_blocks
         target_dir: planning_folder_path
+      outputs:
+        written_artifact: draft_attestation_path
   - kind: technique
     id: verify-artifact-conformance
     technique:

@@ -15,6 +15,13 @@ variables:
       type: string
       description: Absolute path to the persisted impact-analysis artifact.
       defaultValue: ""
+    - name: impact_correction
+      type: string
+      description: The reader's corrections to the impact scope, from each `revise-impact` reply in order. Absent until the reader revises the scope.
+    - name: impact_revision_requested
+      type: boolean
+      description: True between the reader asking to revise the impact scope and that reply's correction landing in `impact_correction`.
+      defaultValue: false
     - name: preservation_required
       type: boolean
       description: Whether the reader asked for flagged content to survive the change.
@@ -65,8 +72,10 @@ steps:
             preservation_required: false
       - id: revise-impact
         label: Revise impact scope
-        description: Impact scope is incomplete or over-inclusive.
+        description: Impact scope is incomplete or over-inclusive, and the reply carries the correction.
         effect:
+          setVariable:
+            impact_revision_requested: true
           exit: revise
       - id: preserve
         label: Preserve some flagged content
@@ -74,11 +83,20 @@ steps:
         effect:
           setVariable:
             preservation_required: true
+  - kind: action
+    id: record-impact-correction
+    when: impact_revision_requested == true
+    actions:
+      - action: set
+        target: impact_correction
+        message: The correction the reader's reply to the impact review carries, appended to any earlier correction, so the next impact pass reads it from the bag.
+      - action: set
+        target: impact_revision_requested
+        value: false
 exits:
   - id: done
     isDefault: true
   - id: revise
-    immediate: true
 outcome:
   - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
   - Exit bindings and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring

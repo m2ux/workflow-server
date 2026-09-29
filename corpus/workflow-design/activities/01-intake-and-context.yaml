@@ -11,10 +11,6 @@ variables:
     - target_path
     - update_seeded_from_review
   writes:
-    - name: applicable_constructs_path
-      type: string
-      description: Absolute path to the persisted applicable-constructs artifact.
-      defaultValue: ""
     - name: change_category
       type: string
       description: "In update mode, the categorised change request from `{user_description}`: one or more of the categories in Change Categories. Unset otherwise."
@@ -22,10 +18,6 @@ variables:
       type: boolean
       description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification.
       defaultValue: true
-    - name: format_conventions_path
-      type: string
-      description: Absolute path to the persisted format-conventions artifact.
-      defaultValue: ""
     - name: format_literacy_confirmed
       type: boolean
       description: Whether YAML format understanding has been demonstrated for this session.
@@ -204,7 +196,7 @@ steps:
         bare_filename: applicable-constructs.md
         artifact_content: applicable_constructs
         target_dir: planning_folder_path
-    when: operation_type == 'create'
+    when: operation_type != 'review'
   - kind: technique
     id: present-problem-overview
     technique:

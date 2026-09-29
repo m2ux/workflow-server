@@ -7,11 +7,17 @@ metadata:
 
 Schema-system and YAML-convention literacy for the design intent.
 
+## Inputs
+
+### operation_type
+
+The classified operation — `create`, `update` or `review`. Selects whether the literacy artifacts are assembled.
+
 ## Outputs
 
-### format_conventions_path
+### format_conventions
 
-Absolute path to the written format-conventions artifact (create mode only).
+The format-conventions summary for this change, at the shape [Template](../resources/format-conventions.md#template) declares. Assembled on a create or update run; absent on a review run.
 
 #### artifact
 
@@ -21,9 +27,9 @@ Absolute path to the written format-conventions artifact (create mode only).
 
 `human`
 
-### applicable_constructs_path
+### applicable_constructs
 
-Absolute path to the written applicable-constructs artifact (create mode only).
+The applicable-constructs list for this change, at the shape [Template](../resources/applicable-constructs.md#template) declares. Assembled on a create or update run; absent on a review run.
 
 #### artifact
 
@@ -55,12 +61,10 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 - Cross-reference the schema field tables to identify applicable constructs with correct field names, types, required-property cross-checks, and reference-workflow examples
 
-### 6. Persist Format Conventions
+### 6. Assemble Format Conventions
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the format-conventions summary per [format-conventions](../resources/format-conventions.md#template) and its [Rules](../resources/format-conventions.md#rules); capture `{format_conventions_path}`
-- Skip when `{operation_type}` is `update` or `review`
+- When `{operation_type}` is `create` or `update`: assemble `{format_conventions}` at the shape [Template](../resources/format-conventions.md#template) declares, under its [Rules](../resources/format-conventions.md#rules)
 
-### 7. Persist Applicable Constructs
+### 7. Assemble Applicable Constructs
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the applicable-constructs list per [applicable-constructs](../resources/applicable-constructs.md#template) and its [Rules](../resources/applicable-constructs.md#rules); capture `{applicable_constructs_path}`
-- Skip when `{operation_type}` is `update` or `review`
+- When `{operation_type}` is `create` or `update`: assemble `{applicable_constructs}` at the shape [Template](../resources/applicable-constructs.md#template) declares, under its [Rules](../resources/applicable-constructs.md#rules)

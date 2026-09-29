@@ -42,4 +42,4 @@ Count of entries in `{enforcement_findings}`.
 ### 3. Assemble Findings
 
 - Set `{enforcement_finding_count}` to the number of findings
-- Assemble `{enforcement_findings}` at the shape the [Findings Satellite Guide](../resources/findings-satellite.md#template) declares
+- Assemble `{enforcement_findings}` at the shape [Template](../resources/findings-satellite.md#template) declares

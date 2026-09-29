@@ -25,7 +25,11 @@ The id of the workflow being created or updated.
 
 ### scope_manifest
 
-The complete file manifest: one entry per file to create/modify/remove with its full path, action, type, and one-line description. Carries the structural design and drafting order sections alongside the table.
+The complete file manifest: one entry per file to create/modify/remove with its full path, action, type, and one-line description.
+
+### scope_manifest_report
+
+The rendered scope manifest: the file table from `{scope_manifest}` with the structural design and drafting order sections, at the shape [Template](../resources/scope-manifest.md#template) declares.
 
 #### artifact
 
@@ -62,7 +66,7 @@ Number of files in `{scope_manifest}`.
 
 - Assemble `{$drafting_order}` for the Drafting order section of [scope-manifest](../resources/scope-manifest.md#template): drafting order (`workflow.yaml`, activities, techniques, resources, README) with a one-line rationale per tier
 
-### 6. Compose Scope Manifest
+### 6. Compose Scope Manifest Report
 
-- Fold the file table, `{structural_design}` and `{drafting_order}` into `{scope_manifest}` at the shape [scope-manifest](../resources/scope-manifest.md#template) declares
+- Render the file table from `{scope_manifest}` with `{$structural_design}` and `{$drafting_order}` into `{scope_manifest_report}` at the shape [Template](../resources/scope-manifest.md#template) declares
 - Own facts only: link impact analysis and design specification rather than restating them
