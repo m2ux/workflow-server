@@ -81,12 +81,19 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Succinct items.**
   Each Problem and Proposal item is one or two sentences. Several things go in a bulleted list, with sub-bullets as needed, never packed into one sentence.
 - **Bold leads.**
-  A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
+  - A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
 
-  ```markdown
-  - **Length is the only check on entry.**
-    The data source decodes the key and never checks its value.
-  ```
+    ```markdown
+    - **Length is the only check on entry.**
+      The data source decodes the key and never checks its value.
+    ```
+
+  - A bulleted item with sub-bullets keeps the line introducing them on its bold statement's line:
+
+    ```markdown
+    - **Framing is undocumented.** Nothing describes:
+      - the runtime's extrinsic type;
+    ```
 - **Next number.**
   Find the next initiative number with [List initiative titles](references/commands.md#list-initiative-titles).
 - **Labels.**
