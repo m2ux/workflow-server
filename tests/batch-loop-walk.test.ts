@@ -36,20 +36,26 @@ import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
 /**
  * The body step ids that call `next_activity`, and so move the session pointer.
  *
+ * `enter-activity` makes no call when the session already stands on the activity it carries — the
+ * convergence a fan entered — so the walk logs an advance only for the entries that make one.
  * `retire-branch` also calls it, once per branch, but it sits inside the `branch-retirement` forEach
  * rather than in the body — this walk reads the body only, so a branch retirement is one body step
  * whose inner advances are outside what these scenarios model.
  */
 const ADVANCING_STEPS = ['continue-batched-worker', 'enter-activity', 'enter-fan'];
 
+/** The destination an activity routes to when it ends the run — through an exit, or for want of one. */
+const TERMINAL = '__terminal__';
+
 interface Envelope {
   /**
    * `none` is not a result type the corpus declares — it is this file's way of scripting a worker that
-   * returned no accepted envelope at all, which the two declared types cannot express and which is the
-   * case every worker-producing technique carries a recovery branch for.
+   * returned no accepted envelope at all, which the declared types cannot express and which is the
+   * case every worker-producing technique carries a recovery branch for. `workflow_complete` is never
+   * scripted: the entry onto `__terminal__` composes it, since no worker runs there.
    */
-  result_type: 'activity_complete' | 'checkpoint_pending' | 'none';
-  next_activity_id?: string | Record<string, unknown> | null;
+  result_type: 'activity_complete' | 'checkpoint_pending' | 'workflow_complete' | 'none';
+  next_activity_id?: string | Record<string, unknown>;
   next_activity_fans?: boolean;
   batch_may_continue?: boolean;
   steps_completed?: unknown[];
@@ -62,19 +68,23 @@ type Bag = Record<string, unknown>;
  *
  * - `continue-batched-worker` → `workflow-engine::continue-batch`: advances the pointer, then returns
  *   an envelope and the identity now holding the activity — the held one, or a replacement it spawned.
- * - `enter-activity` → the run's `enter_activity` input: advances the pointer, mints an identity,
- *   returns an envelope.
+ * - `enter-activity` → the run's `enter_activity` input: advances the pointer unless
+ *   `activity_entered` says the session already stands on the activity, mints an identity named for
+ *   that activity, and returns an envelope. Entering `__terminal__` completes the session: it returns
+ *   the `workflow_complete` envelope and mints no identity.
  * - `enter-fan` → `fan::enter-fan`: one call opens every branch and reports the activity they
  *   converge on.
  * - `spawn-branches` → `fan::spawn-branches`: emits the batch and collects the returns. No gate
  *   reads what it produces.
- * - `branch-retirement` → the forEach over `branch_list`, whose `fan::retire-branch` advances once
- *   per branch. Its inner steps are outside this walk, which reads the body only.
- * - `persist-the-fan` → `workflow-engine::commit-and-persist` over the branch list: the fan's one
- *   commit, at convergence.
+ * - `branch-retirement` → the forEach over `branch_activities`, whose `fan::retire-branch` advances
+ *   once per branch, the last retirement entering the convergence activity. Its inner steps are
+ *   outside this walk, which reads the body only.
+ * - `persist-the-fan` → `workflow-engine::commit-and-persist` over the branch activities: the fan's
+ *   one commit, at convergence.
  * - `resume-yielded-worker` → `workflow-engine::resume-worker`: returns a fresh envelope under the
  *   identity already held. It does NOT touch the pointer.
- * - `commit-activity-artifacts`, `advance-activity`, `release-spent-worker`: as the YAML declares.
+ * - `spend-entered-activity`, `end-walk`, `advance-past-fan`, `retire-fan-envelope`,
+ *   `commit-activity-artifacts`, `advance-activity`, `release-spent-worker`: as the YAML declares.
  */
 const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) => void> = {
   'continue-batched-worker': (bag, next, log) => {
@@ -84,24 +94,34 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     // walk cannot tell the two apart; the bag is left alone rather than implying it can.
     bag['worker_result'] = next();
   },
-  // Also declares trace_token, which no gate reads.
+  // Also declares trace_tokens, which no gate reads.
   'enter-activity': (bag, next, log) => {
-    log.push('advance');
-    bag['worker_agent_id'] = 'worker-minted';
+    const activity = bag['current_activity'] as string;
+    if (activity === TERMINAL) {
+      // The advance onto `__terminal__` completes the session, and no worker runs there.
+      log.push('terminal');
+      bag['worker_result'] = { result_type: 'workflow_complete' };
+      return;
+    }
+    if (!bag['activity_entered']) log.push('advance');
+    bag['worker_agent_id'] = `worker:${activity}`;
     bag['worker_result'] = next();
   },
+  'spend-entered-activity': (bag) => { bag['activity_entered'] = false; },
+  'end-walk': (bag) => { bag['current_activity'] = null; },
   'enter-fan': (bag, _next, log) => {
     log.push('advance');
     // One call opens every branch. Branch envelopes belong to the spawn that follows; this walk
     // only sees the convergence the barrier reported.
     bag['fan_convergence_activity'] = 'gather';
-    bag['branch_list'] = ['probe-unit#0', 'probe-unit#1'];
+    bag['branch_activities'] = ['probe-unit#0', 'probe-unit#1'];
   },
   'spawn-branches': () => { /* returns branch_envelopes; no gate reads it */ },
   'branch-retirement': () => { /* the forEach whose retirements advance, one per branch */ },
   'persist-the-fan': (_bag, _next, log) => { log.push('commit'); },
   'advance-past-fan': (bag) => {
-    bag['current_activity'] = (bag['fan_convergence_activity'] as string | undefined) ?? null;
+    bag['current_activity'] = bag['fan_convergence_activity'];
+    bag['activity_entered'] = true;
   },
   'retire-fan-envelope': (bag) => {
     bag['worker_result'] = null;
@@ -127,7 +147,7 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
   },
   'commit-activity-artifacts': (_bag, _next, log) => { log.push('commit'); },
   'advance-activity': (bag) => {
-    bag['current_activity'] = (bag['worker_result'] as Envelope).next_activity_id ?? null;
+    bag['current_activity'] = (bag['worker_result'] as Envelope).next_activity_id;
   },
   'release-spent-worker': (bag) => { bag['worker_agent_id'] = null; },
 };
@@ -182,8 +202,13 @@ function loopHolds(def: LoopDef, bag: Bag): boolean {
 interface Walk {
   /** Step ids that fired, per iteration. */
   iterations: string[][];
-  /** `advance` and `commit` markers in the order they occurred across the whole walk. */
+  /**
+   * `advance`, `commit` and `terminal` markers in the order they occurred across the whole walk.
+   * `terminal` is the advance onto `__terminal__`, which completes the session and enters no activity.
+   */
   log: string[];
+  /** Every identity a step wrote into the bag, in the order they appeared. */
+  minted: string[];
   /** The bag when the loop exited. */
   bag: Bag;
   /** Why the walk stopped. */
@@ -203,6 +228,7 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
   const queue = [...envelopes];
   const iterations: string[][] = [];
   const log: string[] = [];
+  const minted: string[] = [];
   let exhausted = false;
 
   const next = (): Envelope => {
@@ -220,25 +246,28 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
     throw new Error(`the loop declares no usable iteration ceiling (got ${String(ceiling)})`);
   }
   for (let i = 0; i < Math.min(ceiling, WALK_CAP); i++) {
-    if (!loopHolds(def, bag)) return { iterations, log, bag, stopped: 'condition' };
+    if (!loopHolds(def, bag)) return { iterations, log, minted, bag, stopped: 'condition' };
     const fired: string[] = [];
     try {
       for (const step of body) {
         if (step.when !== undefined && !evaluateWhenExpression(step.when, bag)) continue;
         fired.push(step.id);
+        const held = bag['worker_agent_id'];
         EFFECTS[step.id]?.(bag, next, log);
+        const holding = bag['worker_agent_id'];
+        if (typeof holding === 'string' && holding !== held) minted.push(holding);
       }
     } catch {
       iterations.push(fired);
-      return { iterations, log, bag, stopped: 'envelopes-exhausted' };
+      return { iterations, log, minted, bag, stopped: 'envelopes-exhausted' };
     }
     iterations.push(fired);
-    if (exhausted) return { iterations, log, bag, stopped: 'envelopes-exhausted' };
+    if (exhausted) return { iterations, log, minted, bag, stopped: 'envelopes-exhausted' };
   }
-  return { iterations, log, bag, stopped: 'walk-cap' };
+  return { iterations, log, minted, bag, stopped: 'walk-cap' };
 }
 
-const complete = (next: string | Record<string, unknown> | null, room = true, fans = false): Envelope =>
+const complete = (next: string | Record<string, unknown>, room = true, fans = false): Envelope =>
   ({ result_type: 'activity_complete', next_activity_id: next, next_activity_fans: fans, batch_may_continue: room, steps_completed: [] });
 const gate = (): Envelope => ({ result_type: 'checkpoint_pending' });
 /** A continuation that returned no accepted envelope — the context ended, or answered with neither type. */
@@ -315,7 +344,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // tuned to this file's longest scenario would certify a frame that truncates real batches.
     expect(l.maxIterations ?? 0).toBeGreaterThan(longestWorkflowActivityCount());
 
-    // The body's one pointer write lands on the variable the continuation test reads, carrying the id the
+    // The advance's pointer write lands on the variable the continuation test reads, carrying the id the
     // worker returned. Either half retargeted and the pointer never moves, so the loop runs to its ceiling.
     const advanceWrite = l.steps.find((s) => s.id === 'advance-activity')?.actions?.find((a) => a.action === 'set');
     expect(advanceWrite?.target).toBe(l.continueWhile?.variable);
@@ -333,12 +362,12 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // walked a step of it; the alternation of advance and commit across the walk is what pins the
     // one-each half.
     const scenarios: Record<string, Envelope[]> = {
-      'clean batch of three': [complete('plan-prepare'), complete('assumptions-review'), complete(null)],
-      'gate on the first activity': [gate(), complete('plan-prepare'), complete(null)],
-      'gate on the second': [complete('plan-prepare'), gate(), complete(null)],
-      'batch spent after one': [complete('plan-prepare', false), complete('assumptions-review'), complete(null)],
-      'terminal with room left': [complete(null, true)],
-      'two gates on one activity': [gate(), gate(), complete(null)],
+      'clean batch of three': [complete('plan-prepare'), complete('assumptions-review'), complete(TERMINAL)],
+      'gate on the first activity': [gate(), complete('plan-prepare'), complete(TERMINAL)],
+      'gate on the second': [complete('plan-prepare'), gate(), complete(TERMINAL)],
+      'batch spent after one': [complete('plan-prepare', false), complete('assumptions-review'), complete(TERMINAL)],
+      'terminal with room left': [complete(TERMINAL, true)],
+      'two gates on one activity': [gate(), gate(), complete(TERMINAL)],
     };
     for (const [name, envelopes] of Object.entries(scenarios)) {
       const result = walk(envelopes);
@@ -346,16 +375,20 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
         const advancing = fired.filter((id) => ADVANCING_STEPS.includes(id));
         expect(advancing.length, `${name}, iteration ${index + 1}: ${fired.join(' → ')}`).toBeLessThanOrEqual(1);
       }
-      // A runaway would otherwise pass every assertion below: the advance/commit counts stay equal
-      // per iteration, and the worker check sits behind `stopped === 'condition'` and would skip.
-      expect(result.stopped, `${name}: stopped`).not.toBe('walk-cap');
+      // Every scenario ends on the entry onto `__terminal__`, which ends the loop. A runaway would
+      // otherwise pass every count below, since the advance/commit counts stay equal per iteration.
+      expect(result.stopped, `${name}: stopped`).toBe('condition');
       // One advance per activity walked, which is one commit per activity walked.
       const advances = result.log.filter((e) => e === 'advance').length;
       const commits = result.log.filter((e) => e === 'commit').length;
       expect(advances, `${name}: advances`).toBe(commits);
-      // And the walk always has a worker on the current activity — never neither continuing nor
-      // dispatching while the loop is still running.
-      if (result.stopped === 'condition') expect(result.bag['worker_agent_id']).toBeNull();
+      // And one advance onto `__terminal__`, last, which completes the session and commits nothing.
+      expect(result.log.filter((e) => e === 'terminal'), `${name}: terminal`).toHaveLength(1);
+      expect(result.log.at(-1), `${name}: last`).toBe('terminal');
+      // The walk ends holding no identity: the last activity's worker is released, and none is minted
+      // for `__terminal__`.
+      expect(result.bag['worker_agent_id'], `${name}: identity`).toBeNull();
+      expect(result.minted, `${name}: minted`).not.toContain(`worker:${TERMINAL}`);
     }
   });
 
@@ -364,34 +397,41 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // Without a recovery branch the bag stays on `checkpoint_pending`: every gate step fires a second
     // time, and the orchestrator asks the server to present a checkpoint it has already resolved — which
     // the server refuses. The loop can then neither advance nor dispatch.
-    const result = walk([gate(), gone(), complete(null)]);
+    const result = walk([gate(), gone(), complete(TERMINAL)]);
 
     expect(result.stopped).toBe('condition');
     // The gate is presented once. A second presentation is the stall.
     expect(result.log.filter((e) => e === 'commit')).toHaveLength(1);
     expect(result.iterations.flat().filter((id) => id === 'present-yielded-checkpoint')).toHaveLength(1);
     // The activity still commits and advances exactly once, so the recovery costs one context, not the
-    // activity — and the identity is released at the end like any other completed walk.
-    expect(result.log).toEqual(['advance', 'commit']);
+    // activity — and the walk ends on `__terminal__` holding no identity, like any other completed walk.
+    expect(result.log).toEqual(['advance', 'commit', 'terminal']);
+    expect(result.minted).toEqual(['worker:implementation-analysis', 'worker-replacement']);
     expect(result.bag['worker_agent_id']).toBeNull();
   });
 
-  it('walks a clean batch of three as one dispatch and two continuations', () => {
-    const result = walk([complete('plan-prepare'), complete('assumptions-review'), complete(null)]);
+  it('walks a clean batch of three as one dispatch and two continuations, then enters the terminal', () => {
+    const result = walk([complete('plan-prepare'), complete('assumptions-review'), complete(TERMINAL)]);
 
     expect(result.stopped).toBe('condition');
     expect(result.iterations).toEqual([
       ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
       ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
       ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['enter-activity', 'end-walk'],
     ]);
-    // Every activity commits before the next advance, and the identity is released once, at the end.
-    expect(result.log).toEqual(['advance', 'commit', 'advance', 'commit', 'advance', 'commit']);
+    // Every activity commits before the next advance, the identity is released once, after the last
+    // activity, and the entry onto `__terminal__` is the walk's final advance.
+    expect(result.log).toEqual(['advance', 'commit', 'advance', 'commit', 'advance', 'commit', 'terminal']);
     expect(result.bag['worker_agent_id']).toBeNull();
+    // One identity carries the whole batch. The entry onto `__terminal__` mints none, since no worker
+    // runs there.
+    expect(result.minted).toEqual(['worker:implementation-analysis']);
+    expect(result.minted).not.toContain(`worker:${TERMINAL}`);
   });
 
   it('carries the identity across a gate and continues on the following iteration', () => {
-    const result = walk([gate(), complete('plan-prepare'), complete(null)]);
+    const result = walk([gate(), complete('plan-prepare'), complete(TERMINAL)]);
 
     // The gate iteration presents, responds and resumes — and does NOT commit or advance the pointer,
     // because a gate is not an activity boundary. The resumed envelope then completes the activity in
@@ -410,13 +450,14 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
   });
 
   it('answers two gates on one activity under one identity, committing once', () => {
-    const result = walk([gate(), gate(), complete(null)]);
+    const result = walk([gate(), gate(), complete(TERMINAL)]);
 
     // The second gate takes its own iteration, and that iteration neither dispatches nor continues —
     // the worker is still on the activity it holds, so the pointer must not move. A one-gate walk
-    // finishes in one iteration, so the count is what distinguishes them.
-    expect(result.iterations).toHaveLength(2);
-    expect(walk([gate(), complete(null)]).iterations).toHaveLength(1);
+    // finishes its activity in one iteration, so the count is what distinguishes them; each walk
+    // takes one more iteration to enter `__terminal__`.
+    expect(result.iterations).toHaveLength(3);
+    expect(walk([gate(), complete(TERMINAL)]).iterations).toHaveLength(2);
     expect(result.iterations[1]![0]).toBe('present-yielded-checkpoint');
     expect(result.iterations[1]!.filter((id) => ADVANCING_STEPS.includes(id))).toEqual([]);
     // One activity, one commit — a second gate does not buy a second commit, or a second advance.
@@ -424,30 +465,40 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     expect(result.log.filter((e) => e === 'advance')).toHaveLength(1);
   });
 
-  it('opens a fan by ending the batch, then dispatches the join', () => {
+  it('opens a fan by ending the batch, then dispatches the join without an advance', () => {
     // A source that fans is a completed activity: it commits and releases even when the batch has
-    // room. The next iteration opens the fan; retire clears the envelope so the join is an ordinary
+    // room. The next iteration opens the fan; retire clears the envelope so the join is a fresh
     // dispatch. continue-batch never fires — a fan is not the next activity of this worker.
     //
     // The fan iteration commits once, through `persist-the-fan` rather than through
     // `commit-activity-artifacts`: retiring the envelope precedes that step and empties the result
     // its gate reads, which is what keeps a fan from committing twice.
+    //
+    // The last branch retirement entered the join, so `advance-past-fan` marks it entered and the
+    // join's dispatch carries it without calling `next_activity`. `spend-entered-activity` clears the
+    // mark in that same iteration, so the join's own exit is an ordinary advance.
     const fanDest = { activity: 'probe-unit', over: 'targets', variable: 'probe_target' };
-    const result = walk([complete(fanDest, true, true), complete(null)]);
+    const result = walk([complete(fanDest, true, true), complete(TERMINAL)]);
 
     expect(result.stopped).toBe('condition');
     expect(result.iterations).toEqual([
       ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
       ['enter-fan', 'spawn-branches', 'branch-retirement', 'persist-the-fan', 'advance-past-fan', 'retire-fan-envelope'],
-      ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['enter-activity', 'spend-entered-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['enter-activity', 'end-walk'],
     ]);
     expect(result.iterations.flat().filter((id) => id === 'continue-batched-worker')).toEqual([]);
+    // Two advances: the source's entry and the call that opens the fan. The join's entry adds none —
+    // its commit follows the fan's with no advance between them.
+    expect(result.log).toEqual(['advance', 'commit', 'advance', 'commit', 'commit', 'terminal']);
+    expect(result.minted).toEqual(['worker:implementation-analysis', 'worker:gather']);
+    expect(result.bag['activity_entered']).toBe(false);
     expect(result.bag['current_activity']).toBeNull();
     expect(result.bag['worker_agent_id']).toBeNull();
   });
 
   it('releases a spent batch, so the next activity is dispatched afresh', () => {
-    const result = walk([complete('plan-prepare', false), complete('assumptions-review'), complete(null)]);
+    const result = walk([complete('plan-prepare', false), complete('assumptions-review'), complete(TERMINAL)]);
 
     expect(result.iterations[0]).toContain('release-spent-worker');
     // Released, so the following iteration reaches dispatch rather than continuation.
@@ -455,14 +506,18 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     expect(result.iterations[1]).not.toContain('continue-batched-worker');
   });
 
-  it('stops on the terminal activity without continuing onto a null one', () => {
-    const result = walk([complete(null, true)]);
+  it('stops on the terminal activity by entering it without a worker', () => {
+    const result = walk([complete(TERMINAL, true)]);
 
-    // Room left in the batch, but no next activity. The continuation must not fire on a following
-    // iteration, and the identity must not be left held for a re-entry to continue on.
+    // Room left in the batch, but the activity routes to `__terminal__`. The identity is released, so
+    // the continuation cannot carry the held worker into `__terminal__`, and no identity is left held
+    // for a re-entry to continue on. The next iteration's entry completes the session and ends the walk.
     expect(result.stopped).toBe('condition');
-    expect(result.iterations).toHaveLength(1);
+    expect(result.iterations).toHaveLength(2);
     expect(result.iterations[0]).toContain('release-spent-worker');
+    expect(result.iterations[1]).toEqual(['enter-activity', 'end-walk']);
+    expect(result.bag['worker_result']).toEqual({ result_type: 'workflow_complete' });
+    expect(result.minted).toEqual(['worker:implementation-analysis']);
     expect(result.bag['current_activity']).toBeNull();
     expect(result.bag['worker_agent_id']).toBeNull();
   });
@@ -472,16 +527,19 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // means no 'commit' may follow the 'advance' that moved off its activity — so within each iteration
     // the commit comes after that iteration's advance, and before the next.
     for (const envelopes of [
-      [complete('plan-prepare'), complete('assumptions-review'), complete(null)],
-      [gate(), complete('plan-prepare'), complete(null)],
-      [complete('plan-prepare', false), complete(null)],
+      [complete('plan-prepare'), complete('assumptions-review'), complete(TERMINAL)],
+      [gate(), complete('plan-prepare'), complete(TERMINAL)],
+      [complete('plan-prepare', false), complete(TERMINAL)],
     ]) {
       const { log } = walk(envelopes);
-      // The log alternates advance, commit — one commit for each advance, immediately after it.
-      expect(log.filter((e) => e === 'advance').length).toBe(log.filter((e) => e === 'commit').length);
-      for (let i = 0; i < log.length; i += 2) {
-        expect(log[i]).toBe('advance');
-        expect(log[i + 1]).toBe('commit');
+      // The advance onto `__terminal__` closes the log, after the last activity's commit.
+      expect(log.at(-1)).toBe('terminal');
+      const walked = log.slice(0, -1);
+      // Before it, the log alternates advance, commit — one commit for each advance, immediately after it.
+      expect(walked.filter((e) => e === 'advance').length).toBe(walked.filter((e) => e === 'commit').length);
+      for (let i = 0; i < walked.length; i += 2) {
+        expect(walked[i]).toBe('advance');
+        expect(walked[i + 1]).toBe('commit');
       }
     }
   });
