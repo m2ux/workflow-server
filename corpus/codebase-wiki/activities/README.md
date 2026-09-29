@@ -40,7 +40,7 @@ Definition: [`04-publish.yaml`](./04-publish.yaml). Terminal.
 
 ---
 
-## Transition map
+## Flow
 
 ```
 confirm-scope → build-wiki → lint-wiki → publish

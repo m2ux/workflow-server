@@ -186,7 +186,7 @@ Where an application is still free-form, it is a technique. Where the path is ac
 
 ## 43. A Workflow Borrows Activities
 
-A workflow borrows another workflow's activity file by listing it under `activities:` as `<workflow>/[activities/]…/NN-<id>.yaml`, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). No construct binds or includes one activity inside another; a run of steps several activities share is a routine.
+A workflow borrows another workflow's activity file, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). The reference form is the one the [construct inventory](./schema-construct-inventory.md#compose-or-reuse-activities) states.
 
 ## 44. A Resource Splits for Section Delivery
 

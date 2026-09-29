@@ -15,7 +15,13 @@ Continue execution after the orchestrator resolves a checkpoint.
 
 ### effects
 
-Variable updates carried by the resolved checkpoint.
+The resolved checkpoint's reply.
+
+## Outputs
+
+### selected_exit
+
+The exit the answer selected (only when the `resume_checkpoint` response carries `exit`)
 
 ## Protocol
 
@@ -26,7 +32,10 @@ Variable updates carried by the resolved checkpoint.
 
 ### 2. Apply Effects
 
-- Apply `{effects}`, and the `variables_changed` the response returns, to local state.
-- Where the response carries `exit`, hold `exit.id` as the activity's `selected_exit`. Where `exit.ends_activity` is true, the answer ended the activity at this checkpoint: run none of the remaining steps, and finalize the activity with the steps you ran and that exit.
-- Otherwise continue from the paused step.
+- Apply `{effects}`, and the `variables_changed` the `resume_checkpoint` response returns, to local state.
 
+### 3. Continue Or Finalize
+
+- Where the `resume_checkpoint` response carries `exit`, hold `exit.id` as `{selected_exit}`.
+- Continue from the paused step.
+  > When the response's `exit.ends_activity` is true, the answer ended the activity at this checkpoint: run none of the remaining steps, and finalize the activity with the steps you ran and `{selected_exit}`.

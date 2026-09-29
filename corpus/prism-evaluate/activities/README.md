@@ -6,7 +6,7 @@
 
 A pipeline that classifies a target, plans its dimension-to-lens mappings, runs one analysis per dimension group, consolidates a report, and optionally resolves and applies mitigations.
 
-This file orients. Each activity's steps, checkpoints, conditions, loops and transitions are defined in the YAML linked from its section.
+This file orients. Each activity's steps, checkpoints, conditions, loops and exits are defined in the YAML linked from its section.
 
 ```mermaid
 graph LR

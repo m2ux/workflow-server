@@ -2,7 +2,7 @@
 name: impact-analysis
 description: Creation guide for the impact-analysis planning artifact — classification, integrity verdicts, removals inventory.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 11
 ---
 
@@ -55,7 +55,7 @@ The update-mode decision surface. Answers: what is touched, is topology intact, 
 
 | Check | Verdict |
 |-------|---------|
-| Transitions, entry activity, reachability | Pass / Fail — [one line] |
+| Exits and graph, entry activity, reachability | Pass / Fail — [one line] |
 | Technique and resource references | Pass / Fail — [one line] |
 | Variables, checkpoint effects, step gates | Pass / Fail — [one line] |
 

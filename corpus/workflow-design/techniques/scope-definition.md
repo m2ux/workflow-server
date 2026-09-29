@@ -38,7 +38,7 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 2. Design Folder Structure
 
-- Design the folder layout — `{id}/`, named for the workflow id, with `activities/`, `techniques/`, `resources/`, `routines/` as needed — and the file naming scheme: `NN-<id>.yaml` for activities, whose `id` matches the filename, and kebab-case `.md` for techniques and resources
+- Design the folder layout — `{workflow_id}/`, with `activities/`, `techniques/`, `resources/`, `routines/` as needed — and the file naming scheme: `NN-<id>.yaml` for activities, whose `id` matches the filename, and kebab-case `.md` for techniques and resources
 
 ### 3. Enumerate Files
 
@@ -46,7 +46,7 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 4. Assemble Structural Design
 
-- Assemble `{$structural_design}` for the Structural design section of [scope-manifest](../resources/scope-manifest.md#template): directory tree (or "unchanged" for update), short transition note when topology changes, and a compact pattern-alignment table — not a pattern-comparison essay
+- Assemble `{$structural_design}` for the Structural design section of [scope-manifest](../resources/scope-manifest.md#template): directory tree (or "unchanged" for update), short note on changed graph bindings when topology changes, and a compact pattern-alignment table — not a pattern-comparison essay
 
 ### 5. Assemble Drafting Order
 

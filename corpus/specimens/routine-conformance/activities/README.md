@@ -2,7 +2,7 @@
 
 > Part of the [Routine Conformance Workflow](../README.md)
 
-The authoritative definition of each activity — its steps, technique bindings, routine references, transitions and outcomes — lives in the linked `.yaml` file and is served by `get_activity`. The entries below are orientation only.
+The authoritative definition of each activity — its steps, technique bindings, routine references, exits and outcomes — lives in the linked `.yaml` file and is served by `get_activity`. The entries below are orientation only.
 
 ---
 

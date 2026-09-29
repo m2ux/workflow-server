@@ -36,7 +36,7 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
      - meta/patterns/02-supervisor.yaml
    ```
 
-   An activity routes through the `exits` it declares, and the borrower's `graph` binds every one. A pattern file declaring none ends the run where it is entered; to route onward, copy its step list into a local activity that declares its own exits. A copied `kind: routine` step travels with it and the run it names stays reachable.
+   An activity routes through the `exits` it declares, and the borrower's `graph` binds every one.
 
 2. **Bind your own names.** A technique step takes `{ name, inputs }` deviations and a `kind: routine` step takes its arguments and output bindings at the reference, so a consumer whose bag spells a value differently says so at the site rather than inside the shared run. Read the run's signature off its file under [`meta/routines/`](../../routines/).
 

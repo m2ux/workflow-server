@@ -17,7 +17,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`derive-planning-slug`](derive-planning-slug.md) | The canonical planning slug for a work package — today's date plus its kebab-case initiative name — composed and returned without touching the filesystem |
 | [`dispatch-activity`](dispatch-activity.md) | Transition the session to a target activity and spawn a worker to carry it, and the bounded run of activities behind it |
 | [`evaluate-transition`](evaluate-transition.md) | Name the outcome the just-completed activity reached, and read where the workflow sends it |
-| [`finalize-activity`](finalize-activity.md) | Compile the `activity_complete` result after all steps, checkpoints, and artifacts are done |
+| [`finalize-activity`](finalize-activity.md) | Compile the activity's `activity_complete` result |
 | [`generate-summary`](generate-summary.md) | Compose the markdown session summary presented at workflow close |
 | [`handle-sub-workflow`](handle-sub-workflow.md) | Launch a workflow as a child of the current session, and report where it opens and where it writes |
 | [`list-workflows`](list-workflows.md) | Retrieve the catalog of available workflows |

@@ -31,7 +31,7 @@ The reply the server returns on clearing the active checkpoint: `resolved_option
 
 ### 2. Clear Active Gate
 
-- Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns `resolved_option`, `effect`, `exit` and `dismissed` as they apply. Capture them as `{effects}` and propagate them to the worker on resume.
+- Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns its reply. Capture the reply as `{effects}` and propagate it to the worker on resume.
   > When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
 ## Rules
 

@@ -1,5 +1,5 @@
 id: supervisor
-version: 3.0.0
+version: 3.1.0
 name: Supervisor
 description: Classify a request onto a fixed specialist lane, dispatch that lane, and synthesise or escalate — borrowable mid-phase supervisor pattern.
 variables:
@@ -57,6 +57,9 @@ steps:
   - kind: technique
     id: synthesise
     technique: orchestration-patterns::synthesise-results
+exits:
+  - id: done
+    isDefault: true
 outcome:
   - Request classified onto exactly one lane from the consumer-supplied roster
   - Specialist brief dispatched in isolation

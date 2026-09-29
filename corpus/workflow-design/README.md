@@ -90,7 +90,7 @@ Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/
 
 ## Review Mode
 
-Review mode audits one or more existing workflows (`target_workflow_ids`, with each iteration binding `target_workflow_id`) against the design principles, anti-pattern catalog, and schema validation. Pass inventory, severity disposition, and fix transitions live in [`08-quality-review.yaml`](./activities/08-quality-review.yaml) — do not restate that inventory here. The output is a severity-rated compliance report in the session planning folder.
+Review mode audits one or more existing workflows (`target_workflow_ids`, with each iteration binding `target_workflow_id`) against the design principles, anti-pattern catalog, and schema validation. Pass inventory, severity disposition, and where a failing pass routes live in [`08-quality-review.yaml`](./activities/08-quality-review.yaml) — do not restate that inventory here. The output is a severity-rated compliance report in the session planning folder.
 
 ---
 
