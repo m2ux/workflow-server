@@ -17,11 +17,12 @@ The Work Breakdown guide (`work-breakdown.md`) states how rows, criteria and ref
 | **New initiative** | an initiative, raised in plan mode | kept as the initiative's issue, or subsumed |
 | **Leave** | nothing; the orphan is not initiative work | stays open, in the standalone layout |
 
-- **Kept.** The orphan becomes the new task, epic or initiative issue. It is retitled with its agent-engineering prefix, labelled, and rewritten from its template, and the issue that lists it links it: a task's row id, or an epic's row in its initiative.
+- **Kept.** The orphan becomes the new task, epic or initiative issue. It takes every formatting rule of that kind: the title form, the labels, its template, and the scheme's rules for bodies, code references and succinct items. The issue that lists it links it: a task's row id, or an epic's row in its initiative.
+- **Original body.** A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first, headed by a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan. A subsumed orphan closes with its body as it is.
 - **Subsumed.** The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, and its design goes into the Proposal. That issue's References cite the orphan for the detail it holds, so nothing it recorded is lost. The orphan is then closed with a comment naming the issue that took it.
 - **Keep or subsume.** An orphan that already references detailed planning, a folder of markdown files such as `artifacts/planning/2026-09-10-activity-representation/`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes. Otherwise keep the orphan when its work needs discussion or evidence of its own, as a task with its own issue does, and subsume it when its detail fits in rows, criteria and a reference.
-- **Left.** An orphan left in place keeps no agent-engineering prefix, and its body takes the standalone layout, `templates/issue.md`, when it does not already follow it.
-- **Bodies state the result,** as every body does: none says work was hoisted, migrated or subsumed, or names where it came from. A reference to the orphan says what detail it holds (`The evidence walks and the carve-outs.`), and a kept orphan's body reads as if it had always been its task, epic or initiative.
+- **Left.** An orphan left in place keeps no agent-engineering prefix, and takes the formatting rules of a standalone issue: the title form, `templates/issue.md`, and the scheme's rules for bodies, code references and succinct items.
+- **Bodies state the result,** as every body does: none says work was hoisted, migrated or subsumed, or names where it came from. A reference to the orphan says what detail it holds (`The evidence walks and the carve-outs.`), and a kept orphan's body reads as if it had always been its task, epic or initiative. What the orphan said before lives in the original-body comment, never in the body.
 
 ## Procedure
 
@@ -37,8 +38,8 @@ The Work Breakdown guide (`work-breakdown.md`) states how rows, criteria and ref
    - **New task:** draft the row and its criteria in the epic. Number it where it can start, with `scripts/renumber.py` when undelivered tasks must move. Keep or subsume the orphan.
    - **New epic:** draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves; follow plan mode's steps for creating and linking an epic. Keep or subsume.
    - **New initiative:** run plan mode with the orphan as its input. Keep or subsume.
-   - **Kept:** retitle the orphan with its agent-engineering prefix and a title of the agent-engineering form, label it with its `type:*` (and a `theme:*` for an initiative or epic), and rewrite its body from its template, carrying its evidence into Problem and its design into Proposal.
-   - **Leave:** run review mode's check (`format.py`) on the orphan and bring its body into the standalone layout, carrying its content into the template's sections.
+   - **Kept:** post the original-body comment, then retitle the orphan with its agent-engineering prefix and a title of the agent-engineering form, label it with its `type:*` (and a `theme:*` for an initiative or epic), and rewrite its body from its template by the scheme's body rules, carrying its evidence into Problem and its design into Proposal.
+   - **Leave:** run review mode's check (`format.py`) on the orphan. When its body needs rewriting, post the original-body comment, then bring the body into the standalone layout by the scheme's body rules, carrying its content into the template's sections.
    - **Subsumed:** cite the orphan under the taking issue's References (`- **Rn.** [Element Shape](…/issues/874) — The operations surveyed and their prose entries.`), and any planning it references as its own entry, then close it: comment `Tracked in [I07:E01](…/issues/937) W04.` and `gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_reason=not_planned`. The work stays planned in the taking issue, which is where that work is tracked.
 6. **Review.** Run review mode's check (`format.py`) on every issue the hoist changed or created, and `deps.py` on each initiative that gained a task or epic. Fold every finding in.
 7. **Report** each orphan's placement, the issues changed, created or closed, and the orphans left.
@@ -47,4 +48,8 @@ The Work Breakdown guide (`work-breakdown.md`) states how rows, criteria and ref
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/initiative-planning/scripts/orphans.py issues.json
+gh api repos/{owner}/{repo}/issues/874 --jq .body > body-874.md
+gh api --method POST repos/{owner}/{repo}/issues/874/comments -F body=@comment-874.md --jq .html_url
 ```
+
+`comment-874.md` is the lead line, a blank line, then `body-874.md` word for word. The body is fetched live, not taken from `issues.json`, which can be stale by the time the orphan is applied.

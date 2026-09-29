@@ -35,6 +35,7 @@ Read the file for the mode the request calls for:
   - Find orphan issues
   - Offer each a placement in an existing or new initiative, epic or task
   - Migrate or subsume the ones the user places
+  - Format each migrated or left orphan by its target's rules, keeping its original body as a comment
 - **[Progress](references/progress-mode.md)**
   - Summarise the project board as a standup for a Slack channel
   - Open with a paragraph for management on what the window accomplished
