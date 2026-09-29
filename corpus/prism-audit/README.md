@@ -91,7 +91,7 @@ Each activity step binds exactly one technique via `step.technique`. The techniq
 | [`audit-finalize`](./techniques/audit-finalize/TECHNIQUE.md) | Assemble prism's contract artifacts into the three deliverables and cross-validate them |
 | [`deliver-audit`](./techniques/deliver-audit.md) | Present the deliverables with metrics, the core finding, top remediations, and an artifact index |
 
-Two capabilities come from other workflows: [`gitnexus::analyze`](/gitnexus/techniques/analyze.md) indexes the target during scope-definition, and [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) triggers the prism child workflow during execute-analysis.
+Among the capabilities that come from other workflows, [`gitnexus::analyze`](/gitnexus/techniques/analyze.md) indexes the target during scope-definition, and [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) triggers the prism child workflow during execute-analysis.
 
 **Detailed documentation:** See [techniques/README.md](./techniques/README.md) for the full library index with per-technique breakdowns.
 
@@ -109,7 +109,7 @@ Two capabilities come from other workflows: [`gitnexus::analyze`](/gitnexus/tech
 
 ## Orchestration Model
 
-Like the other workflows in this library, prism-audit runs under the **orchestrator with disposable workers** pattern defined in the `meta` layer. The orchestrator manages transitions and triggers; workers execute activities in fresh contexts with full read/write permission and write artifacts directly to the target paths.
+Like the other workflows in this library, prism-audit runs under the **orchestrator with disposable workers** pattern defined in the `meta` layer. The orchestrator follows the graph's exits and triggers; workers execute activities in fresh contexts with full read/write permission and write artifacts directly to the target paths.
 
 The prism analysis is reached through the **trigger mechanism**: `execute-analysis` uses [`workflow-engine::handle-sub-workflow`](/meta/techniques/workflow-engine/handle-sub-workflow.md) to dispatch prism as a child workflow per audit scope. Two rules keep the boundary clean:
 

@@ -13,7 +13,7 @@ variables:
   writes:
     - name: client_workflow_completed
       type: boolean
-      description: Whether the dispatched client workflow's session reports completed.
+      description: Whether the client workflow walk ended with no further activity routed.
       defaultValue: false
 required: true
 steps:

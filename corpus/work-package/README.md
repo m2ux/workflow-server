@@ -30,7 +30,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose, role, and a flow diagram) and a link to each activity's authoritative YAML definition.
+- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose and role) and a link to each activity's authoritative YAML definition.
 - **Techniques:** See [techniques/README.md](./techniques/README.md) for the technique inventory orientation; per-technique protocols live in the technique files.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index.
 

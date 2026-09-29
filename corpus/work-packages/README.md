@@ -50,134 +50,31 @@ The activities run as a sequential chain (see the flow diagram above). Each link
 
 ### 1. [Scope Assessment](activities/01-scope-assessment.yaml)
 
-Confirms this is a genuine multi-package initiative and produces an agreed inventory of distinct work packages, so planning can proceed package-by-package without scope drift. Ends at a user checkpoint before moving on to folder setup.
-
-```mermaid
-graph TD
-    subgraph scope-assessment[Scope Assessment]
-        s1([assess-scope → assess-initiative-scope])
-        cp1{Scope confirmed?}
-        
-        s1 --> cp1
-        cp1 -->|proceed| Next([→ folder-setup])
-        cp1 -->|refine| s1
-    end
-```
+Confirms this is a genuine multi-package initiative and produces an agreed inventory of distinct work packages, so planning can proceed package-by-package without scope drift.
 
 ### 2. [Folder Setup](activities/02-folder-setup.yaml)
 
 Creates the planning folder and its initial documentation skeletons (`START-HERE.md` and `README.md`), giving the initiative a canonical home before analysis begins, and settles which analysis the next activity performs.
 
-```mermaid
-graph TD
-    subgraph folder-setup[Planning Folder Setup]
-        f1([create-folder → workflow-engine::derive-planning-slug])
-        f2([setup-planning-folder → setup-planning-folder])
-        cpType{Analysis type?}
-        cp1{Folder setup complete?}
-
-        f1 --> f2 --> cpType --> cp1
-        cp1 -->|proceed| Next([→ analysis])
-        cp1 -->|adjust| f1
-    end
-```
-
 ### 3. [Analysis](activities/03-analysis.yaml)
 
 Establishes a validated understanding of the initiative's starting point — either completion analysis of existing progress when continuing previous work, or context analysis for a fresh start. The path follows the `{analysis_type}` folder-setup settled, so later planning rests on confirmed context.
-
-```mermaid
-graph TD
-    subgraph analysis[Analysis]
-        d1{analysis_type?}
-        a1([analyze-completion → analyze-initiative-context::analyze-completion])
-        a2([analyze-context → analyze-initiative-context::analyze-context])
-        cp1{Analysis confirmed?}
-
-        d1 -->|completion| a1
-        d1 -->|context| a2
-        a1 --> cp1
-        a2 --> cp1
-        cp1 -->|proceed| Next([→ package-planning])
-        cp1 -->|revise| d1
-    end
-```
 
 ### 4. [Package Planning](activities/04-package-planning.yaml)
 
 Defines scope, dependencies, effort, and success criteria for each package, fanning out over the identified work packages so every one is detailed enough to be prioritized and executed independently.
 
-```mermaid
-graph TD
-    subgraph package-planning[Work Package Planning]
-        p1([present-planning-overview → plan-work-package-scope::present-overview])
-        loop[[forEach: work_packages]]
-        p2([plan-package → plan-work-package-scope::plan-package])
-        cp1{Plans created?}
-        
-        p1 --> loop
-        loop --> p2
-        p2 --> loop
-        loop -->|done| cp1
-        cp1 -->|proceed| Next([→ prioritization])
-        cp1 -->|revise| p1
-    end
-```
-
 ### 5. [Prioritization](activities/05-prioritization.yaml)
 
-Orders the packages by dependencies, value, risk, and effort, producing a priority ranking the user accepts (or sends back to planning) before the roadmap is finalized.
-
-```mermaid
-graph TD
-    subgraph prioritization[Prioritization]
-        r1([prioritize → prioritize-packages])
-        cp1{Priority confirmed?}
-        
-        r1 --> cp1
-        cp1 -->|accept| Next([→ finalize-roadmap])
-        cp1 -->|adjust| r1
-        cp1 -->|revisit plans| Back([→ package-planning])
-    end
-```
+Orders the packages by dependencies, value, risk, and effort, producing a priority ranking the user accepts before the roadmap is finalized.
 
 ### 6. [Finalize Roadmap](activities/06-finalize-roadmap.yaml)
 
 Completes the roadmap documentation — timeline, navigation, and success criteria — so the initiative has a single source of truth before implementation begins.
 
-```mermaid
-graph TD
-    subgraph finalize-roadmap[Finalize Roadmap]
-        fr1([finalize-roadmap-docs → document-roadmap])
-        cp1{Roadmap complete?}
-        
-        fr1 --> cp1
-        cp1 -->|begin| Next([→ implementation])
-        cp1 -->|refine| fr1
-    end
-```
-
 ### 7. [Implementation](activities/07-implementation.yaml)
 
 Executes each planned package in priority order, triggering the `work-package` workflow for each one in turn and tracking progress until the whole initiative is delivered as merged, reviewed work.
-
-```mermaid
-graph TD
-    subgraph implementation[Implementation]
-        i0([initialize-iteration → orchestrate-package-execution::initialize-iteration])
-        loop[[forEach: remaining_packages]]
-        i1([execute-package → orchestrate-package-execution::execute-package])
-        
-        i0 --> loop
-        loop --> i1
-        i1 --> loop
-        loop -->|done| Done([All Complete])
-    end
-    
-    trigger([work-package workflow])
-    i1 -.->|triggers| trigger
-    trigger -.-> i1
-```
 
 ## Artifacts
 

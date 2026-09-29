@@ -831,7 +831,7 @@ A code token appears bare without backticks.
 
 **Detect:** A bare designator (`{id}`, `{$name}`, a dotted rule address), a CLI or shell command including a single-quoted command, an MCP tool call, a resource URI (`scheme://…`), or a literal path or filename, outside a code span and not a markdown or `::` link target.
 
-**Do not flag:** A token already inside a code span or fence. A descriptive prose noun ("the planning folder"). A hyperlink or `::` target. An invocation argument name (`paren-invocation-args`). A fragmented span (`` `git -C` `{x}` ``) is this fault: one span. Backticks without braces still fail `brace-declared-ids`.
+**Do not flag:** A token already inside a code span or fence. A descriptive prose noun ("the planning folder"). A hyperlink or `::` target. An invocation argument name (`paren-invocation-args`). A heading token a guard parses by pattern, such as a schema filename in a construct-inventory section heading. A fragmented span (`` `git -C` `{x}` ``) is this fault: one span. Backticks without braces still fail `brace-declared-ids`.
 
 **Fix:** Wrap each bare code token in one backtick span, designators inside the same span as the surrounding command. Convert a single-quoted command. De-escape `{\$name}` to `` `{$name}` `` (`escape-literal-dollar`).
 
@@ -1287,7 +1287,7 @@ A design-time authoring standard is filed as a runtime rule.
 
 **Detect:** A rule in `rules.*` or technique `## Rules` governs how to *write* workflows (content shape of YAML/technique/resource files, authoring standards) rather than current-session runtime conduct. Signals: restates a design principle or anti-pattern; would apply in an unrelated authoring session.
 
-**Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions.
+**Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions. An authoring technique's rules for the definitions it drafts.
 
 **Fix:** Remove it from `rules.*` or technique `## Rules`. Migrate it into the design-time canon — a principle, this catalogue, the construct inventory, or an existing covering entry. Enforce it in the authoring audit.
 

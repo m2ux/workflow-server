@@ -10,7 +10,7 @@ For the activity-to-activity flow diagram, the feedback loops, and review-mode b
 
 ### 01. Start Work Package
 
-Initializes the work package: resolves `{host_repo_path}` (monorepo vs standalone), refreshes repo-root submodules and GitNexus, verifies or creates a tracker issue, materializes a dedicated git worktree at `{target_path}` (`<checkout>/.worktrees/<wp-slug>/`), sets up the feature branch and draft PR inside that worktree, and binds the server-resolved planning folder. In review mode it instead captures the existing PR reference and checks out the PR's branch. Entry activity; leads to design-philosophy.
+Gives the work package its tracked, isolated home: a tracker issue, a dedicated git worktree at `{target_path}` holding the feature branch and draft PR, and the planning folder. In review mode that home is the existing PR's branch. Entry activity; leads to design-philosophy.
 
 Definition: [`01-start-work-package.yaml`](./01-start-work-package.yaml)
 
@@ -18,7 +18,7 @@ Definition: [`01-start-work-package.yaml`](./01-start-work-package.yaml)
 
 ### 02. Design Philosophy
 
-Applies a structured design framework to classify the problem (type and complexity), reconcile early assumptions, and decide which optional discovery activities are needed. The complexity it sets drives ADR creation later in Complete. In review mode it also assesses ticket completeness. Always transitions to codebase-comprehension, which then routes onward.
+Applies a structured design framework to classify the problem (type and complexity), reconcile early assumptions, and decide which optional discovery activities are needed. The complexity it sets drives ADR creation later in Complete. In review mode it also assesses ticket completeness. Its exit leads to codebase-comprehension, which then routes onward.
 
 Definition: [`02-design-philosophy.yaml`](./02-design-philosophy.yaml)
 
@@ -82,7 +82,7 @@ Definition: [`08-implement.yaml`](./08-implement.yaml)
 
 ### 09. Lean-Coding Audit
 
-Applies the ponytail lean-coding lens to the just-implemented change: tags it against the over-engineering taxonomy (delete / stdlib / native / yagni / shrink) with a net-lines scoreboard, harvests deliberate-simplification `ponytail:` markers into a tracked debt ledger, and records the honest gain. Accepted simplifications are then applied in a bounded cycle that re-validates the safety floor each pass. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode the apply path is gated out — findings are documented, not applied. Leads to post-impl-review.
+Applies the ponytail lean-coding lens to the just-implemented change: tags it against the over-engineering taxonomy (delete / stdlib / native / yagni / shrink) with a net-lines scoreboard, harvests deliberate-simplification `ponytail:` markers into a tracked debt ledger, and records the honest gain. Accepted simplifications land without breaching the safety floor. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode the apply path is gated out — findings are documented, not applied. Leads to post-impl-review.
 
 Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
@@ -114,7 +114,7 @@ Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 
 ### 13. Submit for Review
 
-Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, hands off build-dependent artifact regen when the agent cannot produce it, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. In stealth mode the PR lifecycle is gated out entirely: the push is preceded by private-remote verification, a final isolation confirmation, and a commit-signature check, and the push targets the consumer's private `push_remote`. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
+Takes the DCO-signed change set to a ready PR with a finalized description, and sees reviewer feedback through. In review mode it delivers all findings as structured PR review comments and ends the workflow. In stealth mode there is no PR lifecycle: the verified, signed commits reach the consumer's private `push_remote`. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
 
 Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 
@@ -122,7 +122,7 @@ Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 
 ### 14. Complete
 
-The terminal activity: creates an ADR for moderate or complex work, writes the close-out and cost artifacts, conducts a retrospective (written into `COMPLETE.md`), verifies that every planning-folder link resolves, removes the component worktree, and selects the next work package. Both paths get a close-out and a cost artifact; review mode additionally re-publishes the planning folder so the branch the posted review links carries the close-out, and skips the ADR, test-plan and inline-docs steps.
+The terminal activity: closes the work package with a close-out, a cost record and a retrospective in `COMPLETE.md` (plus an ADR for moderate or complex work), and selects the next work package. In review mode the branch the posted review links carries the close-out.
 
 Definition: [`14-complete.yaml`](./14-complete.yaml)
 

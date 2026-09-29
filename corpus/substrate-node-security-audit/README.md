@@ -217,7 +217,7 @@ Compares the finalized AI audit report against a professional reference report s
 
 ### Sub-Agent Activities
 
-The three primary-group activities — the crate deep review, the static analysis and the toolkit review — are branches the graph opens: reconnaissance fans to all three at once and they converge on primary audit. The rest are dispatched by the orchestrator during reconnaissance or primary-audit and do not appear in the graph.
+The [activities README](./activities/README.md) states which of these the graph opens as branches and which the orchestrator dispatches.
 
 | Activity | Used By | Phase | Role |
 |----------|---------|-------|------|

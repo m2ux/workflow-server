@@ -9,7 +9,7 @@ Each activity's authoritative definition — steps, checkpoints, exits — lives
 | # | Activity | Role |
 |---|----------|------|
 | 00 | **[Discover Changes](00-discover-changes.yaml)** | Diff upstream `prisms/` against current resources and categorize what changed |
-| 01 | **[Review Changes](01-review-changes.yaml)** | Present the change set at a user checkpoint to confirm scope and exclusions |
+| 01 | **[Review Changes](01-review-changes.yaml)** | Settle the change set's scope and exclusions with the user |
 | 02 | **[Apply Updates](02-apply-updates.yaml)** | Import resource changes, then bring skill routing and docs into line with them |
 | 03 | **[Verify Consistency](03-verify.yaml)** | Confirm no stale references, routing mismatches, or count/index errors remain |
 | 04 | **[Commit and Submit](04-commit-and-submit.yaml)** | Land the update as a feature branch and open a pull request |
@@ -30,7 +30,7 @@ Diffs the upstream prisms directory against current workflow resources, categori
 
 ### 01 — [Review Changes](01-review-changes.yaml)
 
-Presents the discovered changes to the user for approval. The result is a user-approved change set ready for import.
+Produces the user-approved change set the import works from.
 
 ### 02 — [Apply Updates](02-apply-updates.yaml)
 
@@ -42,4 +42,4 @@ Checks content integrity against upstream, stale name references, prompt-guide r
 
 ### 04 — [Commit and Submit](04-commit-and-submit.yaml)
 
-Ensures a feature branch, pushes the commits, and opens a pull request against the workflows branch — putting the update in front of a reviewer.
+Puts the update in front of a reviewer as a pull request against the workflows branch.

@@ -66,9 +66,9 @@ Four technique-groups (one per authoring activity) plus one standalone technique
 
 ## Reference Convention
 
-Because each group is named after the activity whose steps bind it, those steps reference techniques two ways (see the meta `activity-group-shorthand` rule):
+Because each group is named after the activity whose steps bind it, those steps reference techniques two ways:
 
-- **Bare op** where the activity name matches the group — `collect-inputs` inside `scope-definition` resolves to `scope-definition::collect-inputs`; `deliver-audit` is a bare standalone reference.
+- **Bare op** where the activity name matches the group (the meta `activity-group-shorthand` rule) — `collect-inputs` inside `scope-definition` resolves to `scope-definition::collect-inputs`; `deliver-audit` is a bare standalone reference.
 - **Qualified `group::op`** where a step reaches a technique whose group is not the activity's own group — e.g. `compose-audit-prompt::survey-structure`.
 
 ---
