@@ -1,21 +1,12 @@
 ---
 name: initiative-planning
 description: >-
-  Plans and maintains a house initiative on GitHub: an [Ixx] initiative issue, its [Ixx:Eyy] epics
-  and [Ixx:Eyy:Wzz] tasks, written from the house body templates, with a planning record on the
-  engineering branch. Plan mode raises or restructures an initiative, runs review passes against its
-  goal, for consistency and for dependency order, and renumbers epics and tasks so numbers follow
-  run order. Review mode checks existing issues against the templates and fixes them. Update mode
-  records delivered work: links each delivered task to its pull request, ticks the criteria that
-  now hold, closes what is complete, and updates the initiative's project board. Hoist mode finds
-  orphan issues and brings each one the user chooses into an existing or new initiative, epic or
-  task, closing an orphan whose detail the taking issue cites. Progress mode summarises the project
-  board as a standup in Slack markup: what completed, what is in progress and what is next. Use
-  when the user asks to raise, plan or restructure an initiative or epic, to review an initiative,
-  to check an issue's format or bring it into the house layout, to check or fix dependencies or
-  ordering, to renumber epics or tasks, to fold review findings into issues, to update an
-  initiative or epic with completed work, to hoist or triage orphan issues into initiatives, or for
-  a progress summary, standup or status update.
+  Plans and maintains house initiatives on GitHub: [Ixx] initiative issues, their [Ixx:Eyy] epics
+  and [Ixx:Eyy:Wzz] tasks, and the initiative's project board. Use to raise, plan, restructure,
+  review or renumber an initiative or epic; to check an issue's format or dependency order; to fold
+  review findings into issues; to update an initiative or epic with completed work; to hoist or
+  triage orphan issues into an initiative; or for a progress summary, standup or status update in
+  Slack.
 ---
 
 # Initiative Planning
