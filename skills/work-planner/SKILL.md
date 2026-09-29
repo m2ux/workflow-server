@@ -19,28 +19,28 @@ An initiative is one issue that states a goal and lists its epics. Each epic is 
 Read the file for the mode the request calls for:
 
 - **[Plan](references/plan-mode.md)**
-  - Raise, plan or restructure an initiative or epic
-  - Review a plan against its goal
-  - Check dependencies
-  - Renumber epics and tasks
-  - Fold review findings into issues
+  - Raising, planning and restructuring initiatives and epics
+  - Review passes of a plan against its goal
+  - Dependency checks
+  - Renumbering of epics and tasks
+  - Folding review findings into issues
 - **[Review](references/review-mode.md)**
-  - Check existing issues against the templates
-  - Fix each issue that departs from its template
+  - Checks of existing issues against the templates
+  - Fixes for each issue that departs from its template
 - **[Update](references/update-mode.md)**
-  - Link each delivered task to its pull request
-  - Tick the criteria that hold
-  - Close complete task issues, epics and initiatives
-  - Update the initiative's project board
+  - Links from each delivered task to its pull request
+  - Ticks for the criteria that hold
+  - Closure of complete task issues, epics and initiatives
+  - Project board updates
 - **[Hoist](references/hoist-mode.md)**
-  - Find orphan issues
-  - Offer each a placement in an existing or new initiative, epic or task
-  - Migrate or subsume the ones the user places
-  - Format each migrated or left orphan by its target's rules, keeping its original body as a comment
+  - Discovery of orphan issues
+  - Placements for each in an existing or new initiative, epic or task
+  - Migration or subsumption of the orphans the user places
+  - Formatting of each migrated or left orphan by its target's rules, with its original body kept as a comment
 - **[Progress](references/progress-mode.md)**
-  - Summarise the project board as a standup for a Slack channel
-  - Open with a paragraph for management on what the window accomplished
-  - List what completed, what is in progress and what is next
+  - Standup summaries of the project board for a Slack channel
+  - A paragraph for management on what the window accomplished
+  - What completed, what is in progress and what is next
 
 ## Agent-engineering scheme
 
