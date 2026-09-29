@@ -8,7 +8,7 @@ Each activity's authoritative definition — steps, checkpoints, exits — lives
 
 | # | Activity | Role |
 |---|----------|------|
-| 00 | **[Discover Changes](00-discover-changes.yaml)** | Diff upstream prisms/ against current resources and categorize what changed |
+| 00 | **[Discover Changes](00-discover-changes.yaml)** | Diff upstream `prisms/` against current resources and categorize what changed |
 | 01 | **[Review Changes](01-review-changes.yaml)** | Present the change set at a user checkpoint to confirm scope and exclusions |
 | 02 | **[Apply Updates](02-apply-updates.yaml)** | Import resource changes, then bring skill routing and docs into line with them |
 | 03 | **[Verify Consistency](03-verify.yaml)** | Confirm no stale references, routing mismatches, or count/index errors remain |
@@ -30,7 +30,7 @@ Diffs the upstream prisms directory against current workflow resources, categori
 
 ### 01 — [Review Changes](01-review-changes.yaml)
 
-Presents the discovered changes to the user for approval at a blocking checkpoint, where they can confirm the full set, adjust exclusions, or abort. The result is a user-approved change set ready for import.
+Presents the discovered changes to the user for approval. The result is a user-approved change set ready for import.
 
 ### 02 — [Apply Updates](02-apply-updates.yaml)
 
@@ -38,7 +38,7 @@ Applies the approved change set across resources, skill routing, and documentati
 
 ### 03 — [Verify Consistency](03-verify.yaml)
 
-Checks content integrity against upstream, stale name references, prompt-guide routing accuracy, resource count alignment, and duplicate indices. A non-blocking checkpoint surfaces the findings; if issues remain, the flow loops back to apply-updates to address them.
+Checks content integrity against upstream, stale name references, prompt-guide routing accuracy, resource count alignment, and duplicate indices. Remaining issues route back to apply-updates.
 
 ### 04 — [Commit and Submit](04-commit-and-submit.yaml)
 

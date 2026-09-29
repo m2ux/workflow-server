@@ -66,7 +66,7 @@ graph TD
 
 ### 2. [Folder Setup](activities/02-folder-setup.yaml)
 
-Creates the planning folder and its initial documentation skeletons (START-HERE.md and README.md), giving the initiative a canonical home before analysis begins, and settles which analysis the next activity performs.
+Creates the planning folder and its initial documentation skeletons (`START-HERE.md` and `README.md`), giving the initiative a canonical home before analysis begins, and settles which analysis the next activity performs.
 
 ```mermaid
 graph TD
@@ -181,7 +181,7 @@ graph TD
 
 ## Artifacts
 
-The workflow produces planning documentation under the planning folder: START-HERE.md and README.md skeletons (created at setup, finalized at roadmap), a completion or context analysis document, a plan per work package, a priority ranking, and progress tracking updated as packages complete. See the activity YAMLs for the precise artifact each activity reads or writes.
+The workflow produces planning documentation under the planning folder: `START-HERE.md` and `README.md` skeletons (created at setup, finalized at roadmap), a completion or context analysis document, a plan per work package, a priority ranking, and progress tracking updated as packages complete. See the activity YAMLs for the precise artifact each activity reads or writes.
 
 ## Techniques Summary
 
@@ -190,7 +190,7 @@ Workflow-specific techniques live under `techniques/`. Three are **technique gro
 | Technique / Technique | Type | Capability | Used By |
 |-----------------------|------|------------|---------|
 | `assess-initiative-scope` | Standalone | Identify and categorize work packages | Scope Assessment |
-| `setup-planning-folder` | Standalone | Create START-HERE.md and README.md skeletons | Folder Setup |
+| `setup-planning-folder` | Standalone | Create `START-HERE.md` and `README.md` skeletons | Folder Setup |
 | `analyze-initiative-context` | Group | Initiative-level analysis grounding package planning | Analysis |
 | `analyze-initiative-context::analyze-completion` | Group op | Assess the completion state of existing progress | Analysis (continuing) |
 | `analyze-initiative-context::analyze-context` | Group op | Establish the starting context for a fresh initiative | Analysis (new) |
@@ -210,7 +210,7 @@ Workflow-specific techniques live under `techniques/`. Three are **technique gro
 
 | # | Resource | Purpose |
 |---|----------|---------|
-| 00 | Planning Folder Template | Templates for START-HERE.md and README.md skeletons |
+| 00 | Planning Folder Template | Templates for `START-HERE.md` and `README.md` skeletons |
 | 01 | Completion Analysis Guide | Procedure for analyzing continuing initiatives |
 | 02 | Context Analysis Guide | Procedure for analyzing new initiatives |
 | 03 | Package Plan Template | Template for individual work package plans |

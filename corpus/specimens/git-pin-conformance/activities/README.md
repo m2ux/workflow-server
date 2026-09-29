@@ -8,7 +8,7 @@ The authoritative definition of each activity — its steps, technique bindings,
 
 ### 01. Materialise Checkouts
 
-Names two paths beneath the planning folder and stands a worktree of the host repository at each, on a branch of its own, via [`01-materialise-checkouts.yaml`](./01-materialise-checkouts.yaml). Two fixed targets rather than a loop, because each is addressed by name for the rest of the run. Leads to [Plan Pins](#02-plan-pins).
+Names two paths beneath the planning folder and stands a worktree of the host repository at each, on a branch of its own, via [`01-materialise-checkouts.yaml`](./01-materialise-checkouts.yaml). Two fixed targets, each addressed by name for the rest of the run. Leads to [Plan Pins](#02-plan-pins).
 
 Definition: [`01-materialise-checkouts.yaml`](./01-materialise-checkouts.yaml)
 

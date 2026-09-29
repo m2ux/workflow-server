@@ -2,7 +2,7 @@
 
 > Part of the [Codebase Wiki Workflow](../README.md)
 
-Activities that take a codebase from a confirmed ingest scope to a finalized, citation-backed wiki. The spine is linear — `confirm-scope` → `build-wiki` → `lint-wiki` → `publish` — with a single rework back-edge from `lint-wiki` to `build-wiki` when the user opts to fix lint findings by re-ingesting. There is no mode split and no review-only path; every run follows that spine.
+Activities that take a codebase from a confirmed ingest scope to a finalized, citation-backed wiki. The spine is linear — `confirm-scope` → `build-wiki` → `lint-wiki` → `publish` — with a single rework back-edge from `lint-wiki` to `build-wiki` when the user opts to fix lint findings by re-ingesting. Every run follows that spine.
 
 This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, loops, and exits — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
 
@@ -18,7 +18,7 @@ Definition: [`01-confirm-scope.yaml`](./01-confirm-scope.yaml). Leads to [Build 
 
 ### 02. Build Wiki
 
-Ingest each area in the confirmed plan — the raw source at the pinned commit and any task-derived knowledge — into typed wiki pages whose claims cite a source path and carry a confidence score, maintaining the index and log on every mutation. Knowledge compounds: each area augments the existing wiki rather than rebuilding it.
+Ingest each area in the confirmed plan — the raw source at the pinned commit and any task-derived knowledge — into typed wiki pages whose claims cite a source path and carry a confidence score, maintaining the index and log on every mutation. Knowledge compounds: each area augments the existing wiki.
 
 Definition: [`02-build-wiki.yaml`](./02-build-wiki.yaml). Leads to [Lint Wiki](#03-lint-wiki).
 
@@ -26,7 +26,7 @@ Definition: [`02-build-wiki.yaml`](./02-build-wiki.yaml). Leads to [Lint Wiki](#
 
 ### 03. Lint Wiki
 
-Run the wiki integrity checks over the built pages and decide whether the findings warrant another build pass. Contradictions and gaps are surfaced for a decision, never silently reconciled.
+Run the wiki integrity checks over the built pages and decide whether the findings warrant another build pass. Contradictions and gaps are surfaced for a decision.
 
 Definition: [`03-lint-wiki.yaml`](./03-lint-wiki.yaml). Leads to [Publish](#04-publish), or back to [Build Wiki](#02-build-wiki) when re-ingest is chosen.
 
@@ -34,7 +34,7 @@ Definition: [`03-lint-wiki.yaml`](./03-lint-wiki.yaml). Leads to [Publish](#04-p
 
 ### 04. Publish
 
-Finalize the index, log, and overview, leaving an `overview.md` completion summary as a durable entry point, and record the wiki as published. Publish is local-only by design — no branch, commit, or pull-request techniques — so the wiki is delivered in place under the wiki tree root.
+Finalize the index, log, and overview, leaving an `overview.md` completion summary as a durable entry point, and record the wiki as published. Publish is local-only: the wiki is delivered in place under the wiki tree root.
 
 Definition: [`04-publish.yaml`](./04-publish.yaml). Terminal.
 

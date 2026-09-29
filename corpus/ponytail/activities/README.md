@@ -10,7 +10,7 @@ This file is an orientation map. The authoritative definition of each activity �
 
 ### 01. Intake and Scope
 
-Capture the task and target, fix the intensity and scope of the lazy lens, and trace the real end-to-end flow the change touches, so the rung is chosen against the actual problem rather than a guess. A hard `intensity-and-scope-confirmed` checkpoint settles the lens — intensity (`lite` / `full` / `ultra`) and scope (`change` / `repo`) — before any climbing begins. **Value:** the change is understood and the lens calibrated before a single simplification is made.
+Capture the task and target, fix the intensity and scope of the lazy lens, and trace the real end-to-end flow the change touches, so the rung is chosen against the actual problem rather than a guess. **Value:** the change is understood and the lens calibrated before a single simplification is made.
 
 Definition: [`01-intake-and-scope.yaml`](01-intake-and-scope.yaml). Leads to [Apply Ladder](#02-apply-ladder).
 
@@ -18,7 +18,7 @@ Definition: [`01-intake-and-scope.yaml`](01-intake-and-scope.yaml). Leads to [Ap
 
 ### 02. Apply Ladder
 
-Produce the minimal solution by climbing the rungs to the highest one that still solves the understood problem, marking every deliberate simplification with its ponytail marker and leaving one runnable assert-based check. A hard `safety-floor-cleared` checkpoint then confirms the solution clears the floor — validation, error handling, security, accessibility, calibration, the runnable check — and re-climbs to close any gap before the review. **Value:** a built, floor-clearing solution whose deliberate ceilings are marked for later harvest.
+Produce the minimal solution by climbing the rungs to the highest one that still solves the understood problem, marking every deliberate simplification with its ponytail marker and leaving one runnable assert-based check. The solution clears the safety floor — validation, error handling, security, accessibility, calibration, the runnable check — before the review. **Value:** a built, floor-clearing solution whose deliberate ceilings are marked for later harvest.
 
 Definition: [`02-apply-ladder.yaml`](02-apply-ladder.yaml). Leads to [Over-Engineering Review](#03-over-engineering-review) once the safety floor is cleared.
 
@@ -34,7 +34,7 @@ Definition: [`03-over-engineering-review.yaml`](03-over-engineering-review.yaml)
 
 ### 04. Repo Audit
 
-Hunt over-engineering across the whole tree biggest-cut-first — removable dependencies, single-implementation interfaces, one-product factories, delegating wrappers, dead flags, hand-rolled standard-library reimplementations — ranked by the size of the cut and closing with a net lines-and-deps scoreboard. The activity is `required: false` and gated in: it runs only on the widest lens. **Value:** the whole tree's biggest cuts are ranked and quantified.
+Hunt over-engineering across the whole tree biggest-cut-first — removable dependencies, single-implementation interfaces, one-product factories, delegating wrappers, dead flags, hand-rolled standard-library reimplementations — ranked by the size of the cut and closing with a net lines-and-deps scoreboard. It runs only on the widest lens. **Value:** the whole tree's biggest cuts are ranked and quantified.
 
 Definition: [`04-repo-audit.yaml`](04-repo-audit.yaml). Leads to [Harvest Debt and Report](#05-harvest-debt-and-report).
 

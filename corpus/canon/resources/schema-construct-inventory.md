@@ -34,13 +34,13 @@ An activity: the stage that binds the techniques and routines and holds the conv
 
 A technique step: one `steps[]` entry with `kind: technique`, binding one technique.
 
-[AP-15. procedure-in-protocol](./anti-patterns.md#ap-15-procedure-in-protocol), [AP-17. bound-step-no-description](./anti-patterns.md#ap-17-bound-step-no-description), [AP-18. no-monolith-masking-steps](./anti-patterns.md#ap-18-no-monolith-masking-steps).
+[anti-patterns](./anti-patterns.md): `procedure-in-protocol`, `bound-step-no-description`, `no-monolith-masking-steps`.
 
 ### Compose or chain techniques for work
 
 Consecutive technique steps in the activity.
 
-[25. Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps), [26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading), [AP-114. pass-orchestration-in-technique](./anti-patterns.md#ap-114-pass-orchestration-in-technique).
+[25. Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps), [26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); [anti-patterns](./anti-patterns.md): `pass-orchestration-in-technique`.
 
 ### Compose or reuse activities
 
@@ -98,13 +98,13 @@ An action step: one `steps[]` entry with `kind: action`.
 
 A checkpoint step: one `steps[]` entry with `kind: checkpoint`.
 
-[AP-09. checkpoint-not-prose](./anti-patterns.md#ap-09-checkpoint-not-prose), [AP-97. link-named-artifacts](./anti-patterns.md#ap-97-link-named-artifacts), [AP-98. no-next-step-narration](./anti-patterns.md#ap-98-no-next-step-narration), [AP-99. statement-not-question](./anti-patterns.md#ap-99-statement-not-question), [AP-101. no-caption-only-message](./anti-patterns.md#ap-101-no-caption-only-message).
+[anti-patterns](./anti-patterns.md): `checkpoint-not-prose`, `link-named-artifacts`, `no-next-step-narration`, `statement-not-question`, `no-caption-only-message`.
 
 ### Repeat for each item, or do until done
 
 A loop step: one `steps[]` entry with `kind: loop`.
 
-[AP-10. loop-not-prose](./anti-patterns.md#ap-10-loop-not-prose).
+[anti-patterns](./anti-patterns.md): `loop-not-prose`.
 
 ### Several activities carry the same run of steps
 
@@ -124,13 +124,13 @@ An activity trigger.
 
 A `#### artifact` on the producing technique's output.
 
-[AP-12. artifact-not-buried](./anti-patterns.md#ap-12-artifact-not-buried), [AP-31. no-hand-authored-artifacts](./anti-patterns.md#ap-31-no-hand-authored-artifacts), [AP-130. artifact-name-is-filename](./anti-patterns.md#ap-130-artifact-name-is-filename).
+[anti-patterns](./anti-patterns.md): `artifact-not-buried`, `no-hand-authored-artifacts`, `artifact-name-is-filename`.
 
 ### The expected result is X
 
 An activity `outcome` entry.
 
-[AP-32. outcome-names-value](./anti-patterns.md#ap-32-outcome-names-value).
+[anti-patterns](./anti-patterns.md): `outcome-names-value`.
 
 ### Only run when X is true
 
@@ -142,7 +142,7 @@ The step gate: `when` on every kind, and `condition` on a technique, action, or 
 
 An activity `rules` entry.
 
-[AP-69. no-activity-prose-rules](./anti-patterns.md#ap-69-no-activity-prose-rules), [9. Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+[9. Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure); [anti-patterns](./anti-patterns.md): `no-activity-prose-rules`.
 
 ### This activity needs X and produces Y
 
@@ -166,19 +166,19 @@ A workflow variable.
 
 One mode variable, with exits and step gates that read it.
 
-[AP-14. mode-as-state](./anti-patterns.md#ap-14-mode-as-state), [AP-112. no-derived-state-shadow](./anti-patterns.md#ap-112-no-derived-state-shadow).
+[anti-patterns](./anti-patterns.md): `mode-as-state`, `no-derived-state-shadow`.
 
 ### The agent must always do X
 
 A workflow rule in the audience bucket that hears it.
 
-[AP-37. rule-audience-bucket](./anti-patterns.md#ap-37-rule-audience-bucket), [AP-100. runtime-rules-only](./anti-patterns.md#ap-100-runtime-rules-only), [38. A Relocation Records the Outcome It Keeps](./design-principles.md#38-a-relocation-records-the-outcome-it-keeps).
+[38. A Relocation Records the Outcome It Keeps](./design-principles.md#38-a-relocation-records-the-outcome-it-keeps); [anti-patterns](./anti-patterns.md): `rule-audience-bucket`, `runtime-rules-only`.
 
 ### Every activity needs this strategy technique
 
 A technique reference on `techniques.workflow` or `techniques.activity`.
 
-[AP-36. techniques-list-disjoint](./anti-patterns.md#ap-36-techniques-list-disjoint), [AP-39. hoist-universal-techniques](./anti-patterns.md#ap-39-hoist-universal-techniques).
+[anti-patterns](./anti-patterns.md): `techniques-list-disjoint`, `hoist-universal-techniques`.
 
 ### Start with the first activity
 
@@ -252,37 +252,37 @@ A technique.
 
 A technique: one produce path through that space.
 
-[26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading), [AP-135. tool-contract-restated-in-protocol](./anti-patterns.md#ap-135-tool-contract-restated-in-protocol).
+[26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); [anti-patterns](./anti-patterns.md): `tool-contract-restated-in-protocol`.
 
 ### First do A, then do B
 
 The technique Protocol.
 
-[Protocol](/meta/resources/workflow-canonical.md#protocol), [15. Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome), [AP-108. numbered-protocol-phases](./anti-patterns.md#ap-108-numbered-protocol-phases).
+[Protocol](/meta/resources/workflow-canonical.md#protocol), [15. Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome); [anti-patterns](./anti-patterns.md): `numbered-protocol-phases`.
 
 ### Shared inputs, outputs, or rules for every technique in the folder
 
 The container `TECHNIQUE.md` contract.
 
-[Base-contract inheritance](/meta/resources/workflow-canonical.md#base-contract-inheritance), [27. State Contract Contribution](./design-principles.md#27-state-contract-contribution), [AP-115. platform-semantics-in-capability](./anti-patterns.md#ap-115-platform-semantics-in-capability).
+[Base-contract inheritance](/meta/resources/workflow-canonical.md#base-contract-inheritance), [27. State Contract Contribution](./design-principles.md#27-state-contract-contribution); [anti-patterns](./anti-patterns.md): `platform-semantics-in-capability`.
 
 ### Needs a checklist path as input
 
 A technique input.
 
-[AP-16. technique-inputs-declared](./anti-patterns.md#ap-16-technique-inputs-declared).
+[anti-patterns](./anti-patterns.md): `technique-inputs-declared`.
 
 ### Produces an audit report
 
 A technique output.
 
-[AP-109. technique-outputs-declared](./anti-patterns.md#ap-109-technique-outputs-declared), [AP-12. artifact-not-buried](./anti-patterns.md#ap-12-artifact-not-buried).
+[anti-patterns](./anti-patterns.md): `technique-outputs-declared`, `artifact-not-buried`.
 
 ### Never modify the schema
 
 A technique rule.
 
-[45. A Rule States One Invariant](./design-principles.md#45-a-rule-states-one-invariant), [AP-152. one-invariant-per-rule](./anti-patterns.md#ap-152-one-invariant-per-rule).
+[45. A Rule States One Invariant](./design-principles.md#45-a-rule-states-one-invariant); [anti-patterns](./anti-patterns.md): `one-invariant-per-rule`.
 
 ### If X fails, recover by Y
 
@@ -294,7 +294,7 @@ A step of the Protocol phase that gives rise to the failure.
 
 A Protocol phase when the duty is work, and a `## Rules` entry when it is a standing invariant.
 
-[AP-121. rule-as-protocol-step](./anti-patterns.md#ap-121-rule-as-protocol-step), [26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading).
+[26. A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); [anti-patterns](./anti-patterns.md): `rule-as-protocol-step`.
 
 ## Condition Constructs (condition.schema.json)
 

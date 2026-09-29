@@ -2,9 +2,9 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, exits, and artifacts — lives in the corresponding `NN-<id>.yaml` file; it is not duplicated here.
+This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, exits, and artifacts — lives in the corresponding `NN-<id>.yaml` file.
 
-For the activity-to-activity flow diagram, the feedback loops, and review-mode behaviour, see the [workflow README](../README.md). Each activity section below also includes a mermaid diagram showing its internal flow.
+For the activity-to-activity flow diagram, the feedback loops, and review-mode behaviour, see the [workflow README](../README.md).
 
 ---
 
@@ -14,45 +14,6 @@ Initializes the work package: resolves `{host_repo_path}` (monorepo vs standalon
 
 Definition: [`01-start-work-package.yaml`](./01-start-work-package.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> detectReview["Detect review mode"]
-    detectReview -->|"intent ambiguous"| cpReviewMode{"review-mode-detection checkpoint"}
-    cpReviewMode -->|"review existing PR"| cpPrRef{"review-pr-reference checkpoint"}
-    cpReviewMode -->|"new implementation"| resolveRef
-    cpPrRef -->|"PR reference provided"| capturePR["Capture PR reference"]
-    cpPrRef -->|"cancel review mode"| resolveRef
-    capturePR --> resolveRef
-    detectReview -->|"intent unambiguous"| resolveRef["Establish repo context and preconditions"]
-    resolveRef --> cpIssue{"issue-verification checkpoint"}
-    cpIssue -->|"provide existing"| platformSelect
-    cpIssue -->|"create new"| platformSelect{"platform-selection checkpoint"}
-    cpIssue -->|"skip issue"| setUpWorkspace
-
-    platformSelect -->|"GitHub"| createGitHub["Create GitHub issue"]
-    platformSelect -->|"Jira"| searchGitHub["Search for a GitHub issue linked to the Jira ticket"]
-    searchGitHub -->|"none found"| cpGhMissing{"github-issue-missing checkpoint"}
-    cpGhMissing -->|"create"| createGhForJira["Create linked GitHub issue"]
-    cpGhMissing -->|"skip"| selectJiraProject{"jira-project-selection checkpoint"}
-    createGhForJira --> selectJiraProject
-    searchGitHub -->|"found"| selectJiraProject
-    selectJiraProject --> selectIssueType{"issue-type-selection checkpoint"}
-    selectIssueType --> createJira["Create Jira issue"]
-
-    createGitHub --> reviewIssue{"issue-review checkpoint"}
-    createJira --> reviewIssue
-    reviewIssue --> assignIssue["Assign and transition issue"]
-    assignIssue --> setUpWorkspace["Set up the planning folder and component worktree"]
-
-    setUpWorkspace --> cpPR{"pr-check checkpoint"}
-    cpPR -->|"use existing"| linkPR
-    cpPR -->|"create new"| createPR["Create draft PR"]
-    createPR --> cpPRCreation{"pr-creation checkpoint"}
-    cpPRCreation --> linkPR["Link PR to issue"]
-
-    linkPR --> exitNode(["design-philosophy"])
-```
-
 ---
 
 ### 02. Design Philosophy
@@ -60,22 +21,6 @@ graph TD
 Applies a structured design framework to classify the problem (type and complexity), reconcile early assumptions, and decide which optional discovery activities are needed. The complexity it sets drives ADR creation later in Complete. In review mode it also assesses ticket completeness. Always transitions to codebase-comprehension, which then routes onward.
 
 Definition: [`02-design-philosophy.yaml`](./02-design-philosophy.yaml)
-
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> defineProblem["Define problem statement"]
-    defineProblem --> classifyProblem["Classify problem type and complexity"]
-    classifyProblem --> cpClassification{"classification-confirmed checkpoint"}
-    cpClassification -->|"revise-classification exit"| entryNode
-    cpClassification -->|"classification accurate"| cpPath{"workflow-path-selected checkpoint"}
-    cpPath --> pathRationale["Record the path rationale"]
-    pathRationale --> docPhilosophy["Document the design philosophy"]
-    docPhilosophy --> converge["Assumption convergence loop — reconcile, challenge, combine"]
-    converge --> reviewMode{"Review mode?"}
-    reviewMode -->|"yes"| ticketCompleteness{"ticket-completeness checkpoint"}
-    reviewMode -->|"no"| exitComprehension(["codebase-comprehension"])
-    ticketCompleteness --> exitComprehension
-```
 
 ---
 
@@ -85,22 +30,6 @@ Builds or augments a durable mental model of the codebase sufficient to qualify 
 
 Definition: [`15-codebase-comprehension.yaml`](./15-codebase-comprehension.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> buildComprehension["Build the comprehension artifact"]
-    buildComprehension --> dive["Deep-dive, revise questions, challenge and combine, then record"]
-    dive --> hasOpen{"Open questions remain?"}
-    hasOpen -->|"no"| pathBranch{"Selected path?"}
-    hasOpen -->|"yes"| cpSufficient{"comprehension-sufficient checkpoint"}
-    cpSufficient -->|"sufficient"| pathBranch
-    cpSufficient -->|"dive deeper / different area"| dive
-
-    pathBranch -->|"needs elicitation"| exitElicit(["requirements-elicitation"])
-    pathBranch -->|"needs research"| exitResearch(["research"])
-    pathBranch -->|"skip optional"| exitPlan(["plan-prepare"])
-    pathBranch -->|"default"| exitAnalysis(["implementation-analysis"])
-```
-
 ---
 
 ### 03. Requirements Elicitation (optional)
@@ -108,25 +37,6 @@ graph TD
 Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so that planning starts from agreed requirements rather than guesses. Skipped in review mode (requirements come from the ticket). Leads to research or directly to implementation-analysis.
 
 Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.yaml)
-
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> cpDiscussion{"stakeholder-discussion-held checkpoint"}
-    cpDiscussion --> discuss["Record the stakeholder baseline"]
-    discuss --> elicit["Elicit requirements"]
-    elicit --> domainLoop["Question domain loop — one question per domain"]
-    domainLoop --> collect["Collect assumptions"]
-    collect --> document["Create the requirements document"]
-    document --> record["Record and reconcile the assumptions log"]
-
-    record --> cpComplete{"elicitation-complete checkpoint"}
-    cpComplete -->|"complete"| reconcileLoop["Assumption reconciliation loop"]
-    cpComplete -->|"revisit / add"| reconcileLoop
-
-    reconcileLoop --> exitResearch(["research-needed"])
-    reconcileLoop --> exitNoResearch(["no-research-needed"])
-    reconcileLoop --> exitIncomplete(["elicitation-incomplete"])
-```
 
 ---
 
@@ -136,22 +46,6 @@ Gathers best practices, patterns, and reference material from the knowledge base
 
 Definition: [`04-research.yaml`](./04-research.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> kbResearch["Research the knowledge base and web, then triage the candidates"]
-    kbResearch --> reconcileRes["Reconcile candidates (autonomous research pass)"]
-    reconcileRes --> cpConverge{"research-convergence checkpoint (fires only when converged)"}
-    cpConverge -->|"not converged / request-more"| reconcileRes
-    cpConverge -->|"accept"| recordResearch["Record the research"]
-    recordResearch --> converge["Assumption convergence loop — reconcile, challenge, combine"]
-
-    converge --> cpScope{"context-scope-declaration checkpoint"}
-    cpScope --> interviewLoop{"Next open assumption?"}
-    interviewLoop -->|"yes"| cpInterview{"research-assumption-interview checkpoint"}
-    cpInterview --> interviewLoop
-    interviewLoop -->|"all done"| exitNode(["implementation-analysis"])
-```
-
 ---
 
 ### 05. Implementation Analysis (optional)
@@ -159,22 +53,6 @@ graph TD
 Analyzes the current implementation to understand effectiveness, establish baselines, and identify improvement opportunities — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. Leads to plan-prepare.
 
 Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yaml)
-
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> reviewMode{"Review mode?"}
-    reviewMode -->|"yes"| reviewBaseline["Review baseline state (checkout base, document expected changes, return to PR branch)"]
-    reviewBaseline --> reviewImpl
-    reviewMode -->|"no"| reviewImpl["Analyze implementation (review, evaluate effectiveness, establish baselines)"]
-
-    reviewImpl --> recordAnalysis["Record the analysis"]
-    recordAnalysis --> converge["Assumption convergence loop — reconcile, challenge, combine"]
-
-    converge --> interviewLoop{"Next open assumption?"}
-    interviewLoop -->|"yes"| cpInterview{"analysis-assumption-interview checkpoint"}
-    cpInterview --> interviewLoop
-    interviewLoop -->|"all done"| exitNode(["plan-prepare"])
-```
 
 ---
 
@@ -184,17 +62,6 @@ Designs the approach and produces the work-package plan (task breakdown) and tes
 
 Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> envPrereqs["Verify environment prerequisites"]
-    envPrereqs --> createPlan["Plan the work and the tests"]
-    createPlan --> converge["Assumption convergence loop — reconcile, challenge, combine"]
-    converge --> prepare["Create todos, sync the branch, render the PR body"]
-    prepare --> cpApproach{"approach-confirmed checkpoint"}
-    cpApproach -->|"confirmed"| exitNode(["assumptions-review"])
-    cpApproach -->|"revise"| createPlan
-```
-
 ---
 
 ### 07. Assumptions Review
@@ -202,30 +69,6 @@ graph TD
 Reviews each open assumption with the user and posts deferred assumptions to the issue tracker for stakeholder attention, ensuring the plan rests on confirmed ground before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
 
 Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
-
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> evalOpen["Evaluate open assumptions"]
-    evalOpen --> converge["Assumption convergence loop — reconcile, challenge, combine"]
-    converge --> interviewLoop{"Next open assumption?"}
-    interviewLoop -->|"yes"| cpDecision{"assumption-decision checkpoint"}
-    cpDecision -->|"accept / reject / defer"| interviewLoop
-    interviewLoop -->|"all reviewed"| updateLog["Update assumptions log"]
-
-    updateLog --> checkPlatform{"Deferred + platform set?"}
-    checkPlatform -->|"jira"| cpSummary{"post-summary-review checkpoint"}
-    cpSummary -->|"post"| postJira["Post summary to Jira"]
-    cpSummary -->|"skip"| route
-    checkPlatform -->|"github"| postGithub["Post summary to GitHub"]
-    checkPlatform -->|"no platform"| route
-
-    postJira --> route{"Routing"}
-    postGithub --> route
-    route -->|"needs comprehension"| exitComprehension(["codebase-comprehension"])
-    route -->|"needs plan revision"| exitPlan(["plan-prepare"])
-    route -->|"further discussion"| evalOpen
-    route -->|"default"| exitImplement(["implement"])
-```
 
 ---
 
@@ -235,23 +78,6 @@ Executes the implementation plan task by task, each task following an implement-
 
 Definition: [`08-implement.yaml`](./08-implement.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> nextTask{"Next task in plan?"}
-    nextTask -->|"yes"| implementTask["Implement, test, commit and self-review the task"]
-    implementTask --> cpSymbol{"symbol-provenance-confirmed checkpoint"}
-    cpSymbol --> collectAssumptions["Collect assumptions"]
-    collectAssumptions --> nextTask
-
-    nextTask -->|"all done"| converge["Assumption convergence loop — reconcile, challenge, combine"]
-    converge --> presentResolved["Present resolved assumptions"]
-    presentResolved --> interviewLoop{"Next open assumption?"}
-    interviewLoop -->|"yes"| cpInterview{"implementation-assumption-interview checkpoint"}
-    cpInterview --> interviewLoop
-    interviewLoop -->|"all done"| updateLog["Update assumptions log"]
-    updateLog --> exitNode(["lean-coding-audit"])
-```
-
 ---
 
 ### 09. Lean-Coding Audit
@@ -259,22 +85,6 @@ graph TD
 Applies the ponytail lean-coding lens to the just-implemented change: tags it against the over-engineering taxonomy (delete / stdlib / native / yagni / shrink) with a net-lines scoreboard, harvests deliberate-simplification `ponytail:` markers into a tracked debt ledger, and records the honest gain. Accepted simplifications are then applied in a bounded cycle that re-validates the safety floor each pass. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode the apply path is gated out — findings are documented, not applied. Leads to post-impl-review.
 
 Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
-
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> reviewOverEng["Review over-engineering (taxonomy tags + net-lines scoreboard)"]
-    reviewOverEng --> harvestDebt["Harvest ponytail markers into debt ledger"]
-    harvestDebt --> hasMarkers{"has_debt_markers?"}
-    hasMarkers -->|"yes"| reportGain["Append honest gain scoreboard to ledger"]
-    hasMarkers -->|"no"| cpFindings
-    reportGain --> cpFindings{"audit-findings-confirmed checkpoint"}
-    cpFindings -->|"accept"| exitNode(["post-impl-review"])
-    cpFindings -->|"dispute"| exitNode
-    cpFindings -->|"apply simplifications"| applyCycle{"needs_simplification?"}
-    applyCycle -->|"yes"| applyLadder["Apply simplifications, re-score, validate safety floor, re-assess flag"]
-    applyLadder --> applyCycle
-    applyCycle -->|"no"| exitNode
-```
 
 ---
 
@@ -284,31 +94,6 @@ Reviews implementation quality through manual diff review, code review, structur
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> manualDiff["Manual diff review"]
-    manualDiff --> cpFileIndex{"file-index-table checkpoint"}
-    cpFileIndex --> cpRationale{"rationale-attestation checkpoint"}
-    cpRationale --> interviewLoop{"Next flagged block?"}
-    interviewLoop -->|"yes"| cpInterview{"block-interview#{current_block_index} checkpoint"}
-    cpInterview --> interviewLoop
-    interviewLoop -->|"all done"| codeReview["Code review"]
-
-    codeReview --> structural{"problem_complexity == complex?"}
-    structural -->|"no"| structuralInline["Structural analysis (single pass)"]
-    structural -->|"yes"| dispatchPrism["Launch the full prism pipeline and walk it"]
-    structuralInline --> testReview["Review the test suite, then classify and route findings"]
-    dispatchPrism --> testReview
-
-    testReview --> fixCycle{"create mode and actionable code or test findings?"}
-    fixCycle -->|"yes"| applyFixes["Apply fixes, regenerate index, re-review"]
-    applyFixes --> fixCycle
-    fixCycle -->|"no"| blockerGate{"has_critical_blocker?"}
-    blockerGate -->|"yes"| exitImplement(["implement"])
-    blockerGate -->|"no"| cpLocalValidation{"local-validation-permission checkpoint"}
-    cpLocalValidation --> exitValidate(["validate"])
-```
-
 ---
 
 ### 11. Validate
@@ -316,23 +101,6 @@ graph TD
 Validates the implementation against tests, build, format, and lint checks when `{run_local_validation}` says the local environment can run them, as post-impl-review determined. When it cannot, Progress for this activity is marked cancelled/N/A and the suite is skipped. In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
 
 Definition: [`11-validate.yaml`](./11-validate.yaml)
-
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> localGate{"run_local_validation?"}
-    localGate -->|"no"| markNa["Mark Progress cancelled/N/A"]
-    markNa --> exitNode(["strategic-review"])
-    localGate -->|"yes"| preflight["Toolchain preflight"]
-    preflight --> runSuite["Run validation suite (check + clippy + test + fmt-check)"]
-    runSuite --> reviewMode{"Review mode?"}
-    reviewMode -->|"yes"| documentFailures["Document failures as findings"]
-    documentFailures --> assessCoverage["Assess test coverage"]
-    assessCoverage --> exitNode
-    reviewMode -->|"no"| fixBranch{"validation_results.validation_passed == false?"}
-    fixBranch -->|"no"| exitNode
-    fixBranch -->|"yes"| analyzeFailure["Diagnose the failure, fix it, and re-run validation"]
-    analyzeFailure --> fixBranch
-```
 
 ---
 
@@ -342,27 +110,6 @@ Reviews the change set to ensure it is minimal and focused — that the PR conta
 
 Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> reviewScope["Review scope (changes, artifacts, signature scan)"]
-    reviewScope --> cpUnsigned{"unsigned-commits-prompt (authoring path, when unsigned found)"}
-    cpUnsigned -->|"re-sign"| resign["Re-sign commits"]
-    cpUnsigned -->|"decline"| verifyReadme
-    resign --> verifyReadme["Verify the README and the changes fragment, then document findings"]
-    verifyReadme --> cleanupBranch{"Review mode?"}
-    cleanupBranch -->|"yes"| docCleanup["Document cleanup recommendations"]
-    cleanupBranch -->|"no"| applyCleanup["Apply cleanup"]
-    docCleanup --> createArchSummary
-    applyCleanup --> createArchSummary["Architecture summary"]
-    createArchSummary --> analyze["Analyze strategic findings"]
-    analyze --> gateMode{"Review mode?"}
-    gateMode -->|"yes"| cpDelivery{"findings-delivery checkpoint"}
-    gateMode -->|"no"| cpFindings{"review-findings checkpoint"}
-    cpDelivery --> exitSubmit(["submit-for-review"])
-    cpFindings -->|"passed / accept / defer"| exitSubmit
-    cpFindings -->|"fix / selective / more review"| exitPlan(["plan-prepare"])
-```
-
 ---
 
 ### 13. Submit for Review
@@ -371,43 +118,6 @@ Gates submission on a human DCO sign-off, then pushes the branch, finalizes the 
 
 Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> reviewMode{"Review mode?"}
-    reviewMode -->|"yes"| consolidate["Consolidate review findings → resolve publish ref → commit artifacts → generate review summary"]
-    consolidate --> cpSummaryApproval{"review-summary-approval checkpoint"}
-    cpSummaryApproval --> persistSummary["Persist review summary → post PR review"]
-    persistSummary --> awaitReview
-
-    reviewMode -->|"no"| cpDco{"dco-sign-off-confirmation checkpoint"}
-    cpDco --> stealthMode{"Stealth mode?"}
-    stealthMode -->|"yes"| verifyRemote["Verify private remote + signature check"]
-    verifyRemote --> cpPrivatePush{"private-push-confirmation checkpoint"}
-    cpPrivatePush --> pushCommits
-    stealthMode -->|"no"| pushCommits["Push all commits (push_remote)"]
-    pushCommits --> stealthExit{"Stealth mode?"}
-    stealthExit -->|"yes"| exitComplete
-    stealthExit -->|"no"| updateDesc["Update PR description"]
-    updateDesc --> rerenderLoop["verify-pr-body-rerender loop — re-render and verify"]
-    rerenderLoop -->|"body conforms"| mergeGuidance["Merge-strategy guidance (informational message)"]
-    rerenderLoop -->|"still non-conformant"| cpBody{"body-non-conformant checkpoint"}
-    cpBody -->|"proceed with override"| mergeGuidance
-    cpBody -->|"provide missing input"| exitSubmitAgain(["submit-for-review"])
-    cpBody -->|"abort"| exitComplete
-    mergeGuidance --> buildArt{"build-artifact-check checkpoint"}
-    buildArt --> markReady["Mark PR ready for review"]
-    markReady --> awaitReview["Await manual review"]
-
-    awaitReview --> cpReceived{"review-received checkpoint"}
-    cpReceived -->|"comments received"| processComments["Process review comments"]
-    cpReceived -->|"still waiting"| awaitReview
-
-    processComments --> analyzeOutcome["Analyze review outcome"]
-    analyzeOutcome --> cpOutcome{"review-outcome checkpoint"}
-    cpOutcome -->|"approved / minor"| exitComplete(["complete"])
-    cpOutcome -->|"significant changes"| exitPlan(["plan-prepare"])
-```
-
 ---
 
 ### 14. Complete
@@ -415,31 +125,5 @@ graph TD
 The terminal activity: creates an ADR for moderate or complex work, writes the close-out and cost artifacts, conducts a retrospective (written into `COMPLETE.md`), verifies that every planning-folder link resolves, removes the component worktree, and selects the next work package. Both paths get a close-out and a cost artifact; review mode additionally re-publishes the planning folder so the branch the posted review links carries the close-out, and skips the ADR, test-plan and inline-docs steps.
 
 Definition: [`14-complete.yaml`](./14-complete.yaml)
-
-```mermaid
-graph TD
-    entryNode(["Entry"]) --> adrGate{"Review mode?"}
-
-    adrGate -->|"no"| checkADR{"Moderate or complex?"}
-    checkADR -->|"yes"| createADR["Create ADR"]
-    createADR --> updateADR["Update ADR status to Accepted"]
-    updateADR --> finalizeTestPlan
-    checkADR -->|"no"| finalizeTestPlan["Finalize test plan with source links"]
-    finalizeTestPlan --> createComplete
-
-    adrGate -->|"yes"| createComplete["Create COMPLETE.md"]
-    createComplete --> tokenUsage["Render token usage and cost"]
-    tokenUsage --> docsGate{"Review mode?"}
-    docsGate -->|"no"| ensureDocs["Ensure inline docs on public APIs"]
-    ensureDocs --> retrospective
-    docsGate -->|"yes"| retrospective["Conduct the retrospective into COMPLETE.md, then verify planning-folder links"]
-
-    retrospective --> publishGate{"Review mode?"}
-    publishGate -->|"yes"| republish["Resolve the publish ref, then commit the close-out artifacts onto it"]
-    publishGate -->|"no"| removeWorktree
-    republish --> removeWorktree["Remove component worktree (when this run created one)"]
-    removeWorktree --> selectNext["Select next work package"]
-    selectNext --> doneNode(["End"])
-```
 
 ---

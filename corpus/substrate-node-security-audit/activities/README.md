@@ -14,7 +14,7 @@ This file is an orientation map. The authoritative definition of each activity â
 |---|----------|------|
 | 01 | [`scope-setup`](01-scope-setup.yaml) | Pin the audit to a confirmed target at an exact commit, run dependency scanning, and establish the planning folder |
 | 02 | [`reconnaissance`](02-reconnaissance.yaml) | Classify the in-scope surface, map trust boundaries and consensus paths, build the function registry, and assign each area to a responsible agent |
-| 03 | [`primary-audit`](03-primary-audit.yaml) | Dispatch all specialized agent groups concurrently, verify output completeness with a fresh-context verification agent (V), and consolidate with a fresh-context merge agent (M). Report generation is entered only when the dispatch, verification, and merge gates are all set |
+| 03 | [`primary-audit`](03-primary-audit.yaml) | Dispatch all specialized agent groups concurrently, verify output completeness with a fresh-context verification agent (V), and consolidate with a fresh-context merge agent (M) |
 | 04 | [`adversarial-verification`](04-adversarial-verification.yaml) | Re-check every high-stakes PASS verdict at the property level to recover findings missed as false PASSes |
 | 05 | [`report-generation`](05-report-generation.yaml) | Enforce the coverage / dispatch-completeness / reconciliation gates, integrate adversarial results, apply calibrated severity, and produce the report |
 | 06 | [`ensemble-pass`](06-ensemble-pass.yaml) *(optional)* | Run a second-model pass on priority-1/2 components and union-merge with primary results |

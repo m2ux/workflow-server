@@ -6,19 +6,19 @@
 
 ## Overview
 
-A codebase wiki is a tree of typed Markdown pages — concepts, entities, source-summaries, and comparisons — navigated hierarchically from an index, where every claim cites a raw source path and carries a confidence score. It adapts the [Karpathy LLM-wiki knowledge-base format](https://blog.starmorph.com/blog/karpathy-llm-wiki-knowledge-base-guide) for code: knowledge that compounds across techniques instead of being rebuilt each time, and that an agent reads by following `[[wikilinks]]` from the index rather than loading the whole codebase into context.
+A codebase wiki is a tree of typed Markdown pages — concepts, entities, source-summaries, and comparisons — navigated hierarchically from an index, where every claim cites a raw source path and carries a confidence score. It adapts the [Karpathy LLM-wiki knowledge-base format](https://blog.starmorph.com/blog/karpathy-llm-wiki-knowledge-base-guide) for code: knowledge that compounds across techniques, and that an agent reads by following `[[wikilinks]]` from the index to the pages it needs.
 
-**Why build a wiki instead of re-reading the code each time?**
+**What a wiki adds to reading the code:**
 
-- **Knowledge compounds.** Each ingest augments the existing wiki rather than starting over, so understanding accumulates across sessions and across workflows.
+- **Knowledge compounds.** Each ingest augments the existing wiki, so understanding accumulates across sessions and across workflows.
 - **Every claim is traceable.** A claim cites the raw source path it rests on, pinned to an immutable baseline commit, and carries a confidence score — so a reader knows both where a fact came from and how sure the wiki is of it.
 - **Navigation over brute force.** Reading `index.md` and following `[[wikilinks]]` to the relevant pages costs a fraction of the context of loading the codebase, and scales as the codebase grows.
-- **Reusable by other workflows.** The wiki techniques are techniques other workflows bind directly — a comprehension or review workflow can ingest into, or query, the shared wiki without re-implementing any of it.
+- **Reusable by other workflows.** The wiki techniques are techniques other workflows bind directly — a comprehension or review workflow can ingest into, or query, the shared wiki by binding them.
 
 **Use this workflow when you want to:**
 - Build a persistent, cited knowledge base over a codebase or subsystem.
 - Augment an existing wiki with a new area, or with task-derived findings from another workflow.
-- Answer questions about the codebase from cited, confidence-scored pages instead of ad-hoc re-reading.
+- Answer questions about the codebase from cited, confidence-scored pages.
 - Check a wiki's integrity — citation coverage, contradictions, orphan pages, stale claims.
 
 ## Concepts

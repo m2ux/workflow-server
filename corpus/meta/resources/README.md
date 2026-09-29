@@ -4,8 +4,6 @@
 
 Markdown resources providing the bootstrap navigation primer and shared cross-workflow reference structures (such as the canonical planning-folder README guide). Agent entry Protocol lives on workflow-engine techniques ([activity-worker](../techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](../techniques/workflow-engine/workflow-orchestrator.md)); agent stubs are composed by [compose-prompt](../techniques/workflow-engine/compose-prompt.md).
 
-Tool reference content for Atlassian, GitNexus, and state management has moved into the corresponding capability techniques' techniques — each technique declares its own `tools` block and any `prose` reference content.
-
 ---
 
 ## Resource Index
@@ -20,16 +18,6 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 | `token-usage` | [Token Usage](./token-usage.md) | Creation guide: `token-usage.md` — a run's sole cost home, carrying the per-activity ledger, totals, coverage reconciliation and estimate caveat |
 | `session-trace` | [Session Trace](./session-trace.md) | Creation guide: `session-trace.md` — the lean mechanical record of what executed, how long it took, and where it went wrong |
 | `run-status` | [Run Status](./run-status.md) | Creation guide: the run status a completed activity emits — the artifact link, its one-line summary, the activity checklist, and the boundaries on what else may appear |
-
-### Removed
-
-| Resource | Where the content lives now |
-|----------|-----------------------------|
-| `activity-worker-prompt` | [`workflow-engine::activity-worker`](../techniques/workflow-engine/activity-worker.md) (+ [compose-prompt](../techniques/workflow-engine/compose-prompt.md) stub) |
-| `workflow-orchestrator-prompt` | [`workflow-engine::workflow-orchestrator`](../techniques/workflow-engine/workflow-orchestrator.md) (+ [compose-prompt](../techniques/workflow-engine/compose-prompt.md) stub) |
-| GitNexus Reference | Inlined into [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) techniques |
-| Atlassian Tools | Inlined into [`atlassian`](/atlassian/techniques/TECHNIQUE.md) techniques |
-| Workflow State Format | State persistence is server-managed (no agent-facing schema resource needed). The canonical on-disk shape is defined by [`schemas/session-file.schema.json`](https://github.com/m2ux/workflow-server/blob/main/schemas/session-file.schema.json) and is documented in [`docs/state.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state.md). |
 
 ---
 
