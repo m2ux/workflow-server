@@ -14,16 +14,12 @@ description: >-
 
 Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan:
 
-- **Initiative**
-  States a goal and lists its epics.
-- **Epic**
-  Lists its tasks in a Work Breakdown table.
-- **Task**
-  One pull request's worth of work: a row in its epic, with an issue of its own only when it needs discussion or evidence.
-- **Standalone issue**
-  Work outside any initiative.
+- **Initiative**  States a goal and lists its epics.
+- **Epic**  Lists its tasks in a Work Breakdown table.
+- **Task**  One pull request's worth of work.
+- **Standalone issue**  Work outside any initiative.
 
-The initiative's project board shows where each item stands. A planning record holds what the issues leave out: the evidence, the decisions and each review.
+The project board shows where each item stands. A planning record holds what the issues leave out: the evidence, the decisions and each review.
 
 ## Modes
 
@@ -53,7 +49,7 @@ Read the file for the mode the request calls for:
   - A paragraph for management on what the window accomplished
   - What completed, what is in progress and what is next
 - **[Revise](references/revise-mode.md)**
-  - Changes to this skill's own files
+  - Make changes to this skill's own files
   - Conformance with the skill's [guidelines](references/guidelines.md)
 
 ## Formatting Scheme
