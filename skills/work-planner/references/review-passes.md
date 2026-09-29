@@ -1,8 +1,8 @@
 # Review passes
 
-Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which reads the local drafts. Fetch every issue first, with full host permissions, as JSON for `format.py` and as a body for `deps.py` and `renumber.py`: `gh api repos/{owner}/{repo}/issues/<n> > issue-<n>.json; gh api repos/{owner}/{repo}/issues/<n> --jq .body > live-<n>.md`.
+Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which reads the local drafts. Fetch every issue first, as JSON for `format.py` and as a body for `deps.py` and `renumber.py`, with the commands in SKILL.md.
 
-Report findings split by area, one problem/solution pair per finding, each with a severity. Verify every finding against the source or artifacts it concerns before stating it, and quote the file:line that establishes it. Findings that need a decision go to the user as interview questions, one at a time, each with a recommended option.
+Report findings split by area, one problem/solution pair per finding, each with a severity. Verify every finding against its source before stating it, and quote the file:line that establishes it. Put findings that need a decision to the user.
 
 ## Goal pass
 
@@ -36,15 +36,14 @@ Runs after every round of edits.
 - **Stale references.** Task and epic numbers, issue links, and wording from a superseded decision.
 - **Titles.** Every issue's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown table, its title has the agent-engineering form, and the initiative row carries the epic's title name.
 - **Format.** Run review mode's check, `scripts/format.py`, on every issue the round changed. It confirms that each Description cell cites criteria that exist, and that every one has a row.
-- **Task grain.** A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
-- **Description.** Each cell is a short phrase of at most eight words. Detail in a longer cell that no cited criterion already states becomes a new criterion of one invariant, cited by the row. Each row's criteria are the ones its work makes true: a row does not claim a criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet it. The check confirms coverage, not fit.
+- **Rows.** Each row meets the Work Breakdown guide's task grain and Description rules. Detail in a longer Description that no cited criterion already states becomes a new criterion of one invariant, cited by the row. Each row's criteria are the ones its work makes true: a row does not claim a criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet it. The check confirms coverage, not fit.
 - **Contradictions.** Between acceptance criteria in one epic, and between an epic and its initiative.
 - **Ownership overlaps.** Two epics or tasks claiming one piece of work. Assign one owner and state the boundary in both.
 - **Duplicates.** The same outcome as a task in two epics, or an initiative criterion that restates an epic's. Remove one, or raise the initiative's.
 - **Open questions.** Each has a recommendation in the planning record, and holds only what is undecided; a settled point moves to the planning record. An epic whose first task is next has none.
 - **Links.** A link to an unmerged planning branch breaks when the branch merges; list those to repoint.
 - **Non-goals.** Only the initiative has them: one succinct sentence each on what the initiative does not do, naming no initiative, epic, task or issue, and no owner. A boundary between sibling epics belongs in their Proposals.
-- **Cross-initiative overlap.** Record it in References. Editing another initiative's issue needs the user's explicit approval, and the edit stays minimal.
+- **Cross-initiative overlap.** Record it in References. An approved edit to another initiative's issue stays minimal.
 
 ## Ordering pass
 

@@ -1,6 +1,6 @@
 # Review mode
 
-Checks existing initiative, epic, task and standalone issues against the templates, and fixes them. A standalone issue has no agent-engineering prefix and belongs to no initiative; hoist mode leaves such issues in place.
+Checks existing initiative, epic, task and standalone issues against the templates, and fixes them.
 
 ## Procedure
 
@@ -14,7 +14,7 @@ Checks existing initiative, epic, task and standalone issues against the templat
    - **apply:** a title or label change to make on the issue;
    - **decide:** anything needing new content or a judgement.
 4. **Apply the mechanical fixes** without asking. Read the diff to confirm it changes structure only, then patch the body from `fixed-943.md`, along with the title and labels the check names.
-5. **Decide the rest** with the user, one finding at a time, each with a recommended option and the content drafted:
+5. **Decide the rest** with the user, each finding with its content drafted:
    - a missing section: draft it from the issue and its epics;
    - Non-goals in an epic or task: lift any that bound the initiative into the initiative's Non-goals, then remove the section; in a standalone issue, fold them into the Proposal as a closing boundary;
    - an extra section: keep it, fold it into a template section, or remove it;
@@ -23,7 +23,7 @@ Checks existing initiative, epic, task and standalone issues against the templat
    - a task delivering more than three criteria no other task delivers: split it into tasks one pull request each can deliver, drafting the rows and their criteria;
    - an initiative criterion or non-goal naming an initiative, epic, task or issue: restate it locally, or drop a criterion that holds only through another initiative's work;
    - an initiative criterion that carries a count: measure it against a named baseline or check;
-   - an initiative criterion that names no instrument: name the automated test that verifies it, or how the user confirms it where none can exist, as the goal pass's Verified rule defines, and recommend any missing test as a task or a test-infrastructure epic;
+   - an initiative criterion that names no instrument: name its instrument, and plan any missing test, as the goal pass's Verified rule defines;
    - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming what the row delivers, and restate any detail no cited criterion carries as a new criterion of one invariant, cited by the row;
    - a Description cell without criteria: map the row to the criteria it delivers, from its text and each criterion's wording; a criterion no row delivers needs a row, or belongs in another epic;
    - a criterion that may state several invariants: split it, adding each new criterion at the end of the list, and cite it from the rows that deliver it;

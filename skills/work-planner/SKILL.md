@@ -12,16 +12,14 @@ description: >-
 
 # Work Planner
 
-Work Planner plans agent-engineering work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan:
+Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan:
 
 - **Initiative** — states a goal and lists its epics.
 - **Epic** — lists its tasks in a Work Breakdown table.
 - **Task** — one pull request's worth of work: a row in its epic, with an issue of its own only when it needs discussion or evidence.
 - **Standalone issue** — work outside any initiative.
 
-The initiative's project board shows where each item stands. A planning record on the `engineering` branch holds what the issues leave out: the evidence, the decisions and each review.
-
-The modes follow the plan through its life: Plan writes it, Review keeps its issues to the templates, Update records work as it lands, Hoist brings stray issues into it, and Progress reports on it.
+The initiative's project board shows where each item stands. A planning record holds what the issues leave out: the evidence, the decisions and each review.
 
 ## Modes
 
@@ -70,7 +68,7 @@ Read the file for the mode the request calls for:
 
 ## Commands
 
-GitHub goes through REST only, with full host permissions. Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of the repository that holds the issues:
+GitHub goes through REST only, with full host permissions. Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login; where shell state does not persist between commands, confirm instead that neither is set in the shell profile. `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run these inside a checkout of the repository that holds the issues. A project board sits under `users/{owner}`, or `orgs/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`:
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
@@ -83,7 +81,7 @@ gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --
 gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
 ```
 
-Bodies always go through a file with `-F body=@file`. Never inline them, which avoids quoting and the workspace's dynamic-shell restrictions. Keep these files in a working directory outside the repository.
+Bodies always go through a file (`-F body=@file`), never inline, which avoids quoting and the workspace's dynamic-shell restrictions. Keep these files in a working directory outside the repository.
 
 The scripts in `scripts/` run under the sandbox, invoked by the absolute path of the workspace checkout's `scripts/sbx`. `<workspace>` in the mode files stands for that checkout. Their tests are in `test/`: `cd <workspace>/skills/work-planner && <workspace>/scripts/sbx python3 -m unittest discover -s test`.
 

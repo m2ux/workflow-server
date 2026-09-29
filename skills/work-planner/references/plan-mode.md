@@ -4,13 +4,13 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 
 ## Procedure
 
-1. **Understand the request.** Interview the user one question at a time, each with a recommended option, until the goal and scope are clear. State the goal back as clauses, each an outcome someone could observe, and have the user confirm them. Every later review tests against these clauses.
+1. **Understand the request.** Interview the user until the goal and scope are clear. State the goal back as clauses, each an outcome someone could observe, and have the user confirm them. Every later review tests against these clauses.
 2. **Gather evidence.** Measure the current state: counts, paths, file:line. Delegate broad sweeps to parallel sub-agents, and spot-check what they return before recording it.
 3. **Planning record**, for a new initiative or for a change whose decisions need a record. A one-epic addition with no open decision goes straight to step 4.
    - Branch a worktree from `origin/engineering` and add `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
    - `README.md` holds the problem, the goal's clauses and their trace to the criteria, design, decisions, reviews and open questions. `inventory.md` holds the evidence.
    - Open a draft PR against `engineering` for discussion. The user merges it.
-4. **Draft bodies** from the templates, into local files. Those files are the source for every later edit. Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them. The initiative's acceptance criteria are drawn from the goal's clauses, as its template and the goal pass in `review-passes.md` define them; the epics' criteria carry the detail that makes them true. Each names its instrument, the automated test that verifies it or how the user confirms it, as the goal pass's Verified rule defines. Where the tests the criteria name do not exist, recommend them as the initiative's work: a task in the epic whose subject a test covers, or a discrete test-infrastructure epic when the tests serve several criteria, its row citing the criteria it verifies. The initiative closes once every criterion is ticked. Rows, their Descriptions and task grain follow the Work Breakdown guide.
+4. **Draft bodies** from the templates, into local files. Those files are the source for every later edit. Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them. The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the goal pass in `review-passes.md` defines. Each names its instrument, and a test it names that does not exist yet is planned as work, as the goal pass's Verified rule defines. The initiative closes once every criterion is ticked.
 5. **Review the drafts.** Run the goal pass in `review-passes.md`, and `deps.py I=… E00=…` over the drafts. Fold every gap and problem in and run both again. No issue is created while either reports one.
 6. **Create issues** so that every number exists before it is cited:
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;

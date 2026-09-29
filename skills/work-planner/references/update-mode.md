@@ -1,6 +1,6 @@
 # Update mode
 
-Records delivered work on an initiative, its epics and their task issues: links each delivered task to its pull request, ticks the criteria that now hold, closes what is complete, and brings the initiative's project board up to date. The Work Breakdown guide (`work-breakdown.md`) states how pull requests name tasks and how delivery is recorded.
+Records delivered work on an initiative, its epics and their task issues: links each delivered task to its pull request, ticks the criteria that now hold, closes what is complete, and brings the initiative's project board up to date.
 
 ## Procedure
 
@@ -22,7 +22,7 @@ Records delivered work on an initiative, its epics and their task issues: links 
 10. **Close** each epic the re-run reports closable, with `gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed`.
 11. **Update the initiative**: `scripts/update.py issue-936.json --epics issue-943.json issue-937.json …`, with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed. It lists each criterion whose citing epics are all delivered as ready to verify. Run the automated test each names, and tick those that pass with `--tick AC1,AC3`. Put each criterion that names no automated test to the user, who confirms it and ticks it. Close the initiative when it reports every criterion ticked.
 12. **Update the board**, once every issue is patched and closed. Fetch the issues again first.
-    - **Find it.** List the owner's open boards, as the commands below show; they sit under `orgs/{owner}` in place of `users/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`. Fetch each board's items and run `scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json`. The one board holding the initiative is its board. When none or several do, ask the user which board, or none; the first update puts the initiative on the board chosen, so the next search finds it.
+    - **Find it.** List the owner's open boards, as the commands below show. Fetch each board's items and run `scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json`. The one board holding the initiative is its board. When none or several do, ask the user which board, or none; the first update puts the initiative on the board chosen, so the next search finds it.
     - **Plan.** Fetch the board's fields, then its items with the Status field id, and run `scripts/board.py issue-936.json --epics … --tasks … --prs prs.json --board users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/`. It derives each issue's Status and prints the call for each issue to add, item to remove and Status to set. Give an issue it reports unresolved with `--others`.
     - **Write.** Run each call it prints. Fetch the items again and re-run: that re-read confirms every write, and the board is current when it reports nothing to do. An issue added in one pass gets its Status in the next.
 13. **Report** per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts, what was closed, and each board change.

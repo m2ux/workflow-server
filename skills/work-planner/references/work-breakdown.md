@@ -40,4 +40,4 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 
 ## What bodies leave out
 
-An initiative or epic body does not narrate the order work runs in, why it runs in that order, how the tables work, or how the plan changed: no row or sentence says what moved, was renumbered, was replaced or used to be. The tables state order through Depends on, and this guide states the rest. Longest chains, ordering reviews and the reasons behind them go in the planning record.
+An initiative or epic body does not narrate the order work runs in, why, or how the tables work: Depends on states order, and this guide states the rest. Longest chains, ordering reviews and their reasons go in the planning record. How the plan changed is left out too, as the skill's rules state.
