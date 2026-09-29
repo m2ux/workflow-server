@@ -496,8 +496,11 @@ function substituteStep(step: Step, siteBinding: SiteBinding, context: string): 
       const effect = option.effect;
       if (effect?.recordReply) {
         const target = renameHead(effect.recordReply, map);
-        if (target === undefined) delete effect.recordReply; // a dropped output writes nothing
-        else effect.recordReply = target;
+        // A gate asking for typed text has nowhere to put it once its variable is dropped.
+        if (target === undefined) {
+          throw new RoutineResolutionError(`${context}: option '${option.id}' of checkpoint '${step.id}' records its typed reply in a dropped output.`);
+        }
+        effect.recordReply = target;
       }
       if (!effect?.setVariable) continue;
       const rewritten: Record<string, unknown> = {};

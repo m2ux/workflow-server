@@ -380,6 +380,35 @@ describe('the refusals — every terminal but Checked fails', () => {
       .toThrow(/loop 'over-input' binds its item to a dropped output/);
   });
 
+  it('refuses a checkpoint recording its typed reply in an output the site dropped', () => {
+    const asks = routine({
+      id: 'asks',
+      outputs: [{ id: 'typed_note', type: 'string', description: 'what the user typed', optional: true }],
+      steps: [{
+        kind: 'checkpoint', id: 'ask', message: 'Name the file.',
+        options: [{ id: 'named', label: 'Name it', effect: { recordReply: 'typed_note' } }],
+      }] as Step[],
+    });
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'asks', outputs: {} } as Step]);
+    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [asks] }), 'wf'))
+      .toThrow(/option 'named' of checkpoint 'ask' records its typed reply in a dropped output/);
+  });
+
+  it('renames a checkpoint\'s reply variable to the site\'s binding', () => {
+    const asks = routine({
+      id: 'asks',
+      outputs: [{ id: 'typed_note', type: 'string', description: 'what the user typed' }],
+      steps: [{
+        kind: 'checkpoint', id: 'ask', message: 'Name the file.',
+        options: [{ id: 'named', label: 'Name it', effect: { recordReply: 'typed_note' } }],
+      }] as Step[],
+    });
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'asks', outputs: { typed_note: 'target_path' } } as Step]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [asks] }), 'wf');
+    const gate = host.steps![0] as Extract<Step, { kind: 'checkpoint' }>;
+    expect(gate.options![0]!.effect!.recordReply).toBe('target_path');
+  });
+
   it('refuses an action targeting an output the site dropped', () => {
     const writes = routine({
       id: 'writes',
