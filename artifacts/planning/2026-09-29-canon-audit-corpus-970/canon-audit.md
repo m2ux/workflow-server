@@ -2,7 +2,7 @@
 
 **Base ref:** `ba2ee7b6` (`workflows`) · #970 head `0d56c951` · #971 head `8a7dc934` (base `bbc11901`) · engine `main` `c9edbebe` · **Coverage:** 221 of 221 units × 54 of 54 paths · **Change surface:** 54 files (touched: 48 · closure: 6 · consumers: 0) · **Guards:** clean (56 pass on base and both heads)
 
-**Verdict:** Live 2 · Contract 13 · Hygiene 63. Of these, from the diff: Live 0 · Contract 7 · Hygiene 24. Residual: **0 files `unread`** of 54, **1 unit `blocked`** of 221 (the #970 body as a scope manifest). No prior pass.
+**Verdict:** Live 2 · Contract 13 · Hygiene 63. Of these, from the diff: Live 0 · Contract 7 · Hygiene 24. Residual: **0 files `unread`** of 54, **0 units `blocked`** of 221. No prior pass.
 
 | Band | Open | From the diff | Pre-existing |
 |------|-----:|--------------:|-------------:|
@@ -66,7 +66,6 @@ The pre-existing Hygiene (39) is itemised in `walk-A.md` to `walk-F.md` beside t
 |------|------|--------|
 | Anti-Patterns | AP-77, AP-78, AP-83 | not-applicable — "Authoring-session smells"; the surface holds no session record |
 | Anti-Patterns | AP-145 | not-applicable — no surface file is delivered before a session exists |
-| Anti-Patterns | AP-03 scope-manifest reading | blocked — the #970 body was unreadable: the `gh` keyring token is invalid |
 | Mechanical | Option coverage | not-applicable — the walk covers the roster's walked set; the specimen is `notWalked`, and #970 changes no step list, exit, gate or graph |
 
 Binding-fidelity: stamp `7062aa0a`, before the base. The three entries at files #970 touched (`variable-binding.md:43`, `yield-checkpoint.md` `yielded_checkpoint`, `workflow-design/techniques/TECHNIQUE.md` `workflow_files`) re-affirmed at head.
@@ -76,6 +75,8 @@ Binding-fidelity: stamp `7062aa0a`, before the base. The three entries at files 
 read 54 · unread 0.
 
 ## Notes
+
+- The #970 body, read as the scope manifest (AP-03), claims an exits-for-transitions sweep; the surviving "transition" wording above is the unfinished part. The body predates commits `3261c0d8` and `0d56c951`: it gives `yield-checkpoint` as 1.5.0 (the branch has 1.4.0) and omits activity-worker 1.10.0, the undeclared-yield and per-visit replay text, the variable-binding, pattern-analysis and 05-impact-analysis edits, the README sweep and the two resource bumps.
 
 - `workflow-design` is deprecated and "not being repaired". #970 edits its prose and bumps activity and technique versions there. The frozen workflow version is untouched, so no version-mismatch warning follows.
 - The skill's § Homes names `schemas/README.md` for schema fields; that file is now `docs/schemas.md` (the same move as K8).
