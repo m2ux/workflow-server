@@ -1,5 +1,5 @@
 id: impact-analysis
-version: 1.8.0
+version: 1.9.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, exits and graph, and references.
 variables:
@@ -36,6 +36,8 @@ steps:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis
         target_dir: planning_folder_path
+      outputs:
+        written_artifact: impact_analysis_path
     when: operation_type == 'update'
   - kind: action
     id: impact-no-removals
@@ -63,6 +65,8 @@ steps:
       - id: revise-impact
         label: Revise impact scope
         description: Impact scope is incomplete or over-inclusive.
+        effect:
+          exit: revise
       - id: preserve
         label: Preserve some flagged content
         description: Some flagged content must be preserved rather than removed.
@@ -72,6 +76,8 @@ steps:
 exits:
   - id: done
     isDefault: true
+  - id: revise
+    immediate: true
 outcome:
   - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
   - Exit bindings and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring

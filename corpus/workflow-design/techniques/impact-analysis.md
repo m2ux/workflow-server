@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -13,9 +13,9 @@ Impact assessment of proposed changes against an existing workflow.
 
 Number of distinct content removals in the inventory (diff-based and obsolete-file removals). Zero when the change is additive or string-only with no material deleted.
 
-### impact_analysis_path
+### impact_analysis
 
-Absolute path to the written impact-analysis artifact.
+The assembled impact report: per-file classification, the integrity verdicts, and the removals inventory as removed-versus-preserved rows, at the shape [impact-analysis](../resources/impact-analysis.md#template) declares.
 
 #### artifact
 
@@ -56,11 +56,10 @@ Absolute path to the written impact-analysis artifact.
 - For each removal, record a diff-style entry: what is removed and what is preserved in that region — never omit a removal from the inventory
 - Set `{removal_count}` to the number of distinct inventoried removals (0 when none)
 
-### 7. Persist Report
+### 7. Assemble Report
 
-- Persist classification, integrity checks, and the removals inventory, following [impact-analysis](../resources/impact-analysis.md#template)
+- Assemble `{impact_analysis}` from the classification, the integrity checks and the removals inventory
 - Own facts only: link [design-specification](../resources/design-specification.md) and structural inventory rather than restating them
-- Capture the written location as `{impact_analysis_path}`
 
 ## Rules
 

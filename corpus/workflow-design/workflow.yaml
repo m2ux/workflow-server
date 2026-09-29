@@ -52,6 +52,7 @@ graph:
     done: scope-and-draft
   impact-analysis:
     done: scope-and-draft
+    revise: impact-analysis
   scope-and-draft:
     done: quality-review
     redraft: scope-and-draft
