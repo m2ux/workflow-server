@@ -12,7 +12,11 @@ description: >-
 
 # Work Planner
 
-An initiative is one issue that states a goal and lists its epics. Each epic is an issue with its own tasks. Issues are the plan. A planning record on the `engineering` branch holds the evidence, the decisions and each review.
+Work Planner plans agent-engineering work as GitHub issues and keeps the plan current until the work is delivered.
+
+The plan has three levels. An initiative issue states a goal and lists its epics. Each epic is an issue whose Work Breakdown table lists its tasks. A task is one pull request's worth of work: a row in its epic, with an issue of its own only when it needs discussion or evidence. The issues are the plan, and the initiative's project board shows where each item stands. A planning record on the `engineering` branch holds what the issues leave out: the evidence, the decisions and each review.
+
+The modes follow the plan through its life: Plan writes it, Review keeps its issues to the templates, Update records work as it lands, Hoist brings stray issues into it, and Progress reports on it.
 
 ## Modes
 
