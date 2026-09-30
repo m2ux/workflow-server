@@ -41,9 +41,9 @@ describe('a loop continuation test', () => {
   });
 
   it('in a doWhile whose last body step is a nested loop is read after that loop\'s body', async () => {
-    const inner = { kind: 'loop', id: 'inner', name: 'Inner', loopType: 'forEach', over: 'more_to_do', variable: 'current_item', steps: [setFlag] };
+    const inner = { kind: 'loop', id: 'inner', name: 'Inner', loopType: 'forEach', over: 'work_items', variable: 'current_item', steps: [setFlag] };
     const contract = await contractOf({ loopType: 'doWhile', steps: [note, inner] });
-    expect(contract.reads).toEqual(['more_to_do']);
+    expect(contract.reads).toEqual([]);
     expect(contract.internalReads).toEqual(['more_to_do']);
   });
 
