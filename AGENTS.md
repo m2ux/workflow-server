@@ -5,8 +5,7 @@
 
 ## Project Instructions
 
-- You must adopt all content from .project/<folder> *when* working on content in that folder:
-  - .project/main/[AGENTS.md](http://AGENTS.md)
+- You must adopt all content from .project/<folder> *when* working on content in that folder.
 
 - Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.
 - Follow the folder naming pattern at: /.engineering/artifacts/planning/ and use to store *all* planning artifacts
