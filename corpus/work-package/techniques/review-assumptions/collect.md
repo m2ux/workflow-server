@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -13,13 +13,13 @@ Assumptions from the work classified against the bound assumption categories in 
 
 The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) with the newly collected, classified assumptions appended — each carrying type, statement, rationale, and alternatives. This file is the record of truth for the surfaced assumptions.
 
-### open_assumptions
+#### artifact
 
-The collected assumptions classified as open (stakeholder-dependent, non-code-resolvable), which downstream steps iterate for review; empty when none were identified.
+`assumptions-log.md`
 
-### has_open_assumptions
+#### audience
 
-Boolean gate — true iff `{open_assumptions}` is non-empty.
+`human`
 
 ## Protocol
 

@@ -1,5 +1,5 @@
 id: converge-assumptions
-version: 1.0.0
+version: 2.0.0
 name: Assumption Convergence Loop
 description: Reconcile assumptions and challenge the result until no agent-resolvable item remains.
 
@@ -29,15 +29,18 @@ outputs:
   - id: assumptions_log
     type: object
     description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
-  - id: has_resolvable_assumptions
-    type: boolean
-    description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
   - id: has_open_assumptions
     type: boolean
     description: Whether unresolved assumptions requiring stakeholder input remain.
+    optional: true
   - id: open_assumptions
     type: array
     description: The irreducible open assumptions after convergence.
+    optional: true
+
+internals:
+  - id: has_resolvable_assumptions
+    description: Whether a round left an assumption targeted analysis can still resolve, which keeps the loop running.
 
 steps:
   - kind: loop

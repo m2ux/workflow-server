@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.16.2
+version: 2.17.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
@@ -20,13 +20,6 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumption_outcome
-      type: string
-      description: The outcome given the assumption under discussion. Empty before one has been decided.
-      defaultValue: ""
-    - name: assumption_review_presentation
-      type: object
-      description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility — with a link to the assumptions log.
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
@@ -38,17 +31,6 @@ variables:
       type: boolean
       description: Whether any assumption was deferred to stakeholders.
       defaultValue: false
-    - name: has_open_assumptions
-      type: boolean
-      description: Whether unresolved assumptions requiring stakeholder input remain.
-      defaultValue: false
-    - name: has_resolvable_assumptions
-      type: boolean
-      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
-      defaultValue: false
-    - name: open_assumptions
-      type: array
-      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: post_summary_approved
       type: boolean
       description: Whether the deferred-assumptions summary is posted to the issue tracker, as decided at the post-summary-review gate.
@@ -61,26 +43,11 @@ steps:
     id: evaluate-open-assumptions
     technique: review-assumptions::collect
   - kind: routine
-    id: assumption-convergence
-    routine: converge-assumptions
+    id: settle-assumptions
+    routine: settle-assumptions
     outputs:
       assumptions_log: assumptions_log
-      has_resolvable_assumptions: has_resolvable_assumptions
-      has_open_assumptions: has_open_assumptions
-      open_assumptions: open_assumptions
-  - kind: technique
-    id: present-residual-assumptions
-    technique: review-assumptions::assemble-open-set
-    when: is_review_mode != true
-  - kind: routine
-    id: residual-assumptions
-    routine: residual-assumption-interview
-    outputs:
-      assumption_outcome: assumption_outcome
       has_deferred_assumptions: has_deferred_assumptions
-  - kind: technique
-    id: update-assumptions-log
-    technique: review-assumptions::record
   - kind: technique
     id: register-deferred-assumptions
     technique: manage-registers::append-deferred-item

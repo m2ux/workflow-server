@@ -1,5 +1,5 @@
 id: residual-assumption-interview
-version: 1.1.0
+version: 2.0.0
 name: Residual Assumption Interview
 description: Gate the residual open assumptions as a batch, record the batch answer, then interview them one at a time where the batch answer asks for it.
 
@@ -34,18 +34,13 @@ inputs:
     description: GitHub repository as owner/repo.
 
 outputs:
-  - id: assumption_outcome
-    type: string
-    description: The outcome the deciding gate gave the assumption under discussion.
-    values:
-      - confirmed
-      - corrected
-      - deferred
   - id: has_deferred_assumptions
     type: boolean
     description: Whether any assumption was deferred to stakeholder review.
 
 internals:
+  - id: assumption_outcome
+    description: The outcome the deciding gate gave the assumption under discussion — confirmed, corrected or deferred — which the record step writes into the log.
   - id: assumption_correction
     description: Text the user typed correcting the assumption under discussion. Unset until a correction is given.
   - id: current_assumption

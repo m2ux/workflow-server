@@ -8,7 +8,7 @@
 
 This workflow guides the complete lifecycle of a single work package through its main activities plus a codebase-comprehension sub-flow, entered from design-philosophy or assumptions-review. Each activity has defined techniques, checkpoints, and exits. Activities may be conditional (skipped based on complexity) or looped (repeated on failure), and review mode conditions their steps, checkpoints, and exits.
 
-Assumption and comprehension stages converge agent-resolvable concerns (analyse → challenge → combine) before residual stakeholder asks.
+Design philosophy, assumptions review, implement and codebase comprehension converge agent-resolvable concerns (analyse → challenge → combine) before residual stakeholder asks. The activities between them add their assumptions to the log, and assumptions review converges them.
 
 | # | Activity | Description |
 |---|----------|-------------|
