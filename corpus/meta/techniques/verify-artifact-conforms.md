@@ -59,7 +59,7 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 ### 3. Correct in Place
 
-- Replace a restated fact with a pointer to its canonical home in the register's link form, delete a section whose content is an absence, collapse a table whose every row passes, condense prose over its guide's budget, and rewrite a passage that breaks the register
+- Replace a restated fact with a pointer to its canonical home, as the Links rules of the [Artifact Writing Register](/meta/resources/writing-register.md) state, delete a section whose content is an absence, collapse a table whose every row passes, condense prose over its guide's budget, and rewrite a passage that breaks the register
 - Preserve content the user asked for explicitly, whatever the budget says
 - Leave an artifact under a published contract as it stands, recording its violations with `fixed` false — see `published-contracts-are-reported`
 
