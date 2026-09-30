@@ -11,8 +11,8 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_complexity
+    - base_remote
     - problem_statement
-    - push_remote
     - requirements
     - target_path
     - target_repo
@@ -49,7 +49,7 @@ steps:
       name: git::three-dot-name-status
       inputs:
         repo_path: target_path
-        base_ref: "{push_remote}/{default_branch}"
+        base_ref: "{base_remote}/{default_branch}"
   - kind: technique
     id: assess
     when: problem_complexity == 'complex' && is_review_mode != true
@@ -92,5 +92,5 @@ exits:
   - id: done
     isDefault: true
 outcome:
-  - "`pipeline_mode` names the structural analysis post-implementation review runs for the change"
+  - The change's structural analysis is settled as the full prism pipeline or the single inline pass
   - A choice the user makes is made against an assessed recommendation of what the full pipeline adds

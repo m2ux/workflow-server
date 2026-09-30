@@ -138,6 +138,10 @@ variables:
   - name: flagged_block_indices
     type: array
     description: Change-block indices flagged during manual diff review.
+  - name: base_remote
+    type: string
+    description: "Git remote the security branch is cut from (always 'security' here)."
+    defaultValue: security
   - name: push_remote
     type: string
     description: "Git remote for every push (always 'security' here)."

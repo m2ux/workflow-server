@@ -34,7 +34,7 @@ variables:
     description: Portfolio-mode lens name for per-lens artifact naming, distinct from the per-unit current_unit.lens_name.
   - name: pipeline_mode
     type: string
-    description: The analysis mode a caller settled for the run. Absent where the caller settled none.
+    description: The analysis mode the run executes.
   - name: selected_lenses
     type: array
     description: Lenses a caller chose for a portfolio unit. Absent where the caller chose none.

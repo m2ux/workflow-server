@@ -53,4 +53,4 @@ exits:
   - id: taken
     isDefault: true
 outcome:
-  - The next case's complexity and review flag
+  - The next case is bound, an implementation run and then a review run of one complex change

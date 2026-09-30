@@ -25,7 +25,7 @@ The paths the change touches.
 
 The commit the change stands at.
 
-### push_remote
+### base_remote
 
 The remote the change's branch was cut from.
 
@@ -35,7 +35,7 @@ The branch on that remote the change is measured against.
 
 ### prism_value_assessment
 
-The recommendation on the full prism pipeline. Absent on a review run.
+The recommendation on the full prism pipeline.
 
 ### case_outcomes
 
@@ -51,5 +51,5 @@ The list with this case's outcome appended: whether it was a review run, the cha
 
 ### 1. Record Outcome
 
-- Append one entry to `{case_outcomes}`: `{is_review_mode}`, the `{changed_files}` measured at `{head_sha}` against `{push_remote}/{default_branch}`, the `{prism_value_assessment}`, and `{pipeline_mode}`
-  > A review run measures nothing, so its entry records the change, the base and the recommendation as absent.
+- Append one entry to `{case_outcomes}`: `{is_review_mode}`, the `{changed_files}` measured at `{head_sha}` against `{base_remote}/{default_branch}`, the `{prism_value_assessment}`, and `{pipeline_mode}`
+  > A review run's entry records the change, the base and the recommendation as absent.

@@ -112,7 +112,7 @@ variables:
       defaultValue: ""
     - name: analysis_focus
       type: string
-      description: The files the change touches, which the prism run centres its analysis on.
+      description: The files the change touches.
       defaultValue: ""
     - name: test_findings_actionable
       type: boolean

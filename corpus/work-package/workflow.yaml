@@ -110,6 +110,10 @@ variables:
     type: boolean
     description: True when the run suppresses every public-disclosure side-effect.
     defaultValue: false
+  - name: base_remote
+    type: string
+    description: Git remote the feature branch is cut from.
+    defaultValue: origin
   - name: push_remote
     type: string
     description: Git remote the run pushes to.

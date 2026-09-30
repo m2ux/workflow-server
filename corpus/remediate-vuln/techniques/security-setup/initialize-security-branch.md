@@ -27,11 +27,11 @@ The private fork's default branch, which the security branch syncs from and merg
 
 ### 1. Fetch Security Remote
 
-- Fetch from the `security` remote inside `{target_path}` so the private fork's refs are current.
+- Fetch from `{base_remote}` inside `{target_path}` so the private fork's refs are current.
 
 ### 2. Resolve Default Branch
 
-- Resolve `{default_branch}` from `git -C {target_path} ls-remote --symref security HEAD`.
+- Resolve `{default_branch}` from `git -C {target_path} ls-remote --symref {base_remote} HEAD`.
   > Where the remote reports no `HEAD`, take `main`, then `master`.
 
 ### 3. Create Security Branch

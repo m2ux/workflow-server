@@ -15,6 +15,9 @@ variables:
       type: string
       description: Name of the indexed graph covering the target. Empty where no graph covers it.
       defaultValue: ""
+    - name: recommended_mode
+      type: string
+      description: The run mode the plan recommends.
     - name: analysis_units
       type: array
       description: Ordered list of analysis units (for multi-unit scopes)
@@ -128,7 +131,7 @@ steps:
     actions:
       - action: set
         target: pipeline_mode
-        description: Selected analysis mode.
+        value: "{recommended_mode}"
 exits:
   - id: dispute
     when: pipeline_mode == "dispute"

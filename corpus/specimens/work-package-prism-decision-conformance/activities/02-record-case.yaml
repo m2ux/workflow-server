@@ -4,6 +4,7 @@ name: Record Case
 description: Record what the decision settled for the case just walked.
 variables:
   reads:
+    - base_remote
     - case_index
     - case_outcomes
     - changed_files
@@ -12,7 +13,6 @@ variables:
     - is_review_mode
     - pipeline_mode
     - prism_value_assessment
-    - push_remote
   writes:
     - name: case_outcomes
       type: array

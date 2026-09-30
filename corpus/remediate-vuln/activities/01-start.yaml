@@ -4,6 +4,7 @@ name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
 variables:
   reads:
+    - base_remote
     - branch_name
     - component_git_dir
     - host_repo_path

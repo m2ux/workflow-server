@@ -56,7 +56,7 @@ variables:
     type: string
     description: Commit sha at the head of the pull request's branch.
     defaultValue: ""
-  - name: push_remote
+  - name: base_remote
     type: string
     description: The remote the fixture checkout's branch was cut from.
     defaultValue: origin
