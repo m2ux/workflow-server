@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.11.0
+  version: 1.12.0
 ---
 
 ## Capability
@@ -61,15 +61,15 @@ optional — the exit id a checkpoint option named, set when a checkpoint effect
 
 #### next_activity_id
 
-The `next_activity_id` output of [evaluate-transition](./evaluate-transition.md), carried unread.
+Where the run goes next, as the graph names the destination of the exit taken: an activity id, a list of members, or one activity together with the collection it runs over; or `__terminal__`.
 
 #### next_activity_fans
 
-The `next_activity_fans` output of evaluate-transition.
+Whether that destination opens several branches rather than one activity.
 
 #### activity_exit
 
-The `activity_exit` output of evaluate-transition.
+The exit id this activity took; unset where it declares none.
 
 #### batch_may_continue
 

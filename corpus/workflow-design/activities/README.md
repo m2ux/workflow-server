@@ -62,7 +62,7 @@ Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Vali
 
 Validate every file against its schema, verify the scope manifest is addressed, and generate or update the README set; then, in create/update modes, take the stakeholder approval, commit from the session `{target_path}` worktree and open a pull request against the `workflows` branch (`publish-workflow-pr`). In review mode it saves and commits the compliance report.
 
-Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Terminal in create and review modes; leads to [Post-Update Review](#10-post-update-review) in update mode.
+Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Leads to [Retrospective](#11-retrospective) in create and review modes, and to [Post-Update Review](#10-post-update-review) in update mode.
 
 ---
 

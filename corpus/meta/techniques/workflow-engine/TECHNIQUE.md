@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 6.16.0
+  version: 6.17.0
 ---
 
 ## Capability
 
-Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints. Every rule here is one both an orchestrator and a worker can act on; the boundaries a single role carries belong to that role's own technique.
+Contract and rules for executing a workflow's structured flow — sessions, activities, agents, Progress, and checkpoints. Every rule here is one both an orchestrator and a worker can act on.
 
 ## Inputs
 
