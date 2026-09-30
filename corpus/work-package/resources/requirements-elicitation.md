@@ -2,7 +2,7 @@
 name: requirements-elicitation
 description: Reference material for requirements elicitation methodology, including question domains, anti-patterns, and the document template.
 metadata:
-  version: 2.2.1
+  version: 2.2.2
   order: 5
   legacy_id: 5
 ---
@@ -114,7 +114,7 @@ Criteria must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.
 1. [Exclusion 1] - [Why excluded]
 
 ### Deferred
-[Omit this section if none. One line: Deferred scope items: [deferred-items register](deferred-items.md) — record each item there, not here.]
+[Omit this section if none. One line: Deferred scope items: [deferred-items register](deferred-items.json) — record each item there, not here.]
 
 ## Success Criteria
 

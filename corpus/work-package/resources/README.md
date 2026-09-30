@@ -51,6 +51,8 @@ Which guide owns each persisted filename's shape.
 | `requirements-elicitation.md` | [requirements-elicitation](requirements-elicitation.md) |
 | `implementation-analysis.md` | [implementation-analysis](implementation-analysis.md) |
 | `assumptions-log.md` | [assumptions-review](assumptions-review.md) |
+| `deferred-items.json` | [deferred-items](deferred-items.md) |
+| `follow-ups.json` | [follow-ups](follow-ups.md) |
 | `test-plan.md` | [test-plan](test-plan.md) |
 | `code-review.md` | [rust-substrate-code-review](rust-substrate-code-review.md#report-template) |
 | `test-suite-review.md` | [test-suite-review](test-suite-review.md) |

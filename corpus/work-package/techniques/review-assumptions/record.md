@@ -51,7 +51,7 @@ Boolean gate — true iff any assumption was marked deferred (needs-discussion).
 
 ### 3. Link the Deferred Register
 
-- Link the deferred-items register row from the log row's Outcome cell for each assumption marked deferred, so the log points at the register that states the item.
+- Link the deferred-items register from the log row's Outcome cell for each assumption marked deferred, naming the register entry's ID, so the log points at the register that states the item.
 
 ### 4. Preserve Every Row
 

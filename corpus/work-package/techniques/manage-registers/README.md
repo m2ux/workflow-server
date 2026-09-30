@@ -8,5 +8,5 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 
 | Technique | Contributes |
 |---|---|
-| [`append-deferred-item`](append-deferred-item.md) | The out-of-scope deferrals register, carrying one row per item consciously placed beyond this work package |
-| [`append-follow-up`](append-follow-up.md) | The in-task follow-ups register, carrying one row per piece of work still owed inside this work package |
+| [`append-deferred-item`](append-deferred-item.md) | The out-of-scope deferrals register, carrying one entry per item consciously placed beyond this work package |
+| [`append-follow-up`](append-follow-up.md) | The in-task follow-ups register, carrying one entry per piece of work still owed inside this work package |

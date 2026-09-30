@@ -2,7 +2,7 @@
 name: architecture-summary
 description: Create an architecture summary document at the end of implementation, using Mermaid diagrams to visualize how changes relate to the existing system for management-level stakeholders.
 metadata:
-  version: 1.2.0
+  version: 1.2.1
   order: 19
   legacy_id: 19
 ---
@@ -220,7 +220,7 @@ flowchart LR
 
 ## Future Considerations
 
-*[Omit this section if none. One line linking follow-ups: [deferred-items register](deferred-items.md).]*
+*[Omit this section if none. One line linking follow-ups: [deferred-items register](deferred-items.json).]*
 
 ## Related Documents
 

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-The deferred-items register read for rows that name no issue yet.
+The deferred-items register read for entries that name no issue yet.
 
 ## Inputs
 
@@ -15,13 +15,13 @@ The register holding this run's out-of-scope deferrals, named by its bare filena
 
 #### default
 
-`deferred-items.md`
+`deferred-items.json`
 
 ## Outputs
 
 ### open_deferred_items
 
-The register rows whose Follow-up cell holds no issue link, each carrying the row's `id`, `item` and `rationale`. Empty when the register does not exist, or when every row is raised already.
+The register entries whose `issue` is null, each carrying the entry's `id`, `item` and `rationale`. Empty when the register does not exist, or when every entry is raised already.
 
 ### has_unraised_deferred_items
 
@@ -34,7 +34,7 @@ Boolean gate — true when `{open_deferred_items}` holds at least one row.
 - Read `{deferred_items_register}` in `{planning_folder_path}`.
   > The register is created lazily, so a run that deferred nothing has none. `{open_deferred_items}` is empty and `{has_unraised_deferred_items}` false — a run with nothing outstanding, not a missing-file fault.
 
-### 2. Select the Unraised Rows
+### 2. Select the Unraised Entries
 
-- Take every row of the register table whose Follow-up cell holds a dash rather than a link, and record it in `{open_deferred_items}` with its ID, its item text and its rationale.
+- Take every register entry whose `issue` is null, and record it in `{open_deferred_items}` with its `id`, its `item` and its `reason` as the rationale.
 - Set `{has_unraised_deferred_items}` from whether that set holds anything.

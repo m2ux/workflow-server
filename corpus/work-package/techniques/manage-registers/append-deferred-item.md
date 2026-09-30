@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-The out-of-scope deferrals register, carrying one row per item consciously placed beyond this work package.
+The out-of-scope deferrals register, carrying one entry per item consciously placed beyond this work package.
 
 ## Inputs
 
@@ -21,21 +21,21 @@ The out-of-scope deferrals register, carrying one row per item consciously place
 
 ### deferred_items_register
 
-The register with each supplied deferral appended as a row, or updated in place where the row already exists.
+The register with each supplied deferral appended as an entry, or updated in place where the entry already exists.
 
 #### artifact
 
-`deferred-items.md`
+`deferred-items.json`
 
 #### audience
 
-`human`
+`agent`
 
 ## Protocol
 
-### 1. Append the Rows
+### 1. Append the Entries
 
 - Assemble the deferrals this pass contributes: every entry of `{deferred_item_rows}`, plus every `{assumptions_log}` row whose Outcome is Deferred
-- Write each as a row in the shape the [register template](../../resources/deferred-items.md#template) gives, creating the register when this is its first row
-  > Where a row for the item already exists, update that row rather than adding a second, per the group's `one-row-per-item-updated-in-place`.
-- Leave the Follow-up cell as a dash until an issue is raised for the row, which is what marks it as still unraised
+- Write each as an entry in the shape the [register template](../../resources/deferred-items.md#template) gives, creating the register when this is its first entry
+  > Where an entry for the item already exists, update that entry rather than adding a second, per the group's `one-entry-per-item-updated-in-place`.
+- Leave `issue` null until an issue is raised for the entry, which is what marks it as still unraised

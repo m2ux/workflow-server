@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Deferred-items register rows carried into the issue tracker.
+Deferred-items register entries carried into the issue tracker.
 
 ## Inputs
 
