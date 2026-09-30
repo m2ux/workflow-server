@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.1
+  version: 1.6.3
 ---
 
 ## Capability
@@ -43,20 +43,21 @@ Absolute path to the written analysis report.
 
 ### 1. Read Sources
 
-- Read every document named in `{classified_sources}`; when `{target_doc_exists}`, also read the current specification at `{target_doc_path}`.
+- Read every document named in `{classified_sources}`.
+  > When `{target_doc_exists}`, also read the current specification at `{target_doc_path}`.
 - Where two sources bear on the same subject, carry both readings forward — a disagreement between them is a conflict recorded in `{requirements_analysis}`, not a value to pick between here.
 
 ### 2. Identify Requirement Changes
 
 - Extract explicit requirement statements, modifications, additions, and deprecations from each source document, and derive reasonably-implied requirements.
-- Map each change to an existing requirement identifier where one applies; otherwise mark it as a new requirement, per [Identifier Schemes](../resources/specification-protocol.md#identifier-schemes).
+- Map each change to a requirement identifier per the [Rules](../resources/requirements-analysis-report.md#rules), in the category [Identifier Schemes](../resources/specification-protocol.md#identifier-schemes) gives it.
 - For each new or updated requirement, record each contributing passage the [Rules](../resources/requirements-analysis-report.md#rules) require in `{requirements_analysis}`.
 - Note ambiguities and conflicts in `{requirements_analysis}`.
   > When `{analysis_feedback}` is bound, the analysis addresses each point it names: a misreading is corrected, and a missed or unread passage is read and mapped.
 
 ### 3. Create Source References
 
-- Assign one source reference per entry in `{classified_sources}`, so every document the analysis draws on is citable in its own right.
+- Assign each entry in `{classified_sources}` its source reference per the [Rules](../resources/requirements-analysis-report.md#rules).
 - Follow [Source Reference Format](../resources/specification-protocol.md#source-reference-format) for the form each source type takes.
 
 ### 4. Complete Source Coverage

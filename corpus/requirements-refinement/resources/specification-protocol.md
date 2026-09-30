@@ -1,6 +1,6 @@
 ---
 name: specification-protocol
-description: The canonical specification layout preserved verbatim: section structure, identifier schemes, requirement-entry format, status conventions, final specification form, and source-reference format.
+description: The canonical specification layout and conventions, preserved verbatim.
 metadata:
   order: 1
 ---
@@ -11,33 +11,56 @@ The canonical layout and conventions a requirements specification follows. This 
 verbatim when augmenting an existing specification, and instantiated in full when creating one from
 scratch.
 
-## Section Structure
+## Template
 
-A specification is organized into these top-level sections, in order:
-
-1. **Executive Summary** — the purpose of the system. The requirements define its scope, so this section carries no scope statement.
-2. **Requirements Sources** — the documents and discussions requirements derive from:
-   - 2.1 Product and Solution Documents
-   - 2.2 Meeting Transcripts
-   - 2.3 Vendor Documents
-   - 2.4 Source Reference Format
-   - 2.5 Reference Documents
-3. **Use Case Definition** — primary use case, personas, user journey, key success criteria.
-4. **Functional Requirements** — capabilities the system provides, grouped into domain subsections.
-5. **Non-Functional Requirements** — architectural, operational, security, and governance constraints, grouped into subsections.
-6. **Performance Requirements** — throughput, latency, and capacity targets.
-7. **Project and Process Requirements** — delivery, process, and project-level requirements.
-
-Section 2.4 carries these two lines, and [Source Reference Format](#source-reference-format) holds the
-full form:
+A specification carries these sections, in this order. When augmenting, the existing section set and
+ordering are retained; new material is added under the matching section. Section 2.4 summarizes the
+citation form [Source Reference Format](#source-reference-format) holds in full.
 
 ```markdown
+# {System name} Requirements Specification
+
+## 1. Executive Summary
+
+{The purpose of the system. The requirements define its scope, so this section carries no scope statement.}
+
+## 2. Requirements Sources
+
+{The documents and discussions requirements derive from.}
+
+### 2.1 Product and Solution Documents
+
+### 2.2 Meeting Transcripts
+
+### 2.3 Vendor Documents
+
+### 2.4 Source Reference Format
+
 - Each cited source is a markdown hyperlink to the file listed for it in section 2.
 - Participant initials may follow the list.
-```
 
-When augmenting, the existing section set and ordering are retained; new material is added under the
-matching section.
+### 2.5 Reference Documents
+
+## 3. Use Case Definition
+
+{Primary use case, personas, user journey, key success criteria.}
+
+## 4. Functional Requirements
+
+{Capabilities the system provides, grouped into domain subsections.}
+
+## 5. Non-Functional Requirements
+
+{Architectural, operational, security, and governance constraints, grouped into subsections.}
+
+## 6. Performance Requirements
+
+{Throughput, latency, and capacity targets.}
+
+## 7. Project and Process Requirements
+
+{Delivery, process, and project-level requirements.}
+```
 
 ## Identifier Schemes
 
@@ -131,8 +154,6 @@ reference in section 2, relative to the folder of the target specification.
   derived passage — for a transcript, the timestamp heading. When the source is not markdown, the href
   is the file alone.
 
-Section 2.2 lists each transcript, and section 2.5 each document, by a link to that same file.
-
 On a requirement, citations appear at the end of the rationale as a square-bracketed list of those
 hyperlinks. The link text is the source's 1-based index in that list, never a timestamp. Numbering is
 local to the list: every requirement's first source is `1`.
@@ -150,12 +171,15 @@ list:
 [[1](../.engineering/artifacts/documents/settlement-brief.pdf)] (Jane Doe)
 ```
 
-## Reference Documents
+## Source Listings
 
-An unstructured reference document (a proposal, brief, email, or similar) is recorded under section 2.5
-with an `SRC-DOC###` reference and credited to its author, mirroring the meeting-transcript listing:
+Section 2 lists each source by its reference, under the subsection its type takes: a meeting transcript
+under 2.2, and an unstructured reference document (a proposal, brief, email, or similar) under 2.5. The
+link is to the same file its citations name. A meeting is credited to its participants' initials, and a
+document to its author:
 
 ```
+**SRC-MTG###**: [Meeting Title](path/to/transcript.md) — PW, MC
 **SRC-DOC###**: [Document Title](path/to/document) — Author Name
 ```
 

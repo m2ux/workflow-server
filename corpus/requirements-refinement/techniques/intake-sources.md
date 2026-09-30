@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.1
+  version: 1.7.0
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ Filesystem paths of the source documents being processed, each a meeting transcr
 
 ### source_readable
 
-`true` when `{source_paths}` names at least one document and every document it names exists and carries content; `false` when it names none, or when any of them is missing or empty.
+`true` when `{source_paths}` names at least one document, every document it names exists and carries content, and no two share a file name; `false` otherwise.
 
 ### classified_sources
 
@@ -35,9 +35,10 @@ The source documents paired with their classifications, each `{ path, type }` â€
 
 ### 2. Classify Each Source
 
-- For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`. Each source carries its own type, so a mixed set is classified per document rather than as a whole.
+- For each path in `{source_paths}`, infer from that document's content whether it is a meeting transcript or an unstructured document, and record it in `{classified_sources}` as `{ path, type }` with `type` set to `meeting` or `document`.
   > - A source with no content to read carries no classification.
-  > - When `{intake_correction}` names a source's type, that type is recorded over the inference.
+  > - A source the bound `{classified_sources}` already classifies, matched by file name, keeps that type over the inference.
+  > - When `{intake_correction}` names a source's type, that type is recorded over both.
 
 ## Rules
 

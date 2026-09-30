@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.0.2
 ---
 
 ## Capability
@@ -44,7 +44,8 @@ Absolute filesystem path of the specification the run augments or creates. Emitt
 
 ### 2. Apply the Correction
 
-- When `{intake_correction}` is bound, apply it over the starting paths: a source it adds is added, a source it removes is removed, and a target it names replaces the target.
+- Apply `{intake_correction}` over the starting paths: a source it adds is added, a source it removes is removed, and a target it names replaces the target.
+  > Unset, `{intake_correction}` changes no path.
 
 ### 3. Settle the Paths
 

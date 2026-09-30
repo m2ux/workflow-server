@@ -1,12 +1,11 @@
 id: report-failure
-version: 1.6.1
+version: 1.7.1
 name: Report Failure
-description: Compile a failure report of the issues refinement leaves unresolved, the correction history, and the manual resolution each issue needs.
+description: Compile a failure report of the issues refinement leaves unresolved, the correction passes attempted, and the manual resolution each issue needs.
 variables:
   reads:
     - classified_sources
     - planning_folder_path
-    - spec_basename
     - target_doc_path
     - validation_report_path
   writes:
@@ -21,6 +20,6 @@ steps:
     technique: report-failure
     actions:
       - action: message
-        message: "Refinement stops with unresolved issues. The issues, the correction history, and the manual resolution each one needs are on record ([failure report]({failure_report_path}))."
+        message: "Refinement stops with unresolved issues. The issues, the correction passes attempted, and the manual resolution each one needs are on record ([failure report]({failure_report_path}))."
 outcome:
   - The issues that blocked refinement and the manual resolution each one needs are on record

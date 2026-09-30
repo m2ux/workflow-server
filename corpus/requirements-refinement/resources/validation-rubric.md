@@ -12,7 +12,7 @@ The checks applied to an updated specification and the scheme for categorizing e
 ## Checks
 
 ### Structure
-- All canonical sections are present and correctly ordered per [Section Structure](./specification-protocol.md#section-structure), and each section the run adds holds what that structure gives it.
+- All canonical sections are present and correctly ordered per the [Template](./specification-protocol.md#template), and each section the run adds holds what the Template gives it.
 - Each entry the run adds or changes conforms to [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
 - Markdown syntax is well-formed.
 

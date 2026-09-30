@@ -1,5 +1,5 @@
 id: intake
-version: 2.1.0
+version: 2.3.0
 name: Intake
 description: Establish the run's readable, classified source documents and its target specification.
 variables:
@@ -11,7 +11,7 @@ variables:
   writes:
     - name: source_paths
       type: array
-      description: Filesystem paths of the local source documents being processed, each a meeting transcript or an unstructured document
+      description: Filesystem paths of the source documents the user named, each a meeting transcript or an unstructured document
     - name: target_doc_path
       type: string
       description: Filesystem path to the canonical requirements specification being augmented or created
@@ -27,10 +27,6 @@ variables:
       type: array
       description: Source documents paired with their classifications, each { path, type } where type is meeting or document
       defaultValue: []
-    - name: spec_basename
-      type: string
-      description: Basename of the target specification
-      defaultValue: ""
     - name: target_doc_exists
       type: boolean
       description: True when the target specification already exists and is being augmented; false when it is created from scratch
@@ -59,7 +55,7 @@ steps:
     when: source_readable == false
     actions:
       - action: message
-        message: "The run has no readable source: a document named for it is missing or empty, or the request names none (sources: {source_paths})."
+        message: "The run has no readable source: a document named for it is missing or empty, two share a file name, or the request names none (sources: {source_paths})."
   - kind: checkpoint
     id: target-doc-named
     when: source_readable == true
@@ -86,9 +82,6 @@ steps:
     id: record-intake
     technique: record-intake
     when: source_readable == true
-    actions:
-      - action: message
-        message: "The source set and the target specification are captured, each source held in the repository with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
   - kind: checkpoint
     id: sources-confirmed
     when: source_readable == true

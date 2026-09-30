@@ -7,7 +7,7 @@ and a creation guide for each artifact a run persists.
 
 | Resource | Contents |
 |----------|----------|
-| [specification-protocol](specification-protocol.md) | The canonical specification layout, preserved verbatim: section structure, identifier schemes, requirement-entry format, status conventions, final specification form, and source-reference format |
+| [specification-protocol](specification-protocol.md) | The canonical specification layout and conventions, preserved verbatim |
 | [requirements-analysis-report](requirements-analysis-report.md) | Structure for the analysis of requirement changes derived from a set of source documents |
 | [validation-rubric](validation-rubric.md) | Validation checks and the severity/type categorization that labels each issue |
 | [change-summary](change-summary.md) | Structure for the change summary that accompanies a finalized specification |

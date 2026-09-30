@@ -1,17 +1,13 @@
 ---
 metadata:
-  version: 1.5.1
+  version: 1.6.1
 ---
 
 ## Capability
 
-Compile a failure report of the issues refinement leaves unresolved, the correction history, and the manual resolution each issue needs.
+Compile a failure report of the issues refinement leaves unresolved, the correction passes attempted, and the manual resolution each issue needs.
 
 ## Inputs
-
-### spec_basename
-
-Basename of the target specification.
 
 ### validation_report
 
@@ -25,7 +21,7 @@ Absolute path to the written validation report for the pass that stopped refinem
 
 ### failure_report
 
-Failure report carrying the unresolved issue IDs, correction history, and manual-resolution guidance.
+Failure report carrying the unresolved issue IDs, the number of correction passes attempted, and manual-resolution guidance.
 
 #### artifact
 
@@ -52,7 +48,7 @@ Absolute path to the written failure report.
 
 ### 3. Write Failure Report
 
-- Write `{failure_report}` for `{spec_basename}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules), filling the template's path slot with the path of `{validation_report_path}` per `artifact-paths-relative`; capture its written location as `{failure_report_path}`.
+- Write `{failure_report}` for the specification at `{target_doc_path}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules), filling the template's path slot with the path of `{validation_report_path}` per `artifact-paths-relative`; capture its written location as `{failure_report_path}`.
 
 ## Rules
 
