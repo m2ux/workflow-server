@@ -1,5 +1,5 @@
 id: record-deferrals
-version: 1.0.2
+version: 1.0.0
 name: Record Deferrals
 description: Append two deferrals to the register and raise the first as an issue.
 variables:

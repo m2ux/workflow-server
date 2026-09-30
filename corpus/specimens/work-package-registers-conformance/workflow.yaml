@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: work-package-registers-conformance
-version: 1.0.1
+version: 1.0.0
 title: Work Package Registers Conformance Workflow
 description: >-
   Hold the work-package deferred-items register to two cases. The negative case collects before any
