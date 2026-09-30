@@ -18,15 +18,19 @@ The structure for the human-readable summary that accompanies a finalized specif
 **Validation**: [passed | passed after N correction passes]
 
 ## New Requirements
+[Omit this section if none]
 - [REQ-ID]: [one-line title]
 
 ## Updated Requirements
+[Omit this section if none]
 - [REQ-ID]: [what changed]
 
 ## Deprecated Requirements
+[Omit this section if none]
 - [REQ-ID]: [reason]
 
 ## Sources Added
+[Omit this section if none]
 - SRC-MTG###: [meeting title]  ·  or  SRC-DOC###: [document title] — Author Name
 
 ## Staging

@@ -29,12 +29,15 @@ One block per source document:
 ## Requirements Changes
 
 ### New Requirements
+[Omit this section if none]
 [Each new requirement to create: proposed REQ-ID, title, rationale, target section, and each contributing passage as Source ID plus the verbatim heading above that passage.]
 
 ### Updated Requirements
+[Omit this section if none]
 [Each existing requirement to modify: REQ-ID, change needed, rationale, and each contributing passage as Source ID plus the verbatim heading above that passage.]
 
 ### Deprecated Requirements
+[Omit this section if none]
 [Each requirement to deprecate: REQ-ID, rationale.]
 
 ## Source Coverage Matrix
@@ -72,4 +75,5 @@ href fragment. What counts as a normative obligation, and what makes a row a cov
 - **Each contributing passage names the heading above it.** Record the source identifier and the verbatim heading sitting above that passage — the same string [Source Reference Format](./specification-protocol.md#source-reference-format) uses as the fragment.
 - **Each change is applicable without the sources.** State it precisely enough to be applied without re-reading any source document.
   > The heading on a citation locates the passage; the rationale states the change.
-- **Line budget:** ~120 lines, whatever the size of the source set. The source-coverage matrix is the payload; narrative about the sources belongs in the intake record.
+- **Narrative about the sources belongs in the intake record.**
+- **Line budget:** ~120 lines, whatever the size of the source set. The source-coverage matrix is the payload.

@@ -28,16 +28,46 @@ A specification is organized into these top-level sections, in order:
 6. **Performance Requirements** — throughput, latency, and capacity targets.
 7. **Project and Process Requirements** — delivery, process, and project-level requirements.
 
-Section 2.4 carries these two lines, and [Source Reference Format](#source-reference-format) holds the
-full form:
-
-```markdown
-- Each cited source is a markdown hyperlink to the file listed for it in section 2.
-- Participant initials may follow the list.
-```
+Section 2.4 carries the two lines the [Template](#template) gives it, and
+[Source Reference Format](#source-reference-format) holds the full form.
 
 When augmenting, the existing section set and ordering are retained; new material is added under the
 matching section.
+
+## Template
+
+```markdown
+# {System name} Requirements Specification
+
+## 1. Executive Summary
+
+{The purpose of the system.}
+
+## 2. Requirements Sources
+
+### 2.1 Product and Solution Documents
+
+### 2.2 Meeting Transcripts
+
+### 2.3 Vendor Documents
+
+### 2.4 Source Reference Format
+
+- Each cited source is a markdown hyperlink to the file listed for it in section 2.
+- Participant initials may follow the list.
+
+### 2.5 Reference Documents
+
+## 3. Use Case Definition
+
+## 4. Functional Requirements
+
+## 5. Non-Functional Requirements
+
+## 6. Performance Requirements
+
+## 7. Project and Process Requirements
+```
 
 ## Identifier Schemes
 

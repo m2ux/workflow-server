@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.1
+  version: 1.6.2
 ---
 
 ## Capability
@@ -43,7 +43,8 @@ Absolute path to the written analysis report.
 
 ### 1. Read Sources
 
-- Read every document named in `{classified_sources}`; when `{target_doc_exists}`, also read the current specification at `{target_doc_path}`.
+- Read every document named in `{classified_sources}`.
+  > When `{target_doc_exists}`, also read the current specification at `{target_doc_path}`.
 - Where two sources bear on the same subject, carry both readings forward — a disagreement between them is a conflict recorded in `{requirements_analysis}`, not a value to pick between here.
 
 ### 2. Identify Requirement Changes

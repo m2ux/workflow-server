@@ -1,5 +1,5 @@
 id: intake
-version: 2.1.0
+version: 2.2.0
 name: Intake
 description: Establish the run's readable, classified source documents and its target specification.
 variables:
@@ -92,7 +92,7 @@ steps:
   - kind: checkpoint
     id: sources-confirmed
     when: source_readable == true
-    message: "The source set and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured, each source with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
+    message: "The source set and the [target specification]({target_doc_path}) (target exists: {target_doc_exists}) are captured, each source with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
     options:
       - id: confirmed
         label: Yes, proceed
