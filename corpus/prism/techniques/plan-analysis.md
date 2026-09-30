@@ -181,6 +181,7 @@ The run mode the plan recommends.
 - If `{output_path}` is provided, write `{analysis_plan}` into `{output_path}` per [analysis-plan](../resources/analysis-plan.md#template) and its [Rules](../resources/analysis-plan.md#rules), capturing its full filesystem path as `{analysis_plan_path}`
 - A single-unit `{analysis_units}` array runs one analysis pass; a multi-unit array runs one pass per unit in order
 - Emit `{recommended_mode}`: `full-prism` where any unit takes it, else `behavioral` where any unit takes that, else the first unit's mode
+  > Where `{analysis_units}` is empty, `{recommended_mode}` is `single`.
 
 ## Rules
 

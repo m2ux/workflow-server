@@ -29,7 +29,8 @@ One or two sentences that open with the recommendation — run the full pipeline
 
 ### 2. Weigh Signals
 
-- For a measured change, recommend the full pipeline or the inline pass on two signals.
+- Recommend the full pipeline or the inline pass on two signals.
+  > This phase reads a measured change; an empty measurement keeps the reading phase 1 gave it.
   > - Where the change alters a path that creates state, reaches agreement between nodes, checks authority, or persists data across an upgrade, or reaches more than one functional area, recommend the full pipeline.
   > - Where neither holds, recommend the inline pass.
 - Name what the adversarial pass would contest and the synthesis pass would reconcile in the paths the deciding signal names, or that neither has a path to work on.

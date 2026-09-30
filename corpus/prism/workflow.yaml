@@ -37,7 +37,13 @@ variables:
     description: The analysis mode the run executes.
   - name: selected_lenses
     type: array
-    description: Lenses a caller chose for a portfolio unit. Absent where the caller chose none.
+    description: Indices of the lenses a caller chose for a portfolio unit. Absent where the caller chose none.
+  - name: target_type
+    type: string
+    description: Whether the target is code or general text. Absent where the caller did not say.
+    values:
+      - code
+      - general
   - name: analysis_focus
     type: string
     description: Optional focus area to guide the analysis

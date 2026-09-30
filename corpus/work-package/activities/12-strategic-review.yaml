@@ -4,10 +4,12 @@ name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
   reads:
+    - base_remote
     - branch_name
     - changed_files
     - component_git_dir
     - component_path
+    - default_branch
     - host_repo_path
     - is_review_mode
     - issue_number

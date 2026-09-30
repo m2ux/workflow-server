@@ -5,9 +5,13 @@ metadata:
 
 ## Capability
 
-Fetch from the private `security` remote and check out a fresh local feature branch off the private fork, naming it for the advisory so the fix never touches a public branch.
+Fetch from the private fork's remote and check out a fresh local feature branch off the private fork, named for the advisory.
 
 ## Inputs
+
+### base_remote
+
+The remote naming the private fork, which the security branch is cut from.
 
 ### short_id
 

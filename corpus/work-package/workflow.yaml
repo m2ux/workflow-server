@@ -151,6 +151,7 @@ graph:
   lean-coding-audit:
     done: prism-decision
   prism-decision:
+    remeasure: prism-decision
     done: post-impl-review
   post-impl-review:
     done: validate

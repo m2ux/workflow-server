@@ -140,7 +140,7 @@ variables:
     description: Change-block indices flagged during manual diff review.
   - name: base_remote
     type: string
-    description: "Git remote the security branch is cut from (always 'security' here)."
+    description: Git remote the security branch is cut from.
     defaultValue: security
   - name: push_remote
     type: string
@@ -180,6 +180,7 @@ graph:
   lean-coding-audit:
     done: prism-decision
   prism-decision:
+    remeasure: prism-decision
     done: post-impl-review
   post-impl-review:
     done: validate

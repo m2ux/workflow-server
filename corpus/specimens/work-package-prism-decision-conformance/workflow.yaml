@@ -78,6 +78,7 @@ graph:
   take-case:
     taken: prism-decision
   prism-decision:
+    remeasure: prism-decision
     done: record-case
   record-case:
     more-cases: take-case

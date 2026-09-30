@@ -4,6 +4,7 @@ name: Prism Decision
 description: Settle whether the change takes the full prism pipeline or the single inline structural pass.
 variables:
   reads:
+    - base_remote
     - branch_name
     - component_git_dir
     - default_branch
@@ -11,7 +12,6 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_complexity
-    - base_remote
     - problem_statement
     - requirements
     - target_path
@@ -75,6 +75,11 @@ steps:
         effect:
           setVariable:
             pipeline_mode: full-prism
+      - id: measure-again
+        label: Measure the change again
+        description: The branch does not yet carry the change; measure it once it does
+        effect:
+          exit: remeasure
       - id: use-inline-pass
         label: Use the single inline pass
         description: The change is analysed through one structural lens
@@ -89,6 +94,8 @@ steps:
         target: pipeline_mode
         value: full-prism
 exits:
+  - id: remeasure
+    immediate: true
   - id: done
     isDefault: true
 outcome:
