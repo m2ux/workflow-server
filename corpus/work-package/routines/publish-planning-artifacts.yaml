@@ -39,7 +39,11 @@ internals:
 steps:
   - kind: technique
     id: resolve
-    technique: resolve-artifact-publish
+    technique:
+      name: resolve-artifact-publish
+      outputs:
+        artifact_publish_ref: artifact_publish_ref
+        publishable_files: publishable_files
   - kind: technique
     id: commit
     technique:
