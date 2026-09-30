@@ -488,7 +488,7 @@ async function readSignature(
  *
  * Reads are the names the activity consults: a bound op's input under the name-match convention,
  * the `{token}`s of a step binding's values and of the activity's prose, and the variables its
- * gates, conditions, loops and routing test. A name an earlier step of the same activity produces
+ * gates, conditions, loops and routing test. A `doWhile`'s continuation test is read after its body. A name an earlier step of the same activity produces
  * is read internally rather than from the contract — the same closest-producer-before-position
  * rule the provenance annotation applies.
  */
@@ -573,6 +573,17 @@ export async function deriveActivityContract(args: {
     producedSoFar.add(name);
   };
 
+  // A `doWhile` takes its continuation test after a pass, so the test reads what the body wrote.
+  // Each such test is held against the loop's last body step, in the order `flattenActivitySteps`
+  // visits the body, and read once that step has been taken.
+  const testsAfter = new Map<Step, Condition[]>();
+  const lastOfBody = (loop: Step): Step | undefined => {
+    const body = loop.kind === 'loop' ? (loop.steps as Step[]) : [];
+    const last = body[body.length - 1];
+    if (last === undefined) return undefined;
+    return last.kind === 'loop' ? (lastOfBody(last) ?? last) : last;
+  };
+
   for (const step of flattenActivitySteps(activity)) {
     // Gates and conditions are read before the step's own work.
     if (step.when) whenReads(step.when).forEach(read);
@@ -580,7 +591,12 @@ export async function deriveActivityContract(args: {
     if (step.kind === 'loop') {
       // A loop's predicates are its continuation test and its item-iteration early exit; its entry
       // gate is `when` alone.
-      conditionReads(step.continueWhile).forEach(read);
+      const last = step.loopType === 'doWhile' ? lastOfBody(step) : undefined;
+      if (last !== undefined && step.continueWhile !== undefined) {
+        testsAfter.set(last, [...(testsAfter.get(last) ?? []), step.continueWhile]);
+      } else {
+        conditionReads(step.continueWhile).forEach(read);
+      }
       conditionReads(step.breakCondition).forEach(read);
       // `over` is a plain collection reference (`open_assumptions`, `implementation_plan.tasks`),
       // not a gate expression.
@@ -686,6 +702,8 @@ export async function deriveActivityContract(args: {
         if (action.action === 'set' && action.target) write(action.target);
       }
     }
+
+    for (const test of testsAfter.get(step) ?? []) conditionReads(test).forEach(read);
   }
 
   // Activity-level routing is read at the boundary, after every step has run.
