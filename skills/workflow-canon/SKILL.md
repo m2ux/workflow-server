@@ -36,7 +36,8 @@ Read the file for the mode the request calls for:
 - **[Author](references/author-mode.md)**
   - New definitions, and specified changes: a work item, a finding, or a defect with a location
   - Closing a confirmed finding with the Fix its entry states
-  - A walk of the draft before it is written, and an audit of each touched file after
+  - A walk of each draft before it is written, and a check of what the pass wrote
+  - Fix findings closed within the pass, and a stop when two entries undo each other
 - **[Audit](references/audit-mode.md)**
   - Reviews of existing definitions, entry by entry across the change surface
   - Attribution of each finding to the diff, to the base ref, or to a prior pass
@@ -79,4 +80,4 @@ Read the file for the mode the request calls for:
 - **Commands.**
   Every spec runs under the shared conventions at the top of [commands.md](references/commands.md).
 - **Commit gate.**
-  A definition change takes an [Audit](references/audit-mode.md) before it commits.
+  A definition change commits only once audited, as [Author](references/author-mode.md#procedure)'s last step states.

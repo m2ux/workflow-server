@@ -35,8 +35,6 @@ These govern every walk of the canon's units, in each mode. The criterion applie
   A candidate that falls is an edit, in the same pass, to the entry's Do not flag or the guard's exemption surface.
 - **Unread paths.**
   `unread` paths are outside the remediation scope, or the pass reads them and says which.
-- **Touched files.**
-  Every file a fix touched is read whole before the pass closes, under the entries that bind the destination, its compound headings split as [Compound headings](#order) states.
 - **Consumers of a Fix.**  Follow the entry's Fix through to the consumer it names.
 - **Ledgers, fixtures and snapshots.**
   Edit the lines a ledger, fixture, or snapshot needs. The diff's size is the check.
