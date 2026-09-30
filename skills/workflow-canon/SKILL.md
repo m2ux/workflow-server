@@ -1,6 +1,6 @@
 ---
 name: workflow-canon
-description: "Apply the workflow-server design canon — design principles, the anti-pattern catalog, convention conformance, and the repo guard suite — when authoring or auditing a workflow definition (workflow.yaml, activities/, techniques/, resources/, READMEs). Use for: \"review this workflow\", \"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\", \"is this the right schema construct\", before drafting or editing any definition file, before committing definition changes, and to revise the workflow-canon skill itself. Examples: \"audit workflow-design\", \"review my new activity YAML\", \"why is this rule an anti-pattern?\""
+description: "Applies the workflow-server design canon (principles, anti-patterns, conventions, guards) to workflow definitions. Use to draft, change or audit a workflow, activity, technique or resource, before committing definition changes, or to revise this skill: \"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\", \"why is this an anti-pattern?\""
 ---
 
 # Workflow Canon
