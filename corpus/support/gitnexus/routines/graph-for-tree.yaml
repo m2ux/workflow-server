@@ -1,5 +1,5 @@
 id: graph-for-tree
-version: 1.0.0
+version: 1.0.1
 name: Graph For Tree
 description: >-
   Name the graph covering a tree, build one where the inventory covers that tree with none, and name
@@ -24,6 +24,7 @@ steps:
     technique:
       name: gitnexus::resolve-graph
       inputs:
+        repo_name: repo_name
         tree_path: tree_path
       outputs:
         repo_name: repo_name
@@ -33,6 +34,7 @@ steps:
     technique:
       name: gitnexus::analyze
       inputs:
+        repo_name: repo_name
         repo_path: tree_path
       outputs:
         stats: index_stats
@@ -42,6 +44,7 @@ steps:
     technique:
       name: gitnexus::resolve-graph
       inputs:
+        repo_name: repo_name
         tree_path: tree_path
       outputs:
         repo_name: repo_name

@@ -1,5 +1,5 @@
 id: api-surface-review
-version: 1.0.0
+version: 1.0.1
 name: API Surface Review
 description: >-
   Name the graph covering a tree, building one where the inventory covers it with none, map the API
@@ -33,11 +33,15 @@ steps:
     id: map-routes
     technique:
       name: gitnexus::route-map
+      inputs:
+        repo_name: repo_name
       outputs:
         route_inventory: route_inventory
   - kind: technique
     id: check-shapes
     technique:
       name: gitnexus::shape-check
+      inputs:
+        repo_name: repo_name
       outputs:
         shape_report: shape_report
