@@ -1,4 +1,4 @@
-# Guards
+# Check Programs
 
 A check program reads a tree and reports whether a stated invariant holds. Those programs live here, on the engine tree, because they are code: they share the server's loaders and they run as part of this repository's tooling. The verdicts they record about *this* corpus live on the `workflows` branch under `ledgers/`.
 
