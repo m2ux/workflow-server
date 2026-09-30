@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Create the analysis-document artifact capturing the current state, baseline metrics, identified gaps, and improvement opportunities.
+Create the analysis-document artifact capturing the current state, baseline metrics, and identified gaps.
 
 ## Inputs
 
@@ -29,7 +29,7 @@ Gaps linked to success criteria; recorded in the artifact.
 
 ### analysis_document
 
-Current implementation analysis carrying the located implementation, its evaluated effectiveness, the established baselines, the identified gaps, and the improvement opportunities they open.
+Current implementation analysis carrying the located implementation, its evaluated effectiveness, the established baselines, and the identified gaps.
 
 #### artifact
 
@@ -43,5 +43,5 @@ Current implementation analysis carrying the located implementation, its evaluat
 
 ### 1. Create Analysis Artifact
 
-- Create the analysis-document artifact in `{planning_folder_path}`, capturing the located implementation, evaluated effectiveness, established baselines, and identified gaps
+- Create the `{analysis_document}` in `{planning_folder_path}` from the [Document Template](../../resources/implementation-analysis.md#document-template), capturing `{located_implementation}` and `{effectiveness_assessment}` as the current state, `{baseline_metrics}`, and `{gaps_identified}`
 - This artifact is the [canonical home](../../resources/canonical-home-map.md#map) for baselines, gaps, and measurement strategy; success criteria home in `requirements-elicitation.md` — fill the template's link-only slot rather than restating them

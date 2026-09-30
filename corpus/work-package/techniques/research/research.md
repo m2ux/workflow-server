@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ Best practices, documentation, and resources gathered from web research, each ca
 
 ### 1. Load Resources
 
-- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) for guidance; capture web findings so they can fill the [web research findings template](../../resources/web-research.md#section-template)
+- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) for guidance; capture each web finding with its source so it can join the findings list the template gives
 - Review `{requirements}` and `{problem_statement}` for research focus
 
 ### 2. Search Knowledge Base

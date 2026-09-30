@@ -1,8 +1,8 @@
 ---
 name: implementation-analysis
-description: Guidelines for analyzing the existing implementation during work package planning to establish baselines, evaluate effectiveness, and identify improvement opportunities.
+description: Guidelines for analyzing the existing implementation during work package planning to establish baselines, evaluate effectiveness, and identify the gaps the change closes.
 metadata:
-  version: 1.4.0
+  version: 2.0.0
   order: 6
   legacy_id: 6
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Implementation Analysis Guide
 
-Document template and section vocabulary for analyzing an existing implementation: baselines, effectiveness evidence, and quantitative success criteria.
+Document template and section vocabulary for analyzing an existing implementation: its current state, baselines, and the gaps the change closes.
 
 **Full analysis** fills every template section when the work modifies existing functionality, expects performance improvements, defines quality metrics, or needs before/after comparison. **Lightweight analysis** may omit or shorten sections for greenfield work, simple bug fixes with obvious solutions, or documentation-only changes.
 
@@ -20,112 +20,43 @@ Consult when filling the template (not a session procedure):
 
 | Section | Fill with |
 |---------|-----------|
-| **Implementation review** | Code location (files/modules), usage (callers, triggers, frequency), dependencies both ways, architecture patterns, integration points |
-| **Effectiveness evaluation** | Evidence from logs, dashboards, tests, bugs, TODOs/workarounds — what works, what does not |
+| **Current state** | Where the implementation lives, how it is reached, what it depends on, and what works and what does not, each claim carrying its evidence — logs, dashboards, tests, bugs, workarounds |
 | **Baseline metrics** | Performance / quality / usage / reliability numbers plus reproducible measurement method |
 | **Gap analysis** | Existing vs desired (functional, performance, quality, maintainability); priority HIGH / MEDIUM / LOW |
-| **Opportunities** | Quick wins, structural, optimization, cleanup |
-| **Success criteria** | Measurable targets from baselines — format: "Improve [metric] from [baseline] to [target] ([X]% improvement)" with the same validation method as the baseline |
+| **Measurement** | How the change is measured against each baseline — the same method the baseline used — and any analysis-derived target the requirements lack, in the form "Improve [metric] from [baseline] to [target]" |
 
 ## Document Template
 
 ```markdown
-# Implementation Analysis - [Work Package Name]
+# Implementation Analysis — [Work Package Name]
 
 > [work package] · [date] · [Draft/Complete]
 
-## Implementation Review
+## Current State
 
-### Existing Location
-| Component | Path | Description |
-|-----------|------|-------------|
-| [Component] | `src/path/to/module` | [What it does] |
-
-### Usage Patterns
-**How is it used today:**
-- [Usage pattern 1]
-
-**Call frequency:** [How often is it invoked?]
-
-### Dependencies
-
-**Depends On:**
-- `module/path` - [Why]
-
-**Depended On By:**
-- `other/module` - [How]
-
-### Architecture
-**Existing patterns:** [Describe architecture]
-**Known technical debt:** [List any known issues; omit if none]
-
-## Effectiveness Evaluation
-
-### What's Working Well
-
-| Capability | Evidence | Confidence |
-|------------|----------|------------|
-| [Feature/behavior] | [Log data, test results, metrics] | HIGH/MEDIUM/LOW |
-
-### What's Not Working
-
-| Issue | Evidence | Impact |
-|-------|----------|--------|
-| [Problem] | [Error logs, bug reports, metrics] | HIGH/MEDIUM/LOW |
-
-### Workarounds in Place
-[Omit this section if none]
-- [Workaround 1] - [Why needed]
+[Two to five sentences: what the implementation does today, where it lives and what reaches it, with each module named in words and linked; then what works and what does not, each claim carrying its evidence.]
 
 ## Baseline Metrics
 
-| Metric | Current Value | Measurement Method | Date Measured |
-|--------|--------------|-------------------|---------------|
-| [Latency P95] | [X ms] | [How measured] | [Date] |
-| [Error Rate] | [X%] | [How measured] | [Date] |
-
-### Key Findings
-- [Quantitative observation 1]
+| Metric | Value | Measured by | Date |
+|--------|-------|-------------|------|
+| [Latency P95] | [X ms] | [how measured] | [date] |
 
 ## Gap Analysis
 
-| ID | Gap | Current State | Desired State | Impact | Priority |
-|----|-----|---------------|---------------|--------|----------|
-| G1 | [Missing capability] | [What exists] | [What's needed] | [Effect] | HIGH |
+| ID | Gap | Current → desired | Priority |
+|----|-----|-------------------|----------|
+| G1 | [missing capability] | [what exists → what is needed] | HIGH |
 
-## Opportunities for Improvement
+## Measurement
 
-[Include only the subsections that apply]
-
-### Quick Wins (Low Effort, High Impact)
-1. **[Opportunity]:** [Description] — Expected impact: [Benefit]; Effort: [Estimate]
-
-### Structural Improvements (Higher Effort)
-1. **[Opportunity]:** [Description] — Expected impact: [Benefit]; Effort: [Estimate]
-
-### Optimization Opportunities
-1. **[Opportunity]:** [Description] — Expected impact: [Benefit]; Effort: [Estimate]
-
-## Success Criteria
-
-[One line: Success criteria: [requirements](requirements-elicitation.md#success-criteria). This document contributes baselines and gaps; add here ONLY analysis-derived targets absent from requirements, each mapped to a gap ID.]
-
-### Measurement Strategy
-**How will we validate improvements?**
-- [Test/script/tool for measuring metric 1]
-- [Comparison methodology for before/after]
-
-## Sources of Evidence
-
-| Source | Type | What It Showed |
-|--------|------|----------------|
-| [Log file/dashboard] | Metrics | [Findings] |
+[One sentence per metric: how the change is measured against its baseline. Success criteria: [requirements](requirements-elicitation.md#success-criteria); add here only analysis-derived targets absent from requirements, each mapped to a gap ID.]
 ```
 
 ## Rules
 
 - Every effectiveness claim cites evidence (log data, test results, metrics) — no vague claims like "slow" or "not great".
-- Every baseline row records value, measurement method, and date (e.g. `487ms | Production logs, 7-day average | 2025-01-15`).
-- Success criteria are quantitative, each mapped to a gap and to a validation method matching the baseline methodology. "Make it faster" is not a criterion.
+- Every baseline row records value, measurement method, and date (e.g. 487 ms, production logs over a 7-day average, 2025-01-15).
+- A target is quantitative, mapped to a gap, and measured by the method its baseline used. "Make it faster" is not a target.
 - Gaps are prioritized with impact justification.
-- **Line budget:** ~150 lines. Baseline measurements are the payload; the approach they argue for belongs in the plan.
+- **Line budget:** ~60 lines. Baseline measurements are the payload; the approach they argue for belongs in the plan, and the module structure belongs in the comprehension corpus.

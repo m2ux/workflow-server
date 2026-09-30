@@ -2,7 +2,7 @@
 name: requirements-elicitation
 description: Reference material for requirements elicitation methodology, including question domains, anti-patterns, and the document template.
 metadata:
-  version: 2.2.2
+  version: 3.0.0
   order: 5
   legacy_id: 5
 ---
@@ -66,88 +66,47 @@ Criteria must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.
 ```markdown
 # Requirements Elicitation: [Work Package Name]
 
-> [date] · Confirmed | Pending Confirmation
+> [date] · Confirmed by [user] | Pending Confirmation · stakeholder discussion [held | not held]
 
 ## Problem Statement
 
-[2-3 sentences describing the core problem being solved]
+[2-3 sentences: the core problem, and the end state that solves it.]
 
-## Goal
+## Users
 
-[What success looks like - the desired end state]
+- As a **[user type]**, I want **[capability]** so that **[benefit]**.
 
-## Stakeholders
+## Constraints
 
-### Primary Users
-
-| User Type | Needs | User Story |
-|-----------|-------|------------|
-| [Type] | [Needs] | As a [type], I want [X] so that [Y] |
-
-### Secondary Stakeholders
-[Omit this section if none]
-- [Stakeholder 1] - [Their interest]
-
-## Context
-
-### Integration Points
-- [System/component 1] - [How it interacts]
-
-### Dependencies
-[Omit this section if none]
-- [External dependency 1]
-
-### Constraints
-- **Technical:** [Constraints]
-- **Timeline:** [Constraints]
-- **Resources:** [Constraints]
+[Omit this section if none. One line per constraint that bounds the solution — an integration point, a dependency, or a technical, timeline or regulatory limit.]
 
 ## Scope
 
-### In Scope
+**In scope:**
 
-1. [Must-have 1]
-2. [Must-have 2]
+1. [Must-have]
 
-### Out of Scope
+**Out of scope:**
 
-1. [Exclusion 1] - [Why excluded]
+1. [Exclusion] — [why excluded]
 
-### Deferred
-[Omit this section if none. One line: Deferred scope items: [deferred-items register](deferred-items.json) — record each item there, not here.]
+[Omit if none. One line: Deferred scope items: [deferred-items register](deferred-items.json).]
 
 ## Success Criteria
 
 | ID | Criterion | Verification Method |
 |----|-----------|---------------------|
-| SC-1 | [Criterion 1] | [How to verify] |
-| SC-2 | [Criterion 2] | [How to verify] |
+| SC-1 | [Criterion] | [How to verify] |
 
 ## Assumptions
 
-[One line: Assumptions surfaced during elicitation: [assumptions log](assumptions-log.md) — record each there (categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria), not here.]
+[One line: Assumptions surfaced during elicitation: [assumptions log](assumptions-log.md).]
 
 ## Elicitation Log
 
-### Questions Asked
-
-| Domain | Question | Response Summary |
-|--------|----------|------------------|
-| Problem | [Question] | [Key points from response] |
-
-### Clarifications Made
-[Omit this section if none]
-- [Clarification 1]: [Resolution]
-
-### Open Questions Resolved
-[Omit this section if none]
-- [Question]: [Resolution]
-
-## Confirmation
-
-**Confirmed by:** [User]
-**Date:** YYYY-MM-DD
-**Notes:** [Omit if none]
+| Domain | Question | Answer |
+|--------|----------|--------|
+| [domain] | [question posed] | [the answer, in a phrase] |
 ```
 
 ## Question Discipline
@@ -168,4 +127,4 @@ Elicitation is complete when four questions are confidently answerable: what pro
 
 ## Rules
 
-- **Line budget:** ~150 lines. Elicited requirements are the payload; the Elicitation Log holds one row per question and no transcript.
+- **Line budget:** ~60 lines. Elicited requirements are the payload; the Elicitation Log holds one row per question and no transcript.

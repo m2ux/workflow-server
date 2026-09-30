@@ -2,7 +2,7 @@
 name: architecture-summary
 description: Create an architecture summary document at the end of implementation, using Mermaid diagrams to visualize how changes relate to the existing system for management-level stakeholders.
 metadata:
-  version: 1.2.1
+  version: 2.0.0
   order: 19
   legacy_id: 19
 ---
@@ -29,7 +29,7 @@ Skip for: bug fixes with no architectural impact, internal refactoring invisible
 
 Mermaid node shapes: `([text])` actor, `[text]` internal system, `[(text)]` database, `[[text]]` external service.
 
-Container diagram example (the [Architecture Summary Artifact Template](#architecture-summary-artifact-template) embeds examples for the other types):
+Container diagram example (the [Architecture Summary Artifact Template](#architecture-summary-artifact-template) embeds the system-context form):
 
 ```mermaid
 ---
@@ -58,7 +58,8 @@ flowchart LR
 - Label every arrow with the interaction type; direction shows data/control flow; avoid crossing lines.
 - Highlight new/modified elements with distinct colors; grey out unchanged context; keep names and colors consistent across diagrams.
 - Include a clear "why" for the changes.
-- **Line budget:** ~150 lines. Diagrams count toward it, so a third diagram displaces prose rather than adding to it.
+- At most two diagrams: the system context, and one more where the change warrants it.
+- **Line budget:** ~80 lines. Diagrams count toward it.
 
 ## Architecture Summary Artifact Template
 
@@ -69,13 +70,11 @@ Template:
 
 > architecture-summary · [work package name] · #[issue number] [title] · YYYY-MM-DD · [author/agent]
 
-## Executive Summary
+## Summary
 
-[2-3 sentences describing what was implemented and why it matters. Write for someone unfamiliar with the codebase.]
+[2-3 sentences: what was implemented and why it matters, for someone unfamiliar with the codebase.]
 
 ## System Context
-
-[Brief description of the system and its environment]
 
 ```mermaid
 ---
@@ -83,146 +82,32 @@ title: System Context - [Feature/Change Name]
 ---
 flowchart LR
     User([👤 User Role])
-    
+
     Main[System Name<br/>Core system]
     Ext1[(External System)]
-    
+
     User -->|Action/Interaction| Main
     Main -->|Integration type| Ext1
-    
+
     style Main fill:#e1f5fe,stroke:#01579b
     style Ext1 fill:#f5f5f5,stroke:#9e9e9e
 ```
 
-*[Optional: note explaining the diagram if needed]*
-
-## Package Structure
-
-*[Omit this section unless changes affect module organization or dependencies. Highlight new/modified packages with distinct colors.]*
-
-```mermaid
----
-title: Package Diagram - [Feature/Change Name]
----
-flowchart TB
-    subgraph System [System Name]
-        subgraph Package1 [Package 1]
-            Module1[Module A]
-            Module2[Module B]
-        end
-        
-        subgraph Package2 [Package 2]
-            Module3[Module C]
-        end
-    end
-    
-    Package1 --> Package2
-    
-    style System fill:#fafafa,stroke:#424242
-    style Package1 fill:#e3f2fd,stroke:#1976d2
-    style Package2 fill:#c8e6c9,stroke:#2e7d32
-```
-
-## Key Flows
-
-*[Omit this section unless key flows between components are affected]*
-
-```mermaid
----
-title: Sequence - [Flow Name]
----
-sequenceDiagram
-    actor User
-    participant Main as Main System
-    participant Ext as External System
-
-    User->>Main: Initiates action
-    Main->>Ext: Calls API
-    Ext-->>Main: Returns result
-    Main-->>User: Responds
-```
-
 ## What Changed
 
-### Components Added/Modified
+- **[Added / Modified / Removed] [component]** — [what it now does, in business terms].
 
-| Component | Change Type | Description |
-|-----------|-------------|-------------|
-| [Name] | Added/Modified/Removed | [Brief description] |
+## [Package Structure / Key Flow / Before and After]
 
-### Key Changes
-
-- **[Change 1]:** [Description in business terms]
-- **[Change 2]:** [Description in business terms]
-
-## Before & After
-
-*[Omit this section unless the change modifies existing architecture]*
-
-### Before
-
-```mermaid
----
-title: "Before: [Description]"
----
-flowchart LR
-    %% Show original state
-    Actor([👤 Actor])
-    System[System]
-    
-    Actor --> System
-    
-    style System fill:#f5f5f5,stroke:#9e9e9e
-```
-
-### After
-
-```mermaid
----
-title: "After: [Description]"
----
-flowchart LR
-    %% Show new state with changes highlighted
-    Actor([👤 Actor])
-    System[System]
-    NewComponent[New Component]
-    
-    Actor --> System
-    System --> NewComponent
-    
-    style System fill:#f5f5f5,stroke:#9e9e9e
-    style NewComponent fill:#c8e6c9,stroke:#2e7d32
-```
+[Omit this section unless the change warrants a second diagram, chosen per Diagram Selection. One diagram, then one sentence on what it shows.]
 
 ## Impact
 
-### Who Is Affected
+[Who is affected and which upstream or downstream systems, in two or three sentences.]
 
-| Stakeholder | Impact | Notes |
-|-------------|--------|-------|
-| [Role/Team] | [High/Medium/Low] | [Brief description] |
+## Risks
 
-### System Dependencies
+[Omit this section if the implementation surfaced no risk the plan does not already hold. One line per net-new risk and its mitigation.]
 
-*[Omit if no upstream/downstream systems are affected]*
-
-| System | Relationship | Impact |
-|--------|--------------|--------|
-| [System] | Upstream/Downstream | [Description] |
-
-## Risks & Mitigations
-
-*[Omit this section if none. Planning risks: [plan](wp-plan.md#rules) — one line. Table rows ONLY for net-new risks the implementation surfaced:]*
-
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| [Post-implementation risk not in the plan register] | Low/Medium/High | Low/Medium/High | [How addressed] |
-
-## Future Considerations
-
-*[Omit this section if none. One line linking follow-ups: [deferred-items register](deferred-items.json).]*
-
-## Related Documents
-
-*[Omit this section if none. Link (don't copy) the ADR, work package plan, and relevant documentation.]*
+[Omit if none. One line: What comes next: [deferred-items register](deferred-items.json).]
 ````

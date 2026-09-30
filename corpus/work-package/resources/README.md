@@ -12,8 +12,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `jira-issue-creation` | Jira Issue Creation | What Jira adds — terminology, issue types, field arrangement, native markup, priority and labels |
 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
 | `implementation-analysis` | Implementation Analysis | Analysis framework and document template |
-| `knowledge-base-research` | Knowledge Base Research | Research findings artifact template and citation rules |
-| `web-research` | Web Research | Web-research findings template appended to the research document |
+| `knowledge-base-research` | Knowledge Base Research | Research findings artifact template — knowledge-base and web findings in one list — and citation rules |
 | `design-framework` | Design Framework | TRIZICS solution-design methodology applied at plan time, plus the design-philosophy artifact template |
 | `wp-plan` | Work Package Plan | Plan document template with task breakdown format |
 | `test-plan` | Test Plan | Test plan templates and test-design principles |

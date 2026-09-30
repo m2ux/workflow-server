@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ An Architecture Decision Record for the work package, numbered next in the recor
 
 ### design_philosophy_doc
 
-Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with rationale and alternatives
+Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with the problem statement and its classification
 
 ### adr_dir
 
@@ -45,9 +45,8 @@ Directory holding the project's ADR files
 
 ### 2. Gather Context
 
-- Read the `{design_philosophy_doc}` for decision rationale, alternatives, and trade-offs.
-  > Where it is absent, take the rationale and alternatives from the plan and the implementation analysis instead, and record which of them supplied it.
-- Review implementation analysis and plan from `{planning_folder_path}` for architectural choices
+- Read the `{design_philosophy_doc}` for the problem the decision answers.
+- Review the plan and the implementation analysis in `{planning_folder_path}` for the architectural choices, their rationale and their trade-offs
 - Identify alternatives that were considered and rejected
 
 ### 3. Write Adr

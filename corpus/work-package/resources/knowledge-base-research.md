@@ -1,8 +1,8 @@
 ---
 name: knowledge-base-research
-description: Guidelines for researching the knowledge base during work package planning to discover relevant concepts, design patterns, and best practices.
+description: Research findings template and citation rules — knowledge-base and web findings in one list, each linked to its source.
 metadata:
-  version: 1.2.0
+  version: 2.0.0
   order: 7
   legacy_id: 7
 ---
@@ -10,77 +10,46 @@ metadata:
 
 # Knowledge Base Research Guide
 
-Before designing a solution, research the knowledge base to surface best practices, design patterns, architectural guidance, documentation conventions, and testing strategies — informed design reuses proven approaches instead of reinventing them. Research findings fill the artifact template below.
+Before designing a solution, research the knowledge base and the web to surface best practices, design patterns, architectural guidance, documentation conventions, and testing strategies — informed design reuses proven approaches instead of reinventing them. Research findings fill the artifact template below.
 
 **Full research** when the work package involves architectural decisions, multiple possible implementation approaches, an unfamiliar or complex domain, or performance/reliability requirements. **Lightweight research** acceptable for simple well-understood changes, work following established patterns, or minor bug fixes with clear solutions.
 
 ## Planning Artifact
 
-Store research findings in a discrete planning document:
-
 **Template:**
 
 ```markdown
-# Knowledge Base Research - [Work Package Name]
+# Research — [Work Package Name]
 
 > [work package] · [date] · [Draft/Complete]
 
-## Research Approach
-
-| Activity | Technique Used | Results Summary |
-|----------|------------|-----------------|
-| [activity used] | [technique followed] | [Brief findings] |
-
-## Relevant Concepts Discovered
-
-### [Concept 1]
-**Source:** [Document name/path]  
-**Relevance:** [How it applies to work package]  
-**Key Insight:** [Main takeaway]
-
-## Applicable Design Patterns
-
-| Pattern | Source | How It Applies | Confidence |
-|---------|--------|----------------|------------|
-| [Pattern name] | [Document] | [Application to work package] | HIGH/MEDIUM/LOW |
-
-## Best Practices Found
-
-### [Practice 1]
-**Source:** [Document name/path]  
-**Description:** [What the practice recommends]  
-**Application:** [How to apply in this work package]
-
-## Risks and Anti-Patterns
-[Omit this section if none found]
-
-| Risk/Anti-Pattern | Source | Mitigation |
-|-------------------|--------|------------|
-| [Issue] | [Document] | [How to avoid] |
-
 ## Recommended Approach
 
-Based on research findings:
+[Two to four sentences: the pattern to follow, why it fits this work package, and the practices it brings with it.]
 
-1. **Primary Pattern:** [Pattern to follow]
-   - Rationale: [Why this pattern fits]
+## Findings
 
-2. **Key Practices to Apply:**
-   - [Practice 1]
+- **[What the source recommends, in a phrase]** — [how it applies to this work package, with the source linked in the sentence]. Confidence: HIGH/MEDIUM/LOW.
 
-3. **Risks to Monitor:** [Omit if none]
-   - [Risk 1] - [Mitigation]
+## Risks
 
-## Sources Referenced
+[Omit this section if none found]
 
-| Document | Relevance | Key Sections |
-|----------|-----------|--------------|
-| [Document 1] | [Why relevant] | [Specific sections] |
+- **[Risk or anti-pattern]** — [how the approach avoids it, with the source linked in the sentence].
+
+## Compatibility
+
+[Omit this section if no dependency version constrains the approach]
+
+| Dependency | Version | Constraint |
+|------------|---------|------------|
+| [library] | [version] | [what the version rules in or out] |
 ```
 
 ## Rules
 
-- Each finding names its source and states how it applies to this work package (e.g. "API is 90% reads → write-behind cache with periodic flush"), not generic advice ("we should probably use caching").
-- Quote the specific recommendation, not a paraphrase, when the wording carries the decision criteria.
-- Record confidence (HIGH/MEDIUM/LOW) for each pattern recommendation.
-- **Line budget:** ~120 lines. Findings cite their source; a quoted passage longer than the finding it supports is over budget.
+- **A finding links its source in its own sentence**, per [Links](/meta/resources/writing-register.md#links), and states how it applies to this work package ("API is 90% reads → write-behind cache with periodic flush"), not generic advice ("we should probably use caching").
+- **Knowledge-base and web findings share one list.** A web source that confirms a knowledge-base finding adds its link to that finding; one that contradicts or extends it says so on that finding.
+- **Quote the specific recommendation**, not a paraphrase, when the wording carries the decision criteria.
+- **Every finding carries a confidence** — HIGH, MEDIUM or LOW.
+- **Line budget:** ~60 lines. A quoted passage longer than the finding it supports is over budget.
