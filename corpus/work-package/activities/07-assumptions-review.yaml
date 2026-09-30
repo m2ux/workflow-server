@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.16.0
+version: 2.16.1
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
@@ -32,7 +32,7 @@ variables:
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: deferred_items_register
       type: string
-      description: The out-of-scope deferrals register as it stands after this activity's rows.
+      description: The out-of-scope deferrals register as it stands after this activity's entries.
       defaultValue: ""
     - name: has_deferred_assumptions
       type: boolean

@@ -64,7 +64,7 @@ variables:
       defaultValue: []
     - name: follow_ups_register
       type: string
-      description: The in-task follow-ups register as it stands after this activity's rows.
+      description: The in-task follow-ups register as it stands after this activity's entries.
       defaultValue: ""
     - name: from_activity
       type: string

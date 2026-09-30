@@ -60,8 +60,8 @@ Path to the written close-out document, for user-facing links.
 
 ### 4. Link the Open-Work Registers
 
-- Read the in-task follow-ups register and the out-of-scope deferred-items register (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one link line per register that exists, carrying each register's open count and nothing else. Omit the section when neither register exists.
-   > Work still open at close-out and held by no register entry goes to the register that owns it first — in-task to follow-ups, out-of-scope to deferred-items, creating that register when this is its first entry — and Open Work links it like any other. Writing it into the close-out instead is the second home the guide forbids, and it is the one place where the alternative to a register entry is silence.
+- Read the in-task follow-ups register and the out-of-scope deferred-items register (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, its open entry IDs, and a link to each issue raised from it. Omit the section when neither register exists.
+   > Work still open at close-out and held by no register entry goes to the register that owns it first — in-task to follow-ups, out-of-scope to deferred-items, creating that register when this is its first entry — and Open Work counts it like any other. Writing it into the close-out instead is the second home the guide forbids, and it is the one place where the alternative to a register entry is silence.
 
 ### 5. Link the Cost and the Verdict
 

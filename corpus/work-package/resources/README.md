@@ -19,7 +19,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `pr-description` | PR Description | PR description templates, link-row rendering forms, and the conformance criteria a rendered body satisfies |
 | `assumptions-review` | Assumptions Review | Assumption collection, classification, and document formats |
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
-| `findings-report` | Findings Report | Shared finding layout, designator, severity and reachability contracts, and the report/method split every findings report follows |
+| `findings-report` | Findings Report | Shared finding layout, designator, severity and reachability contracts, and the one-report shape every findings report follows |
 | `symbol-provenance` | Symbol Provenance | What establishes provenance for a symbol named in code or documentation, and how each class of symbol is verified |
 | `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria, field list and report templates |
 | `test-suite-review` | Test Suite Review | Test suite quality assessment framework, field list and report templates |

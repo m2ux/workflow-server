@@ -21,7 +21,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 ### change_block_index
 
-[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs whose Block titles hyperlink to `file:line` as permanent blob URLs at the reviewed commit
+[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs whose Block titles name each change and link to it as permanent blob URLs at the reviewed commit
 
 #### artifact
 
@@ -83,7 +83,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 ### 4. Create Index
 
-- Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one `### [Block N — file:line]` subsection per block, each title linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
+- Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one subsection per block, its title naming the change and linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
 - When `{rationale_corrections}` is bound, apply each correction to the Block Rationale paragraph of the block it names
 - Write index to the `{change_block_index}` under `{planning_folder_path}`

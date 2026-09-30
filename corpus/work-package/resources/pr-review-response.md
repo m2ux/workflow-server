@@ -42,7 +42,7 @@ The analysis of one review round. Each comment entry takes the [Response Format 
 
 ## Changes Made
 
-- **[concern]** — [what the change makes true] ([commit](commit-url))
+- **[concern]** — [what the change makes true], in [short-sha](commit-url)
 
 ## Re-review Decision
 

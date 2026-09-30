@@ -16,7 +16,7 @@ This guide owns that shape. A report guide declares only what is its own — its
 
 ## Report
 
-Each review emits one report: its findings in one ID-ordered list, the outcome, and a single `**Method:**` line naming the command, or the continuous-integration run, that reproduces the baseline the review judged against.
+Each review emits one report: its findings in one ID-ordered list, the outcome, and, where the review judged against a run, a single `**Method:**` line naming the command, or the continuous-integration run, that reproduces it.
 
 - **A negative result is not a finding.** *Every added line scanned, no debugging macro found* is nothing the author acts on, and the report carries no record of it.
 - **A finding's own evidence stays with the finding.** The arithmetic that shows a limit is exceeded belongs to the finding it supports.

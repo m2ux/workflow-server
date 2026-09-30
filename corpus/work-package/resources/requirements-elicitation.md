@@ -90,7 +90,7 @@ Criteria must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.
 
 1. [Exclusion] — [why excluded]
 
-[Omit if none. One line: Deferred scope items: [deferred-items register](deferred-items.json).]
+[Omit if none. One line: Deferred scope items: the IDs of their deferred-items register entries.]
 
 ## Success Criteria
 

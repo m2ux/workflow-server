@@ -35,4 +35,3 @@ A link carries the reader from a name in a sentence to the thing named.
 
 - **The link text is the name.** The visible words are the thing the sentence is about, placed where the sentence already names it. A bare URL, or link text that is a path, a line coordinate or "here", hands the reader an address in place of a name.
 - **A source sits with its claim.** The link to what supports a statement is in that statement. A trailing Sources or References list separates every claim from its evidence and is read by no one.
-- **One link per thing per passage.** The first mention carries the link; later mentions in the same passage are plain words.

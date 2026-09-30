@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.9.0
+  version: 3.9.1
 ---
 
 ## Capability
@@ -56,7 +56,7 @@ A line anchor on a **markdown** blob needs `?plain=1` before the fragment — `�
 
 ### code-reference-is-an-inline-link
 
-Every reference to a named thing in the code — a function, type, trait, module, constant, test, or a specific line of one — is an inline markdown link whose visible text is that name, placed where the sentence already names it. A reader following the prose reaches the source by clicking the words they are reading.
+A named thing in the code — a function, type, trait, module, constant, test, or a specific line of one — is named in words that link to it, per [Prose](/meta/resources/writing-register.md#prose). The link sits where the sentence already names it:
 
 ```markdown
 [resolve_cursor](https://github.com/owner/repo/blob/<sha>/src/parser.rs#L190) advances the cursor before the bounds check, so a request at the limit reads one element past the end.

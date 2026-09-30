@@ -9,5 +9,5 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | Technique | Contributes |
 |---|---|
 | [`deep-dive`](deep-dive.md) | Targeted investigation of a selected codebase area, recorded in the comprehension log with its settled outcomes promoted to the corpus artifact |
-| [`revise-questions`](revise-questions.md) | Authoritative Open Questions on the comprehension log after a deep-dive |
+| [`revise-questions`](revise-questions.md) | The authoritative open questions on the comprehension log after a deep-dive |
 | [`survey`](survey.md) | Initial mental model of the codebase area — architecture, abstractions, design rationale, and domain mapping |

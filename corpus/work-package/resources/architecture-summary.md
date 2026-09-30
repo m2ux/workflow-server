@@ -108,6 +108,4 @@ flowchart LR
 ## Risks
 
 [Omit this section if the implementation surfaced no risk the plan does not already hold. One line per net-new risk and its mitigation.]
-
-[Omit if none. One line: What comes next: [deferred-items register](deferred-items.json).]
 ````

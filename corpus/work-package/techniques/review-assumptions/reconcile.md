@@ -40,7 +40,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - For each code-resolvable assumption, perform focused investigation within the codebase at `{target_path}`: trace relevant code paths, examine implementations, diff between versions, compare behavior
 - Use the [gitnexus](/gitnexus/techniques/TECHNIQUE.md) techniques as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) for concept-driven flow discovery, [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) for symbol-level caller/callee/process inspection, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) for custom traces (e.g. error-path or ordering assumptions).
-- Record evidence with file paths and line numbers for every finding
+- Record evidence for every finding, naming the code in words linked to its lines
 - Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)
 - Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies
 - Where code analysis can neither validate nor invalidate an assumption outright, classify it partially resolvable per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification)
@@ -63,6 +63,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - Write each outcome the analysis settled about the code into the section of `{comprehension_artifact}` that owns it, per [Promotion](../../resources/codebase-comprehension.md#promotion)
   > When no `{comprehension_artifact}` was provided, skip this phase; the findings stay in the assumptions log.
+- A question the analysis leaves open stays in the assumptions log as an open assumption; the corpus artifact takes settled outcomes only.
 
 ## Rules
 

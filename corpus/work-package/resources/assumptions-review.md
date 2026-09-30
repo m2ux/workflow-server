@@ -87,8 +87,8 @@ entry when it resolves — its outcome lives in its Log row. Omit the section wh
 
 At completion, exception-only: "N assumptions — all validated/confirmed" is one line.
 Add bullets ONLY for corrected, invalidated, or deferred assumptions, plus one takeaway
-line if a pattern emerged. Deferred follow-ups are canonically tracked in the
-[deferred-items register](deferred-items.json) — link them, don't duplicate.
+line if a pattern emerged. Deferred assumptions are tracked as deferred-items register
+entries — name each entry's ID, don't duplicate it.
 ```
 
 ## Trade-off Dimensions

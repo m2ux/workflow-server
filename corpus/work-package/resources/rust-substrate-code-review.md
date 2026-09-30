@@ -9,7 +9,7 @@ metadata:
 
 # Rust/Substrate Code Review Guide
 
-Produces a **Code Review Report** capturing findings, recommendations, and compliance assessment.
+Produces a **Code Review Report** capturing findings and recommendations.
 
 ## Review Scope
 

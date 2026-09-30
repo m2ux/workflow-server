@@ -25,7 +25,7 @@ The register entries whose `issue` is null, each carrying the entry's `id`, `ite
 
 ### has_unraised_deferred_items
 
-Boolean gate — true when `{open_deferred_items}` holds at least one row.
+Boolean gate — true when `{open_deferred_items}` holds at least one entry.
 
 ## Protocol
 

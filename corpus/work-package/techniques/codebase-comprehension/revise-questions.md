@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Authoritative Open Questions on the comprehension log after a deep-dive.
+The authoritative open questions on the comprehension log after a deep-dive.
 
 ## Inputs
 

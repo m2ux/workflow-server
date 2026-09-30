@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.14.0
+version: 1.14.1
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
@@ -134,7 +134,7 @@ steps:
           variable: has_open_questions
           operator: ==
           value: true
-        message: "Open questions remain in the [comprehension artifact]({comprehension_artifact_path})."
+        message: "Open questions remain after this pass over the area the [comprehension artifact]({comprehension_artifact_path}) covers."
         defaultOption: sufficient
         autoAdvanceMs: 30000
         options:

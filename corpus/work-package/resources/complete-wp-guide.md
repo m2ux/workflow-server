@@ -39,10 +39,10 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 
 ## Open Work
 
-<!-- Link lines only. Neither register's entries are restated here — the register is the single statement of each item. -->
+<!-- Count lines only. Neither register's entries are restated here — the register is the single statement of each item. -->
 [One line per register that exists:]
-- Follow-ups: [register](follow-ups.json) — N open.
-- Deferred items: [register](deferred-items.json) — N open, M raised as issues.
+- Follow-ups: N open — [the open entry IDs].
+- Deferred items: N open, M raised as issues — [each raised issue, linked on its key].
 
 ## Cost
 
@@ -65,7 +65,7 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 ## Rules
 
 - **Link, don't restate.** Tasks live in the plan, test results in the validation report, files in the change-block index, open work in its register, cost in `token-usage.md`. A reader follows one link; a copy goes stale.
-- **Open work by register, never by table.** Read `follow-ups.json` and `deferred-items.json` before writing Open Work, and emit one link line per register that exists. A close-out table of open items is a second home that drifts from the register the moment an entry changes.
+- **Open work by register, never by table.** Read `follow-ups.json` and `deferred-items.json` before writing Open Work, and emit one count line per register that exists. A close-out table of open items is a second home that drifts from the register the moment an entry changes.
 - **Exception-only results.** "All N criteria met" is one line. A table appears only when a row diverges from its target.
 - **Omit null sections.** No "What Was NOT Implemented: none" — drop the heading.
 - **Update in place** if post-merge changes occur; the close-out reflects the final delivered state.
