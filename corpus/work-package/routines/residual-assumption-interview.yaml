@@ -69,7 +69,10 @@ steps:
           variable: has_open_assumptions
           operator: ==
           value: true
-    message: "Open assumptions remain, each with the agent's favored position ([assumptions log]({assumptions_log_path})): {assumption_review_presentation}"
+    message: |-
+      Open assumptions remain, each with the agent's favored position ([assumptions log]({assumptions_log_path})):
+
+      {assumption_review_presentation}
     options:
       - id: accept-agent-positions
         label: Accept agent positions
