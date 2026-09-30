@@ -311,7 +311,7 @@ steps:
             strategic_findings_disposition: fix-selected
       - id: defer-findings
         label: Defer findings
-        description: Set the findings aside beyond this work package and proceed; the reply says why
+        description: Set the findings aside beyond this work package; the reply says why
         effect:
           recordReply: deferral_reason
           setVariable:

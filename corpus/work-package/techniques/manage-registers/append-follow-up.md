@@ -32,5 +32,4 @@ The register's bare filename, once each supplied follow-up is appended as an ent
 ### 1. Append Entries
 
 - For each entry of `{follow_ups}`, write an entry in the shape the [register template](../../resources/follow-ups.md#template) gives, creating the register when this is its first entry
-  > Where an entry for the item already exists, update that entry rather than adding a second, per the register's [Rules](../../resources/follow-ups.md#rules).
-- Where a supplied follow-up carries a new status for an entry, set that entry's `status` to it, leaving the entry in place
+  > Where an entry for the item already exists, update that entry rather than adding a second, per the register's [Rules](../../resources/follow-ups.md#rules), setting its `status` to any new status the follow-up carries.

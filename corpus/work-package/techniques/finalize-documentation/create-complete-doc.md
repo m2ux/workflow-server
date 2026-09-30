@@ -17,9 +17,9 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 *(optional)* The ADR as accepted, with the implementation outcome recorded. Absent where the work package created no ADR.
 
-### adr_document_path
+### adr_document_url
 
-*(optional)* Path of the ADR within the engineering repository. Absent where the work package created no ADR.
+*(optional)* The ADR's full URL. Absent where the work package created no ADR.
 
 ### finalized_test_plan
 
@@ -88,8 +88,8 @@ Path to the written close-out document, for user-facing links.
 - State the validation verdict in one line, and link the change-block index for files changed — link, don't copy the tables.
 - Link the test plan for test coverage, from `{finalized_test_plan}`.
   > Omit the line where `{finalized_test_plan}` is absent.
-- Link the ADR at `{adr_document_path}` by the decision title `{finalized_adr}` records, in the form `manage-artifacts.hyperlink-conventions` gives a target outside the planning folder.
-  > Omit the line where `{adr_document_path}` is absent.
+- Link the ADR at `{adr_document_url}` by the decision title `{finalized_adr}` records.
+  > Omit the line where `{adr_document_url}` is absent.
 
 ### 6. Report Success Criteria
 

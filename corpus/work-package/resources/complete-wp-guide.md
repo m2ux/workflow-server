@@ -67,7 +67,7 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 ## Rules
 
 - **Point, don't restate.** Tasks live in the plan, test results in the validation report, files in the change-block index, open work in its register, cost in `token-usage.md`. A reader follows one link, or reads one line per open entry; a copy goes stale.
-- **Open work by register, never by table.** Read `follow-ups.json` and `deferred-items.json` before writing Open Work, and emit one line per register that exists, pointing at each open entry per `canonical-home-map.link-only-slots`. The register keeps each entry's full statement; a close-out table of open items is a second home that drifts from it the moment an entry changes.
+- **Open work by register, never by table.** Open Work holds one line per register that exists, pointing at each open entry per `canonical-home-map.link-only-slots`. The register keeps each entry's full statement; a close-out table of open items is a second home that drifts from it the moment an entry changes.
 - **Exception-only results.** "All N criteria met" is one line. A table appears only when a row diverges from its target.
 - **Omit null sections.** No "What Was NOT Implemented: none" — drop the heading.
 - **Update in place** if post-merge changes occur; the close-out reflects the final delivered state.

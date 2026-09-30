@@ -57,9 +57,9 @@ variables:
       type: array
       description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
       defaultValue: []
-    - name: adr_document_path
+    - name: adr_document_url
       type: string
-      description: Path of the ADR this work package wrote, within the engineering repository.
+      description: The full URL of the ADR this work package wrote.
       defaultValue: ""
     - name: deferred_item_issue_number
       type: string

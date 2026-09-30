@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Every finding in the strategic review document, as an out-of-scope deferral.
+Every finding in the strategic review document that does not recommend keeping the change, as an out-of-scope deferral.
 
 ## Inputs
 

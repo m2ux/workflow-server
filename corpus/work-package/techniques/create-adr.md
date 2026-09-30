@@ -35,9 +35,9 @@ Directory holding the project's ADR files
 
 `human`
 
-### adr_document_path
+### adr_document_url
 
-Path of the written ADR within the engineering repository.
+The ADR's full URL on the engineering repository's remote, at the branch it is committed on.
 
 ## Protocol
 
@@ -55,5 +55,5 @@ Path of the written ADR within the engineering repository.
 
 ### 3. Write Adr
 
-- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), emitting its path as `{adr_document_path}`
+- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), emitting its full URL, from the engineering checkout's remote and current branch, as `{adr_document_url}`
 
