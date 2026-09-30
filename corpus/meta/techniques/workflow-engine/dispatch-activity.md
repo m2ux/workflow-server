@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.29.0
+  version: 1.30.0
 ---
 
 ## Capability
@@ -39,9 +39,9 @@ The envelope this entry closes on — one of three tagged result types. The `che
 
 Server-side worker identity this dispatch bound — the identity the delivery ledger is keyed on. Unset on the `workflow_complete` envelope, which no worker returned.
 
-### trace_tokens
+### advance_trace_tokens
 
-The opaque HMAC-signed trace tokens this dispatch accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none.
+The opaque trace tokens this dispatch accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none.
 
 ## Protocol
 
@@ -98,7 +98,7 @@ Where the session record and a just-completed worker's `activity_complete` envel
 
 ### accumulate-trace-per-advance
 
-Every `next_activity` returning `_meta.trace_token` has that token appended to `trace_tokens[]` — the first advance of a dispatch, each continuation of a batch ([continue-batch](./continue-batch.md)), and each branch a fan retires ([retire-branch](../fan/retire-branch.md)). The list is the whole execution history close-out reads, so a token dropped at any of those call sites is history no later reader can recover.
+Every `next_activity` returning `_meta.trace_token` has that token in the `advance_trace_tokens` its operation returns — the first advance of a dispatch, each continuation of a batch ([continue-batch](./continue-batch.md)), the call that opens a fan, and each branch a fan retires ([retire-branch](../fan/retire-branch.md)). The walk appends each operation's tokens to the run's `trace_tokens[]`, the whole execution history close-out reads, so a token dropped at any of those call sites is history no later reader can recover.
 
 ### resolve-trace-at-close-out
 

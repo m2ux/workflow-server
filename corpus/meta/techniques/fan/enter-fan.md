@@ -47,9 +47,9 @@ Every branch the destination opened, each as the id that addresses it, in the or
 
 The activity the branches converge on.
 
-### trace_tokens
+### advance_trace_tokens
 
-The opaque HMAC-signed trace token the fan-opening `next_activity` call returned in `_meta.trace_token`, as a one-entry list. Empty when the server returned none.
+The opaque trace token the fan-opening `next_activity` call returned in `_meta.trace_token`, as a one-entry list. Empty when the server returned none.
 
 ## Protocol
 

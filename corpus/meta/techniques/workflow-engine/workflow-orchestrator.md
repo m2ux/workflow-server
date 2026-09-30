@@ -26,7 +26,7 @@ Orchestrator agent identity for this session.
 
 ### 2. Resolve the activity to open with
 
-- Call `get_workflow_status { session_index }`. Where `in_flight` names an activity, the session already stands on it: open the run on it as `from_activity` with `resumes_walk` true, which carries it without a second advance. Otherwise open with the `initialActivity` that `get_workflow` returns as `initial_activity`; a session that has entered no activity reports `in_flight` empty
+- Call `get_workflow_status { session_index }`. Where `in_flight` names an activity, the session already stands on it, and that activity is carried without an advance. Otherwise the first advance enters the `initialActivity` that `get_workflow` returns; a session that has entered no activity reports `in_flight` empty
 
 ### 3. Walk the workflow to its end
 

@@ -246,6 +246,7 @@ steps:
     outputs:
       current_activity: current_activity
       from_activity: from_activity
+      trace_tokens: child_trace_tokens
   - kind: technique
     id: read-prism-manifest
     when: pipeline_mode == 'full-prism'

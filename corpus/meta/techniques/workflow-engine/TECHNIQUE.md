@@ -29,6 +29,10 @@ The session every authenticated tool call names — the 6-character base32 index
 
 *(optional)* The session's current variable bag (`session_index`, `workflow_id`, `activity_id`, …). Unset for an operation that reads none of the session's variables.
 
+### checkpoint_reply
+
+*(optional)* The reply the server returned on clearing the checkpoint the activity yielded. Present only on a continuation past that gate.
+
 ## Rules
 
 ### session-index-passes-on-each-call

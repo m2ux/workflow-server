@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.11.0
+  version: 1.12.0
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ Workflow the worker is executing an activity for.
 ### agent_id
 
 Worker agent identity for this dispatch.
-
-### checkpoint_reply
-
-*(optional)* The reply the server returned on clearing the checkpoint this worker yielded. Present only on a continuation past that gate.
 
 ## Protocol
 

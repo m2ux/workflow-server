@@ -21,10 +21,6 @@ Advance a session this context owns onto an activity and carry that activity her
 
 *(optional)* True where the session already stands on `{activity_id}`, the advance that entered it having been made. False or unset where this entry makes that advance.
 
-### checkpoint_reply
-
-*(optional)* The reply the server returned on clearing the checkpoint this context yielded. Present only on a continuation past that gate.
-
 ### agent_technique
 
 Canonical agent technique this context follows for the activity — default workflow-engine::activity-worker.
@@ -35,9 +31,9 @@ Canonical agent technique this context follows for the activity — default work
 
 The envelope this entry closes on — one of three tagged result types. The `checkpoint_pending` or `activity_complete` envelope is the one the activity produced, which this context composes because it carried the activity. The `workflow_complete` envelope, `{ result_type: "workflow_complete" }`, is the one an advance onto `__terminal__` closes on: the session is completed, and no activity was carried.
 
-### trace_tokens
+### advance_trace_tokens
 
-The opaque HMAC-signed trace tokens this entry accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none.
+The opaque trace tokens this entry accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none.
 
 ## Protocol
 
@@ -51,7 +47,7 @@ The opaque HMAC-signed trace tokens this entry accumulated, one per `next_activi
 ### 2. Carry the activity
 
 - Follow `{agent_technique}` here — [activity-worker](./activity-worker.md) by default — with `{variable_bag}` supplying the bindings its steps resolve against: call `get_activity { session_index, context_tokens }`, execute the activity's steps, and finalise per [finalize-activity](./finalize-activity.md); hold what that produced as `{worker_result}`
-  > - When `{checkpoint_reply}` is bound, this context is continuing past a gate it yielded: follow `{agent_technique}` with `{checkpoint_reply}`, which takes the activity up at that gate in place of its first step. The envelope is owed either way.
+  > - Pass `{checkpoint_reply}` to `{agent_technique}` where it is bound.
   > - Delivery is scoped to this context's own identity, which one context legitimately holds for a session it owns (`agent-id-scopes-delivery`).
 
 ### 3. Account for the activity

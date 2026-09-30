@@ -1,12 +1,11 @@
 id: dispatch-client-workflow
-version: 6.2.0
+version: 6.3.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
   reads:
     - client_initial_activity
     - client_session_index
-    - client_walk_resumes
     - component_path
     - host_repo_path
     - planning_folder_path
@@ -15,12 +14,22 @@ variables:
       type: boolean
       description: Whether the client walk reached an exit leading to `__terminal__`. The client session then stands on the activity that took it, and completes on the advance close-out makes on confirmation.
       defaultValue: false
+    - name: client_in_flight
+      type: array
+      description: The client activities in flight when the walk opens
+    - name: client_walk_resumes
+      type: boolean
+      description: Whether the client session stands on an activity when the walk opens
+      defaultValue: false
     - name: current_activity
       type: string
       description: The client activity the walk holds
     - name: from_activity
       type: string
       description: The client activity an advance retires
+    - name: trace_tokens
+      type: array
+      description: The trace token of every advance the client walk made, in the order it made them
 required: true
 steps:
   - kind: action
@@ -29,6 +38,29 @@ steps:
       - action: set
         target: client_workflow_completed
         value: false
+      - action: set
+        target: client_walk_resumes
+        value: false
+  - kind: technique
+    id: read-client-position
+    technique:
+      name: workflow-engine::read-session
+      inputs:
+        session_index: client_session_index
+      outputs:
+        in_flight: client_in_flight
+        session_state: client_session_state
+        execution_trace: client_execution_trace
+  - kind: action
+    id: resume-standing-client
+    when: client_in_flight.0
+    actions:
+      - action: set
+        target: from_activity
+        value: "{client_in_flight.0}"
+      - action: set
+        target: client_walk_resumes
+        value: true
   - kind: routine
     id: client-activity-loop
     routine: activity-loop
@@ -40,6 +72,7 @@ steps:
     outputs:
       current_activity: current_activity
       from_activity: from_activity
+      trace_tokens: trace_tokens
   - kind: action
     id: record-client-completion
     when: current_activity == null
