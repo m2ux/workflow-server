@@ -1,0 +1,20 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what each collection landed.
+variables:
+  reads:
+    - negative_has_unraised
+    - negative_open_items
+    - positive_has_unraised
+    - positive_open_items
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Both collections are named with what each landed, so a reader can tell the empty register from the filtered one

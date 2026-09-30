@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.4.1
 ---
 
 ## Capability
@@ -47,7 +47,7 @@ Whether the changes are significant enough to require substantial rework
 - Categorize each comment by type (required change, suggestion, question, nit)
 - Identify actionable items vs discussion points
 - Prioritize by reviewer authority and impact
-- Compile a numbered response list of the applicable comments — brief description, `path:line`, and a link to the original GitHub discussion, e.g. `1. Clarify error handling - src/handler.rs:45 [Discussion](https://github.com/repo/pull/123#discussion_r1234567890)`
+- Compile a numbered response list of the applicable comments — a brief description linked to the original GitHub discussion, e.g. `1. [Clarify error handling in the request handler](https://github.com/repo/pull/123#discussion_r1234567890)`
 
 ### 3. Address Comments
 

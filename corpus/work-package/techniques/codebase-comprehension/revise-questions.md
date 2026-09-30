@@ -1,30 +1,30 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.1
 ---
 
 ## Capability
 
-Authoritative Open Questions on the comprehension log after a deep-dive.
+The authoritative open questions on the comprehension log after a deep-dive.
 
 ## Inputs
 
 ### comprehension_log
 
-The log whose Open Questions are revised; its existing table and the findings from the latest targeted investigation drive which questions are resolved and which are added.
+The log whose open questions are revised; its existing questions and the findings from the latest targeted investigation drive which are resolved and which are added.
 
 ## Outputs
 
 ### comprehension_log
 
-The log with its Open Questions set revised — resolved questions cross-referenced to the section that answered them, newly discovered questions added as open, and out-of-scope items listed separately. Its open set is the authoritative unresolved-question set.
+The log with its open questions revised — resolved questions naming the deep dive that answered them, newly discovered questions added as open, and out-of-scope items recorded under out of scope. Its open set is the authoritative unresolved-question set.
 
 
 ## Protocol
 
 ### 1. Question Management
 
-- Revise the Open Questions table and the follow-up list in `{comprehension_log}`, in the shape the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template) defines
-- After each deep-dive iteration, mark resolved questions as resolved with a one-line summary and a cross-reference to the deep-dive section that answered them
+- Revise the open questions and the out-of-scope items in `{comprehension_log}`, in the shape the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template) defines
+- Mark resolved questions as resolved with a one-line resolution and the deep dive that answered them
 - Add new questions discovered during investigation as open — questions naturally emerge from tracing data flows, examining edge cases, and reading adjacent code
-- Record questions identified but out of scope for the current work package as follow-up items
+- Record questions identified but out of scope for the current work package as out-of-scope items

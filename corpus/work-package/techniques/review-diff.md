@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.5.1
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 ### change_block_index
 
-[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs whose Block titles hyperlink to `file:line` as permanent blob URLs at the reviewed commit
+[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs whose Block titles name each change and link to it as permanent blob URLs at the reviewed commit
 
 #### artifact
 
@@ -33,7 +33,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 #### block_rationale
 
-Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices; Block titles link to the primary `file:line`
+Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices; Block titles name each change and link to its primary line
 
 ### reviewed_code_base_url
 
@@ -55,7 +55,7 @@ Per-block issues with interview responses
 
 True if any block marked as critical blocker
 
-### follow_up_rows
+### follow_ups
 
 The reviewer's own edits to paths under review, as in-task follow-ups carrying the pattern each one shows. Empty where the reviewer applied none.
 
@@ -83,7 +83,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 ### 4. Create Index
 
-- Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one `### [Block N — file:line]` subsection per block, each title linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
+- Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one subsection per block, its title naming the change and linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
 - When `{rationale_corrections}` is bound, apply each correction to the Block Rationale paragraph of the block it names
 - Write index to the `{change_block_index}` under `{planning_folder_path}`
@@ -96,7 +96,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 - For each entry of `{flagged_block_indices}`, assemble the full diff content for that file, scoped to the line the entry names where it carries one
 - Record each block's issue into `{manual_diff_review_report.block_findings}` verbatim, with its severity where one is stated
-- Detect manual review edits: compare the working tree to the last agent-written tip for paths under review, and emit each confirmed pattern the reviewer's own edits show as a `{follow_up_rows}` entry
+- Detect manual review edits: compare the working tree to the last agent-written tip for paths under review, and emit each confirmed pattern the reviewer's own edits show as a `{follow_ups}` entry
 
 ### 7. Create Report
 
@@ -112,4 +112,4 @@ Each Block Rationale paragraph is 3–5 sentences covering intent, context, and 
 
 ### review-conduct
 
-Work systematically (top-to-bottom or by logical grouping); reference surrounding code when describing an issue; be specific — include line numbers or code snippets in finding descriptions.
+Work systematically (top-to-bottom or by logical grouping); reference surrounding code when describing an issue; be specific — name the code in words, linked to its lines.

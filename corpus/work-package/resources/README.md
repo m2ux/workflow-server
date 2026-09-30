@@ -12,24 +12,23 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `jira-issue-creation` | Jira Issue Creation | What Jira adds — terminology, issue types, field arrangement, native markup, priority and labels |
 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
 | `implementation-analysis` | Implementation Analysis | Analysis framework and document template |
-| `knowledge-base-research` | Knowledge Base Research | Research findings artifact template and citation rules |
-| `web-research` | Web Research | Web-research findings template appended to the research document |
+| `knowledge-base-research` | Knowledge Base Research | Research findings artifact template — knowledge-base and web findings in one list — and citation rules |
 | `design-framework` | Design Framework | TRIZICS solution-design methodology applied at plan time, plus the design-philosophy artifact template |
 | `wp-plan` | Work Package Plan | Plan document template with task breakdown format |
 | `test-plan` | Test Plan | Test plan templates and test-design principles |
 | `pr-description` | PR Description | PR description templates, link-row rendering forms, and the conformance criteria a rendered body satisfies |
 | `assumptions-review` | Assumptions Review | Assumption collection, classification, and document formats |
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
-| `findings-report` | Findings Report | Shared finding layout, designator, severity and reachability contracts, and the report/method split every findings report follows |
+| `findings-report` | Findings Report | Shared finding layout, designator, severity and reachability contracts, and the one-report shape every findings report follows |
 | `symbol-provenance` | Symbol Provenance | What establishes provenance for a symbol named in code or documentation, and how each class of symbol is verified |
-| `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria, field list and report templates |
-| `test-suite-review` | Test Suite Review | Test suite quality assessment framework, field list and report templates |
-| `strategic-review` | Strategic Review | Strategic review field list and report templates |
+| `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria, field list and report template |
+| `test-suite-review` | Test Suite Review | Test suite quality assessment framework, field list and report template |
+| `strategic-review` | Strategic Review | Strategic review field list and report template |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective methodology and section template |
 | `complete-wp-guide` | Complete Work Package | Close-out document template and fill rules |
-| `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (`file:line` titles) — the report renders as a code-review.md section |
-| `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact links to |
+| `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (titles naming each change, linked to its line) — the report renders as a code-review.md section |
+| `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact points at |
 | `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Review comment template, per-category findings fragments, and the scales they share |
@@ -51,11 +50,11 @@ Which guide owns each persisted filename's shape.
 | `requirements-elicitation.md` | [requirements-elicitation](requirements-elicitation.md) |
 | `implementation-analysis.md` | [implementation-analysis](implementation-analysis.md) |
 | `assumptions-log.md` | [assumptions-review](assumptions-review.md) |
+| `deferred-items.json` | [deferred-items](deferred-items.md) |
+| `follow-ups.json` | [follow-ups](follow-ups.md) |
 | `test-plan.md` | [test-plan](test-plan.md) |
 | `code-review.md` | [rust-substrate-code-review](rust-substrate-code-review.md#report-template) |
-| `code-review-method.md` | [rust-substrate-code-review](rust-substrate-code-review.md#method-record-template) |
 | `test-suite-review.md` | [test-suite-review](test-suite-review.md) |
-| `test-suite-review-method.md` | [test-suite-review](test-suite-review.md#method-record-template) |
 | `session-trace.md` | [session-trace](/meta/resources/session-trace.md) |
 | `change-block-index.md` | [manual-diff-review](manual-diff-review.md#file-index-generation) |
 | `token-usage.md` | [token-usage](/meta/resources/token-usage.md) |
@@ -63,9 +62,8 @@ Which guide owns each persisted filename's shape.
 | `NNNN-{decision_title}.md` | [adr](adr.md) |
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
 | `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
-| `strategic-review-{n}-method.md` | [strategic-review](strategic-review.md#method-record-template) |
 | `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md#corpus-artifact-template) |
-| `codebase-comprehension.md` | [codebase-comprehension](codebase-comprehension.md#comprehension-log-template) |
+| `codebase-comprehension.json` | [codebase-comprehension](codebase-comprehension.md#comprehension-log-template) |
 | `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md` | [pr-review-response](pr-review-response.md) |
 | `kb-research.md` | [knowledge-base-research](knowledge-base-research.md) |
 | `design-philosophy.md` | [design-framework](design-framework.md) |

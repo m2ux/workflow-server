@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -71,7 +71,7 @@ When authoring or revising workflow definition content (YAML prose fields, techn
 
 ### single-source-and-link
 
-Every planning fact has exactly one canonical artifact. When another artifact or the session README needs it, link to the canonical home with at most a one-line pointer — never restate the body.
+Every planning fact has exactly one canonical artifact. When another artifact or the session README needs it, link to the canonical home with at most a one-line pointer — never restate the body, and point at an agent-audience home per [Links](/meta/resources/writing-register.md#links).
 
 ### canonical-home-map
 
@@ -89,7 +89,7 @@ The canonical home for each shared design-session fact category. Templates carry
 | Pattern analysis findings | `pattern-analysis.md` |
 | Compliance / audit findings | `compliance-report.md` (and findings satellites) |
 | In-task follow-ups | `follow-ups.md` (see [follow-ups](../resources/follow-ups.md)) |
-| Out-of-scope deferred items | `deferred-items.md` |
+| Out-of-scope deferred items | `deferred-items.json` |
 | Session index (Progress, Links) | `README.md` |
 
 README Problem Overview and Solution Overview are link-only slots pointing at `design-specification.md` (Solution also links `scope-manifest.md` for the file breakdown).

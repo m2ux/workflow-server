@@ -2,14 +2,14 @@
 name: rust-substrate-code-review
 description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and report generation.
 metadata:
-  version: 1.6.0
+  version: 2.0.1
   order: 16
   legacy_id: 16
 ---
 
 # Rust/Substrate Code Review Guide
 
-Produces a **Code Review Report** capturing findings, recommendations, and compliance assessment.
+Produces a **Code Review Report** capturing findings and recommendations.
 
 ## Review Scope
 
@@ -35,16 +35,14 @@ Designators use the prefix declared for this report's category at [Code Review](
 
 ## Report Template
 
-The report header links back to this guide so readers know the methodology used, and to the method record for what the review walked.
-
 ```markdown
 # Code Review Report
 
-> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed · methodology: [Rust/Substrate Code Review](https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/resources/rust-substrate-code-review.md) · what was walked: [method record](NN-code-review-method.md)
+> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed
 
-## Summary
+**Result:** [Acceptable / Needs Improvement / Significant Issues] · X/5 — Critical: X · High: X · Medium: X · Low: X
 
-**Overall Quality:** X/5 — Critical: X · High: X · Medium: X · Low: X
+[Omit unless the review judged against a run. **Method:** the command, or the continuous-integration run, that reproduces that baseline.]
 
 ## Findings
 
@@ -61,40 +59,6 @@ The report header links back to this guide so readers know the methodology used,
 **Impact:** [consequence]
 
 **Recommendation:** [fix]
-
-## Strengths
-
-[Notable positive patterns observed]
-
-## Review Outcome
-
-**Result:** [Acceptable / Needs Improvement / Significant Issues]
-
-**Summary:** [1-2 sentences]
-```
-
-## Method Record Template
-
-```markdown
-# Code Review Method
-
-> code-review method · [Module/PR/Directory path] · YYYY-MM-DD · findings: [code review report](NN-code-review.md)
-
-## Scope Walked
-
-[What was reviewed and how it was enumerated — the changed-file set, the changed-symbol set, and the blast radius with whether it rests on graph edges or a hand-derived caller set]
-
-## Sweeps
-
-[Each sweep run over the surface and what it returned, clean results included]
-
-## Compliance
-
-[Exception-only: if all 5 categories (Rust Idioms, Substrate Framework, Architecture, Documentation, Testing) pass, state "All 5 compliance categories met." in one line. Otherwise list rows only for divergent categories:]
-
-| Category | Status | Score |
-|----------|--------|-------|
-| [Divergent category] | ✗ | X% |
 ```
 
 ## Review Stance (consult)

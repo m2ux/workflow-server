@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.3.0
+version: 2.3.1
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -58,13 +58,13 @@ variables:
     - name: flagged_block_numbers
       type: string
       description: Text the reviewer typed naming the change blocks that carry an issue, comma-separated.
-    - name: follow_up_rows
+    - name: follow_ups
       type: array
       description: In-task follow-ups to append to the register, each with what remains and where it surfaced.
       defaultValue: []
     - name: follow_ups_register
       type: string
-      description: The in-task follow-ups register as it stands after this activity's rows.
+      description: Bare filename of the in-task follow-ups register this activity's entries were written to.
       defaultValue: ""
     - name: from_activity
       type: string
@@ -125,7 +125,7 @@ steps:
     technique: review-diff
   - kind: checkpoint
     id: file-index-table
-    message: "[Change-block index]({change_block_index}), its block titles linking to file:line."
+    message: "[Change-block index]({change_block_index}), each block title naming its change and linking to it."
     options:
       - id: no-flagged-blocks
         label: No blocks carry an issue

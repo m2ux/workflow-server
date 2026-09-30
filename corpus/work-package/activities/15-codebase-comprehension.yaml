@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.14.0
+version: 1.14.2
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
@@ -107,9 +107,9 @@ steps:
         routine: challenge-concerns
         with:
           challenge_perspectives: '["pedagogy", "rejected-paths"]'
-          concern_document: comprehension_artifact
+          concern_document: comprehension_log
         outputs:
-          concern_document: comprehension_artifact
+          concern_document: comprehension_log
           concerns_agent_resolvable: needs_comprehension
           residual_opens_remain: has_open_questions
       - kind: technique
@@ -134,7 +134,7 @@ steps:
           variable: has_open_questions
           operator: ==
           value: true
-        message: "Open questions remain in the [comprehension artifact]({comprehension_artifact_path})."
+        message: "Open questions remain after this pass over the area the [comprehension artifact]({comprehension_artifact_path}) covers."
         defaultOption: sufficient
         autoAdvanceMs: 30000
         options:
@@ -172,5 +172,5 @@ outcome:
   - Key abstractions and design rationale documented
   - Domain concepts mapped to technical constructs
   - A reusable comprehension reference lands in the cumulative corpus, where the next work package on the same area reads it instead of re-investigating
-  - The questions, investigations and follow-ups behind that reference stay in the session's planning folder as a comprehension log
+  - The questions, investigations and out-of-scope notes behind that reference stay in the session's planning folder as a comprehension log
   - Open questions converged via analyse-challenge before the soft sufficiency gate

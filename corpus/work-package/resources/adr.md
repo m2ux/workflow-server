@@ -53,7 +53,7 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 
 ## Related Decisions
 
-{Links to related, non-superseding records and what each shares with this one.}
+{One sentence per related, non-superseding record: what it shares with this one, with the record linked in that sentence.}
 
 ## Confirmation
 
@@ -65,7 +65,7 @@ Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records.
 
 ## Notes
 
-{Caveats, links to discussions, and considerations not yet decided.}
+{Caveats and considerations not yet decided, each discussion linked in the sentence that cites it.}
 ```
 
 ## Rules

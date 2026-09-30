@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
 
-Current-implementation effectiveness analysis — baseline metrics, gaps, and documented opportunities.
+Current-implementation effectiveness analysis — baseline metrics and the gaps the change closes.
 
 ## Inputs
 
@@ -17,7 +17,7 @@ Basename of the component the work package targets (e.g., midnight-node, midnigh
 
 ### analysis_document
 
-Current implementation [analysis](../../resources/implementation-analysis.md#document-template) with baselines and improvement opportunities
+Current implementation [analysis](../../resources/implementation-analysis.md#document-template) with baselines and the gaps they open
 
 
 

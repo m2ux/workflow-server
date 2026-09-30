@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.7.0
+  version: 3.0.0
 ---
 
 ## Capability
@@ -35,25 +35,13 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 
 `human`
 
-### code_review_method
-
-Method [record](../resources/rust-substrate-code-review.md#method-record-template) of how the review was conducted — the surface walked, the sweeps run and what each returned, and the compliance assessment.
-
-#### artifact
-
-`code-review-method.md`
-
-#### audience
-
-`human`
-
 ## Protocol
 
 ### 1. Load Guidance
 
 - Review against the attached [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria) ([resource-loading-via-tool](/meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool) — never read workflow resources from disk).
-- Review against `{changed_files}` as the authored surface.
-  > Where it is empty, verify the branch and commit range before reviewing an empty set.
+- Review against `{changed_files}` as the authored surface, and against `{expected_changes}` as the yardstick where a baseline supplied it.
+  > Where `{changed_files}` is empty, verify the branch and commit range before reviewing an empty set.
 
 ### 2. Bound Review Scope
 
@@ -90,15 +78,11 @@ When a change touches configuration alone, the documentation describing that con
 - Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when the manual diff review already created it, which owns its own `##` section within it
 - Emit a brief summary of critical and high findings as part of the bindable report output
 
-### 5. Record the Method
-
-- Create the `{code_review_method}` in `{planning_folder_path}` from the [Method Record Template](../resources/rust-substrate-code-review.md#method-record-template): the surface enumerated, each sweep and what it returned including the clean ones, and the compliance assessment. A finding's own evidence stays on the finding, per [Report and Methodology](../resources/findings-report.md#report-and-methodology)
-
 ## Rules
 
 ### evidence-required
 
-Every finding must cite specific code with file path and line numbers
+Every finding cites the specific code it is about: the name of that code, in the finding's prose, links to the lines meant
 
 ### severity-consistency
 

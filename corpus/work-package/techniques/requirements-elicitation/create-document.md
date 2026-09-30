@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -20,6 +20,14 @@ The in/out scope definitions, recorded into the artifact.
 ### elicitation_log
 
 The record of questions asked and responses given, recorded into the artifact as the provenance of the captured requirements.
+
+### deferred_items_register
+
+The out-of-scope deferrals register, named by its bare filename.
+
+#### default
+
+`deferred-items.json`
 
 ## Outputs
 
@@ -41,4 +49,4 @@ The requirements [artifact](../../resources/requirements-elicitation.md#document
 
 - Create the `{requirements_document}` artifact in `{planning_folder_path}`
 - Record the elicited requirements, `{success_criteria}`, `{scope_boundaries}`, the assumptions, and `{elicitation_log}` as the provenance of what was captured
-- Record assumptions in the assumptions log and deferred scope items in the deferred-items register (link-only slots in this document, per its template)
+- Record assumptions in the assumptions log, and point at each deferred scope item's entry in `{deferred_items_register}` (link-only slots in this document, per its template)

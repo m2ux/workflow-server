@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.9.0
+  version: 3.9.3
 ---
 
 ## Capability
@@ -12,7 +12,11 @@ Shared contract for a workflow's planning-folder artifacts — prefixing, organi
 
 ### single-source-and-link
 
-Every fact has exactly one canonical artifact. When another artifact needs it, link to the canonical home (a markdown link to the file or section) with at most a one-line pointer — never restate the content. Validation results, findings, decisions, and deferred items are the common offenders: record each once, reference everywhere else.
+Every fact has exactly one canonical artifact. When another artifact needs it, link to the canonical home (a markdown link to the file or section) with at most a one-line pointer — never restate the content, and point at an agent-audience home by entry, as the Links rules of the [Artifact Writing Register](/meta/resources/writing-register.md) state. Validation results, findings, decisions, and deferred items are the common offenders: record each once, reference everywhere else.
+
+### source-sits-with-its-claim
+
+The link to what supports a statement is in that statement. A work-package artifact carries no trailing Sources or References list.
 
 ### canonical-home-map
 
@@ -36,7 +40,7 @@ Omit template sections whose content would be "None", "N/A", or a restatement th
 
 ### markdown-line-breaks
 
-In a group of consecutive bold-label lines (`**Status:** value`), every line except the last MUST end with two trailing spaces — without them the lines collapse into a single rendered paragraph. Do NOT use bullet prefixes as a substitute. Applies to all planning artifacts that use bold-label fields (assumptions logs, design philosophy documents, research documents, analyses, comprehension artifacts).
+In a group of consecutive bold-label lines (`**Status:** value`), every line except the last MUST end with two trailing spaces — without them the lines collapse into a single rendered paragraph. Do NOT use bullet prefixes as a substitute. Applies to every planning artifact that uses bold-label fields.
 
 ### hyperlink-conventions
 
@@ -56,7 +60,7 @@ A line anchor on a **markdown** blob needs `?plain=1` before the fragment — `�
 
 ### code-reference-is-an-inline-link
 
-Every reference to a named thing in the code — a function, type, trait, module, constant, test, or a specific line of one — is an inline markdown link whose visible text is that name, placed where the sentence already names it. A reader following the prose reaches the source by clicking the words they are reading.
+A named thing in the code — a function, type, trait, module, constant, test, or a specific line of one — is named in words that link to it, per the Prose rules of the [Artifact Writing Register](/meta/resources/writing-register.md). The link sits where the sentence already names it:
 
 ```markdown
 [resolve_cursor](https://github.com/owner/repo/blob/<sha>/src/parser.rs#L190) advances the cursor before the bounds check, so a request at the limit reads one element past the end.

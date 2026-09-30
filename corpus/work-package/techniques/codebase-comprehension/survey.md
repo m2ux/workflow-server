@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -69,7 +69,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 - For each significant design choice, infer the likely rationale from context clues: comments, naming, structure, constraints
 - Identify trade-offs: what does this design optimize for? what does it sacrifice?
 - Identify what each choice constrains: which later changes it rules out, and which it makes cheap
-- State each rationale as a property of the design, under the heading that marks the whole section as read out of the code rather than stated by its authors; where the source documents a reason outright, say so in the entry
+- State each rationale as a property of the design, as read out of the code rather than stated by its authors; where the source documents a reason outright, say so in the entry
 
 ### 5. Domain Mapping
 

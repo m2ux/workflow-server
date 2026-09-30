@@ -2,7 +2,7 @@
 name: review-mode
 description: Reference content for a structured pull-request review — the review comment template, and one section per review category carrying that category's findings fragment and population rules. Organized for per-section delivery.
 metadata:
-  version: 1.19.0
+  version: 1.19.1
   order: 24
   legacy_id: 24
 ---
@@ -287,9 +287,9 @@ Create a mental model of what the ideal implementation would look like:
 
 Based on ticket [PM-XXXXX] requirements:
 
-### Files Expected to Change
-- `src/module/component.rs` - Add new handler for XYZ
-- `tests/module_test.rs` - Add coverage for new behavior
+### Areas Expected to Change
+- [The module or behaviour, in words] — [the change the ticket implies]
+- [The tests that should cover it, in words] — [the coverage expected]
 
 ### Expected Behavior Changes
 1. System should now support [capability] when [condition]

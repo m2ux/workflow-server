@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.1.2
 ---
 
 ## Capability
@@ -68,4 +68,4 @@ Cross-reference related comprehension artifacts and note dependencies between co
 
 ### question-driven-exploration
 
-The log's Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch.
+The log's open questions are the primary input for selecting deep-dive areas. Where open questions exist, they are the default selection for the next deep dive, ahead of new candidate areas.

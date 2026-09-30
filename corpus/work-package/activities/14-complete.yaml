@@ -1,5 +1,5 @@
 id: complete
-version: 1.14.0
+version: 1.14.2
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
@@ -39,22 +39,22 @@ variables:
       defaultValue: ""
     - name: current_deferred_item
       type: object
-      description: The deferred-items register row under consideration.
+      description: The deferred-items register entry under consideration.
     - name: deferred_item_issue_number
       type: string
-      description: Key of the issue raised for the row under consideration.
+      description: Key of the issue raised for the entry under consideration.
       defaultValue: ""
     - name: deferred_item_issue_url
       type: string
-      description: Address of the issue raised for the row under consideration.
+      description: Address of the issue raised for the entry under consideration.
       defaultValue: ""
     - name: has_unraised_deferred_items
       type: boolean
-      description: Whether the register holds at least one row naming no issue yet.
+      description: Whether the register holds at least one entry naming no issue yet.
       defaultValue: false
     - name: open_deferred_items
       type: array
-      description: Register rows whose Follow-up cell holds no issue link, each carrying its ID, item and rationale.
+      description: Register entries naming no issue yet, each carrying its ID, item and reason.
       defaultValue: []
     - name: documented_apis
       type: array
@@ -67,7 +67,7 @@ variables:
       description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: raise_current_deferred_item
       type: boolean
-      description: Whether the row under consideration is approved for raising.
+      description: Whether the entry under consideration is approved for raising.
       defaultValue: false
     - name: worktree_created
       type: boolean
@@ -101,17 +101,17 @@ steps:
     steps:
       - kind: checkpoint
         id: deferred-item-raise#{current_deferred_item.id}
-        message: "Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.rationale}"
+        message: "Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.reason}"
         options:
           - id: raise
             label: Raise an issue
-            description: Create a tracker issue for this item and link it from the register row
+            description: Create a tracker issue for this item and record it on the register entry
             effect:
               setVariable:
                 raise_current_deferred_item: true
           - id: skip
             label: Leave unraised
-            description: Keep the row open with its dash, for a later package to raise
+            description: Keep the entry unraised, for a later package to raise
             effect:
               setVariable:
                 raise_current_deferred_item: false

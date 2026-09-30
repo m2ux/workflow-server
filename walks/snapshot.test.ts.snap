@@ -148,11 +148,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -180,10 +180,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "requirements-elicitation",
       "artifacts": [
+        "deferred-items.json",
         "requirements-elicitation.md",
         "assumptions-log.md",
       ],
       "artifactsWritten": [
+        "03-deferred-items.json",
         "03-requirements-elicitation.md",
         "02-assumptions-log.md",
       ],
@@ -225,6 +227,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "pose-question",
         "record-answer",
         "elicit-requirements",
+        "register-deferred-scope",
         "collect-assumptions",
         "create-document",
         "update-assumptions-log",
@@ -346,11 +349,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "assumptions-review",
       "artifacts": [
         "assumptions-log.md",
-        "deferred-items.md",
+        "deferred-items.json",
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.md",
+        "03-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -467,21 +470,17 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "follow-ups.md",
+        "follow-ups.json",
         "code-review.md",
-        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.md",
+        "10-follow-ups.json",
         "10-code-review.md",
-        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [
         {
@@ -555,11 +554,9 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -578,14 +575,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
-        "strategic-review-{n}-method.md",
-        "deferred-items.md",
+        "deferred-items.json",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "12-strategic-review-n-method.md",
-        "07-deferred-items.md",
+        "03-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -883,11 +878,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -915,10 +910,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "requirements-elicitation",
       "artifacts": [
+        "deferred-items.json",
         "requirements-elicitation.md",
         "assumptions-log.md",
       ],
       "artifactsWritten": [
+        "03-deferred-items.json",
         "03-requirements-elicitation.md",
         "02-assumptions-log.md",
       ],
@@ -960,6 +957,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "pose-question",
         "record-answer",
         "elicit-requirements",
+        "register-deferred-scope",
         "collect-assumptions",
         "create-document",
         "update-assumptions-log",
@@ -1039,11 +1037,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "assumptions-review",
       "artifacts": [
         "assumptions-log.md",
-        "deferred-items.md",
+        "deferred-items.json",
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.md",
+        "03-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -1160,21 +1158,17 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "follow-ups.md",
+        "follow-ups.json",
         "code-review.md",
-        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.md",
+        "10-follow-ups.json",
         "10-code-review.md",
-        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [
         {
@@ -1224,11 +1218,9 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -1247,14 +1239,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
-        "strategic-review-{n}-method.md",
-        "deferred-items.md",
+        "deferred-items.json",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "12-strategic-review-n-method.md",
-        "07-deferred-items.md",
+        "03-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -1553,11 +1543,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -1585,10 +1575,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "requirements-elicitation",
       "artifacts": [
+        "deferred-items.json",
         "requirements-elicitation.md",
         "assumptions-log.md",
       ],
       "artifactsWritten": [
+        "03-deferred-items.json",
         "03-requirements-elicitation.md",
         "02-assumptions-log.md",
       ],
@@ -1630,6 +1622,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "pose-question",
         "record-answer",
         "elicit-requirements",
+        "register-deferred-scope",
         "collect-assumptions",
         "create-document",
         "update-assumptions-log",
@@ -1751,11 +1744,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "assumptions-review",
       "artifacts": [
         "assumptions-log.md",
-        "deferred-items.md",
+        "deferred-items.json",
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.md",
+        "03-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -1872,21 +1865,17 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "follow-ups.md",
+        "follow-ups.json",
         "code-review.md",
-        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.md",
+        "10-follow-ups.json",
         "10-code-review.md",
-        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [
         {
@@ -1960,11 +1949,9 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -1983,14 +1970,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
-        "strategic-review-{n}-method.md",
-        "deferred-items.md",
+        "deferred-items.json",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "12-strategic-review-n-method.md",
-        "07-deferred-items.md",
+        "03-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -2288,11 +2273,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -2431,11 +2416,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "assumptions-review",
       "artifacts": [
         "assumptions-log.md",
-        "deferred-items.md",
+        "deferred-items.json",
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.md",
+        "07-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -2552,21 +2537,17 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "follow-ups.md",
+        "follow-ups.json",
         "code-review.md",
-        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.md",
+        "10-follow-ups.json",
         "10-code-review.md",
-        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [
         {
@@ -2616,11 +2597,9 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -2639,14 +2618,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
-        "strategic-review-{n}-method.md",
-        "deferred-items.md",
+        "deferred-items.json",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "12-strategic-review-n-method.md",
-        "07-deferred-items.md",
+        "07-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -2913,11 +2890,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -3008,11 +2985,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "assumptions-review",
       "artifacts": [
         "assumptions-log.md",
-        "deferred-items.md",
+        "deferred-items.json",
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.md",
+        "07-deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -3068,21 +3045,17 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "follow-ups.md",
+        "follow-ups.json",
         "code-review.md",
-        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.md",
+        "10-follow-ups.json",
         "10-code-review.md",
-        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [
         {
@@ -3132,11 +3105,9 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -3160,14 +3131,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
-        "strategic-review-{n}-method.md",
-        "deferred-items.md",
+        "deferred-items.json",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "12-strategic-review-n-method.md",
-        "07-deferred-items.md",
+        "07-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -3433,11 +3402,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -3506,11 +3475,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "assumptions-review",
       "artifacts": [
         "assumptions-log.md",
-        "deferred-items.md",
+        "deferred-items.json",
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.md",
+        "07-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -3627,21 +3596,17 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "follow-ups.md",
+        "follow-ups.json",
         "code-review.md",
-        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.md",
+        "10-follow-ups.json",
         "10-code-review.md",
-        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [
         {
@@ -3691,11 +3656,9 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
-        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
-        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -3714,14 +3677,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
-        "strategic-review-{n}-method.md",
-        "deferred-items.md",
+        "deferred-items.json",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "12-strategic-review-n-method.md",
-        "07-deferred-items.md",
+        "07-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -3873,8 +3834,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 343,
-  "executedTotal": 190,
+  "declaredTotal": 344,
+  "executedTotal": 191,
   "perActivity": [
     {
       "activity": "assumptions-review",
@@ -3923,8 +3884,8 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "requirements-elicitation",
-      "declared": 16,
-      "executed": 10,
+      "declared": 17,
+      "executed": 11,
     },
     {
       "activity": "research",

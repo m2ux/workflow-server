@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -50,7 +50,7 @@ The input findings, each carrying its assigned severity, its `action_tier` (the 
 - Assign every finding in `{findings_to_classify}` and in each declared subset a severity on the single scale: Critical, Major, Minor, Nit, or Informational.
 - Judge severity by impact, not surface: Critical for security or data-loss risks and failing tests; Major for correctness defects and build failures; Minor for maintainability and lint issues; Nit for style; Informational for observations carrying no required action.
 - When the findings are validation diagnostics (test/build/lint failures), map them onto the same scale — test failures are Critical, build failures are Major — and do NOT attempt to fix them here; classification only.
-- Findings arrive here from several passes, which is where one defect stated twice becomes visible. Two entries naming the same defect are one finding: keep the designator of the pass that owns it and drop the restatement, per [Report and Methodology](../resources/findings-report.md#report-and-methodology).
+- Findings arrive here from several passes, which is where one defect stated twice becomes visible. Two entries naming the same defect are one finding: keep the designator of the pass that owns it and drop the restatement, per [Evidence Reuse](../resources/findings-report.md#evidence-reuse).
 
 - Judge each finding against the [Impact Axes](../resources/findings-report.md#impact-axes) in addition to correctness, and record the axis that applies as that finding's `impact_axis`. A correct-but-harmful finding classifies Major or above, so it is ≥ Minor and sets `{code_findings_actionable}` through the routing rule below — the impact axes add severity without changing the routing threshold.
 

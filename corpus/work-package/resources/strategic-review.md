@@ -2,7 +2,7 @@
 name: strategic-review
 description: Strategic review artifact template for speculative-change, over-engineering, and orphaned-infrastructure findings.
 metadata:
-  version: 1.5.0
+  version: 2.0.1
   order: 18
   legacy_id: 18
 ---
@@ -58,9 +58,11 @@ A changes fragment carries a GitHub issue reference, and the project's check-cha
 ```markdown
 # Strategic Review
 
-> strategic-review · [work package] · [base-branch] → [feature-branch] · [date] · [Agent/Human] · what was walked: [method record](NN-strategic-review-{n}-method.md)
+> strategic-review · [work package] · [base-branch] → [feature-branch] · [date] · [Agent/Human]
 
-**Diff:** [count] files, +[added] / -[removed]
+**Result:** [Passed / Minor Cleanup Completed / Significant Rework Needed] — [one-line reason] · [count] files, +[added] / -[removed]
+
+**Delivery:** carried to the pull request [designators] · handed to the audit [designators] · held [designators]
 
 ## Findings
 
@@ -82,61 +84,12 @@ A changes fragment carries a GitHub issue reference, and the project's check-cha
 
 [Omit this section if no cleanup was needed]
 
-| Action | Files Affected | Commit |
-|--------|----------------|--------|
-| Removed debug logging | [file1, file2] | [hash] |
-
-## Review Result
-
-**Outcome:** [Passed / Minor Cleanup Completed / Significant Rework Needed]
-
-**Rationale:** [Brief explanation of the outcome]
-
-**Next Step:** [Proceed to finalize / Return to planning]
-```
-
-## Method Record Template
-
-```markdown
-# Strategic Review Method
-
-> strategic-review method · [work package] · [date] · findings: [strategic review](NN-strategic-review-{n}.md)
-
-## Scope Assessment
-
-[Exception-only: if every change maps to a requirement, state "All changes in scope — minimal and focused" on one line. Add rows only for scope creep, each carried to the report as a finding.]
-
-| File / Change | In Scope? | Notes |
-|---------------|-----------|-------|
-| [file.rs] | No | [Flagged as scope creep — reason] |
-
-## PR Body Conformance
-
-[Exception-only: if the live PR body conforms to the required format, state "Body conforms — no findings" on one line. Otherwise list what diverged, each carried to the report as a finding.]
-
-| Divergence | Detail |
+| Cleanup | Commit |
 |---------|--------|
-| [e.g. Missing section] | [Description] |
-
-## Minimality Assessment
-
-[Exception-only: if all five minimality-check questions pass, state "All 5 minimality checks pass" on one line. Add rows only for questions answered "No".]
-
-| Question | Answer | Notes |
-|----------|--------|-------|
-| [Failing question] | No | [Details] |
-
-## Delivery Scope
-
-[Every designator the run produced, each in exactly one class, per [Delivery Completeness](./findings-report.md#delivery-completeness).]
-
-| Class | Designators |
-|-------|-------------|
-| Carried to the pull request | [SR-1, SR-2, …] |
-| Handed to the audit | [SR-3, …] |
-| Held | [SR-4, …] |
+| [what was removed or simplified, as a short label] | [the commit's subject, linked to the commit] |
 ```
 
 ## Rules
 
-- **Line budget:** ~120 lines. Each recommendation is one entry with its scope-fit reason.
+- **Line budget:** ~80 lines. Each recommendation is one entry with its scope-fit reason.
+- **Delivery names each designator once.** Every designator the run produced sits in exactly one class, per [Delivery Completeness](./findings-report.md#delivery-completeness); a class holding none is left off the line.

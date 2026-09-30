@@ -2,7 +2,7 @@
 name: manual-diff-review
 description: Lean-header and report-section forms for the manual diff review.
 metadata:
-  version: 2.3.0
+  version: 2.4.0
   order: 22
   legacy_id: 22
 ---
@@ -13,7 +13,7 @@ metadata:
 
 ### Index Format
 
-Open with a lean-header summary line, then one rationale section per changed block. Each **Block** title hyperlinks to the primary `file:line` in the diff as a permanent blob URL at the reviewed commit. No separate Instructions section and no file-index table — the Block titles are the navigation.
+Open with a lean-header summary line, then one rationale section per changed block. Each **Block** title names the change in words and links to its primary line in the diff as a permanent blob URL at the reviewed commit. No separate Instructions section and no file-index table — the Block titles are the navigation.
 
 ```markdown
 # Change Block Index
@@ -22,11 +22,11 @@ Open with a lean-header summary line, then one rationale section per changed blo
 
 ## Block Rationale
 
-### [Block 1 — handlers.rs:42]({REVIEWED_CODE_BASE_URL}/src/api/handlers.rs#L42)
+### [Block 1 — request handler rejects an empty body]({REVIEWED_CODE_BASE_URL}/src/api/handlers.rs#L42)
 
 [Descriptive paragraph explaining what the change does and why.]
 
-### [Block 2 — routes.rs:18]({REVIEWED_CODE_BASE_URL}/src/api/routes.rs#L18)
+### [Block 2 — upload route registered]({REVIEWED_CODE_BASE_URL}/src/api/routes.rs#L18)
 
 [Descriptive paragraph explaining what the change does and why.]
 ```
@@ -40,7 +40,7 @@ Reviewers use their side-by-side diff tool with this index for context.
 ```markdown
 ## Block Rationale
 
-### [Block N — file:line]({REVIEWED_CODE_BASE_URL}/repo-relative/path.ext#L{line})
+### [Block N — what the change does, in a phrase]({REVIEWED_CODE_BASE_URL}/repo-relative/path.ext#L{line})
 
 [Descriptive paragraph explaining what the change does and why.]
 ```
@@ -60,8 +60,8 @@ An `##`-level section, so it nests inside a host document rather than standing a
 
 ### MD-1: [Brief Title]
 
-**File:** [`path/to/file.ext`]({REVIEWED_CODE_BASE_URL}/path/to/file.ext#L{line}) · **Block:** [N] · **Severity:** Critical / High / Medium / Low  
-**Issue:** [User's description of the issue]  
+**Block:** [N] · **Severity:** Critical / High / Medium / Low  
+**Issue:** [the user's description, opening with the changed code named in words and linked to its lines]  
 **Recommendation:** [Suggested fix or action, if provided]
 ```
 

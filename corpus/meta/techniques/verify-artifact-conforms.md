@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -55,11 +55,11 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 - Check each artifact against the `## Rules` of its guide and, when `{canonical_home_map}` is bound, against that map; apply each rule by cite and do not restate its criteria here
 - An artifact carrying a fact the map homes elsewhere is a finding whether or not the fact is accurate
-- Check each human-audience artifact's prose and tables against [Artifact Writing Register](/meta/resources/writing-register.md); a passage or table that breaks the register is a `writing-register` violation
+- Check each human-audience artifact's prose, tables and links against [Artifact Writing Register](/meta/resources/writing-register.md); a passage, table or link that breaks the register is a `writing-register` violation
 
 ### 3. Correct in Place
 
-- Replace a restated fact with a link to its canonical home, delete a section whose content is an absence, collapse a table whose every row passes, condense prose over its guide's budget, and rewrite a passage that breaks the register
+- Replace a restated fact with a pointer to its canonical home, as the Links rules of the [Artifact Writing Register](/meta/resources/writing-register.md) state, delete a section whose content is an absence, collapse a table whose every row passes, condense prose over its guide's budget, and rewrite a passage that breaks the register
 - Preserve content the user asked for explicitly, whatever the budget says
 - Leave an artifact under a published contract as it stands, recording its violations with `fixed` false — see `published-contracts-are-reported`
 

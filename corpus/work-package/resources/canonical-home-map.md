@@ -2,7 +2,7 @@
 name: canonical-home-map
 description: The one artifact that homes each shared fact category, and the link-only slot rule every other template follows.
 metadata:
-  version: 1.0.0
+  version: 1.0.2
 ---
 
 # Canonical Home Map
@@ -21,8 +21,8 @@ The canonical home for each shared fact category.
 | Research findings and recommended approach | `kb-research.md` |
 | Test cases and acceptance matrix | `test-plan.md` |
 | Review findings (code, test, structural, lean-coding, manual-diff) | `code-review.md` and the reviews' own artifacts — consolidated surfaces reference findings by ID + disposition |
-| In-task follow-ups | `follow-ups.md` (see [follow-ups](./follow-ups.md)) |
-| Out-of-scope deferred items | `deferred-items.md` (see [deferred-items](./deferred-items.md)) |
+| In-task follow-ups | `follow-ups.json` (see [follow-ups](./follow-ups.md)) |
+| Out-of-scope deferred items | `deferred-items.json` (see [deferred-items](./deferred-items.md)) |
 | Token counts and cost estimates | `token-usage.md` — the close-out, retrospective and session trace link it and restate no figure, so one ledger produces one artifact |
 | Mechanical execution record (dispatches, tool calls, durations, errors) | `session-trace.md` (see [session-trace](/meta/resources/session-trace.md)) |
 
@@ -30,4 +30,4 @@ The canonical home for each shared fact category.
 
 ### link-only-slots
 
-A template carries a link-only slot for every fact category it does not home: a markdown link to the canonical home plus at most one line. Restating homed content in such a slot is a conformance violation, whether or not the restatement is accurate.
+A template carries a link-only slot for every fact category it does not home: a markdown link to the canonical home plus at most one line. Where that home is agent-audience state, the slot points at each entry per [Links](/meta/resources/writing-register.md#links). Restating homed content in such a slot is a conformance violation, whether or not the restatement is accurate.

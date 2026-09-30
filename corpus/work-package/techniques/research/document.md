@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -43,7 +43,6 @@ Knowledge base and web research synthesis for the work package, carrying the fin
 
 ### 1. Create Research Artifact
 
-- Create the `{research_document}` artifact in `{planning_folder_path}`
-- Include `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks
-- Record `{web_findings}` per the [web research findings template](../../resources/web-research.md#section-template), appended after the knowledge base findings
+- Create the `{research_document}` artifact in `{planning_folder_path}` from the [Planning Artifact](../../resources/knowledge-base-research.md#planning-artifact) template
+- Record `{kb_findings}` and `{web_findings}` as one findings list, `{findings_synthesis}` and `{applicable_patterns}` as the recommended approach, and the risks the research surfaced
 - This artifact is the [canonical home](../../resources/canonical-home-map.md#map) for research findings — the plan consumes them through its link-only Inputs list.

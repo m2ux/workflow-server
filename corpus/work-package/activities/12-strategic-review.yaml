@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.23.0
+version: 2.23.1
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -37,7 +37,7 @@ variables:
       defaultValue: []
     - name: sequence_diagram_source
       type: array
-      description: The ordered step trace of each execution flow the change runs through, which the sequence diagrams are drawn from.
+      description: The ordered step trace of each execution flow the change runs through, which a sequence diagram is drawn from.
       defaultValue: []
     - name: base_branch
       type: string
@@ -51,13 +51,13 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
-    - name: deferred_item_rows
+    - name: deferred_items
       type: array
       description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
       defaultValue: []
     - name: deferred_items_register
       type: string
-      description: The out-of-scope deferrals register as it stands after this activity's rows.
+      description: Bare filename of the out-of-scope deferrals register this activity's entries were written to.
       defaultValue: ""
     - name: head_sha
       type: string

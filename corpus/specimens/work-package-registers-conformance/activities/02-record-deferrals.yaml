@@ -1,0 +1,32 @@
+id: record-deferrals
+version: 1.0.0
+name: Record Deferrals
+description: Append two deferrals to the register and raise the first as an issue.
+variables:
+  reads:
+    - raised_item
+    - raised_issue_number
+    - raised_issue_url
+  writes:
+    - name: deferred_items_register
+      type: string
+      description: Bare filename of the deferred-items register the two entries were written to.
+required: true
+steps:
+  - kind: technique
+    id: append-deferrals
+    technique:
+      name: work-package::manage-registers::append-deferred-item
+  - kind: technique
+    id: raise-first
+    technique:
+      name: work-package::raise-deferred-items::record
+      inputs:
+        current_deferred_item: raised_item
+        deferred_item_issue_number: raised_issue_number
+        deferred_item_issue_url: raised_issue_url
+exits:
+  - id: recorded
+    isDefault: true
+outcome:
+  - The register holds one JSON entry per deferral, and the first entry names the issue raised for it

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.1
+  version: 2.0.1
 ---
 
 ## Capability
@@ -21,19 +21,7 @@ The strategic review [document](../../resources/strategic-review.md#strategic-re
 
 `human`
 
-### strategic_review_method
-
-Method [record](../../resources/strategic-review.md#method-record-template) of how the review was conducted — the scope, conformance and minimality passes, and the delivery class each designator falls in.
-
-#### artifact
-
-`strategic-review-{n}-method.md`
-
-#### audience
-
-`human`
-
-### deferred_item_rows
+### deferred_items
 
 The findings deferred beyond this work package as out-of-scope deferrals, each carrying what was set aside, where, and why. Empty where none was deferred.
 
@@ -44,8 +32,8 @@ The findings deferred beyond this work package as out-of-scope deferrals, each c
 - State each finding in the `{strategic_review_doc}` in the shape [Finding Layout](../../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../../resources/strategic-review.md#field-list) and no others, with its severity derived through the map per [Severity](../../resources/findings-report.md#severity) and its reachability settled from the code the finding cites per [Reachability](../../resources/findings-report.md#reachability)
 - Categorize each finding per the group's `finding-categories`, assigning each a stable designator that downstream surfaces reference, per [Designators](../../resources/findings-report.md#designators)
 - Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
-- Emit any deferred finding as a `{deferred_item_rows}` entry, and link the register row from the finding
+- Emit any deferred finding as a `{deferred_items}` entry deferred at the finding's designator
 
-### 2. Record the Method
+### 2. Place Every Designator
 
-- Create the `{strategic_review_method}` under `{planning_folder_path}` from the [Method Record Template](../../resources/strategic-review.md#method-record-template): the scope, PR-body conformance and minimality passes, and the delivery table placing every designator the run produced in exactly one class, per [Delivery Completeness](../../resources/findings-report.md#delivery-completeness)
+- Place every designator the run produced in exactly one delivery class on the document's delivery line, per [Delivery Completeness](../../resources/findings-report.md#delivery-completeness)

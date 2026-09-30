@@ -2,7 +2,7 @@
 name: design-framework
 description: TRIZICS solution-design methodology (conventional-first, inventive principles, synthesis) and the design-philosophy artifact template.
 metadata:
-  version: 1.3.1
+  version: 2.0.0
   order: 9
   legacy_id: 9
 ---
@@ -116,8 +116,6 @@ Design validation questions:
 
 ## Design Philosophy Artifact Template
 
-Create `design-philosophy.md` in the planning folder using this template:
-
 ```markdown
 # Design Philosophy
 
@@ -125,60 +123,26 @@ Create `design-philosophy.md` in the planning folder using this template:
 
 ## Problem Statement
 
-[2-4 sentences derived from the ticket: what problem exists, why it matters, impact of not solving it. Line budget — this document precedes requirements elicitation, whose document becomes the canonical refined statement; keep this to the ticket-derived essentials and do not elaborate here.]
+[2-4 sentences derived from the ticket: what problem exists, why it matters, and what leaving it costs.]
 
-### System Context
+## Classification
 
-[Components, relationships, and context relevant to this problem]
+**Type:** [Specific — cause known / Specific — cause unknown / Inventive — improvement / Inventive — prevention] · **Complexity:** [Simple / Moderate / Complex]
 
-### Impact Assessment
+[One or two sentences: why this classification.]
 
-| Aspect | Description |
-|--------|-------------|
-| Severity | [Critical/High/Medium/Low] |
-| Scope | [Users/components affected] |
-| Business Impact | [What happens if not addressed] |
+## Workflow Path
 
-## Problem Classification
+**Path:** [Full workflow / Elicitation only / Research only / Direct to planning]
 
-**Type:** [Specific Problem / Inventive Goal]
-
-**Subtype:**
-- [ ] Cause Known (direct fix)
-- [ ] Cause Unknown (investigate first)
-- [ ] Improvement goal
-- [ ] Prevention goal
-
-**Complexity:** [Simple / Moderate / Complex]
-
-**Rationale:** [Why this classification]
-
-## Workflow Path Decision
-
-**Selected Path:** [Full workflow / Elicitation only / Research only / Direct to planning]
-
-**Activities Included:**
-- [ ] Requirements Elicitation
-- [ ] Research
-- [ ] Implementation Analysis
-- [ ] Plan & Prepare
-
-**Rationale:** [Why this path was chosen]
-
-## Constraints
-
-| Constraint Type | Description |
-|-----------------|-------------|
-| Time | [Timeline constraints] |
-| Technical | [Technical limitations] |
-| Dependencies | [External dependencies] |
-| Resources | [Resource constraints] |
+[One or two sentences: why this path.]
 
 ## Success Criteria
 
-[One line: Success criteria: [requirements](requirements-elicitation.md#success-criteria) once elicited. Only when the workflow path skips elicitation does this section carry the criteria table (Criterion | Measurement | Target).]
-
-## Notes
-
-[Omit this section if none. Additional context, open questions, or considerations for subsequent phases]
+[One line: Success criteria: [requirements](requirements-elicitation.md#success-criteria) once elicited. Only when the path skips elicitation does this section carry the criteria table (Criterion | Measurement | Target).]
 ```
+
+## Rules
+
+- **The statement stays ticket-derived.** Requirements elicitation holds the refined statement, its scope and its constraints; this document's own content is the classification and the path.
+- **Line budget:** ~30 lines.
