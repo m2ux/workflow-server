@@ -2,7 +2,7 @@
 name: workflow-retrospective
 description: Methodology and section template for the workflow retrospective.
 metadata:
-  version: 2.3.2
+  version: 2.3.3
   order: 20
   legacy_id: 20
 ---
@@ -49,7 +49,7 @@ A whole-section review is readable only while the section is short, so the item 
 | Recommendations | at most 3, one line each |
 | Key takeaway | one sentence |
 
-Items above the budget are cut, not compressed: an observation that does not make the top six was not the run's real friction. Where a cut item still deserves to survive, it goes to the follow-ups register as an entry and the section names its ID and item.
+Items above the budget are cut, not compressed: an observation that does not make the top six was not the run's real friction. Where a cut item still deserves to survive, it becomes an in-task follow-up.
 
 ## Output Section Template
 
@@ -83,7 +83,7 @@ Items above the budget are cut, not compressed: an observation that does not mak
 
 ## Rules
 
-- **Within the item budget** — the section holds at most the counts in [Item Budget](#item-budget). Overflow goes to the follow-ups register, named by entry ID and item.
+- **Within the item budget** — the section holds at most the counts in [Item Budget](#item-budget).
 - **Workflow improvements, never user or agent error:** users and mechanical traces reveal workflow gaps — analyze as defects in instructions, not blame.
 - **Exception-only:** include only signal categories with content; a smooth session's retrospective is the message counts, a takeaway, and "action required: no".
 - **State each lesson once.** No Summary/Lessons/Takeaway triple-statement — the takeaway line is the recap.

@@ -8,8 +8,9 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 
 | Technique | Contributes |
 |---|---|
-| [`create-complete-doc`](create-complete-doc.md) | Work package's single terminal close-out artifact — delivered work, coverage, limitations, and pointers to the registers that hold open work |
+| [`create-complete-doc`](create-complete-doc.md) | Work package's single terminal close-out artifact — delivered work, coverage, limitations, and the open work its registers hold |
 | [`ensure-docs`](ensure-docs.md) | Ensure public/exported APIs in the diff carry inline documentation |
 | [`finalize-test-plan`](finalize-test-plan.md) | Finalize the test plan by linking each test case to its actual source location |
+| [`gather-open-work`](gather-open-work.md) | The work still open at close-out that no register entry holds, sorted into in-task follow-ups and out-of-scope deferrals |
 | [`render-token-usage`](render-token-usage.md) | Sole cost home for a run — the token-use and cost-estimate artifact, reconciled against the run's actual dispatch count, with a one-line README link |
 | [`update-adr`](update-adr.md) | Update the work package's ADR to Accepted, recording the implementation outcome |

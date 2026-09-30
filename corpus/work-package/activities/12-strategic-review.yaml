@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.23.1
+version: 2.24.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -55,6 +55,10 @@ variables:
       type: array
       description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
       defaultValue: []
+    - name: deferral_reason
+      type: string
+      description: Why the strategic findings are set aside beyond this work package.
+      defaultValue: ""
     - name: deferred_items_register
       type: string
       description: Bare filename of the out-of-scope deferrals register this activity's entries were written to.
@@ -238,9 +242,6 @@ steps:
     id: document-findings
     technique: document-findings
   - kind: technique
-    id: register-deferred-findings
-    technique: manage-registers::append-deferred-item
-  - kind: technique
     id: document-cleanup-recommendations
     technique: recommend-cleanup
     when: is_review_mode == true
@@ -310,8 +311,9 @@ steps:
             strategic_findings_disposition: fix-selected
       - id: defer-findings
         label: Defer findings
-        description: Note findings for future but proceed now
+        description: Set the findings aside beyond this work package; the reply says why
         effect:
+          recordReply: deferral_reason
           setVariable:
             review_passed: true
             strategic_findings_disposition: deferred
@@ -364,6 +366,13 @@ steps:
           setVariable:
             review_passed: true
             raised_findings_scope: none
+  - kind: technique
+    id: defer-checkpoint-findings
+    technique: defer-findings
+    when: strategic_findings_disposition == 'deferred'
+  - kind: technique
+    id: register-deferred-findings
+    technique: manage-registers::append-deferred-item
 exits:
   - id: review-mode
     when: is_review_mode == true

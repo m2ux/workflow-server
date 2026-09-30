@@ -18,15 +18,15 @@ A highly isolated workflow for remediating security vulnerabilities without publ
 | 03 | requirements-elicitation | work-package | Optional requirements discovery |
 | 04 | research | work-package | Optional research (constrained by the private-research rule) |
 | 05 | implementation-analysis | work-package | Current-state analysis |
-| 06 | plan-prepare | work-package | Plan and test strategy (PR rendering stealth-gated out) |
-| 07 | assumptions-review | work-package | Assumption interview (issue-tracker posting stealth-gated out) |
+| 06 | plan-prepare | work-package | Plan and test strategy |
+| 07 | assumptions-review | work-package | Assumption interview |
 | 08 | implement | work-package | Task-cycle implementation with provenance log |
 | 09 | lean-coding-audit | work-package | Over-engineering audit |
 | 16 | prism-decision | work-package | Full prism pipeline or inline structural pass |
 | 10 | post-impl-review | work-package | Code/diff/test review |
 | 11 | validate | work-package | Build/test/lint suite |
 | 12 | strategic-review | work-package | Scope/minimality review + commit-signature scan and re-sign |
-| 13 | submit-for-review | work-package | DCO attestation, private-remote isolation checks, push to `security` (PR lifecycle stealth-gated out) |
+| 13 | submit-for-review | work-package | DCO attestation, private-remote isolation checks, push to `security` |
 | 14 | complete | work-package | Close-out |
 | 15 | codebase-comprehension | work-package | Comprehension deep-dive |
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.6.1
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Conformance of a folder's persisted artifacts to the guide each filename maps to
 
 ### artifact_dir
 
-*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder. In scope are the **human-audience artifacts this run persisted** there — never every file the directory happens to hold, since a planning folder holds only the run's own artifacts while a code or shared directory holds a great deal the run did not write, and never an agent-audience artifact, whose conformance is its declared schema rather than a prose template.
+*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder.
 
 #### default
 
@@ -48,7 +48,7 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 ### 1. Enumerate and Resolve
 
 - Enumerate the human-audience artifacts this run persisted into `{artifact_dir}` and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
-  > A file the run did not write, a child run's output folder, and an artifact declared `agent`, are all out of scope.
+  > Scope per `only-what-this-run-wrote`.
 - Record an artifact whose guide no map names in `unmeasured` and carry it no further
 
 ### 2. Measure Against the Guide and the Map
@@ -73,15 +73,15 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 ### only-what-this-run-wrote
 
-Measure the human-audience artifacts this run persisted, and nothing else in the directory. Three exclusions carry the weight. A caller whose artifact directory is a checkout, a code path, or any folder it shares with content the run did not write would otherwise have unrelated files measured against guides they were never written to, and corrected in place against them. An agent-audience artifact is structured data whose conformance is its declared schema — a template and a line budget say nothing about it, so measuring one against them reports noise and correcting one against them corrupts it. And a folder holding a child run's own output belongs to that run: the child's workflow declares the guides its artifacts follow and binds its own conformance pass over them, so a caller that descends into one measures another workflow's artifacts against a map that was never written for them.
+Measure the human-audience artifacts this run persisted, and nothing else in the directory. A file the run did not write, an agent-audience artifact, and a folder holding a child run's own output are out of scope.
 
 ### guide-is-the-standard
 
-An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, the artifact is unmeasured and the missing mapping is what gets reported — a claim about the folder's map, not about the artifact's shape. Keeping the two apart matters because they are cleared by different people: a violation is a defect in a file the run can correct, and a gap in the map is a definition edit no amount of rework inside the run reaches.
+An artifact is measured against the guide its own filename maps to, and against no other.
 
 ### published-contracts-are-reported
 
-An artifact under a published contract is measured and reported, never rewritten. Its declaration or its guide says so: the bytes are posted or delivered verbatim, or a consumer outside this run parses the file. Rewriting one breaks a promise the producing step made — condensing prose renumbers sections a split step already fixed, and collapsing a table removes a field a triggering workflow reads. Record each violation with `fixed` false and leave the file, so the producing step's own guide is where the shape gets corrected.
+An artifact under a published contract is measured and never rewritten. Its declaration or its guide says so: the bytes are posted or delivered verbatim, or a consumer outside this run parses the file.
 
 ### maps-come-from-the-caller
 

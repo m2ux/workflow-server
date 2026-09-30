@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.26.0
+version: 1.26.1
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -28,7 +28,6 @@ variables:
     - summary_refine_requested
     - target_path
     - target_repo
-    - ticket_disposition
   writes:
     - name: artifact_publish_ref
       type: string
@@ -128,10 +127,7 @@ steps:
         message: Submitting work for review
   - kind: technique
     id: consolidate-review-findings
-    technique:
-      name: findings-classification
-      inputs:
-        ticket_disposition: ticket_disposition
+    technique: findings-classification
     when: is_review_mode == true
   - kind: technique
     id: resolve-artifact-publish

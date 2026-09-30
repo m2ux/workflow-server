@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.4.2
+  version: 1.5.0
 ---
 
 ## Capability
 
-Work package's single terminal close-out artifact — delivered work, coverage, limitations, and the open work its registers hold; retrospective inlined by conduct-retrospective, else link-only to canonical homes.
+Work package's single terminal close-out artifact — delivered work, coverage, limitations, and the open work its registers hold.
 
 ## Inputs
 
@@ -15,15 +15,35 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 ### finalized_adr
 
-*(optional)* The ADR as accepted, with the implementation outcome recorded — absent when the work package created no ADR.
+*(optional)* The ADR as accepted, with the implementation outcome recorded. Absent where the work package created no ADR.
+
+### adr_document_url
+
+*(optional)* The ADR's full URL. Absent where the work package created no ADR.
 
 ### finalized_test_plan
 
-*(optional)* The test plan with each case linked to its test source file and line.
+*(optional)* The test plan with each case linked to its test source file and line. Absent on a review run.
 
-### documented_apis
+### retrospective_document
 
-*(optional)* The public APIs in the diff that the documentation pass covered.
+*(optional)* The text of the Workflow Retrospective section. Absent where the retrospective was skipped.
+
+### follow_ups_register
+
+The in-task follow-ups register, named by its bare filename.
+
+#### default
+
+`follow-ups.json`
+
+### deferred_items_register
+
+The out-of-scope deferrals register, named by its bare filename.
+
+#### default
+
+`deferred-items.json`
 
 ## Outputs
 
@@ -45,9 +65,9 @@ Path to the written close-out document, for user-facing links.
 
 ## Protocol
 
-### 1. Create the Completion Document
+### 1. Create Completion Document
 
-- Create the `{completion_document}` at the `{planning_folder_path}` following the close-out [Template](../../resources/complete-wp-guide.md#template) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files (retrospective is inlined later by conduct-retrospective, or omitted per that group's skip rule). Emit its path as `{completion_document_path}`.
+- Create the `{completion_document}` at the `{planning_folder_path}` following the close-out [Template](../../resources/complete-wp-guide.md#template) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files. Emit its path as `{completion_document_path}`.
 
 ### 2. Summarise What Was Delivered
 
@@ -60,14 +80,22 @@ Path to the written close-out document, for user-facing links.
 
 ### 4. State Open Work
 
-- Read the in-task follow-ups register and the out-of-scope deferred-items register (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, each open entry's ID and one-line item, and a link to each issue raised from it. Omit the section when neither register exists.
-   > Work still open at close-out and held by no register entry goes to the register that owns it first — in-task to the follow-ups register, out-of-scope to the deferred-items register, each an entry per that register's template and Rules ([follow-ups](../../resources/follow-ups.md#rules), [deferred-items](../../resources/deferred-items.md#rules)), creating the register when this is its first entry — and Open Work counts it like any other.
+- Read `{follow_ups_register}` and `{deferred_items_register}` in `{planning_folder_path}` (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, each open entry's ID and one-line item, and a link to each issue raised from it. Omit the section when neither register exists.
 
-### 5. Link the Cost and the Verdict
+### 5. Link Supporting Records
 
 - Link `token-usage.md` for cost when it exists — one line, no figure restated.
 - State the validation verdict in one line, and link the change-block index for files changed — link, don't copy the tables.
+- Link the test plan for test coverage, from `{finalized_test_plan}`.
+  > Omit the line where `{finalized_test_plan}` is absent.
+- Link the ADR at `{adr_document_url}` by the decision title `{finalized_adr}` records.
+  > Omit the line where `{adr_document_url}` is absent.
 
-### 6. Report the Success Criteria
+### 6. Report Success Criteria
 
 - Report success criteria exception-only: one line when all are met, rows only for divergences.
+
+### 7. Carry Retrospective
+
+- Carry `{retrospective_document}` as the Workflow Retrospective section.
+  > Omit the section where `{retrospective_document}` is absent.

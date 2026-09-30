@@ -1,5 +1,5 @@
 id: complete
-version: 1.14.2
+version: 1.15.0
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
@@ -17,6 +17,7 @@ variables:
     - problem_complexity
     - problem_statement
     - requirements
+    - stealth_mode
     - target_path
     - target_repo
     - worktree_created
@@ -40,6 +41,26 @@ variables:
     - name: current_deferred_item
       type: object
       description: The deferred-items register entry under consideration.
+    - name: deferred_items_register
+      type: string
+      description: Bare filename of the out-of-scope deferrals register the close-out's entries were written to.
+      defaultValue: ""
+    - name: follow_ups_register
+      type: string
+      description: Bare filename of the in-task follow-ups register the close-out's entries were written to.
+      defaultValue: ""
+    - name: follow_ups
+      type: array
+      description: Follow-ups to append to the in-task register, each with what remains, where it surfaced, and what happens next.
+      defaultValue: []
+    - name: deferred_items
+      type: array
+      description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
+      defaultValue: []
+    - name: adr_document_url
+      type: string
+      description: The full URL of the ADR this work package wrote.
+      defaultValue: ""
     - name: deferred_item_issue_number
       type: string
       description: Key of the issue raised for the entry under consideration.
@@ -48,20 +69,10 @@ variables:
       type: string
       description: Address of the issue raised for the entry under consideration.
       defaultValue: ""
-    - name: has_unraised_deferred_items
-      type: boolean
-      description: Whether the register holds at least one entry naming no issue yet.
-      defaultValue: false
     - name: open_deferred_items
       type: array
       description: Register entries naming no issue yet, each carrying its ID, item and reason.
       defaultValue: []
-    - name: documented_apis
-      type: array
-      description: The public/exported APIs in the diff, each carrying inline documentation.
-    - name: public_api_symbols
-      type: array
-      description: The exported symbols in the diff that require documentation — the doc-comment work list.
     - name: publishable_files
       type: array
       description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
@@ -88,6 +99,37 @@ steps:
     technique: finalize-documentation::finalize-test-plan
     when: is_review_mode != true
   - kind: technique
+    id: render-token-usage
+    technique: finalize-documentation::render-token-usage
+  - kind: routine
+    id: enumerate-public-api
+    routine: gitnexus::public-api-enum
+    when: is_review_mode != true
+    outputs:
+      public_api_symbols: public_api_symbols
+  - kind: technique
+    id: ensure-docs
+    technique: finalize-documentation::ensure-docs
+    when: is_review_mode != true
+  - kind: technique
+    id: read-session
+    technique: workflow-engine::read-session
+  - kind: technique
+    id: conduct-retrospective
+    technique: conduct-retrospective::retrospective
+  - kind: technique
+    id: register-retrospective-follow-ups
+    technique: manage-registers::append-follow-up
+  - kind: technique
+    id: gather-open-work
+    technique: finalize-documentation::gather-open-work
+  - kind: technique
+    id: register-open-follow-ups
+    technique: manage-registers::append-follow-up
+  - kind: technique
+    id: register-open-deferrals
+    technique: manage-registers::append-deferred-item
+  - kind: technique
     id: collect-deferred-items
     technique: raise-deferred-items::collect
     when: is_review_mode != true
@@ -97,7 +139,7 @@ steps:
     loopType: forEach
     variable: current_deferred_item
     over: open_deferred_items
-    when: is_review_mode != true && has_unraised_deferred_items == true
+    when: is_review_mode != true && stealth_mode != true
     steps:
       - kind: checkpoint
         id: deferred-item-raise#{current_deferred_item.id}
@@ -133,25 +175,6 @@ steps:
   - kind: technique
     id: create-complete-doc
     technique: finalize-documentation::create-complete-doc
-  - kind: technique
-    id: render-token-usage
-    technique: finalize-documentation::render-token-usage
-  - kind: routine
-    id: enumerate-public-api
-    routine: gitnexus::public-api-enum
-    when: is_review_mode != true
-    outputs:
-      public_api_symbols: public_api_symbols
-  - kind: technique
-    id: ensure-docs
-    technique: finalize-documentation::ensure-docs
-    when: is_review_mode != true
-  - kind: technique
-    id: read-session
-    technique: workflow-engine::read-session
-  - kind: technique
-    id: conduct-retrospective
-    technique: conduct-retrospective::retrospective
   - kind: action
     id: announce-retrospective
     actions:

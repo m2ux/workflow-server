@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.14.0
+  version: 1.15.0
 ---
 
 ## Capability
@@ -31,15 +31,19 @@ The triage of prior PR feedback — each prior comment dispositioned Confirmed /
 
 ### review_ticket_ref
 
-*(optional)* The tracker ticket the reviewed PR addresses, named in the summary so the review is traceable to the work it judges.
+*(optional)* The tracker ticket the reviewed PR addresses.
+
+### ticket_disposition
+
+*(optional)* What the reviewer decided about the ticket's completeness gaps. Absent where the ticket was not assessed.
 
 ### rating_cap
 
-The ceiling the Overall Rating may not exceed, derived from the prior-feedback triage. When set to the request-changes tier (an unaddressed external blocker), the rendered Overall Rating is held at or below Request Changes unless the rating-cap carve-in lifts it.
+The ceiling the Overall Rating may not exceed, derived from the prior-feedback triage.
 
 ### changed_files
 
-The authored surface — the PR's changed-files set. Used to enforce the findings-constraint at consolidation.
+The authored surface — the PR's changed-files set.
 
 ### artifact_publish_ref
 
@@ -52,10 +56,6 @@ The authored surface — the PR's changed-files set. Used to enforce the finding
 ### host_repo_path
 
 Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.
-
-### pr_number
-
-*(optional)* PR number used to compose `{reviewed_code_base_url}` when `{reviewed_code_base_url}` is empty.
 
 ## Outputs
 
@@ -93,6 +93,8 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 ### 4. Render the Summary
 
 - Apply `findings-constraint` across the rendered sections, scoping each finding against the authored surface `{changed_files}`.
+- Name `{review_ticket_ref}` in the header where it is present.
+- State `{ticket_disposition}` in the Executive Summary where it is present, per [Design Philosophy](../resources/review-mode.md#design-philosophy).
 - Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, structural analysis, lean-coding audit, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
 - **Every row of every section comes from `{classified_findings}` and nothing else.** One finding is one row, under the designator its own report defines, in ascending designator order per [Designators](../resources/findings-report.md#designators). A section drawing its order from a second enumeration — a priority list, a remediation order — renders siblings inconsistently, and a row standing for a group of findings hides each of them from the totals and from the Action Items.
 - Reference, don't restate: each finding renders as its item designator, `@` locus link, one-line title, and severity only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `@` cell is a hyperlinked `>` onto the pertinent locus — reviewed code under `{reviewed_code_base}` with a line anchor, or the test, document, CI run, or commit the category declares. Descriptions, evidence, and suggestions stay in the linked report artifacts.
@@ -107,7 +109,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 - Render the attribution footer that closes the format template — Apply [viewer-login](/github/techniques/viewer-login.md) and substitute `{viewer_login}` for `{user}`; Apply [view-pr](/github/techniques/view-pr.md)(*repo_path*=`{component_git_dir}`) and use the short form of `{head_sha}` for `{sha}` — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
 - When `{summary_refinement}` is bound, apply each adjustment it names to the rendered text, within the loaded format.
 - Produce `{review_summary}` as the rendered text.
-- Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits — the bytes bound here are the bytes posted.
+- Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is posted verbatim — the bytes bound here are the bytes posted.
 
 ### 5. Measure Against the Budget
 

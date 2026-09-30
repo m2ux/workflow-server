@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -17,12 +17,6 @@ Ensure public/exported APIs in the diff carry inline documentation.
 
 The diff's changed files, scoping which public/exported APIs are enumerated for doc-comment coverage.
 
-## Outputs
-
-### documented_apis
-
-The public/exported APIs in the diff, each carrying inline documentation (doc comments).
-
 ## Protocol
 
 ### 1. Take The Work List
@@ -36,7 +30,7 @@ The public/exported APIs in the diff, each carrying inline documentation (doc co
 
 ### 3. Add Missing Comments
 
-- Add the missing doc comments where absent, and emit the covered set as `{documented_apis}`.
+- Add the missing doc comments where absent.
 
 ### 4. Verify Documentation Builds
 

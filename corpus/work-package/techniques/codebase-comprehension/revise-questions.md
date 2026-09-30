@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.1.1
+  version: 2.1.2
 ---
 
 ## Capability
 
-The authoritative open questions on the comprehension log after a deep-dive.
+The authoritative open questions on the comprehension log.
 
 ## Inputs
 
@@ -17,14 +17,14 @@ The log whose open questions are revised; its existing questions and the finding
 
 ### comprehension_log
 
-The log with its open questions revised — resolved questions naming the deep dive that answered them, newly discovered questions added as open, and out-of-scope items recorded under out of scope. Its open set is the authoritative unresolved-question set.
+The log with its open questions revised — resolved questions naming the deep dive that answered them, newly discovered questions added as open, and areas outside this work package recorded under unexplored. Its open set is the authoritative unresolved-question set.
 
 
 ## Protocol
 
 ### 1. Question Management
 
-- Revise the open questions and the out-of-scope items in `{comprehension_log}`, in the shape the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template) defines
+- Revise the open questions and the unexplored areas in `{comprehension_log}`, in the shape the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template) defines
 - Mark resolved questions as resolved with a one-line resolution and the deep dive that answered them
 - Add new questions discovered during investigation as open — questions naturally emerge from tracing data flows, examining edge cases, and reading adjacent code
-- Record questions identified but out of scope for the current work package as out-of-scope items
+- Record questions identified but outside the current work package as unexplored entries

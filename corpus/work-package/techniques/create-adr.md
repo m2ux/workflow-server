@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.2
+  version: 1.3.0
 ---
 
 ## Capability
@@ -35,6 +35,10 @@ Directory holding the project's ADR files
 
 `human`
 
+### adr_document_url
+
+The ADR's full URL on the engineering repository's remote, at the branch it is committed on.
+
 ## Protocol
 
 ### 1. Determine Number
@@ -51,5 +55,5 @@ Directory holding the project's ADR files
 
 ### 3. Write Adr
 
-- Write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), deriving `{$decision_title}` as a slugified short title of the decision
+- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), emitting its full URL, from the engineering checkout's remote and current branch, as `{adr_document_url}`
 

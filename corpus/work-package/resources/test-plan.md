@@ -2,7 +2,7 @@
 name: test-plan
 description: Test plan templates and test-design principles.
 metadata:
-  version: 1.3.0
+  version: 1.3.1
   order: 11
   legacy_id: 11
 ---
@@ -76,10 +76,17 @@ Key changes validated:
 
 ## Test Cases
 
-| Test ID | Objective | Steps | Expected Result | Type |
-|---|---|---|---|---|
-| [PR###-TC-01](blob-url#LNN) | Verify [specific behavior being tested] | 1. [Setup or precondition]  <br>2. [Action to perform]  <br>3. [Verification step] | [What should happen] | Unit |
-| PR###-TC-02 | Verify [manual test behavior] | 1. [Manual step one]  <br>2. [Manual step two] | [Expected outcome] | Manual |
+| Test ID | Objective | Expected Result | Type |
+|---|---|---|---|
+| [PR###-TC-01](blob-url#LNN) | Verify [specific behavior being tested] | [What should happen] | Unit |
+| PR###-TC-02 | Verify [manual test behavior] | [Expected outcome] | Manual |
+
+### PR###-TC-02 Steps
+
+[Only for a case whose steps its objective does not make evident.]
+
+1. [Manual step one]
+2. [Manual step two]
 
 ## Acceptance Criteria Matrix
 
@@ -100,14 +107,14 @@ Key changes validated:
 
 ## Test Plan Structure
 
-Required sections, in order: header link line (ADR — a relative path where the record lives in the same repo — Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests.
+Required sections, in order: header link line (ADR, Ticket, PR, each linked per `manage-artifacts.hyperlink-conventions`), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests.
 
 ## Rules
 
 - **Section set** — the sections and their order are [Test Plan Structure](#test-plan-structure)'s. The Overview lists only symbols central to the change, not every modified function, one line each, each named in words and linked.
 - **One table for all test types** — never split by type.
 - **Test ID format** — `PR<number>-TC-<sequence>` (01, 02, …), hyperlinked to the test function's definition line (`#L<line>`, not the first assertion) as a permanent blob URL. Manual tests (RPC endpoints, network behaviour, UI verification) carry plain-text non-hyperlinked IDs, having no source to link. A temporarily disabled test stays in the same table with a `**` suffix after its ID — suffix, not prefix, so the link keeps working — plus a `> [!NOTE]` below the table stating the reason and the specific re-enablement condition. No separate table for ignored tests.
-- **Test case content** — objectives open with "Verify…", never a vague "test the feature". Steps are numbered, atomic and verifiable, separated with `  <br>` (two trailing spaces then `<br>`, for cross-renderer compatibility). Type is one of Unit (isolated single function or method behaviour), Integration (component interactions), E2E (complete user workflows), Performance (load and latency validation), or Manual.
+- **Test case content** — objectives open with "Verify…", never a vague "test the feature". Steps, where a case needs them, are a numbered list under that case's own Steps heading, each atomic and verifiable. Type is one of Unit (isolated single function or method behaviour), Integration (component interactions), E2E (complete user workflows), Performance (load and latency validation), or Manual.
 - **Acceptance matrix** — one row per requirement, or per acceptance criterion where a requirement has several, referencing tests by their `PR###-TC-##` IDs. Every requirement maps to at least one test case, and any gap is flagged.
 - **Content boundaries** — the plan covers validation only: no ADR content and no implementation detail. Links are inline, so there is no References section, and planning-artifact content and validation results are linked rather than inlined. Running Tests commands are copy-pasteable and cover the all-tests, module and specific-test scopes, plus build verification where that is relevant.
 - **Promoted naming and storage** — a plan promoted into project docs takes the file name `test-plan-<kebab-case-name>.md`, matching the ADR name where one exists, stored alongside the ADR or in the tests documentation folder.

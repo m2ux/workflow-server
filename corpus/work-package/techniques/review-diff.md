@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.1
+  version: 2.5.2
 ---
 
 ## Capability
@@ -72,7 +72,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 - Parse `git diff {base_branch}...HEAD` to extract the list of changed files and hunks
 - If the diff contains no changes, verify the correct branch and commit range before proceeding
-- Assign `{$row_index}` to each change block
+- Number the change blocks in diff order; each block's number is its index in the change-block index
 - Estimate review time at 30 seconds per hunk (count: `git diff {base_branch}...HEAD | grep -c "^@@"`); formula `total hunks × 0.5 minutes`, rounded to the nearest minute, displayed as "~X minutes" (or "~Xh Ym" for longer reviews)
 
 ### 3. Pin the Citation Base
@@ -84,7 +84,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 ### 4. Create Index
 
 - Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one subsection per block, its title naming the change and linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
-- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
+- When a block centres on a graph-resolvable symbol, bind it as `{$symbol}` and enrich the Block Rationale with caller/callee/process context from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
 - When `{rationale_corrections}` is bound, apply each correction to the Block Rationale paragraph of the block it names
 - Write index to the `{change_block_index}` under `{planning_folder_path}`
 

@@ -2,7 +2,7 @@
 name: complete-wp-guide
 description: Template and fill rules for the COMPLETE.md close-out document.
 metadata:
-  version: 2.2.2
+  version: 2.2.3
   order: 21
   legacy_id: 21
 ---
@@ -32,6 +32,8 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
   |---|---|---|
   | [only criteria that missed, or exceeded in a way that matters] | | |
 - Files changed: see [change-block index](NN-change-block-index.md).
+- Test coverage: see [test plan](NN-test-plan.md). [Omit where no test plan exists.]
+- Architecture decision: [decision title](adr-url). [Omit where no ADR was accepted.]
 - Design decisions: recorded in the [plan](NN-work-package-plan.md#proposed-approach) and
   [assumptions log](NN-assumptions-log.md). [List here ONLY decisions made during
   implementation that are recorded nowhere else, each in the form
@@ -59,13 +61,13 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 
 ## Workflow Retrospective
 
-[Written by conduct-retrospective — see the [retrospective section template](workflow-retrospective.md#output-section-template). Omitted when the skip-if-trivial rule applies.]
+[Per the [retrospective section template](workflow-retrospective.md#output-section-template).]
 ```
 
 ## Rules
 
 - **Point, don't restate.** Tasks live in the plan, test results in the validation report, files in the change-block index, open work in its register, cost in `token-usage.md`. A reader follows one link, or reads one line per open entry; a copy goes stale.
-- **Open work by register, never by table.** Read `follow-ups.json` and `deferred-items.json` before writing Open Work, and emit one line per register that exists, pointing at each open entry per `canonical-home-map.link-only-slots`. The register keeps each entry's full statement; a close-out table of open items is a second home that drifts from it the moment an entry changes.
+- **Open work by register, never by table.** Open Work holds one line per register that exists, pointing at each open entry per `canonical-home-map.link-only-slots`. The register keeps each entry's full statement; a close-out table of open items is a second home that drifts from it the moment an entry changes.
 - **Exception-only results.** "All N criteria met" is one line. A table appears only when a row diverges from its target.
 - **Omit null sections.** No "What Was NOT Implemented: none" — drop the heading.
 - **Update in place** if post-merge changes occur; the close-out reflects the final delivered state.

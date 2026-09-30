@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.0.0
+  version: 3.0.1
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The corpus artifact for this area, whose architecture survey seeds candidate-are
 
 ### comprehension_log
 
-*(optional)* The log from earlier passes over this area; its open questions are the default candidates for the next investigation.
+*(optional)* The log from earlier passes over this area.
 
 ### comprehension_scope
 
@@ -59,8 +59,8 @@ Targeted exploration findings for the selected area: traced data flows, implemen
 
 ### 1. Deep Dive
 
-- Emit candidate areas based on architecture survey and problem relevance as bindable output
-  > - Where open questions already exist in the log, prefer them as the default selection over new candidates, per `question-driven-exploration`.
+- Draw candidate areas from the architecture survey and their relevance to the problem
+  > - Where the log holds open questions, they are the default selection, ahead of new candidate areas.
   > - At `{comprehension_scope}` `same-area`, the selection stays within the area the last pass worked and deepens it; at `new-area`, it comes from the candidate set outside that area.
 - On the mandatory initial pass, attempt to resolve every open question; a subsequent pass narrows to one selected area.
 - For selected area: trace data flows, examine implementation details, document edge cases, applying the [Comprehension Techniques](../../resources/codebase-comprehension.md#comprehension-techniques)

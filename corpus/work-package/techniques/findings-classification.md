@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.1
+  version: 1.5.0
 ---
 
 ## Capability
@@ -24,10 +24,6 @@ The findings or diagnostics to classify. Each entry carries enough context to ju
 ### structural_findings
 
 *(optional)* The structural-analysis findings subset, when present, whatever pipeline produced it.
-
-### ticket_disposition
-
-*(optional)* What the reviewer decided about the ticket's completeness gaps. Where it is present, the consolidated findings carry that judgement to the author alongside the code findings; where it is absent, the ticket was not assessed.
 
 ## Outputs
 
@@ -94,4 +90,4 @@ Only findings at Minor severity or above set a routing flag. Nit and Information
 
 ### classify-do-not-fix
 
-This technique classifies and routes only. Applying fixes is the responsibility of the downstream fix technique.
+This technique classifies and routes only, and applies no fix.
