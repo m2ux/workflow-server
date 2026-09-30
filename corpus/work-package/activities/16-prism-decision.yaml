@@ -1,0 +1,74 @@
+id: prism-decision
+version: 1.0.0
+name: Prism Decision
+description: Settle whether the change takes the full prism pipeline or the single inline structural pass.
+variables:
+  reads:
+    - base_branch
+    - branch_name
+    - changed_files
+    - component_git_dir
+    - is_review_mode
+    - planning_folder_path
+    - pr_number
+    - problem_complexity
+    - problem_statement
+    - requirements
+    - target_path
+    - target_repo
+  writes:
+    - name: prism_value_assessment
+      type: string
+      description: The recommendation on the full prism pipeline and the signal that decided it.
+      defaultValue: ""
+    - name: run_full_prism
+      type: boolean
+      description: Whether the change takes the full prism pipeline.
+      defaultValue: false
+required: true
+steps:
+  - kind: technique
+    id: assess
+    when: problem_complexity == 'complex' && is_review_mode != true
+    technique: assess-prism-value
+  - kind: checkpoint
+    id: full-prism-decision
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: problem_complexity
+          operator: ==
+          value: complex
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+    message: "Full prism pipeline for this change: {prism_value_assessment}"
+    options:
+      - id: run-full-prism
+        label: Run the full prism pipeline
+        description: The change is analysed through the full set of isolated prism passes and a report
+        effect:
+          setVariable:
+            run_full_prism: true
+      - id: use-inline-pass
+        label: Use the single inline pass
+        description: The change is analysed through one structural lens inside post-implementation review
+        effect:
+          setVariable:
+            run_full_prism: false
+  - kind: action
+    id: take-full-pipeline-on-review
+    when: problem_complexity == 'complex' && is_review_mode == true
+    actions:
+      - action: set
+        target: run_full_prism
+        value: true
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - A complex change under review takes the full prism pipeline
+  - On an implementation run, the user chooses the full pipeline or the inline pass on an assessed recommendation of whether the full pipeline is worth its cost
+  - Every other change takes the inline pass

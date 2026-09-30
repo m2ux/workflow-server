@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.0.0
+version: 3.1.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -174,6 +174,8 @@ graph:
   implement:
     done: lean-coding-audit
   lean-coding-audit:
+    done: prism-decision
+  prism-decision:
     done: post-impl-review
   post-impl-review:
     done: validate
@@ -207,6 +209,7 @@ activities:
   - work-package/07-assumptions-review.yaml
   - work-package/08-implement.yaml
   - work-package/09-lean-coding-audit.yaml
+  - work-package/16-prism-decision.yaml
   - work-package/10-post-impl-review.yaml
   - work-package/11-validate.yaml
   - work-package/12-strategic-review.yaml

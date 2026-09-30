@@ -82,15 +82,23 @@ Definition: [`08-implement.yaml`](./08-implement.yaml)
 
 ### 09. Lean-Coding Audit
 
-Applies the ponytail lean-coding lens to the just-implemented change, so accepted simplifications land without breaching the safety floor and deliberate ones are tracked as debt. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode findings are documented, not applied. Leads to post-impl-review.
+Applies the ponytail lean-coding lens to the just-implemented change, so accepted simplifications land without breaching the safety floor and deliberate ones are tracked as debt. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode findings are documented, not applied. Leads to prism-decision.
 
 Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
 ---
 
+### Prism Decision
+
+Settles how post-implementation review analyses the change's structure. A complex change under review takes the full prism pipeline. On an implementation run, a complex change gets an assessed recommendation of whether the full pipeline is worth its cost, and the user chooses the full pipeline or the single inline pass. Every other change takes the inline pass. Leads to post-impl-review.
+
+Definition: [`16-prism-decision.yaml`](./16-prism-decision.yaml)
+
+---
+
 ### 10. Post-Implementation Review
 
-Reviews implementation quality, catching issues before validation. Each review states its findings in one report. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
+Reviews implementation quality, catching issues before validation. Each review states its findings in one report. Structural analysis takes the pass prism-decision settled. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 

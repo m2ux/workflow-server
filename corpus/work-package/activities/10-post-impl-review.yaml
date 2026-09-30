@@ -18,7 +18,7 @@ variables:
     - issue_title
     - planning_folder_path
     - pr_number
-    - problem_complexity
+    - run_full_prism
     - problem_statement
     - push_remote
     - requirements
@@ -197,21 +197,21 @@ steps:
     technique: review-code
   - kind: technique
     id: structural-analysis-inline
-    when: problem_complexity != 'complex'
+    when: run_full_prism != true
     technique:
       name: prism/structural-analysis
       outputs:
         structural_analysis: structural_findings
   - kind: technique
     id: dispatch-prism
-    when: problem_complexity == 'complex'
+    when: run_full_prism == true
     technique:
       name: workflow-engine::handle-sub-workflow
       inputs:
         workflow_id: prism
   - kind: routine
     id: walk-prism-child
-    when: problem_complexity == 'complex'
+    when: run_full_prism == true
     routine: activity-loop
     with:
       session_index: child_session_index
@@ -223,7 +223,7 @@ steps:
       from_activity: from_activity
   - kind: technique
     id: read-prism-manifest
-    when: problem_complexity == 'complex'
+    when: run_full_prism == true
     technique:
       name: prism/read-run-manifest
       inputs:
@@ -234,7 +234,7 @@ steps:
         message: "The prism run reported `{run_status}` — its report or definitive findings is missing or empty. Re-run the prism launch for this change."
   - kind: technique
     id: read-prism-findings
-    when: problem_complexity == 'complex'
+    when: run_full_prism == true
     technique:
       name: prism/read-definitive-findings
       outputs:

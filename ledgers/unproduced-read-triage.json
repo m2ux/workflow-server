@@ -422,6 +422,18 @@
       "rationale": "input-without-a-producer"
     },
     {
+      "site": "remediate-vuln :: work-package/prism-decision",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/prism-decision",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
       "site": "remediate-vuln :: work-package/post-impl-review",
       "name": "block_line_range",
       "verdict": "fix-later",
