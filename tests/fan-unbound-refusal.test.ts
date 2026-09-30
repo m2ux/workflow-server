@@ -26,11 +26,11 @@ function textOf(result: ToolResult): string {
   return result.content?.[0]?.text ?? '';
 }
 
-async function start(slug: string): Promise<string> {
+async function start(slug: string, workflowId = 'instance-fan-fixture'): Promise<string> {
   const opened = await harness.client.callTool({
     name: 'start_session',
     arguments: {
-      workflow_id: 'instance-fan-fixture',
+      workflow_id: workflowId,
       agent_id: 'orchestrator',
       planning_folder: `${harness.workspaceDir}/.engineering/artifacts/planning/${slug}`,
     },
@@ -48,9 +48,34 @@ describe('next_activity opens a fan only on an exit the graph binds to it', () =
     const refused = await advance({ session_index: idx, activity_id: FAN, variables_changed: { probe_targets: ['a', 'b'] } });
     expect(refused.isError).toBe(true);
     expect(textOf(refused)).toMatch(/Cannot open the fan to 'probe-unit' on the walk's opening/);
+    expect(textOf(refused)).toMatch(/the walk opens on 'scope-sweep'/);
 
     const status = await harness.client.callTool({ name: 'get_workflow_status', arguments: { session_index: idx } }) as ToolResult;
-    expect((JSON.parse(textOf(status)) as { in_flight: string[] }).in_flight).toEqual([]);
+    const read = JSON.parse(textOf(status)) as { in_flight: string[]; variables: Record<string, unknown> };
+    expect(read.in_flight).toEqual([]);
+    expect(read.variables['probe_targets']).not.toEqual(['a', 'b']);
+  });
+
+  it('refuses a list fan named on the walk\'s opening', async () => {
+    const idx = await start('fan-unbound-list-opening', 'list-fan-fixture');
+    const refused = await advance({ session_index: idx, activity_id: ['survey-pass', 'dependency-review'] });
+    expect(refused.isError).toBe(true);
+    expect(textOf(refused)).toMatch(/Cannot open the fan to 'survey-pass, dependency-review' on the walk's opening/);
+  });
+
+  it('refuses a fan named with no exit off an activity that binds no fan', async () => {
+    const idx = await start('fan-unbound-no-exit', 'list-fan-fixture');
+    await advance({ session_index: idx, activity_id: 'plan-prepare' });
+    await advance({ session_index: idx, activity_id: ['survey-pass', 'dependency-review'], from_activity: 'plan-prepare', exit: 'done' });
+    const refused = await advance({
+      session_index: idx,
+      activity_id: ['survey-pass', 'dependency-review'],
+      from_activity: 'survey-pass',
+      agent_id: 'survey-worker',
+    });
+    expect(refused.isError).toBe(true);
+    expect(textOf(refused)).toMatch(/off 'survey-pass' with no 'exit' named/);
+    expect(textOf(refused)).toMatch(/'survey-pass' binds no fan to any exit/);
   });
 
   it('refuses a fan named off an exit the retiring activity\'s graph entry does not bind', async () => {
@@ -64,18 +89,19 @@ describe('next_activity opens a fan only on an exit the graph binds to it', () =
       variables_changed: { probe_targets: ['a', 'b'] },
     });
     expect(refused.isError).toBe(true);
-    expect(textOf(refused)).toMatch(/through exit 'swept', which the graph does not bind/);
+    expect(textOf(refused)).toMatch(/through exit 'swept', which 'scope-sweep' does not declare/);
+    expect(textOf(refused)).toMatch(/'scoped' opens a fan/);
 
     const status = await harness.client.callTool({ name: 'get_workflow_status', arguments: { session_index: idx } }) as ToolResult;
     expect((JSON.parse(textOf(status)) as { in_flight: string[] }).in_flight).toEqual(['scope-sweep']);
   });
 
-  it('opens the fan the graph binds to the exit named', async () => {
+  it('opens the fan the graph binds to the exit named, whatever activity_id holds', async () => {
     const idx = await start('fan-bound-exit');
     await advance({ session_index: idx, activity_id: 'scope-sweep' });
     const opened = await advance({
       session_index: idx,
-      activity_id: FAN,
+      activity_id: 'probe-unit',
       from_activity: 'scope-sweep',
       exit: 'scoped',
       variables_changed: { probe_targets: ['a', 'b'] },
