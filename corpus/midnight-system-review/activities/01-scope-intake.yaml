@@ -7,6 +7,7 @@ variables:
     - base_ref
     - planning_folder_path
     - review_target
+    - scope_correction
     - target_repo_path
   writes:
     - name: cargo_available
@@ -31,6 +32,10 @@ variables:
     - name: scope_correction
       type: string
       description: Text the reader typed correcting the change surface or review scope — a path to add or drop, or a crate or pallet a path maps to
+      defaultValue: ""
+    - name: scope_corrections
+      type: array
+      description: Every correction the reader typed to the change surface or review scope, in the order given
     - name: repo_name
       type: string
       description: Name of the indexed graph covering the target checkout; every code-graph probe addresses it, and it is empty when no graph covers the checkout
@@ -44,6 +49,18 @@ steps:
     actions:
       - action: log
         message: Starting system review scope intake — resolving the change surface
+  - kind: action
+    id: gather-scope-correction
+    when: scope_correction
+    actions:
+      - action: set
+        target: scope_corrections
+        value: "{scope_correction}"
+        description: The correction the reader just typed, appended to the corrections the scope carries.
+      - action: set
+        target: scope_correction
+        value: ""
+        description: Clear the correction just gathered.
   - kind: technique
     id: classify-review-target
     technique: classify-review-target
@@ -89,6 +106,13 @@ steps:
         effect:
           recordReply: scope_correction
           exit: revise-scope
+  - kind: action
+    id: spend-scope-corrections
+    actions:
+      - action: set
+        target: scope_corrections
+        value: null
+        description: Clear the corrections the confirmed scope carries.
   - kind: action
     id: finalize-activity
     actions:

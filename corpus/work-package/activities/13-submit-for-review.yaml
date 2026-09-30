@@ -343,7 +343,7 @@ steps:
     options:
       - id: proceed-with-override
         label: Proceed with override
-        description: Acknowledge the deviation and continue.
+        description: Acknowledge the deviation.
         effect:
           setVariable:
             body_conforms: true
