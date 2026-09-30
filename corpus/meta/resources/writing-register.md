@@ -17,7 +17,7 @@ The reader is a technical one — precise terms are welcome, ceremony and paddin
 - **One hedge per claim.** "may, under some conditions, potentially" states less than "may".
 - **Specific and quantified.** Name the thing, and give the number wherever a number is known. "various improvements" and "might be better" carry nothing a reader can act on.
 - **Consequences stated.** A cost, risk, or regression the passage knows about is written down rather than left for the reader to infer.
-- **Code is named, not quoted.** A function, type, file or test the prose mentions is named in words, and the words are the link to it. A backticked identifier in a sentence is a symbol the reader can neither parse nor follow.
+- **Code is named, not quoted.** A function, type, file or test the prose mentions is named in words, and the words are the link to it. A backticked identifier in a sentence is a symbol the reader can neither parse nor follow. Where a creation guide prescribes a code-naming form, the artifact follows the guide's form.
 - **At most one code name and one location per sentence.** A claim needing three names and four line numbers is a section of its own, cited by link.
 
 ## Tables
@@ -30,7 +30,7 @@ A table is the right form for enumerable facts: one row per item, the same field
 
 ## Links
 
-A link carries the reader from a name in a sentence to the thing named. Where a creation guide prescribes a citation form, a code-naming form or a table's link column, the artifact follows the guide's form.
+A link carries the reader from a name in a sentence to the thing named. Where a creation guide prescribes a citation form or a table's link column, the artifact follows the guide's form.
 
 - **The link text is the name.** The visible words are the thing the sentence is about, placed where the sentence already names it. A bare URL, or link text that is a path, a line coordinate or "here", hands the reader an address in place of a name.
 - **An agent-audience record is pointed at by entry.** A pointer into state written for an agent names the entry by its ID and its one-line item, in place of a link.

@@ -12,7 +12,7 @@ Shared contract for a workflow's planning-folder artifacts — prefixing, organi
 
 ### single-source-and-link
 
-Every fact has exactly one canonical artifact. When another artifact needs it, link to the canonical home (a markdown link to the file or section) with at most a one-line pointer — never restate the content, and point at an agent-audience home per [Links](/meta/resources/writing-register.md#links). Validation results, findings, decisions, and deferred items are the common offenders: record each once, reference everywhere else.
+Every fact has exactly one canonical artifact. When another artifact needs it, link to the canonical home (a markdown link to the file or section) with at most a one-line pointer — never restate the content, and point at an agent-audience home in the link form of the [Artifact Writing Register](/meta/resources/writing-register.md). Validation results, findings, decisions, and deferred items are the common offenders: record each once, reference everywhere else.
 
 ### source-sits-with-its-claim
 
