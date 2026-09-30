@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.18.0
+version: 1.19.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, with every file drafted, reviewed and schema-valid.
 variables:
@@ -64,6 +64,9 @@ variables:
       values:
         - confirmed
         - revise
+    - name: file_draft_correction
+      type: string
+      description: Text the reader typed naming the changes the drafted file takes, or the fresh approach a redraft takes.
     - name: file_draft_disposition
       type: string
       description: What the reader decided about the drafted content of the current file. Absent until a draft is reviewed.
@@ -258,22 +261,25 @@ steps:
                 file_draft_disposition: accepted
           - id: revise
             label: Needs revision
-            description: Drafted file content requires targeted changes.
+            description: The reply names the targeted changes the drafted file content needs.
             effect:
               setVariable:
                 file_draft_disposition: revise
+              recordReply: file_draft_correction
           - id: redraft
             label: Redraft from scratch
-            description: Drafted file content requires a fresh approach from scratch.
+            description: The reply names the fresh approach the drafted file content takes from scratch.
             effect:
               setVariable:
                 file_draft_disposition: redraft
+              recordReply: file_draft_correction
       - kind: technique
         id: re-author-drafted-file
         technique:
           name: yaml-authoring
           inputs:
             schema_type: "{current_file.type}"
+            draft_correction: file_draft_correction
         when: file_draft_disposition == 'revise' || file_draft_disposition == 'redraft'
       - kind: checkpoint
         id: preservation-check
@@ -429,7 +435,7 @@ steps:
     options:
       - id: redraft
         label: Return to drafting
-        description: Re-enter the drafting loop to correct the Critical finding before attestation.
+        description: The Critical finding is corrected in the draft before attestation.
         effect:
           exit: redraft
       - id: attest-with-deferral

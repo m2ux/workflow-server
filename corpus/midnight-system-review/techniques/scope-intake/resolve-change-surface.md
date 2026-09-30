@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -45,6 +45,10 @@ Ordered path list of the authoritative authored surface.
 
 *(optional)* Per-path status and line counts when the producing leaf emitted them; when unset, the inventory records paths from `{changed_files}` without per-file stats.
 
+### scope_correction
+
+*(optional)* Text the reader typed correcting the change surface or review scope — a path to add or drop, or a crate or pallet a path maps to. Unset until a correction is given.
+
 ## Outputs
 
 ### change_surface_inventory
@@ -77,6 +81,7 @@ Echo of the intake classification so publish gates keep a single name.
 
 1. For each path in `{changed_files}` (and each row of `{changed_file_entries}` when present), derive change kind and line counts from the entry when available.
 2. Map each path to a preliminary crate/pallet using layout under `{target_repo_path}` (seeds area derivation).
+3. When `{scope_correction}` is bound, apply it over the mapped paths: a path it adds is mapped and joins them, a path it drops leaves them, and a mapping it corrects replaces the preliminary one.
 
 ### 3. Record Inventory
 

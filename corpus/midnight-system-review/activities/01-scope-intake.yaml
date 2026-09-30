@@ -1,5 +1,5 @@
 id: scope-intake
-version: 1.3.0
+version: 1.4.0
 name: Scope Intake
 description: Resolve the authoritative change surface for the review target, establish toolchain availability, and confirm the review scope.
 variables:
@@ -28,6 +28,9 @@ variables:
     - name: pr_number
       type: string
       description: The pull request number.
+    - name: scope_correction
+      type: string
+      description: Text the reader typed correcting the change surface or review scope — a path to add or drop, or a crate or pallet a path maps to
     - name: repo_name
       type: string
       description: Name of the indexed graph covering the target checkout; every code-graph probe addresses it, and it is empty when no graph covers the checkout
@@ -82,8 +85,9 @@ steps:
         description: The resolved change surface and review scope are accurate.
       - id: revise-scope
         label: Revise scope
-        description: The change surface or review scope needs adjustment — provide the correction; the surface is re-resolved before proceeding.
+        description: The reply names what to correct in the change surface or review scope — a path to add or drop, or a crate or pallet a path maps to.
         effect:
+          recordReply: scope_correction
           exit: revise-scope
   - kind: action
     id: finalize-activity

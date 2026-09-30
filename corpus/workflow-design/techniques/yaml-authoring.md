@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Which schema applies to this file — one of `workflow`, `activity` or `techniqu
 ### reference_file
 
 *(optional)* Path to an existing valid YAML file of the same type to use as a syntax reference
+
+### draft_correction
+
+*(optional)* Text the reader typed naming the changes an already drafted file takes, or the fresh approach a redraft of it takes. Unset on a first draft.
 
 ## Outputs
 
@@ -37,6 +41,7 @@ The set of files drafted for this workflow so far, extended with the one just wr
 
 - Identify which schema fields will be used from the JSON schema for `{schema_type}`
 - Map content to fields using formal constructs from [schema-construct-inventory](/canon/resources/schema-construct-inventory.md); cross-check required vs optional properties for the `{schema_type}`
+- When `{draft_correction}` is bound, the planned content applies it: the changes it names over the existing draft, or the fresh approach it gives for a redraft
 
 ### 4. Draft Content
 

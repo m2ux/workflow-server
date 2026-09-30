@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -20,6 +20,10 @@ The file to author — full path, action and kind, with a one-line statement of 
 ### reference_file
 
 *(optional)* Path to an existing valid file of the same kind, used as the syntax reference. Absent means any valid sibling of that kind serves.
+
+### draft_revision
+
+*(optional)* Text the operator typed naming the files to revise before commit and the change each needs. Unset until a revision is asked for.
 
 ## Outputs
 
@@ -45,6 +49,7 @@ True when `{yaml_file}` parses and conforms to the schema its kind selects. Fals
 
 - Identify which fields the content needs from the JSON schema for that kind
 - When `{selected_findings}` is present, the files to author are the ones those findings cite, and the planned change is exactly what each finding's fix prescribes
+- When `{draft_revision}` names `{current_file}`, the planned change includes the revision it gives for that file
 - Map the content onto formal constructs, taking the table for its own level from [Schema Construct Inventory](/canon/resources/schema-construct-inventory.md), plus its condition table wherever a gate is authored
 - Cross-check required against optional properties before drafting rather than after validation fails
 
