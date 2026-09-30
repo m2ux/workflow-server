@@ -2,7 +2,7 @@
 name: strategic-review
 description: Strategic review artifact template for speculative-change, over-engineering, and orphaned-infrastructure findings.
 metadata:
-  version: 2.0.1
+  version: 2.0.2
   order: 18
   legacy_id: 18
 ---
@@ -11,13 +11,23 @@ metadata:
 
 Problem-solving commonly leaves behind speculative changes, debugging infrastructure, or exploratory code that becomes unnecessary once the root cause is understood. The strategic review finds and removes these before finalizing the PR, so PRs are clean, reviewable, and contain only intentional changes.
 
+## Categories
+
+Every finding takes one of these.
+
+- **Investigation Artifact** — changes made while understanding the problem: extra logging or print statements, verbose error messages for debugging, temporary workarounds that were superseded, exploratory test configurations.
+- **Over-Engineering** — solutions that grew beyond what was needed: generic abstractions for specific problems, fallback mechanisms for cases that can't occur, unused configuration options, infrastructure for features not implemented.
+- **Orphaned Infrastructure** — supporting changes that outlived their purpose: commented-out code, unused utilities, duplicate functionality, CI job dependencies added for failed approaches, environment variables for abandoned features, build steps for removed functionality, unnecessary wait/synchronization logic.
+- **Scope Creep** — a change the requirements do not call for: a flow the change reaches from outside them, or an edit unrelated to them.
+- **PR Body Conformance** — a divergence between what the pull request body says and what the change does.
+
 ## Field List
 
 Designators use the prefix declared for this report's category at [Strategic Review](./review-mode.md#strategic-review). Every finding carries the fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
 | Declaration | Value |
 |---|---|
-| `Category` vocabulary | Investigation Artifact / Over-Engineering / Orphaned Infrastructure / Scope Creep / PR Body Conformance |
+| `Category` vocabulary | [Categories](#categories) |
 
 On a strategic finding, `Description` states what the change carries, `Impact` what carrying it costs the reader or the maintainer, and `Recommendation` opens with the verb it asks for — remove, simplify, or keep — followed by the argument for it.
 
