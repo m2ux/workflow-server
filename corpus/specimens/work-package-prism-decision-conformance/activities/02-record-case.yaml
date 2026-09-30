@@ -1,0 +1,32 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the decision settled for the case just walked.
+variables:
+  reads:
+    - base_remote
+    - case_index
+    - case_outcomes
+    - changed_files
+    - default_branch
+    - head_sha
+    - is_review_mode
+    - pipeline_mode
+    - prism_value_assessment
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What the decision settled in each case taken so far.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: more-cases
+    when: case_index < 2
+  - id: all-cases
+    isDefault: true
+outcome:
+  - One outcome per case walked

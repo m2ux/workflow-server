@@ -1,0 +1,89 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-prism-decision-conformance
+version: 1.0.0
+title: Work Package Prism Decision Conformance Workflow
+description: >-
+  Hold the work-package prism decision to two cases over one complex change. On an implementation
+  run the user is shown an assessed recommendation and chooses the pass. On a review run no gate is
+  raised and the full pipeline is taken.
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the session's planning folder.
+  - name: target_repo
+    type: string
+    description: GitHub repository as owner/repo.
+  - name: target_path
+    type: string
+    description: The checkout the fixture change sits in.
+    defaultValue: .
+  - name: component_git_dir
+    type: string
+    description: The git working tree the fixture change sits in.
+    defaultValue: .
+  - name: branch_name
+    type: string
+    description: The branch the fixture change sits on.
+    defaultValue: main
+  - name: pr_number
+    type: string
+    description: The pull request the fixture change is reviewed under.
+    defaultValue: "0"
+  - name: pipeline_mode
+    type: string
+    description: The prism mode the change's structural analysis takes — the full pipeline, or the single inline pass.
+    values:
+      - single
+      - full-prism
+    defaultValue: single
+  - name: prism_value_assessment
+    type: string
+    description: The recommendation on the full prism pipeline, the signal that decided it, and what the full pipeline adds for the change.
+    defaultValue: ""
+  - name: changed_files
+    type: array
+    description: Ordered list of changed file paths.
+    defaultValue: []
+  - name: head_sha
+    type: string
+    description: Commit sha at the head of the pull request's branch.
+    defaultValue: ""
+  - name: base_remote
+    type: string
+    description: The remote the fixture checkout's branch was cut from.
+    defaultValue: origin
+  - name: default_branch
+    type: string
+    description: The branch the fixture checkout's change is measured against.
+    defaultValue: main
+  - name: problem_statement
+    type: string
+    description: The fixture problem the change answers.
+    defaultValue: The project README states no purpose for the repository.
+  - name: requirements
+    type: array
+    description: The fixture requirements the change is held to.
+    defaultValue:
+      - The README states what the repository is for in one sentence.
+initialActivity: take-case
+graph:
+  take-case:
+    taken: prism-decision
+  prism-decision:
+    remeasure: prism-decision
+    done: record-case
+  record-case:
+    more-cases: take-case
+    all-cases: report-cases
+  report-cases:
+    reported: __terminal__
+activities:
+  - work-package/16-prism-decision.yaml

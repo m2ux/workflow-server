@@ -82,15 +82,23 @@ Definition: [`08-implement.yaml`](./08-implement.yaml)
 
 ### 09. Lean-Coding Audit
 
-Applies the ponytail lean-coding lens to the just-implemented change, so accepted simplifications land without breaching the safety floor and deliberate ones are tracked as debt. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode findings are documented, not applied. Leads to post-impl-review.
+Applies the ponytail lean-coding lens to the just-implemented change, so accepted simplifications land without breaching the safety floor and deliberate ones are tracked as debt. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode findings are documented, not applied. Leads to prism-decision.
 
 Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
 ---
 
+### Prism Decision
+
+Settles which structural analysis post-implementation review runs — the full prism pipeline or the single inline pass — on an assessed recommendation where the change is complex. Leads to post-impl-review, or measures the change again.
+
+Definition: [`16-prism-decision.yaml`](./16-prism-decision.yaml)
+
+---
+
 ### 10. Post-Implementation Review
 
-Reviews implementation quality, catching issues before validation. Each review states its findings in one report. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
+Reviews implementation quality, catching issues before validation. Each review states its findings in one report. Structural analysis takes the pass prism-decision settled. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 

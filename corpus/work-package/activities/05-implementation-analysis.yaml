@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.16.1
+version: 2.16.2
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
 variables:
@@ -25,7 +25,7 @@ variables:
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: changed_files
       type: array
-      description: Ordered list of changed file paths (each `.filename` from the pulls files endpoint).
+      description: Ordered list of changed file paths.
       defaultValue: []
     - name: has_deferred_assumptions
       type: boolean

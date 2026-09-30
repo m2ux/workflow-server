@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.2
+  version: 1.6.3
 ---
 
 ## Capability
@@ -8,6 +8,14 @@ metadata:
 Scope-discipline and artifact-hygiene findings across the feature-branch diff for the strategic review document.
 
 ## Inputs
+
+### base_remote
+
+*(optional)* The remote the feature branch is cut from.
+
+### default_branch
+
+*(optional)* The branch on that remote the feature branch is cut from.
 
 ### orphan_candidates
 
@@ -48,7 +56,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 1. Load Guidance
 
 - Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
-- Identify the base branch `{base_branch}`: when `{pr_number}` is set, Apply [view-pr](/github/techniques/view-pr.md)(*repo_path*=`{component_git_dir}`) and take it from the op output; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Identify the base branch `{base_branch}`: when `{pr_number}` is set, Apply [view-pr](/github/techniques/view-pr.md)(*repo_path*=`{component_git_dir}`) and take it from the op output; otherwise (no PR — stealth mode) `{base_remote}/{default_branch}`.
 - Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch `{base_branch}`:
 
   ```bash

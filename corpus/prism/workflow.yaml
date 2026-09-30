@@ -1,5 +1,5 @@
 id: prism
-version: 3.1.0
+version: 3.2.0
 title: Structural Analysis Prism Workflow
 description: Apply cognitive lenses to code or text through isolated sub-agent passes, each running in a fresh context window so the passes stay analytically independent.
 author: m2ux
@@ -32,6 +32,18 @@ variables:
   - name: lens_name
     type: string
     description: Portfolio-mode lens name for per-lens artifact naming, distinct from the per-unit current_unit.lens_name.
+  - name: pipeline_mode
+    type: string
+    description: The analysis mode the run executes.
+  - name: selected_lenses
+    type: array
+    description: Indices of the lenses a caller chose for a portfolio unit. Absent where the caller chose none.
+  - name: target_type
+    type: string
+    description: Whether the target is code or general text. Absent where the caller did not say.
+    values:
+      - code
+      - general
   - name: analysis_focus
     type: string
     description: Optional focus area to guide the analysis

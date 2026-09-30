@@ -22,6 +22,7 @@ A highly isolated workflow for remediating security vulnerabilities without publ
 | 07 | assumptions-review | work-package | Assumption interview (issue-tracker posting stealth-gated out) |
 | 08 | implement | work-package | Task-cycle implementation with provenance log |
 | 09 | lean-coding-audit | work-package | Over-engineering audit |
+| 16 | prism-decision | work-package | Full prism pipeline or inline structural pass |
 | 10 | post-impl-review | work-package | Code/diff/test review |
 | 11 | validate | work-package | Build/test/lint suite |
 | 12 | strategic-review | work-package | Scope/minimality review + commit-signature scan and re-sign |
@@ -34,7 +35,7 @@ flowchart LR
   start --> design-philosophy --> codebase-comprehension
   codebase-comprehension --> requirements-elicitation --> research
   codebase-comprehension --> implementation-analysis --> plan-prepare --> assumptions-review --> implement
-  implement --> lean-coding-audit --> post-impl-review --> validate --> strategic-review --> submit-for-review --> complete
+  implement --> lean-coding-audit --> prism-decision --> post-impl-review --> validate --> strategic-review --> submit-for-review --> complete
   strategic-review -. findings .-> plan-prepare
 ```
 

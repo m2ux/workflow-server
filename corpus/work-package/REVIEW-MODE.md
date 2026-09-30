@@ -92,7 +92,8 @@ graph TD
 
     PP --> AR[assumptions-review]
     AR -->|review-mode exit| LCA[lean-coding-audit: document findings]
-    LCA --> PIR[post-impl-review]
+    LCA --> PD[prism-decision: full pipeline for a complex change]
+    PD --> PIR[post-impl-review]
 
     PIR --> VAL[validate]
     VAL -->|document failures| SR[strategic-review]

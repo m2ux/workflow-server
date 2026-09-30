@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.3.1
+version: 2.4.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -16,9 +16,9 @@ variables:
     - host_repo_path
     - is_review_mode
     - issue_title
+    - pipeline_mode
     - planning_folder_path
     - pr_number
-    - problem_complexity
     - problem_statement
     - push_remote
     - requirements
@@ -102,6 +102,18 @@ variables:
         - complete
         - partial
         - error
+    - name: target
+      type: string
+      description: The worktree the prism run analyses.
+      defaultValue: ""
+    - name: target_description
+      type: string
+      description: The component and issue the prism run's change serves.
+      defaultValue: ""
+    - name: analysis_focus
+      type: string
+      description: The files the change touches.
+      defaultValue: ""
     - name: test_findings_actionable
       type: boolean
       description: Whether any test-suite finding is at or above the severity that warrants action.
@@ -111,9 +123,10 @@ triggers:
   - workflow: prism
     description: The full analytical pipeline over the change surface.
     passContext:
-      - target_path
-      - component_name
-      - issue_title
+      - target
+      - target_description
+      - analysis_focus
+      - pipeline_mode
 steps:
   - kind: action
     id: announce-start
@@ -197,21 +210,34 @@ steps:
     technique: review-code
   - kind: technique
     id: structural-analysis-inline
-    when: problem_complexity != 'complex'
+    when: pipeline_mode != 'full-prism'
     technique:
       name: prism/structural-analysis
       outputs:
         structural_analysis: structural_findings
+  - kind: action
+    id: name-prism-target
+    when: pipeline_mode == 'full-prism'
+    actions:
+      - action: set
+        target: target
+        value: "{target_path}"
+      - action: set
+        target: target_description
+        value: "{component_name}: {issue_title}"
+      - action: set
+        target: analysis_focus
+        value: "The change to {changed_files}"
   - kind: technique
     id: dispatch-prism
-    when: problem_complexity == 'complex'
+    when: pipeline_mode == 'full-prism'
     technique:
       name: workflow-engine::handle-sub-workflow
       inputs:
         workflow_id: prism
   - kind: routine
     id: walk-prism-child
-    when: problem_complexity == 'complex'
+    when: pipeline_mode == 'full-prism'
     routine: activity-loop
     with:
       session_index: child_session_index
@@ -223,7 +249,7 @@ steps:
       from_activity: from_activity
   - kind: technique
     id: read-prism-manifest
-    when: problem_complexity == 'complex'
+    when: pipeline_mode == 'full-prism'
     technique:
       name: prism/read-run-manifest
       inputs:
@@ -234,7 +260,7 @@ steps:
         message: "The prism run reported `{run_status}` — its report or definitive findings is missing or empty. Re-run the prism launch for this change."
   - kind: technique
     id: read-prism-findings
-    when: problem_complexity == 'complex'
+    when: pipeline_mode == 'full-prism'
     technique:
       name: prism/read-definitive-findings
       outputs:

@@ -1,9 +1,10 @@
 id: select-mode
-version: 2.4.0
+version: 2.5.0
 name: Plan Analysis
 description: Select an analysis mode for the user's request.
 variables:
   reads:
+    - pipeline_mode
     - target
   writes:
     - name: analysis_plan_path
@@ -14,6 +15,9 @@ variables:
       type: string
       description: Name of the indexed graph covering the target. Empty where no graph covers it.
       defaultValue: ""
+    - name: recommended_mode
+      type: string
+      description: The run mode the plan recommends.
     - name: analysis_units
       type: array
       description: Ordered list of analysis units (for multi-unit scopes)
@@ -47,9 +51,6 @@ steps:
   - kind: action
     id: apply-plan
     actions:
-      - action: set
-        target: pipeline_mode
-        description: Selected analysis mode.
       - action: set
         target: analysis_units
         description: Ordered execution units.
@@ -124,6 +125,13 @@ steps:
         effect:
           setVariable:
             pipeline_mode: adaptive
+  - kind: action
+    id: adopt-planned-mode
+    when: "!pipeline_mode"
+    actions:
+      - action: set
+        target: pipeline_mode
+        value: "{recommended_mode}"
 exits:
   - id: dispute
     when: pipeline_mode == "dispute"

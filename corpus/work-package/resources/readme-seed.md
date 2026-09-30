@@ -2,7 +2,7 @@
 name: readme-seed
 description: Work-package planning-folder README seed profile — Progress inventory, classifier vocabulary, and mode-exclusion map for create-readme.
 metadata:
-  version: 2.1.0
+  version: 2.1.1
 ---
 
 # Work Package README Seed
@@ -42,17 +42,18 @@ Lifecycle **Status** values: `Planning`, `Ready`, `In Progress`, `Complete`.
 | 13 | Lean-coding audit | Ponytail lean lens on the change | 15-30m | ⬚ |
 | 14 | [Code review](09-code-review.md) | Consolidated review findings home | 15-30m | ⬚ |
 | 15 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ⬚ |
-| 16 | Post-implementation review | Quality review before validation | 30-60m | ⬚ |
-| 17 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
-| 18 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
-| 19 | [Structural analysis](10-structural-analysis.md) | Prism L12 structural findings | 15-30m | ⬚ |
-| 20 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
-| 21 | Validation | Build, test, lint verification | 15-30m | ⬚ |
-| 22 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
-| 23 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
-| 24 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
-| 25 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
-| 26 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
+| 16 | Prism decision | Full pipeline or inline pass | 2-5m | ⬚ |
+| 17 | Post-implementation review | Quality review before validation | 30-60m | ⬚ |
+| 18 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
+| 19 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
+| 20 | [Structural analysis](10-structural-analysis.md) | Prism L12 structural findings | 15-30m | ⬚ |
+| 21 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
+| 22 | Validation | Build, test, lint verification | 15-30m | ⬚ |
+| 23 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
+| 24 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
+| 25 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
+| 26 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
+| 27 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
 
 Rows run in the order the activities execute, which is the order a reader watches them complete in. Codebase comprehension therefore sits third, between design philosophy and requirements elicitation, though its artifact prefix is the highest of the set — the prefix follows the definition file, the row follows the run.
 
@@ -81,6 +82,7 @@ Which activity owns which rows, per [row-ownership map](/meta/resources/planning
 | 13 | Submit for review |
 | 14 | Close-out · Token usage · Session trace |
 | 15 | Codebase comprehension |
+| 16 | Prism decision |
 
 ## Mode exclusion map
 

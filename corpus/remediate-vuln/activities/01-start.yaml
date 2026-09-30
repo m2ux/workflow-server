@@ -1,9 +1,10 @@
 id: start
-version: 2.3.0
+version: 2.4.0
 name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
 variables:
   reads:
+    - base_remote
     - branch_name
     - component_git_dir
     - host_repo_path
@@ -30,6 +31,9 @@ variables:
       type: string
       description: Path of the component under remediation, relative to the host repository.
       defaultValue: .
+    - name: default_branch
+      type: string
+      description: The private fork's default branch, which the security branch syncs from and merges into.
     - name: private_fork_url
       type: string
       description: URL of the private fork backing the security remote.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -28,6 +28,26 @@ standard
 ### depth_preference
 
 *(optional)* Override for pipeline mode when scope is query or file: 'single', 'pipeline', 'portfolio', or 'behavioral'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification.
+
+### pipeline_mode
+
+*(optional)* The analysis mode the caller settled for the whole run. Absent where the caller settled none.
+
+### selected_lenses
+
+*(optional)* The indices of the lenses the caller chose for a portfolio unit. Absent where the caller chose none.
+
+### target_type
+
+*(optional)* Whether the target is `code` or `general`. Absent where the caller did not say.
+
+### repo_name
+
+*(optional)* Name of the indexed graph covering the target. Empty where no graph covers it.
+
+### output_path
+
+*(optional)* Directory the plan is written into.
 
 ## Outputs
 
@@ -83,6 +103,10 @@ Machine-readable ordered array of analysis unit objects, each specifying a targe
 
 Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, rationale, unit_output_subdir }`
 
+### recommended_mode
+
+The run mode the plan recommends.
+
 ## Protocol
 
 ### 1. Detect Scope
@@ -124,6 +148,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 ### 6. Select Strategy Per Unit
 
 - Map risk to pipeline mode based on `{analysis_budget}`
+  > Where `{pipeline_mode}` is present, every unit takes it instead, per `preset-mode-binds`.
 - Budget 'quick': high → single L12, medium → single L12, low → skip
 - Budget 'standard': high → full-prism, medium → single L12, low → portfolio (2 lenses matched to role)
 - Budget 'thorough': high → full-prism, medium → full-prism, low → single L12
@@ -132,6 +157,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 
 - For units assigned single mode: select the single best lens from the `goal-mapping-matrix` rule matched to the module's role (resolve ambiguity with `disjunction-tiebreak` and `model-gating`). Record it as the unit's `lens_name` slug. When no goal selects a specific lens, the `lens_name` is `l12` (`single-lens-default`).
 - For units assigned portfolio mode: select 2 complementary lenses matched to role, recorded as the unit's `lenses` slug array. api-surface → contract + api-surface. auth-security → sdl-trust + error-resilience. business-logic → scarcity + rejected-paths. state-persistence → state-audit + degradation. utilities → degradation + claim. integration → contract + sdl-coupling. architecture → deep-scan + sdl-abstraction.
+  > Where `{selected_lenses}` is present, the unit's `lenses` are the slugs of those lenses.
 - For units assigned full-prism: the pipeline uses the L12 set for all target types — structural ([l12](../resources/l12.md)), adversarial ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), synthesis ([l12-synthesis](../resources/l12-synthesis.md)). Record the unit's `lens_name` as `l12`.
 
 ### 8. Plan Execution
@@ -144,7 +170,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 ### 9. Build Analysis Units
 
 - Build the `{analysis_units}` array — an ordered list of unit objects that the workflow iterates over
-- Each unit object has: `target` (file path or content string), `target_type` (`code`|`general`), `pipeline_mode` (`single`|`full-prism`|`portfolio`|`behavioral`), `lens_name` (the single lens slug for `single` and `full-prism` units — `l12` unless the goal selected another single lens; unused for `portfolio`/`behavioral`), `lenses` (array of lens slugs for `portfolio`, empty otherwise), `role` (module role or `query`), `risk` (`high`|`medium`|`low`), `rationale` (why this mode and lens were selected)
+- Each unit object has: `target` (file path or content string), `target_type` (`code`|`general`), `pipeline_mode` (`single`|`full-prism`|`portfolio`|`behavioral`, or the preset mode), `lens_name` (the single lens slug for `single` and `full-prism` units — `l12` unless the goal selected another single lens; unused for `portfolio`/`behavioral`), `lenses` (array of lens slugs for `portfolio`, empty otherwise), `role` (module role or `query`), `risk` (`high`|`medium`|`low`), `rationale` (why this mode and lens were selected)
 - For query and file scopes: produce a single-element array
 - For module scope: produce a single-element array with the module path as target
 - For codebase and document-set scopes: produce one element per module, ordered by execution priority (high-risk first). Include a `unit_output_subdir` field derived from the module name for artifact namespacing (e.g., `auth/`, `api/`).
@@ -154,6 +180,8 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 - Produce `{analysis_plan}` as structured output and expose `{analysis_units}` as the ordered execution collection
 - If `{output_path}` is provided, write `{analysis_plan}` into `{output_path}` per [analysis-plan](../resources/analysis-plan.md#template) and its [Rules](../resources/analysis-plan.md#rules), capturing its full filesystem path as `{analysis_plan_path}`
 - A single-unit `{analysis_units}` array runs one analysis pass; a multi-unit array runs one pass per unit in order
+- Emit `{recommended_mode}`: `full-prism` where any unit takes it, else `behavioral` where any unit takes that, else the first unit's mode
+  > Where `{analysis_units}` is empty, `{recommended_mode}` is `single`.
 
 ## Rules
 
@@ -171,7 +199,11 @@ When no goal or depth is specified, default to [L12](../resources/l12.md).
 
 ### budget-drives-depth
 
-For a multi-unit scope, the plan derives each unit's depth from its risk and the budget, rather than taking a pipeline mode per module from the caller.
+Absent a preset `{pipeline_mode}`, a multi-unit scope derives each unit's depth from its risk and the budget, and takes no mode per module from the caller.
+
+### preset-mode-binds
+
+A caller's `{pipeline_mode}` sets every unit's depth, ahead of `{depth_preference}` and the budget.
 
 ### skip-is-explicit
 

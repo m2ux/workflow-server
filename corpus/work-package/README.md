@@ -22,6 +22,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 | 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Post plan summary and assumptions to issue tracker for stakeholder review |
 | 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
+| 16 | [**Prism Decision**](./activities/README.md#prism-decision) | Settle whether structural analysis takes the full prism pipeline or the inline pass |
 | 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | Manual diff review, code review, structural analysis, test review |
 | 11 | [**Validate**](./activities/README.md#11-validate) | Run tests, build, and lint checks |
 | 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | Ensure minimal, focused changes |
@@ -69,7 +70,9 @@ graph TD
     AR -->|"assumptions-approved"| IMP["08 implement"]
 
     IMP -->|"done"| LCA
-    LCA -->|"done"| PIR["10 post-impl-review"]
+    LCA -->|"done"| PD["16 prism-decision"]
+    PD -->|"remeasure"| PD
+    PD -->|"done"| PIR["10 post-impl-review"]
     PIR -->|"has-blocker"| IMP
     PIR -->|"done"| VAL["11 validate"]
     VAL -->|"done"| SR["12 strategic-review"]
