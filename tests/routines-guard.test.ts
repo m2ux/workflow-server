@@ -268,7 +268,10 @@ outputs:
 steps:
   - kind: technique
     id: sweep
-    technique: analysis::sweep
+    technique:
+      name: analysis::sweep
+      outputs:
+        run_verdict: run_verdict
 `,
         },
       },
@@ -327,6 +330,8 @@ steps:
     id: sweep
     technique:
       name: pass_operation
+      outputs:
+        run_verdict: run_verdict
 `,
         },
       },
@@ -1164,5 +1169,141 @@ steps:
       },
     });
     expect(checks(findings)).toEqual([]);
+  });
+});
+
+/**
+ * A routine's own names reach a technique step only through the fields the step spells, because an
+ * unbound input or output resolves under its bare id and substitution rewrites only what a step
+ * spells. An internal is renamed at every site, so its bare id is always another variable. An input
+ * or output reaches its bare id only where every site binds that name to itself.
+ */
+describe('a routine name a body step leaves to its bare id', () => {
+  const TECHNIQUES = {
+    wf: {
+      'analysis/produce': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A finding.
+
+## Outputs
+
+### interim_finding
+
+The finding.
+
+## Protocol
+
+### 1. Produce
+
+- Produce the finding.
+`,
+      'analysis/consume': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A verdict from the finding.
+
+## Inputs
+
+### interim_finding
+
+The finding to weigh.
+
+### side_note
+
+*(optional)* A note the caller may add. Unset where none is given.
+
+## Outputs
+
+### run_verdict
+
+The verdict.
+
+## Protocol
+
+### 1. Consume
+
+- Weigh \`{interim_finding}\` into \`{run_verdict}\`.
+`,
+    },
+  };
+  const routineWith = (produceStep: string, consumeOutputs: string): string => `id: shared-run
+version: 1.0.0
+name: Shared Run
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+internals:
+  - id: interim_finding
+    description: handed from the producing step to the consuming step
+  - id: side_note
+    description: a note the run never supplies
+steps:
+${produceStep}
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      inputs:
+        interim_finding: interim_finding
+${consumeOutputs}`;
+  const BOUND_PRODUCE = `  - kind: technique
+    id: produce
+    technique:
+      name: analysis::produce
+      outputs:
+        interim_finding: interim_finding`;
+  const host = (verdictTarget: string): Record<string, Record<string, string>> => ({
+    wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    outputs:\n      run_verdict: ${verdictTarget}\n` },
+  });
+  const scopeFindings = (findings: Finding[]): Finding[] => findings.filter((f) => f.check === 'routine-scope-unbound');
+
+  it('reports an internal a step produces under its bare id', async () => {
+    const findings = await findingsFor({
+      activities: host('run_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith('  - kind: technique\n    id: produce\n    technique: analysis::produce', '      outputs:\n        run_verdict: run_verdict\n') } },
+    });
+    expect(scopeFindings(findings).map((f) => f.detail)).toEqual([
+      expect.stringContaining("step 'produce' leaves its technique's output 'interim_finding' unbound, and 'interim_finding' is an internal"),
+    ]);
+  });
+
+  it('leaves an optional input the run means to leave unset', async () => {
+    const findings = await findingsFor({
+      activities: host('run_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith(BOUND_PRODUCE, '      outputs:\n        run_verdict: run_verdict\n') } },
+    });
+    expect(scopeFindings(findings)).toEqual([]);
+  });
+
+  it('leaves an output every site binds to its own name', async () => {
+    const findings = await findingsFor({
+      activities: host('run_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith(BOUND_PRODUCE, '') } },
+    });
+    expect(scopeFindings(findings)).toEqual([]);
+  });
+
+  it('reports an output a site binds under another name', async () => {
+    const findings = await findingsFor({
+      activities: host('host_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith(BOUND_PRODUCE, '') } },
+    });
+    expect(scopeFindings(findings).map((f) => f.detail)).toEqual([
+      expect.stringContaining("step 'consume' leaves its technique's output 'run_verdict' unbound, and a reference site binds 'run_verdict' under another name"),
+    ]);
   });
 });

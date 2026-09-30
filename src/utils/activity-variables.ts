@@ -476,6 +476,28 @@ async function readSignature(
 }
 
 /**
+ * The declared input and output ids of a technique step's bound technique that the step binds no
+ * value to, own and inherited alike. An unbound input resolves out of the bag under its own id, and
+ * an unbound output lands there under its own id, so neither passes through a field a routine's
+ * substitution rewrites.
+ */
+export async function unboundTechniqueIds(
+  step: Step,
+  activityId: string,
+  workflowDir: string,
+  scopeWorkflowId: string,
+): Promise<{ inputs: Array<{ id: string; suppliable: boolean }>; outputs: string[] }> {
+  const ref = step.kind === 'technique' ? techniqueName(step.technique) : undefined;
+  if (!ref) return { inputs: [], outputs: [] };
+  const signature = await readSignature(ref, activityId, workflowDir, scopeWorkflowId);
+  const binding = bindingOf(step);
+  return {
+    inputs: signature.inputs.filter((input) => binding?.inputs?.[input.id] === undefined),
+    outputs: signature.outputs.filter((id) => binding?.outputs?.[id] === undefined),
+  };
+}
+
+/**
  * What an activity reads from and writes to the session bag.
  *
  * The contract covers the workflow's DECLARED variables — the namespace activities carry values

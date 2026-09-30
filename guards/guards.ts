@@ -577,7 +577,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: "every routine's declared signature matches its own body, and every routine sits in the home its referrers compute or in a library whose techniques it binds",
+    proves: "every routine's declared signature matches its own body, every routine name a body step consults passes through a field the splice rewrites, and every routine sits in the home its referrers compute or in a library whose techniques it binds",
     form: 'materialised',
   },
   {
