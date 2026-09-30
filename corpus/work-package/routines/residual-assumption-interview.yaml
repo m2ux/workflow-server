@@ -83,7 +83,6 @@ steps:
         description: Queue every listed open assumption for stakeholder review
         effect:
           setVariable:
-            has_deferred_assumptions: true
             assumption_outcome: deferred
             needs_individual_interview: false
       - id: interview-individually
@@ -110,7 +109,7 @@ steps:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
-    when: needs_individual_interview == true && has_open_assumptions == true
+    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview == true
     steps:
       - kind: technique
         id: present
@@ -142,7 +141,6 @@ steps:
             description: Queue this assumption for stakeholder review
             effect:
               setVariable:
-                has_deferred_assumptions: true
                 assumption_outcome: deferred
       - kind: technique
         id: record

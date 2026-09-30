@@ -31,21 +31,12 @@ Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-
 
 Path to the written assumptions log.
 
-### has_resolvable_assumptions
-
-Whether an open assumption remains that targeted code analysis could resolve.
-
-### has_open_assumptions
-
-Whether stakeholder-dependent assumptions remain open after convergence.
-
 ## Protocol
 
 ### 1. Classify Resolvability
 
 - Read all open assumptions from the `{assumptions_log}`
 - For each, determine whether targeted code analysis could validate or invalidate it, classifying per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification)
-  > Where no open assumption is code-resolvable, the analysis has nothing to take, and the flags are read from this classification.
 
 ### 2. Targeted Analysis
 
@@ -63,11 +54,7 @@ Whether stakeholder-dependent assumptions remain open after convergence.
 - Write Open Assumptions entries to the `manage-artifacts.markdown-line-breaks` rule
 - Emit the log's path as `{assumptions_log_path}`
 
-### 4. Check Convergence
-
-- Re-classify every open assumption after the analysis pass, newly surfaced ones included, per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification), and emit `{has_resolvable_assumptions}` and `{has_open_assumptions}` from the re-classified set
-
-### 5. Update Comprehension Artifact
+### 4. Update Comprehension Artifact
 
 - Write each outcome the analysis settled about the code into the section of `{comprehension_artifact}` that owns it, per [Promotion](../../resources/codebase-comprehension.md#promotion)
   > When no `{comprehension_artifact}` was provided, skip this phase; the findings stay in the assumptions log.

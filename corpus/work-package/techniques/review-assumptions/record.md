@@ -25,7 +25,7 @@ The decision recorded against an assumption. Empty where no decision has been as
 
 ### assumptions_log
 
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with each assumption marked confirmed, corrected, or needs-discussion and the user's responses recorded inline; all assumptions and their resolution status are preserved. This file is the record of truth for assumption outcomes.
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with each assumption marked confirmed, corrected, or deferred and the user's responses recorded inline; all assumptions and their resolution status are preserved. This file is the record of truth for assumption outcomes.
 
 #### artifact
 
@@ -41,14 +41,15 @@ Path to the written assumptions log.
 
 ### has_deferred_assumptions
 
-Boolean gate — true iff any assumption was marked deferred (needs-discussion).
+Whether any row in `{assumptions_log}` carries Outcome Deferred.
 
 ## Protocol
 
 ### 1. Mark Each Outcome
 
-- Mark each assumption with `{assumption_outcome}`. Where it is empty no decision has been asked for yet, so the assumptions are recorded with the agent's position and no outcome
-  > Where `{current_assumption}` is bound, mark that assumption alone.
+- Mark each open assumption with `{assumption_outcome}`
+  > - Where `{assumption_outcome}` is empty, no decision has been asked for yet, so the assumptions are recorded with the agent's position and no outcome.
+  > - Where `{current_assumption}` is bound, mark that assumption alone.
 
 ### 2. Write the Outcomes Into the Log
 
