@@ -1,8 +1,8 @@
 ---
 name: findings-report
-description: Shared shape for every report that states findings — the finding layout, the designator, severity and reachability contracts, and the split between a report and its methodology record.
+description: Shared shape for every report that states findings — the report, the finding layout, the designator, severity and reachability contracts, and how one pass reuses another's evidence.
 metadata:
-  version: 1.2.0
+  version: 2.0.0
   order: 14
 ---
 
@@ -14,21 +14,17 @@ A report that states findings has an addressee: the person who must act on them.
 
 This guide owns that shape. A report guide declares only what is its own — its designator prefix, the values its `Category` admits, and any extension field it carries — and states them against the sections below, which no report restates.
 
-## Report and Methodology
+## Report
 
-Each review emits two artifacts.
+Each review emits one report: its findings in one ID-ordered list, the outcome, and a single `**Method:**` line naming the command, or the continuous-integration run, that reproduces the baseline the review judged against.
 
-- **The report** — the findings, in one ID-ordered list, plus the outcome. This is what the summary links and what the author reads.
-- **The methodology record** — how the review was conducted: the baseline and the commands that reproduce it, the enumerations walked, the sweeps that came back clean, the coverage and ratio tables, the scope and necessity passes. Same numbered-prefix family as the report, linked once from the report header.
+- **A negative result is not a finding.** *Every added line scanned, no debugging macro found* is nothing the author acts on, and the report carries no record of it.
+- **A finding's own evidence stays with the finding.** The arithmetic that shows a limit is exceeded belongs to the finding it supports.
+- **A capability the review lacked is a finding.** It is stated where findings go, so the reader has something to act on.
 
-A negative result is methodology, not a finding: *every added line scanned, no debugging macro found* is evidence that the review was thorough and is nothing the author acts on.
+## Evidence Reuse
 
-Two boundaries decide what goes where:
-
-- **A finding's own evidence stays with the finding.** The split is between the review's method and its conclusions, never between a conclusion and its support. The arithmetic that shows a limit is exceeded belongs to the finding; the sweep that found no occurrences anywhere is method.
-- **The record states the derivation, not what was missing.** It names the sources read and the commands and tools that produced each enumeration, so a reader can rebuild it. A capability the review did not have is a finding, recorded where findings go — narrating its absence here leaves the reader neither the derivation nor an actionable finding.
-- **The methodology record is checked like the report.** It is the half nobody re-reads, so it is the half a stale claim survives in. Whatever conformance pass runs over the report runs over it.
-- **An enumeration is built once and read thereafter.** A later pass needing a set an earlier pass already walked — the call sites of a symbol, the keys a topology aligns across its configuration files, the branches a refactored function admits — reads it from the record that holds it, citing that record, and extends it where this pass reached further. Rebuilding it costs the walk twice and produces two enumerations that can disagree, which no reader can tell apart from one enumeration and a real change.
+- **An enumeration is built once and read thereafter.** A later pass needing a set an earlier pass already walked — the call sites of a symbol, the keys a topology aligns across its configuration files, the branches a refactored function admits — reads it from the record that holds it and extends it where this pass reached further. Two walks of one set produce two enumerations that can disagree, which no reader can tell apart from one enumeration and a real change.
 - **A pass that reaches a finding another pass already stated cites its designator.** The finding keeps the one home its own pass gave it. A second statement of it is a second designator for one defect: it doubles the totals, splits the author's attention across two rows, and leaves the two wordings free to drift.
 
 ## Fields

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.1
+  version: 2.0.0
 ---
 
 ## Capability
@@ -21,18 +21,6 @@ The strategic review [document](../../resources/strategic-review.md#strategic-re
 
 `human`
 
-### strategic_review_method
-
-Method [record](../../resources/strategic-review.md#method-record-template) of how the review was conducted — the scope, conformance and minimality passes, and the delivery class each designator falls in.
-
-#### artifact
-
-`strategic-review-{n}-method.md`
-
-#### audience
-
-`human`
-
 ### deferred_item_rows
 
 The findings deferred beyond this work package as out-of-scope deferrals, each carrying what was set aside, where, and why. Empty where none was deferred.
@@ -45,7 +33,4 @@ The findings deferred beyond this work package as out-of-scope deferrals, each c
 - Categorize each finding per the group's `finding-categories`, assigning each a stable designator that downstream surfaces reference, per [Designators](../../resources/findings-report.md#designators)
 - Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
 - Emit any deferred finding as a `{deferred_item_rows}` entry, and link the register row from the finding
-
-### 2. Record the Method
-
-- Create the `{strategic_review_method}` under `{planning_folder_path}` from the [Method Record Template](../../resources/strategic-review.md#method-record-template): the scope, PR-body conformance and minimality passes, and the delivery table placing every designator the run produced in exactly one class, per [Delivery Completeness](../../resources/findings-report.md#delivery-completeness)
+- Place every designator the run produced in exactly one delivery class on the document's delivery line, per [Delivery Completeness](../../resources/findings-report.md#delivery-completeness)

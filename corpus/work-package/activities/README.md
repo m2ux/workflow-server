@@ -90,7 +90,7 @@ Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
 ### 10. Post-Implementation Review
 
-Reviews implementation quality, catching issues before validation. Each review states its findings in one report and records what it walked in a companion method record. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
+Reviews implementation quality, catching issues before validation. Each review states its findings in one report. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
@@ -106,7 +106,7 @@ Definition: [`11-validate.yaml`](./11-validate.yaml)
 
 ### 12. Strategic Review
 
-Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document, its method record and the architecture summary. In review mode it documents cleanup recommendations for the posted review without applying them. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
+Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and the architecture summary. In review mode it documents cleanup recommendations for the posted review without applying them. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
 Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 

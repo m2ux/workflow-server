@@ -2,7 +2,7 @@
 name: readme-seed
 description: Work-package planning-folder README seed profile — Progress inventory, classifier vocabulary, and mode-exclusion map for create-readme.
 metadata:
-  version: 1.3.0
+  version: 2.0.0
 ---
 
 # Work Package README Seed
@@ -46,18 +46,15 @@ Lifecycle **Status** values: `Planning`, `Ready`, `In Progress`, `Complete`.
 | 17 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ⬚ |
 | 18 | Post-implementation review | Quality review before validation | 30-60m | ⬚ |
 | 19 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
-| 20 | [Code review method](10-code-review-method.md) | What the code review walked and swept | 5-10m | ⬚ |
-| 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
-| 22 | [Test suite review method](10-test-suite-review-method.md) | Suite baseline, coverage map, sweeps | 5-10m | ⬚ |
-| 23 | [Structural analysis](10-structural-analysis.md) | Prism L12 structural findings | 15-30m | ⬚ |
-| 24 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
-| 25 | Validation | Build, test, lint verification | 15-30m | ⬚ |
-| 26 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
-| 27 | [Strategic review method](12-strategic-review-1-method.md) | Scope, conformance, minimality and delivery passes | 5-10m | ⬚ |
-| 28 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
-| 29 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
-| 30 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
-| 31 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
+| 20 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
+| 21 | [Structural analysis](10-structural-analysis.md) | Prism L12 structural findings | 15-30m | ⬚ |
+| 22 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
+| 23 | Validation | Build, test, lint verification | 15-30m | ⬚ |
+| 24 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
+| 25 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
+| 26 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
+| 27 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
+| 28 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
 
 Rows run in the order the activities execute, which is the order a reader watches them complete in. Codebase comprehension therefore sits third, between design philosophy and requirements elicitation, though its artifact prefix is the highest of the set — the prefix follows the definition file, the row follows the run.
 
@@ -80,9 +77,9 @@ Which activity owns which rows, per [row-ownership map](/meta/resources/planning
 | 07 | Assumptions review |
 | 08 | Implementation · Provenance log |
 | 09 | Lean-coding audit · Code review · Lean change |
-| 10 | Post-implementation review · Change block index · Code review method · Test suite review · Test suite review method · Structural analysis · Architecture summary |
+| 10 | Post-implementation review · Change block index · Test suite review · Structural analysis · Architecture summary |
 | 11 | Validation |
-| 12 | Strategic review · Strategic review method |
+| 12 | Strategic review |
 | 13 | Submit for review |
 | 14 | Close-out · Token usage · Session trace |
 | 15 | Codebase comprehension |

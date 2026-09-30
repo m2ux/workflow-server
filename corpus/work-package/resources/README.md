@@ -53,9 +53,7 @@ Which guide owns each persisted filename's shape.
 | `assumptions-log.md` | [assumptions-review](assumptions-review.md) |
 | `test-plan.md` | [test-plan](test-plan.md) |
 | `code-review.md` | [rust-substrate-code-review](rust-substrate-code-review.md#report-template) |
-| `code-review-method.md` | [rust-substrate-code-review](rust-substrate-code-review.md#method-record-template) |
 | `test-suite-review.md` | [test-suite-review](test-suite-review.md) |
-| `test-suite-review-method.md` | [test-suite-review](test-suite-review.md#method-record-template) |
 | `session-trace.md` | [session-trace](/meta/resources/session-trace.md) |
 | `change-block-index.md` | [manual-diff-review](manual-diff-review.md#file-index-generation) |
 | `token-usage.md` | [token-usage](/meta/resources/token-usage.md) |
@@ -63,7 +61,6 @@ Which guide owns each persisted filename's shape.
 | `NNNN-{decision_title}.md` | [adr](adr.md) |
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
 | `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
-| `strategic-review-{n}-method.md` | [strategic-review](strategic-review.md#method-record-template) |
 | `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md#corpus-artifact-template) |
 | `codebase-comprehension.md` | [codebase-comprehension](codebase-comprehension.md#comprehension-log-template) |
 | `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md` | [pr-review-response](pr-review-response.md) |
