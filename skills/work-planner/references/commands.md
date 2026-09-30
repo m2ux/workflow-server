@@ -181,10 +181,10 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f title='[I07:E00] Purpose
 
 ### Find theme board
 
-Prints the number of the open board for one theme, by the title the theme's board carries.
+Prints the number of the open board for one theme, by the theme's name that opens its title.
 
 ```bash
-gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Canon") | .number'
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | startswith("Canon: ")) | .number'
 ```
 
 ### Fetch board fields

@@ -104,17 +104,18 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 
 Every initiative belongs to one theme, and each theme has one project board.
 
-| Theme | Label | Covers |
+| Theme | Label | Description |
 | --- | --- | --- |
-| Canon | `theme:canon` | What definitions must say, and how they are checked against the design canon |
-| Language | `theme:language` | The definition language: its grammar, constructs and formal rules |
-| Mechanical | `theme:mechanical` | The engine that runs definitions: execution, persistence and walks |
-| Delivery | `theme:delivery` | What reaches agents and hosts: role skills, libraries and delivered content |
+| Canon | `theme:canon` | Definitions Checked Against the Design Canon |
+| Language | `theme:language` | The Definition Language and Its Rules |
+| Mechanical | `theme:mechanical` | The Engine That Runs Definitions |
+| Delivery | `theme:delivery` | What Reaches Agents and Hosts |
 
 - **One theme.**
   An initiative carries one `theme:*` label, and each of its epics carries the same one.
 - **One board per theme.**
-  - Its title is the theme's name, `Canon`, and it is linked to the repository.
+  - Its title is the theme's name, a colon, and its description: `Canon: Definitions Checked Against the Design Canon`.
+  - It is linked to the repository.
   - It holds the theme's initiatives, their epics and their task issues.
 - **Assignees.**
   An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee.
