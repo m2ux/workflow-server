@@ -46,10 +46,9 @@ Read the file for the mode the request calls for:
   - Each home's link names its path from its root: the corpus tree for the `workflows` branch, the server checkout for `main`.
   - Read a home on disk, at the commit audited, never from the link.
 - **Server checkout.**
-  - Inside the checkout, `git rev-parse --show-toplevel`.
-  - From a cursor workspace (`.mcp.json`, `*.code-workspace`, no `package.json`), the checkout is the `project` folder that workspace names.
+  The guards and the schema fields, found with [Find the server checkout](references/commands.md#find-the-server-checkout).
 - **Corpus tree.**
-  The canon, ledgers, and walk artifacts live in the corpus tree: a `workflows` worktree at `.worktrees/workflows` unless `WORKFLOWS_DIR` or `--root` names another.
+  The canon, ledgers, and walk artifacts, a `workflows` worktree found with [Check the corpus tree](references/commands.md#check-the-corpus-tree).
 - **Branches.**
   - A schema-reading guard failing on the corpus branch may be reading a field the code branch has not merged. That clears on the code merge.
   - Establish which before recording a corpus defect.
@@ -63,7 +62,7 @@ Read the file for the mode the request calls for:
 - **git.**  For the base ref, the diff, and the merge-base a delta run measures against.
 - **Node and npm.**  In the server checkout, for the guard suite and the option-coverage walk.
 - **Corpus worktree.**
-  Confirm `corpus/canon/resources/` is present. A fresh clone gains it from [Provision the corpus](references/commands.md#provision-the-corpus). If it is absent, say so.
+  Present with its canon, as [Check the corpus tree](references/commands.md#check-the-corpus-tree) confirms.
 - **The server's AGENTS.md.**
   It owns the check commands, the worktree a run measures, and binding-fidelity triage.
 - **workflow-server MCP.**  For fetching a canon section inside a workflow session.

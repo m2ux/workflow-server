@@ -2,9 +2,10 @@
 
 Every command the skill runs, one spec per operation. The mode files name a spec by linking to it.
 
-- **Ownership.**  These specs follow the server's `AGENTS.md`, as SKILL.md's [Dependencies](../SKILL.md#dependencies) states.
+- **Ownership.**
+  These specs follow the server's `AGENTS.md`, as SKILL.md's [Dependencies](../SKILL.md#dependencies) states.
 - **Where they run.**
-  - `npm` commands run in the server checkout.
+  - `git` and `npm` commands run in the server checkout.
   - Searches of `corpus/` run in the corpus tree. Paths are in SKILL.md's [home links](../SKILL.md#workflow-canon), roots in its [Homes](../SKILL.md#homes).
 - **Branch point.**  Take the verdict at the branch point, and hold that checkout still for the run.
 - **Exit codes.**
@@ -15,7 +16,36 @@ Every command the skill runs, one spec per operation. The mode files name a spec
 - **Example values.**
   Substitute the real ones: `origin/main` a base ref, `work-package` a target workflow id, `anti-patterns.md` a home's file.
 
-## Corpus
+## Checkouts
+
+### Find the server checkout
+
+Prints the root of the server checkout.
+
+- From a cursor workspace (`.mcp.json`, `*.code-workspace`, no `package.json`), the checkout is the `project` folder that workspace names.
+
+```bash
+git rev-parse --show-toplevel
+```
+
+### Resolve ref
+
+Prints a ref's full commit id, for citing it at full length.
+
+```bash
+git rev-parse origin/main
+```
+
+### Check the corpus tree
+
+Lists the canon's prose homes, confirming the corpus tree holds them.
+
+- The corpus tree is at `.worktrees/workflows` unless `WORKFLOWS_DIR` or `--root` names another.
+- When the listing fails, say so, or run [Provision the corpus](#provision-the-corpus).
+
+```bash
+ls .worktrees/workflows/corpus/canon/resources/
+```
 
 ### Provision the corpus
 
@@ -24,6 +54,8 @@ Adds the corpus worktree to a fresh clone, with `corpus/canon/resources/`.
 ```bash
 npm run worktree:provision
 ```
+
+## Corpus
 
 ### List units
 
