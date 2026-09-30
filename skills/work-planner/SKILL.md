@@ -114,12 +114,12 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **One theme.**
   An initiative carries one `theme:*` label, and each of its epics carries the same one.
 - **One board per theme.**
-  - Its title is the repository's name, a colon, and the theme: `workflow-server: Canon`.
+  - Its title is the theme's name, `Canon`, and it is linked to the repository.
   - It holds the theme's initiatives, their epics and their task issues.
 - **Standalone issues.**  A standalone issue sits on no board.
 - **A new theme.**
   - It needs its label and its board before an initiative takes it.
-  - The user creates the board as a copy of the Initiative template board in GitHub, and links it to the repository so the repository's Projects tab lists it, since the REST API can do neither.
+  - The user creates the board in GitHub as a copy of the Initiative template board, titled and linked as above, since the REST API can do neither.
 
 ## Dependencies
 
