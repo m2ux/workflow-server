@@ -30,4 +30,4 @@ The canonical home for each shared fact category.
 
 ### link-only-slots
 
-A template carries a link-only slot for every fact category it does not home: a markdown link to the canonical home plus at most one line. Where that home is agent-audience state, the slot takes the pointer form `manage-artifacts.single-source-and-link` gives. Restating homed content in such a slot is a conformance violation, whether or not the restatement is accurate.
+A template carries a link-only slot for every fact category it does not home: a markdown link to the canonical home plus at most one line. Where that home is agent-audience state, the slot points at each entry per [Links](/meta/resources/writing-register.md#links). Restating homed content in such a slot is a conformance violation, whether or not the restatement is accurate.

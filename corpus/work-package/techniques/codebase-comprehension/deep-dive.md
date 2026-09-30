@@ -64,13 +64,14 @@ Targeted exploration findings for the selected area: traced data flows, implemen
   > - At `{comprehension_scope}` `same-area`, the selection stays within the area the last pass worked and deepens it; at `new-area`, it comes from the candidate set outside that area.
 - On the mandatory initial pass, attempt to resolve every open question; a subsequent pass narrows to one selected area.
 - For selected area: trace data flows, examine implementation details, document edge cases, applying the [Comprehension Techniques](../../resources/codebase-comprehension.md#comprehension-techniques)
+  > Where `{comprehension_log}` records an enumeration of a set this pass needs, reuse it and extend it where this pass reaches further.
 - When `{gitnexus_indexed}` is true: apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) for custom call chain queries
 
 ### 2. Record the Investigation
 
 - Write `{comprehension_log}` per the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template)
 - Append this investigation as a deep dive beside the ones earlier passes wrote, rather than in place of them
-- Record every set this investigation walked in full as an enumeration — the call sites a symbol has, the keys a topology aligns across its configuration files, the branches a function admits — naming the query or command that produced it. A later deep dive over this area reads the set from `{comprehension_log}`.
+- Record every set this investigation walked in full as an enumeration — the call sites a symbol has, the keys a topology aligns across its configuration files, the branches a function admits — naming the query or command that produced it.
 
 ### 3. Promote Settled Outcomes
 

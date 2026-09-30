@@ -71,7 +71,7 @@ When authoring or revising workflow definition content (YAML prose fields, techn
 
 ### single-source-and-link
 
-Every planning fact has exactly one canonical artifact. When another artifact or the session README needs it, link to the canonical home with at most a one-line pointer — never restate the body. An agent-audience home is pointed at by entry ID and one-line item in place of a link.
+Every planning fact has exactly one canonical artifact. When another artifact or the session README needs it, link to the canonical home with at most a one-line pointer — never restate the body, and point at an agent-audience home per [Links](/meta/resources/writing-register.md#links).
 
 ### canonical-home-map
 
