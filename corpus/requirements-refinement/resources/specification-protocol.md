@@ -62,7 +62,7 @@ status line, in that order, with a blank line between parts.
 ```markdown
 **REQ-F013: When component is empty, the system SHALL infer component:* from title or repo, then apply the in-scope filter**
 
-Empty component is common on stubs. Inference is how the in-scope filter still runs. [[1](../../meetings/2026-04-12-planning.md#001412), [2](../../documents/stubs.pdf), [3](../../documents/filter.md#in-scope)]
+Empty component is common on stubs. Inference is how the in-scope filter still runs. [[1](../.engineering/artifacts/meetings/2026-04-12-planning.md#001412), [2](../.engineering/artifacts/documents/stubs.pdf), [3](filter.md#in-scope)]
 
 > The sources do not state which repositories count as in scope.
 
@@ -107,7 +107,8 @@ The final specification carries each entry's status as its icon from
 🕒 **REQ-F013: When component is empty, the system SHALL infer component:* from title or repo, then apply the in-scope filter**
 ```
 
-The final specification closes with the status key after a rule:
+The final specification closes with the status key after a rule, giving each icon and status in
+[Status Conventions](#status-conventions) order:
 
 ```markdown
 ---
@@ -119,12 +120,12 @@ A working specification carries the status line and no key.
 
 ## Source Reference Format
 
-Each cited source is a markdown hyperlink. The href is the relative path from the specification to the
-file recorded for that reference in section 2.
+Each cited source is a markdown hyperlink. The href is the path to the file recorded for that
+reference in section 2, relative to the folder of the target specification.
 
-- A meeting transcript is its copy in the repository's meetings folder, redacted per
-  [transcript-redaction](./transcript-redaction.md).
-- A document from outside the repository is its copy in the repository's documents folder. A document
+- A meeting transcript is its copy in the engineering artifacts' `meetings` folder, beside `planning`,
+  redacted per [transcript-redaction](./transcript-redaction.md).
+- A document from outside the repository is its copy in the `documents` folder beside it. A document
   inside the repository is the file where it sits.
 - When the source is markdown, the href includes the fragment of the nearest heading above the
   derived passage — for a transcript, the timestamp heading. When the source is not markdown, the href
@@ -137,7 +138,7 @@ hyperlinks. The link text is the source's 1-based index in that list, never a ti
 local to the list: every requirement's first source is `1`.
 
 ```markdown
-[[1](../../meetings/2026-04-12-planning.md#000203), [2](../../meetings/2026-04-12-planning.md#000732), [3](../../documents/filter.md#in-scope)]
+[[1](../.engineering/artifacts/meetings/2026-04-12-planning.md#000203), [2](../.engineering/artifacts/meetings/2026-04-12-planning.md#000732), [3](filter.md#in-scope)]
 ```
 
 When a requirement originates from a specific discussion within a meeting, participant initials MAY
@@ -145,8 +146,8 @@ follow the list; when it originates from a reference document, the document's au
 list:
 
 ```markdown
-[[1](../../meetings/2026-04-12-planning.md#000732)] (PW, MC)
-[[1](../../documents/settlement-brief.pdf)] (Jane Doe)
+[[1](../.engineering/artifacts/meetings/2026-04-12-planning.md#000732)] (PW, MC)
+[[1](../.engineering/artifacts/documents/settlement-brief.pdf)] (Jane Doe)
 ```
 
 ## Reference Documents
@@ -158,7 +159,7 @@ with an `SRC-DOC###` reference and credited to its author, mirroring the meeting
 **SRC-DOC###**: [Document Title](path/to/document) — Author Name
 ```
 
-Example: `**SRC-DOC001**: [Cross-chain settlement brief](../../documents/settlement-brief.md) — Jane Doe`
+Example: `**SRC-DOC001**: [Cross-chain settlement brief](../.engineering/artifacts/documents/settlement-brief.md) — Jane Doe`
 
 ## Rules
 

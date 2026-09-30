@@ -4,6 +4,7 @@ name: Intake
 description: Establish the run's readable, classified source documents and its target specification.
 variables:
   reads:
+    - classified_sources
     - host_repo_path
     - planning_folder_path
     - user_request
@@ -38,9 +39,13 @@ variables:
       type: array
       description: Redacted passages in the stored meeting transcripts, each { transcript, heading, kind }
       defaultValue: []
+    - name: copied_transcripts
+      type: array
+      description: Absolute paths of the meeting transcripts newly copied into the repository
+      defaultValue: []
     - name: intake_correction
       type: string
-      description: Text the user typed to correct the sources, a source's classification, a transcript's redactions, or the target specification
+      description: The user's typed correction to the intake
 required: true
 steps:
   - kind: technique

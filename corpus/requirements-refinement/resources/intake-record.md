@@ -36,5 +36,7 @@ Creation guide for bare filename `intake.md`. The record of what a refinement ru
 - **One row per source.** The source table carries a row for every document the run was given.
 - **Source type is recorded; the reference form stays in [Source Reference Format](./specification-protocol.md#source-reference-format).**
 - **Mode is the target's existence.** Augment when the target file exists, create when it does not.
-- **A redaction names its passage, never its words.** One row per redacted passage, giving its transcript, the heading above it, and its kind per [Redacted Conversation](./transcript-redaction.md#redacted-conversation). The table is omitted when no transcript carries a redaction.
+- **A redaction names its passage, never its words.**
+- **One row per redacted passage**, giving its transcript, the heading above it, and its kind per [Redacted Conversation](./transcript-redaction.md#redacted-conversation).
+- **The redaction table is omitted when no transcript carries a redaction.**
 - **Line budget:** ~20 lines, plus one per redaction.

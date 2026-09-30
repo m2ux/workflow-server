@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Shared inputs and specification-fidelity invariants for every requirements-refinement technique.
+Shared inputs, and the specification-fidelity and artifact invariants, for every requirements-refinement technique.
 
 ## Inputs
 
@@ -13,9 +13,9 @@ Shared inputs and specification-fidelity invariants for every requirements-refin
 
 Absolute path to this run's planning folder.
 
-### source_paths
+### classified_sources
 
-Filesystem paths of the source documents being processed, each a meeting transcript or an unstructured document. A single-document run carries one entry.
+The source documents paired with their classifications, each `{ path, type }`.
 
 ### target_doc_path
 
@@ -37,8 +37,8 @@ The [section structure](../resources/specification-protocol.md#section-structure
 
 ### artifacts-write-under-planning-folder
 
-Each technique writes its artifact under `{planning_folder_path}`.
+Each technique writes its declared artifact under `{planning_folder_path}`.
 
 ### artifact-paths-relative
 
-Every path an artifact records is relative to that artifact's folder. No artifact carries an absolute filesystem path.
+Every path an artifact records is relative to the folder the artifact is read from: a specification's to the folder of `{target_doc_path}`, any other artifact's to its own folder. No artifact carries an absolute filesystem path.

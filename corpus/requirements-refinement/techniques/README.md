@@ -2,9 +2,7 @@
 
 > Part of the [Requirements Refinement Workflow](../README.md)
 
-The procedures the activities apply. [`TECHNIQUE.md`](TECHNIQUE.md) holds the shared inputs
-(`planning_folder_path`, `source_paths`, `target_doc_path`, `correction_iteration`) and the
-specification-fidelity rules.
+The procedures the activities apply. [`TECHNIQUE.md`](TECHNIQUE.md) holds the inputs and rules every technique shares.
 
 | Technique | Capability |
 |-----------|-----------|
@@ -19,5 +17,5 @@ specification-fidelity rules.
 | [finalize-specification](finalize-specification.md) | Assemble the final specification and change summary |
 | [report-failure](report-failure.md) | Compile a failure report when refinement stops with unresolved issues |
 
-Completeness is a comparison of the documents in hand: every normative statement in `{source_paths}`
+Completeness is a comparison of the documents in hand: every normative statement in `{classified_sources}`
 reaches a requirement in the specification at `{target_doc_path}`.

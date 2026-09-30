@@ -28,4 +28,4 @@ Each redacted passage is replaced by one marker naming its kind:
 ## Rules
 
 - **Every heading is kept.** A redaction replaces text under a heading, never the heading, so each timestamp fragment still resolves.
-- **Conversation on the meeting's topics is kept whole**, informal wording included.
+- **Conversation on the meeting's topics is kept whole**, informal wording included, apart from a personal aside within it, which is redacted.

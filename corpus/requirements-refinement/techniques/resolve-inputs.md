@@ -15,7 +15,7 @@ The user's free-form request for the run, naming the documents to refine from an
 
 ### intake_correction
 
-*(optional)* Text the user typed to correct the sources, a source's classification, a transcript's redactions, or the target specification. Unset until a correction is given.
+*(optional)* The user's typed correction to the intake. Unset until a correction is given.
 
 ### source_paths
 

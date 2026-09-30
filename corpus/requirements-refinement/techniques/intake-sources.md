@@ -9,9 +9,13 @@ Record whether every source document is readable and what type each one is.
 
 ## Inputs
 
+### source_paths
+
+Filesystem paths of the source documents being processed, each a meeting transcript or an unstructured document.
+
 ### intake_correction
 
-*(optional)* Text the user typed to correct the sources, a source's classification, a transcript's redactions, or the target specification. Unset until a correction is given.
+*(optional)* The user's typed correction to the intake. Unset until a correction is given.
 
 ## Outputs
 
@@ -39,4 +43,4 @@ The source documents paired with their classifications, each `{ path, type }` â€
 
 ### intake-captures-only
 
-Capture and classify only; do not analyze or modify the specification during intake.
+Capture and classify only; do not analyze or modify the specification.

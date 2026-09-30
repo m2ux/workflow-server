@@ -9,10 +9,6 @@ Settle the target specification — where it is, and whether it is augmented or 
 
 ## Inputs
 
-### classified_sources
-
-The source documents paired with their classifications, each `{ path, type }`.
-
 ### host_repo_path
 
 Absolute path of the checkout the run was opened from.
@@ -62,4 +58,5 @@ Absolute path to the written intake record.
 ### 2. Record Intake
 
 - Write `{intake_record}` to `{planning_folder_path}` per [intake-record](../resources/intake-record.md#template) and its [Rules](../resources/intake-record.md#rules), capturing `{classified_sources}`, `{transcript_redactions}`, `{target_doc_path}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
+  > Each path is recorded per `artifact-paths-relative`.
 
