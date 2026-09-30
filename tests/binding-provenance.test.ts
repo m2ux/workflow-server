@@ -30,6 +30,7 @@ function makeCtx(overrides?: Partial<ProvenanceContext>): ProvenanceContext {
       { name: 'late_value', via: 'output', stepId: 'later-step', activityId: 'gamma', ordinal: 9, conditional: false },
     ],
     position: 5,
+    arrivesFrom: new Set(),
     ...(overrides ?? {}),
   };
 }
@@ -97,6 +98,27 @@ describe('resolveInputSource', () => {
     expect(r.kind).toBe('declared-later');
     expect(r.source).toContain("workflow variable 'late_value' (declared;");
     expect(r.source).toContain('produced later in the workflow');
+  });
+
+  it('reports a later producer the graph returns here from as holding a value on that return', () => {
+    const returned = makeCtx({ declaredVariables: new Set(['late_value']), arrivesFrom: new Set(['gamma']) });
+    const r = resolveInputSource('late_value', returned, undefined, REQUIRED);
+    expect(r.kind).toBe('declared-later');
+    expect(r.source).toContain('holds a value where the run passed through it before arriving here');
+    expect(r.source).not.toContain('not yet available');
+  });
+
+  it('names the later producer the graph returns from over one it cannot', () => {
+    const twoLater = makeCtx({
+      producers: [
+        { name: 'late_value', via: 'output', stepId: 'onward', activityId: 'delta', ordinal: 7, conditional: false },
+        { name: 'late_value', via: 'checkpoint', stepId: 'review', activityId: 'gamma', ordinal: 9, conditional: false },
+      ],
+      arrivesFrom: new Set(['gamma']),
+    });
+    const r = resolveInputSource('late_value', twoLater, undefined, REQUIRED);
+    expect(r.source).toContain("set by checkpoint 'review' (activity 'gamma')");
+    expect(r.source).toContain('before arriving here');
   });
 
   it('flags a required own input with no source as UNRESOLVED', () => {
@@ -347,6 +369,31 @@ describe('buildProvenanceContext', () => {
     expect(r.source).toBe("step-binding: output of step 'gather' (activity 'work')");
     expect(r.unresolved).toBe(false);
   });
+
+  it('end-to-end: a correction a gate records after the step reaches the re-run the graph loops back to', async () => {
+    const looping = workflow();
+    looping.activities![1]!.steps!.push({
+      kind: 'checkpoint', id: 'review', message: 'Correct?',
+      options: [
+        { id: 'accept', label: 'Accept' },
+        { id: 'revise', label: 'Revise', effect: { recordReply: 'work_correction', exit: 'revise' } },
+      ],
+    });
+    looping.activities![0]!.exits = [{ id: 'done', isDefault: true }];
+    looping.activities![1]!.exits = [{ id: 'done', isDefault: true }, { id: 'revise' }];
+    looping.graph = { intake: { done: 'work' }, work: { done: '__terminal__', revise: 'work' } };
+
+    const ctx = await buildProvenanceContext({ workflow: looping, workflowDir, currentActivityId: 'work', currentStepId: 'gather' });
+    expect([...ctx!.arrivesFrom].sort()).toEqual(['intake', 'work']);
+    const r = resolveInputSource('work_correction', ctx!, undefined, { ...REQUIRED, optional: true });
+    expect(r.source).toBe(
+      "set by checkpoint 'review' (activity 'work') — positioned after this step, and holds a value where the run passed through it before arriving here, as a return through the graph does; unset before that",
+    );
+
+    const entry = await buildProvenanceContext({ workflow: looping, workflowDir, currentActivityId: 'intake', currentStepId: 'classify' });
+    expect(entry!.arrivesFrom.size).toBe(0);
+    expect(resolveInputSource('work_correction', entry!, undefined, REQUIRED).source).toContain('not yet available');
+  });
 });
 
 
@@ -364,6 +411,7 @@ describe('declaredOutputsByStep', () => {
     declaredVariables: new Set(),
     producers,
     positions: new Map(),
+    reach: new Map(),
     steps: [],
     resolvedTechniques: producers.length,
     unreadableOps: new Set(unreadable),

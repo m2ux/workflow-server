@@ -12,7 +12,9 @@
  * deterministic function of the corpus and the step: no session-state reads, and byte-identical
  * refetches stay byte-identical for reference delivery. Producers positioned after the current
  * step are reported as such rather than claimed — a read whose only producer comes later in the
- * workflow is a real seam, not a resolution.
+ * workflow is a real seam, not a resolution. Where the graph can arrive at the current activity
+ * again from the producer's activity, as a correction loop does, the producer is reported as
+ * holding a value on that return, since a run that has passed through it carries what it wrote.
  *
  * Own inputs are always annotated. Contract-inherited entries (ambient by design, marked by
  * their block note) are annotated only when the resolution says something the block note does
@@ -22,7 +24,7 @@
  * identifier grammar, the `*(optional)*` marker, the ambient ids — shared with
  * scripts/check-binding-fidelity.ts so the server annotation and the guard cannot drift apart.
  */
-import type { Workflow } from '../schema/workflow.schema.js';
+import { destinationTargets, type Workflow } from '../schema/workflow.schema.js';
 import type { TechniqueBinding, Step } from '../schema/activity.schema.js';
 import { flattenActivitySteps, optionWrites, techniqueName } from '../schema/activity.schema.js';
 import type { Technique, InputItemDefinition, OutputItemDefinition } from '../schema/technique.schema.js';
@@ -81,6 +83,12 @@ export interface ProvenanceContext {
   producers: ProducerSite[];
   /** Document-order position of the step being fetched. */
   position: number;
+  /**
+   * Activities from which the graph can arrive at the current activity, the current activity
+   * included where it lies on a cycle. A producer positioned after the current step in one of these
+   * has run by the time such an arrival reaches the step.
+   */
+  arrivesFrom: ReadonlySet<string>;
 }
 
 /**
@@ -96,6 +104,8 @@ export interface ProducerIndex {
   producers: ProducerSite[];
   /** Document-order position of `activityId`/`stepId`, or -1 where the step is not in the workflow. */
   positions: Map<string, number>;
+  /** Activity id → every activity the graph can transition to from it, in one or more transitions. */
+  reach: Map<string, Set<string>>;
   /**
    * The step at each document-order position, as the loaded activity holds it. A step id is
    * unique only within one step list, so a reader that must tell two same-id steps apart — one at
@@ -263,7 +273,34 @@ export async function buildProducerIndex(args: {
     }
   }
 
-  return { declaredVariables, producers, positions, steps, resolvedTechniques: ownOutputsCache.size, unreadableOps };
+  return {
+    declaredVariables, producers, positions, reach: graphReach(workflow), steps,
+    resolvedTechniques: ownOutputsCache.size, unreadableOps,
+  };
+}
+
+/**
+ * Every activity each activity can transition to, in one or more transitions. An activity reaches
+ * itself only where the graph returns to it, so a self-entry marks a cycle rather than a start.
+ */
+function graphReach(workflow: Workflow): Map<string, Set<string>> {
+  const next = new Map<string, string[]>();
+  for (const [from, bindings] of Object.entries(workflow.graph ?? {})) {
+    next.set(from, Object.values(bindings).flatMap(destinationTargets));
+  }
+  const reach = new Map<string, Set<string>>();
+  for (const activity of workflow.activities ?? []) {
+    const seen = new Set<string>();
+    const queue = [...(next.get(activity.id) ?? [])];
+    while (queue.length > 0) {
+      const id = queue.shift()!;
+      if (seen.has(id)) continue;
+      seen.add(id);
+      queue.push(...(next.get(id) ?? []));
+    }
+    reach.set(activity.id, seen);
+  }
+  return reach;
 }
 
 /** Positions are keyed by the pair, since one step id can occur in more than one activity. */
@@ -283,7 +320,10 @@ export function provenanceContextFor(
 ): ProvenanceContext | null {
   const position = index.positions.get(positionKey(currentActivityId, currentStepId));
   if (position === undefined) return null;
-  return { declaredVariables: index.declaredVariables, producers: index.producers, position };
+  const arrivesFrom = new Set(
+    [...index.reach].filter(([, reached]) => reached.has(currentActivityId)).map(([from]) => from),
+  );
+  return { declaredVariables: index.declaredVariables, producers: index.producers, position, arrivesFrom };
 }
 
 /**
@@ -315,10 +355,15 @@ export type SourceKind =
 
 interface BagResolution { text: string; resolved: boolean; kind: SourceKind }
 
-function producerText(p: ProducerSite, later: boolean): string {
+/** Where a producer stands relative to the step reading it. */
+type ProducerTiming = 'prior' | 'later' | 'passed';
+
+function producerText(p: ProducerSite, timing: ProducerTiming): string {
   const where = `'${p.stepId}' (activity '${p.activityId}')`;
   const gate = p.conditional ? ' — behind a `when` gate, so it produces this on the runs that gate admits' : '';
-  const suffix = later ? ' — produced later in the workflow, not yet available' : gate;
+  const suffix = timing === 'later' ? ' — produced later in the workflow, not yet available'
+    : timing === 'passed' ? ' — positioned after this step, and holds a value where the run passed through it before arriving here, as a return through the graph does; unset before that'
+    : gate;
   if (p.via === 'output' || p.via === 'remap') {
     const remap = p.via === 'remap' ? `, remapped from output '${p.origOutputId}'` : '';
     return `output of step ${where}${remap}${suffix}`;
@@ -332,6 +377,10 @@ function producerText(p: ProducerSite, later: boolean): string {
  * before the current step, then a declared workflow variable, then a producer that only exists
  * later in the workflow, then a known ambient id.
  *
+ * Among later producers, one whose activity the graph can return here from outranks one it cannot:
+ * the value it wrote is in the bag on that return, and reporting it as not yet available tells a
+ * reader re-running the step to ignore what it was sent back to apply.
+ *
  * Among prior producers, the closest one that always runs outranks anything behind a `when` gate,
  * however late the gated step sits. A gated step writes the name on the runs its gate admits, so on
  * every other run the value a reader holds came from the unguarded step — and naming the gated one
@@ -341,15 +390,17 @@ function resolveBagName(name: string, ctx: ProvenanceContext): BagResolution {
   const sites = ctx.producers.filter((p) => p.name === name);
   const before = sites.filter((p) => p.ordinal < ctx.position);
   const prior = before.filter((p) => !p.conditional).pop() ?? before.pop();
-  const later = sites.find((p) => p.ordinal >= ctx.position);
+  const after = sites.filter((p) => p.ordinal >= ctx.position);
+  const later = after.find((p) => ctx.arrivesFrom.has(p.activityId)) ?? after[0];
+  const timing: ProducerTiming = later && ctx.arrivesFrom.has(later.activityId) ? 'passed' : 'later';
 
-  if (prior) return { text: producerText(prior, false), resolved: true, kind: 'prior' };
+  if (prior) return { text: producerText(prior, 'prior'), resolved: true, kind: 'prior' };
   if (ctx.declaredVariables.has(name)) {
     return later
-      ? { text: `workflow variable '${name}' (declared; ${producerText(later, true)})`, resolved: true, kind: 'declared-later' }
+      ? { text: `workflow variable '${name}' (declared; ${producerText(later, timing)})`, resolved: true, kind: 'declared-later' }
       : { text: `workflow variable '${name}' (declared)`, resolved: true, kind: 'declared' };
   }
-  if (later) return { text: producerText(later, true), resolved: true, kind: 'later' };
+  if (later) return { text: producerText(later, timing), resolved: true, kind: 'later' };
   if (AMBIENT_CONTEXT_IDS.has(name)) return { text: `ambient context '${name}' (supplied at runtime)`, resolved: true, kind: 'ambient' };
   return { text: `'${name}'`, resolved: false, kind: 'unresolved' };
 }
