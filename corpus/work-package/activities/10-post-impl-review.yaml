@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.2.0
+version: 2.3.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -55,6 +55,9 @@ variables:
       type: array
       description: Change-block indices the reviewer flagged as carrying an issue.
       defaultValue: []
+    - name: flagged_block_numbers
+      type: string
+      description: Text the reviewer typed naming the change blocks that carry an issue, comma-separated.
     - name: follow_up_rows
       type: array
       description: In-task follow-ups to append to the register, each with what remains and where it surfaced.
@@ -78,6 +81,9 @@ variables:
       type: boolean
       description: True once every change block's rationale paragraph is confirmed to describe the change it sits under.
       defaultValue: false
+    - name: rationale_corrections
+      type: string
+      description: Text the reviewer typed correcting the block rationale paragraphs, each correction naming the block it applies to.
     - name: reviewed_code_base_url
       type: string
       description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
@@ -128,6 +134,7 @@ steps:
         label: Some blocks carry an issue
         description: The reply names the block numbers, comma-separated
         effect:
+          recordReply: flagged_block_numbers
           setVariable:
             has_flagged_blocks: true
   - kind: technique
@@ -149,8 +156,9 @@ steps:
             rationale_attested: true
       - id: rationale-corrected
         label: Rationale needs correction
-        description: The reply carries the corrections
+        description: The reply carries the corrections, each naming the block whose rationale it corrects
         effect:
+          recordReply: rationale_corrections
           setVariable:
             rationale_attested: false
   - kind: technique

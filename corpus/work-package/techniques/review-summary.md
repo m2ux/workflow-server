@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.13.0
+  version: 1.14.0
 ---
 
 ## Capability
@@ -15,7 +15,15 @@ The findings gathered and classified across code review, test review, validation
 
 ### raised_findings_scope
 
-How much of `{classified_findings}` the posted review carries to the author: `all`, the `selected` subset the delivery gate named, or `none`.
+How much of `{classified_findings}` the posted review carries to the author: `all`, the `selected` subset `{raised_findings_selection}` names, or `none`.
+
+### raised_findings_selection
+
+*(optional)* Text the user typed naming the findings the posted review carries to the author. Unset unless `{raised_findings_scope}` is `selected`.
+
+### summary_refinement
+
+*(optional)* Text the reviewer typed naming the adjustments the summary takes when it is rendered again. Unset on a first rendering.
 
 ### prior_feedback_triage
 
@@ -88,7 +96,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 - Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, structural analysis, lean-coding audit, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
 - **Every row of every section comes from `{classified_findings}` and nothing else.** One finding is one row, under the designator its own report defines, in ascending designator order per [Designators](../resources/findings-report.md#designators). A section drawing its order from a second enumeration — a priority list, a remediation order — renders siblings inconsistently, and a row standing for a group of findings hides each of them from the totals and from the Action Items.
 - Reference, don't restate: each finding renders as its item designator, `@` locus link, one-line title, and severity only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `@` cell is a hyperlinked `>` onto the pertinent locus — reviewed code under `{reviewed_code_base}` with a line anchor, or the test, document, CI run, or commit the category declares. Descriptions, evidence, and suggestions stay in the linked report artifacts.
-- Carry `{classified_findings}` into the rendered sections at `{raised_findings_scope}`: every finding at `all`, the named subset at `selected`, and none at `none`, where the linked report artifacts keep whatever the summary leaves out.
+- Carry `{classified_findings}` into the rendered sections at `{raised_findings_scope}`: every finding at `all`, the subset `{raised_findings_selection}` names at `selected`, and none at `none`, where the linked report artifacts keep whatever the summary leaves out.
 - Render the Strategic Review section from the run's cleanup and scope-fit recommendations as a findings table on the shared format.
 - Render each Action Items tier from `{classified_findings.action_tier}`, the tier each finding is delivered under per [Action Items](../resources/review-mode.md#action-items).
 - Render `What This Change Gets Right` between Strategic Review and Action Items, one bullet per specific strength and no source pointer beside it, per [What This Change Gets Right](../resources/review-mode.md#what-this-change-gets-right); omit the section when the review found none.
@@ -97,6 +105,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 - Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment, its `Disposition` cell holding one of the three values that column admits and nothing else, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating per the rating-cap carve-in below.
 - Render the attribution footer that closes the format template — Apply [viewer-login](/github/techniques/viewer-login.md) and substitute `{viewer_login}` for `{user}`; Apply [view-pr](/github/techniques/view-pr.md)(*repo_path*=`{component_git_dir}`) and use the short form of `{head_sha}` for `{sha}` — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
+- When `{summary_refinement}` is bound, apply each adjustment it names to the rendered text, within the loaded format.
 - Produce `{review_summary}` as the rendered text.
 - Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits — the bytes bound here are the bytes posted.
 

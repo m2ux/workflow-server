@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.22.0
+version: 2.23.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -71,6 +71,12 @@ variables:
       type: string
       description: URL of the pull request for this work package (alongside pr_number).
       defaultValue: ""
+    - name: strategic_fix_selection
+      type: string
+      description: Text the user typed naming the strategic-review findings to address, by priority.
+    - name: raised_findings_selection
+      type: string
+      description: Text the user typed naming the findings the posted review carries to the pull request author.
     - name: raised_findings_scope
       type: string
       description: How much of the findings set the posted review carries to the pull request author.
@@ -299,6 +305,7 @@ steps:
         label: Fix selected findings
         description: The reply names the findings to address, by priority; the report keeps the rest
         effect:
+          recordReply: strategic_fix_selection
           setVariable:
             strategic_findings_disposition: fix-selected
       - id: defer-findings
@@ -344,8 +351,9 @@ steps:
             raised_findings_scope: all
       - id: raise-selected
         label: Raise selected findings
-        description: The posted review carries the findings named in the reply; the report keeps the rest
+        description: The reply names the findings the posted review carries; the report keeps the rest
         effect:
+          recordReply: raised_findings_selection
           setVariable:
             review_passed: true
             raised_findings_scope: selected

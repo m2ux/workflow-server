@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.25.0
+version: 1.26.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -112,6 +112,9 @@ variables:
       type: boolean
       description: Whether the reviewer asked for the consolidated summary to be rendered again before posting.
       defaultValue: false
+    - name: summary_refinement
+      type: string
+      description: Text the reviewer typed naming the adjustments the consolidated summary takes when it is rendered again.
     - name: test_findings_actionable
       type: boolean
       description: Whether any test-suite finding is at or above the severity that warrants action.
@@ -196,8 +199,9 @@ steps:
                 summary_refine_requested: false
           - id: refine
             label: Refine summary
-            description: The reply carries the adjustments, and the summary is rendered again for approval
+            description: The reply carries the adjustments the summary takes when it is rendered again
             effect:
+              recordReply: summary_refinement
               setVariable:
                 review_posted: false
                 summary_refine_requested: true

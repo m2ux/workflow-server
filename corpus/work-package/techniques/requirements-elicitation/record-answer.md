@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,6 +21,10 @@ The question that was posed.
 
 Whether an answer was given, or the domain was passed over.
 
+### domain_answer
+
+*(optional)* Text the user typed answering the question. Where the domain was passed over it holds an earlier domain's answer, or is unset, so it is read only where `{domain_answered}` is true.
+
 ### elicitation_log
 
 *(optional)* The record so far, which this entry extends. Empty on the first question of a run.
@@ -35,7 +39,7 @@ The record carried in with this question, its domain and its answer appended as 
 
 ### 1. Record the Entry
 
-- Append one entry to `{elicitation_log}` carrying `{current_domain}`, `{current_question}` and the answer as given, in the row shape the [Document Template](../../resources/requirements-elicitation.md#document-template) sets for its Elicitation Log
+- Append one entry to `{elicitation_log}` carrying `{current_domain}`, `{current_question}` and `{domain_answer}` as given, in the row shape the [Document Template](../../resources/requirements-elicitation.md#document-template) sets for its Elicitation Log
   > Where `{domain_answered}` is false the entry records the question and that the domain was passed over, so a later pass sees the domain was reached rather than missed.
 
 ### 2. Summarise the Answer

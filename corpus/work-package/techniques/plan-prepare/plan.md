@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
 Work-package plan artifact — task breakdown, dependencies, ordering, and recorded design decisions.
+
+## Inputs
+
+### strategic_fix_selection
+
+*(optional)* Text the user typed naming the strategic-review findings to address, by priority. Unset until a strategic review selects findings to fix.
 
 ## Outputs
 
@@ -42,6 +48,7 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 - Apply [design framework](../../resources/design-framework.md#design-framework-trizics-approach) to structure implementation approach
 - Document assumptions in planning decisions
 - Break work into atomic tasks with explicit dependencies
+  > When `{strategic_fix_selection}` is bound, the tasks address the strategic-review findings it names, in the priority it gives.
 - Define task ordering — never assume ordering is obvious
 - When the target symbols are knowable, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: each knowable target symbol, *direction*: `upstream`) to bound task scope and order tasks by dependency depth (edit leaves before callers).
 
