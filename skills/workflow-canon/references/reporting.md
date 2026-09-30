@@ -10,7 +10,7 @@ Severity, row shapes, and which report the run owes.
 | **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation whose home lacks the claim | Zero, every pass |
 | **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |
 
-State each band's count. The verdict is Live and Contract. Hygiene rises as fixes land, because replacement prose is walked by the same units.
+State each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.
 
 ## Severity
 
