@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ One or two sentences that open with the recommendation — run the full pipeline
 
 ### 1. Read the Change
 
-- Group `{changed_file_entries}` by the top-level module or package each file belongs to — these are the change's functional areas — and total the lines each area adds and removes.
+- Group `{changed_file_entries}` by the top-level module or package each file belongs to — these are the change's functional areas.
 - Read the paths the change alters in `{target_path}` for state that is created and must be reclaimed, agreement between nodes, authority checks, and data that must survive an upgrade.
 
 ### 2. Weigh the Signals
@@ -32,7 +32,5 @@ One or two sentences that open with the recommendation — run the full pipeline
   > - The change alters a path that creates state, reaches agreement between nodes, checks authority, or persists data across an upgrade.
   > - The change reaches more than one functional area.
 - Recommend the inline pass where neither holds.
-
-### 3. State the Recommendation
-
-- Write `{prism_value_assessment}` for the recommendation and the signal that decided it.
+- Name what the adversarial pass would contest and the synthesis pass would reconcile in the paths the deciding signal names, or that neither has a path to work on.
+- Emit `{prism_value_assessment}`.

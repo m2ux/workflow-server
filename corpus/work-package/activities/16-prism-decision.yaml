@@ -1,5 +1,5 @@
 id: prism-decision
-version: 1.0.0
+version: 1.0.1
 name: Prism Decision
 description: Settle whether the change takes the full prism pipeline or the single inline structural pass.
 variables:
@@ -18,11 +18,11 @@ variables:
   writes:
     - name: changed_files
       type: array
-      description: Ordered list of the paths the change touches.
+      description: Ordered list of changed file paths.
       defaultValue: []
     - name: head_sha
       type: string
-      description: Commit sha at the head of the change's branch.
+      description: Commit sha at the head of the pull request's branch.
       defaultValue: ""
     - name: changed_file_entries
       type: array
@@ -37,7 +37,7 @@ variables:
       defaultValue: single
     - name: prism_value_assessment
       type: string
-      description: The recommendation on the full prism pipeline and the signal that decided it.
+      description: The recommendation on the full prism pipeline, the signal that decided it, and what the full pipeline adds for the change.
       defaultValue: ""
 required: true
 steps:
@@ -47,7 +47,7 @@ steps:
     technique:
       name: git::three-dot-name-status
       inputs:
-        repo_path: target_path
+        repo_path: component_git_dir
         base_ref: default_branch
   - kind: technique
     id: assess
