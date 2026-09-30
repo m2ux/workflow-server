@@ -15,6 +15,10 @@
 		{
 			"name": "🌳 work trees",
 			"path": "./.worktrees"
+		},
+		{
+			"name": "📥 incoming",
+			"path": "/home/mike1/Incoming/"
 		}
 	],
 	"settings": {}
