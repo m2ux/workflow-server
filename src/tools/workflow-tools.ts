@@ -1318,7 +1318,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // T2 has refused a missing exit off an activity that binds a fan, so with no exit named the
         // retiring activity binds none; only a named, undeclared exit leaves a fan to point at.
         const bindings = getExitBindings(result.value, retiring);
-        const fanningExits = bindings.filter((b) => isFan(b.to)).map((b) => `'${b.exit}'`);
+        const fanningExits = exit === undefined ? [] : bindings.filter((b) => isFan(b.to)).map((b) => `'${b.exit}'`);
         const where = exit === undefined
           ? `off '${retiring}' with no 'exit' named`
           : `off '${retiring}' through exit '${exit}', which '${retiring}' does not declare`;
