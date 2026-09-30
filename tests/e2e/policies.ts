@@ -26,8 +26,16 @@ export const baseSimulation: Record<string, Record<string, unknown>> = {
   // Set here rather than on assumptions-review because a simulation applies AFTER the activity's
   // own checkpoints, and the gate that reads it is inside that activity — set on the activity
   // itself, the value arrives one activity too late and only the second host's gate is reached.
-  'plan-prepare': { has_open_assumptions: true },
-  'assumptions-review': { needs_plan_revision: false, needs_further_discussion: false, has_deferred_assumptions: false, has_open_assumptions: true },
+  // A routine that holds the open set as an internal reads it under the materialised name its host
+  // gives it, so each host's gate is simulated under both spellings.
+  'plan-prepare': { has_open_assumptions: true, assumptions_review_settle_assumptions_has_open_assumptions: true },
+  'assumptions-review': {
+    needs_plan_revision: false,
+    needs_further_discussion: false,
+    has_deferred_assumptions: false,
+    has_open_assumptions: true,
+    implement_settle_assumptions_has_open_assumptions: true,
+  },
   // strategic-findings-analysis emits review_passed on the finding-free / minor
   // path (work-package #192): with no findings the review-findings checkpoint
   // auto-dismisses (condition_not_met) and this signal drives the transition to
