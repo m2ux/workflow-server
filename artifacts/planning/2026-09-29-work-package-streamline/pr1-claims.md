@@ -23,7 +23,7 @@ Run record: MCP `http://127.0.0.1:32772/mcp` · image `workflow-server:exp-lean-
 - Requirements elicitation wrote the register with no declared output. It now emits its deferrals and binds the append before the document that points at them.
 - The register guide says the register is unprefixed, while the server offers the activity's `artifact_prefix` and the walk snapshot records a prefixed filename. Pre-existing; carried to PR 3.
 
-## Pre-existing, recorded for follow-up
+## Pre-existing, fixed on #1006
 
 - The strategic-review `finding-categories` rule names three categories; the resource vocabulary names five.
 - The complete activity's `has_unraised_deferred_items` mirrors whether `open_deferred_items` is empty, and it declares `public_api_symbols` twice.
