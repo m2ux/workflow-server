@@ -1,12 +1,11 @@
 id: report-failure
-version: 1.6.1
+version: 1.7.0
 name: Report Failure
 description: Compile a failure report of the issues refinement leaves unresolved, the correction history, and the manual resolution each issue needs.
 variables:
   reads:
     - classified_sources
     - planning_folder_path
-    - spec_basename
     - target_doc_path
     - validation_report_path
   writes:

@@ -1,5 +1,5 @@
 id: intake
-version: 2.2.0
+version: 2.3.0
 name: Intake
 description: Establish the run's readable, classified source documents and its target specification.
 variables:
@@ -27,10 +27,6 @@ variables:
       type: array
       description: Source documents paired with their classifications, each { path, type } where type is meeting or document
       defaultValue: []
-    - name: spec_basename
-      type: string
-      description: Basename of the target specification
-      defaultValue: ""
     - name: target_doc_exists
       type: boolean
       description: True when the target specification already exists and is being augmented; false when it is created from scratch
