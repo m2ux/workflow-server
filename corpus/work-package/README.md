@@ -71,6 +71,7 @@ graph TD
 
     IMP -->|"done"| LCA
     LCA -->|"done"| PD["16 prism-decision"]
+    PD -->|"remeasure"| PD
     PD -->|"done"| PIR["10 post-impl-review"]
     PIR -->|"has-blocker"| IMP
     PIR -->|"done"| VAL["11 validate"]

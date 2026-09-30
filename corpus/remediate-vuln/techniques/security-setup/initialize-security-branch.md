@@ -41,4 +41,4 @@ The private fork's default branch, which the security branch syncs from and merg
 ### 3. Create Security Branch
 
 - Set `{branch_name}` to `` `vuln/remediate-{short_id}` ``.
-- Check out a new local branch named `{branch_name}` off the fetched private-fork ref.
+- Check out a new local branch named `{branch_name}` off `{base_remote}/{default_branch}`.

@@ -144,7 +144,7 @@ variables:
     defaultValue: security
   - name: push_remote
     type: string
-    description: "Git remote for every push (always 'security' here)."
+    description: Git remote for every push.
     defaultValue: security
   - name: squash_merge_supported
     type: boolean

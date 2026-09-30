@@ -9,6 +9,14 @@ Scope-discipline and artifact-hygiene findings across the feature-branch diff fo
 
 ## Inputs
 
+### base_remote
+
+*(optional)* The remote the feature branch is cut from.
+
+### default_branch
+
+*(optional)* The branch on that remote the feature branch is cut from.
+
 ### orphan_candidates
 
 *(optional)* Symbols in the changed files that nothing references — over-engineering and dead-code candidates for user decision.

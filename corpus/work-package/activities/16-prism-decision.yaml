@@ -77,7 +77,7 @@ steps:
             pipeline_mode: full-prism
       - id: measure-again
         label: Measure the change again
-        description: The branch does not yet carry the change; measure it once it does
+        description: The change is measured again once the branch carries it
         effect:
           exit: remeasure
       - id: use-inline-pass

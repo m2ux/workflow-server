@@ -90,7 +90,7 @@ Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
 ### Prism Decision
 
-Settles which structural analysis post-implementation review runs — the full prism pipeline or the single inline pass — on an assessed recommendation where the change is complex. Leads to post-impl-review.
+Settles which structural analysis post-implementation review runs — the full prism pipeline or the single inline pass — on an assessed recommendation where the change is complex. Leads to post-impl-review, or measures the change again.
 
 Definition: [`16-prism-decision.yaml`](./16-prism-decision.yaml)
 
