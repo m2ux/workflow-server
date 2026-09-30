@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.13.0
+version: 1.14.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 variables:
@@ -46,6 +46,9 @@ variables:
       type: boolean
       description: "In review mode: whether the user confirmed the audit target set in intake."
       defaultValue: false
+    - name: review_target_correction
+      type: string
+      description: Text the user typed naming the workflows to audit in place of the classified target set.
     - name: schema_constructs_confirmed
       type: boolean
       description: Whether applicable schema constructs have been identified and confirmed.
@@ -108,8 +111,9 @@ steps:
             intent_needs_confirmation: false
       - id: wrong-review-target
         label: Wrong review target set
-        description: Rejects the review target set.
+        description: The reply names the workflows to audit in place of the classified target set.
         effect:
+          recordReply: review_target_correction
           setVariable:
             review_scope_confirmed: false
             intent_needs_confirmation: true

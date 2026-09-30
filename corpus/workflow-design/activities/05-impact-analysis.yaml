@@ -1,5 +1,5 @@
 id: impact-analysis
-version: 1.9.0
+version: 1.10.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, exits and graph, and references.
 variables:
@@ -15,6 +15,9 @@ variables:
       type: string
       description: Absolute path to the persisted impact-analysis artifact.
       defaultValue: ""
+    - name: impact_correction
+      type: string
+      description: Text the reader typed to correct the impact scope — a file misclassified, an affected file the analysis omits, or one it wrongly includes.
     - name: preservation_required
       type: boolean
       description: Whether the reader asked for flagged content to survive the change.
@@ -64,8 +67,9 @@ steps:
             preservation_required: false
       - id: revise-impact
         label: Revise impact scope
-        description: Impact scope is incomplete or over-inclusive.
+        description: The reply names what to correct in the impact scope — a file misclassified, an affected file the analysis omits, or one it wrongly includes.
         effect:
+          recordReply: impact_correction
           exit: revise
       - id: preserve
         label: Preserve some flagged content
@@ -80,4 +84,5 @@ exits:
 outcome:
   - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
   - Exit bindings and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
+  - A correction the reader types reaches the next impact pass as recorded text, over the classification already settled
   - No content disappears by accident — every flagged removal is one the user consciously approved (or there were none)

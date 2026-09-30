@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The update specification: the changed design dimensions the change makes to the 
 ### structural_inventory
 
 Baseline structural inventory of the target workflow: file counts, entity counts, step kinds and activity ids in order.
+
+### impact_correction
+
+*(optional)* Text the reader typed to correct the impact scope — a file misclassified, an affected file the analysis omits, or one it wrongly includes. Unset until a correction is given.
 
 ## Outputs
 
@@ -45,6 +49,7 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 - Classify each file as unaffected, directly modified (the change explicitly affects it), indirectly affected (a side-effect such as an exit the graph no longer binds), or removed (the change makes it obsolete), with justification
 - Trace the side-effects each change class in `{accumulated_design}` implies: adding an activity may need new graph bindings upstream, techniques, or resources; removing one breaks the graph bindings that lead into it and may orphan techniques; renaming an activity id breaks every graph binding naming it and `initialActivity`; adding a checkpoint may need new variables; modifying checkpoint options may invalidate downstream conditions; adding or removing a mode affects the mode variable and every gate that branches on it; changing a variable's type affects all conditions comparing it
+- When `{impact_correction}` is bound, apply it over the classification: a file it names takes the classification it gives, a file it adds is classified, and a file it excludes is marked unaffected
 
 ### 3. Check Exit Integrity
 
