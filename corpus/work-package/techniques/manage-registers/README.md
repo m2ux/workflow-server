@@ -2,7 +2,7 @@
 
 > Part of [techniques](../README.md)
 
-Shared contract for the work package's two open-work registers — the single home each keeps for its class of outstanding item, and the one-entry-per-item discipline both follow.
+Shared contract for the work package's two open-work registers — the single home each keeps for its class of outstanding item, one entry per item.
 
 The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 

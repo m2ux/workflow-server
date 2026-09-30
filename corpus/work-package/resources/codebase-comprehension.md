@@ -2,7 +2,7 @@
 name: codebase-comprehension
 description: Comprehension techniques, corpus and log artifact templates, promotion criteria, and deep-dive guidance from reverse engineering and code forensics literature.
 metadata:
-  version: 2.0.1
+  version: 2.0.2
   order: 25
   legacy_id: 25
 ---
@@ -237,7 +237,7 @@ Paragraph prose names code per [Prose](/meta/resources/writing-register.md#prose
 
 ### role-columns-in-prose
 
-Tables carry identifiers generally, under `prose-over-symbols`; a column describing what something is *for* is the exception and carries prose. Parameter lists, field names and variant names belong to the definition the row links to.
+Tables carry identifiers generally, under `prose-over-symbols`; a column describing what something is *for* carries prose, the one exception this artifact takes to the writing register's no-prose-in-a-cell. Parameter lists, field names and variant names belong to the definition the row links to.
 
 ### demonstratives-over-counts
 

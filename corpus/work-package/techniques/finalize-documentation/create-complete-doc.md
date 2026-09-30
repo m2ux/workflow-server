@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.4.1
+  version: 1.4.2
 ---
 
 ## Capability
 
-Work package's single terminal close-out artifact — delivered work, coverage, limitations, and pointers to the registers that hold open work; retrospective inlined by conduct-retrospective, else link-only to canonical homes.
+Work package's single terminal close-out artifact — delivered work, coverage, limitations, and the open work its registers hold; retrospective inlined by conduct-retrospective, else link-only to canonical homes.
 
 ## Inputs
 
@@ -29,7 +29,7 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 ### completion_document
 
-[Close-out summary](../../resources/complete-wp-guide.md#template) of delivered work, test coverage, and pointers to the open-work registers.
+[Close-out summary](../../resources/complete-wp-guide.md#template) of delivered work, test coverage, and the open work its registers hold.
 
 #### artifact
 
@@ -58,9 +58,9 @@ Path to the written close-out document, for user-facing links.
 
 - Record known limitations — this document is their canonical home.
 
-### 4. Link the Open-Work Registers
+### 4. State Open Work
 
-- Read the in-task follow-ups register and the out-of-scope deferred-items register (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, its open entry IDs, and a link to each issue raised from it. Omit the section when neither register exists.
+- Read the in-task follow-ups register and the out-of-scope deferred-items register (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, each open entry's ID and one-line item, and a link to each issue raised from it. Omit the section when neither register exists.
    > Work still open at close-out and held by no register entry goes to the register that owns it first — in-task to follow-ups, out-of-scope to deferred-items, creating that register when this is its first entry — and Open Work counts it like any other. Writing it into the close-out instead is the second home the guide forbids, and it is the one place where the alternative to a register entry is silence.
 
 ### 5. Link the Cost and the Verdict

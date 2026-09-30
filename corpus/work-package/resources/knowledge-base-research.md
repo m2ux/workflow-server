@@ -2,7 +2,7 @@
 name: knowledge-base-research
 description: Research findings template and citation rules — knowledge-base and web findings in one list, each linked to its source.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 7
   legacy_id: 7
 ---
@@ -48,7 +48,8 @@ Before designing a solution, research the knowledge base and the web to surface 
 
 ## Rules
 
-- **A finding links its source in its own sentence**, per [Links](/meta/resources/writing-register.md#links), and states how it applies to this work package ("API is 90% reads → write-behind cache with periodic flush"), not generic advice ("we should probably use caching").
+- **A finding links its source in its own sentence.**
+- **A finding states how it applies to this work package** ("API is 90% reads → write-behind cache with periodic flush"), not generic advice ("we should probably use caching").
 - **Knowledge-base and web findings share one list.** A web source that confirms a knowledge-base finding adds its link to that finding; one that contradicts or extends it says so on that finding.
 - **Quote the specific recommendation**, not a paraphrase, when the wording carries the decision criteria.
 - **Every finding carries a confidence** — HIGH, MEDIUM or LOW.

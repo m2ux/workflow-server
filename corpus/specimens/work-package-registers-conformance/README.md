@@ -9,4 +9,4 @@ The techniques are the work-package deferred-items register's: appending deferra
 | `negative-case` | `work-package::raise-deferred-items::collect` | no register |
 | `record-deferrals` | `work-package::manage-registers::append-deferred-item`, `work-package::raise-deferred-items::record` | two deferrals, the first raised |
 | `positive-case` | `work-package::raise-deferred-items::collect` | a register holding one raised and one unraised entry |
-| `report-cases` | nothing — states what each collection landed | |
+| `report-cases` | nothing — reports what each collection landed against the shared [case report](/conformance/resources/case-report.md) guide | |

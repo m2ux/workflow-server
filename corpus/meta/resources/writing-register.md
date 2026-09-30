@@ -27,11 +27,10 @@ A table is the right form for enumerable facts: one row per item, the same field
 - **Few columns.** A column earns its width by being compared across rows. A column whose cells all carry the same value, or that one row alone populates, is a sentence beneath the table.
 - **No prose inside a cell.** A cell holds a value, a short label, or a link. Sentences in a cell make a section wearing a table's clothes, and the row grid stops helping anyone read it.
 - **No table where a sentence does the job.** Two rows carrying one field each is a sentence.
-- **No URL column.** A table whose column holds addresses is a link list; the link belongs on the value the row names.
+- **No bare-URL column.** A column whose cells show addresses is a link list; the link belongs on the value the row names.
 
 ## Links
 
 A link carries the reader from a name in a sentence to the thing named. A creation guide that prescribes a table's link column states that column's form, and the column follows it.
 
 - **The link text is the name.** The visible words are the thing the sentence is about, placed where the sentence already names it. A bare URL, or link text that is a path, a line coordinate or "here", hands the reader an address in place of a name.
-- **A source sits with its claim.** The link to what supports a statement is in that statement. A trailing Sources or References list separates every claim from its evidence and is read by no one.

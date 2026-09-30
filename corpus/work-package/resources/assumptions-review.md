@@ -2,7 +2,7 @@
 name: assumptions-review
 description: Assumptions log template plus category, risk, and probe vocabulary for filling log rows.
 metadata:
-  version: 5.3.2
+  version: 5.3.3
   order: 13
   legacy_id: 13
 ---
@@ -88,7 +88,7 @@ entry when it resolves — its outcome lives in its Log row. Omit the section wh
 At completion, exception-only: "N assumptions — all validated/confirmed" is one line.
 Add bullets ONLY for corrected, invalidated, or deferred assumptions, plus one takeaway
 line if a pattern emerged. Deferred assumptions are tracked as deferred-items register
-entries — name each entry's ID, don't duplicate it.
+entries — name each entry's ID and one-line item, don't duplicate it.
 ```
 
 ## Trade-off Dimensions

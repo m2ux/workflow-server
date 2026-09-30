@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.1
+  version: 2.0.2
 ---
 
 ## Capability
@@ -32,5 +32,5 @@ The register with each supplied follow-up appended as an entry, or updated in pl
 ### 1. Append the Entries
 
 - For each entry of `{follow_ups}`, write an entry in the shape the [register template](../../resources/follow-ups.md#template) gives, creating the register when this is its first entry
-  > Where an entry for the item already exists, update that entry rather than adding a second, per the group's `one-entry-per-item-updated-in-place`.
+  > Where an entry for the item already exists, update that entry rather than adding a second, per the register's [Rules](../../resources/follow-ups.md#rules).
 - Mark an entry `done` when its work closes, leaving it in place so the record of what was owed survives

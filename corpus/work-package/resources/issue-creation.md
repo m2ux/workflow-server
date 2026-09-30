@@ -2,7 +2,7 @@
 name: issue-creation
 description: Reference material for creating a tracker issue on any platform. Provides the body template, anti-patterns, and section rules.
 metadata:
-  version: 3.0.1
+  version: 3.0.2
   order: 3
   legacy_id: 3
 ---
@@ -87,11 +87,7 @@ Required sections: Problem Statement, Goal, Scope, User Stories. Optional: Succe
 
 ## Constraints
 
-[Omit this section if none. Non-functional requirements that bound the solution space: performance, compatibility, security.]
-
-## References
-
-[Omit this section if none. Relevant external documentation, related issues or discussions.]
+[Omit this section if none. Non-functional requirements that bound the solution space: performance, compatibility, security. Related issues, discussions and external documentation are linked in the sentence that relies on them.]
 ```
 
 ## Section Rules

@@ -2,7 +2,7 @@
 name: test-suite-review
 description: Guidelines for reviewing and evaluating test suites. Covers test quality assessment, coverage analysis, anti-pattern detection, and improvement recommendations.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 17
   legacy_id: 17
 ---
@@ -83,4 +83,4 @@ On a test finding, `Description` opens with an inline link to the test, `Impact`
 
 ## Rules
 
-- **Line budget:** ~30 lines per finding. Coverage figures are stated once, not repeated per finding.
+- **Line budget:** ~30 lines per finding. A coverage figure is stated once, on the finding it supports.

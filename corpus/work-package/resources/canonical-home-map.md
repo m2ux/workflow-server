@@ -2,7 +2,7 @@
 name: canonical-home-map
 description: The one artifact that homes each shared fact category, and the link-only slot rule every other template follows.
 metadata:
-  version: 1.0.1
+  version: 1.0.2
 ---
 
 # Canonical Home Map
@@ -30,4 +30,4 @@ The canonical home for each shared fact category.
 
 ### link-only-slots
 
-A template carries a link-only slot for every fact category it does not home: a markdown link to the canonical home plus at most one line. Where that home is agent-audience state, the slot names the entries' IDs in place of the link. Restating homed content in such a slot is a conformance violation, whether or not the restatement is accurate.
+A template carries a link-only slot for every fact category it does not home: a markdown link to the canonical home plus at most one line. Where that home is agent-audience state, the slot names each entry by its ID and its one-line item in place of the link. Restating homed content in such a slot is a conformance violation, whether or not the restatement is accurate.

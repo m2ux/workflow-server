@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.2.2
 ---
 
 ## Capability
@@ -46,7 +46,7 @@ Directory holding the project's ADR files
 ### 2. Gather Context
 
 - Read the `{design_philosophy_doc}` for the problem the decision answers.
-- Review the plan and the implementation analysis in `{planning_folder_path}` for the architectural choices, their rationale and their trade-offs
+- Review the plan in `{planning_folder_path}` for the architectural choices, their rationale and their trade-offs
 - Identify alternatives that were considered and rejected
 
 ### 3. Write Adr

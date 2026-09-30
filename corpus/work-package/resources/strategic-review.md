@@ -2,7 +2,7 @@
 name: strategic-review
 description: Strategic review artifact template for speculative-change, over-engineering, and orphaned-infrastructure findings.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 18
   legacy_id: 18
 ---
@@ -86,7 +86,7 @@ A changes fragment carries a GitHub issue reference, and the project's check-cha
 
 | Cleanup | Commit |
 |---------|--------|
-| [what was removed or simplified, in a sentence] | [hash] |
+| [what was removed or simplified, as a short label] | [hash] |
 ```
 
 ## Rules

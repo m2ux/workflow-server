@@ -2,7 +2,7 @@
 name: pr-review-response
 description: Response format and review-document templates for PR review responses.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 28
   legacy_id: 28
 ---
@@ -42,7 +42,7 @@ The analysis of one review round. Each comment entry takes the [Response Format 
 
 ## Changes Made
 
-- **[concern]** — [what the change makes true], in [short-sha](commit-url)
+- **[concern]** — [what the change makes true], in [the commit subject](commit-url)
 
 ## Re-review Decision
 

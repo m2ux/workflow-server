@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.1
+  version: 2.0.2
 ---
 
 ## Capability
@@ -37,5 +37,5 @@ The register with each supplied deferral appended as an entry, or updated in pla
 
 - Assemble the deferrals this pass contributes: every entry of `{deferred_items}`, plus every `{assumptions_log}` row whose Outcome is Deferred
 - Write each as an entry in the shape the [register template](../../resources/deferred-items.md#template) gives, creating the register when this is its first entry
-  > Where an entry for the item already exists, update that entry rather than adding a second, per the group's `one-entry-per-item-updated-in-place`.
+  > Where an entry for the item already exists, update that entry rather than adding a second, per the register's [Rules](../../resources/deferred-items.md#rules).
 - Leave `issue` null until an issue is raised for the entry, which is what marks it as still unraised

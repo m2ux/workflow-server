@@ -1,24 +1,18 @@
 id: report-cases
-version: 1.0.0
+version: 1.1.0
 name: Report Cases
 description: State what each collection landed.
 variables:
   reads:
-    - deferred_items_register
     - negative_has_unraised
     - negative_open_items
     - positive_has_unraised
     - positive_open_items
 required: true
 steps:
-  - kind: action
+  - kind: technique
     id: report
-    actions:
-      - action: message
-        message: |-
-          **Negative case** (no register): unraised {negative_has_unraised}, collected {negative_open_items}.
-
-          **Positive case** ([deferred-items register]({deferred_items_register})): unraised {positive_has_unraised}, collected {positive_open_items}.
+    technique: report-cases
 exits:
   - id: reported
     isDefault: true
