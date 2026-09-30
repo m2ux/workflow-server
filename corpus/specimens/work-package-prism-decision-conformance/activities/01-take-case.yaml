@@ -1,5 +1,5 @@
 id: take-case
-version: 1.0.0
+version: 1.0.1
 name: Take Case
 description: Bind the next fixture case — an implementation run, then a review run, over one complex change.
 variables:
@@ -24,19 +24,6 @@ variables:
 required: true
 steps:
   - kind: action
-    id: take-implementation-case
-    when: case_index == 0
-    actions:
-      - action: set
-        target: problem_complexity
-        value: complex
-      - action: set
-        target: is_review_mode
-        value: false
-      - action: set
-        target: case_index
-        value: 1
-  - kind: action
     id: take-review-case
     when: case_index == 1
     actions:
@@ -49,6 +36,19 @@ steps:
       - action: set
         target: case_index
         value: 2
+  - kind: action
+    id: take-implementation-case
+    when: case_index == 0
+    actions:
+      - action: set
+        target: problem_complexity
+        value: complex
+      - action: set
+        target: is_review_mode
+        value: false
+      - action: set
+        target: case_index
+        value: 1
 exits:
   - id: taken
     isDefault: true
