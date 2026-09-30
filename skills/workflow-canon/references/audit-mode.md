@@ -1,6 +1,6 @@
 # Audit mode
 
-Reviews existing definitions: enumerates the units, walks them over the surface, attributes each finding, verifies the Highs, and reports. Each confirmed finding goes to [Implement](implement-mode.md) to be fixed.
+Reviews existing definitions: enumerates the units, walks them over the surface, attributes each finding, verifies the Highs, and reports. Each confirmed finding goes to [Author](author-mode.md) to be fixed.
 
 ## Procedure
 

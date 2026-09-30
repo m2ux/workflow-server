@@ -1,6 +1,6 @@
 ---
 name: workflow-canon
-description: "Applies the workflow-server design canon (principles, anti-patterns, conventions, guards) to workflow definitions: workflows, activities, techniques and resources. Use to draft one (\"write a new activity\", \"author a technique\"), make a specified change (\"apply this finding\", \"fix this defect in workflow X\"), audit (\"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\"), or revise this skill (\"update the workflow-canon skill\"). Also for one canon question (\"why is this an anti-pattern?\") and before committing definition changes."
+description: "Applies the workflow-server design canon (principles, anti-patterns, conventions, guards) to workflow definitions: workflows, activities, techniques and resources. Use to author a definition or a change to one (\"write a new activity\", \"apply this finding\", \"fix this defect in workflow X\"), audit (\"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\"), or revise this skill (\"update the workflow-canon skill\"). Also for one canon question (\"why is this an anti-pattern?\") and before committing definition changes."
 ---
 
 # Workflow Canon
@@ -33,11 +33,8 @@ Workflow Canon locates the canon's homes, enumerates their units, walks them ove
 
 Read the file for the mode the request calls for:
 
-- **[Draft](references/draft-mode.md)**
-  - Authoring a definition from scratch
-  - A self-check against the units that bind each file kind
-- **[Implement](references/implement-mode.md)**
-  - A specified change: a work item, a finding, or a defect with a location
+- **[Author](references/author-mode.md)**
+  - New definitions, and specified changes: a work item, a finding, or a defect with a location
   - Closing a confirmed finding with the Fix its entry states
   - A walk of the draft before it is written, and an audit of each touched file after
 - **[Audit](references/audit-mode.md)**
