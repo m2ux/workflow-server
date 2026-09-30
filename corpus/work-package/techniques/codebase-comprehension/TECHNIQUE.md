@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.2
+  version: 2.1.3
 ---
 
 ## Capability
@@ -66,6 +66,3 @@ Prioritize areas relevant to the current problem statement while still building 
 
 Cross-reference related comprehension artifacts and note dependencies between codebase areas
 
-### question-driven-exploration
-
-The log's open questions are the primary input for selecting deep-dive areas. Where open questions exist, they are the default selection for the next deep dive, ahead of new candidate areas.

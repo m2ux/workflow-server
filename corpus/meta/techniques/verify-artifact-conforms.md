@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.6.1
 ---
 
 ## Capability
@@ -73,15 +73,15 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 ### only-what-this-run-wrote
 
-Measure the human-audience artifacts this run persisted, and nothing else in the directory. Three exclusions carry the weight. A caller whose artifact directory is a checkout, a code path, or any folder it shares with content the run did not write would otherwise have unrelated files measured against guides they were never written to, and corrected in place against them. An agent-audience artifact is structured data whose conformance is its declared schema — a template and a line budget say nothing about it, so measuring one against them reports noise and correcting one against them corrupts it. And a folder holding a child run's own output belongs to that run: the child's workflow declares the guides its artifacts follow and binds its own conformance pass over them, so a caller that descends into one measures another workflow's artifacts against a map that was never written for them.
+Measure the human-audience artifacts this run persisted, and nothing else in the directory. Three things stay unmeasured: a file the run did not write, an agent-audience artifact, whose conformance is its declared schema, and a folder holding a child run's own output, whose workflow binds its own conformance pass.
 
 ### guide-is-the-standard
 
-An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, the artifact is unmeasured and the missing mapping is what gets reported — a claim about the folder's map, not about the artifact's shape. Keeping the two apart matters because they are cleared by different people: a violation is a defect in a file the run can correct, and a gap in the map is a definition edit no amount of rework inside the run reaches.
+An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, the artifact is unmeasured and the missing mapping is reported as a gap in the map, not as a violation in the artifact.
 
 ### published-contracts-are-reported
 
-An artifact under a published contract is measured and reported, never rewritten. Its declaration or its guide says so: the bytes are posted or delivered verbatim, or a consumer outside this run parses the file. Rewriting one breaks a promise the producing step made — condensing prose renumbers sections a split step already fixed, and collapsing a table removes a field a triggering workflow reads. Record each violation with `fixed` false and leave the file, so the producing step's own guide is where the shape gets corrected.
+An artifact under a published contract is measured and reported, never rewritten. Its declaration or its guide says so: the bytes are posted or delivered verbatim, or a consumer outside this run parses the file. Record each violation with `fixed` false and leave the file.
 
 ### maps-come-from-the-caller
 

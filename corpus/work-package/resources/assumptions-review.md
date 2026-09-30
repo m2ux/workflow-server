@@ -2,7 +2,7 @@
 name: assumptions-review
 description: Assumptions log template plus category, risk, and probe vocabulary for filling log rows.
 metadata:
-  version: 5.3.3
+  version: 5.3.4
   order: 13
   legacy_id: 13
 ---
@@ -35,7 +35,7 @@ Common origins of false assumptions: missing/stale information, conditions that 
 - **Document confirmations, not just corrections** — the audit trail explains decisions to future maintainers.
 - **Update the row when the resolution happens** — assumptions are harder to recall accurately later.
 - **Record trade-offs for architectural assumptions** — the alternatives considered and why one was chosen (this feeds the open-assumption decision space).
-- **One row per assumption** (state-once-per-artifact): no separate surfaced/response/outcome sections, no per-phase count tables, no closing recap. The table IS the record.
+- **One row per assumption** (`manage-artifacts.state-once-per-artifact`): no separate surfaced/response/outcome sections, no per-phase count tables, no closing recap. The table IS the record.
 - **Null row format**: a phase with no significant assumptions gets one row — `— | [Phase] | — | — | No significant assumptions ([reason]) | — | —`.
 
 ## Assumptions Log Template

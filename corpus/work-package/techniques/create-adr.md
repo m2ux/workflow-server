@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.2
+  version: 1.2.3
 ---
 
 ## Capability
@@ -51,5 +51,5 @@ Directory holding the project's ADR files
 
 ### 3. Write Adr
 
-- Write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), deriving `{$decision_title}` as a slugified short title of the decision
+- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules)
 

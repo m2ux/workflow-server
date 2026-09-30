@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.1.1
+  version: 2.1.2
 ---
 
 ## Capability
 
-The authoritative open questions on the comprehension log after a deep-dive.
+The authoritative open questions on the comprehension log.
 
 ## Inputs
 

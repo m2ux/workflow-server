@@ -2,7 +2,7 @@
 name: codebase-comprehension
 description: Comprehension techniques, corpus and log artifact templates, promotion criteria, and deep-dive guidance from reverse engineering and code forensics literature.
 metadata:
-  version: 2.0.2
+  version: 2.0.3
   order: 25
   legacy_id: 25
 ---
@@ -188,7 +188,7 @@ The session-local record: the questions this pass asked, the investigations that
   "area": "the codebase area",
   "coverage": "what was read, at which revision",
   "open_questions": [
-    { "id": "Q-1", "question": "…", "status": "open", "resolution": null, "answered_by": null }
+    { "id": "Q-1", "question": "…", "status": "open", "classification": "agent-resolvable", "resolution": null, "answered_by": null }
   ],
   "deep_dives": [
     {
@@ -210,7 +210,7 @@ The session-local record: the questions this pass asked, the investigations that
 }
 ```
 
-A resolved question carries its one-line `resolution` and the `id` of the deep dive that answered it in `answered_by`.
+An open question's `classification` is `agent-resolvable`, `stakeholder` or `irreducible`. A resolved question carries its one-line `resolution` and the `id` of the deep dive that answered it in `answered_by`.
 
 ## Promotion
 
