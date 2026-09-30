@@ -19,6 +19,15 @@ Workflow Canon locates the canon's homes, enumerates their units, walks them ove
 [guards]: https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts
 [schemas]: https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md
 
+## Terms
+
+- **Unit**  One heading of a home, at the level the [unit inventory](references/canon-map.md#unit-inventory) names.
+- **Entry**
+  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.
+- **Walk**  Applying each unit to every file on the surface, and recording its status.
+- **Change surface**
+  The touched files and their closure, as Audit's [Scope](references/audit-mode.md#scope) defines them.
+
 ## Modes
 
 Read the file for the mode the request calls for:
@@ -49,20 +58,12 @@ Read the file for the mode the request calls for:
   The guards and the schema fields, found with [Find the server checkout](references/commands.md#find-the-server-checkout).
 - **Corpus tree.**
   The canon, ledgers, and walk artifacts, a `workflows` worktree found with [Check the corpus tree](references/commands.md#check-the-corpus-tree).
-- **Branches.**
-  - A schema-reading guard failing on the corpus branch may be reading a field the code branch has not merged. That clears on the code merge.
-  - Establish which before recording a corpus defect.
-- **Principle citations.**
-  Cite a principle by the title its file uses. An anchor that embeds the section ordinal breaks when a principle is inserted ahead of it.
-- **Canon map.**
-  [Canon map](references/canon-map.md) states how each home is enumerated, and where a judgement already made is recorded. Read it before the first fetch.
 
 ## Dependencies
 
 - **git.**  For the base ref, the diff, and the merge-base a delta run measures against.
 - **Node and npm.**  In the server checkout, for the guard suite and the option-coverage walk.
-- **Corpus worktree.**
-  Present with its canon, as [Check the corpus tree](references/commands.md#check-the-corpus-tree) confirms.
+- **Corpus worktree.**  For the prose homes, as [Homes](#homes) locates it.
 - **The server's AGENTS.md.**
   It owns the check commands, the worktree a run measures, and binding-fidelity triage.
 - **workflow-server MCP.**  For fetching a canon section inside a workflow session.
@@ -72,10 +73,11 @@ Read the file for the mode the request calls for:
 - **Homes own the criteria.**
   - Follow each home as its own overview and entries are written. This skill does not restate them.
   - Fetch the section and follow it. Notes taken from a section are not the section.
+- **Canon map.**
+  Read the [canon map](references/canon-map.md) before the first fetch: how each home is enumerated, and where a judgement already made is recorded.
 - **One question.**
   A single question about the canon takes no mode: fetch that entry, answer, and stop.
 - **Walks.**  Every walk of the canon's units follows the [walk rules](references/walk-rules.md).
-- **Mechanical checks.**
-  Every mode that saves or commits a definition runs the checks in [commands.md](references/commands.md), under its shared conventions.
-- **Reports.**
-  Bands, severity, row shapes and report layouts are in [Reporting](references/reporting.md).
+- **Commands.**
+  Every spec runs under the shared conventions at the top of [commands.md](references/commands.md).
+- **Commit gate.**  A definition change takes an [Audit](references/audit-mode.md) before it commits.

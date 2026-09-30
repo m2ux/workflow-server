@@ -32,7 +32,7 @@ A guard that exits 2 has not measured: `blocked`, not a pass.
 | ID | Stable within the report |
 | Band | `Live`, `Contract`, or `Hygiene` |
 | Severity | The scale above |
-| Entry | As the catalog's entry-identity rule states |
+| Entry | As the catalog's entry-identity rule states. A principle by the title its file uses: an anchor that embeds the section ordinal breaks when a principle is inserted ahead of it |
 | Location | File and field, at the depth the evidence sits |
 | Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |
 | Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |

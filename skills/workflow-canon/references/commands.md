@@ -92,7 +92,9 @@ grep -rn "work-package/" corpus/ --include=*.md --include=*.yaml
 
 Runs the guard registry, or a named subset.
 
-- **Failures.**  Every failure is `Critical`. Exit 2 is `blocked`.
+- **Failures.**
+  - Every failure is `Critical`. Exit 2 is `blocked`.
+  - A schema-reading guard failing on the corpus branch may be reading a field the code branch has not merged. That clears on the code merge. Establish which before recording a corpus defect.
 - **Binding fidelity.**
   - It exits `OK` while carrying triaged debt, stamped with the corpus commit.
   - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.
