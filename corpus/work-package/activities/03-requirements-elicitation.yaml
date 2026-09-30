@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.13.0
+version: 2.13.1
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 variables:

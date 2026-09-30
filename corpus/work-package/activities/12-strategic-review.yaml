@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.23.0
+version: 2.23.1
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:

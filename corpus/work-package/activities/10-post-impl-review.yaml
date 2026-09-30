@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.3.0
+version: 2.3.1
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
