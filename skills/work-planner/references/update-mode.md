@@ -52,9 +52,8 @@ Records delivered work on an initiative, its epics and their task issues: links 
 12. **Update the board.**
     Update it once every issue is patched and closed, fetching the issues again first.
     - **Find it.**
-      - [List boards](commands.md#list-boards), run [Fetch board items](commands.md#fetch-board-items) for each, and run [Find board](commands.md#find-board).
-      - The one board holding the initiative is its board.
-      - When none or several do, ask the user which board, or none; the first update puts the initiative on the board chosen, so the next search finds it.
+      - The board is the initiative's theme board, per SKILL.md's [Themes and boards](../SKILL.md#themes-and-boards): run [Find theme board](commands.md#find-theme-board) with its title.
+      - When no open board carries that title, ask the user to create it, and update the board once it exists.
     - **Plan.**
       - Run [Fetch board fields](commands.md#fetch-board-fields) and [Find Status field](commands.md#find-status-field), then [Fetch board items with Status](commands.md#fetch-board-items-with-status).
       - Run [Plan board changes](commands.md#plan-board-changes), which prints the call for each change.

@@ -2,7 +2,7 @@
 name: work-planner
 description: >-
   Plans and maintains agent-engineering work on GitHub: [Ixx] initiative issues, their [Ixx:Eyy]
-  epics and [Ixx:Eyy:Wzz] tasks, and the initiative's project board. Use to plan the work, plan out,
+  epics and [Ixx:Eyy:Wzz] tasks, and each theme's project board. Use to plan the work, plan out,
   scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure,
   review or renumber an initiative or epic; to check an issue's format or dependency order; to fold
   review findings into issues; to update an initiative or epic with completed work; to hoist or
@@ -19,7 +19,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
 - **Task**  One pull request's worth of work.
 - **Standalone issue**  Work outside any initiative.
 
-The project board shows where each item stands. A planning record holds what the issues leave out: the evidence, the decisions and each review.
+Each theme's project board shows where its items stand. A planning record holds what the issues leave out: the evidence, the decisions and each review.
 
 ## Modes
 
@@ -45,7 +45,7 @@ Read the file for the mode the request calls for:
   - Migration or subsumption of the orphans the user places
   - Formatting of orphans with target's rules and deprecating body
 - **[Progress](references/progress-mode.md)**
-  - Standup summaries of the project board for a Slack channel
+  - Standup summaries of a theme's board for a Slack channel
   - A paragraph for management on what the window accomplished
   - What completed, what is in progress and what is next
 - **[Revise](references/revise-mode.md)**
@@ -59,7 +59,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 | Level | Title | Labels |
 | --- | --- | --- |
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
-| Epic | `[I07:E00] Name: Subtitle` | `type:epic`, a `theme:*` |
+| Epic | `[I07:E00] Name: Subtitle` | `type:epic`, its initiative's `theme:*` |
 | Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
 | Standalone issue | `Name: Subtitle`, with no prefix | no `type:*` |
 
@@ -99,6 +99,27 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Labels.**
   - Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a `priority: *` as they apply.
   - Only labels that exist, as [List labels](references/commands.md#list-labels) shows.
+
+## Themes and boards
+
+Every initiative belongs to one theme, and each theme has one project board.
+
+| Theme | Label | Covers |
+| --- | --- | --- |
+| Canon | `theme:canon` | What definitions must say, and how they are checked against the design canon |
+| Language | `theme:language` | The definition language: its grammar, constructs and formal rules |
+| Mechanical | `theme:mechanical` | The engine that runs definitions: execution, persistence and walks |
+| Delivery | `theme:delivery` | What reaches agents and hosts: role skills, libraries and delivered content |
+
+- **One theme.**
+  An initiative carries one `theme:*` label, and each of its epics carries the same one.
+- **One board per theme.**
+  - Its title is the repository's name, a colon, and the theme: `workflow-server: Canon`.
+  - It holds the theme's initiatives, their epics and their task issues.
+- **Standalone issues.**  A standalone issue sits on no board.
+- **A new theme.**
+  - It needs its label and its board before an initiative takes it.
+  - The user creates the board as a copy of the Initiative template board in GitHub, since the REST API cannot create one.
 
 ## Dependencies
 
