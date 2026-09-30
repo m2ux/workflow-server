@@ -4,9 +4,11 @@ name: Positive Case
 description: Refer to the index refresh over a tree whose graph is current.
 variables:
   reads:
-    - positive_graph_name
     - host_repo_path
   writes:
+    - name: positive_graph_name
+      type: string
+      description: Name of the graph covering the host repository, which the reads address and the report names as the source of this case's answers.
     - name: repo_name
       type: string
       description: Name of the indexed graph every operation in the run addresses — the graph current with its tree, set before the reads key under it.
@@ -18,13 +20,20 @@ variables:
       description: Whether the graph is behind the tree it was built from.
 required: true
 steps:
+  - kind: routine
+    id: name-current-graph
+    routine: gitnexus::covering-graph
+    with:
+      tree_path: "{host_repo_path}"
+    outputs:
+      repo_name: positive_graph_name
   - kind: action
     id: address-graph
     actions:
       - action: set
         target: repo_name
         value: "{positive_graph_name}"
-        description: The graph the reads address — the one current with the tree it was built from.
+        description: The graph the reads address — the one covering the host repository.
   - kind: routine
     id: refresh-current-tree
     routine: gitnexus::index-refresh
@@ -37,4 +46,5 @@ exits:
   - id: refreshed
     isDefault: true
 outcome:
+  - The case named the graph covering the host repository, or said no indexed graph covers it
   - The run's first read found the graph current with its tree, so no rebuild ran and the stats describe the graph as read

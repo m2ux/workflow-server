@@ -3,7 +3,7 @@ id: gitnexus-tool-surface-conformance
 version: 1.2.0
 title: GitNexus Tool Surface Conformance Workflow
 description: >-
-  Hold the gitnexus tool-surface run to two cases. The positive case names the checkout under work,
+  Hold the gitnexus tool-surface run to two cases. The positive case names the host repository,
   a tree registering MCP tools by calling a method, a shape outside the two the walk records as a
   tool node, so the run names the graph covering it and lands an empty inventory. The negative case
   names the markdown tree the index holds under the docs graph, which carries no tool declarations,
@@ -22,14 +22,13 @@ techniques:
 variables:
   - name: host_repo_path
     type: string
-    description: Absolute path of the checkout under work, which the server seeds when the session opens.
+    description: Absolute path to the host repository the session belongs to.
   - name: repo_name
     type: string
     description: Name of the indexed graph every operation in the run addresses.
-    defaultValue: workflow-server
   - name: docs_graph_name
     type: string
-    description: Registry name of the indexed graph built from a markdown tree with no tool declarations, whose tree the negative case binds, so its inventory is empty.
+    description: Registry name of the indexed graph built from a markdown tree with no tool declarations.
     defaultValue: midnight-docs
 initialActivity: positive-case
 graph:

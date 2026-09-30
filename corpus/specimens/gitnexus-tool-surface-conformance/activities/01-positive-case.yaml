@@ -15,6 +15,13 @@ variables:
 required: true
 steps:
   - kind: routine
+    id: name-host-graph
+    routine: gitnexus::covering-graph
+    with:
+      tree_path: "{host_repo_path}"
+    outputs:
+      repo_name: repo_name
+  - kind: routine
     id: map-declaring-tree
     routine: gitnexus::tool-surface
     with:
@@ -26,4 +33,5 @@ exits:
   - id: mapped
     isDefault: true
 outcome:
+  - The case named the graph covering the host repository, or said no indexed graph covers it
   - The run named the graph covering the tree and landed an empty inventory, the tree registering its tools by calling a method rather than in a shape the walk records as a tool node

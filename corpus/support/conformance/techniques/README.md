@@ -6,7 +6,6 @@ The techniques a specimen applies to set a case up, rather than to measure one. 
 
 | Technique | Does |
 |-----------|------|
-| [`locate-indexed-tree`](locate-indexed-tree.md) | Names the tree an indexed graph was built from, so a case binds a tree the index holds by its registry name |
 | [`prepare-stale-fixture`](prepare-stale-fixture.md) | Stands up a throwaway checkout whose graph trails its working tree, and names the path and the graph a case binds |
 | [`prepare-unbuilt-fixture`](prepare-unbuilt-fixture.md) | Stands up a throwaway checkout carrying source and no graph, and names the path and the graph a case binds |
 

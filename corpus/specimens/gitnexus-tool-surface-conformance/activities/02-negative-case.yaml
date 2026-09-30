@@ -6,9 +6,6 @@ variables:
   reads:
     - docs_graph_name
   writes:
-    - name: graph_inventory
-      type: object
-      description: Every indexed graph with the tree it was built from.
     - name: negative_tree_path
       type: string
       description: Filesystem path of the markdown tree the index holds under the docs graph, which carries no tool declarations.
@@ -20,21 +17,13 @@ variables:
       description: The graph the read addressed, which a report naming this inventory names too.
 required: true
 steps:
-  - kind: technique
-    id: read-inventory
-    technique: gitnexus::resolve-graph
-  - kind: technique
+  - kind: routine
     id: locate-docs-tree
-    technique:
-      name: conformance::locate-indexed-tree
-      inputs:
-        graph_name: docs_graph_name
-      outputs:
-        indexed_tree_path: negative_tree_path
-    actions:
-      - action: validate
-        target: negative_tree_path != ''
-        message: "The index holds no graph named `{docs_graph_name}`, so the negative case has no markdown tree to bind."
+    routine: gitnexus::tree-for-graph
+    with:
+      graph_name: "{docs_graph_name}"
+    outputs:
+      tree_path: negative_tree_path
   - kind: routine
     id: map-markdown-tree
     routine: gitnexus::tool-surface

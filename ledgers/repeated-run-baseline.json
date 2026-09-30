@@ -298,15 +298,6 @@
       ],
       "verdict": "unassigned",
       "rationale": "audit-and-fix-cycle"
-    },
-    {
-      "site": "gitnexus-doc-heading-lookup-conformance/activities/01-positive-case.yaml + gitnexus-doc-reference-surface-conformance/activities/01-positive-case.yaml + gitnexus-tool-surface-conformance/activities/02-negative-case.yaml",
-      "run": [
-        "T:gitnexus::resolve-graph()",
-        "T:conformance::locate-indexed-tree(graph_name)"
-      ],
-      "verdict": "unassigned",
-      "rationale": "locate-a-tree-the-index-holds"
     }
   ]
 }

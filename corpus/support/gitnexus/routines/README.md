@@ -53,6 +53,8 @@ A run lands here rather than in a workflow because its body composes this namesp
 | Routine | Reached for |
 |---------|-------------|
 | [`graph-for-tree`](graph-for-tree.yaml) | The name of a tree's graph, built where the tree has none |
+| [`covering-graph`](covering-graph.yaml) | The name of a tree's graph, where the index already holds one |
+| [`tree-for-graph`](tree-for-graph.yaml) | The tree a named graph was built from, where the index holds that graph |
 | [`index-refresh`](index-refresh.yaml) | A graph current with the tree it was built from |
 | [`roster-refresh`](roster-refresh.yaml) | Every tree a roster names carrying a graph current with it, the checkouts brought to their named revisions first where the caller asks for it |
 | [`component-scan`](component-scan.yaml) | Which components a host declares that the roster of trees to index does not cover, and which roster entries no declared component answers |

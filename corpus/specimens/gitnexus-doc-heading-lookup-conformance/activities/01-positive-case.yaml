@@ -7,9 +7,6 @@ variables:
     - docs_graph_name
     - positive_heading_pattern
   writes:
-    - name: graph_inventory
-      type: object
-      description: Every indexed graph with the tree it was built from.
     - name: docs_tree_path
       type: string
       description: Filesystem path of the documentation tree whose headings both cases read, as the index records it for the docs graph.
@@ -21,21 +18,13 @@ variables:
       description: The graph the search addressed, which a report naming these matches names too.
 required: true
 steps:
-  - kind: technique
-    id: read-inventory
-    technique: gitnexus::resolve-graph
-  - kind: technique
+  - kind: routine
     id: locate-docs-tree
-    technique:
-      name: conformance::locate-indexed-tree
-      inputs:
-        graph_name: docs_graph_name
-      outputs:
-        indexed_tree_path: docs_tree_path
-    actions:
-      - action: validate
-        target: docs_tree_path != ''
-        message: "The index holds no graph named `{docs_graph_name}`, so neither case has a documentation tree to bind."
+    routine: gitnexus::tree-for-graph
+    with:
+      graph_name: "{docs_graph_name}"
+    outputs:
+      tree_path: docs_tree_path
   - kind: routine
     id: find-matching-headings
     routine: gitnexus::doc-heading-lookup

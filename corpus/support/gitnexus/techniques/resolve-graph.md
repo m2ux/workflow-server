@@ -1,23 +1,31 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-Name the indexed graph a technique addresses, and report which graphs and repository groups exist to address.
+Name the indexed graph a technique addresses, or the tree a named graph was built from, and report which graphs and repository groups exist to address.
 
 ## Inputs
 
 ### tree_path
 
-*(optional)* Filesystem path of the tree whose answers are wanted. Absent, the answer is the inventory alone and resolves no particular tree.
+*(optional)* Filesystem path of the tree whose answers are wanted. Absent, the answer resolves no particular tree.
+
+### graph_name
+
+*(optional)* Registry name of the indexed graph whose tree is wanted.
 
 ## Outputs
 
 ### repo_name
 
 The name to give the techniques in this group as their `{repo_name}`. Empty when no indexed graph covers `{tree_path}`.
+
+### indexed_tree_path
+
+Filesystem path of the tree the graph named `{graph_name}` was built from. Empty when no indexed graph carries that name.
 
 ### graph_inventory
 
@@ -30,7 +38,7 @@ Every indexed graph with the tree it was built from, when it was built, the comm
 - Call `gitnexus_list_repos { limit, offset }` for the indexed graphs and `gitnexus_group_list` for the group names, and record the two together as `{graph_inventory}`.
    > The graphs arrive a page at a time, fifty to a page unless `limit` says otherwise, in a stable order. While the page's `pagination.hasMore` is true, call again with `offset` set to its `pagination.nextOffset`; a graph is absent from the inventory only once the last page has been read.
 - Call `gitnexus_group_list { name }` for each group whose members the question reaches, and record them under that group. Called with no name the technique answers with names alone, so an inventory read for a member is read one group at a time.
-  > A group's members are registry names, which address a graph and name no tree. The tree each sits in comes from the indexed-graph half of this inventory, matched on that name.
+  > A group's members are registry names, which address a graph and name no tree. A member's tree is the one Resolve names for it as `{graph_name}`.
 
 ### 2. Resolve
 
@@ -38,3 +46,4 @@ Every indexed graph with the tree it was built from, when it was built, the comm
   > - A graph built from a tree that contains `{tree_path}` covers the content as part of a larger tree. Its name is the address that reaches the content, and every answer it gives spans the whole containing tree.
   > - Where a component's own graph and a containing tree's graph both cover `{tree_path}`, choose on the scope of the question: the component's own graph for a question inside it, the containing tree's for a question that crosses component boundaries.
   > - Where no graph covers `{tree_path}`, `{repo_name}` is empty: the tree carries no index, and no name reaches its content until one is built.
+- Where `{graph_name}` is given, take the tree path the graph of that name was built from as `{indexed_tree_path}`.

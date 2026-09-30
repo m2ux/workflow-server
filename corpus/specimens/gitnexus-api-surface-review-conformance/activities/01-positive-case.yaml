@@ -18,6 +18,13 @@ variables:
 required: true
 steps:
   - kind: routine
+    id: name-host-graph
+    routine: gitnexus::covering-graph
+    with:
+      tree_path: "{host_repo_path}"
+    outputs:
+      repo_name: positive_repo_name
+  - kind: routine
     id: review-served-tree
     routine: gitnexus::api-surface-review
     with:
@@ -30,4 +37,5 @@ exits:
   - id: reviewed
     isDefault: true
 outcome:
+  - The case named the graph covering the host repository, or said no indexed graph covers it
   - The run named the graph covering a tree that serves routes, mapped those routes, and landed an empty shape report, the check covering only routes with a consumer and no route in this tree having one

@@ -1,0 +1,29 @@
+id: tree-for-graph
+version: 1.0.0
+name: Tree For Graph
+description: >-
+  Name the tree an indexed graph was built from, and stop where the index holds no graph by that
+  name.
+
+inputs:
+  - id: graph_name
+    description: Registry name of the indexed graph whose tree is wanted.
+
+outputs:
+  - id: tree_path
+    type: string
+    description: Filesystem path of the tree the graph was built from.
+
+steps:
+  - kind: technique
+    id: resolve
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        graph_name: graph_name
+      outputs:
+        indexed_tree_path: tree_path
+    actions:
+      - action: validate
+        target: tree_path != ''
+        message: "The index holds no graph named `{graph_name}`. Index the tree it names, or name a graph the index holds."
