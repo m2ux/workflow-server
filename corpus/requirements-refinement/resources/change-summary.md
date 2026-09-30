@@ -43,4 +43,5 @@ Canonical target: [canonical target path]
 - **Every change is listed by identifier.** List each new, updated, and deprecated requirement by its identifier.
 - **The validation outcome carries its pass count.** State the outcome, including the number of correction passes when more than zero.
 - **Both paths are named.** Name the staged path and the canonical target path.
-- **Line budget:** ~40 lines. The summary says what changed; the specification says what the requirements are.
+- **The summary says what changed; the specification says what the requirements are.**
+- **Line budget:** ~40 lines.

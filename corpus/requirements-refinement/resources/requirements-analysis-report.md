@@ -49,9 +49,11 @@ One block per source document:
 [Sections that need updating, including one new source reference per source — to 2.2 Meeting Transcripts or 2.5 Reference Documents, as its type directs.]
 
 ## Quality Issues Identified
+[Omit this section if none]
 [Ambiguities, duplications, conflicts, or inconsistencies found.]
 
 ## Implementation Notes
+[Omit this section if none]
 [Additional context for applying the changes to the specification.]
 ```
 
@@ -70,7 +72,7 @@ href fragment. What counts as a normative obligation, and what makes a row a cov
 ## Rules
 
 - **Identifiers are reused where they apply.** Map each change to an existing requirement identifier where one applies; otherwise propose a new identifier within the correct category.
-- **Every source gets its own reference under Document Updates Required.** Assign one per source document and list each in the section [Specification Protocol](./specification-protocol.md#section-structure) names for that source type.
+- **Every source gets its own reference under Document Updates Required.** Assign one per source document and list each in the section [Source Reference Format](./specification-protocol.md#source-reference-format) names for that source type.
 - **A change drawn from several sources cites each of them.** Where two sources bear on one requirement, list both references rather than picking the fuller one.
 - **Each contributing passage names the heading above it.** Record the source identifier and the verbatim heading sitting above that passage — the same string [Source Reference Format](./specification-protocol.md#source-reference-format) uses as the fragment.
 - **Each change is applicable without the sources.** State it precisely enough to be applied without re-reading any source document.

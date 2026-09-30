@@ -30,6 +30,7 @@ Creation guide for bare filename `failure-report.md`. Answers: what remains unre
 ## Rules
 
 - **Every unresolved issue carries a resolution.** An issue listed without the manual step it needs leaves the reader where the run stopped.
-- **Issue IDs carry over.** The IDs are the ones the validation reports assigned. The report links the final validation report rather than restating its findings.
+- **Issue IDs carry over** from the validation reports.
+- **The report links the final validation report for its findings.**
 - **This report states what is still broken.** Which pass tried what belongs to the validation reports.
 - **Line budget:** ~30 lines.

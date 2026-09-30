@@ -21,7 +21,7 @@ Filesystem paths of the source documents being processed, each a meeting transcr
 
 ### source_readable
 
-`true` when `{source_paths}` names at least one document and every document it names exists and carries content; `false` when it names none, or when any of them is missing or empty.
+`true` when `{source_paths}` names at least one document, every document it names exists and carries content, and no two share a file name; `false` otherwise.
 
 ### classified_sources
 

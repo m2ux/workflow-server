@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.5.1
 ---
 
 ## Capability
@@ -33,7 +33,7 @@ Count of correction passes performed so far.
 
 ### specification-protocol-preserved
 
-The [section structure](../resources/specification-protocol.md#section-structure), [requirement-entry format](../resources/specification-protocol.md#requirement-entry-format), [identifier schemes](../resources/specification-protocol.md#identifier-schemes), and [status conventions](../resources/specification-protocol.md#status-conventions) are preserved verbatim.
+The [template](../resources/specification-protocol.md#template), [requirement-entry format](../resources/specification-protocol.md#requirement-entry-format), [identifier schemes](../resources/specification-protocol.md#identifier-schemes), and [status conventions](../resources/specification-protocol.md#status-conventions) are preserved verbatim.
 
 ### artifacts-write-under-planning-folder
 

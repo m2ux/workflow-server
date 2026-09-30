@@ -1,6 +1,6 @@
 ---
 name: specification-protocol
-description: The canonical specification layout preserved verbatim: section structure, identifier schemes, requirement-entry format, status conventions, final specification form, and source-reference format.
+description: The canonical specification layout preserved verbatim: template, identifier schemes, requirement-entry format, status conventions, final specification form, and source-reference format.
 metadata:
   order: 1
 ---
@@ -11,39 +11,22 @@ The canonical layout and conventions a requirements specification follows. This 
 verbatim when augmenting an existing specification, and instantiated in full when creating one from
 scratch.
 
-## Section Structure
-
-A specification is organized into these top-level sections, in order:
-
-1. **Executive Summary** — the purpose of the system. The requirements define its scope, so this section carries no scope statement.
-2. **Requirements Sources** — the documents and discussions requirements derive from:
-   - 2.1 Product and Solution Documents
-   - 2.2 Meeting Transcripts
-   - 2.3 Vendor Documents
-   - 2.4 Source Reference Format
-   - 2.5 Reference Documents
-3. **Use Case Definition** — primary use case, personas, user journey, key success criteria.
-4. **Functional Requirements** — capabilities the system provides, grouped into domain subsections.
-5. **Non-Functional Requirements** — architectural, operational, security, and governance constraints, grouped into subsections.
-6. **Performance Requirements** — throughput, latency, and capacity targets.
-7. **Project and Process Requirements** — delivery, process, and project-level requirements.
-
-Section 2.4 carries the two lines the [Template](#template) gives it, and
-[Source Reference Format](#source-reference-format) holds the full form.
-
-When augmenting, the existing section set and ordering are retained; new material is added under the
-matching section.
-
 ## Template
+
+A specification carries these sections, in this order. When augmenting, the existing section set and
+ordering are retained; new material is added under the matching section. Section 2.4 summarizes the
+citation form [Source Reference Format](#source-reference-format) holds in full.
 
 ```markdown
 # {System name} Requirements Specification
 
 ## 1. Executive Summary
 
-{The purpose of the system.}
+{The purpose of the system. The requirements define its scope, so this section carries no scope statement.}
 
 ## 2. Requirements Sources
+
+{The documents and discussions requirements derive from.}
 
 ### 2.1 Product and Solution Documents
 
@@ -60,13 +43,23 @@ matching section.
 
 ## 3. Use Case Definition
 
+{Primary use case, personas, user journey, key success criteria.}
+
 ## 4. Functional Requirements
+
+{Capabilities the system provides, grouped into domain subsections.}
 
 ## 5. Non-Functional Requirements
 
+{Architectural, operational, security, and governance constraints, grouped into subsections.}
+
 ## 6. Performance Requirements
 
+{Throughput, latency, and capacity targets.}
+
 ## 7. Project and Process Requirements
+
+{Delivery, process, and project-level requirements.}
 ```
 
 ## Identifier Schemes

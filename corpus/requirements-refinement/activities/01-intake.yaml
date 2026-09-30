@@ -11,7 +11,7 @@ variables:
   writes:
     - name: source_paths
       type: array
-      description: Filesystem paths of the local source documents being processed, each a meeting transcript or an unstructured document
+      description: Filesystem paths of the source documents the user named, each a meeting transcript or an unstructured document
     - name: target_doc_path
       type: string
       description: Filesystem path to the canonical requirements specification being augmented or created
@@ -59,7 +59,7 @@ steps:
     when: source_readable == false
     actions:
       - action: message
-        message: "The run has no readable source: a document named for it is missing or empty, or the request names none (sources: {source_paths})."
+        message: "The run has no readable source: a document named for it is missing or empty, two share a file name, or the request names none (sources: {source_paths})."
   - kind: checkpoint
     id: target-doc-named
     when: source_readable == true
@@ -86,13 +86,10 @@ steps:
     id: record-intake
     technique: record-intake
     when: source_readable == true
-    actions:
-      - action: message
-        message: "The source set and the target specification are captured, each source held in the repository with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
   - kind: checkpoint
     id: sources-confirmed
     when: source_readable == true
-    message: "The source set and the [target specification]({target_doc_path}) (target exists: {target_doc_exists}) are captured, each source with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
+    message: "The source set and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured, each source with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
     options:
       - id: confirmed
         label: Yes, proceed
