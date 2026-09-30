@@ -22,7 +22,7 @@ This workspace is tailored towards the use of the Cursor IDE. To use with Claude
 │   ├── fork-workspace.sh          # Create a fork from this checkout
 │   ├── deploy-engineering.sh      # Deploy engineering worktree
 │   ├── add-component.sh           # Add a project component from an external repo
-│   ├── bump-project.sh            # Fast-forward project worktrees
+│   ├── bump-project.sh            # Fast-forward workspace, engineering and project worktrees
 │   ├── update-workspace.sh        # Merge upstream workspace tempate updates into this checkout
 │   ├── submit-upstream.sh         # Raise a pull request to contribute local workspace changes to upstream
 │   └── raise-pr.sh                # Raise a pull request against a local feature worktree
@@ -63,7 +63,7 @@ This workspace is tailored towards the use of the Cursor IDE. To use with Claude
    ```
 > `<repo>` is owner/name or a git URL. The worktree at `.project/<name>` is the local checkout of `<branch>`. `<name>` defaults to `<branch>`. The project folder in the workspace file shows it.
 
-6. Fast-forward every worktree under `.project/` with:
+6. Fast-forward the workspace checkout, `.engineering/` and every worktree under `.project/` with:
 
    ```bash
    ./scripts/bump-project.sh
