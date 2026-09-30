@@ -1,0 +1,4 @@
+# upstream-exclude: fork-local files; submit-upstream.sh leaves their changes out of upstream pull requests.
+/AGENTS.md upstream-exclude
+/config/components.txt upstream-exclude
+/cursor.code-workspace upstream-exclude

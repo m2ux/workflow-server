@@ -5,13 +5,17 @@
 #   ./scripts/submit-upstream.sh
 #
 # origin is this fork. upstream is the template remote fork-workspace.sh keeps.
-# The pull request base is branch workspace on upstream. The head is the
-# current branch, pushed to origin when GitHub records origin as a fork of
-# upstream, and to upstream otherwise. GitHub opens a cross-repository pull
-# request only from a repository in the base repository's fork network.
+# The pull request base is branch workspace on upstream. The head is branch
+# submit/<current>: the current branch's commits replayed onto upstream
+# workspace without the paths .gitattributes marks upstream-exclude. Commits
+# that touch only those paths drop out. The head goes to origin when GitHub
+# records origin as a fork of upstream, and to upstream otherwise. GitHub
+# opens a cross-repository pull request only from a repository in the base
+# repository's fork network.
 set -euo pipefail
 
 UPSTREAM_BRANCH="workspace"
+EXCLUDE_ATTR="upstream-exclude"
 
 die() {
   echo "error: $*" >&2
@@ -50,11 +54,36 @@ git -C "$ROOT" remote get-url origin >/dev/null 2>&1 \
 
 echo "Fetching upstream ${UPSTREAM_BRANCH}"
 git -C "$ROOT" fetch upstream "$UPSTREAM_BRANCH"
-ahead="$(git -C "$ROOT" rev-list --count "upstream/${UPSTREAM_BRANCH}..HEAD")"
-if [[ "$ahead" -eq 0 ]]; then
-  echo "No commits on ${current} beyond upstream/${UPSTREAM_BRANCH}."
+base="upstream/${UPSTREAM_BRANCH}"
+submit="submit/${current}"
+
+excludes=()
+while IFS= read -r path; do
+  excludes+=(":(exclude,literal)${path}")
+done < <(git -C "$ROOT" log --no-merges --no-renames --format= --name-only "${base}..HEAD" \
+  | sort -u \
+  | git -C "$ROOT" check-attr --stdin "$EXCLUDE_ATTR" \
+  | sed -n "s/: ${EXCLUDE_ATTR}: set\$//p")
+
+work="$(mktemp -d)"
+patches="$(mktemp)"
+cleanup() {
+  git -C "$ROOT" worktree remove --force "$work" >/dev/null 2>&1 || rm -rf "$work"
+  rm -f "$patches"
+}
+trap cleanup EXIT
+
+git -C "$ROOT" format-patch --no-renames --stdout "${base}..HEAD" -- . "${excludes[@]}" >"$patches"
+if [[ ! -s "$patches" ]]; then
+  echo "No changes on ${current} beyond ${base} outside ${EXCLUDE_ATTR} paths."
   exit 0
 fi
+
+echo "Building ${submit} from ${base}"
+git -C "$ROOT" worktree add --quiet --detach "$work" "$base"
+git -C "$work" am --quiet --3way --committer-date-is-author-date "$patches" \
+  || die "commits on ${current} do not apply to ${base} without ${EXCLUDE_ATTR} paths; merge ${base} first"
+ahead="$(git -C "$work" rev-list --count "${base}..HEAD")"
 
 upstream_slug="$(github_slug "$(git -C "$ROOT" remote get-url upstream)")"
 origin_slug="$(github_slug "$(git -C "$ROOT" remote get-url origin)")"
@@ -62,19 +91,19 @@ origin_parent="$(gh api --jq '.parent.full_name // ""' "repos/${origin_slug}")"
 if [[ "$origin_parent" == "$upstream_slug" ]]; then
   push_remote="origin"
   head_owner="${origin_slug%%/*}"
-  head="${head_owner}:${current}"
+  head="${head_owner}:${submit}"
 else
   push_remote="upstream"
   head_owner="${upstream_slug%%/*}"
-  head="$current"
+  head="$submit"
 fi
 
-echo "Pushing ${current} → ${push_remote}"
-git -C "$ROOT" push "$push_remote" "$current"
+echo "Pushing ${submit} → ${push_remote}"
+git -C "$work" push --force "$push_remote" "HEAD:refs/heads/${submit}"
 
 existing="$(gh api --method GET --jq '.[0].html_url // ""' \
   "repos/${upstream_slug}/pulls" \
-  -f "head=${head_owner}:${current}" \
+  -f "head=${head_owner}:${submit}" \
   -f "base=${UPSTREAM_BRANCH}" \
   -f state=open)"
 if [[ -n "$existing" ]]; then
@@ -82,11 +111,11 @@ if [[ -n "$existing" ]]; then
   exit 0
 fi
 
-title="$(git -C "$ROOT" log -1 --format='%s' "upstream/${UPSTREAM_BRANCH}..HEAD")"
+title="$(git -C "$work" log -1 --format='%s' "${base}..HEAD")"
 if [[ "$ahead" -gt 1 ]]; then
   title="Update the workspace branch from ${current}."
 fi
-body="$(git -C "$ROOT" log --reverse --format='- %s' "upstream/${UPSTREAM_BRANCH}..HEAD")"
+body="$(git -C "$work" log --reverse --format='- %s' "${base}..HEAD")"
 
 echo "Opening pull request ${head} → ${upstream_slug}:${UPSTREAM_BRANCH}"
 url="$(gh api --method POST --jq .html_url \
