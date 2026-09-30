@@ -35,7 +35,7 @@ A guard that exits 2 has not measured: `blocked`, not a pass.
 | Entry | As the catalog's entry-identity rule states |
 | Location | File and field, at the depth the evidence sits |
 | Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |
-| Origin | `diff` or `pre-existing`, per SKILL.md § Audit → Attribute |
+| Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |
 | Known | Set when a prior pass accepted this key |
 | Fix | The action the entry prescribes, in one line |
 
@@ -68,7 +68,9 @@ List the `unread` paths. The next audit starts there. An existence claim over a 
 
 ## Which report
 
-**Inside workflow-authoring or workflow-design**, that run's guide owns the layout:
+### Inside workflow-authoring or workflow-design
+
+That run's guide owns the layout:
 
 | Artifact | Guide, on the corpus tree |
 |----------|---------------------------|
@@ -78,7 +80,9 @@ List the `unread` paths. The next audit starts there. An existence claim over a 
 
 Fetch the guide's `## Template` and fill it. Persist through the activity's `manage-artifacts::write-artifact` step.
 
-**Standalone** — in the chat, or in a file the user named:
+### Standalone
+
+In the chat, or in a file the user named:
 
 ~~~markdown
 # Canon Audit — `{target}`
