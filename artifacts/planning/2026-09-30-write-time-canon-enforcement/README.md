@@ -30,7 +30,7 @@ A definition change complies with the canon when it is written, so an audit that
 - **G5  The write-time walk uses the list.**
   The Author walk loads only the units listed for the constructs a draft writes, and a full Audit still walks every unit.
 
-Status: **awaiting the user's confirmation of G1–G5.**
+The user confirmed G1–G5 on 2026-09-30.
 
 ## Design
 
@@ -57,16 +57,49 @@ Status: **awaiting the user's confirmation of G1–G5.**
 | D5 | The hook matches `Edit\|Write\|MultiEdit` and exits unless the path is a corpus definition file | Firing on every tool call |
 | D6 | The hook fails only on guard failures the branch introduced, as `check:delta` measures | Failing on any corpus failure, which blocks unrelated edits on a branch with a pre-existing failure |
 | D7 | The hook and the index are one initiative, as separate epics | Two initiatives for one goal |
+| D8 | workflow-canon's frontmatter declares the hook, so it runs only while the skill is active; the skill guidelines admit `hooks` | Workspace settings, with or without a Cursor registration |
+| D9 | The hook runs every corpus guard; selecting guards by file kind is a non-goal | An epic in which each guard declares the kinds it admits |
 
-## Open questions
+## Cross-initiative overlap
 
-- **Q1  Where the hook is declared.**
-  Recommendation: workflow-canon's frontmatter `hooks`, so it runs only during canon work, with a skill-guidelines exception for that field. Alternative: workspace settings, covering every session and Cursor with its own registration.
-- **Q2  Selecting guards by file kind.**
-  Recommendation: a non-goal. Select guards once each declares the kinds it admits; until then run all corpus guards.
-- **Q3  E00's standing.**
-  #1019 merged into its stacked base after that base had merged, so #1021 carries it into `workspace`. E00 is delivered when #1021 merges.
+| I07 issue | Holds | Overlap with this plan |
+| --- | --- | --- |
+| [E02](https://github.com/m2ux/workflow-server/issues/940) W03 | Construct tags on every principle and anti-pattern, and a generated construct index (AC4) | The same work as E02–E05's declarations and index |
+| [E02](https://github.com/m2ux/workflow-server/issues/940) W05 | A guard failing on a construct tag naming no construct (AC5) | The same guard as E02's completeness guard |
+| [E00](https://github.com/m2ux/workflow-server/issues/943) W07 | The canon moves unchanged to the `language` branch | E03 and E04 edit the canon files that move |
+| [E01](https://github.com/m2ux/workflow-server/issues/937) | The formal specification, the source I07 names for constructs | D3 names generated-schema paths as the ids |
+| [E05](https://github.com/m2ux/workflow-server/issues/938) W06 | The `workflow-canon` skill retired, or narrowed to what the workflow-design skill does not hold | E00 and E05 change `workflow-canon` |
+| [E04](https://github.com/m2ux/workflow-server/issues/941) | Draft verification, run by corpus CI before merge | Complementary to E01, which runs at each edit |
+
+The user approved narrowing I07 E02 (D10).
+
+| ID | Decision | Alternatives rejected |
+| --- | --- | --- |
+| D10 | This initiative owns the construct tags, index and their guard; I07 E02 drops its tag task and tag clauses, and depends on this initiative | I07 owning them, with G3–G5 waiting on its chain; folding this initiative into I07 |
+
+## Delivery notes
+
+- **E00.**  #1019 merged into its stacked base after that base had merged; #1021 carried it into `workspace` and delivers E00 W01–W03.
 
 ## Reviews
 
-None yet.
+### Goal pass, drafts, 2026-09-30
+
+| Goal | Initiative criteria | Epics | Epic criteria |
+| --- | --- | --- | --- |
+| G1 | AC1 | E00 | AC1–AC4 |
+| G2 | AC2 | E01 | AC2, AC4–AC6, AC8; AC1 and AC7 enable the declaration |
+| G3 | AC5 | E05 | AC2, AC3 |
+| G4 | AC3, AC4 | E02, E03, E04, E05 | E02 AC1–AC4; E03 AC1, AC2; E04 AC1–AC3; E05 AC1 |
+| G5 | AC6, AC7 | E05 | AC4, AC5 |
+
+| Finding | Severity | Resolution |
+| --- | --- | --- |
+| An initiative criterion on hook scope traced to no clause | Medium | Left to E01 AC3; removed from the initiative |
+| AC1 named a pull request number | Low | Cites the dated audit record as its baseline |
+| The listing criterion restated E05's | Low | Raised to G3's outcome |
+| A guard run that cannot measure would pass the hook silently | High | E01 AC8, delivered by W03, and a fixture case in AC6 |
+| I07 E00 moves the canon to the `language` branch while E03 and E04 edit it | Medium | In-flight threat: each declaration task rebases onto wherever the canon lives when it starts; the move carries content unchanged |
+| E04 AC3 reads E03's ids | Medium | E04 depends on E03 |
+
+Check dependencies over the drafts: no problems, no advisory. Longest chains run six steps, from E02 W01 through E02 W02, an E03 task and an E04 task to E05 W02 and W03.
