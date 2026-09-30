@@ -56,11 +56,11 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 
 | ID | Phase/Task | Category | Risk | Assumption — rationale | Resolution | Outcome |
 |----|------------|----------|------|------------------------|------------|---------|
-| DP-1 | Design Philosophy | Problem Interpretation | M | [Statement] — [why this seemed reasonable] | Code: `src/x.rs:42-58` [finding] | Validated |
+| DP-1 | Design Philosophy | Problem Interpretation | M | [Statement] — [why this seemed reasonable] | Code: [the code, named in words](blob-url#L42-L58) [finding] | Validated |
 | PL-1 | Planning | Design Approach | H | [Statement] — [why] | User interview | Corrected: [what changed] |
 | 1.1 | Task 1 | Behavioral | L | [Statement] — [why] | — | Open ([why stakeholder-dependent]) |
 
-Resolution: how it was settled — `Code:` with file:line evidence, `User` (checkpoint or
+Resolution: how it was settled — `Code:` with the code named and linked to its lines, `User` (checkpoint or
 interview), or `—` while open; implementation-task rows append the commit hash for
 assumption-to-commit traceability. Outcome: Validated / Invalidated / Partially Validated
 (code-resolved) · Confirmed / Corrected: <change> / Deferred: <follow-up> (user-resolved)

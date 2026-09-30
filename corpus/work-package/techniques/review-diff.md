@@ -33,7 +33,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 #### block_rationale
 
-Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices; Block titles link to the primary `file:line`
+Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices; Block titles name each change and link to its primary line
 
 ### reviewed_code_base_url
 

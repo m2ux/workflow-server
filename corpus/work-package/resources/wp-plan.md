@@ -2,7 +2,7 @@
 name: wp-plan
 description: Guidelines for creating the work package plan artifact.
 metadata:
-  version: 1.3.0
+  version: 1.3.1
   order: 10
   legacy_id: 10
 ---
@@ -48,8 +48,8 @@ The work package plan is the detailed implementation specification: enough detai
 ### Task 1: [Name] (X-Y min)
 **Goal:** [Objective]
 **Deliverables:**
-- `src/path/to/component` - Description
-- `tests/...` - Test coverage
+- [The component or behaviour delivered, in words] — [description]
+- [The tests that cover it, in words] — [coverage]
 
 ### Task 2: [Name] (X-Y min)
 [Continue pattern...]
@@ -79,6 +79,6 @@ The work package plan is the detailed implementation specification: enough detai
 - **Problem & Scope, Success Criteria, Testing Strategy, Assumptions** — link-only slots: a markdown link to the canonical home plus at most one line (see the [canonical-home map](./canonical-home-map.md#map)). Restating homed content in these slots is a conformance violation.
 - **Inputs** — one line per consumed artifact, linking the specific section that shaped the approach; never reproduce findings. The plan documents what it *decided*, the inputs document what was *learned*.
 - **Proposed Approach** — the plan's canonical content: describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale so reviewers and implementers can validate or challenge it. Design decisions home here (durable ones graduate to an ADR at completion).
-- **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverable paths and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
+- **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverables and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
 - **Dependencies & Risks** — the planning risk register homes here: list blockers; every risk gets impact, probability, and a mitigation strategy.
 - **Line budget** — 150 lines. A plan over budget is restating homed content or padding; cut before committing.

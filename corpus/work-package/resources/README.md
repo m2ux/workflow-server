@@ -27,7 +27,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective methodology and section template |
 | `complete-wp-guide` | Complete Work Package | Close-out document template and fill rules |
-| `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (`file:line` titles) — the report renders as a code-review.md section |
+| `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (titles naming each change, linked to its line) — the report renders as a code-review.md section |
 | `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact links to |
 | `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |

@@ -125,7 +125,7 @@ steps:
     technique: review-diff
   - kind: checkpoint
     id: file-index-table
-    message: "[Change-block index]({change_block_index}), its block titles linking to file:line."
+    message: "[Change-block index]({change_block_index}), each block title naming its change and linking to it."
     options:
       - id: no-flagged-blocks
         label: No blocks carry an issue
