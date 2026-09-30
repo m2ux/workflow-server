@@ -103,6 +103,7 @@ steps:
         assumptions_log: assumptions_log
       outputs:
         assumptions_log: assumptions_log
+        assumptions_log_path: assumptions_log_path
         has_deferred_assumptions: has_deferred_assumptions
     when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
   - kind: loop
@@ -156,4 +157,5 @@ steps:
             current_assumption: current_assumption
           outputs:
             assumptions_log: assumptions_log
+            assumptions_log_path: assumptions_log_path
             has_deferred_assumptions: has_deferred_assumptions
