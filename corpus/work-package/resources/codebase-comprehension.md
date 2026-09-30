@@ -102,7 +102,7 @@ Lexicon for the code path under study:
   - **Reorganization and rollback**: if an external chain (e.g. Cardano) reorganizes, can the same numeric position appear with a different hash?
 - **Consensus implications**: if every node receives the same input, every node hits the same error — a guard that rejects "invalid" data doesn't protect the system, it halts it. Any assertion in a consensus-critical consumer must be matched by enforcement in the producer; if the producer doesn't guarantee the invariant, the consumer must handle violations without halting.
 
-These concerns belong in the architecture survey and deep dives, not as a separate end step: key abstractions raise "where does this data come from?"; rationale raises "what happens if this fails?"; domain mapping raises "what is the timing relationship with dependencies?". Open Questions of this kind ("Does the producer enforce the window bound?", "What happens at genesis when the previous position is zero?") prevent guards from becoming halt vectors.
+These concerns belong in the architecture survey and deep dives, not as a separate end step: key abstractions raise "where does this data come from?"; rationale raises "what happens if this fails?"; domain mapping raises "what is the timing relationship with dependencies?". Open questions of this kind ("Does the producer enforce the window bound?", "What happens at genesis when the previous position is zero?") prevent guards from becoming halt vectors.
 
 ## Corpus Artifact Template
 
@@ -149,7 +149,7 @@ The durable artifact. It states what is true of the codebase area, in the presen
 
 | Invariant | Producer enforces? | Consumer assumes? | Gap |
 |-----------|-------------------|-------------------|-----|
-| [invariant] | [yes/no — linked to the code] | [yes/no] | [the gap, or —] |
+| [invariant] | [the enforcing check, linked, or no] | [yes/no] | [the gap, or —] |
 
 ### Failure and Bounds
 
@@ -250,10 +250,6 @@ The dependency shape, the entry-point call chain, and each data-flow route carry
 ### present-tense-facts
 
 The corpus artifact states what is, in the present tense. Narrative of how the code came to be this way, and comparison against what it used to do, belong to the change record.
-
-### omit-empty-sections
-
-A section the area gives nothing to say is left out rather than headed and filled with a null.
 
 ### line-budget
 

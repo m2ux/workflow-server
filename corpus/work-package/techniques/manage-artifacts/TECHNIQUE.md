@@ -12,11 +12,11 @@ Shared contract for a workflow's planning-folder artifacts — prefixing, organi
 
 ### single-source-and-link
 
-Every fact has exactly one canonical artifact. When another artifact needs it, link to the canonical home (a markdown link to the file or section) with at most a one-line pointer — never restate the content. An agent-audience home is pointed at by entry ID and one-line item in place of a link. Validation results, findings, decisions, and deferred items are the common offenders: record each once, reference everywhere else.
+Every fact has exactly one canonical artifact. When another artifact needs it, link to the canonical home (a markdown link to the file or section) with at most a one-line pointer — never restate the content, and point at an agent-audience home per `canonical-home-map.link-only-slots`. Validation results, findings, decisions, and deferred items are the common offenders: record each once, reference everywhere else.
 
 ### source-sits-with-its-claim
 
-The link to what supports a statement is in that statement. A work-package artifact carries no trailing Sources or References list, which separates every claim from its evidence.
+The link to what supports a statement is in that statement. A work-package artifact carries no trailing Sources or References list.
 
 ### canonical-home-map
 

@@ -27,7 +27,6 @@ A table is the right form for enumerable facts: one row per item, the same field
 - **Few columns.** A column earns its width by being compared across rows. A column whose cells all carry the same value, or that one row alone populates, is a sentence beneath the table.
 - **No prose inside a cell.** A cell holds a value, a short label, or a link. Sentences in a cell make a section wearing a table's clothes, and the row grid stops helping anyone read it.
 - **No table where a sentence does the job.** Two rows carrying one field each is a sentence.
-- **No bare-URL column.** A column whose cells show addresses is a link list; the link belongs on the value the row names.
 
 ## Links
 

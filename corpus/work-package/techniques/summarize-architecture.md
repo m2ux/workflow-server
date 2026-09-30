@@ -73,7 +73,7 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 
 ### diagrams-required
 
-Every summary must include at least a system context diagram — other diagrams as warranted by change scope
+Every summary includes a system context diagram, and at most one more where the change warrants it, per the guide's Diagram Selection
 
 ### mermaid-format
 

@@ -37,7 +37,7 @@ variables:
       defaultValue: []
     - name: sequence_diagram_source
       type: array
-      description: The ordered step trace of each execution flow the change runs through, which the sequence diagrams are drawn from.
+      description: The ordered step trace of each execution flow the change runs through, which a sequence diagram is drawn from.
       defaultValue: []
     - name: base_branch
       type: string

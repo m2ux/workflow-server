@@ -21,14 +21,14 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
 | `findings-report` | Findings Report | Shared finding layout, designator, severity and reachability contracts, and the one-report shape every findings report follows |
 | `symbol-provenance` | Symbol Provenance | What establishes provenance for a symbol named in code or documentation, and how each class of symbol is verified |
-| `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria, field list and report templates |
-| `test-suite-review` | Test Suite Review | Test suite quality assessment framework, field list and report templates |
-| `strategic-review` | Strategic Review | Strategic review field list and report templates |
+| `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria, field list and report template |
+| `test-suite-review` | Test Suite Review | Test suite quality assessment framework, field list and report template |
+| `strategic-review` | Strategic Review | Strategic review field list and report template |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective methodology and section template |
 | `complete-wp-guide` | Complete Work Package | Close-out document template and fill rules |
 | `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (titles naming each change, linked to its line) — the report renders as a code-review.md section |
-| `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact links to |
+| `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact points at |
 | `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Review comment template, per-category findings fragments, and the scales they share |

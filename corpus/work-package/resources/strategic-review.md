@@ -86,7 +86,7 @@ A changes fragment carries a GitHub issue reference, and the project's check-cha
 
 | Cleanup | Commit |
 |---------|--------|
-| [what was removed or simplified, as a short label] | [hash] |
+| [what was removed or simplified, as a short label] | [the commit's subject, linked to the commit] |
 ```
 
 ## Rules

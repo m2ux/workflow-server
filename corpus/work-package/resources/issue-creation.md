@@ -39,7 +39,7 @@ Each is checkable against a draft:
 
 ## Issue Template
 
-Required sections: Problem Statement, Goal, Scope, User Stories. Optional: Success Metrics, Context & Background, Constraints, References.
+Required sections: Problem Statement, Goal, Scope, User Stories. Optional: Success Metrics, Context & Background, Constraints.
 
 ```markdown
 # [Issue Title]

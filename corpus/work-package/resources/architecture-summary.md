@@ -25,7 +25,6 @@ Skip for: bug fixes with no architectural impact, internal refactoring invisible
 | Package (flowchart + subgraphs) | Logical module groupings and dependencies | Changes affect module organization, cross-cutting concerns, or new packages/crates |
 | Container (flowchart + subgraphs) | Runtime containers/services and interactions | Changes affect deployment topology, infrastructure, or service boundaries |
 | Sequence | Ordered interactions between components | Key flows are affected and ordering clarifies behavior |
-| Before/After (paired flowcharts) | Original vs modified state | Change modifies existing architecture/flows |
 
 Mermaid node shapes: `([text])` actor, `[text]` internal system, `[(text)]` database, `[[text]]` external service.
 

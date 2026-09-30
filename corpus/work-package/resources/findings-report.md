@@ -24,7 +24,6 @@ Each review emits one report: its findings in one ID-ordered list, the outcome, 
 
 ## Evidence Reuse
 
-- **An enumeration is built once and read thereafter.** A later pass needing a set an earlier pass already walked — the call sites of a symbol, the keys a topology aligns across its configuration files, the branches a refactored function admits — reads it from the record that holds it and extends it where this pass reached further. Two walks of one set produce two enumerations that can disagree, which no reader can tell apart from one enumeration and a real change.
 - **A pass that reaches a finding another pass already stated cites its designator.** The finding keeps the one home its own pass gave it. A second statement of it is a second designator for one defect: it doubles the totals, splits the author's attention across two rows, and leaves the two wordings free to drift.
 
 ## Fields
