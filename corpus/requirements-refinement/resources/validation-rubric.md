@@ -12,7 +12,7 @@ The checks applied to an updated specification and the scheme for categorizing e
 ## Checks
 
 ### Structure
-- All canonical sections are present and correctly ordered per [Section Structure](./specification-protocol.md#section-structure).
+- All canonical sections are present, correctly ordered, and hold what [Section Structure](./specification-protocol.md#section-structure) gives them.
 - Requirement entries conform to [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
 - Markdown syntax is well-formed.
 
@@ -24,10 +24,13 @@ The checks applied to an updated specification and the scheme for categorizing e
 ### Content
 - Requirement statements are atomic, testable, and use `SHALL` / `SHOULD` / `MAY` as [Requirement Entry Format](./specification-protocol.md#requirement-entry-format) requires.
 - Every requirement carries a complete rationale and at least one source reference.
+- No rationale reproduces a source's wording, a speaker-attributed form included.
+- No rationale states what the sources leave open; each such statement is the entry's note.
 - Status values are drawn from [Status Conventions](./specification-protocol.md#status-conventions); newly added requirements are `pending`.
 
 ### Consistency
 - Source references resolve to entries listed in section 2 (Requirements Sources) and conform to [Source Reference Format](./specification-protocol.md#source-reference-format).
+- Every transcript href is relative and resolves to a transcript in the meetings folder.
 - For a markdown citation, the fragment is a heading in that source file.
 - Every heading recorded on a new or updated change appears in that requirement's source list.
 - No two requirements contradict one another; duplicates are flagged.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -38,3 +38,7 @@ The [section structure](../resources/specification-protocol.md#section-structure
 ### artifacts-write-under-planning-folder
 
 Each technique writes its artifact under `{planning_folder_path}`.
+
+### artifact-paths-relative
+
+Every path an artifact records is relative to that artifact's folder. No artifact carries an absolute filesystem path.

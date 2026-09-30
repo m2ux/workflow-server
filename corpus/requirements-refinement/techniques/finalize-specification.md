@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -55,7 +55,7 @@ Absolute path to the written change summary.
 
 ### 1. Assemble Final Specification
 
-- Copy the validation-passed `{working_specification}` into `{final_specification}` in `{planning_folder_path}`; capture its written location as `{final_specification_path}`.
+- Copy the validation-passed `{working_specification}` into `{final_specification}` in `{planning_folder_path}`, in the [Final Specification Form](../resources/specification-protocol.md#final-specification-form); capture its written location as `{final_specification_path}`.
 
 ### 2. Write Change Summary
 
