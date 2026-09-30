@@ -1307,3 +1307,113 @@ ${consumeOutputs}`;
     ]);
   });
 });
+
+describe('a routine name a parent routine renames', () => {
+  const CONSUME = {
+    wf: {
+      'analysis/consume': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A verdict from the finding.
+
+## Inputs
+
+### interim_finding
+
+The finding to weigh.
+
+## Outputs
+
+### run_verdict
+
+The verdict.
+
+## Protocol
+
+### 1. Consume
+
+- Weigh the finding into the verdict.
+`,
+    },
+  };
+  const CHILD = `id: child-run
+version: 1.0.0
+name: Child Run
+inputs:
+  - id: interim_finding
+    description: the finding
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+steps:
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      outputs:
+        run_verdict: run_verdict
+`;
+  const parent = (internals: string, inputs: string): string => `id: parent-run
+version: 1.0.0
+name: Parent Run
+${inputs}outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+${internals}steps:
+  - kind: action
+    id: note
+    actions:
+      - action: set
+        target: interim_finding
+        value: found
+  - kind: routine
+    id: child
+    routine: child-run
+    with:
+      interim_finding: "{interim_finding}"
+    outputs:
+      run_verdict: run_verdict
+`;
+  const host = (binding: string): Record<string, Record<string, string>> => ({
+    wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: parent-run\n${binding}    outputs:\n      run_verdict: run_verdict\n` },
+  });
+  const unboundIn = (findings: Finding[]): string[] =>
+    findings.filter((f) => f.check === 'routine-scope-unbound').map((f) => `${f.site}: ${f.detail.slice(0, 60)}`);
+
+  it('reports a child step reading the bare name of the internal its parent passes', async () => {
+    const findings = await findingsFor({
+      activities: host(''),
+      techniques: CONSUME,
+      routines: { wf: { 'child-run': CHILD, 'parent-run': parent('internals:\n  - id: interim_finding\n    description: the finding\n', '') } },
+    });
+    expect(unboundIn(findings)).toEqual([
+      "wf/routines/child-run.yaml: step 'consume' leaves its technique's input 'interim_finding",
+    ]);
+  });
+
+  it('reports it where the parent passes on an input its own site rebinds', async () => {
+    const findings = await findingsFor({
+      activities: host('    with:\n      interim_finding: "{host_finding}"\n'),
+      techniques: CONSUME,
+      routines: { wf: { 'child-run': CHILD, 'parent-run': parent('', 'inputs:\n  - id: interim_finding\n    description: the finding\n') } },
+    });
+    expect(unboundIn(findings)).toEqual([
+      "wf/routines/child-run.yaml: step 'consume' leaves its technique's input 'interim_finding",
+    ]);
+  });
+
+  it('leaves it where every site up the chain binds the name to itself', async () => {
+    const findings = await findingsFor({
+      activities: host('    with:\n      interim_finding: "{interim_finding}"\n'),
+      techniques: CONSUME,
+      routines: { wf: { 'child-run': CHILD, 'parent-run': parent('', 'inputs:\n  - id: interim_finding\n    description: the finding\n') } },
+    });
+    expect(unboundIn(findings)).toEqual([]);
+  });
+});

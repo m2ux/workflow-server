@@ -24,7 +24,11 @@
  *   declared inputs or outputs whose id the signature declares. Substitution renames a routine's
  *   names only in the fields a step spells, and an unbound input or output resolves under its bare
  *   id, so an internal never reaches it and an input or output reaches it only where a site happens
- *   to bind that name to itself.
+ *   to bind that name to itself. A site inside another routine renames what that routine renames,
+ *   so an argument naming the parent's internal, or a parent name its own sites rename, renames too.
+ *   An optional input whose id is an internal is left out: the bare id leaves it unset, which is
+ *   what a step that means to leave it unset relies on, and the guard cannot tell that step from
+ *   one that dropped a value it needed.
  * - `routine-operation-unbound` — an input declared `kind: technique` that no step of the body binds.
  *   It stands in a technique position rather than being read as a value, so an unread-input rule
  *   asking the derivation about it would report every one of them.
@@ -98,6 +102,8 @@ interface Reference {
   args: Record<string, string | number | boolean> | undefined;
   /** Where the site lands each output it binds. */
   outputs: Record<string, string> | undefined;
+  /** The routine the site sits in, where it sits in one rather than in an activity. */
+  parent?: { workflowId: string; routine: Routine };
   /** The routine name it resolves to, and where. */
   resolved?: { workflowId: string; name: string };
 }
@@ -165,6 +171,8 @@ async function checkSignature(
   // reporting it as an undeclared read would fire on nearly every real body.
   const written = new Set<string>();
   const consulted = new Set(bodyUses(routine));
+  /** One `routine-scope-unbound` finding per step and name, however many sites the body is read at. */
+  const reportedUnbound = new Set<string>();
   for (const body of bodies) {
     const derived = await deriveActivityContract({
       activity: {
@@ -212,8 +220,11 @@ async function checkSignature(
       for (const [side, ids] of [['input', unboundInputs], ['output', unboundOutputs]] as const) {
         for (const id of ids) {
           if (!declared.has(id)) continue;
+          const reportKey = `${step.id}|${side}|${id}`;
+          if (reportedUnbound.has(reportKey)) continue;
+          reportedUnbound.add(reportKey);
           findings.push({
-            check: 'routine-scope-unbound', site: body.site,
+            check: 'routine-scope-unbound', site,
             detail: scope.internals.has(id)
               ? `step '${step.id}' leaves its technique's ${side} '${id}' unbound, and '${id}' is an internal — an unbound ${side} resolves under its bare name, which substitution never rewrites, so bind it under technique.${side}s as '${id}: ${id}'`
               : `step '${step.id}' leaves its technique's ${side} '${id}' unbound, and a reference site binds '${id}' under another name — an unbound ${side} resolves under its bare name, which substitution never rewrites, so bind it under technique.${side}s as '${id}: ${id}'`,
@@ -498,7 +509,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
       for (const step of collectRoutineSteps({ steps: routine.steps })) {
         references.push({
           workflowId, site: `${workflowId}/routines/${routine.id}.yaml`, ref: step.routine, args: step.with,
-          outputs: step.outputs,
+          outputs: step.outputs, parent: { workflowId, routine },
         });
       }
     }
@@ -515,6 +526,32 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     sitesByRoutine.set(key, [...(sitesByRoutine.get(key) ?? []), reference]);
   }
 
+  // The names some site binds to anything other than themselves. A site inside another routine
+  // renames whatever that routine renames: its internals, and its own names a site of its own
+  // rebinds. The loader refuses a reference cycle, so the recursion ends.
+  const reboundMemo = new Map<string, Set<string>>();
+  const reboundOf = (workflowId: string, routineId: string): Set<string> => {
+    const key = keyOf(workflowId, routineId);
+    const known = reboundMemo.get(key);
+    if (known) return known;
+    const rebound = new Set<string>();
+    reboundMemo.set(key, rebound);
+    for (const reference of sitesByRoutine.get(key) ?? []) {
+      const parent = reference.parent;
+      const parentScope = parent ? routineScope(parent.routine) : undefined;
+      const parentRebound = parent ? reboundOf(parent.workflowId, parent.routine.id) : undefined;
+      const renamedAbove = (name: string): boolean =>
+        parentScope !== undefined && (parentScope.internals.has(name) || parentRebound!.has(name));
+      for (const [id, argument] of Object.entries(reference.args ?? {})) {
+        if (argument !== `{${id}}` || renamedAbove(id)) rebound.add(id);
+      }
+      for (const [id, target] of Object.entries(reference.outputs ?? {})) {
+        if (target !== id || renamedAbove(id)) rebound.add(id);
+      }
+    }
+    return rebound;
+  };
+
   // The signature check. Once per routine, and once per REFERENCE SITE for a routine whose body binds
   // a technique by argument: such a body names a parameter where a technique reference belongs, so
   // it has no signature of its own and there is nothing to derive until a site says which technique.
@@ -526,11 +563,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     for (const routine of routines.values()) {
       const parameters = operationInputs(routine);
       const declaration = `${workflowId}/routines/${routine.id}.yaml`;
-      const rebound = new Set<string>();
-      for (const reference of sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? []) {
-        for (const [id, argument] of Object.entries(reference.args ?? {})) if (argument !== `{${id}}`) rebound.add(id);
-        for (const [id, target] of Object.entries(reference.outputs ?? {})) if (target !== id) rebound.add(id);
-      }
+      const rebound = reboundOf(workflowId, routine.id);
       if (parameters.length === 0) {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, [
           { techniques: new Map(), site: declaration },
