@@ -1274,7 +1274,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // The graph is the single home for the routing, so a call that names the activity it retires
       // and the exit that activity took has said everything the destination follows from, and the
       // destination it enters is the one the graph binds there. `activity_id` carries the walk's
-      // opening, where nothing is retired yet, and any exit the graph leaves unbound.
+      // opening, where nothing is retired yet, and a call naming no exit the retiring activity declares.
       //
       // The shape of a destination is part of what the graph states: an exit bound to a fan opens
       // one branch per element of the collection it names. Reading the destination off the caller
@@ -1310,18 +1310,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (boundDestination === undefined && isFan(destination)) {
         const opened = `Cannot open the fan to '${targets.join(', ')}'`;
         if (retiring === undefined) {
-          throw new Error(
-            `${opened} on the walk's opening, where nothing is retired. A fan opens only on an exit the graph binds to it; `
-            + `the walk opens on '${result.value.initialActivity}'.`,
-          );
+          throw new Error(state.status === 'completed'
+            ? `${opened}: the walk has ended, and a fan opens only on an exit the graph binds to it.`
+            : `${opened} on the walk's opening, where nothing is retired. A fan opens only on an exit the graph binds to it; `
+              + `the walk opens on '${result.value.initialActivity}'.`);
         }
-        const fanningExits = getExitBindings(result.value, retiring).filter((b) => isFan(b.to)).map((b) => b.exit);
+        // T2 has refused a missing exit off an activity that binds a fan, so with no exit named the
+        // retiring activity binds none; only a named, undeclared exit leaves a fan to point at.
+        const bindings = getExitBindings(result.value, retiring);
+        const fanningExits = bindings.filter((b) => isFan(b.to)).map((b) => `'${b.exit}'`);
         const where = exit === undefined
           ? `off '${retiring}' with no 'exit' named`
           : `off '${retiring}' through exit '${exit}', which '${retiring}' does not declare`;
         const remedy = fanningExits.length > 0
-          ? `name the exit '${retiring}' took: ${fanningExits.map((e) => `'${e}'`).join(', ')} opens a fan`
-          : `'${retiring}' binds no fan to any exit, so the run goes where its exit binds`;
+          ? `name the exit '${retiring}' took: ${fanningExits.join(', ')} ${fanningExits.length > 1 ? 'open fans' : 'opens a fan'}`
+          : bindings.length > 0
+            ? `'${retiring}' binds no fan to any exit, so the run goes where its exit binds`
+            : `'${retiring}' declares no exit, so name an activity id or \`__terminal__\``;
         throw new Error(`${opened} ${where}. A fan opens only on an exit the graph binds to it: ${remedy}.`);
       }
 

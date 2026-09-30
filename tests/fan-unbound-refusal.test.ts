@@ -5,7 +5,7 @@ import { createHarness, type Harness } from './e2e/harness.js';
 /**
  * A fan's branches, width and join are read off the graph, so `next_activity` opens one only on an
  * exit the graph binds to it. A fan the call names with no binding behind it is refused: on a walk's
- * opening, and off an exit the retiring activity's graph entry does not bind.
+ * opening, and off a call naming no exit the retiring activity declares.
  */
 const FAN_CORPUS = resolve(import.meta.dirname, 'fixtures/fan-corpus');
 const FAN = { activity: 'probe-unit', over: 'probe_targets', variable: 'probe_target' };
@@ -61,6 +61,38 @@ describe('next_activity opens a fan only on an exit the graph binds to it', () =
     const refused = await advance({ session_index: idx, activity_id: ['survey-pass', 'dependency-review'] });
     expect(refused.isError).toBe(true);
     expect(textOf(refused)).toMatch(/Cannot open the fan to 'survey-pass, dependency-review' on the walk's opening/);
+    expect(textOf(refused)).toMatch(/the walk opens on 'plan-prepare'/);
+
+    const status = await harness.client.callTool({ name: 'get_workflow_status', arguments: { session_index: idx } }) as ToolResult;
+    expect((JSON.parse(textOf(status)) as { in_flight: string[] }).in_flight).toEqual([]);
+  });
+
+  it('reads an empty exit as none, so a fanning activity is told to name its exit', async () => {
+    const idx = await start('fan-empty-exit');
+    await advance({ session_index: idx, activity_id: 'scope-sweep' });
+    const refused = await advance({ session_index: idx, activity_id: FAN, from_activity: 'scope-sweep', exit: '' });
+    expect(refused.isError).toBe(true);
+    expect(textOf(refused)).toMatch(/binds exit 'scoped' to a fan, so 'exit' is required/);
+  });
+
+  it('tells a fan named after the walk has ended that there is nothing to open', async () => {
+    const idx = await start('fan-after-end');
+    await advance({ session_index: idx, activity_id: 'scope-sweep' });
+    const opened = await advance({
+      session_index: idx, activity_id: FAN, from_activity: 'scope-sweep', exit: 'scoped',
+      variables_changed: { probe_targets: ['a', 'b'] },
+    });
+    const branches = (JSON.parse(textOf(opened)) as { fan: Array<{ branches: string[] }> }).fan.flatMap((m) => m.branches);
+    for (const [i, branch] of branches.entries()) {
+      const retired = await advance({ session_index: idx, activity_id: 'combine-probes', from_activity: branch, exit: 'probed', agent_id: 'probe-worker-' + i });
+      expect(retired.isError).toBeFalsy();
+    }
+    const ended = await advance({ session_index: idx, activity_id: '__terminal__', from_activity: 'combine-probes', exit: 'settled' });
+    expect(ended.isError).toBeFalsy();
+
+    const refused = await advance({ session_index: idx, activity_id: FAN });
+    expect(refused.isError).toBe(true);
+    expect(textOf(refused)).toMatch(/the walk has ended/);
   });
 
   it('refuses a fan named with no exit off an activity that binds no fan', async () => {
@@ -78,7 +110,7 @@ describe('next_activity opens a fan only on an exit the graph binds to it', () =
     expect(textOf(refused)).toMatch(/'survey-pass' binds no fan to any exit/);
   });
 
-  it('refuses a fan named off an exit the retiring activity\'s graph entry does not bind', async () => {
+  it('refuses a fan named off an exit the retiring activity does not declare', async () => {
     const idx = await start('fan-unbound-exit');
     await advance({ session_index: idx, activity_id: 'scope-sweep' });
     const refused = await advance({
