@@ -180,10 +180,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "requirements-elicitation",
       "artifacts": [
+        "deferred-items.json",
         "requirements-elicitation.md",
         "assumptions-log.md",
       ],
       "artifactsWritten": [
+        "03-deferred-items.json",
         "03-requirements-elicitation.md",
         "02-assumptions-log.md",
       ],
@@ -225,6 +227,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "pose-question",
         "record-answer",
         "elicit-requirements",
+        "register-deferred-scope",
         "collect-assumptions",
         "create-document",
         "update-assumptions-log",
@@ -350,7 +353,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.json",
+        "03-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -577,7 +580,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "07-deferred-items.json",
+        "03-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -907,10 +910,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "requirements-elicitation",
       "artifacts": [
+        "deferred-items.json",
         "requirements-elicitation.md",
         "assumptions-log.md",
       ],
       "artifactsWritten": [
+        "03-deferred-items.json",
         "03-requirements-elicitation.md",
         "02-assumptions-log.md",
       ],
@@ -952,6 +957,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "pose-question",
         "record-answer",
         "elicit-requirements",
+        "register-deferred-scope",
         "collect-assumptions",
         "create-document",
         "update-assumptions-log",
@@ -1035,7 +1041,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.json",
+        "03-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -1238,7 +1244,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "07-deferred-items.json",
+        "03-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -1569,10 +1575,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "requirements-elicitation",
       "artifacts": [
+        "deferred-items.json",
         "requirements-elicitation.md",
         "assumptions-log.md",
       ],
       "artifactsWritten": [
+        "03-deferred-items.json",
         "03-requirements-elicitation.md",
         "02-assumptions-log.md",
       ],
@@ -1614,6 +1622,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "pose-question",
         "record-answer",
         "elicit-requirements",
+        "register-deferred-scope",
         "collect-assumptions",
         "create-document",
         "update-assumptions-log",
@@ -1739,7 +1748,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.json",
+        "03-deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -1966,7 +1975,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
-        "07-deferred-items.json",
+        "03-deferred-items.json",
         "12-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -3825,8 +3834,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredTotal": 343,
-  "executedTotal": 190,
+  "declaredTotal": 344,
+  "executedTotal": 191,
   "perActivity": [
     {
       "activity": "assumptions-review",
@@ -3875,8 +3884,8 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "requirements-elicitation",
-      "declared": 16,
-      "executed": 10,
+      "declared": 17,
+      "executed": 11,
     },
     {
       "activity": "research",

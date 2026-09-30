@@ -35,7 +35,7 @@ The register's bare filename, once each supplied deferral is appended as an entr
 
 ### 1. Append the Entries
 
-- Assemble the deferrals this pass contributes: every entry of `{deferred_items}`, plus every `{assumptions_log}` row whose Outcome is Deferred
+- Assemble the deferrals this pass contributes: every entry of `{deferred_items}`, plus every `{assumptions_log}` row whose Outcome is Deferred, deferred at that row's ID
 - Write each as an entry in the shape the [register template](../../resources/deferred-items.md#template) gives, creating the register when this is its first entry
   > Where an entry for the item already exists, update that entry rather than adding a second, per the register's [Rules](../../resources/deferred-items.md#rules).
 - Leave `issue` null until an issue is raised for the entry, which is what marks it as still unraised

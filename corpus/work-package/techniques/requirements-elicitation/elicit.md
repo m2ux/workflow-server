@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -31,10 +31,14 @@ The defined success criteria with verification methods.
 
 In/out scope definitions captured during elicitation.
 
+### deferred_items
+
+The scope items deferred beyond this work package, each carrying what was set aside, where, and why. Empty where none was deferred.
+
 ## Protocol
 
 ### 1. Assemble the Elicited Set
 
-- Emit `{requirements}`, `{success_criteria}` and `{scope_boundaries}` from the answers `{elicitation_log}` holds, read against `{stakeholder_baseline}` for what the discussion already settled
+- Emit `{requirements}`, `{success_criteria}`, `{scope_boundaries}` and `{deferred_items}` from the answers `{elicitation_log}` holds, read against `{stakeholder_baseline}` for what the discussion already settled
   > Where the log covers fewer domains than the reference sets out, the elicited set carries the coverage it has and the gap goes to the assumptions log as a scope assumption.
 - Hold the set to the [Minimum Viable Elicitation](../../resources/requirements-elicitation.md#minimum-viable-elicitation) floor, so a light pass still yields a problem statement, a primary stakeholder, in-scope and excluded items, and success criteria

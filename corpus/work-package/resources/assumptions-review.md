@@ -63,7 +63,7 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 Resolution: how it was settled — `Code:` with the code named and linked to its lines, `User` (checkpoint or
 interview), or `—` while open; implementation-task rows append the commit hash for
 assumption-to-commit traceability. Outcome: Validated / Invalidated / Partially Validated
-(code-resolved) · Confirmed / Corrected: <change> / Deferred: <entry ID> (user-resolved)
+(code-resolved) · Confirmed / Corrected: <change> / Deferred (user-resolved)
 · Open (<reason>). When an interpretation difference contributed to an assumption, name
 the ambiguity source (observation, recall, requirement reading, ambiguous problem
 statement) in the rationale.

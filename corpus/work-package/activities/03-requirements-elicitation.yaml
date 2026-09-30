@@ -18,6 +18,14 @@ variables:
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+    - name: deferred_items
+      type: array
+      description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
+      defaultValue: []
+    - name: deferred_items_register
+      type: string
+      description: Bare filename of the out-of-scope deferrals register this activity's entries were written to.
+      defaultValue: ""
     - name: current_domain
       type: string
       description: The question domain the current elicitation question is drawn from.
@@ -149,6 +157,9 @@ steps:
   - kind: technique
     id: elicit-requirements
     technique: elicit
+  - kind: technique
+    id: register-deferred-scope
+    technique: manage-registers::append-deferred-item
   - kind: technique
     id: collect-assumptions
     technique:

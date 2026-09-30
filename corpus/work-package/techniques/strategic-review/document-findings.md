@@ -32,5 +32,5 @@ The findings deferred beyond this work package as out-of-scope deferrals, each c
 - State each finding in the `{strategic_review_doc}` in the shape [Finding Layout](../../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../../resources/strategic-review.md#field-list) and no others, with its severity derived through the map per [Severity](../../resources/findings-report.md#severity) and its reachability settled from the code the finding cites per [Reachability](../../resources/findings-report.md#reachability)
 - Categorize each finding per the group's `finding-categories`, assigning each a stable designator that downstream surfaces reference, per [Designators](../../resources/findings-report.md#designators)
 - Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
-- Emit any deferred finding as a `{deferred_items}` entry, and name the register entry's ID in the finding
+- Emit any deferred finding as a `{deferred_items}` entry deferred at the finding's designator
 - Place every designator the run produced in exactly one delivery class on the document's delivery line, per [Delivery Completeness](../../resources/findings-report.md#delivery-completeness)

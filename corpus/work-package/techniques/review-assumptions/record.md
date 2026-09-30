@@ -47,12 +47,8 @@ Boolean gate — true iff any assumption was marked deferred (needs-discussion).
 
 ### 2. Write the Outcomes Into the Log
 
-- Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred: <entry ID> in the Outcome column, where <change> is `{assumption_correction}` as the user typed it — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact). Emit the log's path as `{assumptions_log_path}`.
+- Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred in the Outcome column, where <change> is `{assumption_correction}` as the user typed it — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact). Emit the log's path as `{assumptions_log_path}`.
 
-### 3. Name Deferred Entries
-
-- Name the deferred-items register entry's ID in the log row's Outcome cell for each assumption marked deferred, so the log points at the register that states the item.
-
-### 4. Preserve Every Row
+### 3. Preserve Every Row
 
 - Preserve all assumption rows and their resolution status
