@@ -1,9 +1,10 @@
 id: intake
-version: 2.0.0
+version: 2.1.0
 name: Intake
 description: Establish the run's readable, classified source documents and its target specification.
 variables:
   reads:
+    - classified_sources
     - host_repo_path
     - planning_folder_path
     - user_request
@@ -34,9 +35,17 @@ variables:
       type: boolean
       description: True when the target specification already exists and is being augmented; false when it is created from scratch
       defaultValue: false
+    - name: transcript_redactions
+      type: array
+      description: Redacted passages in the stored meeting transcripts, each { transcript, heading, kind }
+      defaultValue: []
+    - name: copied_transcripts
+      type: array
+      description: Absolute paths of the meeting transcripts newly copied into the repository
+      defaultValue: []
     - name: intake_correction
       type: string
-      description: Text the user typed to correct the sources, a source's classification, or the target specification
+      description: The user's typed correction to the intake
 required: true
 steps:
   - kind: technique
@@ -66,23 +75,31 @@ steps:
         effect:
           recordReply: target_doc_path
   - kind: technique
+    id: store-sources
+    technique: store-sources
+    when: source_readable == true
+  - kind: technique
+    id: redact-transcripts
+    technique: redact-transcripts
+    when: source_readable == true
+  - kind: technique
     id: record-intake
     technique: record-intake
     when: source_readable == true
     actions:
       - action: message
-        message: "The source set and the target specification are captured, each source with its own classification ([intake record]({intake_record_path}))."
+        message: "The source set and the target specification are captured, each source held in the repository with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
   - kind: checkpoint
     id: sources-confirmed
     when: source_readable == true
-    message: "The source set and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured, each source with its own classification ([intake record]({intake_record_path}))."
+    message: "The source set and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured, each source with its own classification and each transcript's redactions listed ([intake record]({intake_record_path}))."
     options:
       - id: confirmed
         label: Yes, proceed
-        description: The source set, the classification each source carries, and the mode are correct.
+        description: The source set, the classification each source carries, the redactions, and the mode are correct.
       - id: revise
         label: Correct the sources
-        description: The reply names what to change — a source path, a source's classification, the target specification, or a document the set omits.
+        description: The reply names what to change — a source path, a source's classification, a passage to redact or keep, the target specification, or a document the set omits.
         effect:
           recordReply: intake_correction
           exit: revise
@@ -96,5 +113,6 @@ exits:
 outcome:
   - The run names its source documents and a target specification, taken from the request or supplied by the user
   - Each source carries its classification, and whether the specification is being augmented or created is recorded
+  - Each source is held in the repository, citable by a relative path, and each transcript's personal and off-topic conversation is redacted with the redactions confirmed
   - A source with nothing to read is settled at the boundary
   - A correction the user types reaches the next intake as recorded text, over the paths and classifications already settled

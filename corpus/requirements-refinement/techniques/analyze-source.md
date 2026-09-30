@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.6.1
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix and the heading of each contributing passage.
 
 ## Inputs
-
-### classified_sources
-
-The source documents paired with their classifications, each `{ path, type }`.
 
 ### target_doc_exists
 

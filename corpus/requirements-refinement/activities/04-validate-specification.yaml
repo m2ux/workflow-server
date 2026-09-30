@@ -1,12 +1,12 @@
 id: validate-specification
-version: 1.9.0
+version: 1.9.1
 name: Validate Specification
 description: Validate the working specification and categorize each finding as critical or correctable.
 variables:
   reads:
+    - classified_sources
     - correction_iteration
     - planning_folder_path
-    - source_paths
     - target_doc_path
     - update_pass
   writes:

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.5.1
 ---
 
 ## Capability
@@ -52,7 +52,7 @@ Absolute path to the written failure report.
 
 ### 3. Write Failure Report
 
-- Write `{failure_report}` for `{spec_basename}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules), filling the template's path slot from `{validation_report_path}`; capture its written location as `{failure_report_path}`.
+- Write `{failure_report}` for `{spec_basename}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules), filling the template's path slot with the path of `{validation_report_path}` per `artifact-paths-relative`; capture its written location as `{failure_report_path}`.
 
 ## Rules
 

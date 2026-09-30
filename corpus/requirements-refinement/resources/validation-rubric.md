@@ -12,8 +12,8 @@ The checks applied to an updated specification and the scheme for categorizing e
 ## Checks
 
 ### Structure
-- All canonical sections are present and correctly ordered per [Section Structure](./specification-protocol.md#section-structure).
-- Requirement entries conform to [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
+- All canonical sections are present and correctly ordered per [Section Structure](./specification-protocol.md#section-structure), and each section the run adds holds what that structure gives it.
+- Each entry the run adds or changes conforms to [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
 - Markdown syntax is well-formed.
 
 ### Identifiers
@@ -24,10 +24,12 @@ The checks applied to an updated specification and the scheme for categorizing e
 ### Content
 - Requirement statements are atomic, testable, and use `SHALL` / `SHOULD` / `MAY` as [Requirement Entry Format](./specification-protocol.md#requirement-entry-format) requires.
 - Every requirement carries a complete rationale and at least one source reference.
+- No rationale the run writes reproduces a source's wording or states what the sources leave open, per [Requirement Entry Format](./specification-protocol.md#requirement-entry-format).
 - Status values are drawn from [Status Conventions](./specification-protocol.md#status-conventions); newly added requirements are `pending`.
 
 ### Consistency
-- Source references resolve to entries listed in section 2 (Requirements Sources) and conform to [Source Reference Format](./specification-protocol.md#source-reference-format).
+- Source references resolve to entries listed in section 2 (Requirements Sources), and each the run adds conforms to [Source Reference Format](./specification-protocol.md#source-reference-format).
+- Every href to a source the run was given is relative to the target specification's folder, and resolves from there to the stored copy [Source Reference Format](./specification-protocol.md#source-reference-format) names.
 - For a markdown citation, the fragment is a heading in that source file.
 - Every heading recorded on a new or updated change appears in that requirement's source list.
 - No two requirements contradict one another; duplicates are flagged.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -9,13 +9,13 @@ Settle the target specification — where it is, and whether it is augmented or 
 
 ## Inputs
 
-### classified_sources
-
-The source documents paired with their classifications, each `{ path, type }`.
-
 ### host_repo_path
 
 Absolute path of the checkout the run was opened from.
+
+### transcript_redactions
+
+The redacted passages in the stored meeting transcripts, each `{ transcript, heading, kind }`.
 
 ## Outputs
 
@@ -33,7 +33,7 @@ Basename of `{target_doc_path}` — the filename without its directory.
 
 ### intake_record
 
-Record of the captured sources, the classification each carries, the target specification, the detected augment/create mode, and `{spec_basename}`.
+Record of the captured sources, the classification each carries, each transcript's redactions, the target specification, the detected augment/create mode, and `{spec_basename}`.
 
 #### artifact
 
@@ -57,5 +57,6 @@ Absolute path to the written intake record.
 
 ### 2. Record Intake
 
-- Write `{intake_record}` to `{planning_folder_path}` per [intake-record](../resources/intake-record.md#template) and its [Rules](../resources/intake-record.md#rules), capturing `{classified_sources}`, `{target_doc_path}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
+- Write `{intake_record}` to `{planning_folder_path}` per [intake-record](../resources/intake-record.md#template) and its [Rules](../resources/intake-record.md#rules), capturing `{classified_sources}`, `{transcript_redactions}`, `{target_doc_path}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
+  > Each path is recorded per `artifact-paths-relative`.
 

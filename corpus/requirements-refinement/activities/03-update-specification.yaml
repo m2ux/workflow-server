@@ -1,11 +1,11 @@
 id: update-specification
-version: 1.7.0
+version: 1.7.1
 name: Update Specification
 description: Apply requirement changes, validation findings, or requested revisions to a working specification, preserving the specification protocol verbatim.
 variables:
   reads:
+    - classified_sources
     - planning_folder_path
-    - source_paths
     - target_doc_exists
     - target_doc_path
     - update_pass

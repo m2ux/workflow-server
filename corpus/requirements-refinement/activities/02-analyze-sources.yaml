@@ -1,12 +1,11 @@
 id: analyze-sources
-version: 1.0.0
+version: 1.0.1
 name: Analyze Sources
 description: Produce a confirmed requirements analysis of the changes the classified sources imply for the target specification.
 variables:
   reads:
     - classified_sources
     - planning_folder_path
-    - source_paths
     - target_doc_exists
     - target_doc_path
   writes:
