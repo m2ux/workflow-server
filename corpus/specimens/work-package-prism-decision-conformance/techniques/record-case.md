@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.0.0
 ---
 
 ## Capability
@@ -25,9 +25,17 @@ The paths the change touches.
 
 The commit the change stands at.
 
+### push_remote
+
+The remote the change's branch was cut from.
+
+### default_branch
+
+The branch on that remote the change is measured against.
+
 ### prism_value_assessment
 
-The recommendation on the full prism pipeline, where a gate carried one.
+The recommendation on the full prism pipeline. Absent on a review run.
 
 ### case_outcomes
 
@@ -37,11 +45,11 @@ One outcome per case taken so far.
 
 ### case_outcomes
 
-The list with this case's outcome appended: whether it was a review run, the change measured, the recommendation the gate carried, and the mode settled.
+The list with this case's outcome appended: whether it was a review run, the change measured and the base it was measured against, the recommendation, and the mode settled.
 
 ## Protocol
 
-### 1. Record the Outcome
+### 1. Record Outcome
 
-- Append one entry to `{case_outcomes}`: `{is_review_mode}`, the `{changed_files}` measured at `{head_sha}`, the `{prism_value_assessment}` the gate carried, and `{pipeline_mode}`
-  > Every fixture case is complex, so the gate is raised exactly where `{is_review_mode}` is false. A review run records the change and the recommendation as absent, per `decision-case-report.a-case-reports-only-what-it-measured`.
+- Append one entry to `{case_outcomes}`: `{is_review_mode}`, the `{changed_files}` measured at `{head_sha}` against `{push_remote}/{default_branch}`, the `{prism_value_assessment}`, and `{pipeline_mode}`
+  > A review run measures nothing, so its entry records the change, the base and the recommendation as absent.

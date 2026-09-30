@@ -17,13 +17,13 @@ Activity walked: `work-package/prism-decision`, borrowed, once per case.
 
 | Case | Bindings | Gate raised | Recommendation shown | Mode settled |
 |------|----------|-------------|----------------------|--------------|
-| implementation | complex, review false; the change measured against {default_branch} at {head_sha} — {changed file count} files | yes / no | {the recommendation, verbatim} | `single` / `full-prism` |
+| implementation | complex, review false; the change measured against {base} at {head_sha} — {changed file count} files | yes / no | {the recommendation, verbatim} | `single` / `full-prism` |
 | review | complex, review true | yes / no | {the recommendation, or absent} | `single` / `full-prism` |
 
 ## What the run evidenced
 
 - implementation — {how the change was measured, how the recommendation reached the gate, and what the answer set}
-- review — {what the server left undelivered, how the gate was left, and what the review step preset}
+- review — {how the gate was left, and what the review step preset}
 ```
 
 ## Rules

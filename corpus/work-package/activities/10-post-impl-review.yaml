@@ -110,6 +110,10 @@ variables:
       type: string
       description: The component and issue the prism run's change serves.
       defaultValue: ""
+    - name: analysis_focus
+      type: string
+      description: The files the change touches, which the prism run centres its analysis on.
+      defaultValue: ""
     - name: test_findings_actionable
       type: boolean
       description: Whether any test-suite finding is at or above the severity that warrants action.
@@ -121,6 +125,7 @@ triggers:
     passContext:
       - target
       - target_description
+      - analysis_focus
       - pipeline_mode
 steps:
   - kind: action
@@ -220,6 +225,9 @@ steps:
       - action: set
         target: target_description
         value: "{component_name}: {issue_title}"
+      - action: set
+        target: analysis_focus
+        value: "The change to {changed_files}"
   - kind: technique
     id: dispatch-prism
     when: pipeline_mode == 'full-prism'

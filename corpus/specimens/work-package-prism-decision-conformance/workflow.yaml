@@ -46,16 +46,20 @@ variables:
     defaultValue: single
   - name: prism_value_assessment
     type: string
-    description: The recommendation on the full prism pipeline and the signal that decided it.
+    description: The recommendation on the full prism pipeline, the signal that decided it, and what the full pipeline adds for the change.
     defaultValue: ""
   - name: changed_files
     type: array
-    description: Ordered list of the paths the change touches.
+    description: Ordered list of changed file paths.
     defaultValue: []
   - name: head_sha
     type: string
-    description: Commit sha at the head of the change's branch.
+    description: Commit sha at the head of the pull request's branch.
     defaultValue: ""
+  - name: push_remote
+    type: string
+    description: The remote the fixture checkout's branch was cut from.
+    defaultValue: origin
   - name: default_branch
     type: string
     description: The branch the fixture checkout's change is measured against.

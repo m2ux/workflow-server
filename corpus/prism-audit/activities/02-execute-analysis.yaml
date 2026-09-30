@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 2.1.0
+version: 2.1.1
 name: Execute Prism Analysis
 description: Trigger the prism workflow for each audit scope and record each run from its manifest.
 variables:
@@ -29,7 +29,7 @@ variables:
       description: The output location of the audit scope under analysis
     - name: pipeline_mode
       type: string
-      description: "Prism pipeline mode to use for analysis (default: full-prism for thorough audit coverage)"
+      description: Prism pipeline mode to use for analysis.
       defaultValue: full-prism
     - name: target
       type: string

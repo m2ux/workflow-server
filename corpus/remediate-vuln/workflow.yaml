@@ -48,7 +48,7 @@ variables:
     description: Private fork as owner/repo.
   - name: default_branch
     type: string
-    description: The repository's default branch, which the security branch syncs from and merges into.
+    description: The private fork's default branch, which the security branch syncs from and merges into.
   - name: issue_platform
     type: string
     description: The issue tracker the advisory lives in while it stays restricted.

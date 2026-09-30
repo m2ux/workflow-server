@@ -21,13 +21,20 @@ Name of the local security feature branch, formed as `vuln/remediate-{short_id}`
 
 ### default_branch
 
-The private fork's default branch, read off the `security` remote's `HEAD` and falling back to `main`, then `master`. The security branch syncs from it and merges into it.
+The private fork's default branch, which the security branch syncs from and merges into.
 
 ## Protocol
 
-### 1. Initialize Security Branch
+### 1. Fetch Security Remote
 
 - Fetch from the `security` remote inside `{target_path}` so the private fork's refs are current.
-- Resolve `{default_branch}` from `git -C {target_path} ls-remote --symref security HEAD`, falling back to `main`, then `master`.
+
+### 2. Resolve Default Branch
+
+- Resolve `{default_branch}` from `git -C {target_path} ls-remote --symref security HEAD`.
+  > Where the remote reports no `HEAD`, take `main`, then `master`.
+
+### 3. Create Security Branch
+
 - Set `{branch_name}` to `` `vuln/remediate-{short_id}` ``.
 - Check out a new local branch named `{branch_name}` off the fetched private-fork ref.

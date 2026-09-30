@@ -1,5 +1,5 @@
 id: prism-decision
-version: 1.0.1
+version: 1.0.0
 name: Prism Decision
 description: Settle whether the change takes the full prism pipeline or the single inline structural pass.
 variables:
@@ -12,6 +12,7 @@ variables:
     - pr_number
     - problem_complexity
     - problem_statement
+    - push_remote
     - requirements
     - target_path
     - target_repo
@@ -47,8 +48,8 @@ steps:
     technique:
       name: git::three-dot-name-status
       inputs:
-        repo_path: component_git_dir
-        base_ref: default_branch
+        repo_path: target_path
+        base_ref: "{push_remote}/{default_branch}"
   - kind: technique
     id: assess
     when: problem_complexity == 'complex' && is_review_mode != true
@@ -91,6 +92,5 @@ exits:
   - id: done
     isDefault: true
 outcome:
-  - A complex change under review takes the full prism pipeline
-  - On an implementation run, the user chooses the full pipeline or the inline pass on an assessed recommendation of whether the full pipeline is worth its cost
-  - Every other change takes the inline pass
+  - "`pipeline_mode` names the structural analysis post-implementation review runs for the change"
+  - A choice the user makes is made against an assessed recommendation of what the full pipeline adds

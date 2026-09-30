@@ -7,10 +7,12 @@ variables:
     - case_index
     - case_outcomes
     - changed_files
+    - default_branch
     - head_sha
     - is_review_mode
     - pipeline_mode
     - prism_value_assessment
+    - push_remote
   writes:
     - name: case_outcomes
       type: array
@@ -27,4 +29,4 @@ exits:
   - id: all-cases
     isDefault: true
 outcome:
-  - The case's outcome joins the others, so the report reads every case from one list
+  - One outcome per case walked

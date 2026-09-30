@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.0.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ What the decision settled in each case, shaped by [Template](../resources/decisi
 
 ## Protocol
 
-### 1. Write the Report
+### 1. Write Report
 
 - Fill one row per entry of `{case_outcomes}` per [Template](../resources/decision-case-report.md#template) and its [Rules](../resources/decision-case-report.md#rules).
 - Write `{prism_decision_case_report}` to `{planning_folder_path}`.
