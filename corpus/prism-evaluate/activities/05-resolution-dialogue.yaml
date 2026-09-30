@@ -32,6 +32,9 @@ variables:
     - name: mitigation_context
       type: string
       description: Text the reader typed supplying context for the finding under discussion
+    - name: mitigation_discussion
+      type: array
+      description: Every context the reader typed for the finding under discussion, in the order given
     - name: mitigation_plan_path
       type: string
       description: Path to the `MITIGATION-PLAN.md` artifact
@@ -96,6 +99,14 @@ steps:
                   setVariable:
                     finding_disposition: discuss
                   recordReply: mitigation_context
+          - kind: action
+            id: gather-discussion
+            when: finding_disposition == 'discuss'
+            actions:
+              - action: set
+                target: mitigation_discussion
+                value: "{mitigation_context}"
+                description: The context just given, appended to the contexts the finding is discussed under.
       - kind: technique
         id: record-decision
         technique: resolve-findings::record-finding-decision
@@ -105,9 +116,9 @@ steps:
             value: "{finding_decision}"
             description: Append the finding's recorded disposition.
           - action: set
-            target: mitigation_context
+            target: mitigation_discussion
             value: null
-            description: Clear the context the finding just recorded was discussed under.
+            description: Clear the contexts the finding just recorded was discussed under.
   - kind: technique
     id: compile-plan
     technique: resolve-findings::compile-plan

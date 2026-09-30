@@ -9,9 +9,9 @@ Propose a tier-appropriate mitigation for a single finding — a correction, a r
 
 ## Inputs
 
-### mitigation_context
+### mitigation_discussion
 
-*(optional)* Text the reader typed supplying context for the finding under discussion. Unset until the reader discusses the finding.
+*(optional)* Every context the reader typed for the finding under discussion, in the order given. Unset until the reader discusses the finding.
 
 ## Outputs
 
@@ -28,7 +28,7 @@ The mitigation proposed for the finding: its tier, the target location it addres
 ### 2. Compose the Mitigation
 
 - Compose `{proposed_mitigation}` in the shape the finding's tier prescribes (`t1-correction`, `t2-reframing`, `t3-novel-mechanism`, `t4-acknowledgement`), carrying the target location, the text, and the reasoning.  
-  > When `{mitigation_context}` is bound, the proposal takes it into account, superseding the earlier proposal's wording.
+  > When `{mitigation_discussion}` is bound, the proposal takes every context in it into account, superseding the earlier proposal's wording.
 
 ## Rules
 

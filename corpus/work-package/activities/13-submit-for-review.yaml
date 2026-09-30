@@ -349,7 +349,7 @@ steps:
             body_conforms: true
       - id: provide-input
         label: Provide missing input
-        description: The missing input (a pushed engineering branch, an issue rationale) is now in place in the repository, so the body renders again
+        description: The missing input (a pushed engineering branch, an issue rationale) is now in place in the repository
         effect:
           setVariable:
             body_conforms: false
