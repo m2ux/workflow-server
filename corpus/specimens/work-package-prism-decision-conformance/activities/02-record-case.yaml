@@ -1,0 +1,28 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the decision settled for the case just walked.
+variables:
+  reads:
+    - case_index
+    - case_outcomes
+    - is_review_mode
+    - prism_value_assessment
+    - run_full_prism
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What the decision settled in each case taken so far.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: more-cases
+    when: case_index < 2
+  - id: all-cases
+    isDefault: true
+outcome:
+  - The case's outcome joins the others, so the report reads every case from one list
