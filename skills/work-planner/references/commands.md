@@ -16,7 +16,8 @@ Every command the skill runs, one spec per operation. The mode files name a spec
 - **Example values.**  Substitute the real ones:
   - `936` an initiative issue, `943` and `937` its epics, `637` a task issue, `874` an orphan, `946` an initiative off the board;
   - `950` a pull request, `I07` and `I08` initiative numbers;
-  - board `9`, the Canon theme's, and `419167630` its Status field id.
+  - board `9`, the Canon theme's, and `419167630` its Status field id;
+  - `m2ux` the user.
 
 ## Issues
 
@@ -58,6 +59,14 @@ Prints an initiative's issue number, found by its title's prefix.
 
 ```bash
 gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("[I08]")) | .number'
+```
+
+### Find user
+
+Prints the login `gh` runs as, the user assigned to work from Ready on.
+
+```bash
+gh api user --jq .login
 ```
 
 ### Fetch comments
@@ -307,12 +316,13 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/up
 
 ### Plan board changes
 
-Derives each issue's Status and prints the call for each issue to add, item to remove and Status to set.
+Derives each issue's Status and assignees, and prints the call for each issue to add, item to remove, Status to set and assignee to add or remove.
 
 - Give an issue it reports unresolved with `--others`.
+- `--assignee` is the user [Find user](#find-user) prints.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
 ```
 
 ### Summarise progress

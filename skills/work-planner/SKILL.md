@@ -116,6 +116,8 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **One board per theme.**
   - Its title is the theme's name, `Canon`, and it is linked to the repository.
   - It holds the theme's initiatives, their epics and their task issues.
+- **Assignees.**
+  An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee.
 - **Standalone issues.**  A standalone issue sits on no board.
 - **A new theme.**
   - It needs its label and its board before an initiative takes it.
