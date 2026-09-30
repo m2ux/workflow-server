@@ -6,7 +6,9 @@
 #
 # origin is this fork. upstream is the template remote fork-workspace.sh keeps.
 # The pull request base is branch workspace on upstream. The head is the
-# current branch on origin.
+# current branch, pushed to origin when GitHub records origin as a fork of
+# upstream, and to upstream otherwise. GitHub opens a cross-repository pull
+# request only from a repository in the base repository's fork network.
 set -euo pipefail
 
 UPSTREAM_BRANCH="workspace"
@@ -54,22 +56,25 @@ if [[ "$ahead" -eq 0 ]]; then
   exit 0
 fi
 
-echo "Pushing ${current} → origin"
-git -C "$ROOT" push -u origin "$current"
-
 upstream_slug="$(github_slug "$(git -C "$ROOT" remote get-url upstream)")"
 origin_slug="$(github_slug "$(git -C "$ROOT" remote get-url origin)")"
-upstream_owner="${upstream_slug%%/*}"
-origin_owner="${origin_slug%%/*}"
-if [[ "$origin_owner" == "$upstream_owner" && "$origin_slug" == "$upstream_slug" ]]; then
-  head="$current"
+origin_parent="$(gh api --jq '.parent.full_name // ""' "repos/${origin_slug}")"
+if [[ "$origin_parent" == "$upstream_slug" ]]; then
+  push_remote="origin"
+  head_owner="${origin_slug%%/*}"
+  head="${head_owner}:${current}"
 else
-  head="${origin_owner}:${current}"
+  push_remote="upstream"
+  head_owner="${upstream_slug%%/*}"
+  head="$current"
 fi
+
+echo "Pushing ${current} → ${push_remote}"
+git -C "$ROOT" push "$push_remote" "$current"
 
 existing="$(gh api --method GET --jq '.[0].html_url // ""' \
   "repos/${upstream_slug}/pulls" \
-  -f "head=${origin_owner}:${current}" \
+  -f "head=${head_owner}:${current}" \
   -f "base=${UPSTREAM_BRANCH}" \
   -f state=open)"
 if [[ -n "$existing" ]]; then
