@@ -1,5 +1,5 @@
 id: select-mode
-version: 2.4.0
+version: 2.4.1
 name: Plan Analysis
 description: Select an analysis mode for the user's request.
 variables:
@@ -49,7 +49,7 @@ steps:
     actions:
       - action: set
         target: pipeline_mode
-        description: Selected analysis mode.
+        description: The mode the plan settled, which is the caller's preset where one was given.
       - action: set
         target: analysis_units
         description: Ordered execution units.
