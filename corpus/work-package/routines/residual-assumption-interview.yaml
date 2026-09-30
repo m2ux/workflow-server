@@ -101,7 +101,7 @@ steps:
         technique: review-assumptions::assemble-one
       - kind: checkpoint
         id: "decision#{current_assumption.id}"
-        message: "Assumption {current_assumption.id}: {current_assumption.statement}"
+        message: "Assumption {current_assumption.id}: {current_assumption.statement} {assumption_review_presentation}"
         options:
           - id: resolve-inline
             label: Accept the assumption

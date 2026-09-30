@@ -35,6 +35,6 @@ These techniques are referenced by qualified id and resolved directly from the n
 | [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) | Seed and drift-check planning-folder `README.md` |
 | [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` (via prepare-workflow-branch ensure), `remove-worktree` (optional retrospective teardown) |
 | [`work-package::stakeholder-overview`](/work-package/techniques/stakeholder-overview.md) | Plain-language Problem Overview (intake) and Solution Overview (scope-and-draft) sections of the planning README |
-| [`work-package::review-assumptions`](/work-package/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `interview`, `record` for the design-assumption lifecycle |
+| [`work-package::review-assumptions`](/work-package/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `record` for the design-assumption lifecycle |
 | [`git`](/git/techniques/TECHNIQUE.md) | `commit-regular-files`, `push-branch` |
 | [`github`](/github/techniques/TECHNIQUE.md) | `create-pr`, `mark-ready`, `update-pr-description` (bound from validate-and-commit) |

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,7 +17,15 @@ Code-analyzable assumptions closed via targeted analysis.
 
 ### assumptions_log
 
-Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining (same `assumptions-log.md` artifact, written back in place).
+Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining, written back in place.
+
+#### artifact
+
+`assumptions-log.md`
+
+#### audience
+
+`human`
 
 ### has_resolvable_assumptions
 

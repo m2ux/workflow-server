@@ -7,6 +7,7 @@ variables:
     - assumption_outcome
     - change_category
     - component_git_dir
+    - has_resolvable_assumptions
     - operation_type
     - planning_folder_path
     - pr_number
@@ -138,13 +139,10 @@ steps:
       inputs:
         assumption_source: the refined workflow requirements and the constructs they name
         assumption_categories: "Activity Boundaries, Checkpoint Necessity, Technique Selection, Rule Scope, Variable State, Schema Construct Choice"
-  - kind: technique
-    id: reconcile-assumptions
-    technique: reconcile-design-assumptions
   - kind: loop
     id: assumption-reconciliation
     name: Assumption Reconciliation Loop
-    loopType: while
+    loopType: doWhile
     continueWhile:
       type: simple
       variable: has_resolvable_assumptions
@@ -153,7 +151,7 @@ steps:
     maxIterations: 10
     steps:
       - kind: technique
-        id: reconcile-iteration
+        id: reconcile
         technique: reconcile-design-assumptions
   - kind: action
     id: announce-open-judgements

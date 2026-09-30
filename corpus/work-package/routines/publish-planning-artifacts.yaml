@@ -11,9 +11,9 @@ inputs:
   - id: component_git_dir
     description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
   - id: host_repo_path
-    description: Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.
+    description: Absolute path to the host repository the session belongs to.
   - id: issue_number
-    description: The ticket the commit message names.
+    description: GitHub or Jira issue number.
   - id: planning_folder_path
     description: Absolute path to this run's planning folder — the write location for every working artifact.
   - id: pr_number

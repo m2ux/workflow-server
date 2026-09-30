@@ -31,7 +31,7 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 - Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the part of `{assumption_source}` generating them
    > Use the categories supplied for the current phase.
-- Assign a risk letter (**H** / **M** / **L**) from the classification vocabulary; treat **H** as requiring validation before proceeding and **M** as checkpoint-confirmable for the current task
+- Assign a risk letter (**H** / **M** / **L**) from the classification vocabulary
 
 ### 3. Record a Null Result
 
