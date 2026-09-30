@@ -16,7 +16,8 @@ Every command the skill runs, one spec per operation. The mode files name a spec
 - **Example values.**  Substitute the real ones:
   - `936` an initiative issue, `943` and `937` its epics, `637` a task issue, `874` an orphan, `946` an initiative off the board;
   - `950` a pull request, `I07` and `I08` initiative numbers;
-  - board `2`, and `411749936` its Status field id.
+  - board `9`, the Canon theme's, and `419167630` its Status field id;
+  - `m2ux` the user.
 
 ## Issues
 
@@ -58,6 +59,14 @@ Prints an initiative's issue number, found by its title's prefix.
 
 ```bash
 gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("[I08]")) | .number'
+```
+
+### Find user
+
+Prints the login `gh` runs as, the user assigned to work from Ready on.
+
+```bash
+gh api user --jq .login
 ```
 
 ### Fetch comments
@@ -170,20 +179,12 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f title='[I07:E00] Purpose
 
 ## Project boards
 
-### List boards
+### Find theme board
 
-Lists the owner's open boards, by number and title.
-
-```bash
-gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | [.number, .title] | @tsv'
-```
-
-### Fetch board items
-
-Saves a board's items, for [Find board](#find-board).
+Prints the number of the open board for one theme, by the theme's name that opens its title.
 
 ```bash
-gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100" > items-2.json
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | startswith("Canon: ")) | .number'
 ```
 
 ### Fetch board fields
@@ -191,7 +192,7 @@ gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100" > items-2.json
 Saves a board's fields.
 
 ```bash
-gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" > fields.json
+gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" > fields.json
 ```
 
 ### Find Status field
@@ -199,7 +200,7 @@ gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" > fields.json
 Prints the id of a board's Status field.
 
 ```bash
-gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
+gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
 ```
 
 ### Fetch board items with Status
@@ -207,7 +208,7 @@ gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" --jq '.[] | s
 Saves a board's items with their Status, each carrying its issue whole.
 
 ```bash
-gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=411749936" > items.json
+gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=419167630" > items.json
 ```
 
 ## Scripts
@@ -313,22 +314,15 @@ Reports an initiative's delivery state against its epics.
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-936.json --epics issue-943.json issue-937.json
 ```
 
-### Find board
-
-Names the board holding the initiative, from each board's [Fetch board items](#fetch-board-items).
-
-```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py --find issue-936.json 2=items-2.json 7=items-7.json
-```
-
 ### Plan board changes
 
-Derives each issue's Status and prints the call for each issue to add, item to remove and Status to set.
+Derives each issue's Status and assignees, and prints the call for each issue to add, item to remove, Status to set and assignee to add or remove.
 
 - Give an issue it reports unresolved with `--others`.
+- `--assignee` is the user [Find user](#find-user) prints.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
 ```
 
 ### Summarise progress

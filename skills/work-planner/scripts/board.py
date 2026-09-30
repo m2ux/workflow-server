@@ -1,21 +1,18 @@
-"""Find an initiative's project board, and bring the board's Status up to date with its issues.
+"""Bring an initiative's theme board up to date with its issues.
 
 Usage:
-  python3 board.py --find issue-936.json 2=items-2.json 7=items-7.json ...
   python3 board.py issue-936.json --epics issue-943.json ... --tasks issue-637.json ... --prs prs.json
-      --board users/{owner}/projectsV2/2 --fields fields.json --items items.json --out board/
+      --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/
+      --assignee m2ux
       [--others issue-750.json ...]
 
 Issue files are as `gh api repos/{owner}/{repo}/issues/943` returns them, and prs.json as update.py
 reads it. A board's fields and items are as the REST API returns them, pages concatenated:
-  gh api --paginate "users/{owner}/projectsV2/2/fields?per_page=100" > fields.json
-  gh api --paginate "users/{owner}/projectsV2/2/items?per_page=100&fields=<Status field id>" > items.json
+  gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" > fields.json
+  gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=<Status field id>" > items.json
 An organization's board is under orgs/{owner} in place of users/{owner}.
 
---find prints the boards, of those given, holding an item for the initiative issue, and exits 1
-unless exactly one does.
-
-Otherwise the board covers the initiative, every epic its Work Breakdown links, and every task issue
+The board covers the initiative, every epic its Work Breakdown links, and every task issue
 an epic row links, in whichever repository each lives. An issue is known by its repository and
 number, so an epic another repository holds is tracked like one of the initiative's own, and two
 repositories' issues of one number stay apart. An item already on the board for an issue those
@@ -41,9 +38,11 @@ given (another initiative's epic, #750) is reported unresolved and read as undel
 issue with --others to resolve it. An issue outside the initiative's repository prints as
 owner/repo#number.
 
-Printed: the gh call for each issue to add, item to remove and Status to set. A Status write sends
-the body file written under --out. Run the calls, fetch the items again and re-run: the board is
-current when nothing is left to do.
+An issue from Ready on is assigned to the --assignee user, and one in Backlog has no assignee.
+
+Printed: the gh call for each issue to add, item to remove, Status to set and assignee to add or
+remove. A Status write sends the body file written under --out. Run the calls, fetch the issues and
+items again and re-run: the board is current when nothing is left to do.
 """
 import argparse
 import json
@@ -202,35 +201,33 @@ class Board:
         return True
 
 
-def find(initiative_path: str, boards: list[str]) -> int:
-    issue = json.loads(Path(initiative_path).read_text())
-    holding = []
-    for spec in boards:
-        number, path = spec.split('=', 1)
-        if any(i.get('content_type') == 'Issue' and i['content'].get('number') == issue['number']
-               and i['content'].get('repository_url') == issue['repository_url'] for i in pages(path)):
-            holding.append(number)
-    print(f"#{issue['number']} is on board {', '.join(holding)}" if holding else f"#{issue['number']} is on no board given")
-    return 0 if len(holding) == 1 else 1
+def assignee_calls(key: Key, status: str, issue: dict, login: str) -> list[str]:
+    """The calls that give an issue at this Status its assignees: the user from Ready on, and nobody
+    in Backlog."""
+    repo, number = key
+    held = [a['login'] for a in issue.get('assignees') or []]
+    path = f'repos/{repo}/issues/{number}/assignees'
+    if status == 'Backlog':
+        return [f"gh api --method DELETE {path} -f 'assignees[]={who}'" for who in held]
+    if login not in held:
+        return [f"gh api --method POST {path} -f 'assignees[]={login}'"]
+    return []
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('initiative')
-    parser.add_argument('boards', nargs='*', help='--find: N=items-N.json for each board')
-    parser.add_argument('--find', action='store_true', help='print the boards holding the initiative')
     parser.add_argument('--epics', nargs='*', default=[])
     parser.add_argument('--tasks', nargs='*', default=[])
     parser.add_argument('--others', nargs='*', default=[], help='issues outside the initiative its rows depend on')
     parser.add_argument('--prs', help='pull requests as JSON lines')
-    parser.add_argument('--board', help='the board path, e.g. users/m2ux/projectsV2/2')
+    parser.add_argument('--board', help='the board path, e.g. users/m2ux/projectsV2/9')
     parser.add_argument('--fields', help="the board's fields")
     parser.add_argument('--items', help="the board's items, fetched with the Status field")
     parser.add_argument('--out', help='directory for the Status body files')
+    parser.add_argument('--assignee', help='the user assigned to every issue from Ready on')
     args = parser.parse_args()
-    if args.find:
-        return find(args.initiative, args.boards)
-    for name in ('prs', 'board', 'fields', 'items', 'out'):
+    for name in ('prs', 'board', 'fields', 'items', 'out', 'assignee'):
         if not getattr(args, name):
             sys.exit(f'--{name} is required')
 
@@ -343,6 +340,7 @@ def main() -> int:
     for key, wanted in sorted(status.items()):
         title = f"{label(key, home)} {issues[key]['title']}"
         held = on_board.get(key)
+        calls = [] if wanted is None else assignee_calls(key, wanted, issues[key], args.assignee)
         if wanted is None and held:
             print(f'  remove {title} (closed, not completed): '
                   f'gh api --method DELETE {args.board}/items/{held[0]}')
@@ -353,9 +351,11 @@ def main() -> int:
             body = out / f"status-{wanted.lower().replace(' ', '-')}.json"
             print(f"  set {title}: {held[1] or 'no Status'} → {wanted}: "
                   f'gh api --method PATCH {args.board}/items/{held[0]} --input {body}')
-        else:
+        elif not calls:
             current += 1
             continue
+        for call in calls:
+            print(f'  assign {title} ({wanted}): {call}')
         todo += 1
     for note in dict.fromkeys(unresolved):
         print(f'  unresolved: {note}')

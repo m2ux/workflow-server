@@ -52,16 +52,15 @@ Records delivered work on an initiative, its epics and their task issues: links 
 12. **Update the board.**
     Update it once every issue is patched and closed, fetching the issues again first.
     - **Find it.**
-      - [List boards](commands.md#list-boards), run [Fetch board items](commands.md#fetch-board-items) for each, and run [Find board](commands.md#find-board).
-      - The one board holding the initiative is its board.
-      - When none or several do, ask the user which board, or none; the first update puts the initiative on the board chosen, so the next search finds it.
+      - The board is the initiative's theme board, per SKILL.md's [Themes and boards](../SKILL.md#themes-and-boards): run [Find theme board](commands.md#find-theme-board) with its theme.
+      - When no open board carries that theme, ask the user to create it, and update the board once it exists.
     - **Plan.**
       - Run [Fetch board fields](commands.md#fetch-board-fields) and [Find Status field](commands.md#find-status-field), then [Fetch board items with Status](commands.md#fetch-board-items-with-status).
-      - Run [Plan board changes](commands.md#plan-board-changes), which prints the call for each change.
+      - Run [Plan board changes](commands.md#plan-board-changes) with the user from [Find user](commands.md#find-user), which prints the call for each board and assignee change.
     - **Write.**
       - Run each call it prints.
-      - Fetch the items again and re-run: that re-read confirms every write, and the board is current when it reports nothing to do.
+      - Fetch the issues and items again and re-run: that re-read confirms every write, and the board is current when it reports nothing to do.
       - An issue added in one pass gets its Status in the next.
 13. **Report.**
-    Report per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts, what was closed, and each board change.
+    Report per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts, what was closed, and each board and assignee change.
 
