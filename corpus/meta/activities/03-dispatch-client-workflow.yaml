@@ -17,10 +17,6 @@ variables:
     - name: client_in_flight
       type: array
       description: The client activities in flight when the walk opens
-    - name: client_walk_resumes
-      type: boolean
-      description: Whether the client session stands on an activity when the walk opens
-      defaultValue: false
     - name: current_activity
       type: string
       description: The client activity the walk holds
@@ -38,9 +34,6 @@ steps:
       - action: set
         target: client_workflow_completed
         value: false
-      - action: set
-        target: client_walk_resumes
-        value: false
   - kind: technique
     id: read-client-position
     technique:
@@ -51,16 +44,6 @@ steps:
         in_flight: client_in_flight
         session_state: client_session_state
         execution_trace: client_execution_trace
-  - kind: action
-    id: resume-standing-client
-    when: client_in_flight.0
-    actions:
-      - action: set
-        target: from_activity
-        value: "{client_in_flight.0}"
-      - action: set
-        target: client_walk_resumes
-        value: true
   - kind: routine
     id: client-activity-loop
     routine: activity-loop
@@ -68,7 +51,7 @@ steps:
       session_index: client_session_index
       initial_activity: client_initial_activity
       completes_session: false
-      resumes_walk: "{client_walk_resumes}"
+      standing_activity: "{client_in_flight.0}"
     outputs:
       current_activity: current_activity
       from_activity: from_activity

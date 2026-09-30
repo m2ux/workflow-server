@@ -28,9 +28,8 @@ inputs:
   - id: completes_session
     default: true
     description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
-  - id: resumes_walk
-    default: false
-    description: Whether the session stands on `from_activity`, where an earlier walk left it. The walk then opens on that activity and carries it without an advance.
+  - id: standing_activity
+    description: The activity the session stands on, where an earlier walk left it. The walk opens on that activity and carries it without an advance. Unset, the walk opens on `initial_activity`.
 
 outputs:
   - id: current_activity
@@ -41,7 +40,7 @@ outputs:
     description: The activity an advance retires, which every entry names as the one its exit belongs to.
   - id: trace_tokens
     type: array
-    description: The trace token of every advance the walk made, in the order it made them.
+    description: The trace token of every advance the walk made, in the order it made them. A walk opened on `standing_activity` appends to the tokens the host holds.
 
 internals:
   - id: fan_convergence_activity
@@ -60,7 +59,7 @@ steps:
   # opening step clears what that walk retired: the walk's first advance retires nothing.
   - kind: action
     id: prime-initial-activity
-    when: resumes_walk != true
+    when: "!standing_activity"
     actions:
       - action: set
         target: current_activity
@@ -76,11 +75,14 @@ steps:
         value: []
   - kind: action
     id: resume-standing-activity
-    when: resumes_walk == true
+    when: standing_activity
     actions:
       - action: set
         target: current_activity
-        value: "{from_activity}"
+        value: "{standing_activity}"
+      - action: set
+        target: from_activity
+        value: "{standing_activity}"
       - action: set
         target: stands_on_activity
         value: true

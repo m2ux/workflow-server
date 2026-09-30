@@ -15,7 +15,7 @@ The session's variable bag as the server holds it.
 
 ### in_flight
 
-The activities the session stands on: one on an ordinary walk, one per branch while a fan runs. Empty before the session's first advance and once it completes.
+The activities the session stands on: one on an ordinary walk, one per branch while a fan runs. Empty before the session's first advance and after its advance onto `__terminal__`.
 
 ### execution_trace
 

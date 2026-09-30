@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Rewrite the client planning folder's session-trace and token-usage artifacts fro
 
 ### trace_tokens
 
-*(optional)* Opaque client-run trace tokens for dispatch reconciliation when present.
+*(optional)* The trace token of every advance the client run made, the terminal advance last. Empty or unset where the walk accumulated none.
 
 ## Outputs
 
@@ -35,17 +35,24 @@ Updated lean mechanical trace under the planning folder (`*session-trace.md`).
 - Include every activity that ran, including the terminal activity and any failed or partial dispatches that left a ledger row.
 - When the ledger is empty, leave existing artifacts untouched and stop — do not fabricate figures.
 
-### 2. Re-render token usage
+### 2. Resolve the client trace
+
+- Resolve `{trace_tokens}` once per `dispatch-activity.resolve-trace-at-close-out`, naming `{client_session_index}` as the session.
+  > - When `{trace_tokens}` is empty or unset, skip this phase.
+
+### 3. Re-render token usage
 
 - Find-or-update the existing `token-usage.md` (same prefix the client close-out minted) from the ledger, to the shape [token-usage](/meta/resources/token-usage.md#template) lays out and the [Rules](/meta/resources/token-usage.md#rules) that populate it.
+- Reconcile the ledger's entry count against the dispatches the resolved trace counts, for the artifact's Coverage section.
+  > - When no trace was resolved, the dispatch count is unknown, and the totals are a floor.
 - Do not mint a second prefix.
 
-### 3. Re-render session trace
+### 4. Re-render session trace
 
-- Find-or-update the existing `session-trace.md` from the same ledger, to the shape [session-trace](/meta/resources/session-trace.md#template) lays out and the [Rules](/meta/resources/session-trace.md#rules) that populate it.
+- Find-or-update the existing `session-trace.md` from the resolved trace, to the shape [session-trace](/meta/resources/session-trace.md#template) lays out and the [Rules](/meta/resources/session-trace.md#rules) that populate it.
 - When a successful terminal dispatch left no ledger row, record that gap in mechanical notes and in the coverage reconciliation. Wall-clock from durable `activity_dispatched`/`activity_entered` to `activity_exited` may appear as an **unpriced duration note** only when both timestamps exist — never as invented tokens.
 
-### 4. Refresh the README cost line
+### 5. Refresh the README cost line
 
 - Update the planning-folder README token-use summary line to match the revised totals. When usage is absent, omit the line.
 

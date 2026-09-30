@@ -91,3 +91,4 @@ exits:
   - id: completed
     isDefault: true
   - id: return
+    immediate: true

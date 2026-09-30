@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.1
+  version: 2.6.0
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ The PR number for this work package
 ### planning_folder_path
 
 Path to the planning folder where the final outcome and retrospective are recorded
-
-### trace_tokens
-
-*(optional)* Opaque HMAC-signed trace-token collection accumulated across the run.
 
 ## Outputs
 

@@ -50,4 +50,4 @@ Honor `dispatch-activity.no-get-activity-from-orchestrator`, `dispatch-activity.
 
 ### resolve-trace-at-close-out
 
-At client finalize / retrospective close-out, honor `dispatch-activity.resolve-trace-at-close-out`.
+At close-out, honor `dispatch-activity.resolve-trace-at-close-out`.

@@ -102,7 +102,7 @@ Every `next_activity` returning `_meta.trace_token` has that token in the `advan
 
 ### resolve-trace-at-close-out
 
-Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). Tokens stay opaque until that resolve, which reads the whole run where a per-activity `get_trace` reads one advance. Skip resolve when `trace_tokens` is empty.
+The walk's close-out resolves the run's accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }`, optionally with `inspect_session` for fetch and fidelity context. That resolve reads the whole run where a per-activity `get_trace` reads one advance, and each token carries its own events, so the tokens hold the run across a server restart. Tokens stay opaque until that resolve. Where `trace_tokens` is empty, the resolved trace is empty.
 
 ### say-what-a-dispatch-is-doing
 
