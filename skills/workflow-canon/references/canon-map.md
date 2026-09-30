@@ -1,6 +1,6 @@
 # Canon Map
 
-How to address each authority. Paths are in SKILL.md's [home links](../SKILL.md#workflow-canon), roots in its [Homes](../SKILL.md#homes). What a home requires is in that home.
+How each home is enumerated, and where a judgement already made is recorded.
 
 ## Unit inventory
 
@@ -16,7 +16,7 @@ Read the enumeration from the home at the commit audited, with [List units](comm
 - Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
 - The catalog's first family binds when the change edits `anti-patterns.md`. Otherwise it is `not-applicable`, with that reason.
 
-## Authorities beyond the prose homes
+## Prior judgements
 
 An entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.
 
@@ -28,11 +28,10 @@ An entry can fire against an instance a surface has already judged. Read that su
 
 `EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.
 
-## Which units bind a file kind
+## File kinds
 
 Every unit binds until its own text excludes the file kind. `not-applicable` records that wording.
 
-## What to take
+## Covering entries
 
-- Each home's overview states what an audit takes from it. Follow the overview.
-- Where a principle names a covering entry, follow that entry for the spellings its Detect reaches, and follow the principle where it reaches a spelling the Detect does not.
+Where a principle names a covering entry, follow that entry for the spellings its Detect reaches, and follow the principle where it reaches a spelling the Detect does not.

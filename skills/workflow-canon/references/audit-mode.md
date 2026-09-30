@@ -1,6 +1,6 @@
 # Audit mode
 
-Reviews existing definitions: enumerates the units, walks them over the surface, attributes each finding, verifies the Highs, and reports. Audit reports; bringing content into compliance hands each confirmed finding to [Implement](implement-mode.md).
+Reviews existing definitions: enumerates the units, walks them over the surface, attributes each finding, verifies the Highs, and reports. Each confirmed finding goes to [Implement](implement-mode.md) to be fixed.
 
 ## Procedure
 
@@ -19,9 +19,7 @@ Reviews existing definitions: enumerates the units, walks them over the surface,
    - Re-derive each High from the cited file and the entry alone. Withdraw what that re-derivation does not reproduce. Downgrade what supports only a lesser issue.
    - Spot-confirm Mediums: the construct exists and the class is right.
    - Only confirmed findings drive fixes.
-7. **Report.**
-   - Report in the layout [Which report](reporting.md#which-report) names.
-   - A standalone header states files `read` and `unread`, the `blocked` unit count, and the change-surface counts as whole files: touched, closure, consumers.
+7. **Report.**  Report in the layout [Which report](reporting.md#which-report) names.
 8. **File a mechanised Detect.**
    - A Detect applied by pattern is a guard candidate. Name what it keys on and file it against the registry.
    - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks.
@@ -62,7 +60,6 @@ Hunk lines are not the surface. A unit read from a hunk is not `walked`. A refer
 
 - **Reach.**
   The whole of every change-surface file, and the other surface files so a pre-existing defect stays attributable.
-- **Homes.**  Take from each home what its overview says to take.
 - **Ledger.**
   - Each unit is `walked`, `not-applicable` (the unit's own wording), or `blocked` (what prevented the walk). Only `blocked` is missing coverage.
   - `walked` where the unit meets the change surface needs field-level evidence on each whole file in that intersection.

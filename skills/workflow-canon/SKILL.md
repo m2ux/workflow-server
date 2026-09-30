@@ -21,7 +21,8 @@ Workflow Canon locates the canon's homes, enumerates their units, walks them ove
 
 ## Terms
 
-- **Unit**  One heading of a home, at the level the [unit inventory](references/canon-map.md#unit-inventory) names.
+- **Unit**
+  One heading of a home, at the level the [unit inventory](references/canon-map.md#unit-inventory) names.
 - **Entry**
   An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.
 - **Walk**  Applying each unit to every file on the surface, and recording its status.
@@ -80,4 +81,5 @@ Read the file for the mode the request calls for:
 - **Walks.**  Every walk of the canon's units follows the [walk rules](references/walk-rules.md).
 - **Commands.**
   Every spec runs under the shared conventions at the top of [commands.md](references/commands.md).
-- **Commit gate.**  A definition change takes an [Audit](references/audit-mode.md) before it commits.
+- **Commit gate.**
+  A definition change takes an [Audit](references/audit-mode.md) before it commits.

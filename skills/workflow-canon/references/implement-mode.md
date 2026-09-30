@@ -1,6 +1,6 @@
 # Implement mode
 
-Makes a specified change: a work item, a finding, or a defect with a location. Closing a confirmed finding is Implement, and it writes the Fix the entry states. The surface is the specification, not the diff.
+Makes a specified change: a work item, a finding, or a defect with a location. A finding is closed with the Fix its entry states. The surface is the specification, not the diff.
 
 ## Procedure
 

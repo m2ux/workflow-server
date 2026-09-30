@@ -13,7 +13,7 @@ Changes the skill itself: SKILL.md and its references. Every revision follows th
    Branch a worktree for the change, and commit each distinct change as its own commit.
 4. **Revise.**
    - Make the change in the rule's one home, and link to it from every other file that needs it.
-   - A criterion belongs to its canon home on the corpus tree. The skill locates and walks it, and never restates it.
+   - Keep criteria in their homes, per SKILL.md's [Rules](../SKILL.md#rules).
    - Write it to the guidelines' layout, prose, link and command rules as it is written, not in a later pass.
 5. **Check against the guidelines.**
    Read every changed file against each section of the [skill guidelines](../../guidelines.md), and fix what departs:

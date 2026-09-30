@@ -2,11 +2,9 @@
 
 Every command the skill runs, one spec per operation. The mode files name a spec by linking to it.
 
-- **Ownership.**
-  These specs follow the server's `AGENTS.md`, as SKILL.md's [Dependencies](../SKILL.md#dependencies) states.
 - **Where they run.**
   - `git` and `npm` commands run in the server checkout.
-  - Searches of `corpus/` run in the corpus tree. Paths are in SKILL.md's [home links](../SKILL.md#workflow-canon), roots in its [Homes](../SKILL.md#homes).
+  - Searches of `corpus/` run in the corpus tree.
 - **Branch point.**  Take the verdict at the branch point, and hold that checkout still for the run.
 - **Exit codes.**
   - Read the check's own exit code. A pipe reports the filter's.
