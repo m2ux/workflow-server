@@ -75,6 +75,7 @@ The user approved narrowing I07 E02 (D10).
 
 | ID | Decision | Alternatives rejected |
 | --- | --- | --- |
+| D11 | The hook runs the guards in the `.project/main` of the workspace holding its script, with `--root` naming the edited file's corpus tree; the corpus trees are separate clones, so git links neither to a server checkout | A server path rendered into settings by the deploy script; searching upward for `guards/check-all.ts` with a fallback |
 | D10 | This initiative owns the construct tags, index and their guard; I07 E02 drops its tag task and tag clauses, and depends on this initiative | I07 owning them, with G3–G5 waiting on its chain; folding this initiative into I07 |
 
 ## Issues
