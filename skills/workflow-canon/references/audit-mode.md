@@ -22,7 +22,7 @@ Reviews existing definitions: enumerates the units, walks them over the surface,
 7. **Report.**  Report in the layout [Which report](reporting.md#which-report) names.
 8. **File a mechanised Detect.**
    - A Detect applied by pattern is a guard candidate. Name what it keys on and file it against the registry.
-   - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks.
+   - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.
 
 ## Scope
 
@@ -76,3 +76,5 @@ Hunk lines are not the surface. A unit read from a hunk is not `walked`. A refer
 - **`pre-existing`**
   The same construct and evidence at the base ref, independent of an I/O contract change on this surface.
 - **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.
+- **`fix`**
+  Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.
