@@ -77,6 +77,26 @@ The user approved narrowing I07 E02 (D10).
 | --- | --- | --- |
 | D10 | This initiative owns the construct tags, index and their guard; I07 E02 drops its tag task and tag clauses, and depends on this initiative | I07 owning them, with G3–G5 waiting on its chain; folding this initiative into I07 |
 
+## Issues
+
+| Level | Issue |
+| --- | --- |
+| I09 | [#1023](https://github.com/m2ux/workflow-server/issues/1023) |
+| E00 Fix Convergence | [#1024](https://github.com/m2ux/workflow-server/issues/1024) |
+| E01 Edit-time Guards | [#1025](https://github.com/m2ux/workflow-server/issues/1025) |
+| E02 Fires-on Ids | [#1026](https://github.com/m2ux/workflow-server/issues/1026) |
+| E03 Anti-pattern Declarations | [#1027](https://github.com/m2ux/workflow-server/issues/1027) |
+| E04 Principle Declarations | [#1028](https://github.com/m2ux/workflow-server/issues/1028) |
+| E05 Construct Index | [#1029](https://github.com/m2ux/workflow-server/issues/1029) |
+
+I07 edits, approved by the user:
+
+- **#940 (E02).**  W03 and its criterion removed; AC5 renumbered AC4 without its tag clause; W05 no longer depends on W03; the Proposal names I09 as owner of the tags and index.
+- **#938 (E05).**  W04 depends on I09 E05 W01 in place of I07 E02 W03; the Proposal and References route through I09 E05.
+- **#936 (I07).**  E05's Depends on is E04 alone, as Check dependencies derives; the Proposal drops "index it by construct"; References add I09.
+
+Links to repoint once #1022 merges: the planning-record links in #1023 R1 and in each I09 epic's R1.
+
 ## Delivery notes
 
 - **E00.**  #1019 merged into its stacked base after that base had merged; #1021 carried it into `workspace` and delivers E00 W01–W03.
