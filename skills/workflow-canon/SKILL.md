@@ -21,7 +21,7 @@ Locates the canon homes, enumerates their units, walks them, and reports. Follow
 | Anti-Patterns | `corpus/canon/resources/anti-patterns.md` | corpus |
 | Convention Conformance | `corpus/canon/resources/convention-conformance.md` | corpus |
 | Guard suite | `guards/guards.ts` | server |
-| Schema fields | `schemas/README.md` | server |
+| Schema fields | `docs/schemas.md` | server |
 
 Cite a principle by the title its file uses. An anchor that embeds the section ordinal breaks when a principle is inserted ahead of it.
 
@@ -40,7 +40,7 @@ Closing a confirmed finding is Implement. Audit reports. Implement writes the Fi
 
 ## Draft
 
-1. **Read what binds**, per [canon-map](references/canon-map.md#which-units-bind-a-file-kind), and follow it. Schema fields are `schemas/README.md`.
+1. **Read what binds**, per [canon-map](references/canon-map.md#which-units-bind-a-file-kind), and follow it. Schema fields are `docs/schemas.md`.
 2. **Open a live sibling.** Conformance compares against those files.
 3. **Write.**
 4. **Self-check, then save.** Re-walk the units from step 1, then § Mechanical checks. A self-check writes no findings register. A change that will commit takes Audit.
