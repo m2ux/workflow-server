@@ -1,12 +1,11 @@
 id: implement
-version: 2.21.0
+version: 2.21.1
 name: Implement Tasks
 description: Execute the implementation plan task by task.
 variables:
   reads:
     - branch_name
     - component_git_dir
-    - has_uncertain_symbols
     - host_repo_path
     - implementation_plan
     - is_review_mode

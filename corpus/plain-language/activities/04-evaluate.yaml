@@ -1,12 +1,11 @@
 id: evaluate
-version: 1.1.0
+version: 1.1.1
 name: Evaluate
 description: "Evaluate the draft against the four principles as its reader would, revise while issues remain, and complete the ISO checklist once every principle is met."
 variables:
   reads:
     - document_draft
     - document_title
-    - needs_revision
     - planning_folder_path
     - revision_round
   writes:
