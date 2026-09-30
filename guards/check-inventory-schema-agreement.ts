@@ -8,6 +8,10 @@
  * and it reads exactly like a row that works — which is how a retired construct survived in the
  * inventory after the schema, the source and the guard that policed it had all gone.
  *
+ * Rows are read only under a heading of the section form, so a heading that names a schema in any
+ * other form (`section-unread`), or an inventory with no section heading at all (`no-section`), is
+ * reported: either would leave the checks below reading nothing and passing.
+ *
  * Two checks, both keyed on what the schemas declare rather than on a list kept here:
  *
  *   `unknown-field`  — a field path in a section's rows whose root the named schema has no property
@@ -36,6 +40,9 @@ const INVENTORY = 'corpus/canon/resources/schema-construct-inventory.md';
 
 /** A section heading naming the schema its rows map onto: `## Activity-Level Constructs (activity.schema.json)`. */
 const SECTION = /^##\s+(.+?)\s+\((\w[\w-]*\.schema\.json)\)\s*$/;
+
+/** A level-two heading that names a schema file in any form, section-shaped or not. */
+const SCHEMA_NAMED = /\.schema\.json/;
 
 /** A backticked token. */
 const TOKEN = /`([^`]+)`/g;
@@ -116,6 +123,7 @@ function collect(root: string = ROOT): Finding[] {
 
   const properties = declaredProperties();
   let section: { title: string; schema: string } | undefined;
+  let sections = 0;
   let fenced = false;
   const declaredKinds = new Set<string>();
 
@@ -126,9 +134,21 @@ function collect(root: string = ROOT): Finding[] {
     const heading = SECTION.exec(line);
     if (heading) {
       section = { title: heading[1]!, schema: heading[2]! };
+      sections++;
       return;
     }
-    if (line.startsWith('## ')) { section = undefined; return; }
+    if (line.startsWith('## ')) {
+      section = undefined;
+      if (SCHEMA_NAMED.test(line)) {
+        findings.push({
+          check: 'section-unread',
+          site: `${INVENTORY}:${index + 1}`,
+          detail: `'${line.slice(3).trim()}' names a schema but not in the form a section heading takes — `
+            + '`## <title> (<name>.schema.json)`, in plain parentheses — so none of its rows is checked',
+        });
+      }
+      return;
+    }
 
     for (const match of line.matchAll(TOKEN)) {
       const token = match[1]!;
@@ -148,6 +168,14 @@ function collect(root: string = ROOT): Finding[] {
     }
   });
 
+  if (sections === 0) {
+    findings.push({
+      check: 'no-section',
+      site: INVENTORY,
+      detail: 'no heading takes the section form `## <title> (<name>.schema.json)`, so no row is checked against a schema',
+    });
+  }
+
   for (const kind of stepKinds()) {
     if (declaredKinds.has(kind)) continue;
     findings.push({
@@ -163,9 +191,9 @@ function collect(root: string = ROOT): Finding[] {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const root = requireRootOrExit('inventory-schema-agreement', DEFAULT_ROOT);
   report('inventory-schema-agreement', collect(root), {
-    okMessage: 'every construct-inventory field resolves in the schema its section names, and every step kind has a row',
+    okMessage: 'every construct-inventory section is read, every field in it resolves in the schema its section names, and every step kind has a row',
     root,
-    remedy: 'correct the field path, or delete the row when the construct it maps onto is retired; add a row for a step kind the inventory does not carry',
+    remedy: 'write each section heading as `## <title> (<name>.schema.json)`; correct the field path, or delete the row when the construct it maps onto is retired; add a row for a step kind the inventory does not carry',
   });
 }
 

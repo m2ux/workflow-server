@@ -10,8 +10,9 @@
  * took the leaf's, with nothing marking which governed.
  *
  * A leaf entry that changes the bind contract is not this defect and is not flagged: a `#### default`
- * the ancestor lacks, or an optionality marker, is what an override is for. The mirror defect — an
- * input several leaves share that no common ancestor declares at all — is `hoist-shared-inputs`, the
+ * the ancestor lacks, an optionality marker, or a required entry over an ancestor that marks the
+ * input optional, is what an override is for. The mirror defect — an input several leaves share that
+ * no common ancestor declares at all — is `hoist-shared-inputs`, the
  * hoist still owed rather than its residue, and it is out of scope here.
  *
  * Run: npx tsx guards/check-inherited-inputs.ts [--root <workflows-dir>] [--json]
@@ -45,10 +46,12 @@ function entries(span: string): Map<string, string> {
   return out;
 }
 
-function declaredIds(path: string): Set<string> {
-  if (!existsSync(path)) return new Set();
-  return new Set(entries(inputsSpan(readFileSync(path, 'utf-8'))).keys());
+function declaredEntries(path: string): Map<string, string> {
+  if (!existsSync(path)) return new Map();
+  return entries(inputsSpan(readFileSync(path, 'utf-8')));
 }
+
+const OPTIONAL = '*(optional)*';
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir).sort()) {
@@ -65,19 +68,23 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   for (const { dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
-    const rootIds = declaredIds(join(techniquesDir, 'TECHNIQUE.md'));
+    const rootEntries = declaredEntries(join(techniquesDir, 'TECHNIQUE.md'));
     for (const path of walk(techniquesDir)) {
       const span = inputsSpan(readFileSync(path, 'utf-8'));
       if (!span) continue;
       scanned++;
       const groupDir = dirname(path);
-      const groupIds =
-        groupDir === techniquesDir ? new Set<string>() : declaredIds(join(groupDir, 'TECHNIQUE.md'));
+      const groupEntries =
+        groupDir === techniquesDir ? new Map<string, string>() : declaredEntries(join(groupDir, 'TECHNIQUE.md'));
       for (const [id, text] of entries(span)) {
-        if (!rootIds.has(id) && !groupIds.has(id)) continue;
-        // an override changes the bind contract rather than restating it
-        if (text.includes('#### default') || text.includes('*(optional)*')) continue;
-        const owner = groupIds.has(id) ? 'its group' : "the workflow root's";
+        // The nearest ancestor is the declaration this entry merges over.
+        const inherited = groupEntries.get(id) ?? rootEntries.get(id);
+        if (inherited === undefined) continue;
+        // An override changes the bind contract rather than restating it: a default of its own, an
+        // optionality marker, or a required entry over an ancestor that marks the input optional.
+        if (text.includes('#### default') || text.includes(OPTIONAL)) continue;
+        if (inherited.includes(OPTIONAL)) continue;
+        const owner = groupEntries.has(id) ? 'its group' : "the workflow root's";
         findings.push({
           check: 'inherited-input-re-declared',
           site: relative(root, path),
