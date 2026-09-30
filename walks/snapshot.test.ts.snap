@@ -543,13 +543,15 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "walk-prism-child.activity-cycle.present-yielded-checkpoint:worker_result",
         "walk-prism-child.activity-cycle.release-spent-worker:worker_result",
         "walk-prism-child.activity-cycle.respond-yielded-checkpoint:worker_result",
+        "walk-prism-child.activity-cycle.resume-entered-activity:worker_result",
+        "walk-prism-child.activity-cycle.resume-yielded-worker:worker_agent_id",
         "walk-prism-child.activity-cycle.resume-yielded-worker:worker_result",
         "walk-prism-child.activity-cycle.retire-fan-envelope:post_impl_review_walk_prism_child_fan_convergence_activity",
         "walk-prism-child.activity-cycle.spawn-branches:worker_result",
         "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_stands_on_activity",
       ],
       "lazyGates": {
-        "pending": 12,
+        "pending": 13,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -2018,13 +2020,15 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "walk-prism-child.activity-cycle.present-yielded-checkpoint:worker_result",
         "walk-prism-child.activity-cycle.release-spent-worker:worker_result",
         "walk-prism-child.activity-cycle.respond-yielded-checkpoint:worker_result",
+        "walk-prism-child.activity-cycle.resume-entered-activity:worker_result",
+        "walk-prism-child.activity-cycle.resume-yielded-worker:worker_agent_id",
         "walk-prism-child.activity-cycle.resume-yielded-worker:worker_result",
         "walk-prism-child.activity-cycle.retire-fan-envelope:post_impl_review_walk_prism_child_fan_convergence_activity",
         "walk-prism-child.activity-cycle.spawn-branches:worker_result",
         "walk-prism-child.activity-cycle.spend-entered-activity:post_impl_review_walk_prism_child_stands_on_activity",
       ],
       "lazyGates": {
-        "pending": 12,
+        "pending": 13,
         "unbound": 0,
         "unparsed": 0,
       },
@@ -4056,7 +4060,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 16,
-  "declaredTotal": 354,
+  "declaredTotal": 355,
   "executedTotal": 200,
   "perActivity": [
     {
@@ -4101,7 +4105,7 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "post-impl-review",
-      "declared": 57,
+      "declared": 58,
       "executed": 17,
     },
     {

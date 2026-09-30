@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 3.1.0
+version: 3.2.0
 name: Execute Prism Analyses
 description: Trigger the prism workflow for each execution group.
 variables:
@@ -106,7 +106,6 @@ steps:
           session_index: child_session_index
           initial_activity: child_initial_activity
           enter_activity: workflow-engine::take-activity
-          planning_folder_path: child_planning_folder_path
         outputs:
           current_activity: current_activity
           from_activity: from_activity

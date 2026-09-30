@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.2.0
+version: 1.3.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -53,12 +53,21 @@ steps:
       - action: validate
         target: session_index
         message: Cannot walk a session without a session_index; the session must be open
+  # The host holds from_activity and worker_result under those names from any earlier walk, so each
+  # opening step clears what that walk retired: the walk's first advance retires nothing.
   - kind: action
     id: prime-initial-activity
+    when: resumes_walk != true
     actions:
       - action: set
         target: current_activity
         value: "{initial_activity}"
+      - action: set
+        target: from_activity
+        value: null
+      - action: set
+        target: worker_result
+        value: null
   - kind: action
     id: resume-standing-activity
     when: resumes_walk == true
@@ -69,6 +78,9 @@ steps:
       - action: set
         target: stands_on_activity
         value: true
+      - action: set
+        target: worker_result
+        value: null
   - kind: loop
     id: activity-cycle
     name: Activity Cycle
@@ -95,7 +107,7 @@ steps:
             variable_bag: variables
       - kind: technique
         id: enter-activity
-        when: "!worker_agent_id && !worker_result.next_activity_fans"
+        when: "!worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != 'checkpoint_pending'"
         technique:
           name: enter_activity
           inputs:
@@ -217,7 +229,7 @@ steps:
             checkpoint_resolution: user_selection
       - kind: technique
         id: resume-yielded-worker
-        when: worker_result.result_type == "checkpoint_pending"
+        when: worker_result.result_type == "checkpoint_pending" && worker_agent_id
         technique:
           name: workflow-engine::resume-worker
           inputs:
@@ -225,6 +237,16 @@ steps:
             activity_id: current_activity
             worker_agent_id: worker_agent_id
             checkpoint_reply: checkpoint_reply
+            variable_bag: variables
+      - kind: technique
+        id: resume-entered-activity
+        when: worker_result.result_type == "checkpoint_pending" && !worker_agent_id
+        technique:
+          name: enter_activity
+          inputs:
+            activity_id: current_activity
+            session_index: session_index
+            agent_technique: workflow-engine::activity-worker
             variable_bag: variables
       - kind: action
         id: clear-checkpoint-reply
