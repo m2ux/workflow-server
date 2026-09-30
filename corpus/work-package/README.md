@@ -19,7 +19,7 @@ Where assumptions or comprehension questions are settled, agent-resolvable conce
 | 04 | [**Research**](./activities/README.md#04-research-optional) | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | Understand current state, establish baselines |
 | 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Create implementation and test plans |
-| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Post plan summary and assumptions to issue tracker for stakeholder review |
+| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Converge the open assumptions and settle what stays open with the user before implementation |
 | 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
 | 16 | [**Prism Decision**](./activities/README.md#prism-decision) | Settle whether structural analysis takes the full prism pipeline or the inline pass |

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.2
+  version: 1.11.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The decision recorded against an assumption. Empty where no decision has been as
 ### assumption_correction
 
 *(optional)* Text the user typed correcting the assumption under discussion. Unset until a correction is given.
+
+### current_assumption
+
+*(optional)* The one assumption a per-item decision settles. Unset where the outcome covers every open assumption.
 
 ## Outputs
 
@@ -44,6 +48,7 @@ Boolean gate — true iff any assumption was marked deferred (needs-discussion).
 ### 1. Mark Each Outcome
 
 - Mark each assumption with `{assumption_outcome}`. Where it is empty no decision has been asked for yet, so the assumptions are recorded with the agent's position and no outcome
+  > Where `{current_assumption}` is bound, mark that assumption alone.
 
 ### 2. Write the Outcomes Into the Log
 

@@ -345,12 +345,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "option": "accept-agent-positions",
           "setVariable": {
             "assumptions_review_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "assumptions_review_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:assumptions_review_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 5,
         "unbound": 0,
@@ -386,12 +385,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "option": "accept-agent-positions",
           "setVariable": {
             "implement_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "implement_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:implement_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -1065,12 +1063,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "option": "accept-agent-positions",
           "setVariable": {
             "assumptions_review_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "assumptions_review_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:assumptions_review_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 5,
         "unbound": 0,
@@ -1106,12 +1103,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "option": "accept-agent-positions",
           "setVariable": {
             "implement_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "implement_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:implement_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -1787,12 +1783,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "option": "accept-agent-positions",
           "setVariable": {
             "assumptions_review_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "assumptions_review_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:assumptions_review_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 5,
         "unbound": 0,
@@ -1828,12 +1823,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "option": "accept-agent-positions",
           "setVariable": {
             "implement_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "implement_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:implement_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -2488,12 +2482,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "option": "accept-agent-positions",
           "setVariable": {
             "assumptions_review_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "assumptions_review_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:assumptions_review_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 5,
         "unbound": 0,
@@ -2529,12 +2522,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "option": "accept-agent-positions",
           "setVariable": {
             "implement_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "implement_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:implement_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,
@@ -3591,12 +3583,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "option": "accept-agent-positions",
           "setVariable": {
             "assumptions_review_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "assumptions_review_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:assumptions_review_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 5,
         "unbound": 0,
@@ -3632,12 +3623,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "option": "accept-agent-positions",
           "setVariable": {
             "implement_settle_assumptions_interview_assumption_outcome": "confirmed",
+            "implement_settle_assumptions_interview_needs_individual_interview": false,
           },
         },
       ],
-      "gatesReadUnbound": [
-        "settle-assumptions.interview.interview:implement_settle_assumptions_interview_needs_individual_interview",
-      ],
+      "gatesReadUnbound": [],
       "lazyGates": {
         "pending": 3,
         "unbound": 1,

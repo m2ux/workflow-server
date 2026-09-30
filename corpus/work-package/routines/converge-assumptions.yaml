@@ -29,6 +29,10 @@ outputs:
   - id: assumptions_log
     type: object
     description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+  - id: assumptions_log_path
+    type: string
+    description: Path to the written assumptions log.
+    optional: true
   - id: has_open_assumptions
     type: boolean
     description: Whether unresolved assumptions requiring stakeholder input remain.
@@ -58,8 +62,11 @@ steps:
         id: reconcile
         technique:
           name: review-assumptions::reconcile
+          inputs:
+            assumptions_log: assumptions_log
           outputs:
             assumptions_log: assumptions_log
+            assumptions_log_path: assumptions_log_path
             has_resolvable_assumptions: has_resolvable_assumptions
             has_open_assumptions: has_open_assumptions
       # Named for the pass rather than for its first step: a reference id and the body step it

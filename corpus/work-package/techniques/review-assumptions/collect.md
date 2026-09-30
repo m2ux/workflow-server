@@ -35,7 +35,7 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 ### 3. Record a Null Result
 
-- If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed
+- If no significant assumptions are identified, record a single null row in `{assumptions_log}` (`No significant assumptions ([reason])`) and proceed
 
 ### 4. Append Them to the Log
 
