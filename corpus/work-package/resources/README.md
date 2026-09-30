@@ -64,7 +64,7 @@ Which guide owns each persisted filename's shape.
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
 | `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
 | `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md#corpus-artifact-template) |
-| `codebase-comprehension.md` | [codebase-comprehension](codebase-comprehension.md#comprehension-log-template) |
+| `codebase-comprehension.json` | [codebase-comprehension](codebase-comprehension.md#comprehension-log-template) |
 | `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md` | [pr-review-response](pr-review-response.md) |
 | `kb-research.md` | [knowledge-base-research](knowledge-base-research.md) |
 | `design-philosophy.md` | [design-framework](design-framework.md) |

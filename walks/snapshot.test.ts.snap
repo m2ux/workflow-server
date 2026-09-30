@@ -148,11 +148,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -875,11 +875,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -1537,11 +1537,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -2264,11 +2264,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -2881,11 +2881,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],
@@ -3393,11 +3393,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "codebase-comprehension.md",
+        "codebase-comprehension.json",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-codebase-comprehension.md",
+        "15-codebase-comprehension.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [],

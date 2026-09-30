@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -61,9 +61,8 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 ### 5. Update Comprehension Artifact
 
-- If a `{comprehension_artifact}` was provided, append findings to it as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')
-- Update the Open Questions table in the `{comprehension_artifact}` with any questions resolved or surfaced during reconciliation
-- If no `{comprehension_artifact}` was provided, skip this phase — findings are preserved in the assumptions log
+- Write each outcome the analysis settled about the code into the section of `{comprehension_artifact}` that owns it, per [Promotion](../../resources/codebase-comprehension.md#promotion)
+  > When no `{comprehension_artifact}` was provided, skip this phase; the findings stay in the assumptions log.
 
 ## Rules
 

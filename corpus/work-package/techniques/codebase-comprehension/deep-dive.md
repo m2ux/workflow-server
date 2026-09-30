@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 3.0.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The corpus artifact for this area, whose architecture survey seeds candidate-are
 
 ### comprehension_log
 
-*(optional)* The log from earlier passes over this area; its Open Questions are the default candidates for the next investigation.
+*(optional)* The log from earlier passes over this area; its open questions are the default candidates for the next investigation.
 
 ### comprehension_scope
 
@@ -45,11 +45,11 @@ The session-local record of this investigation: the questions it worked, the fin
 
 #### artifact
 
-`codebase-comprehension.md`
+`codebase-comprehension.json`
 
 #### audience
 
-`human`
+`agent`
 
 #### deep_dives
 
@@ -69,8 +69,8 @@ Targeted exploration findings for the selected area: traced data flows, implemen
 ### 2. Record the Investigation
 
 - Write `{comprehension_log}` per the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template)
-- Record this investigation alongside the ones earlier passes wrote, rather than in place of them
-- Record every set this investigation walked in full — the call sites a symbol has, the keys a topology aligns across its configuration files, the branches a function admits — naming the query or command that produced it. A later pass reads the set from here rather than walking it again, per [Evidence Reuse](../../resources/findings-report.md#evidence-reuse); an enumeration left as prose about what was learned is one the next pass has to rebuild.
+- Append this investigation as a deep dive beside the ones earlier passes wrote, rather than in place of them
+- Record every set this investigation walked in full as an enumeration — the call sites a symbol has, the keys a topology aligns across its configuration files, the branches a function admits — naming the query or command that produced it. A later pass reads the set from here rather than walking it again, per [Evidence Reuse](../../resources/findings-report.md#evidence-reuse).
 
 ### 3. Promote Settled Outcomes
 
