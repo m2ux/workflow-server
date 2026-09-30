@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.5.1
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ Path to the planning folder where the final outcome and retrospective are record
 
 ### retrospective_document
 
-Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, as the `## Workflow Retrospective` section of the close-out document.
+Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, as the text of the close-out document's `## Workflow Retrospective` section.
 
 ### session_trace_document
 

@@ -99,6 +99,28 @@ steps:
     technique: finalize-documentation::finalize-test-plan
     when: is_review_mode != true
   - kind: technique
+    id: render-token-usage
+    technique: finalize-documentation::render-token-usage
+  - kind: routine
+    id: enumerate-public-api
+    routine: gitnexus::public-api-enum
+    when: is_review_mode != true
+    outputs:
+      public_api_symbols: public_api_symbols
+  - kind: technique
+    id: ensure-docs
+    technique: finalize-documentation::ensure-docs
+    when: is_review_mode != true
+  - kind: technique
+    id: read-session
+    technique: workflow-engine::read-session
+  - kind: technique
+    id: conduct-retrospective
+    technique: conduct-retrospective::retrospective
+  - kind: technique
+    id: register-retrospective-follow-ups
+    technique: manage-registers::append-follow-up
+  - kind: technique
     id: gather-open-work
     technique: finalize-documentation::gather-open-work
   - kind: technique
@@ -153,28 +175,6 @@ steps:
   - kind: technique
     id: create-complete-doc
     technique: finalize-documentation::create-complete-doc
-  - kind: technique
-    id: render-token-usage
-    technique: finalize-documentation::render-token-usage
-  - kind: routine
-    id: enumerate-public-api
-    routine: gitnexus::public-api-enum
-    when: is_review_mode != true
-    outputs:
-      public_api_symbols: public_api_symbols
-  - kind: technique
-    id: ensure-docs
-    technique: finalize-documentation::ensure-docs
-    when: is_review_mode != true
-  - kind: technique
-    id: read-session
-    technique: workflow-engine::read-session
-  - kind: technique
-    id: conduct-retrospective
-    technique: conduct-retrospective::retrospective
-  - kind: technique
-    id: register-retrospective-follow-ups
-    technique: manage-registers::append-follow-up
   - kind: action
     id: announce-retrospective
     actions:

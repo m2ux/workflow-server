@@ -2,7 +2,7 @@
 name: test-suite-review
 description: Guidelines for reviewing and evaluating test suites. Covers test quality assessment, coverage analysis, anti-pattern detection, and improvement recommendations.
 metadata:
-  version: 2.0.1
+  version: 2.0.2
   order: 17
   legacy_id: 17
 ---
@@ -73,6 +73,8 @@ On a test finding, `Description` opens with an inline link to the test, `Impact`
 **Category:** [category]
 
 **Severity:** [render-scale value]
+
+**Reachability:** [a value from [Reachability](./findings-report.md#reachability)]
 
 **Description:** [what the test does or fails to do, opening with an inline link to it]
 

@@ -82,6 +82,8 @@ A changes fragment carries a GitHub issue reference, and the project's check-cha
 
 **Severity:** [render-scale value]
 
+**Reachability:** [a value from [Reachability](./findings-report.md#reachability)]
+
 **Description:** [what the change carries, opening with an inline link to the named thing]
 
 **Impact:** [what carrying it costs]

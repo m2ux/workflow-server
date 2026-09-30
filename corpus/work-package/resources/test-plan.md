@@ -2,7 +2,7 @@
 name: test-plan
 description: Test plan templates and test-design principles.
 metadata:
-  version: 1.3.0
+  version: 1.3.1
   order: 11
   legacy_id: 11
 ---
@@ -76,10 +76,17 @@ Key changes validated:
 
 ## Test Cases
 
-| Test ID | Objective | Steps | Expected Result | Type |
-|---|---|---|---|---|
-| [PR###-TC-01](blob-url#LNN) | Verify [specific behavior being tested] | 1. [Setup or precondition]  <br>2. [Action to perform]  <br>3. [Verification step] | [What should happen] | Unit |
-| PR###-TC-02 | Verify [manual test behavior] | 1. [Manual step one]  <br>2. [Manual step two] | [Expected outcome] | Manual |
+| Test ID | Objective | Expected Result | Type |
+|---|---|---|---|
+| [PR###-TC-01](blob-url#LNN) | Verify [specific behavior being tested] | [What should happen] | Unit |
+| PR###-TC-02 | Verify [manual test behavior] | [Expected outcome] | Manual |
+
+### PR###-TC-02 Steps
+
+[Only for a case whose steps its objective does not make evident.]
+
+1. [Manual step one]
+2. [Manual step two]
 
 ## Acceptance Criteria Matrix
 

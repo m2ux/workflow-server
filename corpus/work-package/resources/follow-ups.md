@@ -2,7 +2,7 @@
 name: follow-ups
 description: Template and rules for the in-task follow-ups register (work still inside the current package).
 metadata:
-  version: 2.0.1
+  version: 2.0.2
 ---
 
 # Follow-Ups Register Guide
@@ -25,7 +25,7 @@ A JSON array, one object per follow-up.
 ]
 ```
 
-`status` is `open` or `done`.
+`status` is `open`, `done`, or `dropped` for an item consciously abandoned inside the package.
 
 ## Rules
 

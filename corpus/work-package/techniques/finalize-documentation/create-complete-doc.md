@@ -25,6 +25,10 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 *(optional)* The test plan with each case linked to its test source file and line. Absent on a review run.
 
+### retrospective_document
+
+*(optional)* The text of the Workflow Retrospective section. Absent where the retrospective was skipped.
+
 ### follow_ups_register
 
 The in-task follow-ups register, named by its bare filename.
@@ -90,3 +94,8 @@ Path to the written close-out document, for user-facing links.
 ### 6. Report the Success Criteria
 
 - Report success criteria exception-only: one line when all are met, rows only for divergences.
+
+### 7. Carry the Retrospective
+
+- Carry `{retrospective_document}` as the Workflow Retrospective section.
+  > Omit the section where `{retrospective_document}` is absent.

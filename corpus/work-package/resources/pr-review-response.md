@@ -2,7 +2,7 @@
 name: pr-review-response
 description: Response format and review-document templates for PR review responses.
 metadata:
-  version: 2.0.1
+  version: 2.0.2
   order: 28
   legacy_id: 28
 ---
@@ -23,8 +23,7 @@ metadata:
 > **Optional doc wording:**
 > "[Suggested documentation text]"
 
-**Follow-up Actions:**
-1. [Specific action item]
+**Follow-ups:** [each in-task follow-up's register entry ID and one-line item]
 ```
 
 ## Review Document Template

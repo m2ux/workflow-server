@@ -238,9 +238,6 @@ steps:
     id: document-findings
     technique: document-findings
   - kind: technique
-    id: register-deferred-findings
-    technique: manage-registers::append-deferred-item
-  - kind: technique
     id: document-cleanup-recommendations
     technique: recommend-cleanup
     when: is_review_mode == true
@@ -364,6 +361,13 @@ steps:
           setVariable:
             review_passed: true
             raised_findings_scope: none
+  - kind: technique
+    id: defer-checkpoint-findings
+    technique: defer-findings
+    when: strategic_findings_disposition == 'deferred'
+  - kind: technique
+    id: register-deferred-findings
+    technique: manage-registers::append-deferred-item
 exits:
   - id: review-mode
     when: is_review_mode == true

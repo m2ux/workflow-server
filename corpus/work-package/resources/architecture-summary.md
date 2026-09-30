@@ -2,7 +2,7 @@
 name: architecture-summary
 description: Create an architecture summary document at the end of implementation, using Mermaid diagrams to visualize how changes relate to the existing system for management-level stakeholders.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 19
   legacy_id: 19
 ---
@@ -10,12 +10,6 @@ metadata:
 # Architecture Summary Guide
 
 High-level visual document for management-level stakeholders (engineering/product managers, technical directors, non-technical stakeholders) answering: what changed, where it fits, why it matters, what's next. Uses UML-style Mermaid diagrams at whole-system abstraction. Test: a reader unfamiliar with the codebase must understand it in 5 minutes.
-
-## When to Create
-
-Create when: changes touch system boundaries or integrations, multiple components/services are affected, the change has business-visible impact, or stakeholders need to understand what was delivered.
-
-Skip for: bug fixes with no architectural impact, internal refactoring invisible to stakeholders, documentation-only changes.
 
 ## Diagram Selection
 

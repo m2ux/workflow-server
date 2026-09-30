@@ -204,8 +204,8 @@ The session-local record: the questions this pass asked, the investigations that
   "challenges": [
     { "perspective": "…", "date": "YYYY-MM-DD", "surfaced": ["…"] }
   ],
-  "out_of_scope": [
-    { "item": "an item outside this work package the pass surfaced", "to_settle": "what it would take" }
+  "unexplored": [
+    { "area": "a question or area outside this work package the pass left unexplored", "to_explore": "what exploring it would take" }
   ]
 }
 ```
