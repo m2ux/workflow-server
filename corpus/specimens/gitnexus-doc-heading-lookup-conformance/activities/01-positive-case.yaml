@@ -1,12 +1,18 @@
 id: positive-case
-version: 1.0.0
+version: 1.1.0
 name: Positive Case
 description: Refer to the heading lookup under a pattern whole headings in the tree match.
 variables:
   reads:
+    - docs_graph_name
     - positive_heading_pattern
-    - positive_tree_path
   writes:
+    - name: graph_inventory
+      type: object
+      description: Every indexed graph with the tree it was built from.
+    - name: docs_tree_path
+      type: string
+      description: Filesystem path of the documentation tree whose headings both cases read, as the index records it for the docs graph.
     - name: positive_heading_matches
       type: array
       description: Each matching heading with the file it sits in.
@@ -15,11 +21,26 @@ variables:
       description: The graph the search addressed, which a report naming these matches names too.
 required: true
 steps:
+  - kind: technique
+    id: read-inventory
+    technique: gitnexus::resolve-graph
+  - kind: technique
+    id: locate-docs-tree
+    technique:
+      name: conformance::locate-indexed-tree
+      inputs:
+        graph_name: docs_graph_name
+      outputs:
+        indexed_tree_path: docs_tree_path
+    actions:
+      - action: validate
+        target: docs_tree_path != ''
+        message: "The index holds no graph named `{docs_graph_name}`, so neither case has a documentation tree to bind."
   - kind: routine
     id: find-matching-headings
     routine: gitnexus::doc-heading-lookup
     with:
-      tree_path: "{positive_tree_path}"
+      tree_path: "{docs_tree_path}"
       heading_pattern: "{positive_heading_pattern}"
     outputs:
       heading_matches: positive_heading_matches
@@ -28,4 +49,5 @@ exits:
   - id: matched
     isDefault: true
 outcome:
+  - The case named the documentation tree from the index by its graph's registry name, or said the index holds no graph by that name
   - The run named the graph covering the tree and landed the headings the pattern matches, each with the file it sits in

@@ -1,9 +1,10 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-doc-heading-lookup-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Doc Heading Lookup Conformance Workflow
 description: >-
-  Hold the gitnexus doc-heading-lookup run to two cases. The positive case binds a pattern that
+  Hold the gitnexus doc-heading-lookup run to two cases over the documentation tree the index holds
+  under the docs graph's registry name. The positive case binds a pattern that
   whole headings in the documentation tree match, so the run names the graph covering the tree and
   lands the matching headings with the files they sit in. The negative case binds a pattern no
   heading matches, so the run names the same graph and lands an empty set — the fallback it promises
@@ -22,18 +23,14 @@ variables:
     type: string
     description: Name of the indexed graph every operation in the run addresses.
     defaultValue: midnight-docs
-  - name: positive_tree_path
+  - name: docs_graph_name
     type: string
-    description: Filesystem path of the documentation tree whose headings the positive case reads.
-    defaultValue: /home/mike1/projects/dev/midnight-agent-eng/midnight-docs
+    description: Registry name of the indexed graph built from the documentation tree whose headings both cases read.
+    defaultValue: midnight-docs
   - name: positive_heading_pattern
     type: string
     description: A regular expression whole headings in the tree match, so the positive case lands rows.
     defaultValue: ".*Overview.*"
-  - name: negative_tree_path
-    type: string
-    description: Filesystem path of the documentation tree whose headings the negative case reads.
-    defaultValue: /home/mike1/projects/dev/midnight-agent-eng/midnight-docs
   - name: negative_heading_pattern
     type: string
     description: A regular expression no whole heading matches, so the negative case lands an empty set.

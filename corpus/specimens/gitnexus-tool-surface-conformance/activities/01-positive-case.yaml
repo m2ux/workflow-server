@@ -1,10 +1,10 @@
 id: positive-case
-version: 1.1.0
+version: 1.2.0
 name: Positive Case
 description: Refer to the tool surface over a tree registering MCP tools by calling a method.
 variables:
   reads:
-    - positive_tree_path
+    - host_repo_path
   writes:
     - name: positive_tool_inventory
       type: object
@@ -18,7 +18,7 @@ steps:
     id: map-declaring-tree
     routine: gitnexus::tool-surface
     with:
-      tree_path: "{positive_tree_path}"
+      tree_path: "{host_repo_path}"
     outputs:
       tool_inventory: positive_tool_inventory
       repo_name: repo_name

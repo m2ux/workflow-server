@@ -56,7 +56,7 @@
       "site": "prism-audit/activities/02-execute-analysis.yaml + prism-evaluate/activities/02-execute-analysis.yaml + work-package/activities/10-post-impl-review.yaml",
       "run": [
         "T:workflow-engine::handle-sub-workflow(workflow_id)",
-        "R:activity-loop(enter_activity,initial_activity,planning_folder_path,session_index)"
+        "R:activity-loop(enter_activity,initial_activity,session_index)"
       ],
       "verdict": "unassigned",
       "rationale": "launch-then-walk"
@@ -65,7 +65,7 @@
       "site": "prism-audit/activities/02-execute-analysis.yaml + prism-evaluate/activities/02-execute-analysis.yaml",
       "run": [
         "T:workflow-engine::handle-sub-workflow(workflow_id)",
-        "R:activity-loop(enter_activity,initial_activity,planning_folder_path,session_index)",
+        "R:activity-loop(enter_activity,initial_activity,session_index)",
         "T:prism/read-run-manifest()",
         "T:prism/accumulate-analysis-run()"
       ],
@@ -298,6 +298,15 @@
       ],
       "verdict": "unassigned",
       "rationale": "audit-and-fix-cycle"
+    },
+    {
+      "site": "gitnexus-doc-heading-lookup-conformance/activities/01-positive-case.yaml + gitnexus-doc-reference-surface-conformance/activities/01-positive-case.yaml + gitnexus-tool-surface-conformance/activities/02-negative-case.yaml",
+      "run": [
+        "T:gitnexus::resolve-graph()",
+        "T:conformance::locate-indexed-tree(graph_name)"
+      ],
+      "verdict": "unassigned",
+      "rationale": "locate-a-tree-the-index-holds"
     }
   ]
 }

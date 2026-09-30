@@ -1,11 +1,11 @@
 id: negative-case
-version: 1.0.0
+version: 1.1.0
 name: Negative Case
 description: Refer to the heading lookup under a pattern no whole heading matches.
 variables:
   reads:
+    - docs_tree_path
     - negative_heading_pattern
-    - negative_tree_path
   writes:
     - name: negative_heading_matches
       type: array
@@ -19,7 +19,7 @@ steps:
     id: find-absent-headings
     routine: gitnexus::doc-heading-lookup
     with:
-      tree_path: "{negative_tree_path}"
+      tree_path: "{docs_tree_path}"
       heading_pattern: "{negative_heading_pattern}"
     outputs:
       heading_matches: negative_heading_matches

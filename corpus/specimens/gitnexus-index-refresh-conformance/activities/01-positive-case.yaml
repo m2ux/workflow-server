@@ -1,11 +1,11 @@
 id: positive-case
-version: 1.1.0
+version: 1.2.0
 name: Positive Case
 description: Refer to the index refresh over a tree whose graph is current.
 variables:
   reads:
     - positive_graph_name
-    - positive_repo_path
+    - host_repo_path
   writes:
     - name: repo_name
       type: string
@@ -29,7 +29,7 @@ steps:
     id: refresh-current-tree
     routine: gitnexus::index-refresh
     with:
-      repo_path: "{positive_repo_path}"
+      repo_path: "{host_repo_path}"
     outputs:
       stats: positive_stats
       index_stale: positive_index_stale

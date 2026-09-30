@@ -1,10 +1,10 @@
 id: positive-case
-version: 1.1.0
+version: 1.2.0
 name: Positive Case
 description: Refer to the graph resolve over a tree a graph covers.
 variables:
   reads:
-    - positive_tree_path
+    - host_repo_path
   writes:
     - name: positive_repo_name
       type: string
@@ -18,7 +18,7 @@ steps:
     id: name-covered-tree
     routine: gitnexus::graph-for-tree
     with:
-      tree_path: "{positive_tree_path}"
+      tree_path: "{host_repo_path}"
     outputs:
       repo_name: positive_repo_name
       index_stats: positive_index_stats

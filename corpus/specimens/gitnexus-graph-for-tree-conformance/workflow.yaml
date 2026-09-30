@@ -1,9 +1,9 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-graph-for-tree-conformance
-version: 1.2.0
+version: 1.3.0
 title: GitNexus Graph For Tree Conformance Workflow
 description: >-
-  Hold the gitnexus graph-for-tree run to two cases. The positive case binds a tree a graph covers,
+  Hold the gitnexus graph-for-tree run to two cases. The positive case binds the checkout under work, a tree a graph covers,
   so the first resolve names that graph and the build stays unreached. The negative case prepares a
   throwaway checkout carrying no graph and binds it, so the first resolve lands an empty name, the
   run builds a graph over the tree and names it — the fallback it promises for an uncovered tree,
@@ -18,10 +18,9 @@ techniques:
   activity:
     - variable-binding
 variables:
-  - name: positive_tree_path
+  - name: host_repo_path
     type: string
-    description: Filesystem path of a tree a graph covers, so the positive case names it at the first resolve.
-    defaultValue: /home/mike1/projects/dev/workflow-server
+    description: Absolute path of the checkout under work, which the server seeds when the session opens.
 initialActivity: positive-case
 graph:
   positive-case:
