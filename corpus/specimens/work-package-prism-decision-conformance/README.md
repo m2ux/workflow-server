@@ -9,4 +9,4 @@ The activity is the work-package prism decision. For a complex change on an impl
 | `take-case` | nothing | binds the next case: an implementation run, then a review run |
 | `prism-decision` | `work-package/16-prism-decision.yaml` | the decision under test |
 | `record-case` | nothing | appends what the decision settled, and loops while a case remains |
-| `report-cases` | nothing | reports each case under the shared [case report](/conformance/resources/case-report.md) rules |
+| `report-cases` | nothing | reports each case per the [decision case report](resources/decision-case-report.md) guide |

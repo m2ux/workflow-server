@@ -2,10 +2,14 @@
 
 > Part of the [Work Package Prism Decision Conformance Workflow](../README.md)
 
-No resource of its own. The one document this run leaves behind is shaped by its technique's declaration, and follows the shared [case report](/conformance/resources/case-report.md) guide's rules for what a row may claim.
+One guide, for the one document a run leaves behind.
+
+| Resource ID | Title | Purpose |
+|-------------|-------|---------|
+| `decision-case-report` | Decision Case Report | Creation guide: `work-package-prism-decision-cases.md` — template and the rules governing what each case row may claim |
 
 ## Planning artifact to guide map
 
 | Bare filename | Guide |
 |---------------|-------|
-| `work-package-prism-decision-cases.md` | [case-report](/conformance/resources/case-report.md) |
+| `work-package-prism-decision-cases.md` | [decision-case-report](decision-case-report.md) |
