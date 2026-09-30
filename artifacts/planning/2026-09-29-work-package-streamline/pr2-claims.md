@@ -24,3 +24,15 @@ Run record: MCP `http://127.0.0.1:32772/mcp` · image `workflow-server:exp-lean-
 - The assessment's output promised what the full pipeline adds, and no step produced it. Its weighing step now does.
 - The decision had no Progress row. The README seed carries one, with a row-ownership entry.
 - The specimen report followed a guide shaped for a positive and negative pair. It has a guide of its own.
+
+## Walk after the four audit rounds
+
+Corpus `1e0b99c6`, MVW `3S7WU5`, specimen `VTOXSS` (planning folder `…/2026-09-30-work-package-prism-decision-conformance-4`).
+
+| # | Claim | Case | Result |
+|---|---|---|---|
+| 9 | The measurement diffs the feature worktree against the base remote's default branch | implementation | held — the bind resolved `target_path` against `origin/main` |
+| 10 | An empty measurement recommends measuring again, and the gate's measure-again option returns to the decision | implementation | held — the server resolved `remeasure` back to prism-decision and ended the activity; the second visit raised a fresh gate |
+| 11 | A review run still raises no gate and presets `full-prism` | review | held |
+
+Walk finding: the fixture checkout shares no merge base with `origin/main`, so the three-dot range reads nothing. `git::three-dot-name-status` has no reading for a missing merge base; the assessment's no-change reading carried the run.
