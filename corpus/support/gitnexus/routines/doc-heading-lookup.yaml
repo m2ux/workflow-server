@@ -1,5 +1,5 @@
 id: doc-heading-lookup
-version: 1.0.0
+version: 1.1.0
 name: Doc Heading Lookup
 description: >-
   Name the graph covering a documentation tree, building one where the inventory covers it with
@@ -34,5 +34,6 @@ steps:
       name: gitnexus::heading-search
       inputs:
         heading_pattern: heading_pattern
+        repo_name: repo_name
       outputs:
         heading_matches: heading_matches

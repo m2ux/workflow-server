@@ -12,9 +12,9 @@ variables:
     - name: negative_tool_inventory
       type: object
       description: Each declared tool with the file handling it and the description it registers — empty by construction, with the run's note reading the emptiness as registrations the walk did not recognise.
-    - name: repo_name
+    - name: negative_repo_name
       type: string
-      description: The graph the read addressed, which a report naming this inventory names too.
+      description: The graph the negative case's read addressed, which a report naming its inventory names too.
 required: true
 steps:
   - kind: routine
@@ -31,7 +31,7 @@ steps:
       tree_path: "{negative_tree_path}"
     outputs:
       tool_inventory: negative_tool_inventory
-      repo_name: repo_name
+      repo_name: negative_repo_name
 exits:
   - id: mapped
     isDefault: true

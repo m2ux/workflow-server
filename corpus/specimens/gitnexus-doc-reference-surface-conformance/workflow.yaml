@@ -23,7 +23,6 @@ variables:
   - name: repo_name
     type: string
     description: Name of the indexed graph every operation in the run addresses.
-    defaultValue: midnight-docs
   - name: docs_graph_name
     type: string
     description: Registry name of the indexed graph built from the documentation tree whose links both cases read.

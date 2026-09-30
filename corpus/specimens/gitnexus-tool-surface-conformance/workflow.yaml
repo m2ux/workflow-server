@@ -23,9 +23,6 @@ variables:
   - name: host_repo_path
     type: string
     description: Absolute path to the host repository the session belongs to.
-  - name: repo_name
-    type: string
-    description: Name of the indexed graph every operation in the run addresses.
   - name: docs_graph_name
     type: string
     description: Registry name of the indexed graph built from a markdown tree with no tool declarations.

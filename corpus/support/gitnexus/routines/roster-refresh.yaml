@@ -1,5 +1,5 @@
 id: roster-refresh
-version: 2.0.0
+version: 2.1.0
 name: Roster Refresh
 description: >-
   Walk a roster of trees, bring each checkout to the revision the roster names where the caller asks
@@ -79,6 +79,7 @@ steps:
         routine: gitnexus::index-refresh
         with:
           repo_path: "{roster_entry.repo_path}"
+          repo_name: "{entry_repo_name}"
         outputs:
           stats: entry_index_stats
           index_stale: entry_index_stale

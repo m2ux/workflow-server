@@ -5,10 +5,11 @@ description: State what the run landed under each binding.
 variables:
   reads:
     - host_repo_path
+    - negative_repo_name
     - negative_tree_path
     - negative_tool_inventory
+    - positive_repo_name
     - positive_tool_inventory
-    - repo_name
 required: true
 steps:
   - kind: technique

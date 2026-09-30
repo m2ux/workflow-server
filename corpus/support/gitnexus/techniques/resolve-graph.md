@@ -15,7 +15,7 @@ Name the indexed graph a technique addresses, or the tree a named graph was buil
 
 ### graph_name
 
-*(optional)* Registry name of the indexed graph whose tree is wanted.
+*(optional)* Registry name of the indexed graph whose tree is wanted. Absent, the answer names no tree.
 
 ## Outputs
 
@@ -38,7 +38,7 @@ Every indexed graph with the tree it was built from, when it was built, the comm
 - Call `gitnexus_list_repos { limit, offset }` for the indexed graphs and `gitnexus_group_list` for the group names, and record the two together as `{graph_inventory}`.
    > The graphs arrive a page at a time, fifty to a page unless `limit` says otherwise, in a stable order. While the page's `pagination.hasMore` is true, call again with `offset` set to its `pagination.nextOffset`; a graph is absent from the inventory only once the last page has been read.
 - Call `gitnexus_group_list { name }` for each group whose members the question reaches, and record them under that group. Called with no name the technique answers with names alone, so an inventory read for a member is read one group at a time.
-  > A group's members are registry names, which address a graph and name no tree. A member's tree is the one Resolve names for it as `{graph_name}`.
+  > A group's members are registry names, which address a graph and name no tree. A member's tree is the path the inventory records under its name.
 
 ### 2. Resolve
 
