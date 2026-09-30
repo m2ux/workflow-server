@@ -423,6 +423,12 @@
     },
     {
       "site": "remediate-vuln :: work-package/prism-decision",
+      "name": "default_branch",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/prism-decision",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"

@@ -4,10 +4,9 @@ name: Prism Decision
 description: Settle whether the change takes the full prism pipeline or the single inline structural pass.
 variables:
   reads:
-    - base_branch
     - branch_name
-    - changed_files
     - component_git_dir
+    - default_branch
     - is_review_mode
     - planning_folder_path
     - pr_number
@@ -17,16 +16,39 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: changed_files
+      type: array
+      description: Ordered list of the paths the change touches.
+      defaultValue: []
+    - name: head_sha
+      type: string
+      description: Commit sha at the head of the change's branch.
+      defaultValue: ""
+    - name: changed_file_entries
+      type: array
+      description: The files the change touches, each with its change status and the lines it adds and removes.
+      defaultValue: []
+    - name: pipeline_mode
+      type: string
+      description: The prism mode the change's structural analysis takes — the full pipeline, or the single inline pass.
+      values:
+        - single
+        - full-prism
+      defaultValue: single
     - name: prism_value_assessment
       type: string
       description: The recommendation on the full prism pipeline and the signal that decided it.
       defaultValue: ""
-    - name: run_full_prism
-      type: boolean
-      description: Whether the change takes the full prism pipeline.
-      defaultValue: false
 required: true
 steps:
+  - kind: technique
+    id: measure-change
+    when: problem_complexity == 'complex' && is_review_mode != true
+    technique:
+      name: git::three-dot-name-status
+      inputs:
+        repo_path: target_path
+        base_ref: default_branch
   - kind: technique
     id: assess
     when: problem_complexity == 'complex' && is_review_mode != true
@@ -51,20 +73,20 @@ steps:
         description: The change is analysed through the full set of isolated prism passes and a report
         effect:
           setVariable:
-            run_full_prism: true
+            pipeline_mode: full-prism
       - id: use-inline-pass
         label: Use the single inline pass
-        description: The change is analysed through one structural lens inside post-implementation review
+        description: The change is analysed through one structural lens
         effect:
           setVariable:
-            run_full_prism: false
+            pipeline_mode: single
   - kind: action
     id: take-full-pipeline-on-review
     when: problem_complexity == 'complex' && is_review_mode == true
     actions:
       - action: set
-        target: run_full_prism
-        value: true
+        target: pipeline_mode
+        value: full-prism
 exits:
   - id: done
     isDefault: true

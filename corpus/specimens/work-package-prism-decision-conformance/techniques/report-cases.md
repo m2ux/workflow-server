@@ -11,13 +11,13 @@ State what the prism decision settled in each case.
 
 ### case_outcomes
 
-What the decision settled in each case: its id, whether a gate was raised and the recommendation it carried, and whether the case takes the full pipeline.
+What the decision settled in each case: whether it was a review run, the recommendation the gate carried, and the mode the decision settled.
 
 ## Outputs
 
 ### prism_decision_case_report
 
-One row per case: the bindings it took, whether the gate was raised, the recommendation shown, and the pass the decision settled.
+One row per case — its bindings, whether the gate was raised, the recommendation shown, and the mode settled — under a header naming the activity walked, followed by one line per case on what the walk evidenced.
 
 #### artifact
 
@@ -31,9 +31,9 @@ One row per case: the bindings it took, whether the gate was raised, the recomme
 
 ### 1. Fill the Table
 
-- Fill the table from `{case_outcomes}`, one row per case, per [Template](/conformance/resources/case-report.md#template), with the planning folder in the line a graph name takes.
+- Fill one row per entry of `{case_outcomes}` in the shape `{prism_decision_case_report}` declares, following the case report's [Rules](/conformance/resources/case-report.md#rules) for what a row may claim.
    > The review row names the absent gate as the decision's own mark for a run no user attends, rather than as a gate the walk failed to reach.
 
 ### 2. Write the Report
 
-- Write `{prism_decision_case_report}` to `{planning_folder_path}`, with [Rules](/conformance/resources/case-report.md#rules) governing what each row may claim.
+- Write `{prism_decision_case_report}` to `{planning_folder_path}`.

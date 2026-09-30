@@ -37,22 +37,28 @@ variables:
     type: string
     description: The pull request the fixture change is reviewed under.
     defaultValue: "0"
-  - name: run_full_prism
-    type: boolean
-    description: Whether the change takes the full prism pipeline.
-    defaultValue: false
+  - name: pipeline_mode
+    type: string
+    description: The prism mode the change's structural analysis takes — the full pipeline, or the single inline pass.
+    values:
+      - single
+      - full-prism
+    defaultValue: single
   - name: prism_value_assessment
     type: string
     description: The recommendation on the full prism pipeline and the signal that decided it.
     defaultValue: ""
   - name: changed_files
     type: array
-    description: The files the fixture change touches.
-    defaultValue:
-      - README.md
-  - name: base_branch
+    description: Ordered list of the paths the change touches.
+    defaultValue: []
+  - name: head_sha
     type: string
-    description: The branch the fixture change is measured against.
+    description: Commit sha at the head of the change's branch.
+    defaultValue: ""
+  - name: default_branch
+    type: string
+    description: The branch the fixture checkout's change is measured against.
     defaultValue: main
   - name: problem_statement
     type: string

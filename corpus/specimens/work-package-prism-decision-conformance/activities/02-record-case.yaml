@@ -6,9 +6,11 @@ variables:
   reads:
     - case_index
     - case_outcomes
+    - changed_files
+    - head_sha
     - is_review_mode
+    - pipeline_mode
     - prism_value_assessment
-    - run_full_prism
   writes:
     - name: case_outcomes
       type: array

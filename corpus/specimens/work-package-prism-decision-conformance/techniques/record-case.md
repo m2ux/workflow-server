@@ -13,9 +13,17 @@ The outcome list with the case just walked appended.
 
 Whether the case just walked is a review run.
 
-### run_full_prism
+### pipeline_mode
 
-Whether the decision sent the case to the full prism pipeline.
+The prism mode the decision settled for the case.
+
+### changed_files
+
+The paths the decision measured the change as touching.
+
+### head_sha
+
+The commit the change was measured at.
 
 ### prism_value_assessment
 
@@ -29,11 +37,11 @@ What the decision settled in each case taken so far.
 
 ### case_outcomes
 
-The list with this case's outcome appended: whether it was a review run, whether a gate was raised and the recommendation it carried, and whether the case takes the full pipeline.
+The list with this case's outcome appended: whether it was a review run, the change measured, the recommendation the gate carried, and the mode the decision settled.
 
 ## Protocol
 
 ### 1. Record the Outcome
 
-- Append one entry to `{case_outcomes}`: `{is_review_mode}`, whether the decision raised its gate, the `{prism_value_assessment}` that gate carried, and `{run_full_prism}`
-  > A review run raises no gate; record the recommendation as absent for it rather than carrying over an earlier case's text.
+- Append one entry to `{case_outcomes}`: `{is_review_mode}`, the `{changed_files}` measured at `{head_sha}`, the `{prism_value_assessment}` the gate carried, and `{pipeline_mode}`
+  > Every fixture case is complex, so the gate is raised exactly where `{is_review_mode}` is false; for a review run record the recommendation as absent rather than carrying over an earlier case's text.

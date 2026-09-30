@@ -9,26 +9,22 @@ A recommendation, with its reason, on whether a change warrants the full prism p
 
 ## Inputs
 
-### changed_files
+### changed_file_entries
 
-The set of files the change touches.
-
-### base_branch
-
-The branch the change is measured against.
+The files the change touches, each with its change status and the lines it adds and removes.
 
 ## Outputs
 
 ### prism_value_assessment
 
-One or two sentences that open with the recommendation — run the full pipeline, or use the inline pass — and name the signal that decided it.
+One or two sentences that open with the recommendation — run the full pipeline, or use the inline pass — name the signal that decided it, and state what the full pipeline's isolated adversarial and synthesis passes and consolidated report add for this change over the one structural lens the inline pass applies.
 
 ## Protocol
 
 ### 1. Read the Change
 
-- Measure the change in `{target_path}` against `{base_branch}`: the files in `{changed_files}`, the lines added and removed, and the functional areas those files belong to.
-- Read the paths the change alters for state that is created and must be reclaimed, agreement between nodes, authority checks, and data that must survive an upgrade.
+- Group `{changed_file_entries}` by the top-level module or package each file belongs to — these are the change's functional areas — and total the lines each area adds and removes.
+- Read the paths the change alters in `{target_path}` for state that is created and must be reclaimed, agreement between nodes, authority checks, and data that must survive an upgrade.
 
 ### 2. Weigh the Signals
 
@@ -39,4 +35,4 @@ One or two sentences that open with the recommendation — run the full pipeline
 
 ### 3. State the Recommendation
 
-- Write `{prism_value_assessment}`: the recommendation, the signal that decided it, and what the full pipeline adds for this change over the one structural lens the inline pass applies — its isolated adversarial and synthesis passes and a consolidated report.
+- Write `{prism_value_assessment}` for the recommendation and the signal that decided it.
