@@ -13,6 +13,10 @@ applies them while preserving the [specification protocol](resources/specificati
 verbatim, validates the result, iteratively corrects within a bounded loop, and stages a finalized
 specification plus a change summary in the planning folder.
 
+Intake holds each source in the repository, so every artifact cites it by a relative path: a meeting
+transcript in the meetings folder, redacted of personal and off-topic conversation, and a document from
+outside the repository in the documents folder.
+
 Each source is traced in its own right: a meeting transcript is recorded as an `SRC-MTG###` reference,
 an unstructured document as an `SRC-DOC###` reference credited to its author. The source-coverage
 matrix names the source each section came from and records that section as the heading above the
@@ -35,7 +39,7 @@ artifact lives in the run's planning folder.
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 01 | [Intake](activities/01-intake.yaml) | Establish readable, classified sources and the target specification |
+| 01 | [Intake](activities/01-intake.yaml) | Establish readable, classified sources held in the repository, each transcript redacted, and the target specification |
 | 02 | [Analyze Sources](activities/02-analyze-sources.yaml) | Produce a confirmed analysis of the requirement changes the sources imply |
 | 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
 | 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage) and categorize issues |

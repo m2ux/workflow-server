@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The user's free-form request for the run, naming the documents to refine from an
 
 ### intake_correction
 
-*(optional)* Text the user typed to correct the sources, a source's classification, or the target specification. Unset until a correction is given.
+*(optional)* Text the user typed to correct the sources, a source's classification, a transcript's redactions, or the target specification. Unset until a correction is given.
 
 ### source_paths
 

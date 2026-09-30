@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.6.1
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Record whether every source document is readable and what type each one is.
 
 ### intake_correction
 
-*(optional)* Text the user typed to correct the sources, a source's classification, or the target specification. Unset until a correction is given.
+*(optional)* Text the user typed to correct the sources, a source's classification, a transcript's redactions, or the target specification. Unset until a correction is given.
 
 ## Outputs
 
