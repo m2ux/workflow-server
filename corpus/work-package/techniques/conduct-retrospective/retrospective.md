@@ -35,17 +35,9 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 
 `human`
 
-### follow_ups_register
+### follow_ups
 
-The follow-ups register's bare filename, carrying an entry for each item the retrospective cut that still deserves to survive. Unchanged where it cut none.
-
-#### artifact
-
-`follow-ups.json`
-
-#### audience
-
-`agent`
+The items cut from the retrospective that still deserve to survive, each carrying what remains, where it surfaced, and what happens next. Empty where none was cut.
 
 ## Protocol
 
@@ -63,7 +55,7 @@ The follow-ups register's bare filename, carrying an entry for each item the ret
 - Count total user messages; separate prompted responses from substantive interactions; categorize and map to workflow sections.
 - From the resolved trace (when present), derive mechanical observations using [Mechanical classes](../../resources/workflow-retrospective.md#mechanical-classes-from-the-resolved-trace) — treat repeated patterns as instruction defects with prioritized fixes naming the canonical home to change.
 - Identify root causes / frequency; formulate prioritized recommendations (high / medium / low).
-- Cut the set to the counts in [Item Budget](../../resources/workflow-retrospective.md#item-budget), highest priority first; route each cut item that still deserves to survive to `{follow_ups_register}` as an entry in its [register template](../../resources/follow-ups.md#template) shape, and name its entry ID.
+- Cut the set to the counts in [Item Budget](../../resources/workflow-retrospective.md#item-budget), highest priority first; emit each cut item that still deserves to survive as a `{follow_ups}` entry.
 - Write `{retrospective_document}` as the `## Workflow Retrospective` section of `COMPLETE.md` (update in place), using that resource's section template; include only categories with content; link `{session_trace_document}` when written, and `token-usage.md` when present as the sole cost home. Apply `skip-if-trivial` from the group base when mechanical friction is non-trivial even if user-message signals are empty.
 
 ### 4. Update Status

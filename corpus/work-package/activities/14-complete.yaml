@@ -49,6 +49,18 @@ variables:
       type: string
       description: Bare filename of the in-task follow-ups register the close-out's entries were written to.
       defaultValue: ""
+    - name: follow_ups
+      type: array
+      description: Follow-ups to append to the in-task register, each with what remains, where it surfaced, and what happens next.
+      defaultValue: []
+    - name: deferred_items
+      type: array
+      description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
+      defaultValue: []
+    - name: adr_document_path
+      type: string
+      description: Full filesystem path to the ADR this work package wrote.
+      defaultValue: ""
     - name: deferred_item_issue_number
       type: string
       description: Key of the issue raised for the entry under consideration.
@@ -86,6 +98,15 @@ steps:
     id: finalize-test-plan
     technique: finalize-documentation::finalize-test-plan
     when: is_review_mode != true
+  - kind: technique
+    id: gather-open-work
+    technique: finalize-documentation::gather-open-work
+  - kind: technique
+    id: register-open-follow-ups
+    technique: manage-registers::append-follow-up
+  - kind: technique
+    id: register-open-deferrals
+    technique: manage-registers::append-deferred-item
   - kind: technique
     id: collect-deferred-items
     technique: raise-deferred-items::collect
@@ -151,6 +172,9 @@ steps:
   - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective::retrospective
+  - kind: technique
+    id: register-retrospective-follow-ups
+    technique: manage-registers::append-follow-up
   - kind: action
     id: announce-retrospective
     actions:

@@ -41,7 +41,7 @@ Scope-discipline and artifact-hygiene findings across the feature-branch diff fo
 
 ### strategic_review_doc
 
-The strategic review document holding categorized findings — scope creep, orphaned symbols, investigation artifacts, over-engineering, and PR-body conformance entries. Same artifact the group root declares.
+The strategic review document holding findings, each carrying its [category](../../resources/strategic-review.md#categories). Same artifact the group root declares.
 
 ### unsigned_commits_in_pr
 

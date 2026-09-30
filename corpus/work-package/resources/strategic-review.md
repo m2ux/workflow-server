@@ -1,6 +1,6 @@
 ---
 name: strategic-review
-description: Strategic review artifact template for speculative-change, over-engineering, and orphaned-infrastructure findings.
+description: Strategic review artifact template, its finding categories, and the minimality and speculative-change checks.
 metadata:
   version: 2.0.2
   order: 18
@@ -12,8 +12,6 @@ metadata:
 Problem-solving commonly leaves behind speculative changes, debugging infrastructure, or exploratory code that becomes unnecessary once the root cause is understood. The strategic review finds and removes these before finalizing the PR, so PRs are clean, reviewable, and contain only intentional changes.
 
 ## Categories
-
-Every finding takes one of these.
 
 - **Investigation Artifact** — changes made while understanding the problem: extra logging or print statements, verbose error messages for debugging, temporary workarounds that were superseded, exploratory test configurations.
 - **Over-Engineering** — solutions that grew beyond what was needed: generic abstractions for specific problems, fallback mechanisms for cases that can't occur, unused configuration options, infrastructure for features not implemented.

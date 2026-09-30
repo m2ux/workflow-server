@@ -11,7 +11,7 @@ Conformance of a folder's persisted artifacts to the guide each filename maps to
 
 ### artifact_dir
 
-*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder. In scope are the **human-audience artifacts this run persisted** there — never every file the directory happens to hold, since a planning folder holds only the run's own artifacts while a code or shared directory holds a great deal the run did not write, and never an agent-audience artifact, whose conformance is its declared schema rather than a prose template.
+*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder.
 
 #### default
 
@@ -48,7 +48,7 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 ### 1. Enumerate and Resolve
 
 - Enumerate the human-audience artifacts this run persisted into `{artifact_dir}` and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
-  > A file the run did not write, a child run's output folder, and an artifact declared `agent`, are all out of scope.
+  > Scope per `only-what-this-run-wrote`.
 - Record an artifact whose guide no map names in `unmeasured` and carry it no further
 
 ### 2. Measure Against the Guide and the Map
@@ -73,15 +73,15 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 ### only-what-this-run-wrote
 
-Measure the human-audience artifacts this run persisted, and nothing else in the directory. Three things stay unmeasured: a file the run did not write, an agent-audience artifact, whose conformance is its declared schema, and a folder holding a child run's own output, whose workflow binds its own conformance pass.
+Measure the human-audience artifacts this run persisted, and nothing else in the directory. A file the run did not write, an agent-audience artifact, and a folder holding a child run's own output are out of scope.
 
 ### guide-is-the-standard
 
-An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, the artifact is unmeasured and the missing mapping is reported as a gap in the map, not as a violation in the artifact.
+An artifact is measured against the guide its own filename maps to, and against no other.
 
 ### published-contracts-are-reported
 
-An artifact under a published contract is measured and reported, never rewritten. Its declaration or its guide says so: the bytes are posted or delivered verbatim, or a consumer outside this run parses the file. Record each violation with `fixed` false and leave the file.
+An artifact under a published contract is measured and never rewritten. Its declaration or its guide says so: the bytes are posted or delivered verbatim, or a consumer outside this run parses the file.
 
 ### maps-come-from-the-caller
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.2
+  version: 1.5.0
 ---
 
 ## Capability
@@ -90,4 +90,4 @@ Only findings at Minor severity or above set a routing flag. Nit and Information
 
 ### classify-do-not-fix
 
-This technique classifies and routes only. Applying fixes is the responsibility of the downstream fix technique.
+This technique classifies and routes only, and applies no fix.

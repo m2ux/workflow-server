@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Severity and go/no-go recommendation for strategic-review findings (fix now vs a
 
 ### strategic_review_doc
 
-The strategic-review findings and recommendations, categorized by type (investigation artifacts, over-engineering, orphaned infrastructure, scope creep).
+The strategic-review findings and recommendations, each carrying its [category](../resources/strategic-review.md#categories).
 
 ### strategic_review_findings
 

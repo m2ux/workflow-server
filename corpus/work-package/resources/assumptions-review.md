@@ -40,7 +40,7 @@ Common origins of false assumptions: missing/stale information, conditions that 
 
 ## Assumptions Log Template
 
-The log is the single record of truth for assumptions — one row per assumption, updated in place. Never restate assumption content in another artifact; link to the row instead (single-source-and-link).
+The log is the single record of truth for assumptions — one row per assumption, updated in place. Never restate assumption content in another artifact; link to the row instead (`manage-artifacts.single-source-and-link`).
 
 **Template:**
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.3
+  version: 1.3.0
 ---
 
 ## Capability
@@ -35,6 +35,10 @@ Directory holding the project's ADR files
 
 `human`
 
+### adr_document_path
+
+Full filesystem path to the written ADR.
+
 ## Protocol
 
 ### 1. Determine Number
@@ -51,5 +55,5 @@ Directory holding the project's ADR files
 
 ### 3. Write Adr
 
-- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules)
+- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), emitting its path as `{adr_document_path}`
 
