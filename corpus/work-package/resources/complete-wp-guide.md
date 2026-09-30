@@ -2,7 +2,7 @@
 name: complete-wp-guide
 description: Template and fill rules for the COMPLETE.md close-out document.
 metadata:
-  version: 2.2.2
+  version: 2.2.3
   order: 21
   legacy_id: 21
 ---
@@ -32,6 +32,8 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
   |---|---|---|
   | [only criteria that missed, or exceeded in a way that matters] | | |
 - Files changed: see [change-block index](NN-change-block-index.md).
+- Test coverage: see [test plan](NN-test-plan.md).
+- Architecture decision: [ADR NNNN](NNNN-decision-title.md). [Omit where no ADR was accepted.]
 - Design decisions: recorded in the [plan](NN-work-package-plan.md#proposed-approach) and
   [assumptions log](NN-assumptions-log.md). [List here ONLY decisions made during
   implementation that are recorded nowhere else, each in the form
@@ -59,7 +61,7 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 
 ## Workflow Retrospective
 
-[Written by conduct-retrospective — see the [retrospective section template](workflow-retrospective.md#output-section-template). Omitted when the skip-if-trivial rule applies.]
+[Per the [retrospective section template](workflow-retrospective.md#output-section-template). Omitted when the skip-if-trivial rule applies.]
 ```
 
 ## Rules

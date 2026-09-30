@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.2
+  version: 1.4.3
 ---
 
 ## Capability
@@ -15,15 +15,11 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 ### finalized_adr
 
-*(optional)* The ADR as accepted, with the implementation outcome recorded — absent when the work package created no ADR.
+*(optional)* The ADR as accepted, with the implementation outcome recorded. Absent where the work package created no ADR.
 
 ### finalized_test_plan
 
-*(optional)* The test plan with each case linked to its test source file and line.
-
-### documented_apis
-
-*(optional)* The public APIs in the diff that the documentation pass covered.
+*(optional)* The test plan with each case linked to its test source file and line. Absent on a review run.
 
 ## Outputs
 
@@ -43,6 +39,30 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 Path to the written close-out document, for user-facing links.
 
+### follow_ups_register
+
+The follow-ups register's bare filename, carrying an entry for each in-task item the close-out found open and held by no entry. Unchanged where it found none.
+
+#### artifact
+
+`follow-ups.json`
+
+#### audience
+
+`agent`
+
+### deferred_items_register
+
+The deferred-items register's bare filename, carrying an entry for each out-of-scope item the close-out found open and held by no entry. Unchanged where it found none.
+
+#### artifact
+
+`deferred-items.json`
+
+#### audience
+
+`agent`
+
 ## Protocol
 
 ### 1. Create the Completion Document
@@ -61,12 +81,13 @@ Path to the written close-out document, for user-facing links.
 ### 4. State Open Work
 
 - Read the in-task follow-ups register and the out-of-scope deferred-items register (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, each open entry's ID and one-line item, and a link to each issue raised from it. Omit the section when neither register exists.
-   > Work still open at close-out and held by no register entry goes to the register that owns it first — in-task to the follow-ups register, out-of-scope to the deferred-items register, each an entry per that register's template and Rules ([follow-ups](../../resources/follow-ups.md#rules), [deferred-items](../../resources/deferred-items.md#rules)), creating the register when this is its first entry — and Open Work counts it like any other.
+   > Work still open at close-out and held by no register entry goes to the register that owns it first — in-task to `{follow_ups_register}`, out-of-scope to `{deferred_items_register}`, each an entry in its register's template shape, creating that register when this is its first entry — and Open Work counts it like any other.
 
 ### 5. Link the Cost and the Verdict
 
 - Link `token-usage.md` for cost when it exists — one line, no figure restated.
 - State the validation verdict in one line, and link the change-block index for files changed — link, don't copy the tables.
+- Link `{finalized_test_plan}` for test coverage and `{finalized_adr}` for the design decision, one line each, where each is present.
 
 ### 6. Report the Success Criteria
 
