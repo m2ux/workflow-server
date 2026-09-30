@@ -5,19 +5,23 @@ metadata:
 
 ## Capability
 
-The strategic review's findings set aside beyond this work package at the review checkpoint, as out-of-scope deferrals.
+Every finding in the strategic review document, as an out-of-scope deferral.
 
 ## Inputs
 
+### strategic_review_doc
+
+The strategic review document holding the findings.
+
 ### deferred_items
 
-The deferrals the review emitted before the checkpoint. Empty where it emitted none.
+The deferrals the review already emitted. Empty where it emitted none.
 
 ## Outputs
 
 ### deferred_items
 
-The deferrals the review emitted, plus every finding the checkpoint deferred, each carrying what was set aside, the finding's designator as where, and why it falls outside this package.
+The deferrals the review emitted, plus every finding in `{strategic_review_doc}`, each carrying what was set aside, the finding's designator as where, and its Recommendation as why.
 
 ## Protocol
 

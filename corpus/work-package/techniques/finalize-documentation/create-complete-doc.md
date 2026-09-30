@@ -17,10 +17,6 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 *(optional)* The ADR as accepted, with the implementation outcome recorded. Absent where the work package created no ADR.
 
-### adr_document_path
-
-*(optional)* Full filesystem path to the ADR. Absent where the work package created no ADR.
-
 ### finalized_test_plan
 
 *(optional)* The test plan with each case linked to its test source file and line. Absent on a review run.
@@ -82,20 +78,20 @@ Path to the written close-out document, for user-facing links.
 
 - Read `{follow_ups_register}` and `{deferred_items_register}` in `{planning_folder_path}` (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, each open entry's ID and one-line item, and a link to each issue raised from it. Omit the section when neither register exists.
 
-### 5. Link the Supporting Records
+### 5. Link Supporting Records
 
 - Link `token-usage.md` for cost when it exists — one line, no figure restated.
 - State the validation verdict in one line, and link the change-block index for files changed — link, don't copy the tables.
 - Link the test plan for test coverage, from `{finalized_test_plan}`.
   > Omit the line where `{finalized_test_plan}` is absent.
-- Link the ADR at `{adr_document_path}` by the decision title `{finalized_adr}` records.
-  > Omit the line where `{adr_document_path}` is absent.
+- Link the ADR `{finalized_adr}` records by its decision title, at its path relative to `{planning_folder_path}`.
+  > Omit the line where `{finalized_adr}` is absent.
 
 ### 6. Report the Success Criteria
 
 - Report success criteria exception-only: one line when all are met, rows only for divergences.
 
-### 7. Carry the Retrospective
+### 7. Carry Retrospective
 
 - Carry `{retrospective_document}` as the Workflow Retrospective section.
   > Omit the section where `{retrospective_document}` is absent.

@@ -171,6 +171,6 @@ outcome:
   - Mental model of codebase architecture established
   - Key abstractions and design rationale documented
   - Domain concepts mapped to technical constructs
-  - A reusable comprehension reference lands in the cumulative corpus, where the next work package on the same area reads it instead of re-investigating
+  - A reusable comprehension reference lands in the cumulative corpus, which the next work package on the same area reads
   - The questions, investigations and unexplored areas behind that reference stay in the session's planning folder as a comprehension log
   - Open questions converged via analyse-challenge before the soft sufficiency gate

@@ -57,10 +57,6 @@ variables:
       type: array
       description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
       defaultValue: []
-    - name: adr_document_path
-      type: string
-      description: Full filesystem path to the ADR this work package wrote.
-      defaultValue: ""
     - name: deferred_item_issue_number
       type: string
       description: Key of the issue raised for the entry under consideration.

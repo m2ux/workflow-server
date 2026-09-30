@@ -23,7 +23,7 @@ metadata:
 > **Optional doc wording:**
 > "[Suggested documentation text]"
 
-**Follow-ups:** [each in-task follow-up's register entry ID and one-line item]
+**Follow-ups:** [each in-task follow-up's register entry ID and one-line item. Omit where there are none.]
 ```
 
 ## Review Document Template

@@ -33,4 +33,4 @@ The register's bare filename, once each supplied follow-up is appended as an ent
 
 - For each entry of `{follow_ups}`, write an entry in the shape the [register template](../../resources/follow-ups.md#template) gives, creating the register when this is its first entry
   > Where an entry for the item already exists, update that entry rather than adding a second, per the register's [Rules](../../resources/follow-ups.md#rules).
-- Mark an entry `done` when its work closes, leaving it in place
+- Mark an entry `done` when its work closes, or `dropped` when it is consciously abandoned, leaving it in place

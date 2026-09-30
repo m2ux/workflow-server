@@ -35,10 +35,6 @@ Directory holding the project's ADR files
 
 `human`
 
-### adr_document_path
-
-Full filesystem path to the written ADR.
-
 ## Protocol
 
 ### 1. Determine Number
@@ -55,5 +51,5 @@ Full filesystem path to the written ADR.
 
 ### 3. Write Adr
 
-- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), emitting its path as `{adr_document_path}`
+- Derive `{$decision_title}` as a slugified short title of the decision, then write the `{adr_document}` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules)
 

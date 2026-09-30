@@ -42,6 +42,6 @@ The out-of-scope items still open and held by no deferred-items entry, each carr
 - Read the plan's tasks, the validation verdict and the success criteria in `{planning_folder_path}` for work not done.
 - Read `{follow_ups_register}` and `{deferred_items_register}` where they exist, and drop every item an entry already holds.
 
-### 2. Sort the Remainder
+### 2. Sort Remainder
 
 - Emit each remaining item that must finish inside this work package as a `{follow_ups}` entry, and each set aside beyond it as a `{deferred_items}` entry.
