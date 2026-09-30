@@ -43,7 +43,7 @@ Two rows for the one collection, shaped by the case report's [Template](/conform
 
 ### 1. Fill the Table
 
-- Fill the table from the two cases — the negative against `{negative_open_items}` and `{negative_has_unraised}`, the positive against `{positive_open_items}` and `{positive_has_unraised}` — per [Template](/conformance/resources/case-report.md#template); the run addresses no graph, which the header says in the line a graph name takes.
+- Fill the table from the two cases — the negative against `{negative_open_items}` and `{negative_has_unraised}`, the positive against `{positive_open_items}` and `{positive_has_unraised}` — per [Template](/conformance/resources/case-report.md#template); `Run:` names the collect technique, and the run addresses no graph, which the header says in the line a graph name takes.
    > An empty `{negative_open_items}` with `{negative_has_unraised}` false is the collection reading a missing register as nothing outstanding; the row names that fallback rather than reading it as a filtered register.
 
 ### 2. Write the Report

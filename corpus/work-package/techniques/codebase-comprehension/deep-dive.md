@@ -70,7 +70,7 @@ Targeted exploration findings for the selected area: traced data flows, implemen
 
 - Write `{comprehension_log}` per the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template)
 - Append this investigation as a deep dive beside the ones earlier passes wrote, rather than in place of them
-- Record every set this investigation walked in full as an enumeration — the call sites a symbol has, the keys a topology aligns across its configuration files, the branches a function admits — naming the query or command that produced it. A later pass reads the set from here rather than walking it again, per [Evidence Reuse](../../resources/findings-report.md#evidence-reuse).
+- Record every set this investigation walked in full as an enumeration — the call sites a symbol has, the keys a topology aligns across its configuration files, the branches a function admits — naming the query or command that produced it. A later deep dive over this area reads the set from `{comprehension_log}`.
 
 ### 3. Promote Settled Outcomes
 

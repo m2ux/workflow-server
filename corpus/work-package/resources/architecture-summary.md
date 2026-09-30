@@ -96,7 +96,7 @@ flowchart LR
 
 - **[Added / Modified / Removed] [component]** — [what it now does, in business terms].
 
-## [Package Structure / Key Flow / Before and After]
+## [Package Structure / Container View / Key Flow]
 
 [Omit this section unless the change warrants a second diagram, chosen per Diagram Selection. One diagram, then one sentence on what it shows.]
 

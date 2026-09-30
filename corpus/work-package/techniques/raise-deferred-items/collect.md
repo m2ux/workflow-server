@@ -7,16 +7,6 @@ metadata:
 
 The deferred-items register read for entries that name no issue yet.
 
-## Inputs
-
-### deferred_items_register
-
-The register holding this run's out-of-scope deferrals, named by its bare filename.
-
-#### default
-
-`deferred-items.json`
-
 ## Outputs
 
 ### open_deferred_items

@@ -33,4 +33,7 @@ The findings deferred beyond this work package as out-of-scope deferrals, each c
 - Categorize each finding per the group's `finding-categories`, assigning each a stable designator that downstream surfaces reference, per [Designators](../../resources/findings-report.md#designators)
 - Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
 - Emit any deferred finding as a `{deferred_items}` entry deferred at the finding's designator
+
+### 2. Place Every Designator
+
 - Place every designator the run produced in exactly one delivery class on the document's delivery line, per [Delivery Completeness](../../resources/findings-report.md#delivery-completeness)

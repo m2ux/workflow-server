@@ -41,7 +41,7 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 
 - Review against the attached [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria) ([resource-loading-via-tool](/meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool) — never read workflow resources from disk).
 - Review against `{changed_files}` as the authored surface, and against `{expected_changes}` as the yardstick where a baseline supplied it.
-  > Where it is empty, verify the branch and commit range before reviewing an empty set.
+  > Where `{changed_files}` is empty, verify the branch and commit range before reviewing an empty set.
 
 ### 2. Bound Review Scope
 

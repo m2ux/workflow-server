@@ -9,14 +9,6 @@ A deferred-items register entry naming the issue raised for it.
 
 ## Inputs
 
-### deferred_items_register
-
-The register holding this run's out-of-scope deferrals, named by its bare filename.
-
-#### default
-
-`deferred-items.json`
-
 ### current_deferred_item
 
 A register entry, carrying its ID, its item text and the reason it was set aside.

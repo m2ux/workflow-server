@@ -5,7 +5,7 @@ description: The sentence, table and link register every artifact written for a 
 
 # Artifact Writing Register
 
-The register for an artifact whose declared audience is a person. A creation guide owns which sections that artifact has, how long it may run, and which form it prefers; this register owns the sentences, tables and links inside them.
+The register for an artifact whose declared audience is a person. A creation guide owns which sections that artifact has, how long it may run, and which form it prefers; this register owns the sentences, tables and links inside them. Where a creation guide prescribes a citation form or a table's link column, the artifact follows the guide's form.
 
 ## Prose
 
@@ -30,6 +30,6 @@ A table is the right form for enumerable facts: one row per item, the same field
 
 ## Links
 
-A link carries the reader from a name in a sentence to the thing named. A creation guide that prescribes a table's link column states that column's form, and the column follows it.
+A link carries the reader from a name in a sentence to the thing named.
 
 - **The link text is the name.** The visible words are the thing the sentence is about, placed where the sentence already names it. A bare URL, or link text that is a path, a line coordinate or "here", hands the reader an address in place of a name.

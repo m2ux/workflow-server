@@ -33,7 +33,7 @@ The register's bare filename, once each supplied deferral is appended as an entr
 
 ## Protocol
 
-### 1. Append the Entries
+### 1. Append Entries
 
 - Assemble the deferrals this pass contributes: every entry of `{deferred_items}`, plus every `{assumptions_log}` row whose Outcome is Deferred, deferred at that row's ID
 - Write each as an entry in the shape the [register template](../../resources/deferred-items.md#template) gives, creating the register when this is its first entry

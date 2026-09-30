@@ -237,7 +237,7 @@ Paragraph prose names code per [Prose](/meta/resources/writing-register.md#prose
 
 ### role-columns-in-prose
 
-Tables carry identifiers generally, under `prose-over-symbols`; a column describing what something is *for* carries prose, the one exception this artifact takes to the writing register's no-prose-in-a-cell. Parameter lists, field names and variant names belong to the definition the row links to.
+Tables carry identifiers generally, under `prose-over-symbols`; a column describing what something is *for*, or what it binds or causes, carries prose, the one exception this artifact takes to the writing register's no-prose-in-a-cell. Parameter lists, field names and variant names belong to the definition the row links to.
 
 ### demonstratives-over-counts
 

@@ -54,5 +54,5 @@ The analysis of one review round. Each comment entry takes the [Response Format 
 - **The header carries the round's shape.** Comment total and re-review outcome are header fields, so a reader has the outcome before the entries.
 - **Each comment appears once,** its category, disposition and response together in one entry. A disposition table beside the entries states the same fact twice.
 - **Changes name the concern and its commit.** The diff holds the file-level detail; a bullet naming a path restates it.
-- **A comment's site is the comment's own link.** The entry heading names the concern; the code it touches is named and linked in the response, never as a path and line in the heading.
+- **A comment's site is the comment's own link.** The entry heading names the concern; the code it touches is named and linked in the response.
 - **Line budget:** ~60 lines. One entry per comment responded to, each naming the change that answers it.

@@ -21,10 +21,10 @@ variables:
     description: Two out-of-scope deferrals, each carrying what was set aside, where, and why.
     defaultValue:
       - item: Retire the legacy exporter
-        deferred_at: strategic-review
+        deferred_at: SR-1
         reason: The exporter has callers outside this package.
       - item: Document the retry budget
-        deferred_at: assumptions-review
+        deferred_at: PL-3
         reason: The budget awaits the operations owner.
   - name: raised_item
     type: object
