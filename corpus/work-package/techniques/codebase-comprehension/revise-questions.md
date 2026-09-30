@@ -27,4 +27,4 @@ The log with its open questions revised — resolved questions naming the deep d
 - Revise the open questions and the unexplored areas in `{comprehension_log}`, in the shape the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template) defines
 - Mark resolved questions as resolved with a one-line resolution and the deep dive that answered them
 - Add new questions discovered during investigation as open — questions naturally emerge from tracing data flows, examining edge cases, and reading adjacent code
-- Record questions identified but outside the current work package as unexplored entries, each with its area and what exploring it would take
+- Record questions identified but outside the current work package as unexplored entries

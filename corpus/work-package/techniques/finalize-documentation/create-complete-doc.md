@@ -17,6 +17,10 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 *(optional)* The ADR as accepted, with the implementation outcome recorded. Absent where the work package created no ADR.
 
+### adr_document_path
+
+*(optional)* Path of the ADR within the engineering repository. Absent where the work package created no ADR.
+
 ### finalized_test_plan
 
 *(optional)* The test plan with each case linked to its test source file and line. Absent on a review run.
@@ -61,7 +65,7 @@ Path to the written close-out document, for user-facing links.
 
 ## Protocol
 
-### 1. Create the Completion Document
+### 1. Create Completion Document
 
 - Create the `{completion_document}` at the `{planning_folder_path}` following the close-out [Template](../../resources/complete-wp-guide.md#template) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files. Emit its path as `{completion_document_path}`.
 
@@ -84,10 +88,10 @@ Path to the written close-out document, for user-facing links.
 - State the validation verdict in one line, and link the change-block index for files changed — link, don't copy the tables.
 - Link the test plan for test coverage, from `{finalized_test_plan}`.
   > Omit the line where `{finalized_test_plan}` is absent.
-- Link the ADR `{finalized_adr}` records by its decision title, at its path relative to `{planning_folder_path}`.
-  > Omit the line where `{finalized_adr}` is absent.
+- Link the ADR at `{adr_document_path}` by the decision title `{finalized_adr}` records, in the form `manage-artifacts.hyperlink-conventions` gives a target outside the planning folder.
+  > Omit the line where `{adr_document_path}` is absent.
 
-### 6. Report the Success Criteria
+### 6. Report Success Criteria
 
 - Report success criteria exception-only: one line when all are met, rows only for divergences.
 

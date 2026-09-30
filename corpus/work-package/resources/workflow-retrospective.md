@@ -83,7 +83,7 @@ Items above the budget are cut, not compressed: an observation that does not mak
 
 ## Rules
 
-- **Within the item budget** — the section holds at most the counts in [Item Budget](#item-budget). Overflow that still deserves to survive becomes an in-task follow-up.
+- **Within the item budget** — the section holds at most the counts in [Item Budget](#item-budget).
 - **Workflow improvements, never user or agent error:** users and mechanical traces reveal workflow gaps — analyze as defects in instructions, not blame.
 - **Exception-only:** include only signal categories with content; a smooth session's retrospective is the message counts, a takeaway, and "action required: no".
 - **State each lesson once.** No Summary/Lessons/Takeaway triple-statement — the takeaway line is the recap.
