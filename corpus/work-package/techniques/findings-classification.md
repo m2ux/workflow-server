@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.1
+  version: 1.4.2
 ---
 
 ## Capability
@@ -24,10 +24,6 @@ The findings or diagnostics to classify. Each entry carries enough context to ju
 ### structural_findings
 
 *(optional)* The structural-analysis findings subset, when present, whatever pipeline produced it.
-
-### ticket_disposition
-
-*(optional)* What the reviewer decided about the ticket's completeness gaps. Where it is present, the consolidated findings carry that judgement to the author alongside the code findings; where it is absent, the ticket was not assessed.
 
 ## Outputs
 

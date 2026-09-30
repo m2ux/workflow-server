@@ -33,6 +33,10 @@ The triage of prior PR feedback — each prior comment dispositioned Confirmed /
 
 *(optional)* The tracker ticket the reviewed PR addresses, named in the summary so the review is traceable to the work it judges.
 
+### ticket_disposition
+
+*(optional)* What the reviewer decided about the ticket's completeness gaps. Absent where the ticket was not assessed.
+
 ### rating_cap
 
 The ceiling the Overall Rating may not exceed, derived from the prior-feedback triage. When set to the request-changes tier (an unaddressed external blocker), the rendered Overall Rating is held at or below Request Changes unless the rating-cap carve-in lifts it.
@@ -93,6 +97,7 @@ Every way `{review_summary}` disagrees with the reports it renders from, as `{ c
 ### 4. Render the Summary
 
 - Apply `findings-constraint` across the rendered sections, scoping each finding against the authored surface `{changed_files}`.
+- State `{ticket_disposition}` in the Executive Summary where it is present, per [Design Philosophy](../resources/review-mode.md#design-philosophy).
 - Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, structural analysis, lean-coding audit, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
 - **Every row of every section comes from `{classified_findings}` and nothing else.** One finding is one row, under the designator its own report defines, in ascending designator order per [Designators](../resources/findings-report.md#designators). A section drawing its order from a second enumeration — a priority list, a remediation order — renders siblings inconsistently, and a row standing for a group of findings hides each of them from the totals and from the Action Items.
 - Reference, don't restate: each finding renders as its item designator, `@` locus link, one-line title, and severity only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `@` cell is a hyperlinked `>` onto the pertinent locus — reviewed code under `{reviewed_code_base}` with a line anchor, or the test, document, CI run, or commit the category declares. Descriptions, evidence, and suggestions stay in the linked report artifacts.
