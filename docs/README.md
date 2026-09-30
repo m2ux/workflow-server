@@ -32,7 +32,7 @@ The index of definition documents, and the schema that checks a definition.
 
 ## Architecture
 
-Each model answers one pressure, introduced in [architecture](architecture.md).
+Each area covers a specific aspect of behaviour.
 
 
 | Model                        | Answers                                                                                       |
@@ -47,8 +47,7 @@ Each model answers one pressure, introduced in [architecture](architecture.md).
 
 ## Artifacts
 
-Each file an author writes, introduced in [architecture](architecture.md).
-
+Each file an author writes.
 
 | Artifact                  | What it is                                                              |
 | ------------------------- | ----------------------------------------------------------------------- |
@@ -56,6 +55,3 @@ Each file an author writes, introduced in [architecture](architecture.md).
 | [Technique](technique.md) | One capability a step names                                             |
 | [Routine](routine.md)     | A run of steps written once and spliced in wherever it is needed        |
 | [Resource](resource.md)   | Reference material a technique cites and does not contain               |
-
-
-Plans and decision records live under the engineering root. Work on that branch starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).
