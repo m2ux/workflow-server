@@ -15,7 +15,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ## 🎯 Overview
 
-Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [rule](docs/setup.md#3-verify) bootstraps a meta-orchestration agent — from there, the agent-server conversation handles workflow discovery, session management, and step-by-step navigation.
+Workflow Server guides AI agents through structured, multi-step workflows. First, bootstrap a meta-orchestration agent — from there, the agent-server conversation handles workflow discovery, session management, and step-by-step navigation.
 
 ### Why?
 
@@ -39,11 +39,10 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 User Goal → Workflow → Activities → Techniques → Tools
 ```
 
-- **Workflows** — define the mechanical process and outcome contract (e.g., implement a feature from issue to merged PR)
-- **Activities** — are mechanical phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** — are prose-based capability definitions, with an explicit contract (inputs, outputs, procedure, rules)
+- **Workflows** — mechanical process and outcome contract (e.g., implement a feature end-to-end)
+- **Activities** — mechanical phases within a workflow (e.g., plan/implement/review/validate)
+- **Techniques** — prose-based capability definitions with an explicit contract (inputs, outputs, procedure, rules)
 - **Tools** — are the external programs or APIs a technique invokes
-
 
 ## 🚀 Quick Start
 
