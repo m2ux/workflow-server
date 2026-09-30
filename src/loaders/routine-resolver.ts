@@ -665,6 +665,26 @@ function bindReference(
 
   for (const [id, output] of scope.outputs) {
     const bound = step.outputs?.[id];
+    // An id the routine declares as both an input and an output is one variable it reads and then
+    // updates, so a site names that variable once. An argument and an output binding that name two
+    // different variables, or a literal argument with nowhere to write, would send the body's reads
+    // and writes to different places.
+    const argued = scope.inputs.has(id) ? map.get(id) : undefined;
+    if (argued !== undefined && step.with?.[id] !== undefined) {
+      if (argued.kind !== 'name') {
+        throw new RoutineResolutionError(
+          `${context}: '${id}' is both an input and an output of routine '${routine.id}', so its argument `
+          + `names the variable the routine reads and updates — bind it braced, as '{<name>}', rather than as a literal.`,
+        );
+      }
+      if (bound !== undefined && bound !== argued.name) {
+        throw new RoutineResolutionError(
+          `${context}: '${id}' is both an input and an output of routine '${routine.id}', and this site `
+          + `binds the input to '${argued.name}' and the output to '${bound}' — name one variable for both.`,
+        );
+      }
+      continue;
+    }
     if (bound !== undefined) { map.set(id, { kind: 'name', name: bound }); continue; }
     if (output.optional) { map.set(id, { kind: 'drop' }); continue; }
     throw new RoutineResolutionError(

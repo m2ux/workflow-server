@@ -531,3 +531,48 @@ describe('collectRoutineRefs', () => {
     expect(collectRoutineRefs(host)).toEqual(['first-run', 'wf::second-run']);
   });
 });
+
+describe('an id a routine declares as both an input and an output', () => {
+  // The body reads the document and writes it back: one variable the site names once.
+  const updating = routine({
+    id: 'update-run',
+    inputs: [{ id: 'concern_document', description: 'the document the run reads' }],
+    outputs: [
+      { id: 'concern_document', type: 'object', description: 'the document with the run applied', optional: true },
+    ],
+    steps: [
+      {
+        kind: 'technique', id: 'apply',
+        technique: { name: 'fold', inputs: { concern_document: 'concern_document' }, outputs: { concern_document: 'concern_document' } },
+      },
+    ] as Step[],
+  });
+  const LOOKUP = lookupFrom({ wf: [updating] });
+  const bindingOf = (step: Record<string, unknown>): { inputs?: Record<string, unknown>; outputs?: Record<string, unknown> } => {
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'update-run', ...step } as Step]);
+    materializeActivityRoutines(host, LOOKUP, 'wf');
+    return (host.steps![0] as { technique: { inputs?: Record<string, unknown>; outputs?: Record<string, unknown> } }).technique;
+  };
+
+  it('reads and writes the one variable an argument and an output binding agree on', () => {
+    const technique = bindingOf({ with: { concern_document: '{review_log}' }, outputs: { concern_document: 'review_log' } });
+    expect(technique.inputs).toEqual({ concern_document: 'review_log' });
+    expect(technique.outputs).toEqual({ concern_document: 'review_log' });
+  });
+
+  it('reads and writes the argument where the site leaves the optional output unbound', () => {
+    const technique = bindingOf({ with: { concern_document: '{review_log}' } });
+    expect(technique.inputs).toEqual({ concern_document: 'review_log' });
+    expect(technique.outputs).toEqual({ concern_document: 'review_log' });
+  });
+
+  it('refuses an argument and an output binding that name two variables', () => {
+    expect(() => bindingOf({ with: { concern_document: '{review_log}' }, outputs: { concern_document: 'other_log' } }))
+      .toThrow(/'concern_document' is both an input and an output.*'review_log'.*'other_log'/s);
+  });
+
+  it('refuses a literal argument, which leaves the write nowhere to land', () => {
+    expect(() => bindingOf({ with: { concern_document: 'review_log' }, outputs: { concern_document: 'review_log' } }))
+      .toThrow(/'concern_document' is both an input and an output.*braced/s);
+  });
+});
