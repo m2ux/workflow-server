@@ -21,7 +21,7 @@ Workflow Server guides AI agents through structured, multi-step workflows. First
 
 **pseudo-mechanical** workflow execution provides:
 
-* Precision composition and delivery of procedure for repeatable, reliable execution
+* Precision composition and delivery of procedure for repeatable, reliable goal completion
 * Skill-like procedural (technique) and non-procedural (resource) support for operations requiring judgement
 * Optionality to ossify repeated operations into a schematised mechanical form.
 * Avoidance context-rot and maximise token efficiency with just-in-time delivery of precisely composed instructions
