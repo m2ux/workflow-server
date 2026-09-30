@@ -2,7 +2,7 @@
 name: codebase-comprehension
 description: Comprehension techniques, corpus and log artifact templates, promotion criteria, and deep-dive guidance from reverse engineering and code forensics literature.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 25
   legacy_id: 25
 ---
@@ -204,8 +204,8 @@ The session-local record: the questions this pass asked, the investigations that
   "challenges": [
     { "perspective": "…", "date": "YYYY-MM-DD", "surfaced": ["…"] }
   ],
-  "follow_ups": [
-    { "item": "an out-of-scope item this pass left", "to_settle": "what it would take" }
+  "out_of_scope": [
+    { "item": "an item outside this work package the pass surfaced", "to_settle": "what it would take" }
   ]
 }
 ```
@@ -233,7 +233,7 @@ These govern the corpus artifact.
 
 ### prose-over-symbols
 
-Paragraph prose names things in words and hyperlinks to their definition in the sentence flow. Code identifiers, expressions, field lists and enum variants live in tables, diagrams, fenced blocks and link targets — the surfaces built to carry them.
+Paragraph prose names code per [Prose](/meta/resources/writing-register.md#prose). Code identifiers, expressions, field lists and enum variants live in tables, diagrams, fenced blocks and link targets — the surfaces built to carry them.
 
 ### role-columns-in-prose
 

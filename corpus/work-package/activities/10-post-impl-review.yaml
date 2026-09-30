@@ -58,7 +58,7 @@ variables:
     - name: flagged_block_numbers
       type: string
       description: Text the reviewer typed naming the change blocks that carry an issue, comma-separated.
-    - name: follow_up_rows
+    - name: follow_ups
       type: array
       description: In-task follow-ups to append to the register, each with what remains and where it surfaced.
       defaultValue: []

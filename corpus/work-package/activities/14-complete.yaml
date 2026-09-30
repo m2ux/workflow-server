@@ -1,5 +1,5 @@
 id: complete
-version: 1.14.1
+version: 1.14.2
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
@@ -54,7 +54,7 @@ variables:
       defaultValue: false
     - name: open_deferred_items
       type: array
-      description: Register entries naming no issue yet, each carrying its ID, item and rationale.
+      description: Register entries naming no issue yet, each carrying its ID, item and reason.
       defaultValue: []
     - name: documented_apis
       type: array
@@ -101,7 +101,7 @@ steps:
     steps:
       - kind: checkpoint
         id: deferred-item-raise#{current_deferred_item.id}
-        message: "Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.rationale}"
+        message: "Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.reason}"
         options:
           - id: raise
             label: Raise an issue

@@ -2,7 +2,7 @@
 name: implementation-analysis
 description: Guidelines for analyzing the existing implementation during work package planning to establish baselines, evaluate effectiveness, and identify the gaps the change closes.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 6
   legacy_id: 6
 ---
@@ -58,5 +58,5 @@ Consult when filling the template (not a session procedure):
 - Every effectiveness claim cites evidence (log data, test results, metrics) — no vague claims like "slow" or "not great".
 - Every baseline row records value, measurement method, and date (e.g. 487 ms, production logs over a 7-day average, 2025-01-15).
 - A target is quantitative, mapped to a gap, and measured by the method its baseline used. "Make it faster" is not a target.
-- Gaps are prioritized with impact justification.
+- Every gap carries a priority.
 - **Line budget:** ~60 lines. Baseline measurements are the payload; the approach they argue for belongs in the plan, and the module structure belongs in the comprehension corpus.

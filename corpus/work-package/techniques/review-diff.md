@@ -55,7 +55,7 @@ Per-block issues with interview responses
 
 True if any block marked as critical blocker
 
-### follow_up_rows
+### follow_ups
 
 The reviewer's own edits to paths under review, as in-task follow-ups carrying the pattern each one shows. Empty where the reviewer applied none.
 
@@ -96,7 +96,7 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 - For each entry of `{flagged_block_indices}`, assemble the full diff content for that file, scoped to the line the entry names where it carries one
 - Record each block's issue into `{manual_diff_review_report.block_findings}` verbatim, with its severity where one is stated
-- Detect manual review edits: compare the working tree to the last agent-written tip for paths under review, and emit each confirmed pattern the reviewer's own edits show as a `{follow_up_rows}` entry
+- Detect manual review edits: compare the working tree to the last agent-written tip for paths under review, and emit each confirmed pattern the reviewer's own edits show as a `{follow_ups}` entry
 
 ### 7. Create Report
 
@@ -112,4 +112,4 @@ Each Block Rationale paragraph is 3–5 sentences covering intent, context, and 
 
 ### review-conduct
 
-Work systematically (top-to-bottom or by logical grouping); reference surrounding code when describing an issue; be specific — include line numbers or code snippets in finding descriptions.
+Work systematically (top-to-bottom or by logical grouping); reference surrounding code when describing an issue; be specific — name the code in words, linked to its lines.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
@@ -9,7 +9,7 @@ The out-of-scope deferrals register, carrying one entry per item consciously pla
 
 ## Inputs
 
-### deferred_item_rows
+### deferred_items
 
 *(optional)* Deferrals a pass emitted directly, each carrying what was set aside, where, and why it falls outside this package. Empty where the pass emitted none.
 
@@ -35,7 +35,7 @@ The register with each supplied deferral appended as an entry, or updated in pla
 
 ### 1. Append the Entries
 
-- Assemble the deferrals this pass contributes: every entry of `{deferred_item_rows}`, plus every `{assumptions_log}` row whose Outcome is Deferred
+- Assemble the deferrals this pass contributes: every entry of `{deferred_items}`, plus every `{assumptions_log}` row whose Outcome is Deferred
 - Write each as an entry in the shape the [register template](../../resources/deferred-items.md#template) gives, creating the register when this is its first entry
   > Where an entry for the item already exists, update that entry rather than adding a second, per the group's `one-entry-per-item-updated-in-place`.
 - Leave `issue` null until an issue is raised for the entry, which is what marks it as still unraised

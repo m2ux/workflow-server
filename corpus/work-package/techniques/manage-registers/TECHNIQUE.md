@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
 
-Shared contract for the work package's two open-work registers — the single home each keeps for its class of outstanding item, and the append-only discipline both follow.
+Shared contract for the work package's two open-work registers — the single home each keeps for its class of outstanding item, and the one-entry-per-item discipline both follow.
 
 ## Rules
 

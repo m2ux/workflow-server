@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ The register holding this run's out-of-scope deferrals, named by its bare filena
 
 ### open_deferred_items
 
-The register entries whose `issue` is null, each carrying the entry's `id`, `item` and `rationale`. Empty when the register does not exist, or when every entry is raised already.
+The register entries whose `issue` is null, each carrying the entry's `id`, `item` and `reason`. Empty when the register does not exist, or when every entry is raised already.
 
 ### has_unraised_deferred_items
 
@@ -36,5 +36,5 @@ Boolean gate — true when `{open_deferred_items}` holds at least one entry.
 
 ### 2. Select the Unraised Entries
 
-- Take every register entry whose `issue` is null, and record it in `{open_deferred_items}` with its `id`, its `item` and its `reason` as the rationale.
+- Take every register entry whose `issue` is null, and record it in `{open_deferred_items}` with its `id`, its `item` and its `reason`.
 - Set `{has_unraised_deferred_items}` from whether that set holds anything.

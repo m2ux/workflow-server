@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.9.1
+  version: 3.9.2
 ---
 
 ## Capability
@@ -36,7 +36,7 @@ Omit template sections whose content would be "None", "N/A", or a restatement th
 
 ### markdown-line-breaks
 
-In a group of consecutive bold-label lines (`**Status:** value`), every line except the last MUST end with two trailing spaces — without them the lines collapse into a single rendered paragraph. Do NOT use bullet prefixes as a substitute. Applies to all planning artifacts that use bold-label fields (assumptions logs, design philosophy documents, research documents, analyses, comprehension artifacts).
+In a group of consecutive bold-label lines (`**Status:** value`), every line except the last MUST end with two trailing spaces — without them the lines collapse into a single rendered paragraph. Do NOT use bullet prefixes as a substitute. Applies to every planning artifact that uses bold-label fields.
 
 ### hyperlink-conventions
 

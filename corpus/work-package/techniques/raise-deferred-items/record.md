@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
@@ -8,6 +8,14 @@ metadata:
 A deferred-items register entry naming the issue raised for it.
 
 ## Inputs
+
+### deferred_items_register
+
+The register holding this run's out-of-scope deferrals, named by its bare filename.
+
+#### default
+
+`deferred-items.json`
 
 ### current_deferred_item
 
@@ -25,4 +33,4 @@ The address of the issue raised for this entry.
 
 ### 1. Link the Entry to Its Issue
 
-- Set the `issue` of `{current_deferred_item}` in the register to `{deferred_item_issue_number}` and `{deferred_item_issue_url}`, in the shape the [register template](../../resources/deferred-items.md#template) gives that field.
+- Set the `issue` of `{current_deferred_item}` in `{deferred_items_register}` to `{deferred_item_issue_number}` and `{deferred_item_issue_url}`, in the shape the [register template](../../resources/deferred-items.md#template) gives that field.

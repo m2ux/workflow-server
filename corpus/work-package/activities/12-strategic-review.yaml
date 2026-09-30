@@ -51,7 +51,7 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
-    - name: deferred_item_rows
+    - name: deferred_items
       type: array
       description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
       defaultValue: []

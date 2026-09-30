@@ -31,7 +31,7 @@ A table is the right form for enumerable facts: one row per item, the same field
 
 ## Links
 
-A link carries the reader from a name in a sentence to the thing named.
+A link carries the reader from a name in a sentence to the thing named. A creation guide that prescribes a table's link column states that column's form, and the column follows it.
 
 - **The link text is the name.** The visible words are the thing the sentence is about, placed where the sentence already names it. A bare URL, or link text that is a path, a line coordinate or "here", hands the reader an address in place of a name.
 - **A source sits with its claim.** The link to what supports a statement is in that statement. A trailing Sources or References list separates every claim from its evidence and is read by no one.

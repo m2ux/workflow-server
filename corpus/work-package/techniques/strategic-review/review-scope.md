@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.1
+  version: 1.6.2
 ---
 
 ## Capability
@@ -91,7 +91,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 ### 8. Record Pr Body Conformance
 
-- Where `{body_conforms}` is false, record each `{body_findings}` entry in the `{strategic_review_doc}` under 'PR body conformance'.
+- Where `{body_conforms}` is false, state each `{body_findings}` entry in the `{strategic_review_doc}` as a finding whose Category is PR Body Conformance.
   > - A finding an earlier conformance check already stated is cited by its designator rather than restated; a body edited since that check is re-judged whole.
-  > - Where `{body_conforms}` is absent, no pull request exists and the section is omitted.
+  > - Where `{body_conforms}` is absent, no pull request exists and no body finding is stated.
 

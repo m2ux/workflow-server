@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
@@ -9,7 +9,7 @@ The in-task follow-ups register, carrying one entry per piece of work still owed
 
 ## Inputs
 
-### follow_up_rows
+### follow_ups
 
 The follow-ups to record, each carrying what remains, where it surfaced, and what happens next. Empty where the pass surfaced none.
 
@@ -31,6 +31,6 @@ The register with each supplied follow-up appended as an entry, or updated in pl
 
 ### 1. Append the Entries
 
-- For each entry of `{follow_up_rows}`, write an entry in the shape the [register template](../../resources/follow-ups.md#template) gives, creating the register when this is its first entry
+- For each entry of `{follow_ups}`, write an entry in the shape the [register template](../../resources/follow-ups.md#template) gives, creating the register when this is its first entry
   > Where an entry for the item already exists, update that entry rather than adding a second, per the group's `one-entry-per-item-updated-in-place`.
 - Mark an entry `done` when its work closes, leaving it in place so the record of what was owed survives

@@ -1,10 +1,9 @@
 id: record-deferrals
-version: 1.0.0
+version: 1.0.1
 name: Record Deferrals
 description: Append two deferrals to the register and raise the first as an issue.
 variables:
   reads:
-    - deferred_rows
     - raised_item
     - raised_issue_number
     - raised_issue_url
@@ -18,8 +17,6 @@ steps:
     id: append-deferrals
     technique:
       name: work-package::manage-registers::append-deferred-item
-      inputs:
-        deferred_item_rows: deferred_rows
   - kind: technique
     id: raise-first
     technique:

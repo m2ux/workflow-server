@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.14.1
+version: 1.14.2
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
@@ -107,9 +107,9 @@ steps:
         routine: challenge-concerns
         with:
           challenge_perspectives: '["pedagogy", "rejected-paths"]'
-          concern_document: comprehension_artifact
+          concern_document: comprehension_log
         outputs:
-          concern_document: comprehension_artifact
+          concern_document: comprehension_log
           concerns_agent_resolvable: needs_comprehension
           residual_opens_remain: has_open_questions
       - kind: technique

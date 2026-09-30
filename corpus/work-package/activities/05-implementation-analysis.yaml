@@ -1,7 +1,7 @@
 id: implementation-analysis
-version: 2.16.0
+version: 2.16.1
 name: Implementation Analysis
-description: Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement.
+description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
 variables:
   reads:
     - assumption_outcome

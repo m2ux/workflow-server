@@ -50,7 +50,7 @@ Definition: [`04-research.yaml`](./04-research.yaml)
 
 ### 05. Implementation Analysis (optional)
 
-Analyzes the current implementation to understand effectiveness, establish baselines, and identify improvement opportunities — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. Leads to plan-prepare.
+Analyzes the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. Leads to plan-prepare.
 
 Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yaml)
 
