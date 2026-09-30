@@ -2,7 +2,7 @@
 name: readme-seed
 description: Work-package planning-folder README seed profile — Progress inventory, classifier vocabulary, and mode-exclusion map for create-readme.
 metadata:
-  version: 2.1.0
+  version: 2.1.1
 ---
 
 # Work Package README Seed
