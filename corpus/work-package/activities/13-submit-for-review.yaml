@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.26.0
+version: 1.26.1
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
