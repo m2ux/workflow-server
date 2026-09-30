@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.18.0
+version: 1.19.0
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with its design assumptions reconciled.
 variables:
@@ -150,6 +150,7 @@ steps:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
+    maxIterations: 10
     steps:
       - kind: technique
         id: reconcile-iteration
