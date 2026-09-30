@@ -1,6 +1,6 @@
 # Canon Map
 
-How to address each authority. Paths are in SKILL.md's [Homes](../SKILL.md#homes). What a home requires is in that home.
+How to address each authority. Paths are in SKILL.md's [home links](../SKILL.md#workflow-canon), roots in its [Homes](../SKILL.md#homes). What a home requires is in that home.
 
 ## Unit inventory
 

@@ -7,11 +7,17 @@ description: "Applies the workflow-server design canon (principles, anti-pattern
 
 Workflow Canon locates the canon's homes, enumerates their units, walks them over workflow definitions, and reports. The canon has five homes:
 
-- **Design Principles**  The principles a definition is designed to.
-- **Anti-Patterns**  The catalog of defects, grouped in families of entries.
-- **Convention Conformance**  How a definition compares with its sibling workflows.
-- **Guard suite**  The registry of mechanical checks.
-- **Schema fields**  The fields each definition file kind takes.
+- **[Design Principles][principles]**  The principles a definition is designed to.
+- **[Anti-Patterns][anti-patterns]**  The catalog of defects, grouped in families of entries.
+- **[Convention Conformance][conventions]**  How a definition compares with its sibling workflows.
+- **[Guard suite][guards]**  The registry of mechanical checks.
+- **[Schema fields][schemas]**  The fields each definition file kind takes.
+
+[principles]: https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md
+[anti-patterns]: https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md
+[conventions]: https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md
+[guards]: https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts
+[schemas]: https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md
 
 ## Modes
 
@@ -36,14 +42,9 @@ Read the file for the mode the request calls for:
 
 ## Homes
 
-| Home | Path | Root |
-|------|------|------|
-| Design Principles | `corpus/canon/resources/design-principles.md` | corpus |
-| Anti-Patterns | `corpus/canon/resources/anti-patterns.md` | corpus |
-| Convention Conformance | `corpus/canon/resources/convention-conformance.md` | corpus |
-| Guard suite | `guards/guards.ts` | server |
-| Schema fields | `docs/schemas.md` | server |
-
+- **Links and roots.**
+  - Each home's link names its path from its root: the corpus tree for the `workflows` branch, the server checkout for `main`.
+  - Read a home on disk, at the commit audited, never from the link.
 - **Server checkout.**
   - Inside the checkout, `git rev-parse --show-toplevel`.
   - From a cursor workspace (`.mcp.json`, `*.code-workspace`, no `package.json`), the checkout is the `project` folder that workspace names.
