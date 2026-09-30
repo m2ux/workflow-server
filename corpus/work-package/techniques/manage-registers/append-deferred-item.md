@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.2
+  version: 2.0.3
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ The out-of-scope deferrals register, carrying one entry per item consciously pla
 
 ### deferred_items_register
 
-The register with each supplied deferral appended as an entry, or updated in place where the entry already exists.
+The register's bare filename, once each supplied deferral is appended as an entry, or updated in place where the entry already exists.
 
 #### artifact
 

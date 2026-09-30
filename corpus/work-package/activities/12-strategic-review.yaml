@@ -57,7 +57,7 @@ variables:
       defaultValue: []
     - name: deferred_items_register
       type: string
-      description: The out-of-scope deferrals register as it stands after this activity's entries.
+      description: Bare filename of the out-of-scope deferrals register this activity's entries were written to.
       defaultValue: ""
     - name: head_sha
       type: string

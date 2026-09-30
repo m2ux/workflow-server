@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.2
+  version: 2.0.3
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ The follow-ups to record, each carrying what remains, where it surfaced, and wha
 
 ### follow_ups_register
 
-The register with each supplied follow-up appended as an entry, or updated in place where the entry already exists.
+The register's bare filename, once each supplied follow-up is appended as an entry, or updated in place where the entry already exists.
 
 #### artifact
 

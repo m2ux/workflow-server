@@ -1,5 +1,5 @@
 id: record-deferrals
-version: 1.0.1
+version: 1.0.2
 name: Record Deferrals
 description: Append two deferrals to the register and raise the first as an issue.
 variables:
@@ -10,7 +10,7 @@ variables:
   writes:
     - name: deferred_items_register
       type: string
-      description: The deferred-items register as it stands after the two entries.
+      description: Bare filename of the deferred-items register the two entries were written to.
 required: true
 steps:
   - kind: technique
