@@ -1,6 +1,6 @@
 ---
 name: workflow-canon
-description: "Applies the workflow-server design canon (principles, anti-patterns, conventions, guards) to workflow definitions. Use to draft, change or audit a workflow, activity, technique or resource, before committing definition changes, or to revise this skill: \"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\", \"why is this an anti-pattern?\""
+description: "Applies the workflow-server design canon (principles, anti-patterns, conventions, guards) to workflow definitions: workflows, activities, techniques and resources. Use to draft one (\"write a new activity\", \"author a technique\"), make a specified change (\"apply this finding\", \"fix this defect in workflow X\"), audit (\"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\"), or revise this skill (\"update the workflow-canon skill\"). Also for one canon question (\"why is this an anti-pattern?\") and before committing definition changes."
 ---
 
 # Workflow Canon

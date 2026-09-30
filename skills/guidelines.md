@@ -7,6 +7,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Fields.**  `name` and `description` only. `name` is kebab-case and matches the skill's folder.
 - **Description.**
   - It states what the skill covers and the requests that call for it, as the phrases a user would say: "plan the work", "audit workflow X".
+  - It carries at least one such phrase for each mode, since the description alone decides whether the skill loads.
   - It carries no procedure; what each mode does is in the body.
   - It stays under the 1,024-character skill limit.
 
