@@ -571,6 +571,11 @@ describe('an id a routine declares as both an input and an output', () => {
       .toThrow(/'concern_document' is both an input and an output.*'review_log'.*'other_log'/s);
   });
 
+  it('refuses an argument addressing a member, where the routine updates a whole variable', () => {
+    expect(() => bindingOf({ with: { concern_document: '{review.log}' } }))
+      .toThrow(/'concern_document' is both an input and an output.*'\{review\.log\}' addresses a member/s);
+  });
+
   it('refuses a literal argument, which leaves the write nowhere to land', () => {
     expect(() => bindingOf({ with: { concern_document: 'review_log' }, outputs: { concern_document: 'review_log' } }))
       .toThrow(/'concern_document' is both an input and an output.*braced/s);

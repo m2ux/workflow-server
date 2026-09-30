@@ -510,9 +510,9 @@ export async function unboundTechniqueIds(
  *
  * Reads are the names the activity consults: a bound op's input under the name-match convention,
  * the `{token}`s of a step binding's values and of the activity's prose, and the variables its
- * gates, conditions, loops and routing test. A `doWhile`'s continuation test is read after its body. A name an earlier step of the same activity produces
- * is read internally rather than from the contract — the same closest-producer-before-position
- * rule the provenance annotation applies.
+ * gates, conditions, loops and routing test, a `doWhile`'s continuation test after its body. A name
+ * an earlier step of the same activity produces is read internally rather than from the contract —
+ * the same closest-producer-before-position rule the provenance annotation applies.
  */
 export async function deriveActivityContract(args: {
   activity: Activity;
@@ -699,6 +699,17 @@ export async function deriveActivityContract(args: {
       // A routine's bound outputs land the same way a technique's do: the site names where each
       // goes, so the target is what reaches the bag.
       for (const target of Object.values(step.outputs ?? {})) { write(target); operationWrites.add(target); }
+      // An id the routine both reads and updates, bound by argument alone, is updated in the variable
+      // its argument names, as the splice resolves it.
+      const inputIds = new Set((routine?.inputs ?? []).map((input) => input.id));
+      for (const output of routine?.outputs ?? []) {
+        const argument = step.with?.[output.id];
+        if (!inputIds.has(output.id) || step.outputs?.[output.id] !== undefined) continue;
+        if (typeof argument !== 'string' || !/^\{[^{}]+\}$/.test(argument)) continue;
+        const target = bagName(argument.slice(1, -1));
+        write(target);
+        operationWrites.add(target);
+      }
     }
 
     if (step.kind === 'checkpoint') {

@@ -677,6 +677,13 @@ function bindReference(
           + `names the variable the routine reads and updates — bind it braced, as '{<name>}', rather than as a literal.`,
         );
       }
+      const argument = String(step.with[id]);
+      if (argument.slice(1, -1).includes('.')) {
+        throw new RoutineResolutionError(
+          `${context}: '${id}' is both an input and an output of routine '${routine.id}', so its argument `
+          + `names a whole variable the routine updates — '${argument}' addresses a member of one.`,
+        );
+      }
       if (bound !== undefined && bound !== argued.name) {
         throw new RoutineResolutionError(
           `${context}: '${id}' is both an input and an output of routine '${routine.id}', and this site `
