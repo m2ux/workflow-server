@@ -28,10 +28,10 @@
 | R-A4 / R-P7 | Hygiene | Low | `omit-null-sections` — two analysis sections | pre-existing | Marked |
 | R-A5 | Hygiene | Low | `one-invariant-per-rule` — failure-report IDs rule | pre-existing | Split |
 | R-A6 | Hygiene | Low | `one-invariant-per-rule` — change-summary budget rule | pre-existing | Split |
-| R-A2 | Contract | Medium | `no-derived-state-shadow` — `spec_basename` | pre-existing | Open |
-| R-A7 | Hygiene | Low | `no-rationale-in-description` — analyze-source §3 | pre-existing | Open |
-| R-A8 | Hygiene | Low | `no-technique-resource-dual-home` — update-specification restates identifiers and pending | pre-existing | Open |
-| R-A9 | Hygiene | Low | `no-technique-resource-dual-home` — analyze-source §2 restates identifier reuse | pre-existing | Open |
+| R-A2 | Contract | Medium | `no-derived-state-shadow` — `spec_basename` | pre-existing | Fixed at 9049523a |
+| R-A7 | Hygiene | Low | `no-rationale-in-description` — analyze-source §3 | pre-existing | Fixed at 9049523a |
+| R-A8 | Hygiene | Low | `no-technique-resource-dual-home` — update-specification restates identifiers and pending | pre-existing | Fixed at 9049523a |
+| R-A9 | Hygiene | Low | `no-technique-resource-dual-home` — analyze-source §2 restates identifier reuse | pre-existing | Fixed at 9049523a |
 
 Guard candidates filed by walk A (second occurrence across consecutive walks): `omit-null-sections`, `one-invariant-per-rule`, `link-named-artifacts`.
 
