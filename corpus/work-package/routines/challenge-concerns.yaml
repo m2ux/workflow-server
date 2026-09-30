@@ -53,11 +53,14 @@ steps:
       inputs:
         challenge_perspectives: "{challenge_perspectives}"
         concern_document: concern_document
+      outputs:
+        challenge_findings: challenge_findings
   - kind: technique
     id: combine
     technique:
       name: analyse-challenge::combine
       inputs:
+        challenge_findings: challenge_findings
         concern_document: concern_document
       outputs:
         concern_document: concern_document

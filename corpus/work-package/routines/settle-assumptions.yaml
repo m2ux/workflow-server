@@ -53,10 +53,19 @@ steps:
       open_assumptions: open_assumptions
   - kind: technique
     id: assemble-residual
-    technique: review-assumptions::assemble-open-set
+    technique:
+      name: review-assumptions::assemble-open-set
+      inputs:
+        open_assumptions: open_assumptions
+      outputs:
+        assumption_review_presentation: assumption_review_presentation
     when: is_review_mode != true
   - kind: routine
     id: interview
     routine: residual-assumption-interview
+    with:
+      assumption_review_presentation: "{assumption_review_presentation}"
+      has_open_assumptions: "{has_open_assumptions}"
+      open_assumptions: "{open_assumptions}"
     outputs:
       has_deferred_assumptions: has_deferred_assumptions

@@ -33,7 +33,7 @@ Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template
 
 ### elevate-implicit
 
-An implicit decision is recorded as an assumption and validated before implementation rests on it.
+An implicit decision is recorded as an assumption.
 
 ### assembled-entries-carry-their-evidence
 

@@ -29,7 +29,7 @@ Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-
 
 ### has_resolvable_assumptions
 
-Boolean gate driving the reconciliation loop — true while open code-resolvable assumptions remain (another iteration is needed), false once convergence is reached.
+Whether an open assumption remains that targeted code analysis could resolve.
 
 ### has_open_assumptions
 
@@ -57,13 +57,13 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - Update the `{assumptions_log}` rows in place: write finding + evidence into the Resolution column and Validated / Invalidated / Partially Validated into the Outcome column; remove the Open Assumptions entry of any assumption that resolved
 - Add any newly surfaced assumptions as new rows, Outcome `Open`, with their classification (code-resolvable or not)
-- Emit the scorecard data (see [assumption-reconciliation](../../resources/assumption-reconciliation.md#scorecard)) as a bindable pass result after each pass; do NOT persist count tables in the log — the rows are the record
+- Report the [scorecard](../../resources/assumption-reconciliation.md#scorecard) after each pass; the log carries no count table, because its rows are the record
 - Write Open Assumptions entries to the `manage-artifacts.markdown-line-breaks` rule
 
 ### 4. Check Convergence
 
 - Re-classify all open assumptions after the analysis pass
-- If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set `{has_resolvable_assumptions}` to true
+- If any open assumptions are code-resolvable (including newly surfaced ones), set `{has_resolvable_assumptions}` to true
 - If no open assumptions are code-resolvable, convergence is reached per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification): the assumptions log is now the `{assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
 - After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true.
 

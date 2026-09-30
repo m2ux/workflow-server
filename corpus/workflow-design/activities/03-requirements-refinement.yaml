@@ -171,4 +171,4 @@ exits:
     immediate: true
 outcome:
   - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — persisted for drafting, with stakeholder attestation at Gate 2
-  - Audit-resolvable design assumptions converge via a while-loop; open judgements remain in the assumptions log for the late approve-to-commit batch
+  - Audit-resolvable design assumptions converge; open judgements remain in the assumptions log for the late approve-to-commit batch

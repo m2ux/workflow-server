@@ -85,7 +85,10 @@ steps:
             needs_individual_interview: true
   - kind: technique
     id: record-batch
-    technique: review-assumptions::record
+    technique:
+      name: review-assumptions::record
+      inputs:
+        assumption_outcome: assumption_outcome
     when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
   - kind: loop
     id: interview
@@ -98,10 +101,15 @@ steps:
     steps:
       - kind: technique
         id: present
-        technique: review-assumptions::assemble-one
+        technique:
+          name: review-assumptions::assemble-one
+          inputs:
+            current_assumption: current_assumption
+          outputs:
+            assumption_review_presentation: assumption_review_presentation
       - kind: checkpoint
         id: "decision#{current_assumption.id}"
-        message: "Assumption {current_assumption.id}: {current_assumption.statement} {assumption_review_presentation}"
+        message: "{assumption_review_presentation}"
         options:
           - id: resolve-inline
             label: Accept the assumption
@@ -129,3 +137,4 @@ steps:
           name: review-assumptions::record
           inputs:
             assumption_correction: assumption_correction
+            assumption_outcome: assumption_outcome

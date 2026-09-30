@@ -31,11 +31,11 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 - Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the part of `{assumption_source}` generating them
    > Use the categories supplied for the current phase.
-- Assign a risk letter (**H** / **M** / **L**) from the classification vocabulary
+- Assign a risk letter (**H** / **M** / **L**) from the [classification vocabulary](../../resources/assumptions-review.md#classification-vocabulary)
 
 ### 3. Record a Null Result
 
-- If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed — do not prompt the user to confirm a null result
+- If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed
 
 ### 4. Append Them to the Log
 

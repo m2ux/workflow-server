@@ -56,7 +56,12 @@ steps:
     steps:
       - kind: technique
         id: reconcile
-        technique: review-assumptions::reconcile
+        technique:
+          name: review-assumptions::reconcile
+          outputs:
+            assumptions_log: assumptions_log
+            has_resolvable_assumptions: has_resolvable_assumptions
+            has_open_assumptions: has_open_assumptions
       # Named for the pass rather than for its first step: a reference id and the body step it
       # prefixes compose into one identifier, so two segments spelled alike read as a fault.
       - kind: routine
@@ -64,7 +69,7 @@ steps:
         routine: challenge-concerns
         with:
           challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
-          concern_document: assumptions_log
+          concern_document: "{assumptions_log}"
         outputs:
           concern_document: assumptions_log
           concerns_agent_resolvable: has_resolvable_assumptions
