@@ -75,8 +75,8 @@ The user approved narrowing I07 E02 (D10).
 
 | ID | Decision | Alternatives rejected |
 | --- | --- | --- |
+| D10 | This initiative owns the construct tags, index and their guard; I07 E02 drops its tag task and tag clauses, and I07 E05 routes through this initiative's index | I07 owning them, with G3–G5 waiting on its chain; folding this initiative into I07 |
 | D11 | The hook runs the guards in the `.project/main` of the workspace holding its script, with `--root` naming the edited file's corpus tree; the corpus trees are separate clones, so git links neither to a server checkout | A server path rendered into settings by the deploy script; searching upward for `guards/check-all.ts` with a fallback |
-| D10 | This initiative owns the construct tags, index and their guard; I07 E02 drops its tag task and tag clauses, and depends on this initiative | I07 owning them, with G3–G5 waiting on its chain; folding this initiative into I07 |
 
 ## Issues
 
@@ -96,7 +96,7 @@ I07 edits, approved by the user:
 - **#938 (E05).**  W04 depends on I09 E05 W01 in place of I07 E02 W03; the Proposal and References route through I09 E05.
 - **#936 (I07).**  E05's Depends on is E04 alone, as Check dependencies derives; the Proposal drops "index it by construct"; References add I09.
 
-Links to repoint once #1022 merges: the planning-record links in #1023 R1 and in each I09 epic's R1.
+Each I09 issue's planning-record link points at this record on `engineering`. I09 and its epics are on the workflow-server project board.
 
 ## Delivery notes
 
