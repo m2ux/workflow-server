@@ -1,12 +1,10 @@
 id: report-cases
-version: 1.0.0
+version: 1.0.1
 name: Report Cases
 description: State what each collection landed.
 variables:
   reads:
-    - negative_has_unraised
     - negative_open_items
-    - positive_has_unraised
     - positive_open_items
 required: true
 steps:

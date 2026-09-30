@@ -27,7 +27,7 @@ A highly isolated workflow for remediating security vulnerabilities without publ
 | 11 | validate | work-package | Build/test/lint suite |
 | 12 | strategic-review | work-package | Scope/minimality review + commit-signature scan and re-sign |
 | 13 | submit-for-review | work-package | DCO attestation, private-remote isolation checks, push to `security` (PR lifecycle stealth-gated out) |
-| 14 | complete | work-package | Close-out |
+| 14 | complete | work-package | Close-out (deferred-item issue raising stealth-gated out) |
 | 15 | codebase-comprehension | work-package | Comprehension deep-dive |
 
 ```mermaid
