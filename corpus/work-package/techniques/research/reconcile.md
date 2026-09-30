@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,11 +11,15 @@ Research-reconcilable candidates closed until only irreconcilable residue remain
 
 ### research_candidates
 
-The running [inventory](../../resources/research-reconciliation.md#inventory-shape) of open and resolved candidates to reconcile. On the first pass this is the triaged set; on later passes it also carries any candidates a `request-more` reopened.
+The running [inventory](../../resources/research-reconciliation.md#inventory-shape) of open and resolved candidates to reconcile. On the first pass this is the triaged set; on later passes, the inventory the previous pass wrote back.
 
 ### research_document
 
 The research [artifact](../../resources/knowledge-base-research.md#planning-artifact) as it stands at the start of the pass; this pass appends to it and writes it back.
+
+### research_direction
+
+*(optional)* Text the user typed naming the candidate and the focus for a further research pass. Unset until the user directs one.
 
 ## Outputs
 
@@ -36,6 +40,7 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 ### 1. Select Reconcilable Candidates
 
 - Read `{research_candidates}`; take the candidates classified reconcilable-by-research
+- When `{research_direction}` names a candidate whose row records no finding on the focus it gives, reopen that candidate as reconcilable-by-research, scoped to that focus
 - If none are reconcilable, there is nothing to research — set `{has_reconcilable_research}` false and return; convergence is already reached
 
 ### 2. Targeted Research

@@ -406,14 +406,14 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:99",
+      "site": "work-package/techniques/review-summary.md:107",
       "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:99",
+      "site": "work-package/techniques/review-summary.md:107",
       "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"

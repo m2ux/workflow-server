@@ -1,0 +1,16 @@
+$schema: ../../../schemas/workflow.schema.json
+id: reply-correction
+version: 1.0.0
+title: Reply Correction Workflow
+description: >-
+  A draft whose review gate loops back through a correcting option: evidence that the text the
+  reader types with that option lands in its declared variable, and that the re-run reads it.
+author: m2ux
+tags:
+  - specimen
+  - checkpoint
+initialActivity: draft
+graph:
+  draft:
+    done: __terminal__
+    revise: draft

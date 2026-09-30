@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ The baseline elicitation builds its questions on — the stakeholder discussion 
 
 Whether a stakeholder discussion took place before elicitation.
 
+### stakeholder_discussion
+
+*(optional)* Text the user typed carrying the stakeholder discussion transcript or its summary. Unset where no discussion was held.
+
 ## Outputs
 
 ### stakeholder_baseline
@@ -23,5 +27,5 @@ The stakeholder discussion as elicitation reads it — the recorded transcript, 
 
 ### 1. Record the Baseline
 
-- Set `{stakeholder_baseline}` from the discussion the run holds when `{stakeholder_discussion_held}` is true
+- Set `{stakeholder_baseline}` from `{stakeholder_discussion}` when `{stakeholder_discussion_held}` is true
   > Where `{stakeholder_discussion_held}` is false, `{stakeholder_baseline}` carries the limitation that elicitation proceeds on agent-led questions alone, without stakeholder input behind them.

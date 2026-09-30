@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 2.11.0
+  version: 2.12.0
 ---
 
 ## Capability
 
 Operation-type classification and design-intent baseline for create, update, or review.
+
+## Inputs
+
+### review_target_correction
+
+*(optional)* Text the user typed naming the workflows to audit in place of the classified target set. Unset until a correction is given.
 
 ## Outputs
 
@@ -68,6 +74,7 @@ When `{operation_type}` is `update`, the categorized change request derived from
 - Determine `{operation_type}` per the Output criteria
 - Set `{operation_type_ambiguous}` true when classification signals conflict or are insufficient; otherwise false
 - In review mode, resolve `{target_workflow_ids}` from the request and seed `{target_workflow_id}` to the first element; in update mode set `{target_workflow_id}` only; in create mode leave both unset
+  > When `{review_target_correction}` is bound, the workflows it names replace the set the request gives, in the order it names them.
 - In review mode, treat the target set as ambiguous when no concrete workflow id is named or the named set cannot be resolved confidently — that ambiguity feeds `{intent_needs_confirmation}`
 
 ### 2. Derive Intent Gap Flag and Headless

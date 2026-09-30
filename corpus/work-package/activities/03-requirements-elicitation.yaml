@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.12.0
+version: 2.13.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 variables:
@@ -68,6 +68,12 @@ variables:
       type: string
       description: The stakeholder discussion as elicitation reads it, or the recorded limitation that none was held.
       defaultValue: ""
+    - name: stakeholder_discussion
+      type: string
+      description: Text the user typed carrying the stakeholder discussion transcript or its summary.
+    - name: domain_answer
+      type: string
+      description: Text the user typed answering the question posed for the current domain.
     - name: stakeholder_discussion_held
       type: boolean
       description: Whether a stakeholder discussion took place before agent-led elicitation.
@@ -87,6 +93,7 @@ steps:
         label: Transcript provided
         description: The reply carries the discussion transcript or summary
         effect:
+          recordReply: stakeholder_discussion
           setVariable:
             stakeholder_discussion_held: true
       - id: skip-discussion
@@ -120,6 +127,7 @@ steps:
             label: Answer provided
             description: The reply carries the answer to the question posed
             effect:
+              recordReply: domain_answer
               setVariable:
                 domain_answered: true
           - id: skip-domain

@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.28.0
+version: 3.29.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -120,9 +120,12 @@ variables:
       type: string
       description: URL of the tracker issue for this work package (alongside issue_number).
       defaultValue: ""
+    - name: issue_request
+      type: string
+      description: The issue key, URL, or surrounding text the user supplied when opening the work package, or typed in reply to the issue-verification gate.
     - name: jira_project
       type: string
-      description: Whether the Jira project came from the project list ('selected') or from the user directly ('specified').
+      description: Text the user typed naming the Jira project key the new issue is created in. Absent where the project is taken from the project list.
     - name: needs_github_issue_creation
       type: boolean
       description: Whether a GitHub issue should be created to mirror the Jira ticket.
@@ -410,8 +413,9 @@ steps:
     options:
       - id: provide-existing
         label: Provide existing issue
-        description: "Share the issue number or URL (GitHub #N or Jira PROJ-N)"
+        description: "The reply carries the issue number or URL (GitHub #N or Jira PROJ-N)"
         effect:
+          recordReply: issue_request
           setVariable:
             needs_issue_creation: false
       - id: create-issue
@@ -557,16 +561,12 @@ steps:
     options:
       - id: select
         label: Select from list
-        description: Choose from available projects
-        effect:
-          setVariable:
-            jira_project: selected
+        description: The project is taken from the projects the tracker lists
       - id: specify
         label: Specify project key
-        description: Provide a specific project key
+        description: The reply carries the project key
         effect:
-          setVariable:
-            jira_project: specified
+          recordReply: jira_project
   - kind: technique
     id: derive-issue-type
     technique: issue-type-detection

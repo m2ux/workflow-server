@@ -1,0 +1,36 @@
+id: draft
+version: 1.0.0
+name: Draft
+description: Write a one-line draft, and put it to the reader, who accepts it or types a correction.
+required: true
+variables:
+  writes:
+    - name: draft_text
+      type: string
+      description: The one-line draft as last written.
+    - name: draft_correction
+      type: string
+      description: Text the reader typed correcting the draft. Unset until a correction is given.
+steps:
+  - kind: technique
+    id: write-draft
+    technique: write-draft
+  - kind: checkpoint
+    id: draft-reviewed
+    message: "Draft: {draft_text}"
+    options:
+      - id: accept
+        label: Accept the draft
+        description: The draft stands as written
+      - id: revise
+        label: Correct the draft
+        description: The reply carries the correction the next draft applies
+        effect:
+          recordReply: draft_correction
+          exit: revise
+exits:
+  - id: done
+    isDefault: true
+  - id: revise
+outcome:
+  - The reader has accepted a draft ({draft_text}), or typed a correction the next draft applies ({draft_correction})

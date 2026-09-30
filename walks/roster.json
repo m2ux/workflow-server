@@ -14,7 +14,8 @@
     "codebase-wiki",
     "prism-audit",
     "meta",
-    "fan-conformance"
+    "fan-conformance",
+    "reply-correction"
   ],
   "notWalked": [
     {

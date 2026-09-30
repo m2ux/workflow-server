@@ -609,12 +609,6 @@
     },
     {
       "site": "work-package :: start-work-package",
-      "name": "issue_request",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "work-package :: start-work-package",
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"

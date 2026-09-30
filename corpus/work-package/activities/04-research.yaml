@@ -1,5 +1,5 @@
 id: research
-version: 2.19.0
+version: 2.20.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 variables:
@@ -58,6 +58,9 @@ variables:
     - name: research_candidates
       type: array
       description: Inventory of open research gaps, each triaged as reconcilable-by-research or irreconcilable, with its rationale.
+    - name: research_direction
+      type: string
+      description: Text the user typed naming the candidate and the focus for a further research pass.
 required: false
 techniques:
   - scatter-gather
@@ -104,6 +107,7 @@ steps:
             label: Direct further research
             description: The reply names the candidate and the focus for a further research pass.
             effect:
+              recordReply: research_direction
               setVariable:
                 has_reconcilable_research: true
   - kind: technique

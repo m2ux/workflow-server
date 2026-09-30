@@ -1,11 +1,21 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 ## Capability
 
 Conduct structured manual diff review using external side-by-side diff tool with indexed block references
+
+## Inputs
+
+### flagged_block_numbers
+
+*(optional)* Text the reviewer typed naming the change blocks that carry an issue, comma-separated. Unset until the reviewer flags a block.
+
+### rationale_corrections
+
+*(optional)* Text the reviewer typed correcting the block rationale paragraphs, each correction naming the block it applies to. Unset until a correction is given.
 
 ## Outputs
 
@@ -75,11 +85,12 @@ The reviewer's own edits to paths under review, as in-task follow-ups carrying t
 
 - Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one `### [Block N — file:line]` subsection per block, each title linked under `{reviewed_code_base_url}` — no Instructions section and no file-index table
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
+- When `{rationale_corrections}` is bound, apply each correction to the Block Rationale paragraph of the block it names
 - Write index to the `{change_block_index}` under `{planning_folder_path}`
 
 ### 5. Collect Flagged
 
-- Emit `{flagged_block_indices}` from the block numbers the reviewer supplied against the index, in index order; empty when the reviewer supplied none
+- Emit `{flagged_block_indices}` from the block numbers `{flagged_block_numbers}` names against the index, in index order; empty when it is unset
 
 ### 6. Assemble Block Context
 

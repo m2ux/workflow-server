@@ -39,6 +39,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "id": "issue-verification",
           "option": "provide-existing",
           "setVariable": {
+            "issue_request": "walker reply for issue_request",
             "needs_issue_creation": false,
           },
         },
@@ -191,6 +192,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "id": "stakeholder-discussion-held",
           "option": "transcript-provided",
           "setVariable": {
+            "stakeholder_discussion": "walker reply for stakeholder_discussion",
             "stakeholder_discussion_held": true,
           },
         },
@@ -198,6 +200,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "id": "domain-question#{current_domain}",
           "option": "answered",
           "setVariable": {
+            "domain_answer": "walker reply for domain_answer",
             "domain_answered": true,
           },
         },
@@ -771,6 +774,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "id": "issue-verification",
           "option": "provide-existing",
           "setVariable": {
+            "issue_request": "walker reply for issue_request",
             "needs_issue_creation": false,
           },
         },
@@ -923,6 +927,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "id": "stakeholder-discussion-held",
           "option": "transcript-provided",
           "setVariable": {
+            "stakeholder_discussion": "walker reply for stakeholder_discussion",
             "stakeholder_discussion_held": true,
           },
         },
@@ -930,6 +935,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "id": "domain-question#{current_domain}",
           "option": "answered",
           "setVariable": {
+            "domain_answer": "walker reply for domain_answer",
             "domain_answered": true,
           },
         },
@@ -1438,6 +1444,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "id": "issue-verification",
           "option": "provide-existing",
           "setVariable": {
+            "issue_request": "walker reply for issue_request",
             "needs_issue_creation": false,
           },
         },
@@ -1590,6 +1597,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "id": "stakeholder-discussion-held",
           "option": "transcript-provided",
           "setVariable": {
+            "stakeholder_discussion": "walker reply for stakeholder_discussion",
             "stakeholder_discussion_held": true,
           },
         },
@@ -1597,6 +1605,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "id": "domain-question#{current_domain}",
           "option": "answered",
           "setVariable": {
+            "domain_answer": "walker reply for domain_answer",
             "domain_answered": true,
           },
         },
@@ -2170,6 +2179,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "id": "issue-verification",
           "option": "provide-existing",
           "setVariable": {
+            "issue_request": "walker reply for issue_request",
             "needs_issue_creation": false,
           },
         },
@@ -3314,6 +3324,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "id": "issue-verification",
           "option": "provide-existing",
           "setVariable": {
+            "issue_request": "walker reply for issue_request",
             "needs_issue_creation": false,
           },
         },
