@@ -1,4 +1,4 @@
-# 🧭 Workflow Orchestration Server
+# 🧭 Workflow Server
 
 [![Node.js 18+](https://img.shields.io/badge/node-18%2B-blue.svg)](https://nodejs.org/en/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -15,7 +15,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ## 🎯 Overview
 
-Workflow Server guides AI agents through structured, multi-step workflows. First, bootstrap a meta-orchestration agent — from there, the agent-server conversation handles workflow discovery, session management, and step-by-step navigation.
+Workflow Server is an MCP-based orchestration tool that guides AI agents through structured, multi-step workflows. First, bootstrap a meta-orchestration agent — from there, the agent-server conversation handles workflow discovery, session management, and step-by-step navigation.
 
 ### Why?
 
