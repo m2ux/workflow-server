@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.6.1
 ---
 
 ## Capability
 
-Compile a failure report of the issues refinement leaves unresolved, the correction history, and the manual resolution each issue needs.
+Compile a failure report of the issues refinement leaves unresolved, the correction passes attempted, and the manual resolution each issue needs.
 
 ## Inputs
 
@@ -21,7 +21,7 @@ Absolute path to the written validation report for the pass that stopped refinem
 
 ### failure_report
 
-Failure report carrying the unresolved issue IDs, correction history, and manual-resolution guidance.
+Failure report carrying the unresolved issue IDs, the number of correction passes attempted, and manual-resolution guidance.
 
 #### artifact
 

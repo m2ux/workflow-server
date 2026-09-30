@@ -1,6 +1,6 @@
 ---
 name: specification-protocol
-description: The canonical specification layout preserved verbatim: template, identifier schemes, requirement-entry format, status conventions, final specification form, and source-reference format.
+description: The canonical specification layout and conventions, preserved verbatim.
 metadata:
   order: 1
 ---
@@ -154,8 +154,6 @@ reference in section 2, relative to the folder of the target specification.
   derived passage — for a transcript, the timestamp heading. When the source is not markdown, the href
   is the file alone.
 
-Section 2.2 lists each transcript, and section 2.5 each document, by a link to that same file.
-
 On a requirement, citations appear at the end of the rationale as a square-bracketed list of those
 hyperlinks. The link text is the source's 1-based index in that list, never a timestamp. Numbering is
 local to the list: every requirement's first source is `1`.
@@ -173,12 +171,15 @@ list:
 [[1](../.engineering/artifacts/documents/settlement-brief.pdf)] (Jane Doe)
 ```
 
-## Reference Documents
+## Source Listings
 
-An unstructured reference document (a proposal, brief, email, or similar) is recorded under section 2.5
-with an `SRC-DOC###` reference and credited to its author, mirroring the meeting-transcript listing:
+Section 2 lists each source by its reference, under the subsection its type takes: a meeting transcript
+under 2.2, and an unstructured reference document (a proposal, brief, email, or similar) under 2.5. The
+link is to the same file its citations name. A meeting is credited to its participants' initials, and a
+document to its author:
 
 ```
+**SRC-MTG###**: [Meeting Title](path/to/transcript.md) — PW, MC
 **SRC-DOC###**: [Document Title](path/to/document) — Author Name
 ```
 
