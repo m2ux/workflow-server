@@ -27,6 +27,7 @@ This workspace is tailored towards the use of the Cursor IDE. To use with Claude
 │   ├── submit-upstream.sh         # Raise a pull request to contribute local workspace changes to upstream
 │   └── raise-pr.sh                # Raise a pull request against a local feature worktree
 ├── cursor.code-workspace          # Cursor multi-root workspace
+├── .gitattributes                 # Marks fork-local paths upstream-exclude
 ├── .project/                      # Project component worktree root
 ├── .engineering/                  # Engineering artifacts worktree
 └── .worktrees/                    # Feature worktrees
@@ -75,7 +76,7 @@ Fetches branch `workspace` from the `upstream` remote and merges it into the cur
 ./scripts/update-workspace.sh
 ```
 ### Open a pull request for this fork's commits against upstream `workspace`
-Pushes the current branch and opens a pull request on the `upstream` repository. The branch goes to `origin` when GitHub records `origin` as a fork of `upstream`, and to `upstream` otherwise, since GitHub accepts a cross-repository pull request only from the base repository's fork network. The base is branch `workspace`. When that pull request is already open, the script prints its URL.
+Replays the current branch's commits onto upstream `workspace` as branch `submit/<branch>`, pushes it, and opens a pull request on the `upstream` repository. Changes to paths that `.gitattributes` marks `upstream-exclude` stay out, so a fork versions its own copies of those files without submitting them; a commit touching only such paths drops out. The branch goes to `origin` when GitHub records `origin` as a fork of `upstream`, and to `upstream` otherwise, since GitHub accepts a cross-repository pull request only from the base repository's fork network. The base is branch `workspace`. When that pull request is already open, the script prints its URL.
 
 ```bash
 ./scripts/submit-upstream.sh
