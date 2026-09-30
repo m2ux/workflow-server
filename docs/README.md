@@ -1,4 +1,4 @@
-Begin with [setup](setup.md), the shared sequence after a transport is chosen.
+# Supporting Documentation
 
 ## Server
 
