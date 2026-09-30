@@ -127,7 +127,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: 'no technique redeclares an input a container contract already merges into it',
+    proves: 'no technique redeclares an input a container contract already merges into it, beyond an override of its default or optionality',
     form: 'none',
   },
   {
@@ -597,7 +597,7 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     gatesServing: false,
     json: true,
-    proves: 'every field path the construct inventory names resolves in a schema, and every step kind has a row routing an author to it',
+    proves: 'every construct-inventory section heading takes the form the check reads, every field path under it resolves in a schema, and every step kind has a row routing an author to it',
     form: 'none',
   },
   {

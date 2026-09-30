@@ -191,9 +191,9 @@ function collect(root: string = ROOT): Finding[] {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const root = requireRootOrExit('inventory-schema-agreement', DEFAULT_ROOT);
   report('inventory-schema-agreement', collect(root), {
-    okMessage: 'every construct-inventory field resolves in the schema its section names, and every step kind has a row',
+    okMessage: 'every construct-inventory section is read, every field in it resolves in the schema its section names, and every step kind has a row',
     root,
-    remedy: 'correct the field path, or delete the row when the construct it maps onto is retired; add a row for a step kind the inventory does not carry',
+    remedy: 'write each section heading as `## <title> (<name>.schema.json)`; correct the field path, or delete the row when the construct it maps onto is retired; add a row for a step kind the inventory does not carry',
   });
 }
 

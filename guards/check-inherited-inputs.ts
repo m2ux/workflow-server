@@ -11,8 +11,8 @@
  *
  * A leaf entry that changes the bind contract is not this defect and is not flagged: a `#### default`
  * the ancestor lacks, an optionality marker, or a required entry over an ancestor that marks the
- * input optional, is what an override is for. The mirror defect — an
- * input several leaves share that no common ancestor declares at all — is `hoist-shared-inputs`, the
+ * input optional, is what an override is for. The mirror defect — an input several leaves share that
+ * no common ancestor declares at all — is `hoist-shared-inputs`, the
  * hoist still owed rather than its residue, and it is out of scope here.
  *
  * Run: npx tsx guards/check-inherited-inputs.ts [--root <workflows-dir>] [--json]
@@ -80,10 +80,10 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         // The nearest ancestor is the declaration this entry merges over.
         const inherited = groupEntries.get(id) ?? rootEntries.get(id);
         if (inherited === undefined) continue;
-        // An override changes the bind contract rather than restating it: a default of its own, or an
-        // optionality the ancestor does not give it, in either direction.
-        if (text.includes('#### default')) continue;
-        if (text.includes(OPTIONAL) || text.includes(OPTIONAL) !== inherited.includes(OPTIONAL)) continue;
+        // An override changes the bind contract rather than restating it: a default of its own, an
+        // optionality marker, or a required entry over an ancestor that marks the input optional.
+        if (text.includes('#### default') || text.includes(OPTIONAL)) continue;
+        if (inherited.includes(OPTIONAL)) continue;
         const owner = groupEntries.has(id) ? 'its group' : "the workflow root's";
         findings.push({
           check: 'inherited-input-re-declared',

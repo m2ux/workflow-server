@@ -52,4 +52,25 @@ describe('inherited-inputs guard', () => {
   it('passes a leaf that declares a default of its own', () => {
     expect(findingsFor('The path under work.', 'The path this op reads.\n\n#### default\n\n`.`')).toEqual([]);
   });
+
+  it('reads the optionality a leaf overrides from its nearest ancestor, the group', () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-inherited-group-'));
+    try {
+      writeLoadableWorkflowFixture(root, 'wf', ['act']);
+      const techniques = join(root, 'wf', 'techniques');
+      const group = join(techniques, 'grp');
+      mkdirSync(group, { recursive: true });
+      writeFileSync(join(techniques, 'TECHNIQUE.md'), '## Capability\n\nThe library.\n\n## Inputs\n\n### target_path\n\nThe path under work.\n', 'utf-8');
+      writeFileSync(join(group, 'TECHNIQUE.md'), '## Capability\n\nThe group.\n\n## Inputs\n\n### target_path\n\n*(optional)* The path, where one is set.\n', 'utf-8');
+      writeFileSync(
+        join(group, 'op.md'),
+        '---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\nDoes a thing.\n\n'
+        + '## Inputs\n\n### target_path\n\nThe path this op reads.\n\n## Protocol\n\n1. Do the thing.\n',
+        'utf-8',
+      );
+      expect(collectFindings(root)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
 });
