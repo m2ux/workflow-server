@@ -50,7 +50,7 @@ Read the file for the mode the request calls for:
   - What completed, what is in progress and what is next
 - **[Revise](references/revise-mode.md)**
   - To make changes to this skill's own files
-  - Conformance with the skill's [guidelines](references/guidelines.md)
+  - Conformance with the [skill guidelines](../guidelines.md) and the skill's own [guidelines](references/guidelines.md)
 
 ## Formatting Scheme
 
