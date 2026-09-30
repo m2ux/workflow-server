@@ -75,7 +75,7 @@ Fetches branch `workspace` from the `upstream` remote and merges it into the cur
 ./scripts/update-workspace.sh
 ```
 ### Open a pull request for this fork's commits against upstream `workspace`
-Pushes the current branch to `origin` and opens a pull request on the `upstream` repository. The base is branch `workspace`. When that pull request is already open, the script prints its URL.
+Pushes the current branch and opens a pull request on the `upstream` repository. The branch goes to `origin` when GitHub records `origin` as a fork of `upstream`, and to `upstream` otherwise, since GitHub accepts a cross-repository pull request only from the base repository's fork network. The base is branch `workspace`. When that pull request is already open, the script prints its URL.
 
 ```bash
 ./scripts/submit-upstream.sh
