@@ -60,6 +60,25 @@ Units: 165 anti-pattern entries (+ Creation Rules family), 47 principles, 1 conv
 
 Highs re-derived: F1 (confirmed against `scope.ts` and `resource-tools.ts`), F2 (the check reads every href of the working specification), F3 (three specifications, one unnamed base), A1 (four leaf declarations, carve-out stops at three). None withdrawn or downgraded.
 
+## Disposition
+
+Fixed on PR #998 at `0193e9bb`. Guards 236 of 236; engine suite 2200 pass.
+
+| Findings | Outcome |
+|---|---|
+| F1 | `meetings_dir` and `documents_dir` resolve against `{planning_folder_path}` (`../../meetings/`, `../../documents/`) |
+| F3 | Decision: a specification's paths are relative to the folder of `{target_doc_path}`; protocol, rule and examples say so |
+| F2, F8 | Decision: the rubric's href, entry and section checks cover what the run adds or changes |
+| F4, F5 | store-sources emits `copied_transcripts`; only those are redacted, and a correction applies to any stored copy |
+| A1, P1, B5 | `classified_sources` hoisted to `TECHNIQUE.md`; activities read it in place of `source_paths`, now a leaf input of the three intake techniques that read it |
+| F7, P3 | record-intake and report-failure record paths per `artifact-paths-relative`; the specification's hrefs are checked by the rubric. Other artifacts rest on the rule |
+| P2 | The protocol names the folder: the engineering artifacts' `meetings`, beside `planning` |
+| B2 | The on-topic rule redacts a personal aside within it |
+| B3, P6 | update-specification and the rubric cite Requirement Entry Format |
+| A2, B4, B6, B7, B8, P5, P8 | Fixed as each row states |
+| A3 | Withdrawn: the two rules are distinct invariants (`grouped-rule-keys` Do not flag, unrelated rules) |
+| F6, A4–A8, P9, B9–B12 | Pre-existing; left for a separate change |
+
 ## Coverage
 
 | Home | Unit | Status |
