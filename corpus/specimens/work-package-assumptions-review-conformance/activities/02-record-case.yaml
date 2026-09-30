@@ -1,0 +1,28 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the assumptions review settled for the case just walked.
+variables:
+  reads:
+    - assumptions_log
+    - case_index
+    - case_outcomes
+    - has_deferred_assumptions
+    - is_review_mode
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What the assumptions review settled in each case taken so far.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: more-cases
+    when: case_index < 2
+  - id: all-cases
+    isDefault: true
+outcome:
+  - One outcome per case walked

@@ -1,0 +1,99 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-assumptions-review-conformance
+version: 1.0.0
+title: Work Package Assumptions Review Conformance Workflow
+description: >-
+  Hold the work-package assumptions review to two cases over one fixture change. On an
+  implementation run the assumptions converge, the residual set reaches the batch gate, and the
+  answer is recorded in the log. On a review run the assumptions converge into the log and no gate
+  is raised.
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the session's planning folder.
+  - name: target_repo
+    type: string
+    description: GitHub repository as owner/repo.
+  - name: target_path
+    type: string
+    description: The checkout the fixture change sits in.
+    defaultValue: .
+  - name: component_git_dir
+    type: string
+    description: The git working tree the fixture change sits in.
+    defaultValue: .
+  - name: branch_name
+    type: string
+    description: The branch the fixture change sits on.
+    defaultValue: main
+  - name: pr_number
+    type: string
+    description: The pull request the fixture change is reviewed under.
+    defaultValue: "0"
+  - name: stealth_mode
+    type: boolean
+    description: True, so the review posts nothing to an issue tracker.
+    defaultValue: true
+  - name: problem_statement
+    type: string
+    description: The fixture problem the change answers.
+    defaultValue: >-
+      The project README states no purpose for the repository. The maintainer has not said whether
+      the purpose sentence should name the server's MCP transport.
+  - name: requirements
+    type: array
+    description: The fixture requirements the change is held to.
+    defaultValue:
+      - The README states what the repository is for in one sentence, and that sentence names the server's MCP transport.
+  - name: issue_number
+    type: string
+    description: The fixture change's issue number.
+    defaultValue: "0"
+  - name: issue_platform
+    type: string
+    description: The issue tracker the fixture change is filed on.
+    defaultValue: github
+  - name: needs_comprehension
+    type: boolean
+    description: Whether the review routes back for deeper comprehension.
+    defaultValue: false
+  - name: needs_further_discussion
+    type: boolean
+    description: Whether further stakeholder discussion is needed.
+    defaultValue: false
+  - name: needs_plan_revision
+    type: boolean
+    description: Whether the approach needs significant revision.
+    defaultValue: false
+  - name: assumptions_log
+    type: object
+    description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+  - name: has_deferred_assumptions
+    type: boolean
+    description: Whether any assumption was deferred to stakeholders.
+    defaultValue: false
+initialActivity: take-case
+graph:
+  take-case:
+    taken: assumptions-review
+  assumptions-review:
+    needs-comprehension: record-case
+    needs-plan-revision: record-case
+    needs-further-discussion: record-case
+    review-mode: record-case
+    assumptions-approved: record-case
+  record-case:
+    more-cases: take-case
+    all-cases: report-cases
+  report-cases:
+    reported: __terminal__
+activities:
+  - work-package/07-assumptions-review.yaml
