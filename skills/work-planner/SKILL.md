@@ -119,7 +119,7 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **Standalone issues.**  A standalone issue sits on no board.
 - **A new theme.**
   - It needs its label and its board before an initiative takes it.
-  - The user creates the board as a copy of the Initiative template board in GitHub, since the REST API cannot create one.
+  - The user creates the board as a copy of the Initiative template board in GitHub, and links it to the repository so the repository's Projects tab lists it, since the REST API can do neither.
 
 ## Dependencies
 
