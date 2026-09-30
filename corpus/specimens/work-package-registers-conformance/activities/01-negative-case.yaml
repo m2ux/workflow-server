@@ -1,0 +1,26 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Collect unraised deferrals before any register exists.
+variables:
+  writes:
+    - name: negative_open_items
+      type: array
+      description: The unraised entries collected where no register exists — empty by construction.
+    - name: negative_has_unraised
+      type: boolean
+      description: Whether the collection before any deferral found an unraised entry.
+required: true
+steps:
+  - kind: technique
+    id: collect-absent-register
+    technique:
+      name: work-package::raise-deferred-items::collect
+      outputs:
+        open_deferred_items: negative_open_items
+        has_unraised_deferred_items: negative_has_unraised
+exits:
+  - id: collected
+    isDefault: true
+outcome:
+  - A run that deferred nothing reads as nothing outstanding rather than as a missing-file fault

@@ -1,0 +1,26 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Collect unraised deferrals once the register holds a raised and an unraised entry.
+variables:
+  writes:
+    - name: positive_open_items
+      type: array
+      description: The unraised entries collected from the register — the second deferral alone.
+    - name: positive_has_unraised
+      type: boolean
+      description: Whether the collection after the deferrals found an unraised entry.
+required: true
+steps:
+  - kind: technique
+    id: collect-held-register
+    technique:
+      name: work-package::raise-deferred-items::collect
+      outputs:
+        open_deferred_items: positive_open_items
+        has_unraised_deferred_items: positive_has_unraised
+exits:
+  - id: collected
+    isDefault: true
+outcome:
+  - Only the entry that names no issue is collected, so a raised deferral is never raised twice

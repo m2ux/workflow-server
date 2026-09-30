@@ -1,0 +1,53 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-registers-conformance
+version: 1.0.0
+title: Work Package Registers Conformance Workflow
+description: >-
+  Hold the work-package deferred-items register to two cases. The negative case collects before any
+  deferral exists, so no register is there and the collection is empty. The positive case collects
+  after two deferrals are appended and one is raised as an issue, so the collection holds the one
+  entry that names no issue yet.
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: deferred_rows
+    type: array
+    description: Two out-of-scope deferrals, each carrying what was set aside, where, and why.
+    defaultValue:
+      - item: Retire the legacy exporter
+        deferred_at: strategic-review
+        reason: The exporter has callers outside this package.
+      - item: Document the retry budget
+        deferred_at: assumptions-review
+        reason: The budget awaits the operations owner.
+  - name: raised_item
+    type: object
+    description: The first deferral as the register holds it, which the run raises as an issue.
+    defaultValue:
+      id: D-1
+      item: Retire the legacy exporter
+      rationale: The exporter has callers outside this package.
+  - name: raised_issue_number
+    type: string
+    description: Key of the issue the run records against the first deferral.
+    defaultValue: "101"
+  - name: raised_issue_url
+    type: string
+    description: Address of the issue the run records against the first deferral.
+    defaultValue: https://example.invalid/issues/101
+initialActivity: negative-case
+graph:
+  negative-case:
+    collected: record-deferrals
+  record-deferrals:
+    recorded: positive-case
+  positive-case:
+    collected: report-cases
+  report-cases:
+    reported: __terminal__
