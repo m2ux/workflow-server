@@ -40,7 +40,7 @@ Atomic tasks with explicit dependencies, ordering and a Contract — each implem
 
 ### 2. Load Guidance
 
-- Use attached [wp-plan](../../resources/wp-plan.md) for plan template and guidance
+- Use attached [wp-plan](../../resources/wp-plan.md#rules) for plan template and guidance
 - Review `{design_philosophy_doc}`, `{requirements}`, `{analysis_document}`, `{research_document}`
 
 ### 3. Apply Design Framework
