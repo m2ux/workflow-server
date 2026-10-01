@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,15 +15,15 @@ The prism mode the structural branch took.
 
 ### code_review_report
 
-The code review report hoisted at the join.
+The code review report for this case.
 
 ### test_suite_review_report
 
-The test suite review report hoisted at the join.
+The test suite review report for this case.
 
 ### structural_findings
 
-The structural findings the join holds after the fan.
+Structural findings for this case. Empty when `{pipeline_mode}` is `full-prism`.
 
 ### case_outcomes
 
@@ -33,11 +33,11 @@ One outcome per case taken so far.
 
 ### case_outcomes
 
-The list with this case's outcome appended: the pipeline mode, whether each bare report was present, and whether structural findings arrived from the inline branch.
+The list with this case's outcome appended: the pipeline mode, whether each report was present, and whether structural findings are present.
 
 ## Protocol
 
 ### 1. Record Outcome
 
 - Append one entry to `{case_outcomes}`: `{pipeline_mode}`, whether `{code_review_report}` is present, whether `{test_suite_review_report}` is present, and the length of `{structural_findings}`
-  > On the full-prism case, structural findings are empty at this join — the production join runs the full pipeline instead.
+  > Where `{pipeline_mode}` is `full-prism`, `{structural_findings}` is empty.

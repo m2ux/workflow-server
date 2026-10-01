@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Write a one-task specimen plan whose Contract follows the case under walk.
 
 ### contract_complete
 
-Whether every Contract field is written. When false, Error cases is omitted.
+Whether the case writes every Contract field.
 
 ## Outputs
 

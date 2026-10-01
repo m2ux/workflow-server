@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.18.0
+version: 2.18.1
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
 variables:
@@ -18,7 +18,7 @@ variables:
   writes:
     - name: analysis_assumptions
       type: array
-      description: Assumptions this analysis pass surfaced, for the discovery fan's join to write into the log.
+      description: Assumptions this analysis pass surfaced.
       defaultValue: []
     - name: changed_files
       type: array
@@ -51,4 +51,4 @@ outcome:
   - Current state documented with baseline metrics
   - Gaps identified and prioritized
   - Success criteria defined with measurement methodology
-  - Assumptions surfaced as a value for the discovery fan's join
+  - Assumptions surfaced from this analysis pass

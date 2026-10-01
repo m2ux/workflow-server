@@ -1,25 +1,25 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Append the join outcome.
+Append this case's contract-test outcome.
 
 ## Inputs
 
 ### contract_tests_fail_on_base
 
-Whether the join confirmed a red suite.
+Whether the suite failed against the base tree.
 
 ### contract_tests_path
 
-Path hoisted from the contract-tests branch.
+Worktree path the contract tests were written to.
 
 ### contract_tests_branch
 
-Branch hoisted from the contract-tests branch.
+Branch the contract tests were written on.
 
 ### case_outcomes
 

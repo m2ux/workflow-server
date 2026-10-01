@@ -1,5 +1,5 @@
 id: research
-version: 2.23.0
+version: 2.23.1
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 variables:
@@ -36,7 +36,7 @@ variables:
       defaultValue: false
     - name: research_assumptions
       type: array
-      description: Assumptions this research pass surfaced, for the discovery fan's join to write into the log.
+      description: Assumptions this research pass surfaced.
       defaultValue: []
     - name: research_candidates
       type: array
@@ -107,4 +107,4 @@ exits:
 outcome:
   - Best practices identified from multiple sources when research was needed
   - Patterns validated and mapped to requirements when research was needed
-  - Assumptions surfaced as a value for the discovery fan's join
+  - Assumptions surfaced from this research pass

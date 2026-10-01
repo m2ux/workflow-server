@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Report a red contract-test suite as the contract-tests fan branch would.
+Report a red contract-test suite written from the Contract alone.
 
 ## Outputs
 

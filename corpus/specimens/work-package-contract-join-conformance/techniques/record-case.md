@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Append the join outcome for the case.
+Append this case's contract-test outcome.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Whether the suite passed.
 
 ### join_exit
 
-Exit the join took.
+The exit this case took.
 
 ### case_outcomes
 
