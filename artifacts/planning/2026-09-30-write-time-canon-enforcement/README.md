@@ -106,7 +106,12 @@ Each I09 issue's planning-record link points at this record on `engineering`. I0
 ## Delivery notes
 
 - **E00.**  #1019 merged into its stacked base after that base had merged; #1021 carried it into `workspace` and delivers E00 W01–W03.
-- **E02.**  #1034 (W01, into `i09/workflows`), #1035 (W02, into `i09/main`), and #1036 (the canon map's Creation Rules binding, into `i09/workspace`). Implemented, tested and reviewed by separate agents over two review passes; D12–D15 came from those passes. The work-planner skill states D16's rule for every initiative (#1037, into `workspace`).
+- **E02.**  #1034 (W01, into `i09/workflows`), #1035 (W02, into `i09/main`), and #1036 (the canon map's Creation Rules binding, into `i09/workspace`). Implemented, tested and reviewed by separate agents over two review passes; D12–D15 came from those passes. The work-planner skill and the workspace instructions state D16's rule for every initiative (#1037, into `workspace`), and the server's instructions keep only which branch holds code and which holds definitions (#1039).
+- **E03–E05 after E02.**  Folded D13–D15 in, with the user's approval:
+  - #1027 W01 starts at the Structural family, since Creation Rules carry no line.
+  - #1028 AC3 lets a broader id cover a covering entry's ids.
+  - #1029 matches by prefix (AC2, AC3), reads through the guard's exported declaration reader, and adds AC6: exactly one line per unit, directly under its title, delivered by W02.
+  - Check format reports no problem on any of them.
 
 ## Reviews
 
