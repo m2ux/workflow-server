@@ -1,0 +1,85 @@
+corpus/canon/resources/anti-patterns.md:77 AP-01. no-inline-content
+corpus/canon/resources/anti-patterns.md:91 AP-02. schema-is-constraint
+corpus/canon/resources/anti-patterns.md:105 AP-03. no-partial-implementation
+corpus/canon/resources/anti-patterns.md:119 AP-04. no-invented-naming
+corpus/canon/resources/anti-patterns.md:151 AP-06. no-assumption-execution
+corpus/canon/resources/anti-patterns.md:165 AP-07. scope-reverify-completion
+corpus/canon/resources/anti-patterns.md:179 AP-08. one-question-per-message
+corpus/canon/resources/anti-patterns.md:239 AP-12. artifact-not-buried
+corpus/canon/resources/anti-patterns.md:295 AP-16. technique-inputs-declared
+corpus/canon/resources/anti-patterns.md:471 AP-28. no-sequence-in-description
+corpus/canon/resources/anti-patterns.md:485 AP-29. no-user-env-mutation
+corpus/canon/resources/anti-patterns.md:653 AP-41. avoidance-voice-in-definitions
+corpus/canon/resources/anti-patterns.md:741 AP-47. no-redundant-link-label
+corpus/canon/resources/anti-patterns.md:783 AP-50. no-tool-usage-prescription
+corpus/canon/resources/anti-patterns.md:811 AP-52. brace-declared-ids
+corpus/canon/resources/anti-patterns.md:881 AP-57. escape-literal-dollar
+corpus/canon/resources/anti-patterns.md:937 AP-61. factor-repeated-paths
+corpus/canon/resources/anti-patterns.md:965 AP-63. backtick-code-tokens
+corpus/canon/resources/anti-patterns.md:1035 AP-68. technique-stage-agnostic
+corpus/canon/resources/anti-patterns.md:1063 AP-70. capability-group-placement
+corpus/canon/resources/anti-patterns.md:1081 AP-71. no-false-resource-delivery
+corpus/canon/resources/anti-patterns.md:1095 AP-72. complete-bootstrap-path
+corpus/canon/resources/anti-patterns.md:1109 AP-73. consistent-tool-names
+corpus/canon/resources/anti-patterns.md:1123 AP-74. no-duplicated-guidance
+corpus/canon/resources/anti-patterns.md:1137 AP-75. describe-tool-value
+corpus/canon/resources/anti-patterns.md:1151 AP-76. no-redundant-tools
+corpus/canon/resources/anti-patterns.md:1169 AP-77. impl-before-confirmed-approach
+corpus/canon/resources/anti-patterns.md:1183 AP-78. follow-through-on-recommend
+corpus/canon/resources/anti-patterns.md:1225 AP-81. verify-format-literacy
+corpus/canon/resources/anti-patterns.md:1253 AP-83. accept-correction
+corpus/canon/resources/anti-patterns.md:1523 AP-102. no-technique-resource-dual-home
+corpus/canon/resources/anti-patterns.md:1541 AP-103. cited-home-owns-claim
+corpus/canon/resources/anti-patterns.md:1597 AP-107. bind-site-is-orchestration-truth
+corpus/canon/resources/anti-patterns.md:1629 AP-109. technique-outputs-declared
+corpus/canon/resources/anti-patterns.md:1685 AP-113. session-interaction-in-technique
+corpus/canon/resources/anti-patterns.md:1699 AP-114. pass-orchestration-in-technique
+corpus/canon/resources/anti-patterns.md:1713 AP-115. platform-semantics-in-capability
+corpus/canon/resources/anti-patterns.md:1755 AP-118. no-bind-mechanics-as-prose
+corpus/canon/resources/anti-patterns.md:1783 AP-120. procedure-in-capability
+corpus/canon/resources/anti-patterns.md:1811 AP-122. prompt-restates-owned-mechanics
+corpus/canon/resources/anti-patterns.md:1825 AP-123. capability-as-op-inventory
+corpus/canon/resources/anti-patterns.md:1871 AP-126. cut-comment-jsdoc-verbosity
+corpus/canon/resources/anti-patterns.md:1885 AP-127. no-dense-prose-after-config-examples
+corpus/canon/resources/anti-patterns.md:1899 AP-128. worktree-root-placeholders
+corpus/canon/resources/anti-patterns.md:1941 AP-131. bag-value-as-literal
+corpus/canon/resources/anti-patterns.md:1969 AP-133. stale-restatement-after-change
+corpus/canon/resources/anti-patterns.md:2011 AP-136. deployment-path-in-capability
+corpus/canon/resources/anti-patterns.md:2039 AP-138. whole-resource-for-one-section
+corpus/canon/resources/anti-patterns.md:2067 AP-140. phase-cited-by-ordinal
+corpus/canon/resources/anti-patterns.md:2081 AP-141. unowned-harness-capability
+corpus/canon/resources/anti-patterns.md:2179 AP-148. reference-without-provenance
+corpus/canon/resources/anti-patterns.md:2207 AP-150. instruction-narrates-an-actor
+corpus/canon/resources/anti-patterns.md:2249 AP-153. schema-semantics-restated
+corpus/canon/resources/anti-patterns.md:2263 AP-154. engine-internals-narrated
+corpus/canon/resources/anti-patterns.md:2361 AP-161. unreachable-operation-reference
+corpus/canon/resources/anti-patterns.md:2389 AP-163. construct-folder-without-a-readme
+corpus/canon/resources/anti-patterns.md:2403 AP-164. relocation-without-a-preserved-outcome
+corpus/canon/resources/convention-conformance.md:14 Reference Conventions
+corpus/canon/resources/design-principles.md:21 1. Workflows Ossify Patterns
+corpus/canon/resources/design-principles.md:27 2. Internalize Before Producing
+corpus/canon/resources/design-principles.md:33 3. Define Complete Scope Before Execution
+corpus/canon/resources/design-principles.md:39 4. Clarify Before Assuming
+corpus/canon/resources/design-principles.md:45 5. Maximize Schema Expressiveness
+corpus/canon/resources/design-principles.md:51 6. One Authoritative Home
+corpus/canon/resources/design-principles.md:57 7. Convention Over Invention
+corpus/canon/resources/design-principles.md:63 8. Confirm Before Irreversible Changes
+corpus/canon/resources/design-principles.md:75 10. Non-Destructive Updates
+corpus/canon/resources/design-principles.md:123 18. Prefer Shared Capability
+corpus/canon/resources/design-principles.md:135 20. Keep Orchestration in Structure
+corpus/canon/resources/design-principles.md:141 21. Match the Harness Surface
+corpus/canon/resources/design-principles.md:147 22. Modular Over Inline
+corpus/canon/resources/design-principles.md:153 23. Close the Loop
+corpus/canon/resources/design-principles.md:159 24. Keep Session Interaction in Activities
+corpus/canon/resources/design-principles.md:171 26. A Technique Is a Reading
+corpus/canon/resources/design-principles.md:177 27. State Contract Contribution
+corpus/canon/resources/design-principles.md:195 30. Resources Stay Abstract
+corpus/canon/resources/design-principles.md:207 32. Cite Resources at Section Grain
+corpus/canon/resources/design-principles.md:219 34. Edit the Owner
+corpus/canon/resources/design-principles.md:225 35. Prefer Removing the Thing That Needs a Prohibition
+corpus/canon/resources/design-principles.md:231 36. A Technique Names Only What Its Reader Holds
+corpus/canon/resources/design-principles.md:243 38. A Relocation Records the Outcome It Keeps
+corpus/canon/resources/design-principles.md:255 40. Fan-Out Lives at the Layer That Runs the Work
+corpus/canon/resources/design-principles.md:267 42. A Routine Holds the Codified Path
+corpus/canon/resources/design-principles.md:291 46. A Consumer Binds the Contract
+corpus/canon/resources/design-principles.md:297 47. A Calibrated Surface Extends by Wrapping
