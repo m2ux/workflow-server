@@ -118,7 +118,7 @@ Each I09 issue's planning-record link points at this record on `engineering`. I0
   - #1029 matches by prefix (AC2, AC3), reads through the guard's exported declaration reader, and adds AC6: exactly one line per unit, directly under its title, delivered by W02.
   - Check format reports no problem on any of them.
 - **E06.**  The Fires-on rule on `i09/workflows` and the hook declaration on `i09/workspace` are cited in [e06-rule-and-hook.md](e06-rule-and-hook.md). The edit-guard fixture suite on `i09/workspace` passes, recorded in [e06-edit-guard-fixtures.md](e06-edit-guard-fixtures.md). No principle names a covering entry, recorded in [e06-covering-principles.md](e06-covering-principles.md). The guard and listing fixtures on `i09/main` pass, recorded in [e06-guard-fixtures.md](e06-guard-fixtures.md). The paired guard is clean, recorded in [e06-paired-guard.md](e06-paired-guard.md). The listing command over the canon homes is recorded in [e06-listing.md](e06-listing.md). The real edit guard, driving the engine guards over the corpus branch, is recorded in [e06-real-hook.md](e06-real-hook.md). A one-sentence pass note is in [e06-author-pass.md](e06-author-pass.md). A Fires-on partition, not a unit walk, is in [e06-audit.md](e06-audit.md).
-- **E07.**  The sidecar walk of `audit-specimen` is in [e07-walk.md](e07-walk.md).
+- **E07.**  The sidecar walk of `audit-specimen` is in [e07-walk.md](e07-walk.md). The scoring pass is the attest script exiting 0, session `OAGNJZ`, corpus pin `36cff4f0`.
 
 ## Reviews
 

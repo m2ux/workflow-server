@@ -17,3 +17,10 @@ Specimen session `2GU6SZ`, workflow `audit-specimen`, planning folder `2026-10-0
 A not-applicable row quotes the unit's Fires-on line, which names constructs other than a technique file. A walked row was judged from that unit's Detect sentence against `techniques/subject.md`. The only match is AP-41 on `It does not use inline content.`
 
 The ledger is [e07-unit-ledger.md](e07-unit-ledger.md). The listing is [e07-units-listed.txt](e07-units-listed.txt).
+
+## Scoring pass
+
+Corpus pin `36cff4f0`. Engine pin `7dc26dba-dirty`. MVW session `WFR2OV` reached `__terminal__` on exit `dispatched`. Specimen session `OAGNJZ` reached `__terminal__` on exit `scored`.
+
+`scripts/attest.py check` exited 0. The specimen round count is 1, below the baseline count of 4. The author file has 85 headings, each with an application result, matching the listing. The ledger has 283 inventory ids. The re-audit findings file is empty. The first audit records the planted sentence under AP-41.
+
