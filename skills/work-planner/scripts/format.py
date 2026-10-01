@@ -50,7 +50,7 @@ Left to decide, since each needs new content or a judgement:
     standalone issue, whose Proposal states its boundary
   - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
-  - an Acceptance Coverage cell that does not name the criteria the row delivers (AC2, AC5), or
+  - an Coverage cell that does not name the criteria the row delivers (AC2, AC5), or
     cites one that does not exist, and a criterion no row delivers
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
@@ -396,11 +396,11 @@ class Review:
     def check_outcomes(self, sections: list[list]) -> None:
         by_name = {h: lines for h, lines in sections}
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
-        if len(table) < 3 or 'Acceptance Coverage' not in cells(table[0]):
+        if len(table) < 3 or 'Coverage' not in cells(table[0]):
             return
         header = cells(table[0])
         described = header.index('Description') if 'Description' in header else None
-        covered = header.index('Acceptance Coverage')
+        covered = header.index('Coverage')
         wanted = {int(m[1]) for l in by_name.get('Acceptance Criteria', []) if (m := AC.match(l))}
         delivered: set[int] = set()
         cited: list[tuple[str, set[int]]] = []
@@ -415,11 +415,11 @@ class Review:
                                        'one invariant each')
             listed = r[covered] if covered < len(r) else ''
             if not COVERAGE.fullmatch(listed):
-                self.decide.append(f'{name}: Acceptance Coverage does not name the criteria it delivers')
+                self.decide.append(f'{name}: Coverage does not name the criteria it delivers')
                 continue
             numbers = {int(n) for n in re.findall(r'\bAC(\d+)', listed)}
             for n in sorted(numbers - wanted):
-                self.decide.append(f'{name}: Acceptance Coverage cites AC{n}, which is not a criterion')
+                self.decide.append(f'{name}: Coverage cites AC{n}, which is not a criterion')
             delivered |= numbers
             cited.append((name, numbers))
         if self.kind != 'initiative':
@@ -507,14 +507,14 @@ class Review:
                 self.fixed.append('Done set to a tick')
             if cleared:
                 self.fixed.append('Done cleared')
-        if 'Acceptance Coverage' in columns and 'Description' in columns:
+        if 'Coverage' in columns and 'Description' in columns:
             desc_at = columns.index('Description')
-            covered = columns.index('Acceptance Coverage')
+            covered = columns.index('Coverage')
             for r in padded:
                 text = r[desc_at] if desc_at < len(r) else ''
                 found = OUTCOMES.search(text)
                 if found and r[covered] and r[covered] != found[1]:
-                    self.decide.append(f'{row_id(id_cell(columns, r))}: Description and Acceptance Coverage '
+                    self.decide.append(f'{row_id(id_cell(columns, r))}: Description and Coverage '
                                        'name different criteria')
                     return lines
             moved = False
@@ -529,7 +529,7 @@ class Review:
                 r[desc_at] = f'{phrase} {rest}'.strip() if rest else phrase
                 moved = True
             if moved:
-                self.fixed.append('Acceptance Coverage filled from the Description')
+                self.fixed.append('Coverage filled from the Description')
         pattern = ROW_ID[self.kind]
         for r in padded:
             ident = id_cell(columns, r)

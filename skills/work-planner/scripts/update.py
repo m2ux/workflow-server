@@ -123,7 +123,7 @@ def initiative_delivery(rows, header, epics, report):
 
 
 def cited(text: str) -> list[int]:
-    """The acceptance criteria an Acceptance Coverage cell names."""
+    """The acceptance criteria an Coverage cell names."""
     return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
 
 
@@ -136,7 +136,7 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
     for r in rows:
         name = row_id(id_cell(header, r))
         if kind == 'epic':
-            acs = cited(cell(header, r, 'Acceptance Coverage'))
+            acs = cited(cell(header, r, 'Coverage'))
             complete = bool(delivered.get(name)) and bool(acs) and all(ticked.get(n) for n in acs)
         else:
             complete = bool(delivered.get(name))
@@ -218,8 +218,8 @@ def main() -> int:
             report['linked'].append(f"{task} delivered by #{pr['number']}")
         delivered[task] = bool(pr)
     else:
-        if grid is None or 'Acceptance Coverage' not in grid[0]:
-            sys.exit('Work Breakdown has no Acceptance Coverage column; run format.py first')
+        if grid is None or 'Coverage' not in grid[0]:
+            sys.exit('Work Breakdown has no Coverage column; run format.py first')
         header, rows = grid[0], grid[2:]
         if kind == 'epic':
             delivered = epic_delivery(rows, header, named, links, completed(args.tasks), report)
@@ -232,7 +232,7 @@ def main() -> int:
             delivered = initiative_delivery(rows, header, completed(args.epics), report)
         for r in rows:
             name = row_id(id_cell(header, r))
-            for n in cited(cell(header, r, 'Acceptance Coverage')):
+            for n in cited(cell(header, r, 'Coverage')):
                 citing.setdefault(n, []).append(name)
 
     ac_lines = next((l for h, l in sections if h == heading), [])

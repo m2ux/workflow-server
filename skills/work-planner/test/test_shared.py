@@ -61,11 +61,11 @@ class Cells(unittest.TestCase):
 
     def test_phrase_drops_the_criteria(self):
         self.assertEqual(phrase('Loader emits the tree → AC5, AC6'), 'Loader emits the tree')
-        header = ['Task', 'Description', 'Acceptance Coverage', 'Depends on', 'Join', 'Done']
+        header = ['Task', 'Description', 'Coverage', 'Depends on', 'Join', 'Done']
         self.assertEqual(description('| W01 | Loader emits the tree | AC5, AC6 | | | ✓ |', header),
                          'Loader emits the tree')
         self.assertEqual(description('| ✓ | W01 | Loader emits the tree | AC5 | | |',
-                                     ['Done', 'Task', 'Description', 'Acceptance Coverage', 'Depends on', 'Join']),
+                                     ['Done', 'Task', 'Description', 'Coverage', 'Depends on', 'Join']),
                          'Loader emits the tree')
 
     def test_status_of_reads_either_name_shape(self):

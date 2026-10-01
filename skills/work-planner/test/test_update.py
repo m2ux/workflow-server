@@ -80,9 +80,9 @@ class DoneColumn(unittest.TestCase):
                  '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
         review = Review(issue(2, '[I01:E00] First: Epic', body=table))
         fixed = review.run()
-        self.assertIn('Work Breakdown columns added: Acceptance Coverage, Done', review.fixed)
-        self.assertIn('Acceptance Coverage filled from the Description', review.fixed)
-        self.assertIn('| Task | Description | Acceptance Coverage | Depends on | Join | Done |', fixed)
+        self.assertIn('Work Breakdown columns added: Coverage, Done', review.fixed)
+        self.assertIn('Coverage filled from the Description', review.fixed)
+        self.assertIn('| Task | Description | Coverage | Depends on | Join | Done |', fixed)
         self.assertIn('| W01 | Work | AC1 | | | |', fixed)
 
     def test_a_leading_done_column_moves_to_the_end(self):

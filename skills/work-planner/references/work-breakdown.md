@@ -6,14 +6,14 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 
 | Level | Columns |
 | --- | --- |
-| Initiative | `Epic \| Description \| Acceptance Coverage \| Depends on \| Done` |
-| Epic | `Task \| Description \| Acceptance Coverage \| Depends on \| Join \| Done` |
+| Initiative | `Epic \| Description \| Coverage \| Depends on \| Done` |
+| Epic | `Task \| Description \| Coverage \| Depends on \| Join \| Done` |
 
 - **Done.**
   The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
-  - A task row is complete when it is delivered and every criterion its Acceptance Coverage names is ticked.
+  - A task row is complete when it is delivered and every criterion its Coverage names is ticked.
   - An epic row is complete when its issue is closed as completed, which is when every one of its criteria is ticked and every one of its tasks is delivered.
-  - A merged pull request that leaves any criterion its Acceptance Coverage names unmet leaves that task's cell empty. The task takes further pull requests until they hold.
+  - A merged pull request that leaves any criterion its Coverage names unmet leaves that task's cell empty. The task takes further pull requests until they hold.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
   - An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task.
@@ -22,7 +22,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
   A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail.
   - In an epic: each detail is a criterion stating one invariant.
   - In an initiative: the phrase is the epic's title name, the part before the colon (`[I07:E01] Formal Specification: …` gives `Formal Specification`), so the table and the epic name the work alike.
-- **Acceptance Coverage.**
+- **Coverage.**
   The acceptance criteria the row delivers, `AC2, AC5`, and nothing else. Every criterion is delivered by at least one row.
   - In an epic: the epic's criteria the task must meet.
   - In an initiative: the initiative's criteria the epic serves, so each traces to its epics.
