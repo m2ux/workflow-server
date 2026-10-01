@@ -3,11 +3,11 @@
 Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
   python3 sync.py issue-943.json --prs prs.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
-  python3 sync.py issue-936.json --epics issue-943.json issue-937.json ...
+  python3 sync.py issue-936.json --epics issue-943.json issue-937.json ... --prs prs.json
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
-  gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07:"))' > prs.json
+  gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
 
 A pull request's title names the epic it works on: [I07:E00] Purpose. Which of the epic's tasks it
 delivers is read from its changes against the tasks' Descriptions, and recorded by linking each task's
@@ -18,7 +18,11 @@ task's epic.
 Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion it cites is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
-confirmed by the user where it names none. The initiative is closable once every criterion is ticked.
+confirmed by the user where it names none. The initiative is closable once every criterion is ticked
+and every integration branch its pull requests target has merged into its long-lived branch. --prs
+supplies those pull requests, epic and integration alike; without it an initiative whose criteria are
+all ticked is not closable. Each integration branch still unmerged is reported unmerged, naming an
+open pull request that merges it when one is open.
 
 Reported for each acceptance criterion of a task, epic or initiative:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
@@ -41,6 +45,7 @@ TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+LONG_LIVED = ('main', 'workflows', 'workspace')
 
 
 def cites(pr: dict, key: tuple[str, int]) -> bool:
@@ -185,6 +190,47 @@ def initiative_delivery(rows, header, epics, report):
     return delivered
 
 
+def integration_branch(ref: str, initiative: str) -> bool:
+    """Whether ref is this initiative's integration branch for a long-lived branch."""
+    prefix = f'i{initiative}/'
+    return ref.startswith(prefix) and ref[len(prefix):] in LONG_LIVED
+
+
+def pr_repo(pr: dict) -> str:
+    home = PULL_HOME.search(pr.get('html_url') or '')
+    return home[1] if home else ''
+
+
+def unmerged_bases(prs: list[dict], initiative: str, home: str) -> list[str]:
+    """Integration branches this initiative's pull requests target that have not merged.
+
+    A branch is associated when a pull request naming one of its epics targets it. It has merged
+    when a pull request with that head and the long-lived branch as its base has merged. An open
+    pull request that would merge it is named on the report line."""
+    associated: set[tuple[str, str]] = set()
+    merged: set[tuple[str, str]] = set()
+    opened: dict[tuple[str, str], int] = {}
+    for pr in prs:
+        repo = pr_repo(pr)
+        base = (pr.get('base') or {}).get('ref') or ''
+        head = (pr.get('head') or {}).get('ref') or ''
+        title = PR_REF.match(pr.get('title') or '')
+        if title and title[1] == initiative and integration_branch(base, initiative):
+            associated.add((repo, base))
+        if integration_branch(head, initiative) and head == f'i{initiative}/{base}':
+            key = (repo, head)
+            if pr.get('merged_at'):
+                merged.add(key)
+            elif pr.get('state') == 'open':
+                opened.setdefault(key, pr['number'])
+    pending = []
+    for repo, ref in sorted(associated - merged):
+        name = ref if not repo or repo.lower() == home.lower() else f'{repo}:{ref}'
+        number = opened.get((repo, ref))
+        pending.append(f'{name} (#{number} open)' if number else name)
+    return pending
+
+
 def cited(text: str) -> list[int]:
     """The acceptance criteria an Coverage cell names."""
     return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
@@ -266,7 +312,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'ticked early', 'ticked', 'done', 'open questions', 'note')}
+                              'unmet', 'ticked early', 'ticked', 'done', 'open questions', 'note', 'unmerged')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)
@@ -334,14 +380,24 @@ def main() -> int:
     if kind != 'task' and rows:
         done_changed = sync_done(rows, header, delivered, ticked, kind, report)
 
+    open_rows = [t for t, d in delivered.items() if not d] if kind != 'initiative' else []
+    open_criteria = [f'{tag}{n}' for n, t in ticked.items() if not t]
+    branches = ''
+    if kind == 'initiative' and not open_criteria:
+        if not args.prs:
+            branches = 'integration branches not given'
+        else:
+            home = issue['repository_url'].split('/repos/', 1)[1]
+            report['unmerged'].extend(unmerged_bases(prs, initiative, home))
+            if report['unmerged']:
+                branches = 'unmerged ' + ', '.join(report['unmerged'])
     print(f"#{issue['number']} {kind} ({issue['state']})")
     for name, items in report.items():
         for item in items:
             print(f'  {name}: {item}')
-    open_rows = [t for t, d in delivered.items() if not d] if kind != 'initiative' else []
-    open_criteria = [f'{tag}{n}' for n, t in ticked.items() if not t]
     reasons = [f"undelivered {', '.join(open_rows)}" if open_rows else '',
-               f"unticked {', '.join(open_criteria)}" if open_criteria else '']
+               f"unticked {', '.join(open_criteria)}" if open_criteria else '',
+               branches]
     print('  closable: ' + ('no (' + ', '.join(filter(None, reasons)) + ')' if any(reasons) else 'yes'))
 
     if args.fix:

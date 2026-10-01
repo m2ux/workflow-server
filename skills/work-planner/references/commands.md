@@ -154,10 +154,10 @@ gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_r
 
 ### Fetch initiative pull requests
 
-Saves the pull requests that name one initiative.
+Saves the pull requests that name one initiative, its epic pull requests and the integration pull requests titled `[I07] Name`.
 
 ```bash
-gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07:"))' > prs.json
+gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
 ```
 
 ### Fetch all initiative pull requests
@@ -208,8 +208,9 @@ git fetch origin main && git push origin origin/main:refs/heads/i07/main
 
 ### Open integration pull request
 
-Opens the pull request that merges an integration branch into its long-lived branch, once the initiative closes.
+Opens the pull request that merges an integration branch into its long-lived branch.
 
+- Run it when [Sync initiative](#sync-initiative) reports that branch unmerged. The initiative stays open until the pull request merges.
 - The title is the initiative's prefix and name: `[I07] Name`.
 - The body lists the initiative's pull requests the branch carries.
 
@@ -354,10 +355,13 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sy
 
 Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed.
 
-- It takes the epic JSON fetched after closing.
+- It takes the epic JSON fetched after closing, and the pull requests from [Fetch initiative pull requests](#fetch-initiative-pull-requests).
+- It reads each pull request's base and head ref. A pull request naming an epic associates the integration branch it targets.
+- It reports closable as the [Work Breakdown guide](work-breakdown.md#delivery) defines. An integration branch with no merged pull request is reported unmerged.
+- Without the pull requests, an initiative whose criteria are all ticked is not closable.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --prs prs.json
 ```
 
 ### Plan board changes

@@ -48,9 +48,14 @@ def initiative_body(*rows: tuple[str, str]) -> str:
 
 
 def pr(number: int, title: str, merged: str | None = None, state: str | None = None, draft: bool = False,
-       body: str = '', repo: str = REPO) -> dict:
-    return {'number': number, 'title': title, 'body': body, 'html_url': url('pull', number, repo),
-            'state': state or ('closed' if merged else 'open'), 'draft': draft, 'merged_at': merged}
+       body: str = '', repo: str = REPO, base: str | None = None, head: str | None = None) -> dict:
+    record = {'number': number, 'title': title, 'body': body, 'html_url': url('pull', number, repo),
+              'state': state or ('closed' if merged else 'open'), 'draft': draft, 'merged_at': merged}
+    if base:
+        record['base'] = {'ref': base}
+    if head:
+        record['head'] = {'ref': head}
+    return record
 
 
 def run(script: str, *args: str, tz: str = 'UTC') -> subprocess.CompletedProcess:
