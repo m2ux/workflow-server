@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.5.0
+version: 2.6.0
 name: Post-Implementation Review
 description: Raise the manual diff review gates, take the full prism pipeline when chosen, classify the automated review fan's findings, and run the fix cycle.
 variables:
@@ -216,6 +216,7 @@ steps:
             description: The block carries no issue after all
   - kind: action
     id: take-fan-reports
+    when: code_review_outputs && test_suite_review_outputs
     actions:
       - action: set
         target: code_review_report
@@ -225,7 +226,7 @@ steps:
         value: "{test_suite_review_outputs.0.result.test_suite_review_report}"
   - kind: action
     id: take-inline-structural
-    when: pipeline_mode != 'full-prism'
+    when: pipeline_mode != 'full-prism' && structural_analysis_outputs
     actions:
       - action: set
         target: structural_findings

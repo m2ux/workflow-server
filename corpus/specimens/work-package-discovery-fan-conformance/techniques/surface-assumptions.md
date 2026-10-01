@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assumptions surfaced from the bound source and categories, as a value the join can write into the assumptions log once.
+Assumptions surfaced from the bound source and categories.
 
 ## Inputs
 
@@ -37,5 +37,5 @@ One entry per assumption surfaced this pass: category, risk, statement with rati
 
 ### 3. Emit the Surface
 
-- Emit `{surfaced_assumptions}` as the list of classified entries. Do not write `assumptions-log.md` — the activity the fan converges on is the one writer of that log.
+- Emit `{surfaced_assumptions}` as the list of classified entries.
   > Where none are significant, emit an empty list.

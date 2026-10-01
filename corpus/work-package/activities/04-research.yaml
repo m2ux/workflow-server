@@ -1,5 +1,5 @@
 id: research
-version: 2.22.0
+version: 2.23.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 variables:
@@ -89,18 +89,18 @@ steps:
     when: needs_research == true
     technique: document
   - kind: action
+    id: announce-derived-context-scope
+    when: needs_research == true && context_scope_uncertain != true
+    actions:
+      - action: message
+        message: "Research context scope derived as `{context_scope}`."
+  - kind: action
     id: close-research-phase
     when: needs_research == true
     actions:
       - action: set
         target: needs_research
         value: false
-  - kind: action
-    id: announce-derived-context-scope
-    when: needs_research == true && context_scope_uncertain != true
-    actions:
-      - action: message
-        message: "Research context scope derived as `{context_scope}`."
 exits:
   - id: done
     isDefault: true

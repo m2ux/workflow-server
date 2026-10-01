@@ -1,5 +1,5 @@
 id: contract-tests
-version: 1.0.0
+version: 1.1.0
 name: Contract Tests
 description: >-
   Write each task's contract tests from the Contract alone into their own files in a
@@ -10,6 +10,7 @@ variables:
     - branch_name
     - component_git_dir
     - implementation_plan
+    - host_repo_path
     - planning_folder_path
     - pr_number
     - problem_statement
@@ -76,11 +77,14 @@ steps:
         technique: verify-contract-tests-fail
       - kind: technique
         id: commit-contract-tests
+        when: contract_tests_fail_on_base == true
         technique:
-          name: commit-contract-test-paths
+          name: manage-git::commit-paths
           inputs:
             paths: contract_tests_changed_paths
             commit_message: "test: contract for {current_task.id}"
+            target_path: contract_tests_path
+            branch_name: contract_tests_branch
 exits:
   - id: done
     isDefault: true

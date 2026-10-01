@@ -1,21 +1,21 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Append the assumption surfaces the discovery branches reported into the assumptions log in one write.
+Append the bound assumption surfaces into the assumptions log.
 
 ## Inputs
 
 ### research_assumptions
 
-*(optional)* Assumptions the research branch surfaced.
+*(optional)* Assumptions surfaced from research.
 
 ### analysis_assumptions
 
-*(optional)* Assumptions the implementation-analysis branch surfaced.
+*(optional)* Assumptions surfaced from analysis of the current implementation.
 
 ### assumptions_log
 
@@ -25,7 +25,7 @@ Append the assumption surfaces the discovery branches reported into the assumpti
 
 ### assumptions_log
 
-The assumptions [log](../resources/assumptions-review.md#assumptions-log-template) with every discovery surface appended — the one write of that file for the discovery fan.
+The assumptions [log](../resources/assumptions-review.md#assumptions-log-template) with every bound surface appended.
 
 #### artifact
 

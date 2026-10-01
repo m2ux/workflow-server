@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,7 +16,7 @@ Worktree that holds the contract-test commits.
 
 ### contract_tests_branch
 
-Branch the contract-tests worktree stands on — used to list the paths that branch added.
+Branch the contract-tests worktree stands on.
 
 ## Outputs
 

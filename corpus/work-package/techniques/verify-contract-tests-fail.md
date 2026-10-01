@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -34,7 +34,3 @@ True when the suite for this task fails against the base tree; false when it pas
 - In `{contract_tests_path}`, ensure HEAD carries only the contract-test files on top of the default branch (no implementation)
 - Run the project's test command scoped to `{contract_tests_changed_paths}`
 - Set `{contract_tests_fail_on_base}` true when the run fails for reasons the Contract names (missing symbols, unmet behaviours); false when every assertion passes
-
-### 2. Refuse a Green Suite
-
-- When `{contract_tests_fail_on_base}` is false, stop and report that the contract tests do not detect absence of the implementation

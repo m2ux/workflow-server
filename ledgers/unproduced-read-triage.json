@@ -326,6 +326,18 @@
       "rationale": "input-without-a-producer"
     },
     {
+      "site": "remediate-vuln :: work-package/code-review",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/code-review",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
       "site": "remediate-vuln :: work-package/codebase-comprehension",
       "name": "pr_number",
       "verdict": "fix-later",
@@ -531,6 +543,18 @@
     },
     {
       "site": "remediate-vuln :: work-package/submit-for-review",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/test-suite-review",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/test-suite-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
