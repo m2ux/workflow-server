@@ -56,7 +56,7 @@ export const ACCEPTED_HEADLESS_AUTO_ADVANCE: Record<string, string> = {
   'work-package::requirements-elicitation::elicitation-complete':
     'default closes elicitation once every question domain is covered; it records completion and '
     + 'mutates nothing outside the run.',
-  'work-package::research::context-scope-declaration':
+  'work-package::plan-prepare::context-scope-declaration':
     'checkpoint fires only when run evidence could not derive the scope, and the default is the '
     + 'declared repo-only fallback; it records a provenance value and mutates nothing outside the run.',
 };
