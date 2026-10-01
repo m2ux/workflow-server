@@ -50,7 +50,13 @@
  *   `wildcard-not-alone`    — `*` declared beside another id.
  *   `duplicate-id`          — an id declared twice on one line.
  *   `malformed-declaration` — a near-miss marker, or ids that are not comma-separated code spans.
+ *   `missing-line`          — an anti-pattern entry, numbered principle, or convention section carries no Fires-on line.
+ *   `repeated-line`         — that unit carries more than one Fires-on line.
+ *   `misplaced-line`        — its Fires-on line is not the first text under its title.
  *   `missing-home`          — a canon home absent from the corpus, whose declarations nothing reads.
+ *
+ * A family heading and a Creation Rule carry no line. The line sits under the title with only blank
+ * lines between them.
  *
  * A corpus holding none of the homes has nothing to measure, and the guard exits unmeasured.
  *
@@ -286,10 +292,78 @@ function judge(id: string, schemas: SchemaSet): { check: string; reason: string 
   return { check: 'unresolved-path', reason: `reaches no field of the ${kind} schema at '${segment}'` };
 }
 
+/** A heading that carries one Fires-on line: an anti-pattern entry, a numbered principle, or a convention section. */
+function declares(path: string, line: string): boolean {
+  if (path === CANON_HOMES[0]) return /^ {0,3}### AP-\d+\b/.test(line);
+  if (path === CANON_HOMES[1]) return /^ {0,3}## \d+\. /.test(line);
+  if (path === CANON_HOMES[2]) return /^ {0,3}## /.test(line);
+  return false;
+}
+
+/**
+ * One line directly under each declaring heading. A missing line is sited at the heading, a further
+ * line at that line, and a line after other text at the line.
+ */
+function placementFindings(path: string, text: string): Finding[] {
+  const lines = toLines(text.replace(/^\uFEFF/, ''));
+  const skipped = frontMatterLines(lines);
+  const { fenced } = fencedLines(lines.slice(skipped), { onUnclosed: 'read-all' });
+  const hidden = (index: number) => index < skipped || fenced.has(index - skipped);
+  const findings: Finding[] = [];
+  type Unit = { name: string; at: number; decls: number[] };
+  const units: Unit[] = [];
+  let current: Unit | null = null;
+  for (const [index, line] of lines.entries()) {
+    if (hidden(index)) continue;
+    if (HEADING.test(line)) {
+      current = null;
+      if (declares(path, line)) {
+        current = { name: HEADING.exec(line)?.[1] ?? line.trim(), at: index, decls: [] };
+        units.push(current);
+      }
+      continue;
+    }
+    if (current && line.startsWith(DECLARATION_MARKER) && DECLARED_IDS.test(line.slice(DECLARATION_MARKER.length))) {
+      current.decls.push(index);
+    }
+  }
+  for (const unit of units) {
+    let first = -1;
+    for (let index = unit.at + 1; index < lines.length; index++) {
+      if (hidden(index)) continue;
+      if (HEADING.test(lines[index] ?? '')) break;
+      if ((lines[index] ?? '').trim() === '') continue;
+      first = index;
+      break;
+    }
+    const site = `${path}:${unit.at + 1}`;
+    if (unit.decls.length === 0) {
+      findings.push({ check: 'missing-line', site, detail: `'${unit.name}' carries no Fires-on line` });
+      continue;
+    }
+    if (first !== unit.decls[0]) {
+      findings.push({
+        check: 'misplaced-line',
+        site: `${path}:${unit.decls[0]! + 1}`,
+        detail: `'${unit.name}' carries its Fires-on line after other text`,
+      });
+    }
+    for (const extra of unit.decls.slice(1)) {
+      findings.push({
+        check: 'repeated-line',
+        site: `${path}:${extra + 1}`,
+        detail: `'${unit.name}' carries more than one Fires-on line`,
+      });
+    }
+  }
+  return findings;
+}
+
 /** Every finding in the given canon texts, judged against the given schemas. */
 export function checkFiresOn(texts: readonly CanonText[], schemas: SchemaSet): Finding[] {
   const findings: Finding[] = [];
   for (const { path, text } of texts) {
+    findings.push(...placementFindings(path, text));
     const { declarations, malformed } = readDeclarations(text);
     for (const { unit, line, text: written } of malformed) {
       findings.push({
