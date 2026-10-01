@@ -9,8 +9,14 @@ Branch `workflow/e04-w02-contract-tests`. Targets `i10/workflows`.
 | 3 | Contract-tests writes from the Contract alone | definition | `write-contract-tests.md` contract-alone rule | held |
 | 4 | Contract-tests confirms failure against the base tree | definition | `verify-contract-tests-fail.md` | held |
 | 5 | Join hoists contract-tests containers and validates red on base | definition | `21-implementation-join.yaml` | held |
-| 6 | Specimen walks the fan into the join | `work-package-contract-tests-fan-conformance` | walk | pending |
+| 6 | Specimen walks the fan into the join | `work-package-contract-tests-fan-conformance` | walk U2OX4G | held |
 
 ## Notes
 
-- AC2/AC3 instruments name the contract-first specimen walk; claim 6 holds the fan join path. Full write-and-fail walk of `20-contract-tests.yaml` remains for a follow-up cycle when the sidecar engine loads work-package routines.
+- AC2/AC3 instruments name the contract-first specimen walk; claim 6 holds the fan join path. Full write-and-fail walk of `20-contract-tests.yaml` remains for a follow-up when a fixture worktree is wired into the specimen.
+
+## Run record
+
+- MCP `http://127.0.0.1:32772/mcp` · image `workflow-server:exp-i10-activity-loop` · corpus pin `29b93f40-dirty`
+- Specimen `U2OX4G`, planning folder `…/2026-10-01-work-package-contract-tests-fan-conformance-2`
+- Case report: `work-package-contract-tests-fan-cases.md`
