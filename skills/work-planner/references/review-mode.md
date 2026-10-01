@@ -10,6 +10,8 @@ Checks existing initiative, epic, task and standalone issues against the templat
    - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
 2. **Fetch.**
    Fetch each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites, with [Fetch issue](commands.md#fetch-issue).
+   - An initiative's fetch includes every epic its table links, closed epics included, and its format check takes each with `--epic`.
+   - A closed epic's own body is checked only when the epic is named.
 3. **Check.**
    Check each issue with [Check format](commands.md#check-format): an epic with its initiative's JSON, an initiative with each of its epics'. It reports three kinds of finding:
    - **fixed.**
@@ -44,6 +46,11 @@ Checks existing initiative, epic, task and standalone issues against the templat
    For each epic under review, [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) and run [Match pull requests](commands.md#match-pull-requests).
    - **unmet.**
      A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown guide](work-breakdown.md#tables) defines.
+   For an initiative under review, [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) and run [Sync initiative](commands.md#sync-initiative) with every epic its table links.
+   - **ready to verify.**
+     An initiative criterion [sync mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
+   - **ticked early.**
+     An initiative criterion [sync mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
    Put each to the user. Verifying and ticking it is [sync mode](sync-mode.md).
 8. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep.
