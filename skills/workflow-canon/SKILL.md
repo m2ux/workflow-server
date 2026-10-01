@@ -1,6 +1,12 @@
 ---
 name: workflow-canon
 description: "Applies the workflow-server design canon (principles, anti-patterns, conventions, guards) to workflow definitions: workflows, activities, techniques and resources. Use to author a definition or a change to one (\"write a new activity\", \"apply this finding\", \"fix this defect in workflow X\"), audit (\"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\"), or revise this skill (\"update the workflow-canon skill\"). Also for one canon question (\"why is this an anti-pattern?\") and before committing definition changes."
+hooks:
+  PostToolUse:
+    - matcher: "Edit|Write|MultiEdit"
+      hooks:
+        - type: command
+          command: "python3 \"${CLAUDE_PROJECT_DIR}/.claude/skills/workflow-canon/scripts/edit_guard.py\""
 ---
 
 # Workflow Canon
@@ -60,8 +66,16 @@ Read the file for the mode the request calls for:
 
 ## Dependencies
 
-- **git.**  For the base ref, the diff, and the merge-base a delta run measures against.
+- **git.**  For the base ref, the diff, and the merge-base a delta run or the edit guard measures against.
 - **Node and npm.**  In the server checkout, for the guard suite and the option-coverage walk.
+- **Python 3.10+.**  For the [edit guard](references/commands.md#run-the-edit-guard) and its tests.
+- **Workspace server checkout.**
+  The edit guard runs the corpus guards in `.project/main` of the workspace holding this skill, with the `tsx` installed there.
+- **Integration refs.**
+  The corpus tree's `origin/workflows` and each `origin/iNN/workflows`, as last fetched. The edit guard measures against the nearest merge-base with them.
+- **Claude Code hooks.**
+  - Claude Code registers the edit guard when the skill is invoked, and runs it after each edit for the rest of the session. Cursor runs no hook.
+  - The hook finds its script under `CLAUDE_PROJECT_DIR`, so the session starts at the workspace root.
 - **Corpus worktree.**  For the prose homes, as [Homes](#homes) locates it.
 - **The server's AGENTS.md.**
   It owns the check commands, the worktree a run measures, and binding-fidelity triage.
@@ -79,5 +93,7 @@ Read the file for the mode the request calls for:
 - **Walks.**  Every walk of the canon's units follows the [walk rules](references/walk-rules.md).
 - **Commands.**
   Every spec runs under the shared conventions at the top of [commands.md](references/commands.md).
+- **Edit guard.**
+  A failure the [edit guard](references/commands.md#run-the-edit-guard) returns after an edit is closed, or stated as unmeasured, before the next edit.
 - **Commit gate.**
   A definition change commits only once audited, as [Author](references/author-mode.md#procedure)'s last step states.
