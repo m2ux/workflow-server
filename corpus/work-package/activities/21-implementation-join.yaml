@@ -9,14 +9,31 @@ description: >-
   a disputed test reaches the user as a contract ambiguity.
 variables:
   reads:
-    - assumptions_log
-    - contract_tests_outputs
     - implement_outputs
+    - branch_name
+    - component_git_dir
+    - contract_tests_outputs
     - implementation_plan
     - is_review_mode
     - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
     - target_path
+    - target_repo
   writes:
+    - name: task_implementation
+      type: object
+      description: Per-task implementation record hoisted from the implement fan.
+    - name: test_status
+      type: object
+      description: Test status hoisted from the implement fan.
+    - name: failures
+      type: array
+      description: Test failures hoisted from the implement fan.
+    - name: commit_sha
+      type: string
+      description: Commit tip hoisted from the implement fan.
     - name: assumptions_log
       type: object
       description: The assumptions log after residual assumptions settle.
@@ -74,6 +91,22 @@ steps:
       - action: set
         target: contract_tests_branch
         value: "{contract_tests_outputs.0.result.contract_tests_branch}"
+  - kind: action
+    id: take-implement-fan
+    when: implement_outputs
+    actions:
+      - action: set
+        target: task_implementation
+        value: "{implement_outputs.0.result.task_implementation}"
+      - action: set
+        target: test_status
+        value: "{implement_outputs.0.result.test_status}"
+      - action: set
+        target: failures
+        value: "{implement_outputs.0.result.failures}"
+      - action: set
+        target: commit_sha
+        value: "{implement_outputs.0.result.commit_sha}"
   - kind: action
     id: confirm-base-failures
     actions:

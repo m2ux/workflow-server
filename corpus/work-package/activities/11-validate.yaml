@@ -21,6 +21,9 @@ variables:
     - target_repo
     - test_status
   writes:
+    - name: test_suite_review_report
+      type: object
+      description: Test-suite review report when the validate path runs the suite review.
     - name: coverage_gaps
       type: array
       description: Changed symbols no test file calls.

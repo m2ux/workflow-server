@@ -9,9 +9,6 @@ Run the merged contract tests against the implementation in the feature worktree
 
 ## Inputs
 
-### target_path
-
-Implement worktree that now holds both the implementation and the merged contract-test files.
 
 ### contract_tests_merged_paths
 

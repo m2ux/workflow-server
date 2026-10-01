@@ -98,6 +98,7 @@ variables:
     defaultValue: ""
   - name: implementation_plan
     type: object
+    defaultValue: {}
     description: The ordered tasks the change is built from, each with its crate and description.
   - name: issue_title
     type: string
@@ -118,6 +119,61 @@ variables:
     type: string
     description: The issue key, URL, or surrounding text the user supplied when opening the work package, or typed in reply to the issue-verification gate.
     defaultValue: ""
+  # Fan barriers write these containers; empty default covers skip-optional → join paths.
+  - name: research_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the research branch of the discovery fan.
+  - name: implementation_analysis_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the implementation-analysis branch of the discovery fan.
+  - name: code_review_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the code-review branch of the review fan.
+  - name: structural_analysis_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the structural-analysis branch of the review fan.
+  - name: test_suite_review_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the test-suite-review branch of the review fan.
+  - name: contract_tests_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the contract-tests branch of the implementation fan.
+  - name: implement_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the implement branch of the implementation fan.
+
+  - name: test_status
+    type: object
+    defaultValue: {}
+    description: Last test-check status; validate reads it when the implement fan does not hoist a bare value.
+  - name: failures
+    type: array
+    defaultValue: []
+    description: Per-test failure detail validate reads when present.
+  - name: commit_sha
+    type: string
+    defaultValue: ""
+    description: Tip commit the review path names when no activity has written one yet.
+  - name: needs_research
+    type: boolean
+    defaultValue: false
+    description: Whether the discovery fan's research branch does real research work.
+  - name: task_implementation
+    type: object
+    defaultValue: {"summary": ""}
+    description: Per-task implementation record crossing from implement to the join.
+  - name: changed_files
+    type: array
+    defaultValue: []
+    description: Changed file paths review branches read; empty until analysis or the join fills them.
+
 initialActivity: start-work-package
 graph:
   start-work-package:

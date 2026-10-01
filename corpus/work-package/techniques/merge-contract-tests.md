@@ -13,9 +13,6 @@ Bring the contract-test files from the contract-tests worktree into the implemen
 
 Worktree that holds the contract-test commits.
 
-### target_path
-
-Implement worktree the files are copied into.
 
 ### contract_tests_branch
 

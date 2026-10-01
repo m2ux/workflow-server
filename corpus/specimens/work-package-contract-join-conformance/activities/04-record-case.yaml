@@ -8,7 +8,6 @@ variables:
     - case_kind
     - case_outcomes
     - contract_tests_passed
-    - contract_test_failures
     - join_exit
   writes:
     - name: case_outcomes

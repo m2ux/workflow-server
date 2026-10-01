@@ -11,7 +11,6 @@ variables:
     - component_git_dir
     - host_repo_path
     - implementation_plan
-    - is_review_mode
     - planning_folder_path
     - pr_number
     - problem_statement
@@ -23,6 +22,9 @@ variables:
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+    - name: task_implementation
+      type: object
+      description: Per-task implementation record gathered into the implement fan container.
     - name: changed_paths
       type: array
       description: Repository-relative paths the task under construction wrote.
@@ -37,22 +39,10 @@ variables:
       type: array
       description: Per-test failure detail when any failed
       defaultValue: []
-    - name: has_deferred_assumptions
-      type: boolean
-      description: Whether any assumption was deferred to stakeholders.
-      defaultValue: false
-    - name: has_uncertain_symbols
-      type: boolean
-      description: True when one or more symbols in the task under construction have unconfirmed provenance.
-      defaultValue: false
     - name: test_status
       type: object
       description: "The test check's status — `{ check_id, passed, diagnostics }`."
       defaultValue: {}
-    - name: uncertain_symbols
-      type: string
-      description: "Symbols whose provenance could not be confirmed against the codebase or declared dependencies, one per line."
-      defaultValue: ""
 required: true
 techniques:
   - scatter-gather

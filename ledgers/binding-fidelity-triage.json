@@ -401,20 +401,6 @@
       "rationale": "agent-applied-result"
     },
     {
-      "check": "read-resolution",
-      "site": "work-package/activities/06-plan-prepare.yaml[take-research-fan]",
-      "detail": "gate expression reads 'research_outputs', which has no producer (declared id / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "fan-barrier-container"
-    },
-    {
-      "check": "read-resolution",
-      "site": "work-package/activities/06-plan-prepare.yaml[take-analysis-fan]",
-      "detail": "gate expression reads 'implementation_analysis_outputs', which has no producer (declared id / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "fan-barrier-container"
-    },
-    {
       "check": "dead-output",
       "site": "work-package-discovery-fan-conformance/techniques/surface-assumptions.md",
       "detail": "output 'surfaced_assumptions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
@@ -430,24 +416,10 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/activities/21-implementation-join.yaml[take-contract-tests-report]",
-      "detail": "gate expression reads 'contract_tests_outputs', which has no producer (declared id / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "fan-barrier-container"
-    },
-    {
-      "check": "read-resolution",
       "site": "work-package-contract-tests-fan-conformance/activities/06-implementation-join.yaml[take-contract-tests-report]",
       "detail": "gate expression reads 'contract_tests_outputs', which has no producer (declared id / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "fan-barrier-container"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package-contract-join-conformance/techniques/merge-contract-tests-stub.md",
-      "detail": "output 'contract_tests_merged_paths' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "specimen-surface-stub"
     }
   ]
 }

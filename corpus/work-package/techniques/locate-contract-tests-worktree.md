@@ -9,17 +9,8 @@ Derive the contract-tests worktree path and branch from the feature worktree nam
 
 ## Inputs
 
-### branch_name
 
-The feature branch implement uses.
 
-### target_path
-
-The feature worktree path implement uses.
-
-### planning_folder_path
-
-The session planning folder whose basename aligns the worktree slug.
 
 ## Outputs
 

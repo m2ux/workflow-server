@@ -265,15 +265,6 @@
       ],
       "verdict": "unassigned",
       "rationale": "contract-join-disposition"
-    },
-    {
-      "site": "work-package-contract-tests-fan-conformance/activities/06-implementation-join.yaml + work-package/activities/21-implementation-join.yaml",
-      "run": [
-        "A:set=contract_tests_branch,set=contract_tests_fail_on_base,set=contract_tests_path",
-        "A:validate=contract_tests_fail_on_base == true"
-      ],
-      "verdict": "unassigned",
-      "rationale": "contract-tests-fan-hoist"
     }
   ]
 }

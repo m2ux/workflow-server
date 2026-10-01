@@ -5,7 +5,6 @@ description: Verify every task in the case's plan carries Signatures, Behaviours
 variables:
   reads:
     - plan_path
-    - planning_folder_path
   writes:
     - name: contract_check_held
       type: boolean
