@@ -2,7 +2,7 @@
 name: wp-plan
 description: Guidelines for creating the work package plan artifact.
 metadata:
-  version: 1.3.1
+  version: 1.4.0
   order: 10
   legacy_id: 10
 ---
@@ -50,6 +50,11 @@ The work package plan is the detailed implementation specification: enough detai
 **Deliverables:**
 - [The component or behaviour delivered, in words] — [description]
 - [The tests that cover it, in words] — [coverage]
+**Contract:**
+- **Signatures:** [public APIs, entry points or artifacts this task introduces or changes]
+- **Behaviours:** [observable behaviours under normal conditions]
+- **Error cases:** [refusals, failures and boundary conditions the contract names]
+- **Acceptance:** [checks that hold when the task is done]
 
 ### Task 2: [Name] (X-Y min)
 [Continue pattern...]
@@ -80,5 +85,6 @@ The work package plan is the detailed implementation specification: enough detai
 - **Inputs** — one line per consumed artifact, linking the specific section that shaped the approach; never reproduce findings. The plan documents what it *decided*, the inputs document what was *learned*.
 - **Proposed Approach** — the plan's canonical content: describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale so reviewers and implementers can validate or challenge it. Design decisions home here (durable ones graduate to an ADR at completion).
 - **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverables and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
+- **Contract** — each task carries a Contract block with Signatures, Behaviours, Error cases and Acceptance. The block is the public specification an independent agent tests against before the code exists; it names what the task exposes and how it behaves, not how the code is structured. Omit none of the four fields; write `none` when a field has no content.
 - **Dependencies & Risks** — the planning risk register homes here: list blockers; every risk gets impact, probability, and a mitigation strategy.
-- **Line budget** — 150 lines. A plan over budget is restating homed content or padding; cut before committing.
+- **Line budget** — 150 lines excluding each task's Contract block. A Contract stays within 12 lines. A plan over budget is restating homed content or padding; cut before committing.

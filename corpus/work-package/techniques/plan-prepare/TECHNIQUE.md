@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
 
-Implementation planning — design approach, work-package plan, and actionable TODO tasks.
+Implementation planning — design approach, work-package plan with a contract per task, and actionable TODO tasks.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ Design philosophy [artifact](../../resources/design-framework.md#design-philosop
 
 ### plan_document
 
-Work package [plan](../../resources/wp-plan.md#template) with task breakdown and dependencies
+Work package [plan](../../resources/wp-plan.md#template) with task breakdown, a contract per task, and dependencies
 
 
 ## Rules

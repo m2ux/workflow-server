@@ -2,7 +2,7 @@
 name: canonical-home-map
 description: The one artifact that homes each shared fact category, and the link-only slot rule every other template follows.
 metadata:
-  version: 1.0.2
+  version: 1.0.3
 ---
 
 # Canonical Home Map
@@ -17,6 +17,7 @@ The canonical home for each shared fact category.
 | Problem classification | `design-philosophy.md` (plus a 2–4 sentence ticket-derived statement — written before requirements exists, so it carries its own budgeted statement) |
 | Assumptions and their outcomes | `assumptions-log.md` |
 | Design decisions, alternatives, planning risks | `work-package-plan.md` (durable decisions graduate to an ADR at completion) |
+| Task contracts (signatures, behaviours, error cases, acceptance) | `work-package-plan.md` (each task's Contract block) |
 | Baseline metrics, gaps, measurement strategy | `implementation-analysis.md` |
 | Research findings and recommended approach | `kb-research.md` |
 | Test cases and acceptance matrix | `test-plan.md` |

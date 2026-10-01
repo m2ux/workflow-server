@@ -1,0 +1,57 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-task-contract-conformance
+version: 1.0.0
+title: Work Package Task Contract Conformance Workflow
+description: >-
+  Hold the work-package plan's Contract rule to two cases. The complete case writes a one-task
+  plan whose Contract carries Signatures, Behaviours, Error cases and Acceptance, and the check
+  holds. The missing-field case omits Error cases, and the check fails naming that field.
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the session's planning folder.
+  - name: case_index
+    type: number
+    description: How many cases have been taken.
+    defaultValue: 0
+  - name: contract_complete
+    type: boolean
+    description: Whether the case under walk writes every Contract field.
+    defaultValue: true
+  - name: plan_path
+    type: string
+    description: Repository-relative path of the plan written for the case.
+    defaultValue: ""
+  - name: contract_check_held
+    type: boolean
+    description: Whether every task's Contract carried all four fields.
+    defaultValue: false
+  - name: contract_check_missing
+    type: array
+    description: Contract fields the check found absent.
+    defaultValue: []
+  - name: case_outcomes
+    type: array
+    description: What each case's write and check landed.
+    defaultValue: []
+initialActivity: take-case
+graph:
+  take-case:
+    taken: write-plan
+  write-plan:
+    written: check-contracts
+  check-contracts:
+    checked: record-case
+  record-case:
+    more-cases: take-case
+    all-cases: report-cases
+  report-cases:
+    reported: __terminal__

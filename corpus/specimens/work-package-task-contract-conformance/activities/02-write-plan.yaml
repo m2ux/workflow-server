@@ -1,0 +1,23 @@
+id: write-plan
+version: 1.0.0
+name: Write Plan
+description: Write a one-task plan whose Contract shape follows the case under walk.
+variables:
+  reads:
+    - contract_complete
+    - planning_folder_path
+  writes:
+    - name: plan_path
+      type: string
+      description: Path of the plan written for the case.
+      defaultValue: ""
+required: true
+steps:
+  - kind: technique
+    id: write
+    technique: write-task-contract-plan
+exits:
+  - id: written
+    isDefault: true
+outcome:
+  - A one-task plan sits in the planning folder under the case's Contract shape
