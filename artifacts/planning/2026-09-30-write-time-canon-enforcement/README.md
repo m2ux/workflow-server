@@ -97,6 +97,7 @@ The user approved narrowing I07 E02 (D10).
 | E03 Anti-pattern Declarations | [#1027](https://github.com/m2ux/workflow-server/issues/1027) |
 | E04 Principle Declarations | [#1028](https://github.com/m2ux/workflow-server/issues/1028) |
 | E05 Construct Index | [#1029](https://github.com/m2ux/workflow-server/issues/1029) |
+| E06 Integration Evidence | [#1080](https://github.com/m2ux/workflow-server/issues/1080) |
 
 I07 edits, approved by the user:
 
@@ -115,6 +116,7 @@ Each I09 issue's planning-record link points at this record on `engineering`. I0
   - #1028 AC3 lets a broader id cover a covering entry's ids.
   - #1029 matches by prefix (AC2, AC3), reads through the guard's exported declaration reader, and adds AC6: exactly one line per unit, directly under its title, delivered by W02.
   - Check format reports no problem on any of them.
+- **E06.**  The Fires-on rule on `i09/workflows` and the hook declaration on `i09/workspace` are cited in [e06-rule-and-hook.md](e06-rule-and-hook.md).
 
 ## Reviews
 
