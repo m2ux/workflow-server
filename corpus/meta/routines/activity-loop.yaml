@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.2.0
+version: 1.2.1
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -93,6 +93,7 @@ steps:
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
             variable_bag: variables
+            planning_folder_path: planning_folder_path
       - kind: technique
         id: enter-activity
         when: "!worker_agent_id && !worker_result.next_activity_fans"
@@ -107,6 +108,7 @@ steps:
             variables_changed: "{worker_result.variables_changed}"
             stands_on_activity: stands_on_activity
             variable_bag: variables
+            planning_folder_path: planning_folder_path
       - kind: action
         id: spend-entered-activity
         when: stands_on_activity
@@ -134,6 +136,7 @@ steps:
             session_index: session_index
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
+            planning_folder_path: planning_folder_path
           outputs:
             barrier_destination: fan_convergence_activity
       - kind: technique
@@ -145,6 +148,7 @@ steps:
             branch_activities: branch_activities
             agent_technique: workflow-engine::activity-worker
             variable_bag: variables
+            planning_folder_path: planning_folder_path
           outputs:
             branch_envelopes: branch_envelopes
       - kind: loop
@@ -165,6 +169,7 @@ steps:
                 branch_envelopes: branch_envelopes
                 barrier_destination: fan_convergence_activity
                 session_index: session_index
+                planning_folder_path: planning_folder_path
             actions:
               - action: set
                 target: trace_tokens
@@ -176,6 +181,8 @@ steps:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: "{branch_activities}"
+            planning_folder_path: planning_folder_path
+            session_index: session_index
       - kind: action
         id: advance-past-fan
         when: fan_convergence_activity
@@ -207,6 +214,7 @@ steps:
           name: workflow-engine::present-checkpoint-to-user
           inputs:
             session_index: session_index
+            planning_folder_path: planning_folder_path
       - kind: technique
         id: respond-yielded-checkpoint
         when: worker_result.result_type == "checkpoint_pending"
@@ -215,6 +223,7 @@ steps:
           inputs:
             session_index: session_index
             checkpoint_resolution: user_selection
+            planning_folder_path: planning_folder_path
       - kind: technique
         id: resume-yielded-worker
         when: worker_result.result_type == "checkpoint_pending"
@@ -226,6 +235,7 @@ steps:
             worker_agent_id: worker_agent_id
             checkpoint_reply: checkpoint_reply
             variable_bag: variables
+            planning_folder_path: planning_folder_path
       - kind: action
         id: clear-checkpoint-reply
         when: checkpoint_reply
@@ -241,6 +251,8 @@ steps:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: current_activity
+            planning_folder_path: planning_folder_path
+            session_index: session_index
       - kind: action
         id: note-exiting-activity
         when: worker_result.result_type == "activity_complete"

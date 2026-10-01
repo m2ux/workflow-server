@@ -1,5 +1,5 @@
 id: doc-reference-surface
-version: 1.0.0
+version: 1.1.0
 name: Doc Reference Surface
 description: >-
   Name the graph covering a documentation tree, building one where the inventory covers it with
@@ -23,6 +23,8 @@ outputs:
 internals:
   - id: target_file
     description: The file the run holds, whose referencers that pass enumerates.
+  - id: file_referencers
+    description: The files linking to the file the run holds, which that pass appends to the referencers.
 
 steps:
   - kind: routine
@@ -46,7 +48,10 @@ steps:
           name: gitnexus::reference-lookup
           inputs:
             target_file_path: "{target_file}"
+          outputs:
+            referencing_files: file_referencers
         actions:
           - action: set
             target: referencing_files
+            value: "{file_referencers}"
             description: The files linking to this target, appended to the referencers the run holds.
