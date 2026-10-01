@@ -1,0 +1,17 @@
+$schema: ../../../schemas/workflow.schema.json
+id: audit-specimen
+version: 1.0.0
+title: Audit Specimen
+description: >-
+  One planted defect, one fix, and a re-audit. The walk writes the re-audit
+  count, the author load set, and a ledger row for every canon unit.
+author: m2ux
+tags:
+  - specimen
+techniques:
+  activity:
+    - variable-binding
+initialActivity: score
+graph:
+  score:
+    scored: __terminal__

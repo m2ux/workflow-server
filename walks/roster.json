@@ -39,6 +39,10 @@
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that a live instance can dispatch one activity through one routine and one technique, which serving guards and a sidecar MVW walk measure."
     },
     {
+      "id": "audit-specimen",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is one fix round, an author load set, and a full unit ledger, which a sidecar walk measures."
+    },
+    {
       "id": "exitless-end",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that a walk ending on an activity with no exits completes its session, which a sidecar walk measures."
     },
@@ -165,6 +169,14 @@
     {
       "id": "gitnexus-radius-conformance",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that the gitnexus library's reach run answers for every member of a group, each answer naming its graph and the instruments that answered, which the reference guards and a sidecar change-surface walk measure."
+    },
+    {
+      "id": "work-package-prism-decision-conformance",
+      "reason": "Its one gate is the borrowed work-package prism decision's, whose options the work-package walk covers. What the specimen evidences is the decision under an implementation case and a review case, which its sidecar case walk measures."
+    },
+    {
+      "id": "work-package-registers-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that deferrals and follow-ups reach their registers, which its sidecar case walk measures."
     }
   ]
 }
