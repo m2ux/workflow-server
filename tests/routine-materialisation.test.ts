@@ -321,11 +321,11 @@ describe('the refusals — every terminal but Checked fails', () => {
     expect(() => run({ outputs: {} })).toThrow(/output 'run_verdict'.*left unbound.*optional: true/s);
   });
 
-  it('drops the bindings that write an unbound OPTIONAL output', () => {
+  it('keeps an unbound OPTIONAL output local to the use, as an internal', () => {
     const host = activity([{ kind: 'routine', id: 'run', routine: 'strict-run', outputs: { run_verdict: 'v' } } as Step]);
     materializeActivityRoutines(host, LOOKUP, 'wf');
     const gate = host.steps![0] as Extract<Step, { kind: 'checkpoint' }>;
-    expect(gate.options![0]!.effect!.setVariable).toEqual({ v: 'ok' });
+    expect(gate.options![0]!.effect!.setVariable).toEqual({ v: 'ok', host_run_run_notes: 'seen' });
   });
 
   it('refuses a reference cycle, naming the chain', () => {
@@ -344,54 +344,36 @@ describe('the refusals — every terminal but Checked fails', () => {
   });
 
   /**
-   * Dropping an unbound optional output removes the bindings that WRITE it, which is the case
-   * above. A position that READS it has nothing to drop to: a loop cannot iterate a collection no
-   * name reaches, and an action cannot write to a target that is not there. Each is refused where
-   * the body names it, because the alternative is a step whose collection or target is the word
-   * `undefined`.
+   * An optional output a site leaves unbound is local to that use, so every position naming it —
+   * a loop's collection or item, a typed reply, an action's target — names the local variable, and
+   * none reaches a host variable.
    */
-  it('refuses a loop iterating an output the site dropped', () => {
-    const iterates = routine({
-      id: 'iterates',
-      outputs: [{ id: 'found_items', type: 'array', description: 'what the run found', optional: true }],
-      steps: [{
-        kind: 'loop', id: 'over-found', loopType: 'forEach', variable: 'each_item', over: 'found_items',
-        steps: [{ kind: 'action', id: 'note', actions: [{ action: 'log', message: 'seen' }] }],
-      }] as Step[],
-      internals: [{ id: 'each_item', description: 'the item under discussion' }],
-    });
-    const host = activity([{ kind: 'routine', id: 'run', routine: 'iterates', outputs: {} } as Step]);
-    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [iterates] }), 'wf'))
-      .toThrow(/loop 'over-found' iterates a dropped output/);
-  });
-
-  it('refuses a loop binding its item to an output the site dropped', () => {
-    const binds = routine({
-      id: 'binds',
-      outputs: [{ id: 'current_item', type: 'object', description: 'the item under discussion', optional: true }],
-      steps: [{
-        kind: 'loop', id: 'over-input', loopType: 'forEach', variable: 'current_item', over: 'supplied_items',
-        steps: [{ kind: 'action', id: 'note', actions: [{ action: 'log', message: 'seen' }] }],
-      }] as Step[],
+  it('iterates, binds, records and targets a local output under its local name', () => {
+    const local = routine({
+      id: 'local-run',
       inputs: [{ id: 'supplied_items', description: 'what the host supplies' }],
+      outputs: [
+        { id: 'found_items', type: 'array', description: 'what the run found', optional: true },
+        { id: 'current_item', type: 'object', description: 'the item under discussion', optional: true },
+        { id: 'typed_note', type: 'string', description: 'what the user typed', optional: true },
+        { id: 'item_tally', type: 'string', description: 'the count', optional: true },
+      ],
+      steps: [
+        { kind: 'loop', id: 'over-found', loopType: 'forEach', variable: 'current_item', over: 'found_items',
+          steps: [{ kind: 'action', id: 'note', actions: [{ action: 'log', message: 'seen {supplied_items}' }] }] },
+        { kind: 'checkpoint', id: 'ask', message: 'Name the file.',
+          options: [{ id: 'named', label: 'Name it', effect: { recordReply: 'typed_note' } }] },
+        { kind: 'action', id: 'count', actions: [{ action: 'set', target: 'item_tally', value: 'one' }] },
+      ] as Step[],
     });
-    const host = activity([{ kind: 'routine', id: 'run', routine: 'binds', outputs: {} } as Step]);
-    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [binds] }), 'wf'))
-      .toThrow(/loop 'over-input' binds its item to a dropped output/);
-  });
-
-  it('refuses a checkpoint recording its typed reply in an output the site dropped', () => {
-    const asks = routine({
-      id: 'asks',
-      outputs: [{ id: 'typed_note', type: 'string', description: 'what the user typed', optional: true }],
-      steps: [{
-        kind: 'checkpoint', id: 'ask', message: 'Name the file.',
-        options: [{ id: 'named', label: 'Name it', effect: { recordReply: 'typed_note' } }],
-      }] as Step[],
-    });
-    const host = activity([{ kind: 'routine', id: 'run', routine: 'asks', outputs: {} } as Step]);
-    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [asks] }), 'wf'))
-      .toThrow(/option 'named' of checkpoint 'ask' records its typed reply in a dropped output/);
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'local-run', outputs: {} } as Step]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [local] }), 'wf');
+    const [loop, gate, count] = host.steps! as [
+      Extract<Step, { kind: 'loop' }>, Extract<Step, { kind: 'checkpoint' }>, Extract<Step, { kind: 'action' }>,
+    ];
+    expect([loop.over, loop.variable]).toEqual(['host_run_found_items', 'host_run_current_item']);
+    expect(gate.options![0]!.effect!.recordReply).toBe('host_run_typed_note');
+    expect(count.actions![0]!.target).toBe('host_run_item_tally');
   });
 
   it('renames a checkpoint\'s reply variable to the site\'s binding', () => {
@@ -407,17 +389,6 @@ describe('the refusals — every terminal but Checked fails', () => {
     materializeActivityRoutines(host, lookupFrom({ wf: [asks] }), 'wf');
     const gate = host.steps![0] as Extract<Step, { kind: 'checkpoint' }>;
     expect(gate.options![0]!.effect!.recordReply).toBe('target_path');
-  });
-
-  it('refuses an action targeting an output the site dropped', () => {
-    const writes = routine({
-      id: 'writes',
-      outputs: [{ id: 'item_tally', type: 'string', description: 'the count', optional: true }],
-      steps: [{ kind: 'action', id: 'count', actions: [{ action: 'set', target: 'item_tally', value: 'one' }] }] as Step[],
-    });
-    const host = activity([{ kind: 'routine', id: 'run', routine: 'writes', outputs: {} } as Step]);
-    expect(() => materializeActivityRoutines(host, lookupFrom({ wf: [writes] }), 'wf'))
-      .toThrow(/action on step 'count' targets a dropped output/);
   });
 
   /**
@@ -529,5 +500,94 @@ describe('collectRoutineRefs', () => {
       { kind: 'loop', id: 'l', loopType: 'forEach', variable: 'item_name', over: 'item_names', steps: [{ kind: 'routine', id: 'b', routine: 'wf::second-run' }] },
     ] as Step[]);
     expect(collectRoutineRefs(host)).toEqual(['first-run', 'wf::second-run']);
+  });
+});
+
+describe('an id a routine declares as both an input and an output', () => {
+  // The body reads the document and writes it back: one variable the site names once.
+  const updating = routine({
+    id: 'update-run',
+    inputs: [{ id: 'concern_document', description: 'the document the run reads' }],
+    outputs: [
+      { id: 'concern_document', type: 'object', description: 'the document with the run applied', optional: true },
+    ],
+    steps: [
+      {
+        kind: 'technique', id: 'apply',
+        technique: { name: 'fold', inputs: { concern_document: 'concern_document' }, outputs: { concern_document: 'concern_document' } },
+      },
+    ] as Step[],
+  });
+  const LOOKUP = lookupFrom({ wf: [updating] });
+  const bindingOf = (step: Record<string, unknown>): { inputs?: Record<string, unknown>; outputs?: Record<string, unknown> } => {
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'update-run', ...step } as Step]);
+    materializeActivityRoutines(host, LOOKUP, 'wf');
+    return (host.steps![0] as { technique: { inputs?: Record<string, unknown>; outputs?: Record<string, unknown> } }).technique;
+  };
+
+  it('reads and writes the one variable an argument and an output binding agree on', () => {
+    const technique = bindingOf({ with: { concern_document: '{review_log}' }, outputs: { concern_document: 'review_log' } });
+    expect(technique.inputs).toEqual({ concern_document: 'review_log' });
+    expect(technique.outputs).toEqual({ concern_document: 'review_log' });
+  });
+
+  it('reads and writes the argument where the site leaves the optional output unbound', () => {
+    const technique = bindingOf({ with: { concern_document: '{review_log}' } });
+    expect(technique.inputs).toEqual({ concern_document: 'review_log' });
+    expect(technique.outputs).toEqual({ concern_document: 'review_log' });
+  });
+
+  it('refuses an argument and an output binding that name two variables', () => {
+    expect(() => bindingOf({ with: { concern_document: '{review_log}' }, outputs: { concern_document: 'other_log' } }))
+      .toThrow(/'concern_document' is both an input and an output.*'review_log'.*'other_log'/s);
+  });
+
+  it('refuses an argument addressing a member, where the routine updates a whole variable', () => {
+    expect(() => bindingOf({ with: { concern_document: '{review.log}' } }))
+      .toThrow(/'concern_document' is both an input and an output.*'\{review\.log\}' addresses a member/s);
+  });
+
+  it('refuses a site that binds the output alone, or neither', () => {
+    expect(() => bindingOf({ outputs: { concern_document: 'review_log' } }))
+      .toThrow(/'concern_document' is both an input and an output.*braced argument.*binds only the output, to 'review_log'/s);
+    expect(() => bindingOf({}))
+      .toThrow(/'concern_document' is both an input and an output.*braced argument.*binds neither/s);
+  });
+
+  it('refuses a literal argument, which leaves the write nowhere to land', () => {
+    expect(() => bindingOf({ with: { concern_document: 'review_log' }, outputs: { concern_document: 'review_log' } }))
+      .toThrow(/'concern_document' is both an input and an output.*braced/s);
+  });
+});
+
+describe('a braced argument naming a member', () => {
+  it('passes that member to every position the body names the input in', () => {
+    const reads = routine({
+      id: 'read-run',
+      inputs: [{ id: 'tree_path', description: 'the tree' }],
+      steps: [
+        { kind: 'technique', id: 'look', technique: { name: 'scan', inputs: { tree_path: 'tree_path' } } },
+        { kind: 'action', id: 'note', actions: [{ action: 'log', message: 'at {tree_path} and {tree_path.root}' }] },
+      ] as Step[],
+    });
+    const host = activity([{ kind: 'routine', id: 'run', routine: 'read-run', with: { tree_path: '{roster_entry.repo_path}' } } as Step]);
+    materializeActivityRoutines(host, lookupFrom({ wf: [reads] }), 'wf');
+    const [look, note] = host.steps! as [Extract<Step, { kind: 'technique' }>, Extract<Step, { kind: 'action' }>];
+    expect((look.technique as { inputs: Record<string, unknown> }).inputs).toEqual({ tree_path: 'roster_entry.repo_path' });
+    expect(note.actions![0]!.message).toBe('at {roster_entry.repo_path} and {roster_entry.repo_path.root}');
+  });
+});
+
+describe('an id a routine both reads and updates declares no default', () => {
+  it('refuses a default on it, since each site names the variable it updates', () => {
+    const result = RoutineSchema.safeParse({
+      id: 'update-run', version: '1.0.0', name: 'update-run',
+      inputs: [{ id: 'concern_document', description: 'read', default: 'none' }],
+      outputs: [{ id: 'concern_document', type: 'object', description: 'written', optional: true }],
+      steps: [{ kind: 'action', id: 'apply', actions: [{ action: 'log', message: 'x' }] }],
+    });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(['inputs', 0, 'default']);
+    expect(result.error?.issues[0]?.message).toContain("'concern_document' is both an input and an output");
   });
 });

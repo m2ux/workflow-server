@@ -20,6 +20,20 @@
  *   unbound, both of which resolve out of the bag under their own names with no field to rewrite.
  *   A name the body itself produces is none of those: the run reads its own step's production back
  *   out of the bag, so no site supplies it and the host derivation reads it the same way.
+ * - `routine-scope-unbound` — a technique step in the body that leaves unbound one of its technique's
+ *   declared inputs or outputs whose id the signature declares. Substitution renames a routine's
+ *   names only in the fields a step spells, and an unbound input or output resolves under its bare
+ *   id, so an internal never reaches it and an input or output reaches it only where a site happens
+ *   to bind that name to itself. A site renames an input it binds to anything but `{<the same name>}`
+ *   or leaves to its default, and an output it binds to another name; an optional output it leaves
+ *   unbound is local to that use, as an internal is. A site inside another routine renames what
+ *   that routine renames, so an argument naming the parent's internal, or a parent name its own
+ *   sites rename, renames too. An optional input whose id is local is left out: the bare id leaves
+ *   it unset, which is what a step that means to leave it unset relies on, and the guard cannot
+ *   tell that step from one that dropped a value it needed. The same rule reports a routine
+ *   reference inside a body that leaves a child input unbound where this routine renames the name.
+ * - `routine-writes-input` — a body step writing, by spelling it, a name the signature declares as an
+ *   input and not an output. A site supplies an input and is never told it is written.
  * - `routine-operation-unbound` — an input declared `kind: technique` that no step of the body binds.
  *   It stands in a technique position rather than being read as a value, so an unread-input rule
  *   asking the derivation about it would report every one of them.
@@ -67,7 +81,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import type { Activity, Step } from '../src/schema/activity.schema.js';
+import { type Activity, type Step, flattenActivitySteps } from '../src/schema/activity.schema.js';
 import type { Routine } from '../src/schema/routine.schema.js';
 import { isOperationInput, operationInputs, routineScope } from '../src/schema/routine.schema.js';
 import { type CorpusIndex, type NamespaceLocation, indexCorpus } from '../src/loaders/corpus-index.js';
@@ -75,7 +89,7 @@ import {
   META_WORKFLOW_ID, type OperationMap, bodyWithOperations, collectRoutineRefs, collectRoutineSteps, parseRoutineRef,
 } from '../src/loaders/routine-resolver.js';
 import { ROUTINES_DIR, buildRoutineLookup, readCorpusRoutines } from '../src/loaders/routine-loader.js';
-import { deriveActivityContract } from '../src/utils/activity-variables.js';
+import { deriveActivityContract, unboundTechniqueIds } from '../src/utils/activity-variables.js';
 import { assertScanned, corpusWorkflows, defaultCorpusDest, definitionsUnder, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
@@ -91,12 +105,26 @@ interface Reference {
   ref: string;
   /** The arguments the site binds, which a technique parameter's contract is derived against. */
   args: Record<string, string | number | boolean> | undefined;
+  /** Where the site lands each output it binds. */
+  outputs: Record<string, string> | undefined;
+  /** The routine the site sits in, where it sits in one rather than in an activity. */
+  parent?: { workflowId: string; routine: Routine };
   /** The routine name it resolves to, and where. */
   resolved?: { workflowId: string; name: string };
 }
 
 /** A routine key, unique corpus-wide: the workflow that declares it and its name. */
 const keyOf = (workflowId: string, name: string): string => `${workflowId}::${name}`;
+
+/**
+ * How a routine's reference sites bind its names. `renamed` holds the inputs and outputs some site
+ * sends to a variable other than the bare name — another name, a literal, a default, or a rename a
+ * routine enclosing the site makes. `dropped` holds the optional outputs some site leaves unbound.
+ */
+interface SiteRenames {
+  renamed: ReadonlySet<string>;
+  dropped: ReadonlySet<string>;
+}
 
 /**
  * Which routine a reference resolves to, under the resolution rule: a qualified name in that
@@ -138,6 +166,8 @@ async function checkSignature(
   routines: Awaited<ReturnType<typeof buildRoutineLookup>>,
   /** The bodies to derive: one per reference site where the routine binds a technique by argument. */
   bodies: ReadonlyArray<{ techniques: OperationMap; site: string }>,
+  /** How the reference sites bind the routine's inputs and outputs. */
+  rebound: SiteRenames,
 ): Promise<Finding[]> {
   const scope = routineScope(routine);
   const declared = new Set([...scope.inputs.keys(), ...scope.outputs.keys(), ...scope.internals.keys()]);
@@ -156,6 +186,12 @@ async function checkSignature(
   // reporting it as an undeclared read would fire on nearly every real body.
   const written = new Set<string>();
   const consulted = new Set(bodyUses(routine));
+  /**
+   * One `routine-scope-unbound` finding per step and name, however many sites the body is read at,
+   * naming each site whose technique the reading came from.
+   */
+  const unboundFindings = new Map<string, { detail: string; sites: Set<string> }>();
+  const writtenInputs = new Set<string>();
   for (const body of bodies) {
     const derived = await deriveActivityContract({
       activity: {
@@ -188,6 +224,60 @@ async function checkSignature(
       });
     }
 
+    // A routine's own names reach a technique step only through the fields that step spells.
+    const bodySteps = flattenActivitySteps({ steps: bodyWithOperations(routine.steps, body.techniques) } as Activity);
+    for (const step of bodySteps) {
+      if (step.kind !== 'technique') continue;
+      const unbound = await unboundTechniqueIds(step, routine.id, root, workflowId);
+      // An internal is renamed at every site, so its bare name is always a different variable — save
+      // an input the agent may supply itself, which the bare name leaves unset as intended. An input
+      // or an output reaches its bare name only where every site binds that name to itself.
+      // An internal, and an optional output a site leaves unbound, are local to each use, so their
+      // bare names are always other variables — save an input the agent may supply itself, which the
+      // bare name leaves unset as intended. An input or an output reaches its bare name only where
+      // every site, and every routine enclosing one, binds that name to itself.
+      const local = (id: string): boolean => scope.internals.has(id) || rebound.dropped.has(id);
+      const misses = (id: string, suppliable: boolean): boolean =>
+        rebound.renamed.has(id) || (local(id) && !suppliable);
+      const unboundInputs = unbound.inputs.filter((input) => misses(input.id, input.suppliable)).map((input) => input.id);
+      const unboundOutputs = unbound.outputs.filter((id) => misses(id, false));
+      for (const [side, ids] of [['input', unboundInputs], ['output', unboundOutputs]] as const) {
+        for (const id of ids) {
+          if (!declared.has(id)) continue;
+          const reportKey = `${step.id}|${side}|${id}`;
+          const why = scope.internals.has(id)
+            ? `'${id}' is an internal`
+            : rebound.renamed.has(id)
+              ? `a reference site, or a routine enclosing one, binds '${id}' under another name`
+              : `a reference site leaves the optional output '${id}' unbound, which keeps it local to that use`;
+          // A body may write only what its signature lets a site receive.
+          const remedy = side === 'output' && !scope.outputs.has(id)
+            ? `declare '${id}' an output as well, and bind it under technique.outputs as '${id}: ${id}'`
+            : `bind it under technique.${side}s as '${id}: ${id}'`;
+          const entry = unboundFindings.get(reportKey) ?? {
+            detail: `step '${step.id}' leaves its technique's ${side} '${id}' unbound, and ${why} — an unbound ${side} resolves under its bare name, which substitution never rewrites, so ${remedy}`,
+            sites: new Set<string>(),
+          };
+          entry.sites.add(body.site);
+          unboundFindings.set(reportKey, entry);
+        }
+      }
+    }
+
+    // An input is a value the site supplies. A body writing one updates a variable its signature
+    // never promises to write, so the host's contract cannot charge the write.
+    const explicit = explicitWrites(bodyWithOperations(routine.steps, body.techniques));
+    for (const id of scope.inputs.keys()) {
+      if (scope.outputs.has(id) || !explicit.has(id)) continue;
+      const key = `writes-input|${id}`;
+      if (writtenInputs.has(key)) continue;
+      writtenInputs.add(key);
+      findings.push({
+        check: 'routine-writes-input', site,
+        detail: `the body writes '${id}', which the signature declares as an input and not an output — a site supplies an input and is never told it is written, so declare '${id}' an output as well`,
+      });
+    }
+
     // A value the ARGUMENT produces cannot be carried onward, because which values those are follows
     // from the argument. A name the body passes on has to be one the run owns at every site, and a
     // declaration naming one of the argument's outputs is a signature that holds only at this one.
@@ -198,6 +288,14 @@ async function checkSignature(
         detail: `'${name}' is an output of the technique this site binds and the signature declares it — a run takes its argument's technique and not that technique's values, which differ by argument, so nothing downstream of the run can be promised one`,
       });
     }
+  }
+
+  for (const { detail, sites } of unboundFindings.values()) {
+    const readings = [...sites].filter((reading) => reading !== site);
+    findings.push({
+      check: 'routine-scope-unbound', site,
+      detail: readings.length === 0 ? detail : `${detail} (read at ${readings.join('; ')})`,
+    });
   }
 
   // A declaration rule asks whether the body ever honours what the signature promises, so it is
@@ -240,6 +338,33 @@ async function checkSignature(
     }
   }
   return findings;
+}
+
+/**
+ * The names a run of steps writes by spelling them: bound technique outputs, checkpoint variables and
+ * replies, action targets and loop items. A technique's own outputs, which land wherever a step
+ * leaves them, are the unbound-name rule's to judge.
+ */
+function explicitWrites(steps: readonly Step[]): Set<string> {
+  const written = new Set<string>();
+  for (const step of flattenActivitySteps({ steps } as Activity)) {
+    if (step.kind === 'technique' && typeof step.technique === 'object') {
+      for (const target of Object.values(step.technique.outputs ?? {})) written.add(target.split('.')[0]!);
+    }
+    if (step.kind === 'checkpoint') {
+      for (const option of step.options ?? []) {
+        for (const name of Object.keys(option.effect?.setVariable ?? {})) written.add(name.split('.')[0]!);
+        if (option.effect?.recordReply) written.add(option.effect.recordReply.split('.')[0]!);
+      }
+    }
+    if (step.kind === 'technique' || step.kind === 'action') {
+      for (const action of step.actions ?? []) {
+        if (action.action === 'set' && action.target) written.add(action.target.split('.')[0]!);
+      }
+    }
+    if (step.kind === 'loop' && step.variable) written.add(step.variable);
+  }
+  return written;
 }
 
 /**
@@ -455,7 +580,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
   for (const { id: workflowId, dir } of corpus) {
     for (const { site, steps } of authoredActivities(workflowId, dir)) {
       for (const step of collectRoutineSteps({ steps })) {
-        references.push({ workflowId, site, ref: step.routine, args: step.with });
+        references.push({ workflowId, site, ref: step.routine, args: step.with, outputs: step.outputs });
       }
     }
   }
@@ -464,6 +589,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
       for (const step of collectRoutineSteps({ steps: routine.steps })) {
         references.push({
           workflowId, site: `${workflowId}/routines/${routine.id}.yaml`, ref: step.routine, args: step.with,
+          outputs: step.outputs, parent: { workflowId, routine },
         });
       }
     }
@@ -480,6 +606,46 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     sitesByRoutine.set(key, [...(sitesByRoutine.get(key) ?? []), reference]);
   }
 
+  // The names some site binds to anything other than themselves. A site inside another routine
+  // renames whatever that routine renames: its internals, and its own names a site of its own
+  // rebinds. The loader refuses a reference cycle, so the recursion ends.
+  const reboundMemo = new Map<string, SiteRenames>();
+  const routineScopeOf = (workflowId: string, name: string): ReturnType<typeof routineScope> | undefined => {
+    const found = declared.get(workflowId)?.get(name);
+    return found ? routineScope(found) : undefined;
+  };
+  const reboundOf = (workflowId: string, routineId: string): SiteRenames => {
+    const key = keyOf(workflowId, routineId);
+    const known = reboundMemo.get(key);
+    if (known) return known;
+    const rebound = new Set<string>();
+    const dropped = new Set<string>();
+    reboundMemo.set(key, { renamed: rebound, dropped });
+    for (const reference of sitesByRoutine.get(key) ?? []) {
+      const parent = reference.parent;
+      const parentScope = parent ? routineScope(parent.routine) : undefined;
+      const parentRebound = parent ? reboundOf(parent.workflowId, parent.routine.id) : undefined;
+      const renamedAbove = (name: string): boolean =>
+        parentScope !== undefined && (parentScope.internals.has(name) || parentRebound!.renamed.has(name));
+      for (const [id, argument] of Object.entries(reference.args ?? {})) {
+        if (argument !== `{${id}}` || renamedAbove(id)) rebound.add(id);
+      }
+      for (const [id, target] of Object.entries(reference.outputs ?? {})) {
+        if (target !== id || renamedAbove(id)) rebound.add(id);
+      }
+      // An input left to its default takes the default in the body's own fields, and an optional
+      // output left unbound is dropped from them, so either one's bare name is a different variable.
+      const scope = reference.resolved ? routineScopeOf(reference.resolved.workflowId, reference.resolved.name) : undefined;
+      for (const [id, input] of scope?.inputs ?? []) {
+        if (reference.args?.[id] === undefined && input.default !== undefined && !isOperationInput(input)) rebound.add(id);
+      }
+      for (const [id] of scope?.outputs ?? []) {
+        if (reference.outputs?.[id] === undefined && !scope!.inputs.has(id)) dropped.add(id);
+      }
+    }
+    return { renamed: rebound, dropped };
+  };
+
   // The signature check. Once per routine, and once per REFERENCE SITE for a routine whose body binds
   // a technique by argument: such a body names a parameter where a technique reference belongs, so
   // it has no signature of its own and there is nothing to derive until a site says which technique.
@@ -491,10 +657,26 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
     for (const routine of routines.values()) {
       const parameters = operationInputs(routine);
       const declaration = `${workflowId}/routines/${routine.id}.yaml`;
+      const rebound = reboundOf(workflowId, routine.id);
+      // A child input this routine leaves unbound takes the host's value under its bare id, which
+      // is not the variable this routine holds where it renames that name.
+      const ownScope = routineScope(routine);
+      for (const reference of collectRoutineSteps({ steps: routine.steps })) {
+        const resolved = resolveKey(reference.routine, workflowId, declared);
+        const childScope = resolved ? routineScopeOf(resolved.workflowId, resolved.name) : undefined;
+        for (const [id, input] of childScope?.inputs ?? []) {
+          if (isOperationInput(input) || input.default !== undefined || reference.with?.[id] !== undefined) continue;
+          if (!ownScope.internals.has(id) && !rebound.renamed.has(id)) continue;
+          findings.push({
+            check: 'routine-scope-unbound', site: declaration,
+            detail: `step '${reference.id}' leaves '${reference.routine}' input '${id}' unbound, and ${ownScope.internals.has(id) ? `'${id}' is an internal here` : `a reference site, or a routine enclosing one, binds '${id}' under another name`} — an unbound routine input takes the host's value under its bare name, so bind it under 'with' as '${id}: "{${id}}"'`,
+          });
+        }
+      }
       if (parameters.length === 0) {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, [
           { techniques: new Map(), site: declaration },
-        ]));
+        ], rebound));
         continue;
       }
       const sites = sitesByRoutine.get(keyOf(workflowId, routine.id)) ?? [];
@@ -505,7 +687,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
         bodies.push({ techniques, site: `${declaration} at ${reference.site}` });
       }
       if (bodies.length > 0) {
-        findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies));
+        findings.push(...await checkSignature(root, workflowId, routine, lookup, bodies, rebound));
         continue;
       }
       // A declaration supplying its own technique holds the signature where NO site refers to it:
@@ -516,7 +698,7 @@ export async function collectRoutineFindings(root: string): Promise<Finding[]> {
       if (fromDefaults) {
         findings.push(...await checkSignature(root, workflowId, routine, lookup, [
           { techniques: fromDefaults, site: `${declaration} at its declared defaults` },
-        ]));
+        ], rebound));
         continue;
       }
       // Nothing was derived, so no signature rule could fire. Saying so is the difference between a

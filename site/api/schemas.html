@@ -146,7 +146,7 @@
           <tr><td><code>outputs[].type</code></td><td><code>&quot;string&quot; | &quot;number&quot; | &quot;boolean&quot; | &quot;array&quot; | &quot;object&quot;</code></td><td>yes</td><td>Type of the output and its bound session variable.</td></tr>
           <tr><td><code>outputs[].description</code></td><td><code>string</code></td><td>yes</td><td>What the value is.</td></tr>
           <tr><td><code>outputs[].values</code></td><td><code>string[]</code></td><td>no</td><td>Complete set of allowed values for a string output.</td></tr>
-          <tr><td><code>outputs[].optional</code></td><td><code>true</code></td><td>no</td><td>Declare <code>true</code> to allow this output to remain unbound; omission requires an output binding.</td></tr>
+          <tr><td><code>outputs[].optional</code></td><td><code>true</code></td><td>no</td><td>Declare <code>true</code> to allow this output to remain unbound, where it stays local to that use of the routine; omission requires an output binding, save for an id that is also an input, which its argument binds.</td></tr>
           <tr><td><code>internals</code></td><td><code>object[]</code></td><td>no</td><td>Names for values shared between the routine's steps, local to each use.</td></tr>
           <tr><td><code>internals[].id</code></td><td><code>0 | 1</code></td><td>yes</td><td>Name local to the routine body at each use, outside the workflow variable set.</td></tr>
           <tr><td><code>internals[].description</code></td><td><code>string</code></td><td>yes</td><td>What the value is, and which steps pass it.</td></tr>

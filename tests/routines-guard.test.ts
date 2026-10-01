@@ -268,7 +268,10 @@ outputs:
 steps:
   - kind: technique
     id: sweep
-    technique: analysis::sweep
+    technique:
+      name: analysis::sweep
+      outputs:
+        run_verdict: run_verdict
 `,
         },
       },
@@ -327,6 +330,8 @@ steps:
     id: sweep
     technique:
       name: pass_operation
+      outputs:
+        run_verdict: run_verdict
 `,
         },
       },
@@ -1164,5 +1169,499 @@ steps:
       },
     });
     expect(checks(findings)).toEqual([]);
+  });
+});
+
+/**
+ * A routine's own names reach a technique step only through the fields the step spells, because an
+ * unbound input or output resolves under its bare id and substitution rewrites only what a step
+ * spells. An internal is renamed at every site, so its bare id is always another variable. An input
+ * or output reaches its bare id only where every site binds that name to itself.
+ */
+describe('a routine name a body step leaves to its bare id', () => {
+  const TECHNIQUES = {
+    wf: {
+      'analysis/produce': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A finding.
+
+## Outputs
+
+### interim_finding
+
+The finding.
+
+## Protocol
+
+### 1. Produce
+
+- Produce the finding.
+`,
+      'analysis/consume': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A verdict from the finding.
+
+## Inputs
+
+### interim_finding
+
+The finding to weigh.
+
+### side_note
+
+*(optional)* A note the caller may add. Unset where none is given.
+
+## Outputs
+
+### run_verdict
+
+The verdict.
+
+## Protocol
+
+### 1. Consume
+
+- Weigh \`{interim_finding}\` into \`{run_verdict}\`.
+`,
+    },
+  };
+  const routineWith = (produceStep: string, consumeOutputs: string): string => `id: shared-run
+version: 1.0.0
+name: Shared Run
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+internals:
+  - id: interim_finding
+    description: handed from the producing step to the consuming step
+  - id: side_note
+    description: a note the run never supplies
+steps:
+${produceStep}
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      inputs:
+        interim_finding: interim_finding
+${consumeOutputs}`;
+  const BOUND_PRODUCE = `  - kind: technique
+    id: produce
+    technique:
+      name: analysis::produce
+      outputs:
+        interim_finding: interim_finding`;
+  const host = (verdictTarget: string): Record<string, Record<string, string>> => ({
+    wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    outputs:\n      run_verdict: ${verdictTarget}\n` },
+  });
+  const scopeFindings = (findings: Finding[]): Finding[] => findings.filter((f) => f.check === 'routine-scope-unbound');
+
+  it('reports an internal a step produces under its bare id', async () => {
+    const findings = await findingsFor({
+      activities: host('run_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith('  - kind: technique\n    id: produce\n    technique: analysis::produce', '      outputs:\n        run_verdict: run_verdict\n') } },
+    });
+    expect(scopeFindings(findings).map((f) => f.detail)).toEqual([
+      expect.stringContaining("step 'produce' leaves its technique's output 'interim_finding' unbound, and 'interim_finding' is an internal"),
+    ]);
+  });
+
+  it('leaves an optional input the run means to leave unset', async () => {
+    const findings = await findingsFor({
+      activities: host('run_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith(BOUND_PRODUCE, '      outputs:\n        run_verdict: run_verdict\n') } },
+    });
+    expect(scopeFindings(findings)).toEqual([]);
+  });
+
+  it('leaves an output every site binds to its own name', async () => {
+    const findings = await findingsFor({
+      activities: host('run_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith(BOUND_PRODUCE, '') } },
+    });
+    expect(scopeFindings(findings)).toEqual([]);
+  });
+
+  it('reports an output a site binds under another name', async () => {
+    const findings = await findingsFor({
+      activities: host('host_verdict'),
+      techniques: TECHNIQUES,
+      routines: { wf: { 'shared-run': routineWith(BOUND_PRODUCE, '') } },
+    });
+    expect(scopeFindings(findings).map((f) => f.detail)).toEqual([
+      expect.stringContaining("step 'consume' leaves its technique's output 'run_verdict' unbound, and a reference site, or a routine enclosing one, binds 'run_verdict' under another name"),
+    ]);
+  });
+});
+
+describe('a routine name a parent routine renames', () => {
+  const CONSUME = {
+    wf: {
+      'analysis/consume': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A verdict from the finding.
+
+## Inputs
+
+### interim_finding
+
+The finding to weigh.
+
+## Outputs
+
+### run_verdict
+
+The verdict.
+
+## Protocol
+
+### 1. Consume
+
+- Weigh the finding into the verdict.
+`,
+    },
+  };
+  const CHILD = `id: child-run
+version: 1.0.0
+name: Child Run
+inputs:
+  - id: interim_finding
+    description: the finding
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+steps:
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      outputs:
+        run_verdict: run_verdict
+`;
+  const parent = (internals: string, inputs: string): string => `id: parent-run
+version: 1.0.0
+name: Parent Run
+${inputs}outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+${internals}steps:
+  - kind: action
+    id: note
+    actions:
+      - action: set
+        target: interim_finding
+        value: found
+  - kind: routine
+    id: child
+    routine: child-run
+    with:
+      interim_finding: "{interim_finding}"
+    outputs:
+      run_verdict: run_verdict
+`;
+  const host = (binding: string): Record<string, Record<string, string>> => ({
+    wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: parent-run\n${binding}    outputs:\n      run_verdict: run_verdict\n` },
+  });
+  const unboundIn = (findings: Finding[]): string[] =>
+    findings.filter((f) => f.check === 'routine-scope-unbound').map((f) => `${f.site}: ${f.detail}`);
+  const CHILD_MISS = "wf/routines/child-run.yaml: step 'consume' leaves its technique's input 'interim_finding' unbound, and a reference site, or a routine enclosing one, binds 'interim_finding' under another name — an unbound input resolves under its bare name, which substitution never rewrites, so bind it under technique.inputs as 'interim_finding: interim_finding'";
+
+  it('reports a child step reading the bare name of the internal its parent passes', async () => {
+    const findings = await findingsFor({
+      activities: host(''),
+      techniques: CONSUME,
+      routines: { wf: { 'child-run': CHILD, 'parent-run': parent('internals:\n  - id: interim_finding\n    description: the finding\n', '') } },
+    });
+    expect(unboundIn(findings)).toEqual([CHILD_MISS]);
+  });
+
+  it('reports it where the parent passes on an input its own site rebinds', async () => {
+    const findings = await findingsFor({
+      activities: host('    with:\n      interim_finding: "{host_finding}"\n'),
+      techniques: CONSUME,
+      routines: { wf: { 'child-run': CHILD, 'parent-run': parent('', 'inputs:\n  - id: interim_finding\n    description: the finding\n') } },
+    });
+    expect(unboundIn(findings)).toEqual([CHILD_MISS]);
+  });
+
+  it('leaves it where every site up the chain binds the name to itself', async () => {
+    const findings = await findingsFor({
+      activities: host('    with:\n      interim_finding: "{interim_finding}"\n'),
+      techniques: CONSUME,
+      routines: { wf: { 'child-run': CHILD, 'parent-run': parent('', 'inputs:\n  - id: interim_finding\n    description: the finding\n') } },
+    });
+    expect(unboundIn(findings)).toEqual([]);
+  });
+});
+
+describe('a routine name a site leaves to a default, keeps local, or never passes on', () => {
+  const READ = {
+    wf: {
+      'analysis/consume': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A verdict from the finding.
+
+## Inputs
+
+### interim_finding
+
+The finding to weigh.
+
+## Outputs
+
+### run_verdict
+
+The verdict.
+
+## Protocol
+
+### 1. Consume
+
+- Weigh the finding into the verdict.
+`,
+    },
+  };
+  const scope = (findings: Finding[], check = 'routine-scope-unbound'): string[] =>
+    findings.filter((f) => f.check === check).map((f) => `${f.site}: ${f.detail.split(' — ')[0]}`);
+
+  it('reports a step reading the bare name of an input a site leaves to its default', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: referrer('    outputs:\n      run_verdict: run_verdict\n') } },
+      techniques: READ,
+      routines: { wf: { 'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: interim_finding
+    description: the finding
+    default: none
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+steps:
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      outputs:
+        run_verdict: run_verdict
+` } },
+    });
+    expect(scope(findings)).toEqual([
+      "wf/routines/shared-run.yaml: step 'consume' leaves its technique's input 'interim_finding' unbound, and a reference site, or a routine enclosing one, binds 'interim_finding' under another name",
+    ]);
+  });
+
+  it('reports a step reading the bare name of an optional output a site keeps local', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: referrer('    outputs:\n      run_verdict: run_verdict\n') } },
+      techniques: READ,
+      routines: { wf: { 'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+  - id: interim_finding
+    type: string
+    description: the finding
+    optional: true
+steps:
+  - kind: action
+    id: note
+    actions:
+      - action: set
+        target: interim_finding
+        value: found
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      outputs:
+        run_verdict: run_verdict
+` } },
+    });
+    expect(scope(findings)).toEqual([
+      "wf/routines/shared-run.yaml: step 'consume' leaves its technique's input 'interim_finding' unbound, and a reference site leaves the optional output 'interim_finding' unbound, which keeps it local to that use",
+    ]);
+  });
+
+  it('reports a site inside a routine leaving a child input unbound where the routine holds the name as an internal', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: `id: host\nversion: 1.0.0\nname: Host\nsteps:\n  - kind: routine\n    id: run\n    routine: parent-run\n    outputs:\n      run_verdict: run_verdict\n` } },
+      techniques: READ,
+      routines: { wf: {
+        'child-run': `id: child-run
+version: 1.0.0
+name: Child Run
+inputs:
+  - id: interim_finding
+    description: the finding
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+steps:
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      inputs:
+        interim_finding: interim_finding
+      outputs:
+        run_verdict: run_verdict
+`,
+        'parent-run': `id: parent-run
+version: 1.0.0
+name: Parent Run
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+internals:
+  - id: interim_finding
+    description: the finding
+steps:
+  - kind: action
+    id: note
+    actions:
+      - action: set
+        target: interim_finding
+        value: found
+  - kind: routine
+    id: child
+    routine: child-run
+    outputs:
+      run_verdict: run_verdict
+`,
+      } },
+    });
+    expect(scope(findings)).toEqual([
+      "wf/routines/parent-run.yaml: step 'child' leaves 'child-run' input 'interim_finding' unbound, and 'interim_finding' is an internal here",
+    ]);
+  });
+
+  it('reports a body writing a name its signature declares only as an input', async () => {
+    const findings = await findingsFor({
+      activities: { wf: { host: referrer('    with:\n      interim_finding: "{host_finding}"\n    outputs:\n      run_verdict: run_verdict\n') } },
+      techniques: READ,
+      routines: { wf: { 'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: interim_finding
+    description: the finding
+outputs:
+  - id: run_verdict
+    type: string
+    description: the verdict
+steps:
+  - kind: technique
+    id: consume
+    technique:
+      name: analysis::consume
+      inputs:
+        interim_finding: interim_finding
+      outputs:
+        run_verdict: run_verdict
+  - kind: action
+    id: overwrite
+    actions:
+      - action: set
+        target: interim_finding
+        value: spent
+` } },
+    });
+    expect(scope(findings, 'routine-writes-input')).toEqual([
+      "wf/routines/shared-run.yaml: the body writes 'interim_finding', which the signature declares as an input and not an output",
+    ]);
+  });
+});
+
+describe('a routine read at each site that supplies its technique', () => {
+  it('reports an unbound internal once, naming every site it was read at', async () => {
+    const host = (id: string): string => `id: ${id}\nversion: 1.0.0\nname: ${id}\nsteps:\n  - kind: routine\n    id: run\n    routine: shared-run\n    with:\n      pass_operation: analysis::produce\n`;
+    const findings = await findingsFor({
+      activities: { wf: { first: host('first'), second: host('second') } },
+      techniques: {
+        wf: {
+          'analysis/produce': `---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+A finding.
+
+## Outputs
+
+### interim_finding
+
+The finding.
+
+## Protocol
+
+### 1. Produce
+
+- Produce the finding.
+`,
+        },
+      },
+      routines: { wf: { 'shared-run': `id: shared-run
+version: 1.0.0
+name: Shared Run
+inputs:
+  - id: pass_operation
+    kind: technique
+    description: the producing technique each site applies
+internals:
+  - id: interim_finding
+    description: handed from the producing step to the note
+steps:
+  - kind: technique
+    id: produce
+    technique:
+      name: pass_operation
+  - kind: action
+    id: note
+    actions:
+      - action: log
+        message: "found {interim_finding}"
+` } },
+    });
+    const unbound = findings.filter((f) => f.check === 'routine-scope-unbound');
+    expect(unbound).toHaveLength(1);
+    expect(unbound[0]!.site).toBe('wf/routines/shared-run.yaml');
+    expect(unbound[0]!.detail).toContain("step 'produce' leaves its technique's output 'interim_finding' unbound, and 'interim_finding' is an internal");
+    expect(unbound[0]!.detail).toContain('(read at wf/routines/shared-run.yaml at wf/activities/01-first.yaml; wf/routines/shared-run.yaml at wf/activities/02-second.yaml)');
   });
 });
