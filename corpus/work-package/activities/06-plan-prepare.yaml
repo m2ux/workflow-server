@@ -1,23 +1,31 @@
 id: plan-prepare
-version: 1.13.0
+version: 1.14.0
 name: Plan & Prepare
-description: Design the approach, create the work package plan, and prepare for implementation.
+description: Raise the discovery fan's research gates, write the assumptions the branches surfaced, design the approach, and prepare for implementation.
 variables:
   reads:
+    - assumptions_log
     - branch_name
     - component_git_dir
     - default_branch
     - host_repo_path
+    - implementation_analysis_outputs
     - is_review_mode
     - planning_folder_path
     - pr_number
     - problem_statement
     - requirements
+    - research_outputs
+    - research_direction
     - review_summary
     - stealth_mode
     - target_path
     - target_repo
   writes:
+    - name: analysis_assumptions
+      type: array
+      description: Assumptions the implementation-analysis branch surfaced, hoisted from its container when the discovery fan ran.
+      defaultValue: []
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
@@ -29,9 +37,44 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
+    - name: changed_files
+      type: array
+      description: Ordered list of changed file paths, hoisted from the implementation-analysis branch when the discovery fan ran.
+      defaultValue: []
+    - name: context_scope
+      type: string
+      description: Provenance scope of AI-generated code in this work package.
+      values:
+        - repo-only
+        - web-retrieval
+        - mixed
+      defaultValue: repo-only
+    - name: context_scope_uncertain
+      type: boolean
+      description: True when research run evidence cannot decide repo-only vs web-retrieval vs mixed for context_scope.
+      defaultValue: false
+    - name: has_reconcilable_research
+      type: boolean
+      description: Whether open research-reconcilable candidates remain.
+      defaultValue: false
     - name: rendered_pr_body
       type: string
       description: The body now live on the PR after the patch.
+    - name: research_assumptions
+      type: array
+      description: Assumptions the research branch surfaced, hoisted from its container when the discovery fan ran.
+      defaultValue: []
+    - name: research_candidates
+      type: array
+      description: Inventory of open research gaps from the research branch.
+      defaultValue: []
+    - name: research_direction
+      type: string
+      description: Text the user typed naming the candidate and the focus for a further research pass.
+      defaultValue: ""
+    - name: research_document
+      type: object
+      description: The research findings document, hoisted from the research branch when the discovery fan ran.
     - name: stakeholder_overview
       type: string
       description: The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
@@ -63,6 +106,124 @@ steps:
       - action: validate
         target: gpg.agent.reachable == true
         message: GPG agent is not reachable.
+  - kind: action
+    id: take-research-fan
+    when: research_outputs
+    actions:
+      - action: set
+        target: research_assumptions
+        value: "{research_outputs.0.result.research_assumptions}"
+      - action: set
+        target: research_candidates
+        value: "{research_outputs.0.result.research_candidates}"
+      - action: set
+        target: has_reconcilable_research
+        value: "{research_outputs.0.result.has_reconcilable_research}"
+      - action: set
+        target: context_scope
+        value: "{research_outputs.0.result.context_scope}"
+      - action: set
+        target: context_scope_uncertain
+        value: "{research_outputs.0.result.context_scope_uncertain}"
+      - action: set
+        target: research_document
+        value: "{research_outputs.0.result.research_document}"
+  - kind: action
+    id: take-analysis-fan
+    when: implementation_analysis_outputs
+    actions:
+      - action: set
+        target: analysis_assumptions
+        value: "{implementation_analysis_outputs.0.result.analysis_assumptions}"
+      - action: set
+        target: changed_files
+        value: "{implementation_analysis_outputs.0.result.changed_files}"
+  - kind: technique
+    id: ingest-discovery-assumptions
+    technique:
+      name: ingest-assumption-surfaces
+      inputs:
+        research_assumptions: research_assumptions
+        analysis_assumptions: analysis_assumptions
+        assumptions_log: assumptions_log
+  - kind: loop
+    id: research-reconciliation
+    name: Research Reconciliation Loop
+    loopType: doWhile
+    when: has_reconcilable_research == true
+    continueWhile:
+      type: simple
+      variable: has_reconcilable_research
+      operator: ==
+      value: true
+    maxIterations: 10
+    steps:
+      - kind: action
+        id: announce-research-direction
+        when: has_reconcilable_research == true
+        actions:
+          - action: message
+            message: "Further research direction: {research_direction}."
+      - kind: technique
+        id: reconcile-research-candidates
+        technique:
+          name: research/reconcile
+          inputs:
+            research_direction: research_direction
+        when: has_reconcilable_research == true
+      - kind: checkpoint
+        id: research-convergence
+        condition:
+          type: simple
+          variable: has_reconcilable_research
+          operator: ==
+          value: false
+        message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}."
+        defaultOption: accept-research
+        autoAdvanceMs: 30000
+        options:
+          - id: accept-research
+            label: Accept — proceed to planning
+            description: Research is complete; the remaining open candidates are irreconcilable by research.
+          - id: request-more
+            label: Direct further research
+            description: The reply names the candidate and the focus for a further research pass.
+            effect:
+              recordReply: research_direction
+              setVariable:
+                has_reconcilable_research: true
+  - kind: checkpoint
+    id: context-scope-declaration
+    condition:
+      type: simple
+      variable: context_scope_uncertain
+      operator: ==
+      value: true
+    message: The research run's evidence settles no single provenance scope for the sources that informed the design.
+    defaultOption: repo-only
+    autoAdvanceMs: 15000
+    options:
+      - id: repo-only
+        label: Repository only — no external web sources used
+        description: All research was based on codebase and local knowledge (default)
+        effect:
+          setVariable:
+            context_scope: repo-only
+            context_scope_uncertain: false
+      - id: web-retrieval
+        label: External web sources used for design decisions
+        description: Web search, external docs, or third-party references informed the approach
+        effect:
+          setVariable:
+            context_scope: web-retrieval
+            context_scope_uncertain: false
+      - id: mixed
+        label: Both repository and external sources used
+        description: Mix of codebase analysis and external references
+        effect:
+          setVariable:
+            context_scope: mixed
+            context_scope_uncertain: false
   - kind: technique
     id: create-plan
     technique: plan
@@ -128,3 +289,4 @@ outcome:
   - A sequenced approach the implement activity can execute against task by task, put to the user for a decision before implementation begins
   - A defined verification strategy that validation will run the implementation against
   - Reviewers and stakeholders can see the intended approach on the PR before any code is written
+  - Discovery-branch assumptions reach the log through one writer, and research's gates are raised here

@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.17.0
+version: 2.18.0
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
 variables:
@@ -16,9 +16,10 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumptions_log
-      type: object
-      description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+    - name: analysis_assumptions
+      type: array
+      description: Assumptions this analysis pass surfaced, for the discovery fan's join to write into the log.
+      defaultValue: []
     - name: changed_files
       type: array
       description: Ordered list of changed file paths.
@@ -33,11 +34,13 @@ steps:
     id: analyze-implementation
     technique: analyze
   - kind: technique
-    id: collect-assumptions
+    id: surface-assumptions
     technique:
-      name: review-assumptions::collect
+      name: surface-assumptions
       inputs:
         assumption_categories: Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding
+      outputs:
+        surfaced_assumptions: analysis_assumptions
   - kind: technique
     id: document
     technique: document
@@ -48,3 +51,4 @@ outcome:
   - Current state documented with baseline metrics
   - Gaps identified and prioritized
   - Success criteria defined with measurement methodology
+  - Assumptions surfaced as a value for the discovery fan's join

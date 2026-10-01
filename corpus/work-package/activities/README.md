@@ -42,7 +42,7 @@ Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.y
 
 ### 04. Research (optional)
 
-Gathers best practices, patterns, and reference material from the knowledge base and external sources to inform the plan, and adds the assumptions surfaced along the way to the log. Leads to implementation-analysis.
+Gathers best practices, patterns, and reference material from the knowledge base and external sources, and surfaces assumptions as a value. A branch of the discovery fan when research is needed; converges on plan-prepare. Research's soft gates live at the join.
 
 Definition: [`04-research.yaml`](./04-research.yaml)
 
@@ -50,7 +50,7 @@ Definition: [`04-research.yaml`](./04-research.yaml)
 
 ### 05. Implementation Analysis (optional)
 
-Analyzes the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. Leads to plan-prepare.
+Analyzes the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. A branch of the discovery fan beside research when both run; otherwise leads alone to plan-prepare.
 
 Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yaml)
 
@@ -58,7 +58,7 @@ Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yam
 
 ### 06. Plan & Prepare
 
-Designs the approach and produces the work-package plan (task breakdown) and test plan, then prepares the branch and PR for implementation. This is the convergence point for all optional discovery paths, and the target that rework loops return to. Leads to assumptions-review.
+The discovery fan's join: raises research's gates, writes the assumptions the branches surfaced into the log once, then designs the approach and produces the work-package plan and test plan. Convergence point for all optional discovery paths, and the target that rework loops return to. Leads to assumptions-review.
 
 Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
