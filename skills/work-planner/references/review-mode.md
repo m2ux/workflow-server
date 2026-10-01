@@ -44,7 +44,7 @@ Checks existing initiative, epic, task and standalone issues against the templat
    For each epic under review, [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) and run [Match pull requests](commands.md#match-pull-requests).
    - **unmet.**
      A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown guide](work-breakdown.md#tables) defines.
-   Put each to the user. Verifying and ticking it is update mode.
+   Put each to the user. Verifying and ticking it is [sync mode](sync-mode.md).
 8. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep.
    - Report what changed on each issue.

@@ -53,7 +53,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   A pull request delivers one task, or a set of tasks that name each other in Joins. A further pull request on a task that is not yet Done delivers that same task, or tasks that name it in Joins.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
-  - Update mode finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
+  - [Sync mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
 - **Integration branches.**
   - Each long-lived branch an initiative changes (`main`, `workflows`, `workspace`) has an integration branch, named for the initiative and that branch and cut from it: `i07/main`.
   - Every pull request delivering the initiative's work targets its integration branch, never the long-lived branch.

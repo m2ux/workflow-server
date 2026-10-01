@@ -56,7 +56,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
      - A condition over a list of subjects ("every reader reads `when` alone: the validator, the guards …") is one condition.
 
    Run the goal pass, and the ordering pass when tasks or dependencies change.
-10. **Deliver.**  As work lands, run update mode (`update-mode.md`).
+10. **Deliver.**  As work lands, run [sync mode](sync-mode.md).
 
 ## Rules
 

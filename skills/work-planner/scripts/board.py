@@ -6,7 +6,7 @@ Usage:
       --assignee m2ux
       [--others issue-750.json ...]
 
-Issue files are as `gh api repos/{owner}/{repo}/issues/943` returns them, and prs.json as update.py
+Issue files are as `gh api repos/{owner}/{repo}/issues/943` returns them, and prs.json as sync.py
 reads it. A board's fields and items are as the REST API returns them, pages concatenated:
   gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" > fields.json
   gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=<Status field id>" > items.json
@@ -52,7 +52,7 @@ import sys
 from pathlib import Path
 
 from format import LINK, cell, id_cell, row_id, split_sections
-from update import PR_REF, Unreadable, cites, pull_requests, table
+from sync import PR_REF, Unreadable, cites, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')

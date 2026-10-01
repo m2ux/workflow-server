@@ -1,4 +1,4 @@
-"""The helpers progress.py shares with board.py, update.py and format.py.
+"""The helpers progress.py shares with board.py, sync.py and format.py.
 
 Run from the skill directory: python3 -m unittest discover -s test
 """
@@ -13,7 +13,7 @@ from fixtures import SCRIPTS, issue, pr, run, url
 sys.path.insert(0, str(SCRIPTS))
 from board import Board, cites, status_of  # noqa: E402
 from format import cell, description, phrase  # noqa: E402
-from update import Unreadable  # noqa: E402
+from sync import Unreadable  # noqa: E402
 
 
 class Cites(unittest.TestCase):
@@ -83,12 +83,12 @@ class UnreadableTable(unittest.TestCase):
         with self.assertRaises(Unreadable):
             board.table(('o/r', 19))
 
-    def test_update_exits_with_the_message(self):
+    def test_sync_exits_with_the_message(self):
         with tempfile.TemporaryDirectory() as tmp:
             path, prs = Path(tmp, 'issue.json'), Path(tmp, 'prs.json')
             path.write_text(json.dumps(self.broken))
             prs.write_text('')
-            done = run('update.py', str(path), '--prs', str(prs))
+            done = run('sync.py', str(path), '--prs', str(prs))
         self.assertNotEqual(done.returncode, 0)
         self.assertEqual(done.stderr.strip(), 'Work Breakdown has no table')
 

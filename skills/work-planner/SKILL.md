@@ -5,7 +5,7 @@ description: >-
   epics and [Ixx:Eyy:Wzz] tasks, and each theme's project board. Use to plan the work, plan out,
   scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure,
   review or renumber an initiative or epic; to check an issue's format or dependency order; to fold
-  review findings into issues; to update an initiative or epic with completed work; to hoist or
+  review findings into issues; to sync an initiative or epic with completed work; to hoist or
   triage orphan issues into an initiative; for a progress summary, standup or status update in
   Slack; or to revise or update the work-planner skill itself.
 ---
@@ -35,11 +35,11 @@ Read the file for the mode the request calls for:
   - Checks of existing issues against the templates
   - Fixes for each issue that departs from its template
   - A scan for a merged pull request whose task still has an unticked coverage criterion
-- **[Update](references/update-mode.md)**
+- **[Sync](references/sync-mode.md)**
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
   - Closure of complete task issues, epics and initiatives
-  - Project board updates
+  - The theme board brought current with its issues
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task

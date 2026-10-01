@@ -14,12 +14,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from format import Review  # noqa: E402
 
 
-def updated(record: dict, pulls: list[dict], *args: str) -> str:
+def synced(record: dict, pulls: list[dict], *args: str) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         body, pulls_path, fixed = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'fixed.md')
         body.write_text(json.dumps(record))
         pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
-        done = run('update.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *args)
+        done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *args)
         if done.returncode != 0:
             raise AssertionError(done.stderr.strip() or done.stdout)
         return fixed.read_text()
@@ -28,13 +28,13 @@ def updated(record: dict, pulls: list[dict], *args: str) -> str:
 class Done(unittest.TestCase):
     def test_a_merged_pull_request_leaves_done_empty(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        fixed = updated(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')], '--link', 'W01=950')
+        fixed = synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')], '--link', 'W01=950')
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
         self.assertNotIn('| ✓ |', fixed)
 
     def test_done_ticks_when_every_cited_criterion_is_ticked(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        fixed = updated(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')],
+        fixed = synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')],
                         '--link', 'W01=950', '--tick', 'AC1')
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | ✓ |", fixed)
         self.assertIn('- [x] **AC1.**', fixed)
@@ -43,7 +43,7 @@ class Done(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z'),
                  pr(951, '[I01:E00] Rest', merged='2026-09-02T00:00:00Z')]
-        fixed = updated(epic, pulls, '--link', 'W01=951')
+        fixed = synced(epic, pulls, '--link', 'W01=951')
         self.assertIn(f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})", fixed)
         self.assertNotIn('| ✓ |', fixed)
 
@@ -54,7 +54,7 @@ class Done(unittest.TestCase):
             epic_path, body, fixed = Path(tmp, 'epic.json'), Path(tmp, 'issue.json'), Path(tmp, 'fixed.md')
             epic_path.write_text(json.dumps(epic))
             body.write_text(json.dumps(initiative))
-            done = run('update.py', str(body), '--epics', str(epic_path), '--fix', str(fixed))
+            done = run('sync.py', str(body), '--epics', str(epic_path), '--fix', str(fixed))
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertIn(f"| [E00]({url('issues', 2)}) | Work | AC1 | | ✓ |", fixed.read_text())
 
@@ -65,7 +65,7 @@ class Done(unittest.TestCase):
             epic_path, body, fixed = Path(tmp, 'epic.json'), Path(tmp, 'issue.json'), Path(tmp, 'fixed.md')
             epic_path.write_text(json.dumps(epic))
             body.write_text(json.dumps(initiative))
-            done = run('update.py', str(body), '--epics', str(epic_path), '--fix', str(fixed))
+            done = run('sync.py', str(body), '--epics', str(epic_path), '--fix', str(fixed))
             self.assertEqual(done.returncode, 0, done.stderr)
             text = fixed.read_text()
             self.assertIn(f"| [E00]({url('issues', 2)}) | Work | AC1 |  | |", text)
@@ -73,7 +73,7 @@ class Done(unittest.TestCase):
 
 
 class TaskLinks(unittest.TestCase):
-    def run_update(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = ()):
+    def run_sync(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = ()):
         with tempfile.TemporaryDirectory() as tmp:
             body, pulls_path, fixed = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'fixed.md')
             body.write_text(json.dumps(epic))
@@ -84,12 +84,12 @@ class TaskLinks(unittest.TestCase):
                 path.write_text(json.dumps(task))
                 task_paths.append(str(path))
             extra = ['--tasks', *task_paths] if task_paths else []
-            done = run('update.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *extra, *args)
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *extra, *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_an_open_pull_request_is_linked_and_does_not_deliver(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        done, fixed = self.run_update(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
         self.assertNotIn('| ✓ |', fixed)
@@ -99,14 +99,14 @@ class TaskLinks(unittest.TestCase):
 
     def test_an_open_pull_request_is_not_ready_to_tick(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950', '--tick', 'AC1')
+        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950', '--tick', 'AC1')
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('not ready to verify', done.stderr)
 
     def test_a_further_open_pull_request_is_in_flight_until_linked(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work'), pr(951, '[I01:E00] More')]
-        done, _ = self.run_update(epic, pulls)
+        done, _ = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('#950', done.stdout)
         self.assertIn('in flight: #951', done.stdout)
@@ -114,7 +114,7 @@ class TaskLinks(unittest.TestCase):
     def test_a_row_linking_its_task_issue_links_the_pull_request(self):
         task = issue(3, '[I01:E00:W01] Task: One')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
-        done, fixed = self.run_update(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950', tasks=[task])
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950', tasks=[task])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn(f"[W01]({url('pull', 950)})", fixed)
         self.assertNotIn(url('issues', 3), fixed)
@@ -124,20 +124,20 @@ class TaskLinks(unittest.TestCase):
         task = issue(3, '[I01:E00:W01] Task: One')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', body=f"See {url('issues', 3)}")]
-        done, fixed = self.run_update(epic, pulls, '--link', 'W01=950', tasks=[task])
+        done, fixed = self.run_sync(epic, pulls, '--link', 'W01=950', tasks=[task])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn(f"[W01]({url('pull', 950)})", fixed)
         self.assertNotIn('uncited:', done.stdout)
 
     def test_a_merged_pull_request_with_an_unticked_criterion_is_unmet(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
-        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('unmet: W01 (#950): AC1 unticked', done.stdout)
 
     def test_an_open_pull_request_leaves_coverage_unreported(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
-        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work')])
+        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work')])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('unmet:', done.stdout)
 
@@ -146,7 +146,7 @@ class TaskLinks(unittest.TestCase):
             '| AC1 |', '| AC1, AC2 |').replace('- [ ] **AC1.** Holds.',
                                                '- [x] **AC1.** Holds.\n- [ ] **AC2.** Holds.')
         epic = issue(2, '[I01:E00] First: Epic', body=body)
-        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('unmet: W01 (#950): AC2 unticked', done.stdout)
         self.assertNotIn('AC1 unticked', done.stdout)
@@ -154,7 +154,7 @@ class TaskLinks(unittest.TestCase):
     def test_a_closed_task_issue_stays_delivered_until_its_pull_request_is_linked(self):
         task = issue(3, '[I01:E00:W01] Task: Done', 'closed')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
-        done, _ = self.run_update(epic, [], tasks=[task])
+        done, _ = self.run_sync(epic, [], tasks=[task])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('ready to verify: AC1 (W01)', done.stdout)
         self.assertIn('note: W01 links task issue #3; link its pull request', done.stdout)
