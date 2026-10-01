@@ -25,8 +25,9 @@ Status, first match wins:
   In Progress  an open draft pull request names it, or it is an epic with a delivered row
   Ready        every dependency in its row is delivered and it has no Open questions
   Backlog      otherwise
-An open initiative is In Progress when any epic is Done, In Review or In Progress, Ready when any
-epic is Ready, and Backlog otherwise.
+An open initiative is In Review when every acceptance criterion is ticked, which holds while it
+waits for its integration branches to merge. It is In Progress when any epic is Done, In Review or
+In Progress, Ready when any epic is Ready, and Backlog otherwise.
 
 The board's Status field offers Backlog, Ready, In Progress and Done. In Review is optional: on a
 board whose Status lacks it, an issue In Review is set In Progress.
@@ -51,8 +52,8 @@ import re
 import sys
 from pathlib import Path
 
-from format import LINK, cell, id_cell, row_id, split_sections
-from sync import PR_REF, Unreadable, cites, pull_requests, table
+from format import AC, LINK, cell, id_cell, row_id, split_sections
+from sync import PR_REF, TICKED, Unreadable, cites, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
@@ -93,6 +94,14 @@ def load(paths: list[str]) -> dict[Key, dict]:
 
 def completed(issue: dict) -> bool:
     return issue['state'] == 'closed' and issue.get('state_reason') == 'completed'
+
+
+def criteria_met(issue: dict) -> bool:
+    """Whether the issue has acceptance criteria and every one is ticked."""
+    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
+    lines = next((l for h, l in sections if h == 'Acceptance Criteria'), [])
+    found = [TICKED.match(line) for line in lines if AC.match(line)]
+    return bool(found) and all(found)
 
 
 def open_questions(issue: dict) -> bool:
@@ -316,6 +325,8 @@ def main() -> int:
     epic_status = [status.get(n) for n in epic_ids.values()]
     if initiative['state'] == 'closed':
         status[root] = 'Done' if completed(initiative) else None
+    elif criteria_met(initiative):
+        status[root] = 'In Review'
     elif any(s in ('Done', 'In Review', 'In Progress') for s in epic_status):
         status[root] = 'In Progress'
     elif 'Ready' in epic_status:

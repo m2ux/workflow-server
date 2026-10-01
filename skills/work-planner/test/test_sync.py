@@ -199,3 +199,71 @@ class DoneColumn(unittest.TestCase):
                  '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
         fixed = Review(issue(2, '[I01:E00] First: Epic', body=table)).run()
         self.assertIn('| W01 | Reads count ([#1053](https://github.com/o/r/pull/1053)) | AC1 | | | ✓ |', fixed)
+
+
+class InitiativeClose(unittest.TestCase):
+    def run_sync(self, pulls: list[dict] | None, ticked: bool = True) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', 'closed')
+        body = initiative_body((f"[E00]({url('issues', 2)})", ''))
+        if ticked:
+            body = body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        initiative = issue(1, '[I01] First: Initiative', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            epic_path, issue_path = Path(tmp, 'epic.json'), Path(tmp, 'issue.json')
+            epic_path.write_text(json.dumps(epic))
+            issue_path.write_text(json.dumps(initiative))
+            args = [str(issue_path), '--epics', str(epic_path)]
+            if pulls is not None:
+                pulls_path = Path(tmp, 'prs.json')
+                pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+                args.extend(['--prs', str(pulls_path)])
+            done = run('sync.py', *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_ticked_criteria_stay_open_until_the_integration_branch_merges(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic')])
+        self.assertIn('unmerged: i01/main', out)
+        self.assertIn('closable: no (unmerged i01/main)', out)
+
+    def test_an_open_integration_pull_request_is_named(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
+                 pr(980, '[I01] First', base='main', head='i01/main')]
+        out = self.run_sync(pulls)
+        self.assertIn('unmerged: i01/main (#980 open)', out)
+        self.assertIn('closable: no (unmerged i01/main (#980 open))', out)
+
+    def test_a_merged_integration_branch_is_closable(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
+                 pr(980, '[I01] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/main')]
+        out = self.run_sync(pulls)
+        self.assertNotIn('unmerged:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_one_unmerged_branch_blocks_when_another_has_merged(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
+                 pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z', base='i01/workflows', head='topic-w'),
+                 pr(980, '[I01] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/main')]
+        out = self.run_sync(pulls)
+        self.assertIn('closable: no (unmerged i01/workflows)', out)
+        self.assertNotIn('i01/main', out)
+
+    def test_ticked_criteria_without_pull_requests_are_not_closable(self):
+        out = self.run_sync(None)
+        self.assertNotIn('unmerged:', out)
+        self.assertIn('closable: no (integration branches not given)', out)
+
+    def test_an_unticked_criterion_does_not_report_an_unmerged_branch(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main')], ticked=False)
+        self.assertNotIn('unmerged', out)
+        self.assertIn('closable: no (unticked AC1)', out)
+
+    def test_a_pull_request_on_a_long_lived_branch_adds_no_integration_branch(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='main', head='topic')])
+        self.assertNotIn('unmerged:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_an_integration_branch_in_another_repository_is_named_with_it(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/main', head='topic', repo='o/other')])
+        self.assertIn('closable: no (unmerged o/other:i01/main)', out)

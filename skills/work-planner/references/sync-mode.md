@@ -51,13 +51,14 @@ Records work on an initiative, its epics and their task issues: links each task 
 10. **Close.**
     [Close as completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
-    - Run [Sync initiative](commands.md#sync-initiative), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown guide](work-breakdown.md#tables) defines.
+    - Run [Sync initiative](commands.md#sync-initiative), with the epic JSON fetched after closing and the pull requests from [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests). An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown guide](work-breakdown.md#tables) defines.
     - It lists each criterion whose citing epics are all delivered as ready to verify. Run the automated test each names, and tick those that pass with [Tick criteria](commands.md#tick-criteria).
     - Put each criterion that names no automated test to the user, who confirms it and ticks it.
-    - [Close as completed](commands.md#close-as-completed) the initiative when it reports every criterion ticked.
-    - Then run [Open integration pull request](commands.md#open-integration-pull-request) for each of its integration branches, which the user merges.
+    - [Patch body](commands.md#patch-body) the initiative from its `--fix` file when a tick changed it, so the board sync reads every criterion ticked.
+    - When it reports an integration branch unmerged, open that pull request with [Open integration pull request](commands.md#open-integration-pull-request) and leave the initiative open.
+    - [Close as completed](commands.md#close-as-completed) the initiative when it reports closable, as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
 12. **Sync the board.**
-    Sync it once every issue is patched and closed, fetching the issues again first.
+    Sync it after the issues are patched and any closable issue is closed, fetching the issues again first. An open initiative whose criteria are all ticked is In Review.
     - **Find it.**
       - The board is the initiative's theme board, per SKILL.md's [Themes and boards](../SKILL.md#themes-and-boards): run [Find theme board](commands.md#find-theme-board) with its theme.
       - When no open board carries that theme, ask the user to create it, and sync the board once it exists.
