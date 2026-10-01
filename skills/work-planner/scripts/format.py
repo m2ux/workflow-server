@@ -14,7 +14,7 @@ optional ("delete the section", in any case), and its Work Breakdown columns.
 Fixed in the body written to --fix, keeping the issue's wording:
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
-    present is a template column. A missing Done column is added as an unticked checkbox
+    present is a template column. A checkbox in Done is set to ✓ or cleared
   - table rows padded to the header's width
   - Work Breakdown references given colons (E01 W02 to E01:W02, I05 E00 to I05:E00), and each
     reference to an epic of the same initiative linked to that epic's issue. The epic issues come
@@ -48,7 +48,7 @@ Left to decide, since each needs new content or a judgement:
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
     Non-goals section in an epic or task, since non-goals belong to the initiative, or in a
     standalone issue, whose Proposal states its boundary
-  - a Work Breakdown column the template lacks, a Done cell that is not a checkbox, or a row id of
+  - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
   - a Description cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
     cites one that does not exist, and a criterion no row delivers
@@ -85,7 +85,8 @@ COUNT = re.compile(r'\d[\d,.]*|\b(?:two|three|four|five|six|seven|eight|nine|ten
 HISTORY = re.compile(r'\bmoved to\b|\(was [EW]?\d|\bwas W\d\d|\brenumbered\b|\bformerly\b|\bpreviously\b|'
                      r'\bno longer\b|\bdischarged\b|\bsuperseded\b|\bsubsumed\b|\bused to\b', re.I)
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
-DONE_BOX = re.compile(r'^\[[ xX]\]$')
+TICK = '✓'
+CHECKBOX = {'[ ]': '', '[x]': TICK, '[X]': TICK}
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
 LEAD = re.compile(r'^(\s*)(- )?(\*\*[^*]+?[.:!?]\*\*)[ \t]+(\S.*)$')
@@ -172,12 +173,9 @@ def epic_name(title: str) -> str:
     return rest.split(': ', 1)[0].strip()
 
 
-def description(line: str) -> str:
+def description(line: str, header: list[str]) -> str:
     """A row's Description phrase, without the criteria it cites."""
-    row = cells(line)
-    if row and DONE_BOX.fullmatch(row[0]):
-        row = row[1:]
-    return phrase(row[1] if len(row) > 1 else '')
+    return phrase(cell(header, cells(line), 'Description'))
 
 
 def cell(header: list[str], r: list[str], column: str) -> str:
@@ -189,6 +187,13 @@ def cell(header: list[str], r: list[str], column: str) -> str:
 def phrase(text: str) -> str:
     """A Description cell's phrase, without the criteria it cites."""
     return text.split(' →', 1)[0].strip()
+
+
+def done_mark(value: str) -> str | None:
+    """The Done cell as the table writes it: empty, or a tick. None when the cell is something else."""
+    if value in ('', TICK):
+        return value
+    return CHECKBOX.get(value)
 
 
 def id_cell(header: list[str], r: list[str]) -> str:
@@ -268,7 +273,7 @@ class Review:
             header, rows = work_table(self.initiative['body'] or '')
             for line in rows:
                 epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', id_cell(header, cells(line)))
-                if epic and int(epic[2]) == self.issue.get('number') and description(line) != name:
+                if epic and int(epic[2]) == self.issue.get('number') and description(line, header) != name:
                     self.apply.append(f"initiative row {epic[1]}: Description {name}, the epic's title name")
 
     def check_title_shape(self, name: str, subtitle: str) -> None:
@@ -467,8 +472,8 @@ class Review:
             at = header.index('Done')
             for r in rows:
                 value = r[at] if at < len(r) else ''
-                if value and not DONE_BOX.fullmatch(value):
-                    self.decide.append(f'{row_id(id_cell(header, r))}: Done holds more than a checkbox: {value}')
+                if done_mark(value) is None:
+                    self.decide.append(f'{row_id(id_cell(header, r))}: Done holds more than a tick: {value}')
                     return lines
 
         width = len(header)
@@ -485,15 +490,21 @@ class Review:
                 self.fixed.append('Work Breakdown columns added: ' + ', '.join(missing))
             if [c for c in columns if c in header] != header:
                 self.fixed.append('Work Breakdown columns put in template order')
-            padded = [[r[header.index(c)] if c in header else ('[ ]' if c == 'Done' else '')
-                       for c in columns] for r in padded]
+            padded = [[r[header.index(c)] if c in header else '' for c in columns] for r in padded]
         if 'Done' in columns:
             at = columns.index('Done')
-            if any(not DONE_BOX.fullmatch(r[at]) for r in padded):
-                for r in padded:
-                    if not DONE_BOX.fullmatch(r[at]):
-                        r[at] = '[ ]'
-                self.fixed.append('Done set to an unticked checkbox')
+            ticks = cleared = False
+            for r in padded:
+                mark = done_mark(r[at])
+                if mark is None or mark == r[at]:
+                    continue
+                r[at] = mark
+                ticks = ticks or mark == TICK
+                cleared = cleared or mark == ''
+            if ticks:
+                self.fixed.append('Done set to a tick')
+            if cleared:
+                self.fixed.append('Done cleared')
         pattern = ROW_ID[self.kind]
         for r in padded:
             ident = id_cell(columns, r)
@@ -540,7 +551,7 @@ class Review:
             r = cells(lines[i])
             epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', r[id_at] if id_at < len(r) else '')
             name = self.epics.get(int(epic[2])) if epic else None
-            if name is None or description(lines[i]) == name:
+            if name is None or description(lines[i], header) == name:
                 continue
             while len(r) <= desc_at:
                 r.append('')

@@ -4,9 +4,9 @@ Usage:
   python3 deps.py [I=bodies/initiative.md] E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the agent-engineering Work Breakdown table:
-  | Done | Task | Description | Depends on | Join |
+  | Task | Description | Depends on | Join | Done |
 A delivered task's id links each pull request that has landed on it:
-  | [ ] | [W01](https://…/pull/950), [W01](https://…/pull/960) | … |
+  | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | | | |
 Cells are read by column name, so the column order does not matter.
 
 A dependency is one of:

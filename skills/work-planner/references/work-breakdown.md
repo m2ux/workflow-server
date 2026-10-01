@@ -6,14 +6,14 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 
 | Level | Columns |
 | --- | --- |
-| Initiative | `Done \| Epic \| Description \| Depends on` |
-| Epic | `Done \| Task \| Description \| Depends on \| Join` |
+| Initiative | `Epic \| Description \| Depends on \| Done` |
+| Epic | `Task \| Description \| Depends on \| Join \| Done` |
 
 - **Done.**
-  The first column. Its cell is a checkbox, `[ ]` while the row is open and `[x]` when the row is complete.
+  The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
   - A task row is complete when it is delivered and every acceptance criterion it cites is ticked.
   - An epic row is complete when its issue is closed as completed, which is when every one of its criteria is ticked and every one of its tasks is delivered.
-  - A merged pull request that leaves any criterion a task cites unmet leaves that task's box unticked. The task takes further pull requests until they hold.
+  - A merged pull request that leaves any criterion a task cites unmet leaves that task's cell empty. The task takes further pull requests until they hold.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
   - An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task.
