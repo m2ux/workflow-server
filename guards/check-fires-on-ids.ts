@@ -230,6 +230,47 @@ export function readDeclarations(text: string): DeclarationRead {
   return read;
 }
 
+/** A unit whose declaration covers a queried construct, sited at its Fires-on line. */
+export interface ListedUnit {
+  path: string;
+  line: number;
+  unit: string;
+}
+
+/**
+ * Whether a declared id covers a queried construct. `*` covers every query. Any other id covers
+ * the query when it is the query, or a prefix of it: the bare kind, or a field the query extends
+ * with `.` or `[]`. A narrower id does not cover a broader query.
+ */
+export function covers(declared: string, query: string): boolean {
+  return declared === WILDCARD_ID || declared === query
+    || query.startsWith(`${declared}.`)
+    || query.startsWith(`${declared}[]`);
+}
+
+/**
+ * Every unit in the canon texts that declares `query`, a prefix of it, its bare kind, or `*`.
+ * One unit declaring several ids is listed once, at the line whose ids cover the query. The order
+ * is path, then line.
+ */
+export function listUnits(texts: readonly CanonText[], query: string): ListedUnit[] {
+  const found: ListedUnit[] = [];
+  for (const { path, text } of texts) {
+    for (const declaration of readDeclarations(text).declarations) {
+      if (declaration.ids.some((id) => covers(id, query))) {
+        found.push({ path, line: declaration.line, unit: declaration.unit });
+      }
+    }
+  }
+  found.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : a.line - b.line);
+  return found;
+}
+
+/** The listing a caller reads: `path:line unit`, one unit per line. */
+export function formatListing(units: readonly ListedUnit[]): string {
+  return units.map((unit) => `${unit.path}:${unit.line} ${unit.unit}`).join('\n') + (units.length ? '\n' : '');
+}
+
 /** Why an id fails, or null when it is valid. */
 function judge(id: string, schemas: SchemaSet): { check: string; reason: string } | null {
   if (CANON_DEFINED_IDS.has(id) || KINDS.has(id)) return null;
