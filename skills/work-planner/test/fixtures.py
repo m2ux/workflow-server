@@ -33,15 +33,16 @@ def item(content: dict | None, status: str | None) -> dict:
 
 def epic_body(*rows: tuple[str, str, str]) -> str:
     """An epic body whose Work Breakdown holds rows of (task id, description, depends on)."""
-    lines = ['## Work Breakdown', '', '| Task | Description | Depends on | Join |', '| --- | --- | --- | --- |']
-    lines += [f'| {task} | {description} → AC1 | {depends} | |' for task, description, depends in rows]
+    lines = ['## Work Breakdown', '', '| Done | Task | Description | Depends on | Join |',
+             '| --- | --- | --- | --- | --- |']
+    lines += [f'| [ ] | {task} | {description} → AC1 | {depends} | |' for task, description, depends in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 
 
 def initiative_body(*rows: tuple[str, str]) -> str:
     """An initiative body whose Work Breakdown holds rows of (epic id, depends on)."""
-    lines = ['## Work Breakdown', '', '| Epic | Description | Depends on |', '| --- | --- | --- |']
-    lines += [f'| {epic} | Work → AC1 | {depends} |' for epic, depends in rows]
+    lines = ['## Work Breakdown', '', '| Done | Epic | Description | Depends on |', '| --- | --- | --- | --- |']
+    lines += [f'| [ ] | {epic} | Work → AC1 | {depends} |' for epic, depends in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 
 

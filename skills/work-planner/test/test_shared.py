@@ -62,6 +62,7 @@ class Cells(unittest.TestCase):
     def test_phrase_drops_the_criteria(self):
         self.assertEqual(phrase('Loader emits the tree → AC5, AC6'), 'Loader emits the tree')
         self.assertEqual(description('| W01 | Loader emits the tree → AC5 | | |'), 'Loader emits the tree')
+        self.assertEqual(description('| [ ] | W01 | Loader emits the tree → AC5 | | |'), 'Loader emits the tree')
 
     def test_status_of_reads_either_name_shape(self):
         for name in ('Ready', {'raw': 'Ready', 'html': 'Ready'}):

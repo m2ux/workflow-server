@@ -50,7 +50,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import LINK, cell, split_sections
+from format import LINK, cell, has_pull, id_cell, row_id, split_sections
 from update import PR_REF, Unreadable, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -148,17 +148,19 @@ class Board:
         """An issue's Work Breakdown header, and its rows by id."""
         if key not in self.tables:
             header, body = rows(self.issues[key])
-            self.tables[key] = header, {i: r for r in body if (i := LINK.sub(r'\1', r[0]))}
+            self.tables[key] = header, {i: r for r in body if (i := row_id(id_cell(header, r)))}
         return self.tables[key]
 
     def row_delivered(self, key: Key, task: str, why: str) -> bool:
-        r = self.table(key)[1].get(task)
+        header, found = self.table(key)
+        r = found.get(task)
         if r is None:
             self.unresolved.append(f'{why}: {label(key, self.home)} has no row {task}')
             return False
-        issue = linked_issue(r[0])
+        ident = id_cell(header, r)
+        issue = linked_issue(ident)
         if issue is None:
-            return bool(LINK.fullmatch(r[0]))
+            return has_pull(ident)
         return self.issue_delivered(issue, why)
 
     def issue_delivered(self, key: Key, why: str) -> bool:
@@ -245,7 +247,7 @@ def main() -> int:
     board = Board(issues, unresolved, home)
 
     header, epic_rows = rows(initiative)
-    epic_ids = {LINK.sub(r'\1', r[0]): n for r in epic_rows if (n := linked_issue(r[0]))}
+    epic_ids = {row_id(id_cell(header, r)): n for r in epic_rows if (n := linked_issue(id_cell(header, r)))}
     status: dict[Key, str | None] = {}
 
     def pr_status(epic_key: str, cite: Key | None = None) -> str | None:
@@ -261,16 +263,17 @@ def main() -> int:
         return 'In Review' if 'In Review' in found else 'In Progress' if found else None
 
     for r in epic_rows:
-        number = linked_issue(r[0])
+        ident = id_cell(header, r)
+        number = linked_issue(ident)
         if number is None or number not in epics:
-            unresolved.append(LINK.sub(r'\1', r[0]) + ': its issue is not given with --epics')
+            unresolved.append(row_id(ident) + ': its issue is not given with --epics')
             continue
         epic = epics[number]
-        epic_key = LINK.sub(r'\1', r[0])[1:]
+        epic_key = row_id(ident)[1:]
         task_header, task_rows = board.table(number)
         delivered_any = False
         for tid, tr in task_rows.items():
-            task_issue = linked_issue(tr[0])
+            task_issue = linked_issue(id_cell(task_header, tr))
             if task_issue is not None and task_issue not in tasks:
                 unresolved.append(f'E{epic_key}:{tid}: task issue {label(task_issue, home)} is not given with --tasks')
                 continue

@@ -6,9 +6,14 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 
 | Level | Columns |
 | --- | --- |
-| Initiative | `Epic \| Description \| Depends on` |
-| Epic | `Task \| Description \| Depends on \| Join` |
+| Initiative | `Done \| Epic \| Description \| Depends on` |
+| Epic | `Done \| Task \| Description \| Depends on \| Join` |
 
+- **Done.**
+  The first column. Its cell is a checkbox, `[ ]` while the row is open and `[x]` when the row is complete.
+  - A task row is complete when it is delivered and every acceptance criterion it cites is ticked.
+  - An epic row is complete when its issue is closed as completed, which is when every one of its criteria is ticked and every one of its tasks is delivered.
+  - A merged pull request that leaves any criterion a task cites unmet leaves that task's box unticked. The task takes further pull requests until they hold.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
   - An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task.
@@ -22,7 +27,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
   - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check dependencies](commands.md#check-dependencies) derives it from the epic tables.
 - **Task grain.**
-  - A task is one pull request's worth of work.
+  - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
 - **Join.**
@@ -32,7 +37,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 
 Epics are numbered in the order they run, and tasks in the order they can start, so every dependency points to an earlier epic or an earlier task. [Check dependencies](commands.md#check-dependencies) reports numbering that does not follow start order as advisory, because older initiatives predate the rule.
 
-Delivered work keeps its number: an epic once a pull request names it, and a task once its id links the pull request that delivered it. Renumbering touches only work that is not delivered yet.
+Delivered work keeps its number: an epic once a pull request names it, and a task once its id links a pull request. Renumbering touches only work that is not delivered yet.
 
 ## References
 
@@ -40,8 +45,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 
 ## Delivery
 
-- **One pull request per task.**
-  A pull request delivers one task, or a set of tasks that Join each other.
+- **Pull request scope.**
+  A pull request delivers one task, or a set of tasks that Join each other. A further pull request on a task that is not yet Done delivers that same task, or tasks that Join it.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - Update mode finds an epic's pull requests by this prefix, and matches each merged one to the tasks it delivered from its changes and the tasks' Descriptions.
@@ -51,7 +56,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - It merges into its long-lived branch once the initiative closes, so no part of an unfinished initiative reaches a long-lived branch. Merging it is the user's call.
 - **Delivered task ids.**
-  A delivered task's id links its pull request: `[W01](…/pull/950)`. An undelivered task's id is plain.
+  A task's id links each pull request that has landed on it: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`. An undelivered task's id is plain.
 - **Tasks with their own issue.**
   - A task with its own issue keeps its id linked to that issue.
   - The issue records the pull request that delivers it, and the task is delivered when the issue is closed as completed.
