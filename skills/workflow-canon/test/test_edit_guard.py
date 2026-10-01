@@ -206,9 +206,8 @@ class Unmeasured(Workspace):
         self.assertEqual(self.calls(), ['tree', 'base'])
 
     def test_runner_that_exits_2_over_a_report_of_passes(self):
-        """DEFECT: check() reads the runner's exit code only to recognise a clean run. A runner that
-        exits 2 (unmeasured) while every table row reads PASS falls through to the branch point,
-        finds no delta, and exits 0: a silent pass, against AC8."""
+        """A runner that exits 2 while every table row reads PASS has not reported the whole run,
+        so the hook blocks as unmeasured rather than measuring the branch point (AC8)."""
         self.from_workflows()
         run = self.edit('activities/start.yaml', stub=('--exit', '2'))
         self.assertUnmeasured(run, 'exit 2')
