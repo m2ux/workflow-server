@@ -116,7 +116,7 @@ Each I09 issue's planning-record link points at this record on `engineering`. I0
   - #1028 AC3 lets a broader id cover a covering entry's ids.
   - #1029 matches by prefix (AC2, AC3), reads through the guard's exported declaration reader, and adds AC6: exactly one line per unit, directly under its title, delivered by W02.
   - Check format reports no problem on any of them.
-- **E06.**  The Fires-on rule on `i09/workflows` and the hook declaration on `i09/workspace` are cited in [e06-rule-and-hook.md](e06-rule-and-hook.md).
+- **E06.**  The Fires-on rule on `i09/workflows` and the hook declaration on `i09/workspace` are cited in [e06-rule-and-hook.md](e06-rule-and-hook.md). The edit-guard fixture suite on `i09/workspace` passes, recorded in [e06-edit-guard-fixtures.md](e06-edit-guard-fixtures.md).
 
 ## Reviews
 
