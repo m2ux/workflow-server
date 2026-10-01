@@ -1,13 +1,18 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import {
   buildSessionScope,
   extractRepoFromPath,
+  isLocalSharePath,
   listSessionSearchRoots,
   mappedWorkingRoots,
+  planningProjectFolder,
+  primaryCheckoutOf,
+  projectFolderOf,
   repoCheckoutBasename,
+  resolveCheckoutSessionRoot,
   resolveMultiRootEngineeringDir,
   resolveSessionRoot,
 } from '../src/utils/session/scope.js';
@@ -142,6 +147,72 @@ describe('session scope (multi-root)', () => {
       resolve('/tmp/inst/projects/workflow-server'),
       resolve('/tmp/inst/projects/app/.engineering'),
     ]));
+  });
+
+  it('plans a worktree at the primary checkout above .worktrees', () => {
+    const scope = buildSessionScope({
+      ...MULTI_ROOT,
+      hostProjectsRoot: '/home/u/projects/dev',
+    });
+    const worktree = '/home/u/projects/dev/workflow-server/.worktrees/engineering/i10-e05-plan';
+    expect(primaryCheckoutOf(worktree)).toBe('/home/u/projects/dev/workflow-server');
+    const root = resolveCheckoutSessionRoot(scope, {
+      hostRepoPath: worktree,
+      repo: 'm2ux/workflow-server',
+    });
+    expect(root.engineeringDir).toBe(resolve('/home/u/projects/dev/workflow-server/.engineering'));
+  });
+
+  it('plans a local-share clone at the primary project checkout', () => {
+    const scope = buildSessionScope({
+      ...MULTI_ROOT,
+      engineeringDir: '/var/lib/workflow-server/projects',
+      hostProjectsRoot: '/home/u/projects/dev',
+      checkoutRoot: '/var/lib/workflow-server/exp-projects',
+    });
+    const clone = '/var/lib/workflow-server/exp-projects/workflow-server';
+    const root = resolveCheckoutSessionRoot(scope, {
+      hostRepoPath: clone,
+      repo: 'm2ux/workflow-server',
+    });
+    expect(root.engineeringDir).toBe(resolve('/var/lib/workflow-server/projects/workflow-server/.engineering'));
+    expect(root.engineeringDir.includes(`${sep}.worktrees${sep}`)).toBe(false);
+  });
+
+  it('refuses planning when the projects root itself is the local share', () => {
+    const share = '/home/u/.local/share/workflow-server/exp-projects';
+    const scope = buildSessionScope({
+      ...MULTI_ROOT,
+      engineeringDir: '/var/lib/workflow-server/projects',
+      installDir: '/var/lib/workflow-server',
+      hostProjectsRoot: share,
+    });
+    expect(isLocalSharePath(share)).toBe(true);
+    expect(() => resolveCheckoutSessionRoot(scope, {
+      hostRepoPath: `${share}/workflow-server`,
+      repo: 'm2ux/workflow-server',
+    })).toThrow(/local share/);
+  });
+
+  it('mappedWorkingRoots includes the extra checkout mount', () => {
+    const scope = buildSessionScope({
+      ...MULTI_ROOT,
+      checkoutRoot: '/var/lib/workflow-server/exp-projects',
+    });
+    expect(mappedWorkingRoots(scope, [])).toEqual(expect.arrayContaining([
+      resolve('/var/lib/workflow-server/exp-projects'),
+    ]));
+  });
+
+  it('projectFolderOf still names the top-level folder under the projects root', () => {
+    expect(projectFolderOf(
+      '/home/u/projects/dev',
+      '/home/u/projects/dev/workflow-server/.worktrees/engineering/i10-e05-plan',
+    )).toBe(resolve('/home/u/projects/dev/workflow-server'));
+    expect(planningProjectFolder(buildSessionScope(MULTI_ROOT), {
+      hostRepoPath: '/tmp/inst/projects/app',
+      repo: 'acme/app',
+    })).toBe(resolve('/tmp/inst/projects/app'));
   });
 });
 
