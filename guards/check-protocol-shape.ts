@@ -16,10 +16,10 @@
  *
  * Run: npx tsx guards/check-protocol-shape.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -75,7 +75,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   for (const { dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
-    for (const path of walk(techniquesDir)) {
+    for (const path of corpusFiles(techniquesDir)) {
       if (!path.endsWith('.md') || path.endsWith('README.md')) continue;
       if (seen.has(path)) continue;
       seen.add(path);
@@ -100,14 +100,6 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   }
   assertScanned(scanned, 'technique files carrying a Protocol', root);
   return findings;
-}
-
-function* walk(dir: string): Generator<string> {
-  for (const entry of readdirSync(dir).sort()) {
-    const path = join(dir, entry);
-    if (statSync(path).isDirectory()) yield* walk(path);
-    else yield path;
-  }
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

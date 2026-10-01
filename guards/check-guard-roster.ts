@@ -20,11 +20,11 @@
  *
  * Run: npx tsx guards/check-guard-roster.ts [--root <workflows-dir>]
  */
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { requireRootOrExit, report, type Finding } from './guard-protocol.js';
-import { resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusFiles, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { GUARDS } from './guards.js';
 
 const GUARDS_DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -41,20 +41,10 @@ const GUARD_PATH = /guards\/([a-z0-9-]+)\.ts/g;
 const ROSTER_THRESHOLD = 3;
 const NOT_A_PROGRAM = new Set(['guards', 'check-all', 'check-delta']);
 
-function markdownFiles(dir: string, out: string[] = []): string[] {
-  for (const name of readdirSync(dir)) {
-    if (name === 'node_modules' || name === '.git') continue;
-    const p = join(dir, name);
-    if (statSync(p).isDirectory()) markdownFiles(p, out);
-    else if (name.endsWith('.md')) out.push(p);
-  }
-  return out;
-}
-
 function collect(root: string = ROOT): Finding[] {
   const findings: Finding[] = [];
 
-  for (const file of markdownFiles(root)) {
+  for (const file of corpusFiles(root, (name) => name.endsWith('.md'))) {
     const text = readFileSync(file, 'utf-8');
     const site = relative(root, file);
     const cited = new Map<string, number>();

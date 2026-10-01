@@ -59,7 +59,7 @@
  * `--root <path>` (or set WORKFLOWS_DIR) — issue #160 follow-up #1.
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { branchKey } from '../src/schema/workflow.schema.js';
@@ -67,7 +67,7 @@ import { branchKey } from '../src/schema/workflow.schema.js';
 // is their single source of truth), so guard and server cannot drift apart on what counts as an
 // identifier, an optional input, or an ambient id.
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
-import { assertScanned, citePath, corpusNamespaces, definitionsUnder, ledgerPath, resolveWorkflowsRoot, namespaceSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, citePath, corpusFiles, corpusNamespaces, definitionsUnder, ledgerPath, resolveWorkflowsRoot, namespaceSubdir, defaultCorpusDest } from './workflows-root.js';
 import { indexCorpus, namespaceRefFromCitePath, type CorpusIndex } from '../src/loaders/corpus-index.js';
 // The reference rule itself, shared with the server, so guard and loader read a `::` path the same way.
 import { isBareName, parseTechniqueRef, TechniqueRefError, type TechniqueRef } from '../src/loaders/technique-ref.js';
@@ -239,7 +239,7 @@ function buildRegistry(wf: string): void {
   note(rootDet, cite(rootIdx));
   const rootSig = toSig(rootDet);
   const withRoot = (s: Sig): Sig => unionSig(s, rootSig);
-  for (const entry of readdirSync(tdir)) {
+  for (const entry of readdirSync(tdir).sort()) {
     const p = join(tdir, entry); const st = statSync(p);
     if (st.isFile() && entry.endsWith('.md') && entry !== 'TECHNIQUE.md') {
       const det = fileSigDetailed(p); note(det, cite(p));
@@ -250,7 +250,7 @@ function buildRegistry(wf: string): void {
       if (existsSync(idx)) note(gdet, cite(idx));
       const gsig = toSig(gdet);
       reg.groups.set(entry, { own: gdet, composed: withRoot(gsig) });
-      for (const f of readdirSync(p)) {
+      for (const f of readdirSync(p).sort()) {
         if (f.endsWith('.md') && f !== 'TECHNIQUE.md') {
           const own = fileSigDetailed(join(p, f)); note(own, cite(join(p, f)));
           reg.ops.set(`${entry}::${f.slice(0, -3)}`, { own, composed: withRoot(unionSig(toSig(own), gsig)) });
@@ -678,7 +678,7 @@ function collectArtifactTemplateTokens(rel: string, raw: string): void {
 function scanRoutines(wf: string): void {
   const dir = namespaceSubdir(INDEX, wf, 'routines');
   if (!dir || !existsSync(dir)) return;
-  for (const entry of readdirSync(dir)) {
+  for (const entry of readdirSync(dir).sort()) {
     if (!entry.endsWith('.yaml')) continue;
     const rel = cite(join(dir, entry));
     const raw = readFileSync(join(dir, entry), 'utf-8');
@@ -757,19 +757,13 @@ function ensureIndexed(): void {
   for (const wf of workflows) buildRegistry(wf);
 
   for (const wf of workflows) {
-    const walk = (dir: string): void => {
-      for (const e of readdirSync(dir)) {
-        const p = join(dir, e); const st = statSync(p);
-        if (st.isDirectory()) { if (e !== 'resources') walk(p); }
-        else if (e.endsWith('.md')) {
-          const raw = readFileSync(p, 'utf-8');
-          collectReads(wf, cite(p), raw, 'technique');
-          collectArtifactTemplateTokens(cite(p), raw);
-        }
-      }
-    };
     const techniques = namespaceSubdir(INDEX, wf, 'techniques');
-    if (techniques) walk(techniques);
+    for (const p of techniques ? corpusFiles(techniques, (name) => name.endsWith('.md')) : []) {
+      if (relative(techniques!, p).split(sep).includes('resources')) continue;
+      const raw = readFileSync(p, 'utf-8');
+      collectReads(wf, cite(p), raw, 'technique');
+      collectArtifactTemplateTokens(cite(p), raw);
+    }
   }
 
   // Activities are a workflow's own, so the second half enumerates only namespaces holding a

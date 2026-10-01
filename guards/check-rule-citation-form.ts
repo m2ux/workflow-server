@@ -48,10 +48,10 @@
  *
  * Run: npx tsx guards/check-rule-citation-form.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, relative, resolve, dirname, basename, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusFiles, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
 
@@ -222,7 +222,7 @@ export function collectFindings(root: string): Finding[] {
 
   // Which files declare each slug, so a bare mention can be told from a rule nobody declares.
   const declaringFiles = new Map<string, string[]>();
-  for (const path of markdownUnder(root)) {
+  for (const path of corpusFiles(root, (name) => name.endsWith('.md'))) {
     for (const slug of rulesOf(path)) {
       const homes = declaringFiles.get(slug) ?? [];
       homes.push(path);
@@ -232,7 +232,7 @@ export function collectFindings(root: string): Finding[] {
 
   const findings: Finding[] = [];
   let scanned = 0;
-  for (const path of markdownUnder(root)) {
+  for (const path of corpusFiles(root, (name) => name.endsWith('.md'))) {
     scanned++;
     const rel = relative(root, path);
     if (citerKind(rel) !== 'technique') continue;
@@ -267,16 +267,6 @@ export function collectFindings(root: string): Finding[] {
   }
   assertScanned(scanned, 'markdown files', root);
   return findings;
-}
-
-function* markdownUnder(dir: string): Generator<string> {
-  if (!existsSync(dir)) return;
-  for (const entry of readdirSync(dir).sort()) {
-    if (entry === 'node_modules' || entry === '.git') continue;
-    const path = join(dir, entry);
-    if (statSync(path).isDirectory()) yield* markdownUnder(path);
-    else if (entry.endsWith('.md')) yield path;
-  }
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

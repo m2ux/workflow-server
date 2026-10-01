@@ -30,11 +30,11 @@
  *
  * Run: npx tsx guards/check-loop-shape.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -124,13 +124,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     .filter(({ dir }) => existsSync(join(dir, 'activities')) || existsSync(join(dir, 'routines')));
   // Recursive, because activity definitions also sit a level down — `meta/activities/patterns/`
   // holds five, and a flat read leaves them unscanned while `assertScanned` still passes.
-  const definitions = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .flatMap((entry) => {
-      const path = join(dir, entry.name);
-      if (entry.isDirectory()) return definitions(path);
-      return entry.name.endsWith('.yaml') ? [path] : [];
-    });
+  const definitions = (dir: string): string[] => corpusFiles(dir, (name) => name.endsWith('.yaml'));
 
   for (const { dir } of workflows) {
     // `routines/` too, because a routine body holds loops and an unbounded `while` in a shared body

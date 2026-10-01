@@ -28,10 +28,10 @@
  *
  * Run: npx tsx guards/check-technique-template.ts [--root <workflows-dir>]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { corpusNamespaces, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusFiles, corpusNamespaces, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 import { ARTIFACT_NAME_PATTERN } from '../src/schema/technique.schema.js';
 
@@ -188,20 +188,12 @@ export function lintTechniqueFile(raw: string, file: string): TemplateViolation[
   return violations;
 }
 
-function* walkFiles(dir: string): Generator<string> {
-  for (const entry of readdirSync(dir).sort()) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) yield* walkFiles(p);
-    else if (entry.endsWith('.md') && entry !== 'README.md') yield p;
-  }
-}
-
 export function collectTemplateViolations(root: string = ROOT): TemplateViolation[] {
   const violations: TemplateViolation[] = [];
   for (const { dir } of corpusNamespaces(root)) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
-    for (const path of walkFiles(techniquesDir)) {
+    for (const path of corpusFiles(techniquesDir, (name) => name.endsWith('.md') && name !== 'README.md')) {
       violations.push(...lintTechniqueFile(readFileSync(path, 'utf-8'), relative(root, path)));
     }
   }

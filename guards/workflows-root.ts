@@ -16,7 +16,7 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import { defaultCorpusDest, REFERENCE_CORPUS_ADD } from '../src/corpus-dest.js';
-import { type CorpusIndex, type WorkflowLocation, indexCorpus, namespaceLocation, namespaceOwning, workflowLocation } from '../src/loaders/corpus-index.js';
+import { type CorpusIndex, type WorkflowLocation, indexCorpus, inNameOrder, namespaceLocation, namespaceOwning, withinTree, workflowLocation } from '../src/loaders/corpus-index.js';
 
 export { defaultCorpusDest, isPrimaryCheckout, primaryCheckoutRoot, REFERENCE_CORPUS_ADD, REFERENCE_CORPUS_REL } from '../src/corpus-dest.js';
 
@@ -220,6 +220,27 @@ export function walkArtifactPath(root: string, file: string): string {
   return join(root, 'walks', file);
 }
 
+/**
+ * Every file beneath a directory of a corpus tree, at any depth, in name order — those whose name
+ * `accept` passes, or all of them.
+ *
+ * This is the file walk a guard takes. It holds to the corpus walk's `withinTree`, so a checkout
+ * nested in the tree (`.worktrees/<branch>`, a clone) is never measured as part of it, and it reads
+ * each directory in name order, so a finding naming the first file a walk meets names the same file
+ * on every tree holding the same content.
+ */
+export function corpusFiles(dir: string, accept: (name: string) => boolean = () => true): string[] {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .sort(inNameOrder)
+    .flatMap((entry) => {
+      const path = join(dir, entry.name);
+      if (!withinTree(path, entry.name)) return [];
+      if (entry.isDirectory()) return corpusFiles(path, accept);
+      return entry.isFile() && accept(entry.name) ? [path] : [];
+    });
+}
+
 /** One definition file: its path on disk, and its path from the directory the walk started at. */
 export interface DefinitionFile { rel: string; path: string }
 
@@ -235,15 +256,7 @@ const isDefinition = (name: string): boolean => name.endsWith('.yaml') || name.e
  * caller citing a file cites one on disk.
  */
 export function definitionsUnder(dir: string): DefinitionFile[] {
-  const walk = (at: string, prefix: string): DefinitionFile[] => readdirSync(at, { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .flatMap((entry) => {
-      const path = join(at, entry.name);
-      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
-      if (entry.isDirectory()) return walk(path, rel);
-      return isDefinition(entry.name) ? [{ rel, path }] : [];
-    });
-  return walk(dir, '');
+  return corpusFiles(dir, isDefinition).map((path) => ({ rel: posixRel(dir, path), path }));
 }
 
 /**

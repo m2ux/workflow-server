@@ -29,12 +29,12 @@
  *
  * Run: npx tsx guards/check-set-action-values.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { isTemplateReference } from '../src/utils/variable-seed.js';
 import { declaredVariables } from './workflow-declarations.js';
@@ -158,13 +158,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const workflows = corpusWorkflows(root, index).filter(({ dir }) => existsSync(join(dir, 'activities')));
   // Recursive, because activity definitions also sit a level down — `meta/activities/patterns/` holds
   // five, and a flat read leaves them unscanned while `assertScanned` still passes on the rest.
-  const definitions = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .flatMap((entry) => {
-      const path = join(dir, entry.name);
-      if (entry.isDirectory()) return definitions(path);
-      return entry.name.endsWith('.yaml') ? [path] : [];
-    });
+  const definitions = (dir: string): string[] => corpusFiles(dir, (name) => name.endsWith('.yaml'));
 
   for (const { id: workflow, dir } of workflows) {
     const declarations = declaredVariables(root, workflow, index);

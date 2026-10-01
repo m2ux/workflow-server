@@ -18,7 +18,7 @@ import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
 import { requireRootOrExit } from './guard-protocol.js';
-import { corpusWorkflows, defaultCorpusDest } from './workflows-root.js';
+import { corpusFiles, corpusWorkflows, defaultCorpusDest } from './workflows-root.js';
 
 /**
  * Check NN- filename prefix and report duplicate skill/activity IDs.
@@ -48,16 +48,6 @@ function checkPrefixAndDuplicates(files: string[]): string[] {
 }
 
 /** Recursively collect technique .md files (group dirs contain per-technique files). */
-function walkTechniqueFiles(dir: string): string[] {
-  const out: string[] = [];
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const p = join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...walkTechniqueFiles(p));
-    else if (entry.name.endsWith('.md')) out.push(p);
-  }
-  return out;
-}
-
 /**
  * Flag unanchored value-references in a technique's `## Protocol` section: a
  * multi-word snake_case token used BARE — neither a `{designator}` (the
@@ -140,7 +130,7 @@ async function validateWorkflowDir(root: string, workflowDirPath: string): Promi
 
   const activitiesDir = join(workflowDirPath, 'activities');
   if (existsSync(activitiesDir)) {
-    const activityFiles = readdirSync(activitiesDir).filter((f) => f.endsWith('.yaml'));
+    const activityFiles = readdirSync(activitiesDir).filter((f) => f.endsWith('.yaml')).sort();
     console.log(`\n[INFO] activities/ (${activityFiles.length} files)`);
     const layoutIssues = checkPrefixAndDuplicates(activityFiles);
     for (const issue of layoutIssues) {
@@ -163,7 +153,7 @@ async function validateWorkflowDir(root: string, workflowDirPath: string): Promi
 
   const techniquesDir = join(workflowDirPath, 'techniques');
   if (existsSync(techniquesDir)) {
-    const techFiles = walkTechniqueFiles(techniquesDir);
+    const techFiles = corpusFiles(techniquesDir, (name) => name.endsWith('.md'));
     console.log(`\n[INFO] techniques/ (${techFiles.length} files)`);
     let techFailed = 0;
     for (const file of techFiles) {

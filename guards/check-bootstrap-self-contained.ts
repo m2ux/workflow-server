@@ -48,7 +48,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { type CorpusSource, asIndex, indexCorpus } from '../src/loaders/corpus-index.js';
+import { type CorpusSource, asIndex, indexCorpus, inNameOrder } from '../src/loaders/corpus-index.js';
 import { assertScanned, corpusNamespaces, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, stripDestinations, toLines } from './markdown-refs.js';
@@ -115,10 +115,10 @@ function declaredRules(root: string, source: CorpusSource = root): Declared {
   for (const { ref: namespace, dir } of corpusNamespaces(root, asIndex(source))) {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
-    for (const entry of readdirSync(techniquesDir, { withFileTypes: true })) {
+    for (const entry of readdirSync(techniquesDir, { withFileTypes: true }).sort(inNameOrder)) {
       const entryPath = join(techniquesDir, entry.name);
       if (entry.isDirectory()) {
-        for (const op of readdirSync(entryPath)) {
+        for (const op of readdirSync(entryPath).sort()) {
           if (!op.endsWith('.md')) continue;
           addFile(join(entryPath, op), op === 'TECHNIQUE.md' ? entry.name : op.slice(0, -3));
         }

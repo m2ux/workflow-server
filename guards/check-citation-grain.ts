@@ -25,11 +25,11 @@
  *
  * Run: npx tsx guards/check-citation-grain.ts [--root <workflows-dir>]
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, relative, resolve, dirname, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { requireRootOrExit, report, type Finding } from './guard-protocol.js';
-import { resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusFiles, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
@@ -37,16 +37,6 @@ const ROOT = resolveWorkflowsRoot(DEFAULT_ROOT);
 
 /** A markdown link whose target is a `.md` path, with or without a trailing `#anchor`. */
 const LINK = /\[[^\]]*\]\(([^)\s]+?\.md)(#[^)\s]*)?\)/g;
-
-function markdownFiles(dir: string, out: string[] = []): string[] {
-  for (const name of readdirSync(dir)) {
-    if (name === 'node_modules' || name === '.git') continue;
-    const p = join(dir, name);
-    if (statSync(p).isDirectory()) markdownFiles(p, out);
-    else if (name.endsWith('.md')) out.push(p);
-  }
-  return out;
-}
 
 /** Sections a resource offers — a resource with fewer than two has no grain to choose. */
 function sectionCount(path: string): number {
@@ -59,7 +49,7 @@ function sectionCount(path: string): number {
 
 function collect(root: string = ROOT): Finding[] {
   const findings: Finding[] = [];
-  for (const file of markdownFiles(root)) {
+  for (const file of corpusFiles(root, (name) => name.endsWith('.md'))) {
     // The entry scopes the tell to a technique consulting a resource. A resource cross-referencing
     // a sibling, and a README introducing one, are the overview-prose carve-out it names.
     if (!file.includes(`${sep}techniques${sep}`) || file.endsWith('README.md')) continue;

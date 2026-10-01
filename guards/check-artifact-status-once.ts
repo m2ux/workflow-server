@@ -18,10 +18,10 @@
  *
  * Run: npx tsx guards/check-artifact-status-once.ts [--root <workflows-dir>] [--json]
  */
-import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -41,18 +41,6 @@ const HEADER = /^\s*>\s+\S/;
 
 /** A closing status field. */
 const STATUS = /^\s*\*\*Status:?\*\*/i;
-
-function walk(dir: string): string[] {
-  if (!existsSync(dir)) return [];
-  const out: string[] = [];
-  for (const name of readdirSync(dir).sort()) {
-    if (name === '.git') continue;
-    const path = join(dir, name);
-    if (statSync(path).isDirectory()) out.push(...walk(path));
-    else if (name.endsWith('.md')) out.push(path);
-  }
-  return out;
-}
 
 /** The fenced blocks of one file, each as its own line array. */
 function fencedBlocks(body: string): string[][] {
@@ -75,7 +63,7 @@ function fencedBlocks(body: string): string[][] {
 
 export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
   const out: Finding[] = [];
-  const files = walk(root);
+  const files = corpusFiles(root, (name) => name.endsWith('.md'));
   assertScanned(files.length, 'definition file(s)', root);
   for (const file of files) {
     const site = relative(root, file);

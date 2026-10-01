@@ -17,10 +17,10 @@
  *
  * Run: npx tsx guards/check-inherited-inputs.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -53,15 +53,6 @@ function declaredEntries(path: string): Map<string, string> {
 
 const OPTIONAL = '*(optional)*';
 
-function walk(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir).sort()) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) walk(p, out);
-    else if (entry.endsWith('.md') && entry !== 'TECHNIQUE.md') out.push(p);
-  }
-  return out;
-}
-
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
@@ -69,7 +60,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     const techniquesDir = join(dir, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     const rootEntries = declaredEntries(join(techniquesDir, 'TECHNIQUE.md'));
-    for (const path of walk(techniquesDir)) {
+    for (const path of corpusFiles(techniquesDir, (name) => name.endsWith('.md') && name !== 'TECHNIQUE.md')) {
       const span = inputsSpan(readFileSync(path, 'utf-8'));
       if (!span) continue;
       scanned++;

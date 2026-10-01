@@ -24,11 +24,11 @@
  *
  *   npx tsx guards/check-identifier-qualification.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EXEMPT_DATA_ID_SET as EXEMPT, isSingleWord } from '../src/schema/identifiers.js';
-import { assertScanned, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusNamespaces, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -52,22 +52,14 @@ function scanTechnique(path: string, rel: string, hits: Hit[]): void {
   });
 }
 
-function scanTechniqueDir(dir: string, root: string, hits: Hit[]): number {
-  if (!existsSync(dir)) return 0;
-  let scanned = 0;
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry); const st = statSync(p);
-    if (st.isFile() && entry.endsWith('.md')) { scanTechnique(p, relative(root, p), hits); scanned++; }
-    else if (st.isDirectory()) scanned += scanTechniqueDir(p, root, hits);
-  }
-  return scanned;
-}
-
 export function collectHits(root: string = DEFAULT_ROOT): Hit[] {
   const hits: Hit[] = [];
   let scanned = 0;
   for (const { dir } of corpusNamespaces(root)) {
-    scanned += scanTechniqueDir(join(dir, 'techniques'), root, hits);
+    for (const path of corpusFiles(join(dir, 'techniques'), (name) => name.endsWith('.md'))) {
+      scanTechnique(path, relative(root, path), hits);
+      scanned++;
+    }
   }
   assertScanned(scanned, 'technique files', root);
   return hits;

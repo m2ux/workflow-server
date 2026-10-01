@@ -24,11 +24,11 @@
  *
  * Run: npx tsx guards/check-section-framing.ts [--root <workflows-dir>]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { citePath, ledgerPath, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { citePath, corpusFiles, ledgerPath, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -61,16 +61,6 @@ export interface FramingFinding {
 interface TriageEntry { site: string; verdict: string; rationale: string }
 interface Triage { rationales?: Record<string, string>; entries?: TriageEntry[] }
 
-function walkFiles(dir: string, out: string[] = []): string[] {
-  for (const e of readdirSync(dir)) {
-    if (e === '.git' || e === 'node_modules') continue;
-    const p = join(dir, e);
-    if (statSync(p).isDirectory()) walkFiles(p, out);
-    else if (e.endsWith('.md') || e.endsWith('.yaml')) out.push(p);
-  }
-  return out;
-}
-
 /** Characters of body before the first `##`, with frontmatter and the leading H1 removed. */
 function framingLength(text: string): number {
   let body = text;
@@ -88,7 +78,7 @@ function framingLength(text: string): number {
 }
 
 export function collectFramingFindings(root: string = resolveWorkflowsRoot(DEFAULT_ROOT)): FramingFinding[] {
-  const files = walkFiles(root);
+  const files = corpusFiles(root, (name) => name.endsWith('.md') || name.endsWith('.yaml'));
   const index = indexCorpus(root);
   const triageFile = triagePath(root);
   /** What to call the triage in a finding, so the message names the file the reader has to open. */

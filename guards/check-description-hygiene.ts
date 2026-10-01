@@ -12,11 +12,11 @@
  *
  * Run: npx tsx guards/check-description-hygiene.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { readFileSync, existsSync, statSync } from 'node:fs';
+import { basename, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
-import { assertScanned, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusWorkflows, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -135,33 +135,23 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   for (const { dir } of corpusWorkflows(root)) {
     const activitiesDir = join(dir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
-    const stack = [activitiesDir];
-    while (stack.length) {
-      const dir = stack.pop()!;
-      for (const entry of readdirSync(dir).sort()) {
-        const full = join(dir, entry);
-        if (statSync(full).isDirectory()) {
-          stack.push(full);
-          continue;
-        }
-        if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
-        const def = parse(readFileSync(full, 'utf-8')) as YamlMap | null;
-        scanned++;
-        if (!isMap(def)) continue;
-        const rel = relative(root, full);
-        const activityId = asString(def.id) ?? entry;
-        const activityDesc = asString(def.description);
-        if (activityDesc && isProcedureEssay(activityDesc)) {
-          findings.push({
-            check: 'procedure-in-description',
-            site: `${rel}#description`,
-            detail:
-              `activity '${activityId}' description holds procedure/sequence prose — ` +
-              'state WHAT the activity delivers; sequence lives in steps[] (no-sequence-in-description)',
-          });
-        }
-        walkSteps(def.steps, rel, activityId, findings, '');
+    for (const full of corpusFiles(activitiesDir, (name) => name.endsWith('.yaml') || name.endsWith('.yml'))) {
+      const def = parse(readFileSync(full, 'utf-8')) as YamlMap | null;
+      scanned++;
+      if (!isMap(def)) continue;
+      const rel = relative(root, full);
+      const activityId = asString(def.id) ?? basename(full);
+      const activityDesc = asString(def.description);
+      if (activityDesc && isProcedureEssay(activityDesc)) {
+        findings.push({
+          check: 'procedure-in-description',
+          site: `${rel}#description`,
+          detail:
+            `activity '${activityId}' description holds procedure/sequence prose — ` +
+            'state WHAT the activity delivers; sequence lives in steps[] (no-sequence-in-description)',
+        });
       }
+      walkSteps(def.steps, rel, activityId, findings, '');
     }
   }
   assertScanned(scanned, 'activity files', root);

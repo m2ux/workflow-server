@@ -730,7 +730,7 @@ export async function orchestratorInputs(workflowDir: string): Promise<Set<strin
   const techniques = workflowSubdir(index, ORCHESTRATOR_WORKFLOW, 'techniques');
   const dir = techniques ? join(techniques, ORCHESTRATOR_GROUP) : null;
   if (!dir || !existsSync(dir)) return names;
-  for (const entry of readdirSync(dir)) {
+  for (const entry of readdirSync(dir).sort()) {
     if (!entry.endsWith('.md')) continue;
     const op = entry === 'TECHNIQUE.md' ? ORCHESTRATOR_GROUP : `${ORCHESTRATOR_GROUP}::${entry.slice(0, -3)}`;
     const composed = await composeActivityTechnique(op, workflowDir, ORCHESTRATOR_WORKFLOW);
@@ -742,7 +742,7 @@ export async function orchestratorInputs(workflowDir: string): Promise<Set<strin
   // session, so a name its graph reads is consumed whichever workflow writes it.
   const metaActivities = workflowSubdir(index, ORCHESTRATOR_WORKFLOW, 'activities');
   if (metaActivities && existsSync(metaActivities)) {
-    for (const entry of readdirSync(metaActivities)) {
+    for (const entry of readdirSync(metaActivities).sort()) {
       if (!entry.endsWith('.yaml')) continue;
       const parsed = parseDefinition(readFileSync(join(metaActivities, entry), 'utf-8')) as
         { variables?: { reads?: string[] } } | null;

@@ -47,11 +47,11 @@
  *
  * Run: npx tsx guards/check-tool-call-shape.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { captureTools } from '../scripts/generate-site-data.js';
-import { assertScanned, corpusNamespaces, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusNamespaces, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
 
@@ -200,7 +200,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   // one nests inside another, so a path is checked once.
   const seen = new Set<string>();
   for (const { dir } of corpusNamespaces(root)) {
-    for (const path of markdownUnder(dir)) {
+    for (const path of corpusFiles(dir, (name) => name.endsWith('.md'))) {
       if (seen.has(path)) continue;
       seen.add(path);
       scanned++;
@@ -212,15 +212,6 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   }
   assertScanned(scanned, 'markdown files', root);
   return findings;
-}
-
-function* markdownUnder(dir: string): Generator<string> {
-  if (!existsSync(dir)) return;
-  for (const entry of readdirSync(dir).sort()) {
-    const path = join(dir, entry);
-    if (statSync(path).isDirectory()) yield* markdownUnder(path);
-    else if (entry.endsWith('.md')) yield path;
-  }
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

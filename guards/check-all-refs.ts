@@ -8,6 +8,7 @@
  *   npx tsx guards/check-all-refs.ts [--root /path/to/worktree/workflows] [--json]
  */
 import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { listWorkflows, loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { resolveTechniques } from '../src/loaders/technique-loader.js';
 import { assertScanned, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
@@ -65,7 +66,10 @@ export async function collectFindings(WF_DIR: string = DEFAULT_ROOT): Promise<Fi
   return findings;
 }
 
-await runGuard('refs', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-  okMessage: 'every activity/workflow techniques[] reference resolves through the loader',
-  remedy: 'fix or remove each unresolved reference',
-});
+const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  await runGuard('refs', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
+    okMessage: 'every activity/workflow techniques[] reference resolves through the loader',
+    remedy: 'fix or remove each unresolved reference',
+  });
+}

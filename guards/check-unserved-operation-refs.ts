@@ -49,10 +49,10 @@
  *
  * Run: npx tsx guards/check-unserved-operation-refs.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, corpusNamespaces, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusNamespaces, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -124,25 +124,14 @@ function scanFile(path: string, rel: string, refs: Ref[]): void {
   });
 }
 
-function scanDir(dir: string, root: string, refs: Ref[]): number {
-  if (!existsSync(dir)) return 0;
-  let scanned = 0;
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry);
-    const st = statSync(p);
-    if (st.isFile() && entry.endsWith('.md') && entry !== 'README.md') {
-      scanFile(p, relative(root, p), refs);
-      scanned++;
-    } else if (st.isDirectory()) scanned += scanDir(p, root, refs);
-  }
-  return scanned;
-}
-
 export function collectRefs(root: string = DEFAULT_ROOT): Ref[] {
   const refs: Ref[] = [];
   let scanned = 0;
   for (const { dir } of corpusNamespaces(root)) {
-    scanned += scanDir(join(dir, 'techniques'), root, refs);
+    for (const path of corpusFiles(join(dir, 'techniques'), (name) => name.endsWith('.md') && name !== 'README.md')) {
+      scanFile(path, relative(root, path), refs);
+      scanned++;
+    }
   }
   assertScanned(scanned, 'technique files', root);
   return refs;

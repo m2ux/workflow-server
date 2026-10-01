@@ -54,10 +54,35 @@ import { parseDefinition } from '../utils/serialization.js';
  * and it makes the answer the corpus on disk right now — a definition added, moved or checked out at
  * another commit under a running server resolves on the next call, with no cache to invalidate. A
  * caller resolving many ids at once walks once with `indexCorpus` and passes the result.
+ *
+ * The walk reads the pointed tree and no other: `withinTree` is the rule, and the guards' file walk
+ * follows the same one, so what the server serves and what the guards measure are one set of files.
  */
 
 /** Directory names holding a namespace's own files, which the walk never enters and never searches. */
 const RESERVED_DIR_NAMES = new Set(['activities', 'resources', 'techniques', 'routines']);
+
+/** Installed packages, which a tree holds beside its own files and never authors. */
+const INSTALLED_PACKAGES_DIR = 'node_modules';
+
+/**
+ * Whether a directory entry beneath a walk root belongs to the tree being walked.
+ *
+ * An entry whose name starts with a dot is plumbing: `.git`, a `.worktrees` folder of nested
+ * checkouts, editor state. `node_modules` is installed rather than authored. A directory holding a
+ * `.git` of its own — a linked worktree, a clone, a submodule — is a separate checkout whatever it
+ * is called, so its files belong to that tree. A walk holding to this rule reads the same files from
+ * a checkout whatever is nested inside it.
+ */
+export function withinTree(path: string, name: string): boolean {
+  if (name.startsWith('.') || name === INSTALLED_PACKAGES_DIR) return false;
+  return !existsSync(join(path, '.git'));
+}
+
+/** Entries of a directory in name order, so everything a walk derives is the same on every tree holding the same files. */
+export function inNameOrder(a: Dirent, b: Dirent): number {
+  return a.name.localeCompare(b.name);
+}
 
 /**
  * The library directories whose presence makes a directory a namespace, and the kinds a reference
@@ -297,19 +322,16 @@ export function indexCorpus(root: string): CorpusIndex {
   const visit = (dir: string): void => {
     let entries: Dirent[];
     try {
-      entries = readdirSync(dir, { withFileTypes: true });
+      entries = readdirSync(dir, { withFileTypes: true }).sort(inNameOrder);
     } catch (error) {
       logWarn('Unreadable corpus directory', { dir, error: error instanceof Error ? error.message : String(error) });
       return;
     }
     for (const entry of entries) {
       // `isDirectory()` is false for a symlink, so the walk cannot cycle through one.
-      if (
-        !entry.isDirectory()
-        || entry.name.startsWith('.')
-        || RESERVED_DIR_NAMES.has(entry.name)
-      ) continue;
+      if (!entry.isDirectory() || RESERVED_DIR_NAMES.has(entry.name)) continue;
       const path = join(dir, entry.name);
+      if (!withinTree(path, entry.name)) continue;
       const manifest = definitionIn(path);
       if (manifest !== null || holdsLibrary(path)) {
         walked.push({ id: entry.name, path: corpusPath(base, path), dir: path, manifest });

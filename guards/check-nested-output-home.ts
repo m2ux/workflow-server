@@ -30,7 +30,7 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, citePath, ledgerPath, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, citePath, corpusFiles, ledgerPath, defaultCorpusDest } from './workflows-root.js';
 import { requireRootOrExit, runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -87,26 +87,10 @@ function outputs(path: string): Map<string, string[]> {
   return out;
 }
 
-/** Every group container in the corpus: a directory holding a TECHNIQUE.md. */
-function containers(root: string): string[] {
-  const out: string[] = [];
-  const visit = (dir: string) => {
-    if (!existsSync(dir)) return;
-    const names = readdirSync(dir).sort();
-    if (names.includes('TECHNIQUE.md')) out.push(join(dir, 'TECHNIQUE.md'));
-    for (const name of names) {
-      if (name === '.git') continue;
-      const path = join(dir, name);
-      if (statSync(path).isDirectory()) visit(path);
-    }
-  };
-  visit(root);
-  return out;
-}
-
 export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
   const out: Finding[] = [];
-  const files = containers(root);
+  // Every group container in the corpus: a directory holding a TECHNIQUE.md.
+  const files = corpusFiles(root, (name) => name === 'TECHNIQUE.md');
   assertScanned(files.length, 'technique group container(s)', root);
   const index = indexCorpus(root);
   const cite = (file: string): string => citePath(root, file, index);

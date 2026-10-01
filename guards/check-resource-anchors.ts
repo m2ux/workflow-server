@@ -16,11 +16,11 @@
  *
  * Run: npx tsx guards/check-resource-anchors.ts
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { indexCorpus } from '../src/loaders/corpus-index.js';
-import { resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { corpusFiles, resolveWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { requireRootOrExit } from './guard-protocol.js';
 import { resolveLink } from './corpus-links.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
@@ -72,16 +72,6 @@ function collectAnchors(mdPath: string): Set<string> {
   return anchors;
 }
 
-function* walkFiles(dir: string): Generator<string> {
-  for (const entry of readdirSync(dir)) {
-    if (entry === '.git' || entry === 'node_modules') continue;
-    const p = join(dir, entry);
-    const st = statSync(p);
-    if (st.isDirectory()) yield* walkFiles(p);
-    else if (/\.(md|yaml)$/.test(entry)) yield p;
-  }
-}
-
 /** An anchored markdown destination, once the shared reader has produced it in any spelling. */
 const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
 
@@ -91,7 +81,7 @@ export function collectBrokenAnchors(root: string = resolveWorkflowsRoot(DEFAULT
   const preSessionResource = workflowSubdir(corpusIndex, 'meta', join('resources', 'bootstrap-protocol.md'));
   const broken: BrokenAnchor[] = [];
   const anchorCache = new Map<string, Set<string>>();
-  for (const file of walkFiles(root)) {
+  for (const file of corpusFiles(root, (name) => /\.(md|yaml)$/.test(name))) {
     // The pre-session bootstrap resource belongs to `check-bootstrap-self-contained`, which refuses
     // EVERY corpus link on it — nothing can be followed before a session exists. So anything this guard
     // could report there is already a finding of that one's, and reporting it twice would make one bad

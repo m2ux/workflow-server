@@ -7,24 +7,13 @@
  * has to read both, and for an included activity it has to read the file where that activity
  * lives. This assembles the same set the loader folds at runtime, without loading the workflow.
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { type CorpusSource, workflowSubdir } from '../src/loaders/corpus-index.js';
 import { mergeActivityVariables, type VariableContributor } from '../src/utils/activity-variables.js';
+import { corpusFiles } from './workflows-root.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
-
-/** Every activity file under a directory, nested library subdirectories included. */
-function activityFiles(dir: string | null): string[] {
-  if (!dir || !existsSync(dir)) return [];
-  const out: string[] = [];
-  for (const entry of readdirSync(dir).sort()) {
-    const path = join(dir, entry);
-    if (statSync(path).isDirectory()) out.push(...activityFiles(path));
-    else if (/\.ya?ml$/.test(entry)) out.push(path);
-  }
-  return out;
-}
 
 function readContributor(path: string): VariableContributor | null {
   try {
@@ -58,7 +47,9 @@ export function declaredVariables(
   }
 
   const contributors: VariableContributor[] = [];
-  for (const path of activityFiles(workflowSubdir(source, workflowId, 'activities'))) {
+  // Every activity file, nested library subdirectories included.
+  const activities = workflowSubdir(source, workflowId, 'activities');
+  for (const path of activities ? corpusFiles(activities, (name) => /\.ya?ml$/.test(name)) : []) {
     const contributor = readContributor(path);
     if (contributor) contributors.push(contributor);
   }

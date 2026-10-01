@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
 import { logInfo, logError } from '../logging.js';
-import { type CorpusSource, indexCorpus, namespaceSubdir } from './corpus-index.js';
+import { type CorpusSource, indexCorpus, inNameOrder, namespaceSubdir } from './corpus-index.js';
 
 export { ResourceNotFoundError } from '../errors.js';
 
@@ -51,7 +51,7 @@ async function findResourceSkillMd(source: CorpusSource, workflowId: string, id:
 
   // 2. Frontmatter-name match across flat resource files.
   try {
-    const entries = await readdir(resourceDir, { withFileTypes: true });
+    const entries = (await readdir(resourceDir, { withFileTypes: true })).sort(inNameOrder);
     for (const entry of entries) {
       if (!entry.isFile() || !entry.name.endsWith('.md') || entry.name === 'README.md') continue;
       const candidate = join(resourceDir, entry.name);

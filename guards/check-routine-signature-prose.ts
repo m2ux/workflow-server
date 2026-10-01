@@ -12,12 +12,12 @@
  *
  * Run: npx tsx guards/check-routine-signature-prose.ts [--root <workflows-dir>]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { readFileSync, existsSync } from 'node:fs';
+import { basename, dirname, join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { requireRootOrExit, report, type Finding } from './guard-protocol.js';
-import { resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { corpusFiles, resolveWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
@@ -38,23 +38,10 @@ const SITE_PROSE: { pattern: RegExp; names: string }[] = [
 ];
 
 /** Every `routines/` directory under the corpus — the workflow a routine belongs to is its parent. */
-function routineFiles(root: string, out: string[] = []): string[] {
+function routineFiles(root: string): string[] {
   const corpus = join(root, 'corpus');
   const base = existsSync(corpus) ? corpus : root;
-  const walk = (dir: string): void => {
-    for (const name of readdirSync(dir)) {
-      if (name === 'node_modules' || name === '.git') continue;
-      const p = join(dir, name);
-      if (!statSync(p).isDirectory()) continue;
-      if (name === 'routines') {
-        for (const file of readdirSync(p)) if (file.endsWith('.yaml')) out.push(join(p, file));
-        continue;
-      }
-      walk(p);
-    }
-  };
-  walk(base);
-  return out;
+  return corpusFiles(base, (name) => name.endsWith('.yaml')).filter((path) => basename(dirname(path)) === 'routines');
 }
 
 function flag(findings: Finding[], site: string, where: string, text: unknown): void {

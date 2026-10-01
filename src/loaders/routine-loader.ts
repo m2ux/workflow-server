@@ -67,7 +67,7 @@ async function readRoutineFiles(
   const routinesPath = join(dir, ROUTINES_DIR);
   if (!existsSync(routinesPath)) return { routines, invalid };
 
-  for (const file of await readdir(routinesPath)) {
+  for (const file of (await readdir(routinesPath)).sort()) {
     const name = /^(.+)\.ya?ml$/.exec(file)?.[1];
     if (!name) continue;
     const site = `Routine '${workflowId}::${name}' (${ROUTINES_DIR}/${file})`;
@@ -166,13 +166,19 @@ export async function readCorpusRoutines(
   const errors: Array<{ workflowId: string; error: string }> = [];
   // Keyed by name, which is the spelling a caller enumerating the corpus holds. A namespace whose
   // name two directories claim is absent here for the same reason it is absent from resolution.
-  await Promise.all([...index.namespacesByName.keys()].map(async (id) => {
+  // Reads run together and land in name order, so both collections read the same whichever read
+  // finishes first.
+  const ids = [...index.namespacesByName.keys()].sort();
+  const reads = await Promise.all(ids.map(async (id) => {
     try {
-      const routines = await readWorkflowRoutines(workflowDir, id, index);
-      if (routines.size > 0) byWorkflow.set(id, routines);
+      return { id, routines: await readWorkflowRoutines(workflowDir, id, index) };
     } catch (error) {
-      errors.push({ workflowId: id, error: error instanceof Error ? error.message : String(error) });
+      return { id, error: error instanceof Error ? error.message : String(error) };
     }
   }));
+  for (const read of reads) {
+    if ('error' in read) errors.push({ workflowId: read.id, error: read.error });
+    else if (read.routines.size > 0) byWorkflow.set(read.id, read.routines);
+  }
   return { byWorkflow, errors };
 }

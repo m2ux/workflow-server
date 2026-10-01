@@ -30,12 +30,12 @@
  *
  * Run: npx tsx guards/check-checkpoint-presentation.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
-import { assertScanned, corpusNamespaces, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, corpusNamespaces, requireWorkflowsRoot, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -121,15 +121,6 @@ function rulesSection(md: string): string {
   return next ? rest.slice(0, next.index) : rest;
 }
 
-function walkFiles(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir).sort()) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) walkFiles(p, out);
-    else out.push(p);
-  }
-  return out;
-}
-
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
@@ -146,7 +137,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
 
     const activitiesDir = join(wfDir, 'activities');
     if (existsSync(activitiesDir) && statSync(activitiesDir).isDirectory()) {
-      for (const f of walkFiles(activitiesDir)) {
+      for (const f of corpusFiles(activitiesDir)) {
         if (!f.endsWith('.yaml') && !f.endsWith('.yml')) continue;
         const def = parse(readFileSync(f, 'utf-8')) as Record<string, unknown> | null;
         scanned++;
@@ -165,7 +156,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
 
     const techniquesDir = join(wfDir, 'techniques');
     if (existsSync(techniquesDir) && statSync(techniquesDir).isDirectory()) {
-      for (const f of walkFiles(techniquesDir)) {
+      for (const f of corpusFiles(techniquesDir)) {
         if (!f.endsWith('.md')) continue;
         const rel = relative(root, f);
         scanned++;

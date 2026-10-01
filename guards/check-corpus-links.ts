@@ -38,10 +38,10 @@
  *
  * Run: npx tsx guards/check-corpus-links.ts [--root <workflows-dir>] [--json]
  */
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { assertScanned, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
+import { assertScanned, corpusFiles, requireWorkflowsRoot, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 import { resolveLink } from './corpus-links.js';
@@ -56,21 +56,12 @@ function withoutAnchor(path: string): string {
   return hash === -1 ? path : path.slice(0, hash);
 }
 
-function* markdownFiles(dir: string): Generator<string> {
-  for (const entry of readdirSync(dir)) {
-    if (entry.startsWith('.')) continue;
-    const path = join(dir, entry);
-    if (statSync(path).isDirectory()) yield* markdownFiles(path);
-    else if (entry.endsWith('.md')) yield path;
-  }
-}
-
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   let scanned = 0;
   const corpus = indexCorpus(root);
 
-  for (const file of markdownFiles(root)) {
+  for (const file of corpusFiles(root, (name) => name.endsWith('.md'))) {
     const home = namespaceOwning(corpus, file);
     // A file under no namespace — the corpus README — has nothing to be inside of. A library is a
     // namespace like any other, and its links climb out of it the same way a workflow's do.
