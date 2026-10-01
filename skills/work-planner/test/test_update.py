@@ -129,6 +129,28 @@ class TaskLinks(unittest.TestCase):
         self.assertIn(f"[W01]({url('pull', 950)})", fixed)
         self.assertNotIn('uncited:', done.stdout)
 
+    def test_a_merged_pull_request_with_an_unticked_criterion_is_unmet(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unmet: W01 (#950): AC1 unticked', done.stdout)
+
+    def test_an_open_pull_request_leaves_coverage_unreported(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('unmet:', done.stdout)
+
+    def test_a_delivered_task_reports_only_its_unticked_criteria(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace(
+            '| AC1 |', '| AC1, AC2 |').replace('- [ ] **AC1.** Holds.',
+                                               '- [x] **AC1.** Holds.\n- [ ] **AC2.** Holds.')
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unmet: W01 (#950): AC2 unticked', done.stdout)
+        self.assertNotIn('AC1 unticked', done.stdout)
+
     def test_a_closed_task_issue_stays_delivered_until_its_pull_request_is_linked(self):
         task = issue(3, '[I01:E00:W01] Task: Done', 'closed')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))

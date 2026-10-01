@@ -314,6 +314,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/or
 Reports an epic's delivery state against the pull requests that name it.
 
 - A merged pull request no row links is unmatched, and an open one no row links is in flight.
+- A row that links a merged pull request while a criterion its Coverage names is unticked is unmet.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-943.json --prs prs.json

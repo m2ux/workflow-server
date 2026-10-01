@@ -34,6 +34,7 @@ Read the file for the mode the request calls for:
 - **[Review](references/review-mode.md)**
   - Checks of existing issues against the templates
   - Fixes for each issue that departs from its template
+  - A scan for a merged pull request whose task still has an unticked coverage criterion
 - **[Update](references/update-mode.md)**
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
