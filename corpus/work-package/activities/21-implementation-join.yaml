@@ -1,10 +1,12 @@
 id: implementation-join
-version: 1.0.0
+version: 1.1.0
 name: Implementation Join
 description: >-
   Converge the contract-tests and implement fan branches, hoist each branch's
-  containers, confirm contract suites are red against the base tree, settle
-  symbol provenance and residual assumptions, and continue to lean-coding audit.
+  containers, confirm contract suites are red against the base tree, run them
+  against the implementation, settle symbol provenance and residual assumptions,
+  and continue to lean-coding audit. A failing suite returns to the implementer;
+  a disputed test reaches the user as a contract ambiguity.
 variables:
   reads:
     - assumptions_log
@@ -30,6 +32,18 @@ variables:
       type: string
       description: Branch the contract-tests worktree stood on.
       defaultValue: ""
+    - name: contract_tests_merged_paths
+      type: array
+      description: Contract-test paths copied into the implement worktree.
+      defaultValue: []
+    - name: contract_tests_passed
+      type: boolean
+      description: True when every merged contract suite passes against the implementation.
+      defaultValue: false
+    - name: contract_test_failures
+      type: array
+      description: Failing assertions when the suite is red against the implementation.
+      defaultValue: []
     - name: current_task
       type: object
       description: The implementation-plan task under provenance review.
@@ -68,12 +82,64 @@ steps:
         message: >-
           Contract tests did not fail against the base tree. The contract-tests
           branch must leave a red suite before implementation is joined.
+  - kind: technique
+    id: merge-contract-tests
+    technique: merge-contract-tests
+  - kind: technique
+    id: run-contract-tests
+    technique: run-contract-tests
+  - kind: checkpoint
+    id: contract-test-disposition
+    when: contract_tests_passed != true
+    message: |-
+      Contract tests failed against the implementation:
+
+      {contract_test_failures}
+
+      Rework the implementation to satisfy the Contract, or dispute a test as a contract ambiguity.
+    options:
+      - id: rework-implementation
+        label: Rework the implementation
+        description: Return the failing tasks to the implementer
+        effect:
+          exit: needs-rework
+      - id: dispute-test
+        label: Dispute a test
+        description: The failure is a Contract ambiguity for the user to settle
+  - kind: checkpoint
+    id: contract-ambiguity
+    when: contract_tests_passed != true
+    message: |-
+      A contract test is disputed. The Contract and the failing assertions are:
+
+      {contract_test_failures}
+
+      Settle whether the implementation should change, the tests (and Contract) should change, or the current implementation is accepted against a revised reading.
+    options:
+      - id: revise-implementation
+        label: Revise the implementation
+        description: The Contract holds; the implementer reworks the failing tasks
+        effect:
+          exit: needs-rework
+      - id: revise-tests
+        label: Revise the contract tests
+        description: The Contract or its tests are wrong; the contract-tests branch rewrites them
+        effect:
+          exit: needs-contract-tests
+      - id: accept-implementation
+        label: Accept the implementation
+        description: The disputed reading is settled; treat the suite as passing for this join
+        effect:
+          setVariable:
+            contract_tests_passed: true
+            contract_test_failures: []
   - kind: loop
     id: provenance-settle-cycle
     name: Symbol Provenance Settle Cycle
     loopType: forEach
     variable: current_task
     over: implementation_plan.tasks
+    when: contract_tests_passed == true
     steps:
       - kind: loop
         id: provenance-retry
@@ -116,13 +182,19 @@ steps:
   - kind: routine
     id: settle-assumptions
     routine: settle-assumptions
+    when: contract_tests_passed == true
     outputs:
       assumptions_log: assumptions_log
       has_deferred_assumptions: has_deferred_assumptions
 exits:
+  - id: needs-rework
+    immediate: true
+  - id: needs-contract-tests
+    immediate: true
   - id: done
     isDefault: true
 outcome:
   - Fan containers from contract-tests and implement are hoisted
-  - Contract suites are confirmed red against the base tree
-  - Symbol provenance and residual assumptions are settled at the join
+  - Contract suites are confirmed red against the base tree, then green against the implementation
+  - A failing suite returns to the implementer; a disputed test reaches the user as a contract ambiguity
+  - Symbol provenance and residual assumptions are settled at the join once the suite passes

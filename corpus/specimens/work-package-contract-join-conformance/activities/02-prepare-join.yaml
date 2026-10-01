@@ -1,0 +1,46 @@
+id: prepare-join
+version: 1.0.0
+name: Prepare Join
+description: Seed hoist state and the case's intended run outcome.
+variables:
+  reads:
+    - case_kind
+  writes:
+    - name: contract_tests_fail_on_base
+      type: boolean
+      description: Always true for these cases.
+      defaultValue: true
+    - name: contract_tests_passed
+      type: boolean
+      description: Seeded false; the run stub sets the case outcome.
+      defaultValue: false
+    - name: contract_test_failures
+      type: array
+      description: Cleared before the run stub.
+      defaultValue: []
+    - name: join_exit
+      type: string
+      description: Cleared before the join.
+      defaultValue: ""
+required: true
+steps:
+  - kind: action
+    id: seed
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: true
+      - action: set
+        target: contract_tests_passed
+        value: false
+      - action: set
+        target: contract_test_failures
+        value: []
+      - action: set
+        target: join_exit
+        value: ""
+exits:
+  - id: prepared
+    isDefault: true
+outcome:
+  - Hoist state is ready for the join
