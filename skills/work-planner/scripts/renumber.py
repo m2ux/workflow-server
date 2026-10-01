@@ -23,7 +23,7 @@ or onto a number it leaves out, is refused and nothing is written. So is a map t
 work a pull request names: a task whose id in --own links a pull request or commit, open or merged,
 or an epic a pull request
 in --prs names ([I07:E00] Purpose), since that is how its delivery is found. prs.json holds pull
-requests as JSON lines, as update.py takes them.
+requests as JSON lines, as sync.py takes them.
 
 After running: re-sort the renumbered table, update each affected issue title, check every range
 the script prints (a renumbered W04–W09 may not be contiguous), and grep the prose for references it

@@ -1,9 +1,9 @@
 """Bring a task, an epic or an initiative up to date with delivered work.
 
 Usage:
-  python3 update.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
-  python3 update.py issue-943.json --prs prs.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
-  python3 update.py issue-936.json --epics issue-943.json issue-937.json ...
+  python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
+  python3 sync.py issue-943.json --prs prs.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
+  python3 sync.py issue-936.json --epics issue-943.json issue-937.json ...
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
@@ -247,10 +247,10 @@ def main() -> int:
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
-    parser.add_argument('--fix', help='write the updated body here')
+    parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
     if (args.tick or args.link) and not args.fix:
-        sys.exit('--tick and --link need --fix, which holds the updated body')
+        sys.exit('--tick and --link need --fix, which holds the body')
 
     issue = json.loads(Path(args.issue).read_text())
     m = PREFIX.match(issue['title'])

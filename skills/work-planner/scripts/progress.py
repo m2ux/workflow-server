@@ -7,7 +7,7 @@ Usage:
 
 items.json is the board's items with the Status field, as board.py reads them; each item carries
 its issue whole, body included, and the script exits when no item carries Status. prs.json holds
-pull requests as JSON lines, as update.py reads them, from as many repositories as the board spans:
+pull requests as JSON lines, as sync.py reads them, from as many repositories as the board spans:
 a pull request is known by its URL, and cites an issue as board.py reads a citation. --initiatives
 gives initiative issues off the board, as `gh api repos/{owner}/{repo}/issues/946` returns them:
 they place their epics and describe their work as a board initiative does, and hold no Status.
@@ -73,7 +73,7 @@ from pathlib import Path
 
 from board import Board, Key, PREFIX, PULL_REF, cites, key_of, label, linked_issue, pages, status_of
 from format import LINK, cell, epic_name, id_cell, phrase
-from update import PR_REF, PULL_URL, Unreadable, pull_requests
+from sync import PR_REF, PULL_URL, Unreadable, pull_requests
 
 PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
             'priority: low': 4, 'priority: lowest': 5}
