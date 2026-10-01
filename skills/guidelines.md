@@ -4,7 +4,13 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 
 ## Frontmatter
 
-- **Fields.**  `name` and `description` only. `name` is kebab-case and matches the skill's folder.
+- **Fields.**
+  - `name` and `description`, and `hooks` when the skill declares a hook. No other field.
+  - `name` is kebab-case and matches the skill's folder.
+- **Hooks.**
+  - A skill declares a hook when a check it owns must run at every tool call that could break it, not only at a step its procedure names.
+  - The hook's command runs a script in the skill's own scripts folder, which exits at once on a call outside its check.
+  - Claude Code registers the hook when the skill is invoked and runs it for the rest of the session. Cursor ignores the field.
 - **Description.**
   - It states what the skill covers and the requests that call for it, as the phrases a user would say: "plan the work", "audit workflow X".
   - It carries at least one such phrase for each mode, since the description alone decides whether the skill loads.
