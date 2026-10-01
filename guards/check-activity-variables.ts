@@ -17,8 +17,8 @@
  *   unproduced-read    — a declared read of a name the workflow file owns with no defaultValue,
  *                        or an empty one, that no step of any activity produces and the server
  *                        does not seed. Nothing ever sets it, so every run reads it unset or empty.
- *   unread-write       — a declared write nothing reads: neither another activity's contract nor
- *                        the workflow file's own prose.
+  *   unread-write       — a declared write nothing reads: neither another activity's contract, the
+ *                        activity's own later steps, nor the workflow file's own prose.
  *   unreachable-read   — a read no path satisfies. `entry` means some path from the initial
  *                        activity arrives before any write; `re-entry` means the read sits on a
  *                        cycle no activity in the cycle writes, so a return visit reads the
@@ -467,6 +467,10 @@ export async function collectFindings(root: string): Promise<Finding[]> {
           });
           continue;
         }
+        // Own later steps count as readers for every activity, not only a fan branch: a working
+        // value consumed inside the activity that wrote it is read, and needs no other activity
+        // or a prose mention to hold the check.
+        if (record.derived.internalReads.has(name)) continue;
         if (readersOf.has(name) || proseReads.has(name) || record.derived.artifactWrites.has(name)) continue;
         if (engineInputs.has(name)) continue;
         findings.push({
