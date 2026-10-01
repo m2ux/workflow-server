@@ -44,6 +44,8 @@ E01 AC4, AC5 and AC8 trace to clause 3's routine work and to the user's directio
 - **Local unbound outputs.**
   An optional output a site leaves unbound is local to that use of the routine, renamed as an internal is, rather than dropped (E02 W04).
 - **Earlier decisions.**  The scan's [Decisions](scan.md#decisions) hold the report, prism, convergence, parallelism and contract-first choices.
+- **Prism child stays at the fan join (E03).**
+  Load-time L14 refuses `workflow-engine::handle-sub-workflow` on a fanned activity: a child session records one activity id while a fan holds several in flight. The full prism walk therefore runs at post-implementation review (the join); the structural-analysis fan branch runs the inline pass only.
 
 ## Delivery order
 
@@ -61,7 +63,3 @@ E01 W01 #1046 and W03 #1010 are delivered to `i10/main`. The [progress review](p
 - **Goal pass on the drafts.**  Every clause traces to an initiative criterion, and every initiative criterion to an epic row; the dependency check reported no problem after E02 W07's implied dependency and E04's missing E01 dependency were folded in.
 - **Audit rounds.**  The claim tables [pr1](pr1-claims.md), [pr2](pr2-claims.md) and [pr3](pr3-claims.md) record each delivery's audit rounds and sidecar walk.
 
-## Open questions
-
-- **A prism child inside a fan branch (E03).**
-  Whether a prism child session can be walked from inside a fan branch. Recommendation: a sidecar check before E03 W01, with the structural analysis kept at the join if it cannot.
