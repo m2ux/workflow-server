@@ -193,17 +193,40 @@ describe('activity-variables guard', () => {
     try {
       mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
       writeFileSync(join(root, 'wf', 'workflow.yaml'),
-        'id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\n');
+        'id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\n'
+        + 'graph:\n  thing:\n    done: __terminal__\n');
       writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'),
         'id: thing\nversion: 1.0.0\nname: Thing\nvariables:\n'
         + '  writes:\n    - name: phase_complete\n      type: boolean\n      defaultValue: false\n'
         + 'steps:\n  - kind: action\n    id: finish\n'
-        + '    actions:\n      - action: set\n        target: phase_complete\n        value: true\n');
+        + '    actions:\n      - action: set\n        target: phase_complete\n        value: true\n'
+        + 'exits:\n  - id: done\n    isDefault: true\n');
       expect(await collectFindings(root)).toEqual([{
         check: 'unread-write',
         site: 'wf :: thing',
         detail: "writes 'phase_complete', which nothing in this workflow reads",
       }]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('accepts a write whose only reader is a later step of the same activity', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-avars-own-read-'));
+    try {
+      mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
+      writeFileSync(join(root, 'wf', 'workflow.yaml'),
+        'id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\n'
+        + 'variables:\n  - name: scratch_flag\n    type: boolean\n    defaultValue: false\n'
+        + 'graph:\n  thing:\n    done: __terminal__\n');
+      writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'),
+        'id: thing\nversion: 1.0.0\nname: Thing\nvariables:\n'
+        + '  writes:\n    - name: scratch_flag\n      type: boolean\n      defaultValue: false\n'
+        + 'steps:\n  - kind: action\n    id: set-it\n'
+        + '    actions:\n      - action: set\n        target: scratch_flag\n        value: true\n'
+        + '  - kind: action\n    id: use-it\n    when: scratch_flag == true\n'
+        + 'exits:\n  - id: done\n    isDefault: true\n');
+      expect(await collectFindings(root)).toEqual([]);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
