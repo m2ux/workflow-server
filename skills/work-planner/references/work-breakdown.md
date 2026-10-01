@@ -75,7 +75,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 ## Problem and Proposal
 
 - **Friction.**
-  A Problem states the friction a person hits now. Its evidence is a count or a code link for that friction.
+  A Problem states the friction as it is now. Its evidence is a count or a code link for that friction.
 - **Plan ids.**
   A Problem or a Proposal names no epic, task, or acceptance criterion of its own initiative. That work has not happened, and the Work Breakdown table is where those references live.
 - **Evidence that may be cited.**
