@@ -338,6 +338,8 @@ Rule smells.
 
 ### AP-19. no-rule-protocol-restatement
 
+**Fires on:** `technique.rules`, `activity.rules`, `workflow.rules`, `technique.protocol`
+
 "The rule restates the protocol" / "a rule instructing work that no Protocol phase states"
 
 A rule carries procedure — copied from a protocol phase, or work no phase states yet.
@@ -349,6 +351,8 @@ A rule carries procedure — copied from a protocol phase, or work no phase stat
 **Fix:** Delete the rule where a phase already carries the work. Where the work is genuinely unstated, move it into `## Protocol` as a phase rather than leaving it in Rules — protocol is the procedural source either way. Keep any residual invariant the phases cannot express.
 
 ### AP-20. rule-group-disambiguation
+
+**Fires on:** `technique.rules`, `activity.rules`, `workflow.rules`
 
 "Explain why / Avoid attribution"
 
@@ -362,6 +366,8 @@ Apparently contradictory rules lack a disambiguating group key.
 
 ### AP-21. grouped-rule-keys
 
+**Fires on:** `technique.rules`, `activity.rules`, `workflow.rules`
+
 "code-foo, code-bar, code-baz"
 
 Shared-prefix rules sprawl as flat keys instead of a grouped array.
@@ -373,6 +379,8 @@ Shared-prefix rules sprawl as flat keys instead of a grouped array.
 **Fix:** Collapse into a grouped array under a key that replaces the prefix; use the schema's string|array rule union.
 
 ### AP-22. single-rule-authority
+
+**Fires on:** `workflow.rules`, `activity.rules`, `technique.rules`
 
 "This rule appears in the technique AND the activity AND the workflow" / "two entries in one `## Rules` block, bridged by `(same stance as …)`"
 
@@ -386,6 +394,8 @@ The same rule has more than one home — across levels, or twice within one rule
 
 ### AP-23. worker-rule-reach
 
+**Fires on:** `workflow.rules.workflow`, `activity.rules`, `technique.rules`
+
 "prefer gitnexus over grep" lifted to `workflow.yaml` / duplicated across techniques for worker visibility
 
 A worker-directed rule is mis-placed where workers never receive it.
@@ -398,6 +408,8 @@ A worker-directed rule is mis-placed where workers never receive it.
 
 ### AP-24. no-contradictory-rules
 
+**Fires on:** `technique.rules`, `activity.rules`, `workflow.rules`
+
 "status-proposed" AND "status-accepted-directly"
 
 Sibling rules in the same technique contradict each other.
@@ -409,6 +421,8 @@ Sibling rules in the same technique contradict each other.
 **Fix:** Identify the stale rule and remove or rewrite it so the set is logically consistent.
 
 ### AP-25. no-one-step-rules
+
+**Fires on:** `technique.rules`, `technique.protocol`
 
 "persist-output" rule on a technique with a "write-artifact" step
 
@@ -426,6 +440,8 @@ Definition-prose smells.
 
 ### AP-26. no-rationale-in-description
 
+**Fires on:** `workflow.description`, `activity.description`, `activity.steps[].message`, `activity.steps[].options[].description`, `activity.steps[].actions[].description`, `technique.protocol`, `technique.rules`, `activity.rules`, `workflow.rules`
+
 "Let me explain why this is here"
 
 Description fields carry rationale, process narration, or structural restatement.
@@ -437,6 +453,8 @@ Description fields carry rationale, process narration, or structural restatement
 **Fix:** Delete the rationale, narration, or restatement. Keep a clause whose deletion would lose a fact. Where a reader needs another actor's contract, link that contract's home. Put rationale in a commit, an ADR, or a planning doc.
 
 ### AP-27. validate-message-economy
+
+**Fires on:** `activity.steps[].actions[].message`
 
 "Without X, Y will happen"
 
@@ -450,6 +468,8 @@ A validate message justifies consequences instead of stating cause + fix only.
 
 ### AP-28. no-sequence-in-description
 
+**Fires on:** `workflow.description`, `activity.description`, `technique.capability`, `workflow.activities`, `workflow.graph`, `activity.steps`, `technique.protocol`
+
 "Workflow X first does A, then B, then C"
 
 Activity/step sequence is restated in description prose.
@@ -461,6 +481,8 @@ Activity/step sequence is restated in description prose.
 **Fix:** Remove the sequence prose from `description`.
 
 ### AP-29. no-user-env-mutation
+
+**Fires on:** `workflow.description`, `activity.description`, `technique.capability`, `activity.steps[].actions[].message`, `technique.protocol`, `activity.steps[].options`
 
 "Run 'git config --global ...'"
 
@@ -474,6 +496,8 @@ Workflow prose directs mutation of user-owned environment state.
 
 ### AP-30. role-rules-not-description
 
+**Fires on:** `workflow.description`, `activity.description`, `workflow.variables`, `activity.variables`, `workflow.rules`, `activity.rules`, `technique.rules`
+
 "The orchestrator coordinates only"
 
 Role/behaviour constraints sit in description instead of rules.
@@ -485,6 +509,8 @@ Role/behaviour constraints sit in description instead of rules.
 **Fix:** Move the role constraint into `rules:` on the owning construct, or drop it when that rule is already there.
 
 ### AP-31. no-hand-authored-artifacts
+
+**Fires on:** `activity`, `technique.outputs`
 
 "`artifacts: - id: evaluation-report / name: EVALUATION-REPORT.md / location: evaluation`"
 
@@ -498,6 +524,8 @@ Activity artifacts[] is hand-authored instead of synthesized from techniques.
 
 ### AP-32. outcome-names-value
 
+**Fires on:** `activity.outcome`
+
 "`EVALUATION-REPORT.md written with per-dimension findings…`" / "`Output directory created`" / "`dimension_plan … populated`"
 
 An outcome names the vessel (file/variable) instead of delivered value.
@@ -509,6 +537,8 @@ An outcome names the vessel (file/variable) instead of delivered value.
 **Fix:** Rewrite the outcome as the value delivered. Delete or fold an outcome whose only content is that a directory was created or a variable was populated.
 
 ### AP-33. no-set-of-technique-output
+
+**Fires on:** `activity.steps[].technique`, `activity.steps[].actions`, `technique.outputs`
 
 "`technique: …` + `set` of the technique's own product"
 
@@ -522,6 +552,8 @@ An activity set duplicates a bound technique's output.
 
 ### AP-34. no-valueless-control-set
 
+**Fires on:** `activity.steps[].actions`
+
 "control step `set` with `target` + `description`, no `value:`"
 
 Control sets carry no derived value.
@@ -533,6 +565,8 @@ Control sets carry no derived value.
 **Fix:** Bind a technique whose outputs/protocol own the derivation; delete the value-LESS activity sets.
 
 ### AP-35. no-intra-step-input-set
+
+**Fires on:** `activity.steps[].technique.inputs`, `activity.steps[].actions`
 
 "`commit_message: "docs({target_name}): …"` + same-step `set` of `target_name`"
 
@@ -546,6 +580,8 @@ A step set feeds that same step's own inputs.
 
 ### AP-36. techniques-list-disjoint
 
+**Fires on:** `activity.techniques`, `activity.steps[].technique`
+
 "`techniques: - workflow-engine::list-workflows …` with matching `step.technique`"
 
 Activity techniques[] overlaps step technique binds.
@@ -557,6 +593,8 @@ Activity techniques[] overlaps step technique binds.
 **Fix:** Remove every overlapping entry from activity `techniques[]`; keep only cross-cutting strategies; delete the block if none remain.
 
 ### AP-37. rule-audience-bucket
+
+**Fires on:** `workflow.rules.workflow`, `workflow.rules.activity`, `workflow.rules.universal`
 
 "`rules: workflow: - \"WORKER PERMISSIONS: Workers MUST write all artifacts directly …\"`"
 
@@ -570,6 +608,8 @@ A rule sits in the wrong rules.* audience bucket.
 
 ### AP-38. no-duplicate-technique-steps
 
+**Fires on:** `activity.steps[].technique`
+
 "`steps: - id: map-findings / technique: compare-finding-sets …` (×N)"
 
 N steps bind one technique without structural reason to split.
@@ -581,6 +621,8 @@ N steps bind one technique without structural reason to split.
 **Fix:** Collapse, loop, or split per that classification.
 
 ### AP-39. hoist-universal-techniques
+
+**Fires on:** `activity.techniques`, `workflow.techniques.activity`
 
 "every activity carries `techniques: - variable-binding`"
 
@@ -594,6 +636,8 @@ A universal technique is not hoisted to workflow.techniques.activity.
 
 ### AP-40. readme-orients-not-transcribes
 
+**Fires on:** `readme`
+
 "README `### NN. Activity` + `Steps:**` / checkpoints table / routing / `## Variables` / `## Rules` / estimated times" / "The workflow includes 27 resources… Each resource lives as `resources/<id>.md`"
 
 README transcribes YAML structure, inventory counts, or loader packaging instead of orienting.
@@ -605,6 +649,8 @@ README transcribes YAML structure, inventory counts, or loader packaging instead
 **Fix:** Delete the enumerations of steps, checkpoints, loops, exits, the graph, bindings, Variables, Rules, estimated times, inventory counts, and loader HOW. Keep diagrams and purpose orientation. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
 
 ### AP-41. avoidance-voice-in-definitions
+
+**Fires on:** `workflow.description`, `activity.description`, `activity.outcome`, `technique.capability`, `activity.steps[].options[].description`, `activity.steps[].actions[].description`, `readme`, `resource`
 
 "`Does not use inline content`" / "`Rather than X, the workflow now…`" / "`Never skip the checkpoint`"
 
