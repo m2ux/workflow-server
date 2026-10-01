@@ -23,7 +23,10 @@ Where assumptions or comprehension questions are settled, agent-resolvable conce
 | 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
 | 16 | [**Prism Decision**](./activities/README.md#prism-decision) | Settle whether structural analysis takes the full prism pipeline or the inline pass |
-| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | Manual diff review, code review, structural analysis, test review |
+| 17 | [**Code Review**](./activities/README.md#code-review) | Automated review fan branch — code findings |
+| 18 | [**Structural Analysis**](./activities/README.md#structural-analysis) | Automated review fan branch — inline structural pass |
+| 19 | [**Test Suite Review**](./activities/README.md#test-suite-review) | Automated review fan branch — coverage map and test findings |
+| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | Review fan join — manual diff gates, full prism when chosen, classify, fix cycle |
 | 11 | [**Validate**](./activities/README.md#11-validate) | Run tests, build, and lint checks |
 | 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | Ensure minimal, focused changes |
 | 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | Push PR, mark ready, handle reviewer feedback |
@@ -72,7 +75,12 @@ graph TD
     IMP -->|"done"| LCA
     LCA -->|"done"| PD["16 prism-decision"]
     PD -->|"remeasure"| PD
-    PD -->|"done"| PIR["10 post-impl-review"]
+    PD -->|"done"| CR["17 code-review"]
+    PD -->|"done"| SA["18 structural-analysis"]
+    PD -->|"done"| TSR["19 test-suite-review"]
+    CR -->|"done"| PIR["10 post-impl-review"]
+    SA -->|"done"| PIR
+    TSR -->|"done"| PIR
     PIR -->|"has-blocker"| IMP
     PIR -->|"done"| VAL["11 validate"]
     VAL -->|"done"| SR["12 strategic-review"]

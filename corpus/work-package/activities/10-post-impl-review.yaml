@@ -1,7 +1,7 @@
 id: post-impl-review
-version: 2.4.0
+version: 2.5.0
 name: Post-Implementation Review
-description: Review implementation quality before validation.
+description: Raise the manual diff review gates, take the full prism pipeline when chosen, classify the automated review fan's findings, and run the fix cycle.
 variables:
   reads:
     - base_branch
@@ -9,6 +9,7 @@ variables:
     - block_path
     - branch_name
     - changed_files
+    - code_review_outputs
     - commit_sha
     - component_git_dir
     - component_name
@@ -22,8 +23,10 @@ variables:
     - problem_statement
     - push_remote
     - requirements
+    - structural_analysis_outputs
     - target_path
     - target_repo
+    - test_suite_review_outputs
   writes:
     - name: coverage_gaps
       type: array
@@ -40,6 +43,9 @@ variables:
     - name: classified_findings
       type: array
       description: "The input findings, each carrying its assigned severity, its `action_tier`, and its `impact_axis` where one applies."
+    - name: code_review_report
+      type: object
+      description: Code review report from the review fan, or from a fix-cycle re-review.
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
@@ -118,6 +124,9 @@ variables:
       type: boolean
       description: Whether any test-suite finding is at or above the severity that warrants action.
       defaultValue: false
+    - name: test_suite_review_report
+      type: object
+      description: Test suite review report from the review fan, or from a fix-cycle re-review.
 required: true
 triggers:
   - workflow: prism
@@ -205,16 +214,22 @@ steps:
           - id: skip-block
             label: Skip this block
             description: The block carries no issue after all
-  - kind: technique
-    id: code-review
-    technique: review-code
-  - kind: technique
-    id: structural-analysis-inline
+  - kind: action
+    id: take-fan-reports
+    actions:
+      - action: set
+        target: code_review_report
+        value: "{code_review_outputs.0.result.code_review_report}"
+      - action: set
+        target: test_suite_review_report
+        value: "{test_suite_review_outputs.0.result.test_suite_review_report}"
+  - kind: action
+    id: take-inline-structural
     when: pipeline_mode != 'full-prism'
-    technique:
-      name: prism/structural-analysis
-      outputs:
-        structural_analysis: structural_findings
+    actions:
+      - action: set
+        target: structural_findings
+        value: "{structural_analysis_outputs.0.result.structural_findings}"
   - kind: action
     id: name-prism-target
     when: pipeline_mode == 'full-prism'
@@ -265,15 +280,6 @@ steps:
       name: prism/read-definitive-findings
       outputs:
         definitive_findings: structural_findings
-  - kind: routine
-    id: map-diff-coverage
-    routine: gitnexus::diff-coverage-map
-    outputs:
-      coverage_gaps: coverage_gaps
-      update_candidates: update_candidates
-  - kind: technique
-    id: test-suite-review
-    technique: review-test-suite
   - kind: technique
     id: classify-and-route-findings
     technique:

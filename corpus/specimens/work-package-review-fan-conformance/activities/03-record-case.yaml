@@ -1,0 +1,29 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the fan landed for the case just walked.
+variables:
+  reads:
+    - case_index
+    - case_outcomes
+    - code_review_report
+    - pipeline_mode
+    - structural_findings
+    - test_suite_review_report
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What each case's fan landed in the join's bare reports.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: more-cases
+    when: case_index < 2
+  - id: all-cases
+    isDefault: true
+outcome:
+  - One outcome per case walked
