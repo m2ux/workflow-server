@@ -15,7 +15,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion it cites is ticked. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, a row linked to a pull request naming another epic, rows sharing a pull request that do not Join each other, and work started while Open questions remain.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion it cites is ticked. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked.
@@ -109,7 +109,7 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
                 r[at] = linked
                 report['linked'].append(f"{task} → #{pr['number']}")
         ident = r[at]
-        joins = set(re.findall(r'W\d\d', cell(header, r, 'Join')))
+        joins = set(re.findall(r'W\d\d', cell(header, r, 'Joins')))
         pulls, commits, issue_numbers = [], False, []
         for found in LINK.finditer(ident):
             if '/commit/' in found[2]:
@@ -142,7 +142,7 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
     for number, group in by_pr.items():
         apart = [f'{a}+{b}' for a, ja in group for b, _ in group if a < b and b not in ja]
         if apart:
-            report['conflict'].append(f"#{number} delivers tasks that do not Join: {', '.join(apart)}")
+            report['conflict'].append(f"#{number} delivers tasks that do not name each other in Joins: {', '.join(apart)}")
     for number, pr in sorted(named.items()):
         if number in by_pr:
             continue

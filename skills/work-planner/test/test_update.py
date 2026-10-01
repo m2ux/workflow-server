@@ -141,19 +141,19 @@ class TaskLinks(unittest.TestCase):
 class DoneColumn(unittest.TestCase):
     def test_a_missing_done_column_is_added_empty(self):
         table = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
-                 '## Work Breakdown\n\n| Task | Description | Depends on | Join |\n| --- | --- | --- | --- |\n'
+                 '## Work Breakdown\n\n| Task | Description | Depends on | Joins |\n| --- | --- | --- | --- |\n'
                  '| W01 | Work → AC1 | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
                  '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
         review = Review(issue(2, '[I01:E00] First: Epic', body=table))
         fixed = review.run()
         self.assertIn('Work Breakdown columns added: Coverage, Done', review.fixed)
         self.assertIn('Coverage filled from the Description', review.fixed)
-        self.assertIn('| Task | Description | Coverage | Depends on | Join | Done |', fixed)
+        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Done |', fixed)
         self.assertIn('| W01 | Work | AC1 | | | |', fixed)
 
     def test_a_leading_done_column_moves_to_the_end(self):
         epic = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
-                '## Work Breakdown\n\n| Done | Task | Description | Depends on | Join |\n'
+                '## Work Breakdown\n\n| Done | Task | Description | Depends on | Joins |\n'
                 '| --- | --- | --- | --- | --- |\n'
                 '| [x] | W01 | Work → AC1 | | |\n\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
                 '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
@@ -170,7 +170,7 @@ class DoneColumn(unittest.TestCase):
 
     def test_a_note_after_the_criteria_stays_on_the_description(self):
         table = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
-                 '## Work Breakdown\n\n| Task | Description | Depends on | Join | Done |\n'
+                 '## Work Breakdown\n\n| Task | Description | Depends on | Joins | Done |\n'
                  '| --- | --- | --- | --- | --- |\n'
                  '| W01 | Reads count → AC1 ([#1053](https://github.com/o/r/pull/1053)) | | | ✓ |\n\n'
                  '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'

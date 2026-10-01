@@ -257,7 +257,7 @@ gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=41916763
 
 Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
 
-- It also reports dependencies listed twice or already implied, and Join pairs.
+- It also reports dependencies listed twice or already implied, and Joins pairs.
 - It reads bodies from [Fetch body](#fetch-body), or local drafts.
 
 ```bash

@@ -4,7 +4,7 @@ Usage:
   python3 deps.py [I=bodies/initiative.md] E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the agent-engineering Work Breakdown table:
-  | Task | Description | Coverage | Depends on | Join | Done |
+  | Task | Description | Coverage | Depends on | Joins | Done |
 A task's id links each pull request associated with it, open or merged:
   | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | AC1 | | | |
 Cells are read by column name, so the column order does not matter.
@@ -21,7 +21,7 @@ Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E
 Problems (exit status 1): unknown references, a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
 in the same cell already implies. A whole-epic dependency (E01) states intent, so its tasks are not
-reported as implied. Join problems: a task joining one that does not join it back, and two joined
+reported as implied. Joins problems: a task joining one that does not join it back, and two joined
 tasks where one depends on the other, directly or through a task outside the pair.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
 epics its tasks depend on, less those another named epic already depends on, and names no task.
@@ -64,7 +64,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
             if not re.fullmatch(r'W\d\d', wid):
                 continue
             rows[f'{epic}:{wid}'] = (row.get('Description', ''), row.get('Depends on', ''),
-                                     row.get('Join', ''))
+                                     row.get('Joins', ''))
 
     problems = []
     tasks = {}
@@ -163,7 +163,7 @@ def main(argv: list[str]) -> int:
                 problems.append(f'{key}: depends on later epic {d}')
         for a in acc:
             if a not in tasks:
-                problems.append(f'{key}: Join names unknown task {a}')
+                problems.append(f'{key}: Joins names unknown task {a}')
 
     graph = {k: [d for d in v[1] if d in tasks] for k, v in tasks.items()}
     state: dict[str, int] = {}

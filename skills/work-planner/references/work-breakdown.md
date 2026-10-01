@@ -7,7 +7,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 | Level | Columns |
 | --- | --- |
 | Initiative | `Epic \| Description \| Coverage \| Depends on \| Done` |
-| Epic | `Task \| Description \| Coverage \| Depends on \| Join \| Done` |
+| Epic | `Task \| Description \| Coverage \| Depends on \| Joins \| Done` |
 
 - **Done.**
   The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
@@ -34,7 +34,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
   - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
-- **Join.**
+- **Joins.**
   The tasks that can land in the same pull request as this one. Each lists the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
 
 ## Numbering
@@ -50,7 +50,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 ## Delivery
 
 - **Pull request scope.**
-  A pull request delivers one task, or a set of tasks that Join each other. A further pull request on a task that is not yet Done delivers that same task, or tasks that Join it.
+  A pull request delivers one task, or a set of tasks that name each other in Joins. A further pull request on a task that is not yet Done delivers that same task, or tasks that name it in Joins.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - Update mode finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.

@@ -18,7 +18,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - Run [Match pull requests](commands.md#match-pull-requests) for each epic.
    - **Unmatched.**  A merged pull request it reports names the epic, and no row links it yet.
    - **In flight.**  An open pull request it reports names the epic, and no row links it yet.
-   - Read its changes and description against the tasks' Descriptions, and name the tasks it works on: one task, or tasks that Join each other.
+   - Read its changes and description against the tasks' Descriptions, and name the tasks it works on: one task, or tasks that name each other in Joins.
    - Put any match that is not clear to the user.
 5. **Update each task issue.**
    - Run [Update task issue](commands.md#update-task-issue) when a merged pull request delivered it.
@@ -28,7 +28,7 @@ Records work on an initiative, its epics and their task issues: links each task 
 6. **Update each epic.**
    Run [Update epic](commands.md#update-epic), linking every match from step 4, open or merged, with the task issues. It reports:
    - **conflict.**
-     A row linked to a pull request whose title names another epic, or tasks sharing a pull request that do not Join each other. Put it to the user.
+     A row linked to a pull request whose title names another epic, or tasks sharing a pull request that do not name each other in Joins. Put it to the user.
    - **unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
    - **in flight.**  Open pull requests still linked from no row. Match them as in step 4.
    - **uncited.**
