@@ -18,97 +18,145 @@ Ordinals are stable. A new invariant is appended.
 
 ## 1. Workflows Ossify Patterns
 
+**Fires on:** `workflow`, `activity`, `technique`, `routine`
+
 A repeated procedure is a durable graph of activities. A circumstance has its own graph and rules; techniques and routines stay portable across graphs. The graph comes from repeated success in this practice, or from an external procedure already held as such. Novelty is a design update, or work outside the graph. Which construct holds one application is [A Routine Holds the Codified Path](#42-a-routine-holds-the-codified-path).
 
 ## 2. Internalize Before Producing
+
+**Fires on:** `*`
 
 Read the construct model — Goal, Workflow, Activity, Technique, Routine — the schema boundary, and the conventions already in the tree before writing content.
 
 ## 3. Define Complete Scope Before Execution
 
+**Fires on:** `*`
+
 List every file to create, modify, or remove, including the session edit root at `{target_path}`, before starting, and check that list again before claiming the work done.
 
 ## 4. Clarify Before Assuming
+
+**Fires on:** `*`
 
 When the request admits materially different interpretations, ask one question before acting.
 
 ## 5. Maximize Schema Expressiveness
 
+**Fires on:** `workflow`, `activity`, `technique`, `routine`
+
 Use the most specific construct the schema provides. A prose field (`description`, `outcome`, and their equivalents) states what the construct is, and does not restate structure the schema already holds.
 
 ## 6. One Authoritative Home
+
+**Fires on:** `*`
 
 Each operative fact has one statement. Resources hold fill and consult: templates, vocabularies, criteria, policy. Protocol holds cadence and how. Other layers cite that statement. A repeated copy exists only where delivery would not carry the statement, and that copy is not a second text to edit.
 
 ## 7. Convention Over Invention
 
+**Fires on:** `*`
+
 Search existing naming, field order, and structure before introducing a pattern.
 
 ## 8. Confirm Before Irreversible Changes
+
+**Fires on:** `*`
 
 A semi-reversible or irreversible change waits for explicit confirmation that includes the impact.
 
 ## 9. Encode Constraints as Structure
 
+**Fires on:** `activity.steps`, `activity.exits`, `workflow.rules`, `activity.rules`, `technique.rules`
+
 A critical constraint is a checkpoint, a condition, a validate action, or an exit `when`. Rule text does not enforce it.
 
 ## 10. Non-Destructive Updates
+
+**Fires on:** `*`
 
 Compare new content with what is there. A change that removes material names the removal and waits for explicit approval. A move that must keep an outcome is [A Relocation Records the Outcome It Keeps](#38-a-relocation-records-the-outcome-it-keeps).
 
 ## 11. Complete Documentation Structure
 
+**Fires on:** `readme`
+
 A workflow root, and each construct folder a reader can open, has a README that orients: purpose, flow, value, structure, and links. A parent README that already names that folder's files at file grain is that orientation.
 
 ## 12. Output Economy
+
+**Fires on:** `technique.outputs`, `activity.steps`, `resource`
 
 An artifact or a checkpoint states one fact for one declared audience, and links the home of every other fact.
 
 ## 13. Separate Contract from Procedure
 
+**Fires on:** `technique.inputs`, `technique.outputs`, `technique.protocol`, `technique.rules`
+
 On a technique, Inputs and Outputs state what the bound value is: meaning, shape, and allowed values. An Output may state how the value is recognised. Protocol states when and how, and refers to `{id}`. How attached to a value — a constraint, an order, a fallback, a side duty — is a Protocol step, or a Rule when it cuts across steps. A phase whose only work is projecting another output is not a phase.
 
 ## 14. Single Source of Truth
+
+**Fires on:** `workflow.variables`, `activity.steps`, `technique.inputs`
 
 Each fact of session state has one variable. Gates and technique inputs read that variable.
 
 ## 15. Phase by Sequenced Outcome
 
+**Fires on:** `technique.protocol`
+
 A Protocol phase is one outcome that finishes before the next begins, written as a `### N. Title` section with the work in bullets under it. Facets of that same outcome stay bullets. A partition that can be reordered or dropped without changing the sequence is not its own phase. What the heading is made of is [A Phase Heading Names the Outcome](#39-a-phase-heading-names-the-outcome).
 
 ## 16. Distinguish Designators from Parameters
+
+**Fires on:** `technique.protocol`
 
 In Protocol, a declared value is `{id}`, a technique argument name is italic, and the argument list sits in parentheses on the technique reference. Argument names stay out of braces and backticks.
 
 ## 17. Document in Positive Present
 
+**Fires on:** `workflow.description`, `activity.description`, `activity.outcome`, `activity.steps[].options`, `readme`
+
 Definition prose — `description`, `outcome`, option text, and README orientation for the defined workflow — states what the system is or does, in declarative present tense.
 
 ## 18. Prefer Shared Capability
+
+**Fires on:** `activity.steps`, `activity.techniques`, `workflow.techniques`, `technique`
 
 When a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. A local recipe exists when the shared surface cannot absorb the caller's diversity. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work).
 
 ## 19. Name Symbols Affirmatively
 
+**Fires on:** `technique.inputs`, `technique.outputs`, `technique.rules`, `workflow.variables`, `activity.variables`
+
 A symbol id states what the value is: affirmative, head noun last, `snake_case`. A boolean is a predicate, a collection is a plural, and an I/O id carries neither direction nor representation. A rule slug states a positive invariant when that is clearer than a negation.
 
 ## 20. Keep Orchestration in Structure
+
+**Fires on:** `activity.steps`, `activity.exits`, `workflow.graph`, `technique.capability`, `technique.protocol`, `technique.rules`
 
 An activity owns its stage, checkpoints, and exits, and the workflow graph binds each exit to what runs next. A technique produces values and durable evidence, and does not name the activity flow or the gates that consume its outputs.
 
 ## 21. Match the Harness Surface
 
+**Fires on:** `technique`, `resource`, `readme`
+
 Tool names, return shapes, and bootstrap paths in techniques and docs match the harness. Guidance about a tool's behaviour has one home. What a phase may claim about a response is [A Phase States Answers the Tool Has Returned](#41-a-phase-states-answers-the-tool-has-returned).
 
 ## 22. Modular Over Inline
+
+**Fires on:** `workflow`, `activity`, `technique`, `resource`, `routine`
 
 A construct lives in its own file. A parent references that file.
 
 ## 23. Close the Loop
 
+**Fires on:** `*`
+
 When implementation is in scope, a recommendation is followed by the action, or by an explicit stop.
 
 ## 24. Keep Session Interaction in Activities
+
+**Fires on:** `technique`, `activity.steps`
 
 A technique takes inputs, works over tools and resources, and emits outputs. An activity owns when and how those products reach a person: `action: message`, checkpoint `message` and `options`, and artifact links.
 
