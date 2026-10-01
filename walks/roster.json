@@ -165,6 +165,10 @@
     {
       "id": "gitnexus-radius-conformance",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that the gitnexus library's reach run answers for every member of a group, each answer naming its graph and the instruments that answered, which the reference guards and a sidecar change-surface walk measure."
+    },
+    {
+      "id": "work-package-assumptions-review-conformance",
+      "reason": "Its gates are the borrowed work-package assumptions review's, whose options the work-package walk covers. What the specimen evidences is the review under an implementation case and a review case, which its sidecar case walk measures."
     }
   ]
 }
