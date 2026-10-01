@@ -7,7 +7,7 @@ metadata:
 
 # Convention Conformance
 
-Operative checklist for comparing drafted content to reference workflows of similar type. Pair with live reference workflows as the pattern baseline; this resource does not replace reading those files.
+Operative checklist for comparing drafted content to reference workflows of similar type. Pair with live reference workflows as the pattern baseline; this resource does not replace reading those files. A `##` section's Fires-on line follows the [Fires-on line](./anti-patterns.md#fires-on-line) rule.
 
 ## Reference Conventions
 
