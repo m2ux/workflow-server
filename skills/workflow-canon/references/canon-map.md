@@ -14,7 +14,7 @@ Read the enumeration from the home at the commit audited, with [List units](comm
 | Guards | One registry entry in `guards/guards.ts` |
 
 - Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
-- The catalog's first family binds when the change edits `anti-patterns.md`. Otherwise it is `not-applicable`, with that reason.
+- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.
 
 ## Prior judgements
 
@@ -30,7 +30,7 @@ An entry can fire against an instance a surface has already judged. Read that su
 
 ## File kinds
 
-Every unit binds until its own text excludes the file kind. `not-applicable` records that wording.
+A unit binds the constructs its Fires-on line names. Author runs [List units for a construct](commands.md#list-units-for-a-construct) once for each construct a draft writes, and loads the units it prints. Audit walks every unit the [unit inventory](#unit-inventory) names, whatever the lines say. On an Audit, `not-applicable` records a unit's own wording that excludes the file in hand.
 
 ## Covering entries
 

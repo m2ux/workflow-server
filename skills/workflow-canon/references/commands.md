@@ -5,6 +5,7 @@ Every command the skill runs, one spec per operation. The mode files name a spec
 - **Where they run.**
   - `git` and `npm` commands run in the server checkout.
   - Searches of `corpus/` run in the corpus tree.
+  - Edit guard commands run in the workspace root.
 - **Branch point.**  Take the verdict at the branch point, and hold that checkout still for the run.
 - **Exit codes.**
   - Read the check's own exit code. A pipe reports the filter's.
@@ -64,6 +65,18 @@ Lists a home's `##` units, then its `###` entries, with their line numbers.
 ```bash
 grep -n "^## " corpus/canon/resources/anti-patterns.md
 grep -n "^### " corpus/canon/resources/anti-patterns.md
+```
+
+### List units for a construct
+
+Prints every canon unit that fires on one construct id, with its file and line.
+
+- The id is a construct a draft writes: a bare kind, a field path, `resource`, `readme`, or `*`.
+- A unit is listed when it declares that id, a prefix of it, its bare kind, or `*`.
+- Runs in the server checkout. `--root` names the corpus tree. The listing is printed and not stored.
+
+```bash
+npx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>
 ```
 
 ### Fetch unit
@@ -134,4 +147,34 @@ Checks whether a walk still reaches every option and exit.
 
 ```bash
 npm run test:coverage-walk
+```
+
+## Edit guard
+
+### Run the edit guard
+
+Runs the corpus guards over an edited definition's corpus tree, and reports the failures its branch introduced, as the hook does after each edit.
+
+- **Input.**
+  - The hook's JSON on stdin. `tool_input.file_path` names the edited file, and a relative path resolves against `cwd`.
+  - Only a corpus definition file runs a guard: a `workflow.yaml`, a README, or a file under `activities/`, `routines/`, `techniques/` or `resources/`, beneath `corpus/` of a corpus tree.
+- **Measure.**
+  - The guards run in `.project/main`, with `--root` naming the file's corpus tree.
+  - A failing run is compared with a run at the branch point: the nearest merge-base with `origin/workflows` and each `origin/iNN/workflows`.
+  - The branch point's run is cached in `.project/main/.guard-cache`, by branch point and server HEAD. A server checkout with uncommitted changes caches nothing.
+- **Exits.**
+  - 0 when no guard runs, every guard is clean, or every failure is present at the branch point.
+  - 2 with the introduced failures on stderr, or with the reason the run cannot measure.
+- **Flags.**  `--server`, `--guards` and `--cache` replace the server checkout, guard runner and cache folder.
+
+```bash
+echo '{"tool_input": {"file_path": ".project/workflows/corpus/work-package/workflow.yaml"}}' | python3 skills/workflow-canon/scripts/edit_guard.py
+```
+
+### Run the edit guard tests
+
+Drives the edit guard over seeded edits in temporary git repositories, with a stub guard runner in place of the server.
+
+```bash
+cd skills/workflow-canon && python3 -m unittest discover -s test
 ```
