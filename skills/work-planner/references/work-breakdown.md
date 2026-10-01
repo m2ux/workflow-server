@@ -6,22 +6,26 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 
 | Level | Columns |
 | --- | --- |
-| Initiative | `Epic \| Description \| Depends on \| Done` |
-| Epic | `Task \| Description \| Depends on \| Join \| Done` |
+| Initiative | `Epic \| Description \| Acceptance Coverage \| Depends on \| Done` |
+| Epic | `Task \| Description \| Acceptance Coverage \| Depends on \| Join \| Done` |
 
 - **Done.**
   The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
-  - A task row is complete when it is delivered and every acceptance criterion it cites is ticked.
+  - A task row is complete when it is delivered and every criterion its Acceptance Coverage names is ticked.
   - An epic row is complete when its issue is closed as completed, which is when every one of its criteria is ticked and every one of its tasks is delivered.
-  - A merged pull request that leaves any criterion a task cites unmet leaves that task's cell empty. The task takes further pull requests until they hold.
+  - A merged pull request that leaves any criterion its Acceptance Coverage names unmet leaves that task's cell empty. The task takes further pull requests until they hold.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
   - An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task.
   - A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion or evidence of its own.
 - **Description.**
-  A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail, ending with the acceptance criteria the row delivers. Every criterion is delivered by at least one row.
-  - In an epic: the row cites the epic's acceptance criteria (`… → AC2, AC5`), so an agent working the task knows which criteria it must meet. Each detail is a criterion stating one invariant.
-  - In an initiative: the phrase is the epic's title name, the part before the colon (`[I07:E01] Formal Specification: …` gives `Formal Specification → AC4, AC5`), so the table and the epic name the work alike. The row cites the initiative's criteria the epic serves, so each traces to its epics.
+  A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail.
+  - In an epic: each detail is a criterion stating one invariant.
+  - In an initiative: the phrase is the epic's title name, the part before the colon (`[I07:E01] Formal Specification: …` gives `Formal Specification`), so the table and the epic name the work alike.
+- **Acceptance Coverage.**
+  The acceptance criteria the row delivers, `AC2, AC5`, and nothing else. Every criterion is delivered by at least one row.
+  - In an epic: the epic's criteria the task must meet.
+  - In an initiative: the initiative's criteria the epic serves, so each traces to its epics.
 - **Depends on.**
   References only, with no prose, and only what no other entry in the cell already implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).

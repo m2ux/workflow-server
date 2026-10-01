@@ -31,7 +31,7 @@ Checks existing initiative, epic, task and standalone issues against the templat
    - an initiative criterion that carries a count: measure it against a named baseline or check;
    - an initiative criterion that names no instrument: name its instrument, and plan any missing test, as the goal pass's Verified rule defines;
    - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming what the row delivers, and restate any detail no cited criterion carries as a new criterion of one invariant, cited by the row;
-   - a Description cell without criteria: map the row to the criteria it delivers, from its text and each criterion's wording; a criterion no row delivers needs a row, or belongs in another epic;
+   - an Acceptance Coverage cell that does not name the criteria the row delivers: map the row to them, from its text and each criterion's wording; a criterion no row delivers needs a row, or belongs in another epic;
    - a criterion that may state several invariants: split it, adding each new criterion at the end of the list, and cite it from the rows that deliver it;
    - prose in the Work Breakdown outside its table: move any design content into the Proposal, and drop narration of order and its reasons;
    - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics [Check dependencies](commands.md#check-dependencies) derives with `I=`;

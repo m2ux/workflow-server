@@ -16,9 +16,9 @@
 
 ## Work Breakdown
 
-| Epic | Description | Depends on | Done |
-| --- | --- | --- | --- |
-| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{The epic's title name, the part before the colon}} → AC{{n}}, AC{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} | |
+| Epic | Description | Acceptance Coverage | Depends on | Done |
+| --- | --- | --- | --- | --- |
+| [E00](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) | {{The epic's title name, the part before the colon}} | AC{{n}}, AC{{m}} | {{[Exx](…), the other epics this epic's tasks depend on}} | |
 
 ## Acceptance Criteria
 
