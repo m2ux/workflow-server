@@ -52,11 +52,12 @@
  *   `malformed-declaration` — a near-miss marker, or ids that are not comma-separated code spans.
  *   `missing-line`          — an anti-pattern entry, numbered principle, or convention section carries no Fires-on line.
  *   `repeated-line`         — that unit carries more than one Fires-on line.
- *   `misplaced-line`        — its Fires-on line is not the first text under its title.
+ *   `misplaced-line`        — an anti-pattern line is not after the opening prose and before Detect, a principle line is not after the prose, or a convention line is not directly under its title.
  *   `missing-home`          — a canon home absent from the corpus, whose declarations nothing reads.
  *
- * A family heading and a Creation Rule carry no line. The line sits under the title with only blank
- * lines between them.
+ * A family heading and a Creation Rule carry no line. An anti-pattern entry's line is the last text
+ * before Detect, with opening prose above it. A principle's line is the last text of its section,
+ * with its prose above it. A convention section's line is the first text under its title.
  *
  * A corpus holding none of the homes has nothing to measure, and the guard exits unmeasured.
  *
@@ -301,8 +302,8 @@ function declares(path: string, line: string): boolean {
 }
 
 /**
- * One line directly under each declaring heading. A missing line is sited at the heading, a further
- * line at that line, and a line after other text at the line.
+ * Where each home's one Fires-on line sits. A missing line is sited at the heading, a further line
+ * at that line, and a line in the wrong slot at the line.
  */
 function placementFindings(path: string, text: string): Finding[] {
   const lines = toLines(text.replace(/^\uFEFF/, ''));
@@ -328,24 +329,18 @@ function placementFindings(path: string, text: string): Finding[] {
     }
   }
   for (const unit of units) {
-    let first = -1;
-    for (let index = unit.at + 1; index < lines.length; index++) {
-      if (hidden(index)) continue;
-      if (HEADING.test(lines[index] ?? '')) break;
-      if ((lines[index] ?? '').trim() === '') continue;
-      first = index;
-      break;
-    }
     const site = `${path}:${unit.at + 1}`;
     if (unit.decls.length === 0) {
       findings.push({ check: 'missing-line', site, detail: `'${unit.name}' carries no Fires-on line` });
       continue;
     }
-    if (first !== unit.decls[0]) {
+    const slot = declarationSlot(path, lines, hidden, unit.at);
+    const prose = proseBefore(lines, hidden, unit.at + 1, unit.decls[0]!);
+    if (slot !== unit.decls[0] || (path !== CANON_HOMES[2] && !prose)) {
       findings.push({
         check: 'misplaced-line',
         site: `${path}:${unit.decls[0]! + 1}`,
-        detail: `'${unit.name}' carries its Fires-on line after other text`,
+        detail: `'${unit.name}' ${misplacedDetail(path)}`,
       });
     }
     for (const extra of unit.decls.slice(1)) {
@@ -357,6 +352,73 @@ function placementFindings(path: string, text: string): Finding[] {
     }
   }
   return findings;
+}
+
+/** The index where this home's Fires-on line belongs, or -1 when the slot cannot be read. */
+function declarationSlot(
+  path: string,
+  lines: string[],
+  hidden: (index: number) => boolean,
+  heading: number,
+): number {
+  const end = sectionEnd(lines, hidden, heading + 1);
+  if (path === CANON_HOMES[2]) return firstContent(lines, hidden, heading + 1, end);
+  if (path === CANON_HOMES[0]) {
+    const detect = markerAt(lines, hidden, heading + 1, end, '**Detect:**');
+    return detect < 0 ? -1 : lastContent(lines, hidden, heading + 1, detect);
+  }
+  return lastContent(lines, hidden, heading + 1, end);
+}
+
+function misplacedDetail(path: string): string {
+  if (path === CANON_HOMES[0]) return 'carries its Fires-on line other than after its opening prose and before Detect';
+  if (path === CANON_HOMES[1]) return 'carries its Fires-on line other than after its prose';
+  return 'carries its Fires-on line other than directly under its title';
+}
+
+function sectionEnd(lines: string[], hidden: (index: number) => boolean, from: number): number {
+  for (let index = from; index < lines.length; index++) {
+    if (hidden(index)) continue;
+    if (HEADING.test(lines[index] ?? '')) return index;
+  }
+  return lines.length;
+}
+
+function firstContent(lines: string[], hidden: (index: number) => boolean, from: number, until: number): number {
+  for (let index = from; index < until; index++) {
+    if (hidden(index)) continue;
+    if ((lines[index] ?? '').trim() === '') continue;
+    return index;
+  }
+  return -1;
+}
+
+function lastContent(lines: string[], hidden: (index: number) => boolean, from: number, until: number): number {
+  let found = -1;
+  for (let index = from; index < until; index++) {
+    if (hidden(index)) continue;
+    if ((lines[index] ?? '').trim() === '') continue;
+    found = index;
+  }
+  return found;
+}
+
+function markerAt(lines: string[], hidden: (index: number) => boolean, from: number, until: number, marker: string): number {
+  for (let index = from; index < until; index++) {
+    if (hidden(index)) continue;
+    if ((lines[index] ?? '').startsWith(marker)) return index;
+  }
+  return -1;
+}
+
+function proseBefore(lines: string[], hidden: (index: number) => boolean, from: number, decl: number): boolean {
+  for (let index = from; index < decl; index++) {
+    if (hidden(index)) continue;
+    const line = lines[index] ?? '';
+    if (line.trim() === '' || line.startsWith(DECLARATION_MARKER)) continue;
+    return true;
+  }
+  return false;
 }
 
 /** Every finding in the given canon texts, judged against the given schemas. */

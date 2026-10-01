@@ -580,11 +580,11 @@ describe('fires-on-ids guard', () => {
 
   describe('sites a finding', () => {
     it('at home:line, naming the unit by its nearest heading', () => {
-      const text = '# Catalog\n\n## Group\n\n### AP-01. first-unit\n\n**Fires on:** `resource`\n\n'
-        + '### AP-02. second-unit\n\n**Fires on:** `nosuch.id`\n';
+      const text = '# Catalog\n\n## Group\n\n### AP-01. first-unit\n\nOpening.\n\n**Fires on:** `resource`\n\n**Detect:** Fine.\n\n'
+        + '### AP-02. second-unit\n\nOpening.\n\n**Fires on:** `nosuch.id`\n\n**Detect:** Fine.\n';
       const findings = findingsFor(text);
       expect(findings).toHaveLength(1);
-      expect(findings[0]!.site).toBe(`${HOME}:11`);
+      expect(findings[0]!.site).toBe(`${HOME}:17`);
       expect(findings[0]!.detail).toContain("'AP-02. second-unit'");
     });
 
@@ -705,18 +705,24 @@ describe('fires-on-ids guard', () => {
       expect(checks(conventions, '# Convention Conformance\n\n## Reference Conventions\n\n| Concern |\n')).toEqual(['missing-line']);
     });
 
-    it('fails a second line, and a line after other text', () => {
-      const repeated = '### AP-01. name\n\n**Fires on:** `activity`\n\n**Fires on:** `technique`\n';
+    it('fails a second line, and a line that leads the entry', () => {
+      const repeated = '### AP-01. name\n\n"quote"\n\n**Fires on:** `activity`\n\n**Detect:** The mismatch.\n\n**Fires on:** `technique`\n';
       expect(checks(anti, repeated)).toEqual(['repeated-line']);
-      const misplaced = '### AP-01. name\n\n"quote"\n\n**Fires on:** `activity`\n';
-      const findings = checkFiresOn([{ path: anti, text: misplaced }], schemas);
+      const leading = '### AP-01. name\n\n**Fires on:** `activity`\n\n"quote"\n\n**Detect:** The mismatch.\n';
+      const findings = checkFiresOn([{ path: anti, text: leading }], schemas);
       expect(findings.map((finding) => finding.check)).toEqual(['misplaced-line']);
-      expect(findings[0]!.site).toBe(`${anti}:5`);
+      expect(findings[0]!.detail).toContain('before Detect');
     });
 
-    it('accepts one line as the first text under the title', () => {
-      const text = '### AP-01. name\n\n**Fires on:** `activity`, `technique`\n\n"quote"\n';
+    it('accepts one line after the opening prose and before Detect', () => {
+      const text = '### AP-01. name\n\n"quote"\n\nThe failure.\n\n**Fires on:** `activity`, `technique`\n\n**Detect:** The mismatch.\n';
       expect(checks(anti, text)).toEqual([]);
+    });
+
+    it('accepts a principle line after its prose, and a convention line under its title', () => {
+      expect(checks(principles, '## 1. Name\n\nA graph.\n\n**Fires on:** `workflow`\n')).toEqual([]);
+      expect(checks(principles, '## 1. Name\n\n**Fires on:** `workflow`\n\nA graph.\n')).toEqual(['misplaced-line']);
+      expect(checks(conventions, '## Reference Conventions\n\n**Fires on:** `workflow`\n\n| Concern |\n')).toEqual([]);
     });
   });
 });
