@@ -705,8 +705,8 @@ export async function deriveActivityContract(args: {
       for (const output of routine?.outputs ?? []) {
         const argument = step.with?.[output.id];
         if (!inputIds.has(output.id) || step.outputs?.[output.id] !== undefined) continue;
-        if (typeof argument !== 'string' || !/^\{[^{}]+\}$/.test(argument)) continue;
-        const target = bagName(argument.slice(1, -1));
+        if (typeof argument !== 'string' || !/^\{[A-Za-z_][A-Za-z0-9_]*\}$/.test(argument)) continue;
+        const target = argument.slice(1, -1);
         write(target);
         operationWrites.add(target);
       }

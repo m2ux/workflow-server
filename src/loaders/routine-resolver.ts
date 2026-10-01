@@ -32,11 +32,12 @@
  *   the arguments   an argument naming no declared input; an output binding naming no declared
  *                   output; an output left unbound whose declaration does not permit it; an
  *                   technique parameter with no argument, or one bound to something that is not a
- *                   literal reference
+ *                   literal reference; an id declared as both an input and an output whose argument
+ *                   is missing, a literal, or a member, or whose output binding names another
+ *                   variable
  *   the body        a parameter standing where the `when` dialect takes a value; a substitution
  *                   carrying a quote into that position; an operand the dialect cannot read beside a
- *                   parameter the site bound to a literal; a loop iterating or binding its item to a
- *                   dropped output; an action targeting one
+ *                   parameter the site bound to a literal
  *   the result      two reference steps whose materialised ids collide; a reference block the step
  *                   schema does not admit, which reaches the splice through the raw text path
  *
@@ -152,16 +153,14 @@ export function resolveRoutine(
  * `rename` and `reference` differ only in where they came from — an output binding or a braced
  * argument — and both carry a name, so a braced token keeps its braces and a bare name position
  * takes the name. A `literal` contributes its characters instead: a braced token loses its braces,
- * because rewriting the token root would emit a reference to a variable nothing writes. A `drop`
- * removes the binding that carries it.
+ * because rewriting the token root would emit a reference to a variable nothing writes.
  *
  * A declared input a reference site leaves unbound, with no default, has NO entry: it substitutes to
  * itself, which is what makes it take the host's value under the same spelling.
  */
 type Substitution =
   | { kind: 'name'; name: string }
-  | { kind: 'literal'; value: string | number | boolean }
-  | { kind: 'drop' };
+  | { kind: 'literal'; value: string | number | boolean };
 
 type SubstitutionMap = ReadonlyMap<string, Substitution>;
 
@@ -182,11 +181,9 @@ interface SiteBinding {
   techniques: OperationMap;
 }
 
-/** The name a substitution puts in a bare-name position. A dropped binding has none. */
-function substitutedName(substitution: Substitution): string | undefined {
-  if (substitution.kind === 'name') return substitution.name;
-  if (substitution.kind === 'literal') return String(substitution.value);
-  return undefined;
+/** The name a substitution puts in a bare-name position. */
+function substitutedName(substitution: Substitution): string {
+  return substitution.kind === 'name' ? substitution.name : String(substitution.value);
 }
 
 /** A reference's head: `current_unit.mode` addresses `current_unit`. */
@@ -195,13 +192,11 @@ function head(reference: string): string {
 }
 
 /** Rewrite the head of a dotted bag reference, keeping the tail. */
-function renameHead(reference: string, map: SubstitutionMap): string | undefined {
+function renameHead(reference: string, map: SubstitutionMap): string {
   const segments = reference.split('.');
   const substitution = map.get(segments[0]!);
   if (!substitution) return reference;
-  const name = substitutedName(substitution);
-  if (name === undefined) return undefined;
-  return [name, ...segments.slice(1)].join('.');
+  return [substitutedName(substitution), ...segments.slice(1)].join('.');
 }
 
 const TOKEN_RE = /\{([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*)\}/g;
@@ -226,7 +221,6 @@ function substituteTokens(text: string, map: SubstitutionMap): string {
     const substitution = map.get(head(reference));
     if (!substitution) return match;
     if (substitution.kind === 'literal') return String(substitution.value);
-    if (substitution.kind === 'drop') return match;
     return `{${[substitution.name, ...reference.split('.').slice(1)].join('.')}}`;
   });
 }
@@ -391,7 +385,7 @@ function substituteExpression(expression: string, map: SubstitutionMap, context:
       index = fold.end;
       continue;
     }
-    out += renameHead(identifier, map) ?? identifier;
+    out += renameHead(identifier, map);
     index += identifier.length;
   }
   return out;
@@ -400,8 +394,7 @@ function substituteExpression(expression: string, map: SubstitutionMap, context:
 /** Rewrite a structured condition's variable references, at any nesting depth. */
 function substituteCondition(condition: Condition, map: SubstitutionMap): Condition {
   if (condition.type === 'simple') {
-    const variable = renameHead(condition.variable, map);
-    return { ...condition, variable: variable ?? condition.variable };
+    return { ...condition, variable: renameHead(condition.variable, map) };
   }
   if (condition.type === 'not') {
     return { ...condition, condition: substituteCondition(condition.condition, map) };
@@ -413,28 +406,23 @@ function substituteCondition(condition: Condition, map: SubstitutionMap): Condit
  * Rewrite a binding value — a technique step input, a `with` argument, an action value.
  *
  * A value that is exactly one token is the whole binding, so a literal argument contributes its
- * characters unbraced; a longer string keeps its shape and only its tokens move. A value whose whole
- * binding resolves to a dropped output removes the binding, which is what `undefined` reports.
+ * characters unbraced; a longer string keeps its shape and only its tokens move.
  */
 function substituteBindingValue(
   value: string | number | boolean,
   map: SubstitutionMap,
-): string | number | boolean | undefined {
+): string | number | boolean {
   if (typeof value !== 'string') return value;
   const whole = /^\{([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)*)\}$/.exec(value);
   if (whole) {
     const substitution = map.get(head(whole[1]!));
     if (!substitution) return value;
-    if (substitution.kind === 'drop') return undefined;
     if (substitution.kind === 'literal') return substitution.value;
     return `{${[substitution.name, ...whole[1]!.split('.').slice(1)].join('.')}}`;
   }
   // A bare value naming a declared name is a rename of that name; anything else is a literal.
   const bare = map.get(value);
-  if (bare && !value.includes('{')) {
-    if (bare.kind === 'drop') return undefined;
-    return substitutedName(bare)!;
-  }
+  if (bare && !value.includes('{')) return substitutedName(bare);
   return substituteTokens(value, map);
 }
 
@@ -465,16 +453,8 @@ function substituteStep(step: Step, siteBinding: SiteBinding, context: string): 
   if (step.kind === 'loop') {
     if (step.continueWhile) out['continueWhile'] = substituteCondition(step.continueWhile, map);
     if (step.breakCondition) out['breakCondition'] = substituteCondition(step.breakCondition, map);
-    if (step.over) {
-      const over = renameHead(step.over, map);
-      if (over === undefined) throw new RoutineResolutionError(`${context}: loop '${step.id}' iterates a dropped output.`);
-      out['over'] = over;
-    }
-    if (step.variable) {
-      const variable = renameHead(step.variable, map);
-      if (variable === undefined) throw new RoutineResolutionError(`${context}: loop '${step.id}' binds its item to a dropped output.`);
-      out['variable'] = variable;
-    }
+    if (step.over) out['over'] = renameHead(step.over, map);
+    if (step.variable) out['variable'] = renameHead(step.variable, map);
     out['steps'] = (step.steps as Step[]).map((nested) => substituteStep(nested, siteBinding, context));
   }
 
@@ -494,20 +474,11 @@ function substituteStep(step: Step, siteBinding: SiteBinding, context: string): 
     if (step.message) out['message'] = substituteTokens(step.message, map);
     for (const option of step.options ?? []) {
       const effect = option.effect;
-      if (effect?.recordReply) {
-        const target = renameHead(effect.recordReply, map);
-        // A gate asking for typed text has nowhere to put it once its variable is dropped.
-        if (target === undefined) {
-          throw new RoutineResolutionError(`${context}: option '${option.id}' of checkpoint '${step.id}' records its typed reply in a dropped output.`);
-        }
-        effect.recordReply = target;
-      }
+      if (effect?.recordReply) effect.recordReply = renameHead(effect.recordReply, map);
       if (!effect?.setVariable) continue;
       const rewritten: Record<string, unknown> = {};
       for (const [name, value] of Object.entries(effect.setVariable)) {
-        const target = renameHead(name, map);
-        if (target === undefined) continue; // a dropped output writes nothing
-        rewritten[target] = typeof value === 'string' ? substituteTokens(value, map) : value;
+        rewritten[renameHead(name, map)] = typeof value === 'string' ? substituteTokens(value, map) : value;
       }
       effect.setVariable = rewritten;
     }
@@ -517,11 +488,7 @@ function substituteStep(step: Step, siteBinding: SiteBinding, context: string): 
     for (const action of step.actions ?? []) {
       if (action.condition) action.condition = substituteCondition(action.condition, map);
       if (action.action === 'validate' && action.target) action.target = substituteExpression(action.target, map, context);
-      else if (action.target) {
-        const target = renameHead(action.target, map);
-        if (target === undefined) throw new RoutineResolutionError(`${context}: action on step '${step.id}' targets a dropped output.`);
-        action.target = target;
-      }
+      else if (action.target) action.target = renameHead(action.target, map);
       if (action.message) action.message = substituteTokens(action.message, map);
       if (typeof action.value === 'string') action.value = substituteTokens(action.value, map);
     }
@@ -537,27 +504,17 @@ function substituteStep(step: Step, siteBinding: SiteBinding, context: string): 
   return step;
 }
 
-/** Rewrite the values of a binding map, dropping an entry whose value resolves to a dropped output. */
+/** Rewrite the values of a binding map. */
 function substituteValueMap(
   values: Record<string, string | number | boolean>,
   map: SubstitutionMap,
 ): Record<string, string | number | boolean> {
-  const out: Record<string, string | number | boolean> = {};
-  for (const [key, value] of Object.entries(values)) {
-    const substituted = substituteBindingValue(value, map);
-    if (substituted !== undefined) out[key] = substituted;
-  }
-  return out;
+  return Object.fromEntries(Object.entries(values).map(([key, value]) => [key, substituteBindingValue(value, map)]));
 }
 
-/** Rewrite the target names of an output map, dropping an entry naming a dropped output. */
+/** Rewrite the target names of an output map. */
 function substituteTargetMap(targets: Record<string, string>, map: SubstitutionMap): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const [key, target] of Object.entries(targets)) {
-    const renamed = renameHead(target, map);
-    if (renamed !== undefined) out[key] = renamed;
-  }
-  return out;
+  return Object.fromEntries(Object.entries(targets).map(([key, target]) => [key, renameHead(target, map)]));
 }
 
 // ---------------------------------------------------------------------------
@@ -654,7 +611,7 @@ function bindReference(
     if (argument !== undefined) {
       const braced = typeof argument === 'string' && /^\{[^{}]+\}$/.test(argument);
       map.set(id, braced
-        ? { kind: 'name', name: head((argument as string).slice(1, -1)) }
+        ? { kind: 'name', name: (argument as string).slice(1, -1) }
         : { kind: 'literal', value: argument });
       continue;
     }
@@ -669,6 +626,12 @@ function bindReference(
     // updates, so a site names that variable once. An argument and an output binding that name two
     // different variables, or a literal argument with nowhere to write, would send the body's reads
     // and writes to different places.
+    if (scope.inputs.has(id) && step.with?.[id] === undefined) {
+      throw new RoutineResolutionError(
+        `${context}: '${id}' is both an input and an output of routine '${routine.id}', so the site names the variable `
+        + `the routine reads and updates with a braced argument, as '{<name>}' — this site binds ${bound === undefined ? 'neither' : `only the output, to '${bound}'`}.`,
+      );
+    }
     const argued = scope.inputs.has(id) ? map.get(id) : undefined;
     if (argued !== undefined && step.with?.[id] !== undefined) {
       if (argued.kind !== 'name') {
@@ -693,7 +656,9 @@ function bindReference(
       continue;
     }
     if (bound !== undefined) { map.set(id, { kind: 'name', name: bound }); continue; }
-    if (output.optional) { map.set(id, { kind: 'drop' }); continue; }
+    // An optional output no site receives is still the body's to write, so it is local to this use
+    // of the routine, as an internal is, and reaches no host variable.
+    if (output.optional) { map.set(id, { kind: 'name', name: internalName(activityId, referencePath, id) }); continue; }
     throw new RoutineResolutionError(
       `${context}: output '${id}' of routine '${routine.id}' is left unbound — bind it under `
       + `'outputs', or declare 'optional: true' on the output to say a site may leave it out.`,
