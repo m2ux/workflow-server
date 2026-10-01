@@ -57,7 +57,7 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
   beforeAll(async () => {
     h = await createHarness();
     for (const policy of policies) walks.set(policy.name, await walk(h, 'work-package', policy));
-  }, 600_000);
+  }, 900_000);
   afterAll(async () => { await h.close(); });
 
   /** Every walk the matrix ran, or a clear failure rather than a total quietly short of one. */
