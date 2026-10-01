@@ -12,9 +12,9 @@ export default defineConfig({
     setupFiles: ['tests/vitest-key-dir.ts'],
     // The e2e walks replay full multi-activity workflow sessions against the live corpus; their
     // duration scales with corpus size, so the 5s vitest default is too tight. A GitHub runner is
-    // roughly 4x slower than a local machine, and a single walk sits near 30s there; a hook that
-    // performs several walks up front carries its own timeout.
-    testTimeout: 60_000,
+    // roughly 4x slower than a local machine, and a work-package walk with fanned branches sits near
+    // a minute there; a hook that performs several walks up front carries its own timeout.
+    testTimeout: 120_000,
     resolveSnapshotPath: (testPath, snapExtension) => {
       const normalised = testPath.replaceAll('\\', '/');
       if (normalised.endsWith('tests/e2e/snapshot.test.ts')) {
