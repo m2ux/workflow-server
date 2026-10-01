@@ -8,7 +8,7 @@ metadata:
 
 # Overview
 
-Fundamental design principles for workflow design-time authoring. Each heading is one invariant: a *prefer / before / only after* stance. A citation of the heading is a citation of that invariant.
+Fundamental design principles for workflow design-time authoring. Each heading is one invariant: a *prefer / before / only after* stance. A citation of the heading is a citation of that invariant. A heading's Fires-on line follows the [Fires-on line](./anti-patterns.md#fires-on-line) rule.
 
 A principle is broader than any one defect. Specific bad instances are catalogued in [anti-patterns](./anti-patterns.md). Together with that catalog and the schema construct inventory, these are the **workflow-design canon** for design-time authoring.
 
