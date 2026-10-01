@@ -28,9 +28,22 @@ Title: `### AP-XX. name`. **AP-XX** is file order, zero-padded. Cite the kebab n
 
 An audit technique loads the subsection and applies it. It does not restate the detect or the fix.
 
+### Fires-on line
+
+Each `### AP-XX` entry, each `##` [design principle](./design-principles.md), and each `##` [convention conformance](./convention-conformance.md) section names the constructs it fires on in one line directly under its title, with a blank line on each side: `**Fires on:**`, then its ids, each a code span, comma-separated, as in **Fires on:** `technique.rules`, `activity.steps[].when`, `resource`. A family heading and a Creation Rule carry none.
+
+An id is one of:
+
+- An authored kind, `workflow`, `activity`, `technique`, or `routine`, covering every field of that kind.
+- A path under an authored kind, covering the field it names and every field beneath it. Field names are dot-separated (`technique.rules`). An array field is named without `[]`: `activity.steps` covers the array and every element field. `[]` steps from an array field into a field of its elements (`activity.steps[].when`) and never ends a path. A path ends at a map-valued field, whose keys the author chooses (`workflow.graph`).
+- `resource` or `readme`.
+- `*`, all definition text, resources and READMEs included.
+
+Name the narrowest ids that cover every construct the unit reads: an entry's Detect, a principle's stance, a convention section's rows. `*` stands alone. Each id appears once.
+
 ### Entry intro
 
-Two lines, then a blank line: a quoted exemplar, then one sentence naming the failure. No gloss on the quote and no `>` note under it.
+After the title and its [Fires-on line](#fires-on-line), two lines, then a blank line: a quoted exemplar, then one sentence naming the failure. No gloss on the quote and no `>` note under it.
 
 ### Detect triad
 
