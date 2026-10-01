@@ -1,6 +1,6 @@
 # I10 Work Package Streamline — planning record
 
-Initiative: [I10](https://github.com/m2ux/workflow-server/issues/1040). Epics: [E00 Lean Reviews](https://github.com/m2ux/workflow-server/issues/1041), [E01 Assumption Settling](https://github.com/m2ux/workflow-server/issues/1042), [E02 Routine Bindings](https://github.com/m2ux/workflow-server/issues/1043), [E03 Parallel Reviews](https://github.com/m2ux/workflow-server/issues/1044), [E04 Contract-First Tests](https://github.com/m2ux/workflow-server/issues/1045).
+Initiative: [I10](https://github.com/m2ux/workflow-server/issues/1040). Epics: [E00 Lean Reviews](https://github.com/m2ux/workflow-server/issues/1041), [E01 Assumption Settling](https://github.com/m2ux/workflow-server/issues/1042), [E02 Routine Bindings](https://github.com/m2ux/workflow-server/issues/1043), [E03 Parallel Reviews](https://github.com/m2ux/workflow-server/issues/1044), [E04 Contract-First Tests](https://github.com/m2ux/workflow-server/issues/1045), [E05 Tip Validation](https://github.com/m2ux/workflow-server/issues/1099).
 
 Integration branches: `i10/main` and `i10/workflows`, cut from `main` at `6bb35651` and `workflows` at `d0dd198d`.
 
@@ -19,6 +19,7 @@ Confirmed with the user, one clause per observable outcome:
 5. Independent reviews, and research beside implementation analysis, run side by side.
 6. Implementation is checked against contract tests written from the plan before the code.
 7. Each changed activity is held by a canon audit and a sidecar specimen walk.
+8. Every initiative criterion passes its named instrument on the integration tips before those tips merge, as one validation ledger records.
 
 ## Trace
 
@@ -31,6 +32,7 @@ Confirmed with the user, one clause per observable outcome:
 | 5 | AC8, AC9 | E03 | E03 AC1–AC5 |
 | 6 | AC10, AC11, AC12 | E04 | E04 AC1–AC6 |
 | 7 | AC13, AC14 | all | each epic's audit and specimen criteria; E02 AC9 |
+| 8 | AC15 | E05 | E05 AC1, AC2 |
 
 E01 AC4, AC5 and AC8 trace to clause 3's routine work and to the user's direction to follow the integration-branch scheme.
 
@@ -46,6 +48,8 @@ E01 AC4, AC5 and AC8 trace to clause 3's routine work and to the user's directio
 - **Earlier decisions.**  The scan's [Decisions](scan.md#decisions) hold the report, prism, convergence, parallelism and contract-first choices.
 - **Prism child stays at the fan join (E03).**
   Load-time L14 refuses `workflow-engine::handle-sub-workflow` on a fanned activity: a child session records one activity id while a fan holds several in flight. The full prism walk therefore runs at post-implementation review (the join); the structural-analysis fan branch runs the inline pass only.
+- **Tip validation as E05 (I10).**
+  Lives on the same initiative. Re-executes every AC1–AC14 instrument on `i10/main` and `i10/workflows` (no new automated checks beyond those instruments). One task writes [e05-validation-ledger.md](e05-validation-ledger.md). Integration PRs merge only after every ledger row passes.
 
 ## Delivery order
 
