@@ -580,7 +580,14 @@ async function executeActivitySteps(
     fetchedStepIds.add(stepId);
     const res = await client.callTool({
       name: 'get_technique',
-      arguments: { session_index: sessionIndex, step_id: stepId, ...(worker ? { agent_id: worker.agentId } : {}) },
+      arguments: {
+        session_index: sessionIndex,
+        step_id: stepId,
+        // Under a fan several activities are in flight; the server refuses a technique fetch that
+        // does not name which branch it serves — the same activity_id get_activity already carries.
+        ...(activityId !== undefined ? { activity_id: activityId } : {}),
+        ...(worker ? { agent_id: worker.agentId } : {}),
+      },
     });
     if (isError(res)) {
       const content = (res as ToolResult).content as Array<{ text?: string }> | undefined;

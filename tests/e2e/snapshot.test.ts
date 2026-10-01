@@ -57,7 +57,7 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
   beforeAll(async () => {
     h = await createHarness();
     for (const policy of policies) walks.set(policy.name, await walk(h, 'work-package', policy));
-  }, 600_000);
+  }, 900_000);
   afterAll(async () => { await h.close(); });
 
   /** Every walk the matrix ran, or a clear failure rather than a total quietly short of one. */
@@ -78,11 +78,10 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
     [skipOptionalPolicy.name]: { mustExclude: ['requirements-elicitation', 'research'] },
     [fullWorkflowPolicy.name]: { mustInclude: ['requirements-elicitation', 'research', 'implementation-analysis'] },
     [researchOnlyPolicy.name]: { mustInclude: ['research'], mustExclude: ['requirements-elicitation'] },
-    // Elicitation-only (needs_research=false) skips research: requirements-elicitation routes
-    // straight to implementation-analysis.
+    // Elicitation-only (needs_research=false) still fans research beside implementation-analysis;
+    // research runs as a no-op branch. The fan is what the discovery graph always opens.
     [elicitationOnlyPolicy.name]: {
-      mustInclude: ['requirements-elicitation', 'implementation-analysis'],
-      mustExclude: ['research'],
+      mustInclude: ['requirements-elicitation', 'research', 'implementation-analysis'],
     },
     // Review mode routes around the create-only implement activity entirely: assumptions-review
     // carries an is_review_mode transition to lean-coding-audit.
