@@ -104,7 +104,11 @@ classDiagram
 
 *Figure 4. Input, Internal, and Output.*
 
-An input declares an id, a description, an optional default, and optionally `kind: technique`, which marks a parameter standing where a technique reference belongs. An output declares an id, a type, a description, an optional closed set of values, and whether it may be absent. An internal declares an id and a description, and nothing else: no type, no default, no value set. It never enters the workflow's variables. Its materialised name carries the host activity and the reference path, so two activities that use one routine do not share it.
+An input declares an id, a description, an optional default, and optionally `kind: technique`, which marks a parameter standing where a technique reference belongs.
+
+An output declares an id, a type, a description, an optional closed set of values, and whether it may be absent.
+
+An internal declares an id and a description, and nothing else: no type, no default, no value set. It never enters the workflow's variables. Its materialised name carries the host activity and the reference path, so two activities that use one routine do not share it.
 
 A routine declares no exits, no outcome, no rules, no triggers, and no activity-wide techniques. It takes no place in the graph, costs no hand-off, and has no delivery of its own.
 
@@ -154,11 +158,49 @@ A reference is `[namespace::]name`. A qualified name resolves in that namespace 
     confirmed: target_confirmed
 ```
 
-A braced value is a host variable, member path included, so `{entry.repo_path}` passes that member. A bare value is a literal. A declared input left unbound takes its default, or the host's value under the input's own id. A `kind: technique` input takes a literal technique reference or its default, nothing from the host, and is an error with neither; a body technique step that binds one declares its own id. An optional output the site leaves unbound stays local to that use of the routine: the body still writes it, under a name no host variable has, as it does an internal. Any other output left unbound is an error, unless the id is also an input the site binds. An argument naming no declared input, and an output binding naming no declared output, are errors too. An id the routine declares as both an input and an output is one variable it reads and then updates, so it takes a braced argument naming a whole variable, declares no default, and an output binding for it, where present, names the same variable. A missing argument, a literal, a member, or an output binding naming another variable, are errors.
+##### Values
 
-Substitution rewrites only what a body step spells, so a body technique step binds each of its technique's inputs and outputs whose id the routine declares. An input or output left unbound resolves under its bare id, which an internal or an output the site leaves unbound never has, and a routine input or output has only where the site, and any routine enclosing it, binds it to that same name. A body writes only its outputs and internals: an input is a value the site supplies.
+A braced value is a host variable, member path included, so `{entry.repo_path}` passes that member. A bare value is a literal.
 
-A reference error excludes the referring activity from the load and records an activity load error; the rest of the workflow loads. An invalid routine file, one its schema rejects, whose id disagrees with its filename, or whose steps break a step rule such as a duplicate step id, is recorded against that routine alone. Each activity referring to it is excluded with that error naming the file, a routine of the same name in a later scope is not used in its place, and a file nothing refers to affects nothing.
+##### Unbound inputs
+
+A declared input left unbound takes its default, or the host's value under the input's own id.
+
+##### Technique inputs
+
+A `kind: technique` input takes a literal technique reference or its default, and nothing from the host. It is an error with neither. A body technique step that binds one declares its own id.
+
+##### Unbound outputs
+
+An optional output the site leaves unbound stays local to that use of the routine. The body still writes it, under a name no host variable has, as it does an internal.
+
+Any other output left unbound is an error, unless the id is also an input the site binds.
+
+##### Unknown names
+
+An argument naming no declared input is an error. An output binding naming no declared output is an error.
+
+##### An id read and updated
+
+An id the routine declares as both an input and an output is one variable it reads and then updates. It takes a braced argument naming a whole variable, and it declares no default. An output binding for it, where present, names the same variable.
+
+A missing argument, a literal, a member, or an output binding naming another variable, are errors.
+
+##### What a body step spells
+
+Substitution rewrites only what a body step spells. A body technique step binds each of its technique's inputs and outputs whose id the routine declares.
+
+An input or output left unbound resolves under its bare id. An internal never has that id, and neither does an output the site leaves unbound. A routine input or output has it only where the site, and any routine enclosing it, binds that name to itself.
+
+A body writes only its outputs and internals. An input is a value the site supplies.
+
+##### Load errors
+
+A reference error excludes the referring activity from the load and records an activity load error. The rest of the workflow loads.
+
+An invalid routine file is recorded against that routine alone: a file its schema rejects, whose id disagrees with its filename, or whose steps break a step rule such as a duplicate step id. Each activity referring to it is excluded, and the error names the file. A routine of the same name in a later scope is not used in its place. A file nothing refers to affects nothing.
+
+##### The site prefix
 
 The step's id is the prefix every identifier in the materialised body carries. Its gate is `when` alone. A structured condition is rejected: on a checkpoint that field is what makes the gate dismissible, and a site condition pushed into the body would hand every gate in the run a capability its author never declared.
 
