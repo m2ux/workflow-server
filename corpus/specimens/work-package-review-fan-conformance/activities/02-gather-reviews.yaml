@@ -1,0 +1,51 @@
+id: gather-reviews
+version: 1.0.0
+name: Gather Reviews
+description: Hoist each branch container into a bare report, as post-impl-review does at the fan's join.
+variables:
+  reads:
+    - code_review_outputs
+    - pipeline_mode
+    - structural_analysis_outputs
+    - test_suite_review_outputs
+  writes:
+    - name: code_review_report
+      type: object
+      description: Code review report hoisted from the code-review branch container.
+    - name: test_suite_review_report
+      type: object
+      description: Test suite review report hoisted from the test-suite-review branch container.
+    - name: structural_findings
+      type: array
+      description: Structural findings from the inline branch, or empty when full prism deferred.
+      defaultValue: []
+required: true
+steps:
+  - kind: action
+    id: take-fan-reports
+    actions:
+      - action: set
+        target: code_review_report
+        value: "{code_review_outputs.0.result.code_review_report}"
+      - action: set
+        target: test_suite_review_report
+        value: "{test_suite_review_outputs.0.result.test_suite_review_report}"
+  - kind: action
+    id: take-inline-structural
+    when: pipeline_mode != 'full-prism'
+    actions:
+      - action: set
+        target: structural_findings
+        value: "{structural_analysis_outputs.0.result.structural_findings}"
+  - kind: action
+    id: note-full-prism-deferral
+    when: pipeline_mode == 'full-prism'
+    actions:
+      - action: set
+        target: structural_findings
+        value: []
+exits:
+  - id: gathered
+    isDefault: true
+outcome:
+  - Each branch's report is available under its bare name at the join
