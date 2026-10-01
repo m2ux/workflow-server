@@ -82,6 +82,7 @@ The user approved narrowing I07 E02 (D10).
 | D14 | An id covers the field it names and every field beneath it, so E05 matches by prefix | Each id naming one field exactly |
 | D15 | Ids name the authored kinds alone, `workflow`, `activity`, `technique`, `routine`, as bare names and path roots | Every generated schema, `condition` and `session-file` included |
 | D16 | I09's pull requests target the integration branches `i09/main`, `i09/workflows` and `i09/workspace`, which merge into their long-lived branches once I09 closes | Each epic landing on the long-lived branches as it is delivered |
+| D17 | The edit-time hook's branch point is the nearest of the merge-bases with `origin/workflows` and each `origin/iNN/workflows`, so an initiative's corpus branch measures against its integration branch | Always `origin/workflows`, which counts earlier epics' failures as introduced; the branch's upstream, which feature branches here do not set |
 
 ## Issues
 
