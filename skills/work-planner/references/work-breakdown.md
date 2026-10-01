@@ -45,6 +45,11 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - Update mode finds an epic's pull requests by this prefix, and matches each merged one to the tasks it delivered from its changes and the tasks' Descriptions.
+- **Integration branches.**
+  - Each long-lived branch an initiative changes (`main`, `workflows`, `workspace`) has an integration branch, named for the initiative and that branch and cut from it: `i07/main`.
+  - Every pull request delivering the initiative's work targets its integration branch, never the long-lived branch.
+  - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
+  - It merges into its long-lived branch once the initiative closes, so no part of an unfinished initiative reaches a long-lived branch. Merging it is the user's call.
 - **Delivered task ids.**
   A delivered task's id links its pull request: `[W01](…/pull/950)`. An undelivered task's id is plain.
 - **Tasks with their own issue.**

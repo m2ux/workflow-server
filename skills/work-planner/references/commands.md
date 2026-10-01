@@ -177,6 +177,36 @@ Replaces a pull request's title.
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f title='[I07:E00] Purpose' --jq .title
 ```
 
+### Retarget pull request
+
+Points a pull request at another base branch, such as its initiative's integration branch.
+
+```bash
+gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/main' --jq .base.ref
+```
+
+### Create integration branch
+
+Cuts an initiative's integration branch from the tip of a long-lived branch on the remote.
+
+- Run inside a checkout of the repository, with full host permissions.
+- The push refuses a branch that already exists.
+
+```bash
+git fetch origin main && git push origin origin/main:refs/heads/i07/main
+```
+
+### Open integration pull request
+
+Opens the pull request that merges an integration branch into its long-lived branch, once the initiative closes.
+
+- The title is the initiative's prefix and name: `[I07] Name`.
+- The body lists the initiative's pull requests the branch carries.
+
+```bash
+gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07] Name' -f head='i07/main' -f base='main' -F body=@body.md --jq .html_url
+```
+
 ## Project boards
 
 ### Find theme board
