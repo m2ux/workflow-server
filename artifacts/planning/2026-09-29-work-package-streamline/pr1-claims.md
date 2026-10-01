@@ -4,6 +4,8 @@ Branch `workflow/work-package-lean-templates`. Specimen `work-package-registers-
 
 Run record: MCP `http://127.0.0.1:32772/mcp` · image `workflow-server:exp-lean-templates` · engine pin `a59870c7-dirty` (untracked `node_modules` link only). First walk: corpus `fef39440`, MVW `GSFUX3`, specimen `JOJCZT` (planning folder `…/2026-09-30-work-package-registers-conformance`). Walk after the canon audit's fixes: corpus `b9f77e0e`, MVW `TL5UPS`, specimen `QFDSY7` (planning folder `…/2026-09-30-work-package-registers-conformance-2`).
 
+Re-walk after #1006 and the bare-register fix (E00 AC7/AC9): MCP `http://127.0.0.1:32772/mcp` · image `workflow-server:exp-unprefixed-registers` · engine pin `3af770f5` · corpus pin `b1cac031`. MVW `VEMCRJ`. Specimen `NOR7HO`, planning folder `…/2026-10-01-work-package-registers-conformance`.
+
 | # | Claim | Evidence | Case | Result |
 |---|---|---|---|---|
 | 1 | Appending deferrals writes `deferred-items.json`, one JSON entry per item, `issue` null | sidecar walk | `record-deferrals` append | held — delivered artifact `deferred-items.json`, audience `agent`, template and rules sections bundled |
@@ -15,13 +17,14 @@ Run record: MCP `http://127.0.0.1:32772/mcp` · image `workflow-server:exp-lean-
 | 7 | No activity's artifact contract names a method record, a `.md` register or the `.md` comprehension log | walk snapshot diff | every commit | held |
 | 8 | Guards stay at the base's result | `check-all` diff against base | every commit | held — one pre-existing `activity-variables` failure |
 | 9 | The case report fills every column of the case report template | sidecar walk | `report-cases` | held |
+| 10 | The register is written bare on disk, with no activity `artifactPrefix` | sidecar walk; walk snapshot | `record-deferrals` | held — planning folder holds bare `deferred-items.json`; snapshot `artifactsWritten` names the same bare file |
 
 ## Found by the walk and the audit
 
 - The register output binds straight into the next technique's input, which names the register by bare filename, while the output and activity-variable descriptions called it the register's contents. Descriptions now say bare filename.
 - The assumptions log and strategic-review findings named a register entry ID that append assigns only afterwards. The entry now names its origin, and the origin says Deferred.
 - Requirements elicitation wrote the register with no declared output. It now emits its deferrals and binds the append before the document that points at them.
-- The register guide says the register is unprefixed, while the server offers the activity's `artifact_prefix` and the walk snapshot records a prefixed filename. Pre-existing; carried to PR 3.
+- The register guide says the register is unprefixed. `write-artifact` and the e2e walker create `deferred-items.json` and `follow-ups.json` bare; the walk snapshot records the bare names. Held on #1049 / #1050.
 
 ## Pre-existing, fixed on #1006
 
