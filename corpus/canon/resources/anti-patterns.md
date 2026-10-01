@@ -1334,6 +1334,8 @@ Canon smells.
 
 ### AP-103. cited-home-owns-claim
 
+**Fires on:** `technique`, `resource`, `readme`
+
 "Select the set from [guide]"
 
 A citation attributes a fact to a home that lacks it.
@@ -1345,6 +1347,8 @@ A citation attributes a fact to a home that lacks it.
 **Fix:** Move the fact into the cited home, or stop attributing it to X and own it in the citer (`operative-criteria-need-a-home`, `no-technique-resource-dual-home`).
 
 ### AP-104. operative-criteria-need-a-home
+
+**Fires on:** `technique.protocol`, `resource`
 
 "Flag every divergence matching: naming, field order, voice markers…"
 
@@ -1358,6 +1362,8 @@ Reusable criteria live only in a technique with no catalog/resource home.
 
 ### AP-105. no-shadow-audit-pass
 
+**Fires on:** `technique.protocol`
+
 "`audit-consistency` restates Tool-Technique-Doc Detect while `audit-anti-patterns` already walks that section"
 
 An audit pass shadows another walker's Detect criteria.
@@ -1370,6 +1376,8 @@ An audit pass shadows another walker's Detect criteria.
 
 ### AP-106. canon-layer-cites-not-restates
 
+**Fires on:** `resource`, `readme`
+
 "Principle 4 prose embeds the full Schema Expressiveness / Description Hygiene Detect body already in the catalogue"
 
 An upper canon layer restates Detect/Fix already owned below.
@@ -1381,6 +1389,8 @@ An upper canon layer restates Detect/Fix already owned below.
 **Fix:** Keep the upper layer as the stance. Delete the restated Detect, the Detect-routing block, and a host Enforcement inventory (`no-resource-caller-backlink`). Migrate unique criteria down before deleting them. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-107. bind-site-is-orchestration-truth
+
+**Fires on:** `readme`, `resource`, `technique`, `workflow.description`, `activity.steps`, `workflow.graph`, `workflow.initialActivity`
 
 "Review mode runs: expressiveness, conformance, rule-to-structure…"
 
@@ -1398,6 +1408,8 @@ Smells on technique markdown.
 
 ### AP-108. numbered-protocol-phases
 
+**Fires on:** `technique.protocol`
+
 "### 1. Apply Fixes" with edit / re-validate / record as bullets under one heading
 
 Discrete sequential protocol phases are collapsed into one numbered step.
@@ -1409,6 +1421,8 @@ Discrete sequential protocol phases are collapsed into one numbered step.
 **Fix:** Split into consecutive `### N. Title` steps, one phase per heading. Keep an elaborating bullet under the phase it refines. See [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome).
 
 ### AP-109. technique-outputs-declared
+
+**Fires on:** `technique.capability`, `technique.protocol`, `technique.outputs`
 
 "Assemble the per-file drafting plan…" with no `## Outputs` entry
 
@@ -1422,6 +1436,8 @@ Capability or Protocol produces a value that is not declared on Outputs.
 
 ### AP-110. duplicate-shared-capability
 
+**Fires on:** `technique.protocol`
+
 "`publish-workflow-pr` re-teaches `gh pr create` / `gh pr ready` / `git push` already covered by the `github` and `git` namespaces"
 
 A workflow-local technique re-implements a capability a shared namespace already offers.
@@ -1433,6 +1449,8 @@ A workflow-local technique re-implements a capability a shared namespace already
 **Fix:** Delete the local harness recipe. Bind the shared op from the activity, or borrow an activity that already binds it. Keep caller-specific value assembly in a local technique when the activity needs it (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). See [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps).
 
 ### AP-111. contract-not-procedure
+
+**Fires on:** `technique.protocol`, `technique.outputs`
 
 "### 7. Set Technique Flags" restating create/update/review recognition criteria already (or better) owned by Outputs
 
@@ -1446,6 +1464,8 @@ Protocol carries identity criteria or a trailing "Set …" phase that belongs on
 
 ### AP-112. no-derived-state-shadow
 
+**Fires on:** `workflow.variables`
+
 "`is_update_mode` / `is_review_mode` alongside `operation_type`"
 
 A derived shadow variable duplicates an authoritative state variable.
@@ -1457,6 +1477,8 @@ A derived shadow variable duplicates an authoritative state variable.
 **Fix:** Keep the authoritative variable; rewrite conditions, technique inputs, and effects to compare it directly; delete the shadow declarations and every write to them. See also [Single Source of Truth](./design-principles.md#14-single-source-of-truth).
 
 ### AP-113. session-interaction-in-technique
+
+**Fires on:** `technique.capability`, `technique.protocol`, `technique.rules`
 
 "Present `{drafting_plan}`" / "Present findings to the user" / "surface the summary in chat"
 
@@ -1470,6 +1492,8 @@ A technique performs or prescribes human/session interaction.
 
 ### AP-114. pass-orchestration-in-technique
 
+**Fires on:** `technique.capability`, `technique.protocol`
+
 "`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…"
 
 A technique's Protocol invokes other techniques to do work — sequencing sibling or shared techniques the binding site should carry as consecutive steps.
@@ -1481,6 +1505,8 @@ A technique's Protocol invokes other techniques to do work — sequencing siblin
 **Fix:** Delete the façade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared technique as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
 
 ### AP-115. platform-semantics-in-capability
+
+**Fires on:** `technique.capability`, `readme`
 
 "Shared base contract… Inputs… are inherited by every technique… Techniques inherit the Rules below…"
 
@@ -1494,6 +1520,8 @@ Capability (or a techniques-folder README) teaches loader composition instead of
 
 ### AP-116. no-template-creation-guide
 
+**Fires on:** `technique.protocol`, `resource`
+
 "Persist a decision-facing report: classification summary… integrity verdicts… removals inventory — via write-artifact … bare filename `impact-analysis.md`" (full layout recipe in Protocol; no creation-guide Template)
 
 A planning artifact is persisted without a creation-guide Template, or the technique invents the layout in Protocol instead of citing one.
@@ -1505,6 +1533,8 @@ A planning artifact is persisted without a creation-guide Template, or the techn
 **Fix:** Author or extend a creation-guide resource with `## Template` and `## Rules`. Map the bare filename in the resources index. Replace the Protocol layout with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#28-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.
 
 ### AP-117. no-engine-mechanics-as-rules
+
+**Fires on:** `technique.rules`, `activity.rules`, `workflow.rules`, `technique.protocol`
 
 "ambient-bag-variables-changed — Declared outputs appear in the activity's `variables_changed`"
 
@@ -1518,6 +1548,8 @@ A leaf Rule (or a Protocol phase whose only job is the same restatement) re-enco
 
 ### AP-118. no-bind-mechanics-as-prose
 
+**Fires on:** `technique.inputs`, `technique.outputs`, `technique.capability`, `technique.protocol`, `technique.rules`, `activity.rules`, `workflow.rules`, `activity.steps[].options[].description`, `activity.steps[].actions[].description`, `readme`
+
 "When unbound, use `{worker_result.artifacts_produced}` from the orchestrator bag after dispatch."
 
 Prose substitutes for a bind decision that structure already owns.
@@ -1529,6 +1561,8 @@ Prose substitutes for a bind decision that structure already owns.
 **Fix:** Delete the bind prose. Close the gap with a same-name bag binding, a declared `default`, or a call-site input or output deviation. Delete unused I/O. Where structure cannot express the resolution, extend variable-binding or the schema once. See also `io-agnostic-contract`.
 
 ### AP-119. procedure-in-io-contract
+
+**Fires on:** `technique.inputs`, `technique.outputs`
 
 "`applied_fixes` — the selected findings implemented in `{target_path}`, verified to compile with tests passing, then staged and committed on `{branch_name}` — final phase, no separate commit step follows" / "Branch to push to (typically the current branch — do NOT create a new branch in the parent repo)" / "`needs_issue_creation` — false when step 1 verified an existing issue; Gates steps 2 and 3"
 
@@ -1542,6 +1576,8 @@ An Input or Output description holds how the value is produced or used.
 
 ### AP-120. procedure-in-capability
 
+**Fires on:** `technique.capability`
+
 "Create README.md … populating its header fields … applying mode-aware Progress Status … (seed-time exclusion uses the cancelled/N/A value)" / "via meta [create-pr](…)" / "Applied-fix record (`{fixes_applied}`)"
 
 `## Capability` holds how, a hyperlink, or a `{id}`.
@@ -1553,6 +1589,8 @@ An Input or Output description holds how the value is produced or used.
 **Fix:** Leave the insight. Move how, designators, and cites into Protocol, Rules, or I/O. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure).
 
 ### AP-121. rule-as-protocol-step
+
+**Fires on:** `technique.protocol`, `resource`
 
 "4. Follow the rules in the techniques bundle throughout — agent-conduct, workflow-engine…"
 
@@ -1566,6 +1604,8 @@ A standalone / cross-cutting rule is encoded as a numbered Protocol (or bootstra
 
 ### AP-122. prompt-restates-owned-mechanics
 
+**Fires on:** `resource`, `technique`
+
 "Exception — inlined `step_techniques`: … EMIT a one-line `▶ step <step_id>` begin-beat… Resource bodies are never nested inside…"
 
 A worker/orchestrator spawn stub or agent-entry technique restates delivery, bind, checkpoint, or engine HOW that already has an authoritative home.
@@ -1577,6 +1617,8 @@ A worker/orchestrator spawn stub or agent-entry technique restates delivery, bin
 **Fix:** Delete the restatement. Keep the imperative entry sequence and cite the home. Hoist a unique duty that still has no home into workflow-engine or the owning technique once. See also `no-delivery-mechanism-narration`, `no-engine-mechanics-as-rules`, `no-duplicated-guidance`.
 
 ### AP-123. capability-as-op-inventory
+
+**Fires on:** `technique.capability`
 
 "Techniques and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create/start), activity dispatch (dispatch-activity), agent entry techniques (activity-worker, workflow-orchestrator) composed via compose-prompt, …"
 
@@ -1590,6 +1632,8 @@ A worker/orchestrator spawn stub or agent-entry technique restates delivery, bin
 
 ### AP-124. alternate-ops-as-protocol-sequence
 
+**Fires on:** `technique.protocol`
+
 "### 1. Spawn … ### 2. Resume … ### 3. Concurrent" (or unnumbered `### spawn` / `### resume` / `### concurrent` under `## Protocol`)
 
 Mutually exclusive technique variants — or standing host-invoke policy — are encoded as Protocol phases as if they were a sequenced procedure.
@@ -1601,6 +1645,8 @@ Mutually exclusive technique variants — or standing host-invoke policy — are
 **Fix:** Move alternate slices and standing host policy into `## Rules`, naming slices by `operation_kind` when a resolver selects them. Keep `## Protocol` for ordered outcomes. A caller Applies the selected rule section. See also `rule-as-protocol-step`, `no-one-step-rules`.
 
 ### AP-125. technique-ref-in-io-contract
+
+**Fires on:** `technique.inputs`, `technique.outputs`
 
 "`challenge_findings` — Ordered per-perspective findings from [challenge](./challenge.md)" / "`applied_fixes` … via [manage-git](…)::[commit-paths](…)" / "`concurrency` … parallel fan-out via [spawn-concurrent](…)"
 
