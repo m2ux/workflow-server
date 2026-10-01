@@ -14,7 +14,7 @@ Read the enumeration from the home at the commit audited, with [List units](comm
 | Guards | One registry entry in `guards/guards.ts` |
 
 - Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
-- The catalog's first family binds when the change edits `anti-patterns.md`. Otherwise it is `not-applicable`, with that reason.
+- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.
 
 ## Prior judgements
 
