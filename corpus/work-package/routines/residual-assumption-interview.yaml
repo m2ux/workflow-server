@@ -39,6 +39,10 @@ outputs:
   - id: assumptions_log
     type: object
     description: The assumptions log with each settled assumption's outcome recorded.
+  - id: assumptions_log_path
+    type: string
+    description: Path to the assumptions log the record steps wrote.
+    optional: true
   - id: has_deferred_assumptions
     type: boolean
     description: Whether any assumption was deferred to stakeholder review.
