@@ -1,0 +1,43 @@
+id: test-suite-review
+version: 1.0.0
+name: Test Suite Review
+description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+variables:
+  reads:
+    - branch_name
+    - changed_files
+    - component_git_dir
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - target_path
+    - target_repo
+  writes:
+    - name: coverage_gaps
+      type: array
+      description: Changed symbols no test file calls.
+      defaultValue: []
+    - name: update_candidates
+      type: array
+      description: Changed symbols a test file calls against a signature or behaviour the change moved.
+      defaultValue: []
+    - name: test_suite_review_report
+      type: object
+      description: Test suite review report stating the suite's findings and the review outcome.
+required: true
+steps:
+  - kind: routine
+    id: map-diff-coverage
+    routine: gitnexus::diff-coverage-map
+    outputs:
+      coverage_gaps: coverage_gaps
+      update_candidates: update_candidates
+  - kind: technique
+    id: test-suite-review
+    technique: review-test-suite
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Coverage gaps and test-suite findings are stated for triage at the review fan's join

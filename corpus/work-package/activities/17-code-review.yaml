@@ -1,0 +1,29 @@
+id: code-review
+version: 1.0.0
+name: Code Review
+description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+variables:
+  reads:
+    - branch_name
+    - changed_files
+    - component_git_dir
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - target_path
+    - target_repo
+  writes:
+    - name: code_review_report
+      type: object
+      description: Code review report stating this review's findings and its outcome.
+required: true
+steps:
+  - kind: technique
+    id: code-review
+    technique: review-code
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Code-level defects and risks are stated in one report for triage at the review fan's join

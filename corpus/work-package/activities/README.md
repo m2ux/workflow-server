@@ -90,15 +90,39 @@ Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
 ### Prism Decision
 
-Settles which structural analysis post-implementation review runs — the full prism pipeline or the single inline pass — on an assessed recommendation where the change is complex. Leads to post-impl-review, or measures the change again.
+Settles which structural analysis the review fan and its join run — the full prism pipeline or the single inline pass — on an assessed recommendation where the change is complex. Leads to the automated review fan, or measures the change again.
 
 Definition: [`16-prism-decision.yaml`](./16-prism-decision.yaml)
 
 ---
 
+### Code Review
+
+Reviews the change's code for architecture, error handling, safety and project-specific patterns. A branch of the automated review fan that converges on post-impl-review.
+
+Definition: [`17-code-review.yaml`](./17-code-review.yaml)
+
+---
+
+### Structural Analysis
+
+Runs the single inline structural pass when prism-decision settled that mode. A branch of the automated review fan; the full prism pipeline runs at post-impl-review.
+
+Definition: [`18-structural-analysis.yaml`](./18-structural-analysis.yaml)
+
+---
+
+### Test Suite Review
+
+Maps diff coverage and reviews the test suite for gaps, assertion quality and anti-patterns. A branch of the automated review fan that converges on post-impl-review.
+
+Definition: [`19-test-suite-review.yaml`](./19-test-suite-review.yaml)
+
+---
+
 ### 10. Post-Implementation Review
 
-Reviews implementation quality, catching issues before validation. Each review states its findings in one report. Structural analysis takes the pass prism-decision settled. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
+The automated review fan's join: raises the manual diff review gates, runs the full prism pipeline when chosen, classifies the branches' findings, and runs the fix cycle. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
