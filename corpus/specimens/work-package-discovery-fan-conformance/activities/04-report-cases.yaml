@@ -1,0 +1,22 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: Write the case report for the discovery fan walk.
+variables:
+  reads:
+    - case_outcomes
+    - planning_folder_path
+  writes:
+    - name: discovery_fan_case_report
+      type: object
+      description: What the fan landed in each case.
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - The case report states what each fan walk landed

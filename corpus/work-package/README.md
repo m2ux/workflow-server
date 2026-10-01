@@ -16,9 +16,9 @@ Where assumptions or comprehension questions are settled, agent-resolvable conce
 | 02 | [**Design Philosophy**](./activities/README.md#02-design-philosophy) | Classify problem, assess complexity, determine workflow path |
 | 15 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension-optional) | Build/augment mental model of codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](./activities/README.md#03-requirements-elicitation-optional) | Clarify requirements through stakeholder conversation |
-| 04 | [**Research**](./activities/README.md#04-research-optional) | Gather best practices from knowledge base and web |
-| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | Understand current state, establish baselines |
-| 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Create implementation and test plans |
+| 04 | [**Research**](./activities/README.md#04-research-optional) | Discovery fan branch — knowledge-base and web research |
+| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | Discovery fan branch — baselines and gaps |
+| 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Discovery fan join — research gates, assumption ingest, plan |
 | 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Converge the open assumptions and settle what stays open with the user before implementation |
 | 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
@@ -53,14 +53,14 @@ graph TD
     DP -->|"done"| CC["codebase-comprehension"]
 
     CC -->|"needs-elicitation"| REL["03 requirements-elicitation"]
-    CC -->|"research-needed"| RS["04 research"]
+    CC -->|"research-needed / comprehension-complete"| RS["04 research"]
+    CC -->|"research-needed / comprehension-complete"| IA["05 implementation-analysis"]
     CC -->|"skip-optional-activities"| PP["06 plan-prepare"]
-    CC -->|"comprehension-complete"| IA["05 implementation-analysis"]
 
     REL -->|"elicitation-incomplete"| REL
-    REL -->|"research-needed"| RS
-    REL -->|"no-research-needed"| IA
-    RS -->|"done"| IA
+    REL -->|"research-needed / no-research-needed"| RS
+    REL -->|"research-needed / no-research-needed"| IA
+    RS -->|"done"| PP
     IA -->|"done"| PP
 
     PP -->|"revise"| PP

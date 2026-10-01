@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 4.6.0
+version: 4.7.0
 title: Work Package Implementation Workflow
 description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, an audit of an existing pull request, or any other deliverable. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -126,11 +126,15 @@ graph:
     done: codebase-comprehension
     revise-classification: design-philosophy
   requirements-elicitation:
-    research-needed: research
-    no-research-needed: implementation-analysis
+    research-needed:
+      - research
+      - implementation-analysis
+    no-research-needed:
+      - research
+      - implementation-analysis
     elicitation-incomplete: requirements-elicitation
   research:
-    done: implementation-analysis
+    done: plan-prepare
   implementation-analysis:
     done: plan-prepare
   plan-prepare:
@@ -178,6 +182,10 @@ graph:
     done: __terminal__
   codebase-comprehension:
     needs-elicitation: requirements-elicitation
-    research-needed: research
+    research-needed:
+      - research
+      - implementation-analysis
     skip-optional-activities: plan-prepare
-    comprehension-complete: implementation-analysis
+    comprehension-complete:
+      - research
+      - implementation-analysis
