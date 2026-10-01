@@ -13,8 +13,15 @@ Open question settled before authoring: L14 refuses `workflow-engine::handle-sub
 | 5 | Join runs `handle-sub-workflow` only when `pipeline_mode == 'full-prism'` | definition | `10-post-impl-review.yaml` | held |
 | 6 | Join hoists fan containers into bare reports before classify | definition | `take-fan-reports` / `take-inline-structural` | held |
 | 7 | Activity-variables guard raises no new finding on the changed activities | guard | `check-activity-variables` against the branch corpus | held — remaining rows are pre-existing unproduced-reads |
-| 8 | Sidecar specimen walks each changed activity | specimen | pending | open |
+| 8 | Sidecar specimen walks each changed branch activity under both pipeline modes | `work-package-review-fan-conformance` | walk T4ZWHT | held — fan opened twice; containers hoisted; full-prism structural deferred |
 
 ## Notes
 
-- AC1/AC2 instruments name the work-package snapshot walk; AC7 names a sidecar specimen. Claim 8 stays open until that specimen lands.
+- AC1/AC2 instruments name the work-package snapshot walk after merge. AC7 claim 8 held on the borrowed branch activities; post-impl-review gates remain for the snapshot walk.
+
+## Run record
+
+- MCP `http://127.0.0.1:32772/mcp` · image `workflow-server:exp-i10-activity-loop` · engine pin `7bdef1fc-dirty` · corpus pin `07de249a`
+- MVW `CCCYUL` → terminal
+- Specimen `T4ZWHT`, planning folder `…/2026-10-01-work-package-review-fan-conformance`
+- Case report: `04-work-package-review-fan-cases.md`
