@@ -19,12 +19,12 @@ Epic: --link links each named task's id to a merged pull request naming the epic
 pull request that is unmerged or names another epic, or a row linking a task issue. A further pull
 request on a row is linked after the ones already there. A row whose id links a task issue is
 delivered when that issue, given by --tasks, is closed as completed; any other row when its id links
-a pull request or commit. Done is ticked when the row is delivered and every criterion it cites is
+a pull request or commit. Done carries a tick when the row is delivered and every criterion it cites is
 ticked. Reported: merged pull requests naming the epic that no row links yet, open ones as in flight,
 a row linked to a pull request naming another epic, rows sharing a pull request that do not Join
 each other, and work started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
-completed, and Done is ticked then. A criterion is verified by the automated test it names, or
+completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked.
 
 Reported for each acceptance criterion of a task, epic or initiative:
@@ -40,7 +40,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, DONE_BOX, LINK, OUTCOMES, cell, cells, id_cell, join_sections, row, row_id, split_sections
+from format import AC, LINK, OUTCOMES, TICK, cell, cells, id_cell, join_sections, row, row_id, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -129,7 +129,7 @@ def cited(text: str) -> list[int]:
 
 
 def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool], kind: str, report) -> bool:
-    """Tick Done on each complete row, and clear it on each row that is not. Returns whether any changed."""
+    """Set a tick on each complete row, and clear it on each row that is not. Returns whether any changed."""
     if 'Done' not in header:
         return False
     at = header.index('Done')
@@ -141,13 +141,13 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
             complete = bool(delivered.get(name)) and bool(acs) and all(ticked.get(n) for n in acs)
         else:
             complete = bool(delivered.get(name))
-        box = '[x]' if complete else '[ ]'
+        mark = TICK if complete else ''
         current = r[at] if at < len(r) else ''
-        if DONE_BOX.fullmatch(current) and current.lower() == box:
+        if current == mark:
             continue
         while len(r) <= at:
             r.append('')
-        r[at] = box
+        r[at] = mark
         changed = True
         if complete:
             report['done'].append(name)
