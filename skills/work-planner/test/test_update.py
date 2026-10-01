@@ -101,3 +101,13 @@ class DoneColumn(unittest.TestCase):
         initiative_fixed = Review(issue(1, '[I01] First: Initiative', body=initiative)).run()
         self.assertIn('| W01 | Work | AC1 | | | ✓ |', epic_fixed)
         self.assertIn('| [E00](https://github.com/o/r/issues/3) | Work | AC1 | | ✓ |', initiative_fixed)
+
+    def test_a_note_after_the_criteria_stays_on_the_description(self):
+        table = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                 '## Work Breakdown\n\n| Task | Description | Depends on | Join | Done |\n'
+                 '| --- | --- | --- | --- | --- |\n'
+                 '| W01 | Reads count → AC1 ([#1053](https://github.com/o/r/pull/1053)) | | | ✓ |\n\n'
+                 '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                 '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
+        fixed = Review(issue(2, '[I01:E00] First: Epic', body=table)).run()
+        self.assertIn('| W01 | Reads count ([#1053](https://github.com/o/r/pull/1053)) | AC1 | | | ✓ |', fixed)

@@ -524,7 +524,9 @@ class Review:
                 if not found:
                     continue
                 r[covered] = found[1]
-                r[desc_at] = text[:found.start()].strip()
+                phrase = text[:found.start()].strip()
+                rest = text[found.end():].strip()
+                r[desc_at] = f'{phrase} {rest}'.strip() if rest else phrase
                 moved = True
             if moved:
                 self.fixed.append('Acceptance Coverage filled from the Description')
