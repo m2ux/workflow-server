@@ -3,8 +3,7 @@ version: 1.0.0
 name: Prepare Join
 description: Seed hoist state and the case's intended run outcome.
 variables:
-  reads:
-    - case_kind
+  reads: []
   writes:
     - name: contract_tests_fail_on_base
       type: boolean

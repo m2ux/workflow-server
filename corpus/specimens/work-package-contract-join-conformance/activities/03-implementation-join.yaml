@@ -8,9 +8,6 @@ variables:
   reads:
     - case_kind
     - contract_tests_fail_on_base
-    - contract_tests_path
-    - contract_tests_branch
-    - target_path
   writes:
     - name: contract_tests_merged_paths
       type: array
@@ -39,6 +36,12 @@ steps:
   - kind: technique
     id: merge-contract-tests
     technique: merge-contract-tests-stub
+  - kind: action
+    id: note-merged-paths
+    when: contract_tests_merged_paths
+    actions:
+      - action: message
+        message: "Merged contract-test paths: {contract_tests_merged_paths}."
   - kind: technique
     id: run-contract-tests
     technique: run-contract-tests-stub
@@ -46,7 +49,7 @@ steps:
     id: contract-test-disposition
     when: contract_tests_passed != true
     message: |-
-      Contract tests failed against the implementation:
+      Specimen join — contract tests failed against the implementation:
 
       {contract_test_failures}
 
@@ -64,7 +67,7 @@ steps:
     id: contract-ambiguity
     when: contract_tests_passed != true
     message: |-
-      A contract test is disputed. The Contract and the failing assertions are:
+      Specimen join — a contract test is disputed. The Contract and the failing assertions are:
 
       {contract_test_failures}
 

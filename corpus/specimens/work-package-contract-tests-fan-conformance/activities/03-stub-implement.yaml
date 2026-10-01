@@ -4,19 +4,14 @@ name: Stub Implement
 description: Stub the implement branch — mark the task delivered without writing code.
 variables:
   reads: []
-  writes:
-    - name: implement_stub_done
-      type: boolean
-      description: True when the stub implement branch finished.
-      defaultValue: false
+  writes: []
 required: true
 steps:
   - kind: action
     id: mark-done
     actions:
-      - action: set
-        target: implement_stub_done
-        value: true
+      - action: message
+        message: Implement stub branch finished.
 exits:
   - id: done
     isDefault: true

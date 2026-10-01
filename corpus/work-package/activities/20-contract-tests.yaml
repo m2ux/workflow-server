@@ -9,10 +9,13 @@ variables:
   reads:
     - branch_name
     - component_git_dir
-    - host_repo_path
     - implementation_plan
     - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
     - target_path
+    - target_repo
   writes:
     - name: contract_tests_branch
       type: string
@@ -29,6 +32,18 @@ variables:
     - name: contract_tests_fail_on_base
       type: boolean
       description: True when every written contract suite fails against the base tree.
+      defaultValue: false
+    - name: commit_sha
+      type: string
+      description: HEAD the contract-tests worktree stands on after create-worktree.
+      defaultValue: ""
+    - name: default_branch
+      type: string
+      description: Default branch create-worktree records.
+      defaultValue: ""
+    - name: worktree_created
+      type: boolean
+      description: Whether create-worktree created the contract-tests worktree.
       defaultValue: false
     - name: current_task
       type: object

@@ -1,7 +1,7 @@
 {
   "groups": [
     {
-      "reason": "Gated on a value only the agent or the environment produces — a count of findings, an ambiguity flag, whether a pull request already exists. The enumerator varies decisions and cannot invent a bag entry, so no amount of forking reaches these.",
+      "reason": "Gated on a value only the agent or the environment produces \u2014 a count of findings, an ambiguity flag, whether a pull request already exists. The enumerator varies decisions and cannot invent a bag entry, so no amount of forking reaches these.",
       "options": [
         "checkpoint:assumptions-review:post-summary-review=skip-posting",
         "checkpoint:codebase-comprehension:comprehension-sufficient=different-area",
@@ -32,9 +32,9 @@
         "checkpoint:intake-and-profile:intent-and-profile-batch=confirm-rewrite",
         "checkpoint:lint-wiki:lint-findings-confirmed=accept",
         "checkpoint:lint-wiki:lint-findings-confirmed=reingest",
-        "checkpoint:research:context-scope-declaration=mixed",
-        "checkpoint:research:context-scope-declaration=repo-only",
-        "checkpoint:research:context-scope-declaration=web-retrieval",
+        "checkpoint:plan-prepare:context-scope-declaration=mixed",
+        "checkpoint:plan-prepare:context-scope-declaration=repo-only",
+        "checkpoint:plan-prepare:context-scope-declaration=web-retrieval",
         "checkpoint:scope-and-draft:pre-attestation-blocker=attest-with-deferral",
         "checkpoint:scope-and-draft:pre-attestation-blocker=redraft",
         "checkpoint:scope-and-draft:preservation-check#{current_file.path}=flag-and-proceed",
@@ -76,7 +76,7 @@
       ]
     },
     {
-      "reason": "Gated on a run mode the enumerator does not set — review mode, stealth mode, or an operation type. A policy could seed these, but only by walking each workflow once per mode, which multiplies a walk already measured in minutes.",
+      "reason": "Gated on a run mode the enumerator does not set \u2014 review mode, stealth mode, or an operation type. A policy could seed these, but only by walking each workflow once per mode, which multiplies a walk already measured in minutes.",
       "options": [
         "checkpoint:quality-review:review-disposition=fix-issues",
         "checkpoint:quality-review:review-disposition=report-only",
@@ -109,7 +109,7 @@
       ]
     },
     {
-      "reason": "Declared by a run a library holds, and reached only through the specimen that refers to it — which declares no checkpoint of its own, so the roster lists it as one a coverage walk covers nothing of. The gates arrive spliced in at load, and no workflow this matrix walks refers to either run, so measuring them means walking the specimen.",
+      "reason": "Declared by a run a library holds, and reached only through the specimen that refers to it \u2014 which declares no checkpoint of its own, so the roster lists it as one a coverage walk covers nothing of. The gates arrive spliced in at load, and no workflow this matrix walks refers to either run, so measuring them means walking the specimen.",
       "options": [
         "checkpoint:gate-an-edit:guard-the-edit.accept-blast-radius=hold",
         "checkpoint:gate-an-edit:guard-the-edit.accept-blast-radius=proceed",

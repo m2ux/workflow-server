@@ -50,7 +50,7 @@ variables:
   - name: changed_files
     type: array
     description: Ordered list of changed file paths.
-    defaultValue: []
+    defaultValue: ['src/example.ts']
   - name: pipeline_mode
     type: string
     description: The prism mode the structural branch takes.

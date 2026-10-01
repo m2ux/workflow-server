@@ -4,6 +4,7 @@ name: Lean-Coding Audit
 description: Apply the ponytail lean-coding lens to the just-implemented change.
 variables:
   reads:
+    - task_implementation
     - floor_breached
     - is_review_mode
   writes:
@@ -24,6 +25,12 @@ variables:
       defaultValue: false
 required: true
 steps:
+  - kind: action
+    id: note-task-implementation
+    when: task_implementation
+    actions:
+      - action: message
+        message: "Task implementation record is present for provenance."
   - kind: technique
     id: review-over-engineering
     technique:

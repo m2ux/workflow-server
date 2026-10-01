@@ -4,8 +4,8 @@ name: Gather Discovery
 description: Hoist each branch container and write the surfaced assumptions once, as plan-prepare does.
 variables:
   reads:
+    - assumptions_log
     - implementation_analysis_outputs
-    - needs_research
     - research_outputs
   writes:
     - name: analysis_assumptions

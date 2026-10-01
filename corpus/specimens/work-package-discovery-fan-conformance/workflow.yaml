@@ -71,6 +71,10 @@ variables:
     type: array
     description: What each case's fan landed at the join.
     defaultValue: []
+  - name: assumptions_log
+    type: object
+    defaultValue: {"assumptions": []}
+    description: Seeded log the join ingest writes into.
 initialActivity: take-case
 graph:
   take-case:

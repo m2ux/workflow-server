@@ -118,6 +118,7 @@ variables:
     defaultValue: false
   - name: implementation_plan
     type: object
+    defaultValue: {}
     description: "Implementation plan ({ task_count, tasks: [{ id, description, status }] })."
   - name: gitnexus_indexed
     type: boolean
@@ -146,6 +147,31 @@ variables:
     type: boolean
     description: Whether the host supports squash merge, always false in this workflow.
     defaultValue: false
+  - name: research_outputs
+    type: array
+    defaultValue: [{'result': {}}]
+    description: Fan container for research when the borrowed discovery fan runs.
+  - name: implementation_analysis_outputs
+    type: array
+    defaultValue: [{'result': {}}]
+    description: Fan container for implementation-analysis when the borrowed discovery fan runs.
+  - name: code_review_outputs
+    type: array
+    defaultValue: [{'result': {}}]
+    description: Fan container for code-review when the borrowed review fan runs.
+  - name: structural_analysis_outputs
+    type: array
+    defaultValue: [{'result': {}}]
+    description: Fan container for structural-analysis when the borrowed review fan runs.
+  - name: test_suite_review_outputs
+    type: array
+    defaultValue: [{'result': {}}]
+    description: Fan container for test-suite-review when the borrowed review fan runs.
+
+  - name: task_implementation
+    type: object
+    defaultValue: {"summary": ""}
+    description: Per-task implementation record; implement overwrites; lean-coding may read.
 initialActivity: start
 graph:
   start:

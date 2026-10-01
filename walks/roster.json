@@ -177,6 +177,26 @@
     {
       "id": "work-package-registers-conformance",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that deferrals and follow-ups reach their registers, which its sidecar case walk measures."
+    },
+    {
+      "id": "work-package-review-fan-conformance",
+      "reason": "Declares no checkpoint of its own; the fan it opens borrows the post-implementation review branches whose options the work-package walk covers. What the specimen evidences is the fan under both pipeline modes, which its sidecar case walk measures."
+    },
+    {
+      "id": "work-package-discovery-fan-conformance",
+      "reason": "Declares no checkpoint of its own; the fan it opens borrows research and implementation analysis whose options the work-package walk covers. What the specimen evidences is the fan under both needs_research values, which its sidecar case walk measures."
+    },
+    {
+      "id": "work-package-task-contract-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. What it evidences is that each plan task carries a Contract, which its sidecar case walk measures."
+    },
+    {
+      "id": "work-package-contract-tests-fan-conformance",
+      "reason": "Declares no checkpoint of its own; the fan it opens borrows the contract-tests and implement shapes whose options the work-package walk covers. What the specimen evidences is the fan under both fail-on-base outcomes, which its sidecar case walk measures."
+    },
+    {
+      "id": "work-package-contract-join-conformance",
+      "reason": "Its disposition gates are the borrowed work-package implementation join's, whose options the work-package walk covers. What the specimen evidences is the join under pass, rework and ambiguity cases, which its sidecar case walk measures."
     }
   ]
 }
