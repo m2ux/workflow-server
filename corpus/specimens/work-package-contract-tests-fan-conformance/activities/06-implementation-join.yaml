@@ -1,0 +1,46 @@
+id: implementation-join
+version: 1.0.0
+name: Implementation Join
+description: Specimen join — hoist contract-tests containers and confirm red on base.
+variables:
+  reads:
+    - contract_tests_outputs
+  writes:
+    - name: contract_tests_fail_on_base
+      type: boolean
+      description: Whether the contract-tests branch confirmed failure against the base tree.
+      defaultValue: false
+    - name: contract_tests_path
+      type: string
+      description: Dedicated worktree path the contract-tests branch used.
+      defaultValue: ""
+    - name: contract_tests_branch
+      type: string
+      description: Branch the contract-tests worktree stood on.
+      defaultValue: ""
+required: true
+steps:
+  - kind: action
+    id: take-contract-tests-report
+    when: contract_tests_outputs
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: "{contract_tests_outputs.0.result.contract_tests_fail_on_base}"
+      - action: set
+        target: contract_tests_path
+        value: "{contract_tests_outputs.0.result.contract_tests_path}"
+      - action: set
+        target: contract_tests_branch
+        value: "{contract_tests_outputs.0.result.contract_tests_branch}"
+  - kind: action
+    id: confirm-base-failures
+    actions:
+      - action: validate
+        target: contract_tests_fail_on_base == true
+        message: Contract tests did not fail against the base tree.
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Fan containers hoisted; red on base confirmed
