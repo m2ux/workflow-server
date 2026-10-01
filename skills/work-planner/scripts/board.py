@@ -12,9 +12,9 @@ reads it. A board's fields and items are as the REST API returns them, pages con
   gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=<Status field id>" > items.json
 An organization's board is under orgs/{owner} in place of users/{owner}.
 
-The board covers the initiative, every epic its Work Breakdown links, and every task issue
-an epic row links, in whichever repository each lives. An issue is known by its repository and
-number, so an epic another repository holds is tracked like one of the initiative's own, and two
+The board covers the initiative, every epic its Work Breakdown links, and each task issue whose
+title names a task of those epics or whose issue an epic row links, in whichever repository each
+lives. An issue is known by its repository and number, so an epic another repository holds is tracked like one of the initiative's own, and two
 repositories' issues of one number stay apart. An item already on the board for an issue those
 bodies cite, closed other than as completed (an issue a task subsumed), is removed. Each issue's
 Status, first match wins:
@@ -32,8 +32,9 @@ The board's Status field offers Backlog, Ready, In Progress and Done. In Review 
 board whose Status lacks it, an issue In Review is set In Progress.
 
 A dependency is delivered when its task row is, or its issue is closed as completed. A task row is
-delivered when its id links a pull request or commit, or a task issue closed as completed. A bare
-#750 names an issue in the repository of the issue whose row cites it. A dependency on an issue not
+delivered when a linked pull request has merged, or its id links a commit. A row that links a task
+issue and no pull request is delivered when that issue is closed as completed. An open pull request
+does not deliver the task. A bare #750 names an issue in the repository of the issue whose row cites it. A dependency on an issue not
 given (another initiative's epic, #750) is reported unresolved and read as undelivered; give that
 issue with --others to resolve it. An issue outside the initiative's repository prints as
 owner/repo#number.
@@ -50,8 +51,8 @@ import re
 import sys
 from pathlib import Path
 
-from format import LINK, cell, has_pull, id_cell, row_id, split_sections
-from update import PR_REF, Unreadable, pull_requests, table
+from format import LINK, cell, id_cell, row_id, split_sections
+from update import PR_REF, Unreadable, cites, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
@@ -115,17 +116,6 @@ def linked_issue(cell: str) -> Key | None:
     return issue_url(link[2]) if link else None
 
 
-def cites(pr: dict, key: Key) -> bool:
-    """Whether a pull request's title or body cites the issue: by its URL or owner/repo#number, or
-    as a bare #number from the issue's own repository. Repository names match in any case."""
-    repo, number = key
-    text = f"{pr['title']}\n{pr.get('body') or ''}"
-    if re.search(rf'(?<![\w.-]){re.escape(repo)}(?:/issues/|#){number}\b', text, re.IGNORECASE):
-        return True
-    home = PULL_REF.search(pr.get('html_url') or '')
-    return bool(home) and home[1].lower() == repo.lower() and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
-
-
 def option_name(name) -> str | None:
     """A single-select option's name, which REST gives as a string or as {raw, html}."""
     return name['raw'] if isinstance(name, dict) else name
@@ -138,10 +128,11 @@ def status_of(item: dict) -> str | None:
 
 
 class Board:
-    def __init__(self, issues: dict[Key, dict], unresolved: list[str], home: str):
+    def __init__(self, issues: dict[Key, dict], unresolved: list[str], home: str, prs: list[dict] | None = None):
         self.issues = issues
         self.unresolved = unresolved
         self.home = home
+        self.pulls = {p['html_url']: p for p in prs or []}
         self.tables: dict[Key, tuple[list[str], dict[str, list[str]]]] = {}
 
     def table(self, key: Key) -> tuple[list[str], dict[str, list[str]]]:
@@ -158,9 +149,24 @@ class Board:
             self.unresolved.append(f'{why}: {label(key, self.home)} has no row {task}')
             return False
         ident = id_cell(header, r)
+        pulls = commits = merged = False
+        for found in LINK.finditer(ident):
+            if '/commit/' in found[2]:
+                commits = True
+            elif '/pull/' in found[2]:
+                pulls = True
+                pr = self.pulls.get(found[2])
+                if pr is None:
+                    self.unresolved.append(f'{why}: {found[2]} is not in --prs')
+                elif pr.get('merged_at'):
+                    merged = True
+        if commits or merged:
+            return True
+        if pulls:
+            return False
         issue = linked_issue(ident)
         if issue is None:
-            return has_pull(ident)
+            return False
         return self.issue_delivered(issue, why)
 
     def issue_delivered(self, key: Key, why: str) -> bool:
@@ -244,7 +250,7 @@ def main() -> int:
     issues = {**load(args.others), **tasks, **epics, root: initiative}
     prs = pull_requests(args.prs)
     unresolved: list[str] = []
-    board = Board(issues, unresolved, home)
+    board = Board(issues, unresolved, home, prs)
 
     header, epic_rows = rows(initiative)
     epic_ids = {row_id(id_cell(header, r)): n for r in epic_rows if (n := linked_issue(id_cell(header, r)))}
@@ -273,10 +279,17 @@ def main() -> int:
         task_header, task_rows = board.table(number)
         delivered_any = False
         for tid, tr in task_rows.items():
-            task_issue = linked_issue(id_cell(task_header, tr))
+            ident = id_cell(task_header, tr)
+            task_issue = linked_issue(ident)
             if task_issue is not None and task_issue not in tasks:
                 unresolved.append(f'E{epic_key}:{tid}: task issue {label(task_issue, home)} is not given with --tasks')
                 continue
+            if task_issue is None:
+                prefix = f'[I{tag}:E{epic_key}:{tid}]'
+                found = [k for k, issue in tasks.items() if issue['title'].startswith(prefix)]
+                if len(found) > 1:
+                    unresolved.append(f'E{epic_key}:{tid}: {len(found)} task issues titled {prefix}')
+                task_issue = found[0] if len(found) == 1 else None
             delivered_any |= board.row_delivered(number, tid, f'E{epic_key}:{tid}')
             if task_issue is None:
                 continue

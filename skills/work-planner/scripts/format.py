@@ -216,11 +216,6 @@ def id_form(text: str) -> str:
     return parts[0] if parts and all(p == parts[0] for p in parts) else bare
 
 
-def has_pull(text: str) -> bool:
-    """Whether a cell links a pull request or a commit."""
-    return any('/pull/' in m[2] or '/commit/' in m[2] for m in LINK.finditer(text))
-
-
 def colon_refs(text: str) -> str:
     text = re.sub(r'\bI(\d\d) E(\d\d)(?: W(\d\d))?\b',
                   lambda m: f'I{m[1]}:E{m[2]}' + (f':W{m[3]}' if m[3] else ''), text)

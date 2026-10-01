@@ -91,7 +91,7 @@ Checks dependencies as a graph, then renumbers.
    - backward references: a task depending on a later task in its epic, or an epic depending on a later epic;
    - cycles;
    - dependencies listed twice, or already implied by another in the same cell;
-   - Join pairs that are one-way, or where one task depends on the other, directly or through a task outside the pair;
+   - Joins pairs that are one-way, or where one task depends on the other, directly or through a task outside the pair;
    - initiative Depends on cells that name a task, or differ from the epics the epics' tasks depend on;
    - as advisory, numbering that does not follow start order;
    - the longest chains, and the tasks every one of them shares.

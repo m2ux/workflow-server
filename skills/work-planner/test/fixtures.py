@@ -33,7 +33,7 @@ def item(content: dict | None, status: str | None) -> dict:
 
 def epic_body(*rows: tuple[str, str, str]) -> str:
     """An epic body whose Work Breakdown holds rows of (task id, description, depends on)."""
-    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Join | Done |',
+    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Done |',
              '| --- | --- | --- | --- | --- | --- |']
     lines += [f'| {task} | {description} | AC1 | {depends} | | |' for task, description, depends in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])

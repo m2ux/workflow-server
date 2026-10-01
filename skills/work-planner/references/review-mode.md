@@ -40,7 +40,12 @@ Checks existing initiative, epic, task and standalone issues against the templat
 6. **Check dependencies.**
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch body](commands.md#fetch-body), and run [Check dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in step 5. An initiative Depends on cell takes the epics it derives.
-7. **Re-run.**
-   - Re-run both checks until they report nothing, or until every remaining finding is one the user chose to keep.
+7. **Coverage.**
+   For each epic under review, [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) and run [Match pull requests](commands.md#match-pull-requests).
+   - **unmet.**
+     A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown guide](work-breakdown.md#tables) defines.
+   Put each to the user. Verifying and ticking it is update mode.
+8. **Re-run.**
+   - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep.
    - Report what changed on each issue.
 

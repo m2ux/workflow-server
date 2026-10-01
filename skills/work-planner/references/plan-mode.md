@@ -30,7 +30,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
    2. the epics in dependency order, each citing the initiative and the epics created before it, with placeholders for any it cites that do not exist yet;
    3. a [Patch body](commands.md#patch-body) replacing every remaining placeholder, in the initiative and in any epic that holds one. Grep the local files for `#E[0-9]` until none is left;
-   4. a task issue from `templates/task.md` for each task that needs one, citing its epic, with the row id then linking the issue;
+   4. a task issue from `templates/task.md` for each task that needs one, citing its epic;
    5. [Check format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch body](commands.md#patch-body) from each fixed body.
 7. **Review.**  Run the passes in `review-passes.md`:
    - the goal pass, whenever the goal, a criterion or an epic changes;

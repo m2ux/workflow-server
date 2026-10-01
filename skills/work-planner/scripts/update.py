@@ -15,14 +15,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a merged pull request naming the epic, and refuses a
-pull request that is unmerged or names another epic, or a row linking a task issue. A further pull
-request on a row is linked after the ones already there. A row whose id links a task issue is
-delivered when that issue, given by --tasks, is closed as completed; any other row when its id links
-a pull request or commit. Done carries a tick when the row is delivered and every criterion it cites is
-ticked. Reported: merged pull requests naming the epic that no row links yet, open ones as in flight,
-a row linked to a pull request naming another epic, rows sharing a pull request that do not Join
-each other, and work started while Open questions remain.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion it cites is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked.
@@ -47,6 +40,26 @@ PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
+PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+
+
+def cites(pr: dict, key: tuple[str, int]) -> bool:
+    """Whether a pull request's title or body cites the issue: by its URL or owner/repo#number, or
+    as a bare #number from the issue's own repository. Repository names match in any case."""
+    repo, number = key
+    text = f"{pr['title']}\n{pr.get('body') or ''}"
+    if re.search(rf'(?<![\w.-]){re.escape(repo)}(?:/issues/|#){number}\b', text, re.IGNORECASE):
+        return True
+    home = PULL_HOME.search(pr.get('html_url') or '')
+    return bool(home) and home[1].lower() == repo.lower() and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
+
+
+def issue_done(issue: dict) -> bool:
+    return issue['state'] == 'closed' and issue.get('state_reason') == 'completed'
+
+
+def load_issues(paths: list[str]) -> list[dict]:
+    return [json.loads(Path(path).read_text()) for path in paths]
 
 
 def completed(paths: list[str]) -> dict[int, bool]:
@@ -62,51 +75,101 @@ def for_epic(prs: list[dict], initiative: str, epic: str) -> dict[int, dict]:
     return {p['number']: p for p in prs if (m := PR_REF.match(p['title'])) and m.groups() == (initiative, epic)}
 
 
-def epic_delivery(rows, header, named, links, tasks, report):
+def compose_id(task: str, text: str, url: str) -> str:
+    """The task's id linking url, keeping each pull request and commit already linked and dropping an issue link."""
+    kept, seen = [], set()
+    for found in LINK.finditer(text):
+        if ISSUE_URL.search(found[2]) or found[2] in seen:
+            continue
+        seen.add(found[2])
+        kept.append(f'[{task}]({found[2]})')
+    if url not in seen:
+        kept.append(f'[{task}]({url})')
+    return ', '.join(kept)
+
+
+def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report):
     delivered, by_pr = {}, {}
+    issues = load_issues(task_paths)
+    by_number = {issue['number']: issue for issue in issues}
+    by_task = {}
+    for issue in issues:
+        title = PREFIX.match(issue['title'])
+        if title and title[1] == initiative and title[2] == epic and title[3]:
+            by_task[f'W{title[3]}'] = issue
     at = header.index('Task')
     for r in rows:
         task = row_id(r[at])
         if task in links:
             pr = named.get(links[task])
-            issue = ISSUE_URL.search(m[2]) if (m := LINK.fullmatch(r[at].strip())) else None
-            if issue:
-                sys.exit(f'{task} links its task issue #{issue[1]}; that issue records its pull request')
-            if not pr or not pr.get('merged_at'):
-                sys.exit(f'--link {task}={links[task]}: no merged pull request naming this epic')
-            urls = [found[2] for found in LINK.finditer(r[at])]
-            if pr['html_url'] not in urls:
-                link = f"[{task}]({pr['html_url']})"
-                r[at] = link if not urls else f'{r[at]}, {link}'
+            if not pr:
+                sys.exit(f'--link {task}={links[task]}: no pull request naming this epic')
+            linked = compose_id(task, r[at], pr['html_url'])
+            if linked != r[at].strip():
+                r[at] = linked
                 report['linked'].append(f"{task} → #{pr['number']}")
         ident = r[at]
-        issue = ISSUE_URL.search(m[2]) if (m := LINK.fullmatch(ident.strip())) else None
-        if issue:
-            number = int(issue[1])
-            if number not in tasks:
-                report['note'].append(f'{task}: no --tasks issue for #{number}')
-            delivered[task] = bool(tasks.get(number))
-            continue
-        joins = set(re.findall(r'W\d\d', cell(header, r, 'Join')))
+        joins = set(re.findall(r'W\d\d', cell(header, r, 'Joins')))
+        pulls, commits, issue_numbers = [], False, []
         for found in LINK.finditer(ident):
+            if '/commit/' in found[2]:
+                commits = True
             pull = PULL_URL.search(found[2])
-            if not pull:
-                continue
-            number = int(pull[1])
-            by_pr.setdefault(number, []).append((task, joins))
-            if number not in named:
-                report['conflict'].append(f'{task} links #{number}, whose title does not name this epic')
-        delivered[task] = bool(LINK.search(ident))
+            if pull:
+                number = int(pull[1])
+                pulls.append(number)
+                by_pr.setdefault(number, []).append((task, joins))
+                if number not in named:
+                    report['conflict'].append(f'{task} links #{number}, whose title does not name this epic')
+            elif (issue := ISSUE_URL.search(found[2])):
+                issue_numbers.append(int(issue[1]))
+        landed = commits or any(named.get(number, {}).get('merged_at') for number in pulls)
+        if not pulls and not commits and issue_numbers:
+            number = issue_numbers[0]
+            if number not in by_number:
+                report['note'].append(f'{task}: no --tasks issue for #{number}')
+            landed = issue_done(by_number[number]) if number in by_number else False
+            report['note'].append(f'{task} links task issue #{number}; link its pull request')
+        task_issue = by_task.get(task)
+        if task_issue:
+            repo = task_issue['repository_url'].split('/repos/', 1)[1]
+            key = (repo, task_issue['number'])
+            for number in pulls:
+                pr = named.get(number)
+                if pr and not cites(pr, key):
+                    report['uncited'].append(f"#{number} does not cite {task} #{task_issue['number']}")
+        delivered[task] = landed
     for number, group in by_pr.items():
         apart = [f'{a}+{b}' for a, ja in group for b, _ in group if a < b and b not in ja]
         if apart:
-            report['conflict'].append(f"#{number} delivers tasks that do not Join: {', '.join(apart)}")
+            report['conflict'].append(f"#{number} delivers tasks that do not name each other in Joins: {', '.join(apart)}")
     for number, pr in sorted(named.items()):
-        if pr.get('merged_at') and number not in by_pr:
+        if number in by_pr:
+            continue
+        if pr.get('merged_at'):
             report['unmatched'].append(f"#{number} {pr['title']}")
         elif pr.get('state') == 'open':
             report['in flight'].append(f"#{number} {pr['title']}")
     return delivered
+
+
+def unmet_coverage(rows, header, named, ticked, report):
+    """A delivered task whose Coverage criteria are still unticked."""
+    at = header.index('Task')
+    for r in rows:
+        task = row_id(r[at])
+        numbers = []
+        for found in LINK.finditer(r[at]):
+            pull = PULL_URL.search(found[2])
+            if pull and named.get(int(pull[1]), {}).get('merged_at'):
+                numbers.append(int(pull[1]))
+        if not numbers:
+            continue
+        open_acs = [n for n in cited(cell(header, r, 'Coverage')) if not ticked.get(n)]
+        if open_acs:
+            prs = ', '.join(f'#{n}' for n in numbers)
+            acs = ', '.join(f'AC{n}' for n in open_acs)
+            report['unmet'].append(f'{task} ({prs}): {acs} unticked')
 
 
 def initiative_delivery(rows, header, epics, report):
@@ -180,7 +243,7 @@ def main() -> int:
     parser.add_argument('issue')
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
     parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
-    parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, e.g. W01=950,W02=950')
+    parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, e.g. W01=950,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
@@ -202,8 +265,8 @@ def main() -> int:
     links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
-    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'ready to verify',
-                              'ticked early', 'ticked', 'done', 'open questions', 'note')}
+    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
+                              'unmet', 'ticked early', 'ticked', 'done', 'open questions', 'note')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)
@@ -222,9 +285,10 @@ def main() -> int:
             sys.exit('Work Breakdown has no Coverage column; run format.py first')
         header, rows = grid[0], grid[2:]
         if kind == 'epic':
-            delivered = epic_delivery(rows, header, named, links, completed(args.tasks), report)
+            delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report)
             questions = next((l for h, l in sections if h == 'Open questions'), [])
-            started = any(delivered.values()) or report['in flight'] or report['unmatched']
+            open_named = any(p.get('state') == 'open' for p in named.values())
+            started = any(delivered.values()) or open_named or report['unmatched']
             if started and any(l.strip() for l in questions):
                 report['open questions'].append('work has started while questions remain; resolve them '
                                                 'in plan mode, since their answers may reshape the epic')
@@ -262,6 +326,9 @@ def main() -> int:
             ac_lines[i] = '- [x] ' + line[6:]
             ticked[int(a[1])] = True
             report['ticked'].append(f'{tag}{a[1]}')
+
+    if kind == 'epic' and rows:
+        unmet_coverage(rows, header, named, ticked, report)
 
     done_changed = False
     if kind != 'task' and rows:

@@ -20,7 +20,8 @@ reference carrying this initiative's prefix (I07 E01 W03, I07:E01:W03) is rewrit
 unprefixed one means their own initiative. A bare task number right after a link ([I00 E01](…) W05)
 belongs to the linked epic and is left as it is. Files are rewritten in place. A map that sends two numbers to one,
 or onto a number it leaves out, is refused and nothing is written. So is a map that renumbers
-delivered work: a task whose id in --own links a pull request or commit, or an epic a pull request
+work a pull request names: a task whose id in --own links a pull request or commit, open or merged,
+or an epic a pull request
 in --prs names ([I07:E00] Purpose), since that is how its delivery is found. prs.json holds pull
 requests as JSON lines, as update.py takes them.
 
@@ -164,7 +165,7 @@ def main() -> None:
         epics = named_epics(args.prs, args.initiative) if args.prs else set()
         held = sorted(f'E{o:02d}' for o in moved if o in epics)
     if held:
-        sys.exit(f'delivered work keeps its number: {", ".join(held)}. Nothing was written.')
+        sys.exit(f'work a pull request names keeps its number: {", ".join(held)}. Nothing was written.')
 
     names = list(dict.fromkeys(args.files + ([args.own] if task_mode else [])))
     names += [n for n in args.outside if n not in names]
