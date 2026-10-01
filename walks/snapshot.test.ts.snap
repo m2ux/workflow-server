@@ -317,6 +317,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "env-prerequisites",
+        "take-research-fan",
+        "take-analysis-fan",
         "ingest-discovery-assumptions",
         "create-plan",
         "create-test-plan",
@@ -450,6 +452,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "take-contract-tests-report",
+        "take-implement-fan",
         "confirm-base-failures",
         "merge-contract-tests",
         "run-contract-tests",
@@ -490,6 +494,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "next": "prism-decision",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "note-task-implementation",
         "review-over-engineering",
         "harvest-debt",
       ],
@@ -1171,6 +1176,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "env-prerequisites",
+        "take-research-fan",
+        "take-analysis-fan",
         "ingest-discovery-assumptions",
         "create-plan",
         "create-test-plan",
@@ -1304,6 +1311,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "take-contract-tests-report",
+        "take-implement-fan",
         "confirm-base-failures",
         "merge-contract-tests",
         "run-contract-tests",
@@ -1344,6 +1353,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "next": "prism-decision",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "note-task-implementation",
         "review-over-engineering",
         "harvest-debt",
       ],
@@ -1994,6 +2004,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "env-prerequisites",
+        "take-research-fan",
+        "take-analysis-fan",
         "ingest-discovery-assumptions",
         "create-plan",
         "create-test-plan",
@@ -2127,6 +2139,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "take-contract-tests-report",
+        "take-implement-fan",
         "confirm-base-failures",
         "merge-contract-tests",
         "run-contract-tests",
@@ -2167,6 +2181,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "next": "prism-decision",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "note-task-implementation",
         "review-over-engineering",
         "harvest-debt",
       ],
@@ -2796,6 +2811,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "env-prerequisites",
+        "take-research-fan",
+        "take-analysis-fan",
         "ingest-discovery-assumptions",
         "create-plan",
         "create-test-plan",
@@ -2929,6 +2946,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "take-contract-tests-report",
+        "take-implement-fan",
         "confirm-base-failures",
         "merge-contract-tests",
         "run-contract-tests",
@@ -2969,6 +2988,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "next": "prism-decision",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "note-task-implementation",
         "review-over-engineering",
         "harvest-debt",
       ],
@@ -3520,6 +3540,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "env-prerequisites",
+        "take-research-fan",
+        "take-analysis-fan",
         "ingest-discovery-assumptions",
         "create-plan",
         "create-test-plan",
@@ -3584,6 +3606,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "next": "prism-decision",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "note-task-implementation",
         "review-over-engineering",
         "harvest-debt",
       ],
@@ -4095,6 +4118,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "env-prerequisites",
+        "take-research-fan",
+        "take-analysis-fan",
         "ingest-discovery-assumptions",
         "create-plan",
         "create-test-plan",
@@ -4228,6 +4253,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "take-contract-tests-report",
+        "take-implement-fan",
         "confirm-base-failures",
         "merge-contract-tests",
         "run-contract-tests",
@@ -4268,6 +4295,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "next": "prism-decision",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "note-task-implementation",
         "review-over-engineering",
         "harvest-debt",
       ],
@@ -4602,8 +4630,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 21,
-  "declaredTotal": 351,
-  "executedTotal": 192,
+  "declaredTotal": 353,
+  "executedTotal": 197,
   "perActivity": [
     {
       "activity": "assumptions-review",
@@ -4647,18 +4675,18 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "implementation-join",
-      "declared": 21,
-      "executed": 8,
+      "declared": 22,
+      "executed": 10,
     },
     {
       "activity": "lean-coding-audit",
-      "declared": 8,
-      "executed": 2,
+      "declared": 9,
+      "executed": 3,
     },
     {
       "activity": "plan-prepare",
       "declared": 17,
-      "executed": 9,
+      "executed": 11,
     },
     {
       "activity": "post-impl-review",
