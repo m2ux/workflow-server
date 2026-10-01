@@ -134,7 +134,8 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **Python 3.10 or later.**
   Standard library only, for the scripts in `scripts/` and their tests in `test/`.
 - **git.**
-  For the planning record: a worktree of the `engineering` branch, whose records live under `artifacts/planning/`.
+  - For the planning record: a worktree of the `engineering` branch, whose records live under `artifacts/planning/`.
+  - For delivery: each initiative's integration branches, which its pull requests target, per the [Work Breakdown guide](references/work-breakdown.md#delivery).
 - **Sub-agents.**  Where the harness has them, for plan mode's broad evidence sweeps.
 
 ## Rules

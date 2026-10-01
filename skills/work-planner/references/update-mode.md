@@ -49,6 +49,7 @@ Records delivered work on an initiative, its epics and their task issues: links 
     - It lists each criterion whose citing epics are all delivered as ready to verify. Run the automated test each names, and tick those that pass with [Tick criteria](commands.md#tick-criteria).
     - Put each criterion that names no automated test to the user, who confirms it and ticks it.
     - [Close as completed](commands.md#close-as-completed) the initiative when it reports every criterion ticked.
+    - Then run [Open integration pull request](commands.md#open-integration-pull-request) for each of its integration branches, which the user merges.
 12. **Update the board.**
     Update it once every issue is patched and closed, fetching the issues again first.
     - **Find it.**

@@ -42,7 +42,10 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - After each round, patch every changed issue, update the planning record and the discussion PR body, then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
 9. **Ready the epic.**
-   Ready each epic before it starts. No task of the epic starts until both hold:
+   Ready each epic before it starts. No task of the epic starts until all hold:
+   - **Integration branches exist.**
+     - Each long-lived branch the epic's tasks change has the initiative's integration branch, as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
+     - Cut a missing one with [Create integration branch](commands.md#create-integration-branch), and point an open pull request of the epic at it with [Retarget pull request](commands.md#retarget-pull-request).
    - **Open questions resolved.**
      - An open question is unfinished planning.
      - Put each to the user with its recommendation, record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.
