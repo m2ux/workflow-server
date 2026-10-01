@@ -938,6 +938,8 @@ Harness-surface mismatch smells. Apply by comparing authored claims to the actua
 
 ### AP-71. no-false-resource-delivery
 
+**Fires on:** `technique`, `resource`, `readme`
+
 "Resources are in the response"
 
 A surface claims a tool return shape that is not accurate.
@@ -949,6 +951,8 @@ A surface claims a tool return shape that is not accurate.
 **Fix:** Align the claim with actual tool behaviour, or delete the claim if the surface should not describe tools. See [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface).
 
 ### AP-72. complete-bootstrap-path
+
+**Fires on:** `technique`, `resource`
 
 "Call start_session, then call next_activity"
 
@@ -962,6 +966,8 @@ The bootstrap path has a discoverability gap between hops.
 
 ### AP-73. consistent-tool-names
 
+**Fires on:** `technique`, `resource`, `readme`
+
 "`get_step_technique`" / invented or stale tool name
 
 The same harness action is named inconsistently or with a stale name.
@@ -973,6 +979,8 @@ The same harness action is named inconsistently or with a stale name.
 **Fix:** Use one canonical name everywhere; replace or delete names absent from the harness surface.
 
 ### AP-74. no-duplicated-guidance
+
+**Fires on:** `technique`, `resource`
 
 "Pass token to all calls"
 
@@ -986,6 +994,8 @@ The same behavioural guidance is multi-homed across techniques and tool docs.
 
 ### AP-75. describe-tool-value
 
+**Fires on:** `technique`, `resource`
+
 "Returns: Activity definition"
 
 A tool description undersells the value of the real return.
@@ -997,6 +1007,8 @@ A tool description undersells the value of the real return.
 **Fix:** Describe the value of the real return.
 
 ### AP-76. no-redundant-tools
+
+**Fires on:** `technique`, `resource`
 
 "Also call get_activities for the routing"
 
@@ -1014,6 +1026,8 @@ Authoring-session smells.
 
 ### AP-77. impl-before-confirmed-approach
 
+**Fires on:** `*`
+
 "I'll just start implementing"
 
 Implementation starts before the approach is confirmed.
@@ -1025,6 +1039,8 @@ Implementation starts before the approach is confirmed.
 **Fix:** Present the approach; wait for confirmation; then modify. See [Confirm Before Irreversible Changes](./design-principles.md#8-confirm-before-irreversible-changes).
 
 ### AP-78. follow-through-on-recommend
+
+**Fires on:** `*`
 
 "Here's what I recommend..."
 
@@ -1038,6 +1054,8 @@ A recommendation is presented without follow-through implementation.
 
 ### AP-79. structure-backed-constraints
 
+**Fires on:** `workflow.rules`, `activity.rules`, `technique.rules`, `activity.steps`, `activity.exits`
+
 "The agent must never do X"
 
 A critical constraint is text-only with no structural enforcement.
@@ -1049,6 +1067,8 @@ A critical constraint is text-only with no structural enforcement.
 **Fix:** Add structural enforcement (checkpoint, condition, validate, exit `when`), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
 
 ### AP-80. preserve-readme-content
+
+**Fires on:** `readme`
 
 "Updated README"
 
@@ -1062,6 +1082,8 @@ A README update reduces content without a preservation audit and confirmation.
 
 ### AP-81. verify-format-literacy
 
+**Fires on:** `workflow`, `technique`, `resource`
+
 "Draft first, validate later"
 
 Drafting proceeds without format literacy, or commit skips validation.
@@ -1074,6 +1096,8 @@ Drafting proceeds without format literacy, or commit skips validation.
 
 ### AP-82. work-through-activities
 
+**Fires on:** `workflow.activities`, `workflow.graph`
+
 "I'll just merge the worker outputs here"
 
 Work bypasses defined activities via informal combination of results.
@@ -1085,6 +1109,8 @@ Work bypasses defined activities via informal combination of results.
 **Fix:** Route the work through the defined activities. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
 
 ### AP-83. accept-correction
+
+**Fires on:** `*`
 
 "That correction seems wrong — keeping my version"
 
@@ -1102,6 +1128,8 @@ Artifact and checkpoint smells.
 
 ### AP-84. single-closeout-artifact
 
+**Fires on:** `resource`, `readme`
+
 `COMPLETE.md` + `workflow-retrospective.md` + `close-out-summary.md` + a README footer narrative
 
 Multiple close-out documents re-narrate the same session.
@@ -1113,6 +1141,8 @@ Multiple close-out documents re-narrate the same session.
 **Fix:** Collapse to one close-out document; retarget retrospective writes to it; keep README as an index line only.
 
 ### AP-85. link-dont-copy-sections
+
+**Fires on:** `resource`
 
 "### Test Results" / "### Files Changed" / "*Recorded from the [validation report]*"
 
@@ -1126,6 +1156,8 @@ A template section forces copying content owned by another artifact.
 
 ### AP-86. exception-only-verdict-tables
 
+**Fires on:** `resource`
+
 "| Criterion | Target | Actual | Status |" with every row "✅ Met"
 
 A verdict table lists all-green rows instead of exceptions only.
@@ -1137,6 +1169,8 @@ A verdict table lists all-green rows instead of exceptions only.
 **Fix:** Replace with a one-line all-pass form plus a divergences-only table.
 
 ### AP-87. omit-null-sections
+
+**Fires on:** `resource`, `activity.steps`
 
 "Deferred Decisions: None." / empty "### Frustration Signals" table / "confirm no assumptions were made"
 
@@ -1150,6 +1184,8 @@ Null/empty results get headed sections or confirmation ceremony.
 
 ### AP-88. one-decision-one-checkpoint
 
+**Fires on:** `activity.steps`
+
 "`classification-confirmed` immediately followed by `workflow-path-selected`" / "`rationale-amendment` re-asking what prior options already captured"
 
 One decision is split across multiple checkpoints.
@@ -1161,6 +1197,8 @@ One decision is split across multiple checkpoints.
 **Fix:** Merge into one checkpoint whose options cover the full decision space plus an escape hatch for the subsumed judgement; move recording side-effects to the survivor; delete variables whose only consumer was the removed checkpoint's condition.
 
 ### AP-89. checkpoint-requires-decision
+
+**Fires on:** `activity.steps`
 
 "`merge-strategy-reminder` — options: [Understood]"
 
@@ -1174,6 +1212,8 @@ A checkpoint has no real decision in its options.
 
 ### AP-90. no-guide-wrapper-ceremony
 
+**Fires on:** `resource`
+
 "Purpose:** … / ## Overview / > **Key Insight:** … / Good–Bad pairs / ## Quality Checklist / ## Relationship to Other Documents"**
 
 A guide is wrapper ceremony around a template.
@@ -1185,6 +1225,8 @@ A guide is wrapper ceremony around a template.
 **Fix:** Rewrite as template + rules; fold each Good/Bad lesson into one rule bullet; drop wrapper sections; verify referenced heading anchors survive.
 
 ### AP-91. lifecycle-row-update
+
+**Fires on:** `resource`
 
 "### Assumptions Surfaced → ### User Response → ### Outcome → Final Review scorecards"
 
@@ -1198,6 +1240,8 @@ Lifecycle rows are append-only instead of updated in place.
 
 ### AP-92. resource-fills-not-does
 
+**Fires on:** `resource`
+
 "## Surfacing Assumptions / Ask after each phase/task…" / "## Research Protocol / 1. Ensure…"
 
 A resource owns DOES procedure (session cadence or operational HOW) instead of fill/consult content.
@@ -1209,6 +1253,8 @@ A resource owns DOES procedure (session cadence or operational HOW) instead of f
 **Fix:** Move does-sections to the owning technique as protocol phases or named rules; leave templates + consult vocabulary; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-93. canonical-fact-home
+
+**Fires on:** `resource`
 
 "### Problem Statement in wp-plan / requirements-elicitation / design-framework"
 
@@ -1222,6 +1268,8 @@ A fact is multi-homed across templates.
 
 ### AP-94. link-only-input-slots
 
+**Fires on:** `resource`
+
 "### Key Findings Summary — From KB Research: [key concept discovered]…"
 
 An input slot restates another artifact's content.
@@ -1233,6 +1281,8 @@ An input slot restates another artifact's content.
 **Fix:** Replace with a link-only inputs list — one line per consumed artifact, linking the section that shaped the work. Anchors are permitted.
 
 ### AP-95. enforce-output-discipline
+
+**Fires on:** `workflow.rules`, `technique.rules`, `resource`
 
 "state-once-per-artifact / single-source-and-link / exception-only-reporting … declared in a TECHNIQUE.md nobody re-checks"
 
@@ -1246,6 +1296,8 @@ Output-discipline rules exist without a verify gate.
 
 ### AP-96. artifact-audience-declared
 
+**Fires on:** `technique.outputs`
+
 "`#### artifact` / `debt-ledger.md`" — a filename with no `#### audience` beneath it
 
 An artifact's primary audience is undeclared.
@@ -1257,6 +1309,8 @@ An artifact's primary audience is undeclared.
 **Fix:** Declare the audience. `human` is prose. `agent` is structured one-entry-per-item data, serialized as JSON (`check-audience` enforces the format; `audience-declared` enforces the presence). Where a person is pointed at the artifact — a progress-inventory row, a gate message linking it — that reader is the one the format serves.
 
 ### AP-97. link-named-artifacts
+
+**Fires on:** `activity.steps[].message`, `activity.steps[].actions[].message`
 
 "`spec-confirmed` — message: Full specification across the elicited dimensions`" / "`findings in the report are the change specification.`"
 
@@ -1270,6 +1324,8 @@ A durable artifact is named in a message but not linked.
 
 ### AP-98. no-next-step-narration
 
+**Fires on:** `activity.steps[].message`, `activity.steps[].actions[].message`, `activity.steps[].options[].description`
+
 "`Impact analysis complete — no removals. Continuing to scope…`" / "`… Accepting in 30s unless you intervene`" / "`(default — auto-accepts after 30s)`"
 
 A message narrates the next step or auto-advance.
@@ -1281,6 +1337,8 @@ A message narrates the next step or auto-advance.
 **Fix:** Delete the narration; keep timing in `autoAdvanceMs` and `defaultOption`, routing in `exits` and the workflow `graph`, and the rest in option labels only.
 
 ### AP-99. statement-not-question
+
+**Fires on:** `activity.steps[].message`
 
 "`Here is the full specification. Is it accurate and complete?`" / "`Confirm this target set?`"
 
@@ -1294,6 +1352,8 @@ A checkpoint message is phrased as a question.
 
 ### AP-100. runtime-rules-only
 
+**Fires on:** `workflow.rules`, `activity.rules`, `technique.rules`
+
 "`Never use prose where a formal schema construct exists`" / "`Modular over inline`" / checkpoint-message or README authoring standards in `rules.*` or technique `## Rules`
 
 A design-time authoring standard is filed as a runtime rule.
@@ -1306,6 +1366,8 @@ A design-time authoring standard is filed as a runtime rule.
 
 ### AP-101. no-caption-only-message
 
+**Fires on:** `activity.steps[].message`
+
 `Structural patterns from existing workflows, with proposed structure shown alongside.`
 
 A checkpoint message is only a caption of the prior present step.
@@ -1317,6 +1379,8 @@ A checkpoint message is only a caption of the prior present step.
 **Fix:** Persist, then link (`[label]({path})`), or reduce the message to the subject the options decide.
 
 ### AP-102. no-technique-resource-dual-home
+
+**Fires on:** `technique`, `resource`
 
 "`audit-anti-patterns` protocol lists per-entry Flag/Skip/Fix…` while `anti-patterns.md` already defines those criteria" / technique restates a linked resource's checklist, vocabulary, or detect rules"
 
