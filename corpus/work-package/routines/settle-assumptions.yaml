@@ -1,0 +1,77 @@
+id: settle-assumptions
+version: 1.0.0
+name: Settle Assumptions
+description: Converge the collected assumptions, assemble what stays open, and put that residual set to the user.
+
+inputs:
+  - id: assumption_categories
+    description: The categories an assumption is classified into.
+  - id: assumption_source
+    description: The work the assumptions are drawn from — the design decision, the plan, the analysis, or the change under construction.
+  - id: branch_name
+    description: Feature branch name.
+  - id: component_git_dir
+    description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
+  - id: is_review_mode
+    description: Whether the run is reviewing someone else's work, in which case no gate asks a user for a decision.
+  - id: planning_folder_path
+    description: Absolute path to this run's planning folder — the write location for every working artifact.
+  - id: pr_number
+    description: Pull request number.
+  - id: problem_statement
+    description: A clear problem definition with system understanding, impact assessment, success criteria, and constraints — understandable without prior context.
+  - id: requirements
+    description: The captured requirements list elicited across the domains.
+  - id: target_path
+    description: Feature worktree path for edits, builds, and PR ops.
+  - id: target_repo
+    description: GitHub repository as owner/repo.
+
+outputs:
+  - id: assumptions_log
+    type: object
+    description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+  - id: has_deferred_assumptions
+    type: boolean
+    description: Whether any assumption was deferred to stakeholder review.
+
+internals:
+  - id: assumptions_log_path
+    description: Path to the assumptions log convergence wrote, which the residual gate links.
+  - id: has_open_assumptions
+    description: Whether unresolved assumptions requiring stakeholder input remain after convergence.
+  - id: open_assumptions
+    description: The irreducible open assumptions after convergence.
+  - id: assumption_review_presentation
+    description: Judgement-augmentation context per open assumption, which the residual gate carries.
+
+steps:
+  - kind: routine
+    id: converge
+    routine: converge-assumptions
+    outputs:
+      assumptions_log: assumptions_log
+      assumptions_log_path: assumptions_log_path
+      has_open_assumptions: has_open_assumptions
+      open_assumptions: open_assumptions
+  - kind: technique
+    id: assemble-residual
+    technique:
+      name: review-assumptions::assemble-open-set
+      inputs:
+        open_assumptions: open_assumptions
+      outputs:
+        assumption_review_presentation: assumption_review_presentation
+    when: is_review_mode != true
+  - kind: routine
+    id: interview
+    routine: residual-assumption-interview
+    with:
+      assumption_review_presentation: "{assumption_review_presentation}"
+      assumptions_log_path: "{assumptions_log_path}"
+      has_open_assumptions: "{has_open_assumptions}"
+      open_assumptions: "{open_assumptions}"
+    outputs:
+      assumptions_log: assumptions_log
+      assumptions_log_path: assumptions_log_path
+      has_deferred_assumptions: has_deferred_assumptions

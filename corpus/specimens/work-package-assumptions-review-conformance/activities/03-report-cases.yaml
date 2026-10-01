@@ -1,0 +1,18 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the assumptions review settled in each case.
+variables:
+  reads:
+    - case_outcomes
+    - planning_folder_path
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Each case is named with what the review settled, so a reader can tell the user's answer from the review run's headless pass

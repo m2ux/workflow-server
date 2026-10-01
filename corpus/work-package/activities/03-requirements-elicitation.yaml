@@ -1,10 +1,9 @@
 id: requirements-elicitation
-version: 2.13.1
+version: 2.14.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 variables:
   reads:
-    - assumption_outcome
     - branch_name
     - component_git_dir
     - needs_research
@@ -45,25 +44,10 @@ variables:
       type: array
       description: One entry per question posed, carrying its domain, the question and the answer given.
       defaultValue: []
-    - name: has_deferred_assumptions
-      type: boolean
-      description: Whether any assumption was deferred to stakeholders.
-      defaultValue: false
-    - name: has_open_assumptions
-      type: boolean
-      description: Whether unresolved assumptions requiring stakeholder input remain.
-      defaultValue: false
-    - name: has_resolvable_assumptions
-      type: boolean
-      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
-      defaultValue: false
     - name: needs_elicitation
       type: boolean
       description: Whether requirements elicitation is needed.
       defaultValue: false
-    - name: open_assumptions
-      type: array
-      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: question_domains
       type: array
       description: The domains this run poses elicitation questions from.
@@ -169,12 +153,6 @@ steps:
   - kind: technique
     id: create-document
     technique: create-document
-  - kind: technique
-    id: update-assumptions-log
-    technique: review-assumptions::record
-  - kind: technique
-    id: reconcile-assumptions
-    technique: review-assumptions::reconcile
   - kind: checkpoint
     id: elicitation-complete
     message: Every question domain has been covered.
@@ -200,19 +178,6 @@ steps:
         effect:
           setVariable:
             elicitation_complete: false
-  - kind: loop
-    id: assumption-reconciliation
-    name: Assumption Reconciliation Loop
-    loopType: while
-    continueWhile:
-      type: simple
-      variable: has_resolvable_assumptions
-      operator: ==
-      value: true
-    steps:
-      - kind: technique
-        id: reconcile-iteration
-        technique: review-assumptions::reconcile
 exits:
   - id: no-research-needed
     when: elicitation_complete == true && needs_research == false

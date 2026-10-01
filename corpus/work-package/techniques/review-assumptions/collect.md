@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -13,13 +13,13 @@ Assumptions from the work classified against the bound assumption categories in 
 
 The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) with the newly collected, classified assumptions appended — each carrying type, statement, rationale, and alternatives. This file is the record of truth for the surfaced assumptions.
 
-### open_assumptions
+#### artifact
 
-The collected assumptions classified as open (stakeholder-dependent, non-code-resolvable), which downstream steps iterate for review; empty when none were identified.
+`assumptions-log.md`
 
-### has_open_assumptions
+#### audience
 
-Boolean gate — true iff `{open_assumptions}` is non-empty.
+`human`
 
 ## Protocol
 
@@ -31,11 +31,11 @@ Boolean gate — true iff `{open_assumptions}` is non-empty.
 
 - Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the part of `{assumption_source}` generating them
    > Use the categories supplied for the current phase.
-- Assign a risk letter (**H** / **M** / **L**) from the classification vocabulary; treat **H** as requiring validation before proceeding and **M** as checkpoint-confirmable for the current task
+- Assign a risk letter (**H** / **M** / **L**) from the [classification vocabulary](../../resources/assumptions-review.md#classification-vocabulary)
 
 ### 3. Record a Null Result
 
-- If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed — do not prompt the user to confirm a null result
+- If no significant assumptions are identified, record a single null row in `{assumptions_log}` (`No significant assumptions ([reason])`) and proceed
 
 ### 4. Append Them to the Log
 

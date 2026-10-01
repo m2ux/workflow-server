@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ The residual open assumptions to assemble, each carrying its statement, category
 
 ### assumption_review_presentation
 
-Judgement-augmentation context for every open assumption, each entry on the [Assumptions Log Template](../../resources/assumptions-review.md#assumptions-log-template) field shape, closing with a link to the assumptions log.
+Judgement-augmentation context for every open assumption, each entry on the [Assumptions Log Template](../../resources/assumptions-review.md#assumptions-log-template) field shape.
 
 ## Protocol
 
@@ -32,4 +32,4 @@ Judgement-augmentation context for every open assumption, each entry on the [Ass
 
 ### 3. Emit the Presentation
 
-- Close with a markdown link to the assumptions log and emit `{assumption_review_presentation}`
+- Emit `{assumption_review_presentation}`

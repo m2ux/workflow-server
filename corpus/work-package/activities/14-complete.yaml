@@ -1,5 +1,5 @@
 id: complete
-version: 1.15.0
+version: 1.15.1
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
@@ -73,9 +73,6 @@ variables:
       type: array
       description: Register entries naming no issue yet, each carrying its ID, item and reason.
       defaultValue: []
-    - name: publishable_files
-      type: array
-      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: raise_current_deferred_item
       type: boolean
       description: Whether the entry under consideration is approved for raising.
@@ -187,20 +184,14 @@ steps:
       - action: validate
         target: broken_artifact_links == []
         message: "Planning artifacts carry links that do not resolve: {broken_artifact_links}. Repoint each to a target that resolves at the publish ref, then re-run."
-  - kind: technique
-    id: resolve-close-out-publish
-    technique: resolve-artifact-publish
-    when: is_review_mode == true
-  - kind: technique
+  - kind: routine
     id: publish-close-out-artifacts
-    technique:
-      name: manage-git::artifact-commits
-      inputs:
-        activity_name: complete
-        issue_key: issue_number
-        files: publishable_files
-        branch: artifact_publish_ref
+    routine: publish-planning-artifacts
     when: is_review_mode == true
+    with:
+      activity_name: complete
+    outputs:
+      artifact_publish_ref: artifact_publish_ref
   - kind: technique
     id: remove-worktree
     technique: manage-git::remove-worktree

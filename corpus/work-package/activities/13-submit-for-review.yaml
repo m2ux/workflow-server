@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.26.1
+version: 1.26.2
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -63,9 +63,6 @@ variables:
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
       defaultValue: false
-    - name: publishable_files
-      type: array
-      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: push_remote_url
       type: string
       description: URL the push remote resolves to (used in stealth-mode isolation confirmation).
@@ -129,20 +126,14 @@ steps:
     id: consolidate-review-findings
     technique: findings-classification
     when: is_review_mode == true
-  - kind: technique
-    id: resolve-artifact-publish
-    technique: resolve-artifact-publish
+  - kind: routine
+    id: publish-review-artifacts
+    routine: publish-planning-artifacts
     when: is_review_mode == true
-  - kind: technique
-    id: commit-review-artifacts
-    technique:
-      name: manage-git::artifact-commits
-      inputs:
-        activity_name: submit-for-review
-        issue_key: issue_number
-        files: publishable_files
-        branch: artifact_publish_ref
-    when: is_review_mode == true
+    with:
+      activity_name: submit-for-review
+    outputs:
+      artifact_publish_ref: artifact_publish_ref
   - kind: loop
     id: review-summary-cycle
     name: Review Summary Approval Cycle
