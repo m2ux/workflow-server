@@ -12,9 +12,9 @@
 
 ## Work Breakdown
 
-| Task | Description | Depends on | Join | Done |
-| --- | --- | --- | --- | --- |
-| W01 | {{What the task delivers, at most eight words}} → AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](…) or [Exx](…) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | |
+| Task | Description | Coverage | Depends on | Join | Done |
+| --- | --- | --- | --- | --- | --- |
+| W01 | {{What the task delivers, at most eight words}} | AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](…) or [Exx](…) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | |
 
 ## Acceptance Criteria
 

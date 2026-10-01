@@ -40,7 +40,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, LINK, OUTCOMES, TICK, cell, cells, id_cell, join_sections, row, row_id, split_sections
+from format import AC, LINK, TICK, cell, cells, id_cell, join_sections, row, row_id, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -123,9 +123,8 @@ def initiative_delivery(rows, header, epics, report):
 
 
 def cited(text: str) -> list[int]:
-    """The acceptance criteria a Description cell cites."""
-    listed = OUTCOMES.search(text)
-    return [int(n) for n in re.findall(r'\bAC(\d+)', listed[1])] if listed else []
+    """The acceptance criteria an Coverage cell names."""
+    return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
 
 
 def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool], kind: str, report) -> bool:
@@ -137,7 +136,7 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
     for r in rows:
         name = row_id(id_cell(header, r))
         if kind == 'epic':
-            acs = cited(cell(header, r, 'Description'))
+            acs = cited(cell(header, r, 'Coverage'))
             complete = bool(delivered.get(name)) and bool(acs) and all(ticked.get(n) for n in acs)
         else:
             complete = bool(delivered.get(name))
@@ -219,10 +218,9 @@ def main() -> int:
             report['linked'].append(f"{task} delivered by #{pr['number']}")
         delivered[task] = bool(pr)
     else:
-        if grid is None or 'Description' not in grid[0]:
-            sys.exit('Work Breakdown has no Description column; run format.py first')
+        if grid is None or 'Coverage' not in grid[0]:
+            sys.exit('Work Breakdown has no Coverage column; run format.py first')
         header, rows = grid[0], grid[2:]
-        described = header.index('Description')
         if kind == 'epic':
             delivered = epic_delivery(rows, header, named, links, completed(args.tasks), report)
             questions = next((l for h, l in sections if h == 'Open questions'), [])
@@ -234,9 +232,8 @@ def main() -> int:
             delivered = initiative_delivery(rows, header, completed(args.epics), report)
         for r in rows:
             name = row_id(id_cell(header, r))
-            listed = OUTCOMES.search(r[described])
-            for n in re.findall(rf'\b{tag}(\d+)', listed[1]) if listed else []:
-                citing.setdefault(int(n), []).append(name)
+            for n in cited(cell(header, r, 'Coverage')):
+                citing.setdefault(n, []).append(name)
 
     ac_lines = next((l for h, l in sections if h == heading), [])
     ticked, ready = {}, set()

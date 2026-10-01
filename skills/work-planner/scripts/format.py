@@ -50,7 +50,7 @@ Left to decide, since each needs new content or a judgement:
     standalone issue, whose Proposal states its boundary
   - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
-  - a Description cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
+  - an Coverage cell that does not name the criteria the row delivers (AC2, AC5), or
     cites one that does not exist, and a criterion no row delivers
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
@@ -94,6 +94,7 @@ LEAD_ALONE = re.compile(r'^(\s*)- \*\*[^*]+?[.:!?]\*\*$')
 BULLET = re.compile(r'^(\s*)[-*] ')
 SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
+COVERAGE = re.compile(r'AC\d+(?:, AC\d+)*')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 DEPENDENCY = {
@@ -395,29 +396,30 @@ class Review:
     def check_outcomes(self, sections: list[list]) -> None:
         by_name = {h: lines for h, lines in sections}
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
-        if len(table) < 3 or 'Description' not in cells(table[0]):
+        if len(table) < 3 or 'Coverage' not in cells(table[0]):
             return
         header = cells(table[0])
-        column = header.index('Description')
+        described = header.index('Description') if 'Description' in header else None
+        covered = header.index('Coverage')
         wanted = {int(m[1]) for l in by_name.get('Acceptance Criteria', []) if (m := AC.match(l))}
         delivered: set[int] = set()
         cited: list[tuple[str, set[int]]] = []
         for line in table[2:]:
             r = cells(line)
             name = row_id(id_cell(header, r))
-            cell = r[column] if column < len(r) else ''
-            listed = OUTCOMES.search(cell)
-            if not listed:
-                self.decide.append(f'{name}: Description does not end with the criteria it delivers')
+            if described is not None:
+                phrase = LINK.sub(r'\1', r[described] if described < len(r) else '').strip()
+                if len(phrase.split()) > MAX_DESCRIPTION or ';' in phrase:
+                    self.decide.append(f'{name}: Description runs to {len(phrase.split())} words; shorten it to a '
+                                       f'phrase of at most {MAX_DESCRIPTION}, and state its detail as criteria of '
+                                       'one invariant each')
+            listed = r[covered] if covered < len(r) else ''
+            if not COVERAGE.fullmatch(listed):
+                self.decide.append(f'{name}: Coverage does not name the criteria it delivers')
                 continue
-            phrase = LINK.sub(r'\1', cell[:listed.start()]).strip()
-            if len(phrase.split()) > MAX_DESCRIPTION or ';' in phrase:
-                self.decide.append(f'{name}: Description runs to {len(phrase.split())} words; shorten it to a '
-                                   f'phrase of at most {MAX_DESCRIPTION}, and state its detail as criteria of '
-                                   'one invariant each')
-            numbers = {int(n) for n in re.findall(r'\bAC(\d+)', listed[1])}
+            numbers = {int(n) for n in re.findall(r'\bAC(\d+)', listed)}
             for n in sorted(numbers - wanted):
-                self.decide.append(f'{name}: Description cites AC{n}, which is not a criterion')
+                self.decide.append(f'{name}: Coverage cites AC{n}, which is not a criterion')
             delivered |= numbers
             cited.append((name, numbers))
         if self.kind != 'initiative':
@@ -505,6 +507,29 @@ class Review:
                 self.fixed.append('Done set to a tick')
             if cleared:
                 self.fixed.append('Done cleared')
+        if 'Coverage' in columns and 'Description' in columns:
+            desc_at = columns.index('Description')
+            covered = columns.index('Coverage')
+            for r in padded:
+                text = r[desc_at] if desc_at < len(r) else ''
+                found = OUTCOMES.search(text)
+                if found and r[covered] and r[covered] != found[1]:
+                    self.decide.append(f'{row_id(id_cell(columns, r))}: Description and Coverage '
+                                       'name different criteria')
+                    return lines
+            moved = False
+            for r in padded:
+                text = r[desc_at] if desc_at < len(r) else ''
+                found = OUTCOMES.search(text)
+                if not found:
+                    continue
+                r[covered] = found[1]
+                phrase = text[:found.start()].strip()
+                rest = text[found.end():].strip()
+                r[desc_at] = f'{phrase} {rest}'.strip() if rest else phrase
+                moved = True
+            if moved:
+                self.fixed.append('Coverage filled from the Description')
         pattern = ROW_ID[self.kind]
         for r in padded:
             ident = id_cell(columns, r)
@@ -555,8 +580,7 @@ class Review:
                 continue
             while len(r) <= desc_at:
                 r.append('')
-            cites = r[desc_at].split(' →', 1)
-            r[desc_at] = name + (' →' + cites[1] if len(cites) > 1 else '')
+            r[desc_at] = name
             out[i] = row(r)
             named.append(epic[1])
         if named:
