@@ -19,7 +19,7 @@ Criterion: every initiative AC1–AC14 passes its named instrument on those tips
 | AC11 | contract-first specimen — join runs tests | specimen `work-package-contract-join-conformance` | pass — `JPY7HO` pass case merges `tests/contract/t1.test.ts`, runs green, exit `done` |
 | AC12 | contract-first specimen — failing test returns | specimen `work-package-contract-join-conformance` | pass — `JPY7HO` rework takes `needs-rework`; dispute takes `needs-contract-tests` |
 | AC13 | epic audit records re-confirmed | re-read / re-run each epic's audit rounds on tip delta | pass — [e05-ac13-audits.md](e05-ac13-audits.md); work-package bytes unchanged since `38a0bae4` |
-| AC14 | epic claim tables / sidecar specimens | re-run each epic's named specimen walks | |
+| AC14 | epic claim tables / sidecar specimens | re-run each epic's named specimen walks | pass — review fan `HL4C7Q`, discovery fan `5TX7F4`, registers `5HHIMI`, assumptions review `GFQRKL`; contract and prism walks are the rows above |
 
 ## Notes
 
