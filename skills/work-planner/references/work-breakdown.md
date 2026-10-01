@@ -1,6 +1,6 @@
 # Work Breakdown guide
 
-How the Work Breakdown tables are written, read and kept current. Issue bodies carry the tables and nothing about them: the conventions live here.
+How the Work Breakdown tables are written, read and kept current, and what a Problem and a Proposal hold. Issue bodies carry the tables and nothing about them: the conventions live here.
 
 ## Tables
 
@@ -71,6 +71,15 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.
 - **Work another issue takes.**
   It leaves the table. Its criteria go with it, or to another row that delivers them.
+
+## Problem and Proposal
+
+- **Friction.**
+  A Problem states the friction as it is now. Its evidence is a count or a code link for that friction.
+- **Plan ids.**
+  A Problem or a Proposal names no epic, task, or acceptance criterion of its own initiative. That work has not happened, and the Work Breakdown table is where those references live.
+- **Evidence that may be cited.**
+  A boundary with a sibling epic is plain language. Code, a merged pull request, and an issue outside this initiative may be cited.
 
 ## What bodies leave out
 

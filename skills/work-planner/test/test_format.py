@@ -63,3 +63,35 @@ class BoldLeads(unittest.TestCase):
     def test_other_sections_are_left(self):
         r, _ = review('Gap.')
         self.assertEqual(r.fixed, [])
+
+
+class PlanIds(unittest.TestCase):
+    def test_problem_naming_an_epic_is_a_finding(self):
+        r, _ = review('The walk stops at E09.')
+        self.assertIn('Problem: names E09;', ' '.join(r.decide))
+
+    def test_proposal_naming_a_task_and_a_criterion_is_a_finding(self):
+        r, _ = review('Gap.', 'W01 meets AC1.')
+        self.assertIn('Proposal: names W01, AC1;', ' '.join(r.decide))
+
+    def test_a_merged_pull_request_and_another_initiative_are_left(self):
+        r, _ = review('See #440. I05:E00 holds the language.')
+        self.assertFalse(any('names' in item for item in r.decide))
+
+    def test_own_initiative_epic_is_a_finding(self):
+        r = Review(issue(1, '[I00:E12] Tip Validation: Each Criterion Attested',
+                         body=body('I00:E12 has not landed.', 'Design.'),
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertTrue(any('I00:E12' in item for item in r.decide))
+
+    def test_the_table_may_name_a_task(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n')
+        r = Review(issue(1, '[I00:E12] Tip Validation: Each Criterion Attested', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any(item.startswith('Problem:') or item.startswith('Proposal:') for item in r.decide))

@@ -18,6 +18,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Open a draft PR against `engineering` for discussion. The user merges it.
 4. **Draft bodies.**
    - Draft each body from its template into a local file. Those files are the source for every later edit.
+   - A Problem and a Proposal follow the [Work Breakdown guide](work-breakdown.md#problem-and-proposal).
    - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them.
    - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the goal pass in `review-passes.md` defines.
    - Each criterion names its instrument, and a test it names that does not exist yet is planned as work, as the goal pass's Verified rule defines.
@@ -33,7 +34,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    4. a task issue from `templates/task.md` for each task that needs one, citing its epic;
    5. [Check format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch body](commands.md#patch-body) from each fixed body.
 7. **Review.**  Run the passes in `review-passes.md`:
-   - the goal pass, whenever the goal, a criterion or an epic changes;
+   - the goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
    - the consistency pass, after every round of edits;
    - the ordering pass, whenever tasks or dependencies change.
 

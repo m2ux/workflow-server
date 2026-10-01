@@ -4,11 +4,11 @@
 
 ## Problem
 
-{{The current state with measured evidence: counts, and code linked from the words it supports. Bullets for distinct facets, sub-bullets for several items.}}
+{{As the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines. Bullets for distinct facets, sub-bullets for several items.}}
 
 ## Proposal
 
-{{The design, in bullets or paragraphs, each opening with a bold statement laid out by the scheme's Bold leads rule.}}
+{{The design, in bullets or paragraphs, each opening with a bold statement laid out by the scheme's Bold leads rule, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines.}}
 
 ## Acceptance Criteria
 
