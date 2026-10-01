@@ -11,6 +11,8 @@ Operative checklist for comparing drafted content to reference workflows of simi
 
 ## Reference Conventions
 
+**Fires on:** `workflow`, `activity`, `technique`, `resource`, `routine`
+
 | Concern | Established convention |
 |---------|------------------------|
 | File naming | Activities `NN-name.yaml`; techniques/resources kebab-case `.md` |
