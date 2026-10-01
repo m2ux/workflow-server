@@ -49,6 +49,6 @@ The #970 record, [2026-09-29-canon-audit-corpus-970](../2026-09-29-canon-audit-c
 ## Hook surface
 
 - **Claude Code.**
-  PostToolUse hooks filter by tool name through `matcher` and receive the tool input, `file_path` included, as JSON on stdin. Exit code 2 returns stderr to the agent. A skill's frontmatter `hooks` registers hooks only while that skill is active.
+  PostToolUse hooks filter by tool name through `matcher` and receive the tool input, `file_path` included, as JSON on stdin. Exit code 2 returns stderr to the agent. A skill's frontmatter `hooks` registers its hooks when the skill is invoked, and they run for the rest of the session ([hooks in skills](https://code.claude.com/docs/en/hooks)). PostToolUse exit 2 shows stderr to the agent and cannot block, since the tool already ran.
 - **Cursor.**  Reads only standard skill frontmatter; its hooks use a separate format.
 - **Workspace.**  Existing hooks live in `hooks/`, registered through `.claude/settings.template.json`.

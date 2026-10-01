@@ -57,7 +57,7 @@ The user confirmed G1–G5 on 2026-09-30.
 | D5 | The hook matches `Edit\|Write\|MultiEdit` and exits unless the path is a corpus definition file | Firing on every tool call |
 | D6 | The hook fails only on guard failures the branch introduced, as `check:delta` measures | Failing on any corpus failure, which blocks unrelated edits on a branch with a pre-existing failure |
 | D7 | The hook and the index are one initiative, as separate epics | Two initiatives for one goal |
-| D8 | workflow-canon's frontmatter declares the hook, so it runs only while the skill is active; the skill guidelines admit `hooks` | Workspace settings, with or without a Cursor registration |
+| D8 | workflow-canon's frontmatter declares the hook, so it runs from the skill's first invocation to the end of the session; the skill guidelines admit `hooks` | Workspace settings, with or without a Cursor registration |
 | D9 | The hook runs every corpus guard; selecting guards by file kind is a non-goal | An epic in which each guard declares the kinds it admits |
 
 ## Cross-initiative overlap
@@ -83,6 +83,8 @@ The user approved narrowing I07 E02 (D10).
 | D15 | Ids name the authored kinds alone, `workflow`, `activity`, `technique`, `routine`, as bare names and path roots | Every generated schema, `condition` and `session-file` included |
 | D16 | I09's pull requests target the integration branches `i09/main`, `i09/workflows` and `i09/workspace`, which merge into their long-lived branches once I09 closes | Each epic landing on the long-lived branches as it is delivered |
 | D17 | The edit-time hook's branch point is the nearest of the merge-bases with `origin/workflows` and each `origin/iNN/workflows`, so an initiative's corpus branch measures against its integration branch | Always `origin/workflows`, which counts earlier epics' failures as introduced; the branch's upstream, which feature branches here do not set |
+| D18 | The hook's path filter includes `routines/` with the other definition directories | Activities, techniques and resources alone, leaving routine edits to the next guard run |
+| D19 | The two guard defects that make the hook report unchanged trees as failing land as a fix on `main`: the `refs` message naming whichever file the walk meets first, and corpus walks entering nested `.worktrees/`. `main` then merges into `i09/main` | A W00 on `i09/main`; a workaround in the hook |
 
 ## Issues
 
