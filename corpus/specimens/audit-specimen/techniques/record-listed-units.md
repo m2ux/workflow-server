@@ -21,7 +21,7 @@ Units the author step loads while rewriting the subject capability, one path and
 
 ### 1. List
 
-- Run `npx tsx guards/list-fires-on.ts technique.capability --root <corpus>` from the engine checkout. Write each printed unit into `{units_listed}`.
+- Run the listing command for `technique.capability` against this corpus tree. Write each printed unit into `{units_listed}`.
 
 ### 2. Load
 
