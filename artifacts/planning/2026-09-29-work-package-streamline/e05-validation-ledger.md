@@ -7,7 +7,7 @@ Criterion: every initiative AC1–AC14 passes its named instrument on those tips
 | AC | Instrument | Command / walk | Result |
 |---|---|---|---|
 | AC1 | work-package snapshot walk — artifact list | `vitest run tests/e2e/snapshot.test.ts` (WORKFLOWS_DIR=`i10/workflows`) | pass — 23/23 on engine `3a0ec0fb`, corpus `fc5cf13a` |
-| AC2 | canon audit of work-package report guides | workflow-canon Audit on guide surfaces | |
+| AC2 | canon audit of work-package report guides | workflow-canon Audit on guide surfaces | pass — [e05-ac2-guides.md](e05-ac2-guides.md); five guides, no open finding, on `fc5cf13a` |
 | AC3 | prism-decision specimen — implementation case | specimen `work-package-prism-decision-conformance` | pass — walk `CUAFWP`; gate showed the empty-change assessment; measure-again returned to the decision; the second answer set `pipeline_mode` to `single` |
 | AC4 | prism-decision specimen — review case | specimen `work-package-prism-decision-conformance` | pass — walk `CUAFWP`; gate dismissed with no variable set; review step preset `full-prism` |
 | AC5 | work-package snapshot walk — executed steps | same snapshot matrix as AC1 | pass — same 23/23 run |
