@@ -20,7 +20,8 @@ first link read deciding where more than one does. Repository names match in any
   - An epic belongs to the initiative whose Work Breakdown links it, or else to the initiative of
     its number in its own repository.
   - A task issue belongs to the epic whose row links it, or else to the epic of its reference in
-    its own repository, and stands for the pull requests that cite it.
+    its own repository, or else to the epic whose pull request cites it, and stands for the pull
+    requests that cite it.
   - A pull request titled with an epic's reference counts towards that epic when it lives in the
     epic's repository or its initiative's, the epic's own first. A row whose id links a pull
     request reads it by URL, whatever its title or repository.
@@ -41,7 +42,8 @@ epic's repository.
                none, low, lowest), then by reference; the first five, and a count of the rest. An
                epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
-task issue, if it has one, is on the board and not In Progress or In Review. A task issue that
+task issue, if it has one, is on the board and not In Progress or In Review. A task is undelivered
+while every pull request its id links is open. A task issue that
 belongs to an epic which names its task as next is not listed again.
 
 The window opens at the start of --since in local time, by default a week before today.
@@ -195,9 +197,10 @@ def main() -> int:
         given = json.loads(Path(path).read_text())
         if (t := tags(given['title'])) and not t[1]:
             issues.setdefault(key_of(given), given)
+    prs = pull_requests(args.prs)
     unresolved: list[str] = []
     home = Counter(k[0] for k in issues).most_common(1)[0][0] if issues else ''
-    board = Summary(issues, unresolved, home)
+    board = Summary(issues, unresolved, home, prs)
     canonical = {(k[0].lower(), k[1]): k for k in issues}
 
     def on_board(key: Key | None) -> Key | None:
@@ -234,10 +237,6 @@ def main() -> int:
     for tk, t in tasks.items():
         if tk not in epic_of and (ek := by_reference.get((tk[0].lower(), *t[:2]))):
             epic_of[tk] = ek
-    owned: dict[Key, dict[str, Key]] = {}
-    for tk, ek in epic_of.items():
-        owned.setdefault(ek, {})[f'W{tasks[tk][2]}'] = tk
-
     def epic_for(k: Key) -> Key | None:
         return k if k in epics else epic_of.get(k)
 
@@ -270,7 +269,7 @@ def main() -> int:
     epics_by_reference: dict[tuple[str, str], list[Key]] = {}
     for ek, t in sorted(epics.items()):
         epics_by_reference.setdefault(t[:2], []).append(ek)
-    by_url = {p['html_url']: p for p in pull_requests(args.prs)}
+    by_url = {p['html_url']: p for p in prs}
     prs_of: dict[Key, list[dict]] = {}
     for p in by_url.values():
         if not (m := PR_REF.match(p['title'])):
@@ -284,6 +283,13 @@ def main() -> int:
             (ek for ek in candidates if scope_of_epic[ek][0] == where), None)
         if chosen_epic:
             prs_of.setdefault(chosen_epic, []).append(p)
+    for ek, named_prs in prs_of.items():
+        for tk in tasks:
+            if tk not in epic_of and any(cites(p, tk) for p in named_prs):
+                epic_of[tk] = ek
+    owned: dict[Key, dict[str, Key]] = {}
+    for tk, ek in epic_of.items():
+        owned.setdefault(ek, {})[f'W{tasks[tk][2]}'] = tk
 
     def within(stamp: str | None) -> bool:
         return (stamp or '') >= after

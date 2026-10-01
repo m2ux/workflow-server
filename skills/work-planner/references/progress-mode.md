@@ -18,7 +18,7 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
    - **One initiative.**
      Give `--initiative I08` when the user names one initiative, or `owner/repo:I08` where that number names initiatives in several repositories.
    - **Repositories.**
-     Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, and a pull request counts towards the epic of its reference in the epic's repository or its initiative's.
+     Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, or for a task issue the pull request that cites it, and a pull request counts towards the epic of its reference in the epic's repository or its initiative's.
 
    It prints the `--summary` paragraph, set off by blank lines, and the board's link beneath the heading, then:
    - **Initiatives.**

@@ -41,7 +41,7 @@ How the Work Breakdown tables are written, read and kept current. Issue bodies c
 
 Epics are numbered in the order they run, and tasks in the order they can start, so every dependency points to an earlier epic or an earlier task. [Check dependencies](commands.md#check-dependencies) reports numbering that does not follow start order as advisory, because older initiatives predate the rule.
 
-Delivered work keeps its number: an epic once a pull request names it, and a task once its id links a pull request. Renumbering touches only work that is not delivered yet.
+Work a pull request names keeps its number: an epic once a pull request names it, and a task once its id links a pull request, open or merged. Renumbering touches only a task whose id links no pull request, and an epic no pull request names.
 
 ## References
 
@@ -53,17 +53,20 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   A pull request delivers one task, or a set of tasks that Join each other. A further pull request on a task that is not yet Done delivers that same task, or tasks that Join it.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
-  - Update mode finds an epic's pull requests by this prefix, and matches each merged one to the tasks it delivered from its changes and the tasks' Descriptions.
+  - Update mode finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
 - **Integration branches.**
   - Each long-lived branch an initiative changes (`main`, `workflows`, `workspace`) has an integration branch, named for the initiative and that branch and cut from it: `i07/main`.
   - Every pull request delivering the initiative's work targets its integration branch, never the long-lived branch.
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - It merges into its long-lived branch once the initiative closes, so no part of an unfinished initiative reaches a long-lived branch. Merging it is the user's call.
-- **Delivered task ids.**
-  A task's id links each pull request that has landed on it: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`. An undelivered task's id is plain.
+- **Task ids.**
+  - A task's id links each pull request associated with it, open or merged: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`. A task with no pull request is plain.
+  - The task is delivered when a linked pull request has merged, or its id links a commit.
+  - A link to an open pull request does not deliver the task.
 - **Tasks with their own issue.**
-  - A task with its own issue keeps its id linked to that issue.
-  - The issue records the pull request that delivers it, and the task is delivered when the issue is closed as completed.
+  - The row links the pull request, not the issue.
+  - The pull request's body cites the issue by its URL.
+  - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
 - **Issues backing several tasks.**
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.
 - **Work another issue takes.**

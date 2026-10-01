@@ -72,6 +72,72 @@ class Done(unittest.TestCase):
             self.assertNotIn('| ✓ |', text)
 
 
+class TaskLinks(unittest.TestCase):
+    def run_update(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = ()):
+        with tempfile.TemporaryDirectory() as tmp:
+            body, pulls_path, fixed = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'fixed.md')
+            body.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            task_paths = []
+            for n, task in enumerate(tasks):
+                path = Path(tmp, f'task-{n}.json')
+                path.write_text(json.dumps(task))
+                task_paths.append(str(path))
+            extra = ['--tasks', *task_paths] if task_paths else []
+            done = run('update.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *extra, *args)
+            return done, fixed.read_text() if fixed.exists() else ''
+
+    def test_an_open_pull_request_is_linked_and_does_not_deliver(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        done, fixed = self.run_update(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
+        self.assertNotIn('| ✓ |', fixed)
+        self.assertNotIn('ready to verify', done.stdout)
+        self.assertNotIn('in flight:', done.stdout)
+        self.assertIn('closable: no (undelivered W01', done.stdout)
+
+    def test_an_open_pull_request_is_not_ready_to_tick(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        done, _ = self.run_update(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950', '--tick', 'AC1')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('not ready to verify', done.stderr)
+
+    def test_a_further_open_pull_request_is_in_flight_until_linked(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work'), pr(951, '[I01:E00] More')]
+        done, _ = self.run_update(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('#950', done.stdout)
+        self.assertIn('in flight: #951', done.stdout)
+
+    def test_a_row_linking_its_task_issue_links_the_pull_request(self):
+        task = issue(3, '[I01:E00:W01] Task: One')
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
+        done, fixed = self.run_update(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950', tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn(f"[W01]({url('pull', 950)})", fixed)
+        self.assertNotIn(url('issues', 3), fixed)
+        self.assertIn(f'uncited: #950 does not cite W01 #3', done.stdout)
+
+    def test_a_pull_request_that_cites_the_task_issue_is_not_uncited(self):
+        task = issue(3, '[I01:E00:W01] Task: One')
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', body=f"See {url('issues', 3)}")]
+        done, fixed = self.run_update(epic, pulls, '--link', 'W01=950', tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn(f"[W01]({url('pull', 950)})", fixed)
+        self.assertNotIn('uncited:', done.stdout)
+
+    def test_a_closed_task_issue_stays_delivered_until_its_pull_request_is_linked(self):
+        task = issue(3, '[I01:E00:W01] Task: Done', 'closed')
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
+        done, _ = self.run_update(epic, [], tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('ready to verify: AC1 (W01)', done.stdout)
+        self.assertIn('note: W01 links task issue #3; link its pull request', done.stdout)
+
+
 class DoneColumn(unittest.TestCase):
     def test_a_missing_done_column_is_added_empty(self):
         table = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'

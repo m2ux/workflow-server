@@ -66,7 +66,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
      - Subsume the orphan.
    - **New task.**
      - Draft the row and its criteria in the epic.
-     - Number it where it can start, with [Renumber tasks](commands.md#renumber-tasks) when undelivered tasks must move.
+     - Number it where it can start, with [Renumber tasks](commands.md#renumber-tasks) when a task no pull request names must move.
      - Keep or subsume the orphan.
    - **New epic.**
      - Draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves.

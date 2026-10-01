@@ -5,7 +5,7 @@ Usage:
 
 Each file is an epic issue body holding the agent-engineering Work Breakdown table:
   | Task | Description | Coverage | Depends on | Join | Done |
-A delivered task's id links each pull request that has landed on it:
+A task's id links each pull request associated with it, open or merged:
   | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | AC1 | | | |
 Cells are read by column name, so the column order does not matter.
 

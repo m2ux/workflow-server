@@ -1,6 +1,6 @@
 # Update mode
 
-Records delivered work on an initiative, its epics and their task issues: links each delivered task to its pull request, ticks the criteria that now hold, ticks Done on each complete row, closes what is complete, and brings the initiative's project board up to date.
+Records work on an initiative, its epics and their task issues: links each task that has a pull request to that pull request, open or merged, ticks the criteria that now hold, ticks Done on each complete row, closes what is complete, and brings the initiative's project board up to date.
 
 ## Procedure
 
@@ -8,34 +8,38 @@ Records delivered work on an initiative, its epics and their task issues: links 
    - Select an initiative with its open epics, or the epics the user names.
    - Run review mode first on any issue whose format [Check format](commands.md#check-format) rejects, since the update reads the agent-engineering table.
 2. **Fetch.**
-   - [Fetch issue](commands.md#fetch-issue) for each issue, including the task issues that epic row ids link.
+   - [Fetch issue](commands.md#fetch-issue) for each issue, including each task issue titled `[I07:E00:Wzz]` under an epic being updated.
    - [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) for the pull requests that name the initiative.
 3. **Unnamed deliveries.**
    - When the user says work has landed but no pull request names its epic, find the pull request and confirm it with the user.
    - Give it the epic's reference, `[I07:E00] Purpose`, with [Retitle pull request](commands.md#retitle-pull-request).
    - Run [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) again.
 4. **Match pull requests to tasks.**
-   - Run [Match pull requests](commands.md#match-pull-requests) for each epic. Each merged pull request it reports as **unmatched** names the epic but no row links it yet.
-   - Read its changes and description against the tasks' Descriptions, and name the tasks it delivered: one task, or tasks that Join each other.
+   - Run [Match pull requests](commands.md#match-pull-requests) for each epic.
+   - **Unmatched.**  A merged pull request it reports names the epic, and no row links it yet.
+   - **In flight.**  An open pull request it reports names the epic, and no row links it yet.
+   - Read its changes and description against the tasks' Descriptions, and name the tasks it works on: one task, or tasks that Join each other.
    - Put any match that is not clear to the user.
-   - A pull request that delivered a task with its own issue belongs to that issue, in step 5.
 5. **Update each task issue.**
-   - Run [Update task issue](commands.md#update-task-issue), naming the pull request that delivered it.
+   - Run [Update task issue](commands.md#update-task-issue) when a merged pull request delivered it.
    - Verify and tick its criteria as in steps 7–8.
    - Record the pull request on it with [Comment on issue](commands.md#comment-on-issue): `Delivered by #950.`
    - [Close as completed](commands.md#close-as-completed) when it reports closable.
 6. **Update each epic.**
-   Run [Update epic](commands.md#update-epic), linking the matches from step 4, with the task issues fetched after closing. It reports:
+   Run [Update epic](commands.md#update-epic), linking every match from step 4, open or merged, with the task issues. It reports:
    - **conflict.**
      A row linked to a pull request whose title names another epic, or tasks sharing a pull request that do not Join each other. Put it to the user.
-   - **unmatched.**
-     Merged pull requests still linked from no row. Match them as in step 4; one that delivered a task issue stays unmatched here, since its issue records it.
+   - **unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
+   - **in flight.**  Open pull requests still linked from no row. Match them as in step 4.
+   - **uncited.**
+     A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch pull request body](commands.md#patch-pull-request-body), then [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) again.
+   - **note.**  A row links its task issue. Link the pull request as in step 4.
    - **open questions.**
      Work on the epic has started while its Open questions section remains. Stop and ready the epic in plan mode, since the answers may reshape it.
-   - **in flight.**  Open pull requests naming the epic.
    - **ready to verify.**  Criteria whose delivering rows are all delivered.
    - **ticked early.**
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
+   Link what those lines name, then run it again. The epic's update is finished when unmatched, in flight, uncited and note are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names or implies: run the test, guard or command, or read the code at the file and line it concerns.
    - A criterion that cannot be confirmed stays unticked and is reported with what is missing.

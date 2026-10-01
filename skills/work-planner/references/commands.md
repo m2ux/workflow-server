@@ -185,6 +185,16 @@ Points a pull request at another base branch, such as its initiative's integrati
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/main' --jq .base.ref
 ```
 
+### Patch pull request body
+
+Replaces a pull request's body.
+
+- The file is the whole body. When the task has its own issue, the body cites that issue by its URL.
+
+```bash
+gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .html_url
+```
+
 ### Create integration branch
 
 Cuts an initiative's integration branch from the tip of a long-lived branch on the remote.
@@ -259,7 +269,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/de
 Renumbers an initiative's epics by the map given, in the files given.
 
 - It rewrites files in place, and rewrites only this initiative's prefixed references in the bodies given after `--outside` (other initiatives' issues). Links keep their targets.
-- It refuses a map that collides or that renumbers delivered work: a task whose id links its pull request, or an epic a pull request in `--prs` names.
+- It refuses a map that collides or that renumbers work a pull request names: a task whose id links a pull request, open or merged, or an epic a pull request in `--prs` names.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-*.md
@@ -303,6 +313,8 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/or
 
 Reports an epic's delivery state against the pull requests that name it.
 
+- A merged pull request no row links is unmatched, and an open one no row links is in flight.
+
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-943.json --prs prs.json
 ```
@@ -317,9 +329,12 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/up
 
 ### Update epic
 
-Links each of an epic's rows to the pull request that delivered it, and ticks Done on a row once it is complete.
+Links each named task's id to a pull request naming the epic, open or merged, and ticks Done on a row once it is complete.
 
-- It takes the task issues fetched after closing.
+- It reports the same delivery state as [Match pull requests](#match-pull-requests).
+- A row whose id links its task issue links the pull request instead.
+- A task is delivered as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
+- It takes the epic's task issues. A linked pull request that does not cite a task's issue is reported uncited.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md

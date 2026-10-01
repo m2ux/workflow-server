@@ -107,6 +107,22 @@ class Completed(unittest.TestCase):
 
 
 class InProgress(unittest.TestCase):
+    def test_an_open_pull_request_link_leaves_that_task_next(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
+            (f"[W01]({url('pull', 54)})", 'In flight', ''), ('W02', 'After', 'W01')))
+        out = summary([item(epic, 'Ready')], [pr(54, '[I01:E00] Open work')])
+        self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 First*, next W01 In flight — {url('issues', 2)}"])
+
+    def test_a_pull_request_citing_another_repository_places_the_task_issue(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 41, 'o/s')})", 'Task', '')),
+                     repo='o/s')
+        task = issue(3, '[I01:E00:W01] Task Issue: Open')
+        out = summary([item(epic, 'In Progress'), item(task, 'In Review')],
+                      [pr(41, '[I01:E00] Elsewhere', body=f"See {url('issues', 3)}", repo='o/s')])
+        text = section(out, 'In progress')
+        self.assertIn(f"    👀 W01 Task Issue — {url('issues', 3)}", text)
+        self.assertNotIn(url('pull', 41, 'o/s'), '\n'.join(text))
+
     def test_epic_lists_its_open_pull_requests_ready_and_draft(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         prs = [pr(54, '[I01:E00] Ready one'), pr(55, '[I01:E00] Drafted', draft=True)]
