@@ -40,6 +40,7 @@ Left to decide, since each needs new content or a judgement:
     splitting (a criterion several tasks deliver is shared, and does not count towards any one)
   - wording that narrates how the plan changed (moved to, was W06, renumbered, formerly,
     previously, no longer, discharged, superseded, subsumed, used to)
+  - a Problem or Proposal that names an epic, task, or acceptance criterion of its own initiative
   - an initiative's acceptance criterion that may state several invariants (a colon or semicolon in
     its statement), that names an initiative, epic, task or issue, or that carries a count (a figure
     or a number word) that is not its own target
@@ -84,6 +85,7 @@ COUNT = re.compile(r'\d[\d,.]*|\b(?:two|three|four|five|six|seven|eight|nine|ten
                    r'thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand)(?:-\w+)?\b', re.I)
 HISTORY = re.compile(r'\bmoved to\b|\(was [EW]?\d|\bwas W\d\d|\brenumbered\b|\bformerly\b|\bpreviously\b|'
                      r'\bno longer\b|\bdischarged\b|\bsuperseded\b|\bsubsumed\b|\bused to\b', re.I)
+PLAN_ID = re.compile(r'(?<![\w:])E\d\d(?:[: ]W\d\d)?\b|(?<![\w:])W\d\d\b|\bAC\d+\b')
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
 TICK = '✓'
 CHECKBOX = {'[ ]': '', '[x]': TICK, '[X]': TICK}
@@ -343,6 +345,7 @@ class Review:
 
         self.check_outcomes(sections)
         self.check_history(sections)
+        self.check_plan_ids(sections)
         fixed = join_sections(preamble, sections) if self.fixed else body
         if '{{' in fixed:
             self.decide.append('unfilled {{…}} field')
@@ -369,6 +372,23 @@ class Review:
             if named:
                 self.decide.append(f'AC{criterion[1]} names {", ".join(named)}; an initiative\'s criterion names no '
                                    'initiative, epic, task or issue, and is local to this initiative')
+
+    def check_plan_ids(self, sections: list[list]) -> None:
+        """A Problem or Proposal names no epic, task, or acceptance criterion of its own initiative."""
+        own = re.compile(rf'\bI{self.number}[: ]E\d\d(?:[: ]W\d\d)?\b') if self.number else None
+        for heading, lines in sections:
+            if heading not in ('Problem', 'Proposal'):
+                continue
+            found: list[str] = []
+            for line in lines:
+                text = LINK.sub(r'\1', line)
+                found += PLAN_ID.findall(text)
+                if own:
+                    found += own.findall(text)
+            if found:
+                names = ', '.join(dict.fromkeys(found))
+                self.decide.append(f'{heading}: names {names}; a Problem or Proposal names no epic, task, or '
+                                   'acceptance criterion of its own initiative')
 
     def check_history(self, sections: list[list]) -> None:
         """A body states the plan as it is: report wording that narrates how it changed."""

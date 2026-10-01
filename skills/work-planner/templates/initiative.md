@@ -4,15 +4,15 @@
 
 ## Problem
 
-{{One sentence on the gap, then one bullet per facet. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule, carries measured evidence (counts, and code linked from the words it supports), and says why it matters.}}
+{{One sentence on the friction, then one bullet per facet, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule.}}
 
 - **{{Facet}}.**
-  {{Evidence and consequence.}}
+  {{The evidence.}}
 
 ## Proposal
 
 - **{{Move}}.**
-  {{What is done, within the scheme's Succinct items rule.}}
+  {{What is done, within the scheme's Succinct items rule, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines.}}
 
 ## Work Breakdown
 

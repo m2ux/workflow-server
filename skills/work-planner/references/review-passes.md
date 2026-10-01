@@ -6,7 +6,7 @@ Report findings split by area, one problem/solution pair per finding, each with 
 
 ## Goal pass
 
-Tests the initiative's and the epics' acceptance criteria against the goal the user stated. It runs on the drafts before any issue is created, and again whenever the goal, a criterion or an epic changes.
+Tests each acceptance criterion against the goal the user stated, and each Problem and Proposal against the [Work Breakdown guide](work-breakdown.md#problem-and-proposal). It runs on the drafts before any issue is created, and again whenever the goal, a criterion, a Problem, a Proposal, or an epic changes.
 
 1. **Clauses.**
    Take the goal the user stated and confirmed in the interview, as clauses, each an outcome someone could observe.
@@ -37,7 +37,11 @@ Tests the initiative's and the epics' acceptance criteria against the goal the u
      - A named test that does not exist yet is work the plan holds: a task in the epic whose subject it tests, or a discrete test-infrastructure epic when the tests serve several criteria. That epic's row cites the criteria its tests verify.
    - **Whole.**
      An initiative criterion states what the initiative achieves as a whole. One that restates a single epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to the epic.
-5. **Outside threats.**  Look past the clauses for what defeats the goal from outside:
+5. **Friction.**
+   Read each Problem and Proposal against the [Work Breakdown guide](work-breakdown.md#problem-and-proposal).
+   - A Problem that describes the plan is a finding.
+   - [Check format](commands.md#check-format) reports each name the guide excludes.
+6. **Outside threats.**  Look past the clauses for what defeats the goal from outside:
    - **Consumers.**
      Anything outside the plan that reads, builds or ships what the plan changes or removes.
    - **Silent failures.**  Skips, fallbacks and fail-closed paths that hide a violation.
@@ -46,7 +50,7 @@ Tests the initiative's and the epics' acceptance criteria against the goal the u
    - **Version skew.**
      Between the artifacts the plan produces and the implementations that read them.
    - **In-flight work.**  Changes elsewhere that alter the ground the plan stands on.
-6. **Rank.**
+7. **Rank.**
    - Rank the gaps, and flag the few that most threaten the goal.
    - Record the trace table in the planning record, or give it to the user when the change has none.
 

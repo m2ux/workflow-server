@@ -143,7 +143,7 @@ Every initiative belongs to one theme, and each theme has one project board.
 ## Rules
 
 - **Work Breakdown guide.**
-  Every mode reads [work-breakdown.md](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables.
+  Every mode reads [work-breakdown.md](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables, and what a [Problem and a Proposal](references/work-breakdown.md#problem-and-proposal) hold.
 - **Decisions.**
   - Ask them one at a time, each with a recommended option.
   - Record each answer in the affected issues and, when there is one, the planning record.
