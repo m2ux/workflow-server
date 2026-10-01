@@ -1,0 +1,225 @@
+excludes	anti-patterns.md:71	Structural	(no Fires-on line)
+binds	anti-patterns.md:75	AP-01. no-inline-content	technique
+binds	anti-patterns.md:89	AP-02. schema-is-constraint	technique
+binds	anti-patterns.md:103	AP-03. no-partial-implementation	*
+binds	anti-patterns.md:117	AP-04. no-invented-naming	*
+excludes	anti-patterns.md:131	Interaction	(no Fires-on line)
+excludes	anti-patterns.md:135	AP-05. atomic-checkpoints	`activity.steps`
+binds	anti-patterns.md:149	AP-06. no-assumption-execution	*
+binds	anti-patterns.md:163	AP-07. scope-reverify-completion	*
+binds	anti-patterns.md:177	AP-08. one-question-per-message	*
+excludes	anti-patterns.md:191	Schema Expressiveness	(no Fires-on line)
+binds	anti-patterns.md:195	AP-09. checkpoint-not-prose	technique.protocol
+binds	anti-patterns.md:209	AP-10. loop-not-prose	technique.protocol
+excludes	anti-patterns.md:223	AP-11. decision-not-prose	`activity.description`, `activity.exits`, `workflow.graph`
+binds	anti-patterns.md:237	AP-12. artifact-not-buried	technique.capability, technique.protocol, technique.outputs
+excludes	anti-patterns.md:251	AP-13. variable-for-approval	`activity.description`, `activity.steps`, `activity.variables`, `workflow.variables`
+binds	anti-patterns.md:265	AP-14. mode-as-state	technique.rules
+excludes	anti-patterns.md:279	AP-15. procedure-in-protocol	`activity.steps`
+binds	anti-patterns.md:293	AP-16. technique-inputs-declared	technique.capability, technique.inputs, technique.protocol
+excludes	anti-patterns.md:307	AP-17. bound-step-no-description	`activity.steps`
+excludes	anti-patterns.md:321	AP-18. no-monolith-masking-steps	`activity.steps`
+excludes	anti-patterns.md:335	Rule Hygiene	(no Fires-on line)
+binds	anti-patterns.md:339	AP-19. no-rule-protocol-restatement	technique.rules, technique.protocol
+binds	anti-patterns.md:353	AP-20. rule-group-disambiguation	technique.rules
+binds	anti-patterns.md:367	AP-21. grouped-rule-keys	technique.rules
+binds	anti-patterns.md:381	AP-22. single-rule-authority	technique.rules
+binds	anti-patterns.md:395	AP-23. worker-rule-reach	technique.rules
+binds	anti-patterns.md:409	AP-24. no-contradictory-rules	technique.rules
+binds	anti-patterns.md:423	AP-25. no-one-step-rules	technique.rules, technique.protocol
+excludes	anti-patterns.md:437	Description Hygiene	(no Fires-on line)
+binds	anti-patterns.md:441	AP-26. no-rationale-in-description	technique.protocol, technique.rules
+excludes	anti-patterns.md:455	AP-27. validate-message-economy	`activity.steps[].actions[].message`
+binds	anti-patterns.md:469	AP-28. no-sequence-in-description	technique.capability, technique.protocol
+binds	anti-patterns.md:483	AP-29. no-user-env-mutation	technique.capability, technique.protocol
+binds	anti-patterns.md:497	AP-30. role-rules-not-description	technique.rules
+binds	anti-patterns.md:511	AP-31. no-hand-authored-artifacts	technique.outputs
+excludes	anti-patterns.md:525	AP-32. outcome-names-value	`activity.outcome`
+binds	anti-patterns.md:539	AP-33. no-set-of-technique-output	technique.outputs
+excludes	anti-patterns.md:553	AP-34. no-valueless-control-set	`activity.steps[].actions`
+excludes	anti-patterns.md:567	AP-35. no-intra-step-input-set	`activity.steps[].technique.inputs`, `activity.steps[].actions`
+excludes	anti-patterns.md:581	AP-36. techniques-list-disjoint	`activity.techniques`, `activity.steps[].technique`
+excludes	anti-patterns.md:595	AP-37. rule-audience-bucket	`workflow.rules.workflow`, `workflow.rules.activity`, `workflow.rules.universal`
+excludes	anti-patterns.md:609	AP-38. no-duplicate-technique-steps	`activity.steps[].technique`
+excludes	anti-patterns.md:623	AP-39. hoist-universal-techniques	`activity.techniques`, `workflow.techniques.activity`
+excludes	anti-patterns.md:637	AP-40. readme-orients-not-transcribes	`readme`
+binds	anti-patterns.md:651	AP-41. avoidance-voice-in-definitions	technique.capability
+excludes	anti-patterns.md:665	Coupling	(no Fires-on line)
+binds	anti-patterns.md:669	AP-42. io-agnostic-contract	technique.inputs, technique.outputs
+binds	anti-patterns.md:683	AP-43. canonical-artifact-ids	technique.protocol, technique.inputs, technique.outputs
+binds	anti-patterns.md:697	AP-44. artifact-name-in-io	technique.protocol, technique.inputs, technique.outputs
+binds	anti-patterns.md:711	AP-45. no-opaque-artifact-path-array	technique.inputs, technique.protocol
+excludes	anti-patterns.md:725	AP-46. no-resource-caller-backlink	`resource`
+binds	anti-patterns.md:739	AP-47. no-redundant-link-label	*
+binds	anti-patterns.md:753	AP-48. brace-output-references	technique.protocol
+binds	anti-patterns.md:767	AP-49. no-delivery-mechanism-narration	technique.protocol
+binds	anti-patterns.md:781	AP-50. no-tool-usage-prescription	technique.capability, technique.protocol, technique.rules
+binds	anti-patterns.md:795	AP-51. canonical-technique-reference	technique.protocol
+binds	anti-patterns.md:809	AP-52. brace-declared-ids	technique.protocol, technique.capability
+binds	anti-patterns.md:823	AP-53. dotted-rule-address	technique.protocol
+binds	anti-patterns.md:837	AP-54. anchored-protocol-references	technique.protocol
+binds	anti-patterns.md:851	AP-55. hoist-shared-inputs	technique.inputs, technique.inherited_inputs
+binds	anti-patterns.md:865	AP-56. paren-invocation-args	technique.protocol
+binds	anti-patterns.md:879	AP-57. escape-literal-dollar	*
+binds	anti-patterns.md:893	AP-58. snake-case-symbols	technique.inputs, technique.outputs, technique.protocol, technique.rules
+binds	anti-patterns.md:907	AP-59. constraint-as-blockquote	technique.protocol
+binds	anti-patterns.md:921	AP-60. local-rule-as-note	technique.rules, technique.protocol
+binds	anti-patterns.md:935	AP-61. factor-repeated-paths	technique
+binds	anti-patterns.md:949	AP-62. bind-protocol-locals	technique.protocol, technique.inputs, technique.outputs
+binds	anti-patterns.md:963	AP-63. backtick-code-tokens	*
+binds	anti-patterns.md:977	AP-64. boolean-id-shape	technique.inputs, technique.outputs
+binds	anti-patterns.md:991	AP-65. collection-id-shape	technique.inputs, technique.outputs
+binds	anti-patterns.md:1005	AP-66. io-id-shape	technique.inputs, technique.outputs
+binds	anti-patterns.md:1019	AP-67. rule-slug-shape	technique.rules
+binds	anti-patterns.md:1033	AP-68. technique-stage-agnostic	technique.capability, technique.protocol, technique.rules
+excludes	anti-patterns.md:1047	AP-69. no-activity-prose-rules	`activity.rules`
+binds	anti-patterns.md:1061	AP-70. capability-group-placement	technique
+excludes	anti-patterns.md:1075	Tool-Technique-Doc Consistency	(no Fires-on line)
+binds	anti-patterns.md:1079	AP-71. no-false-resource-delivery	technique
+binds	anti-patterns.md:1093	AP-72. complete-bootstrap-path	technique
+binds	anti-patterns.md:1107	AP-73. consistent-tool-names	technique
+binds	anti-patterns.md:1121	AP-74. no-duplicated-guidance	technique
+binds	anti-patterns.md:1135	AP-75. describe-tool-value	technique
+binds	anti-patterns.md:1149	AP-76. no-redundant-tools	technique
+excludes	anti-patterns.md:1163	Execution	(no Fires-on line)
+binds	anti-patterns.md:1167	AP-77. impl-before-confirmed-approach	*
+binds	anti-patterns.md:1181	AP-78. follow-through-on-recommend	*
+binds	anti-patterns.md:1195	AP-79. structure-backed-constraints	technique.rules
+excludes	anti-patterns.md:1209	AP-80. preserve-readme-content	`readme`
+binds	anti-patterns.md:1223	AP-81. verify-format-literacy	technique
+excludes	anti-patterns.md:1237	AP-82. work-through-activities	`workflow.activities`, `workflow.graph`
+binds	anti-patterns.md:1251	AP-83. accept-correction	*
+excludes	anti-patterns.md:1265	Output Economy	(no Fires-on line)
+excludes	anti-patterns.md:1269	AP-84. single-closeout-artifact	`resource`, `readme`
+excludes	anti-patterns.md:1283	AP-85. link-dont-copy-sections	`resource`
+excludes	anti-patterns.md:1297	AP-86. exception-only-verdict-tables	`resource`
+excludes	anti-patterns.md:1311	AP-87. omit-null-sections	`resource`, `activity.steps`
+excludes	anti-patterns.md:1325	AP-88. one-decision-one-checkpoint	`activity.steps`
+excludes	anti-patterns.md:1339	AP-89. checkpoint-requires-decision	`activity.steps`
+excludes	anti-patterns.md:1353	AP-90. no-guide-wrapper-ceremony	`resource`
+excludes	anti-patterns.md:1367	AP-91. lifecycle-row-update	`resource`
+excludes	anti-patterns.md:1381	AP-92. resource-fills-not-does	`resource`
+excludes	anti-patterns.md:1395	AP-93. canonical-fact-home	`resource`
+excludes	anti-patterns.md:1409	AP-94. link-only-input-slots	`resource`
+binds	anti-patterns.md:1423	AP-95. enforce-output-discipline	technique.rules
+binds	anti-patterns.md:1437	AP-96. artifact-audience-declared	technique.outputs
+excludes	anti-patterns.md:1451	AP-97. link-named-artifacts	`activity.steps[].message`, `activity.steps[].actions[].message`
+excludes	anti-patterns.md:1465	AP-98. no-next-step-narration	`activity.steps[].message`, `activity.steps[].actions[].message`, `activity.steps[].options[].description`
+excludes	anti-patterns.md:1479	AP-99. statement-not-question	`activity.steps[].message`
+binds	anti-patterns.md:1493	AP-100. runtime-rules-only	technique.rules
+excludes	anti-patterns.md:1507	AP-101. no-caption-only-message	`activity.steps[].message`
+binds	anti-patterns.md:1521	AP-102. no-technique-resource-dual-home	technique
+excludes	anti-patterns.md:1535	Canon Hygiene	(no Fires-on line)
+binds	anti-patterns.md:1539	AP-103. cited-home-owns-claim	technique
+binds	anti-patterns.md:1553	AP-104. operative-criteria-need-a-home	technique.protocol
+binds	anti-patterns.md:1567	AP-105. no-shadow-audit-pass	technique.protocol
+excludes	anti-patterns.md:1581	AP-106. canon-layer-cites-not-restates	`resource`, `readme`
+binds	anti-patterns.md:1595	AP-107. bind-site-is-orchestration-truth	technique
+excludes	anti-patterns.md:1609	Technique Protocol	(no Fires-on line)
+binds	anti-patterns.md:1613	AP-108. numbered-protocol-phases	technique.protocol
+binds	anti-patterns.md:1627	AP-109. technique-outputs-declared	technique.capability, technique.protocol, technique.outputs
+binds	anti-patterns.md:1641	AP-110. duplicate-shared-capability	technique.protocol
+binds	anti-patterns.md:1655	AP-111. contract-not-procedure	technique.protocol, technique.outputs
+excludes	anti-patterns.md:1669	AP-112. no-derived-state-shadow	`workflow.variables`
+binds	anti-patterns.md:1683	AP-113. session-interaction-in-technique	technique.capability, technique.protocol, technique.rules
+binds	anti-patterns.md:1697	AP-114. pass-orchestration-in-technique	technique.capability, technique.protocol
+binds	anti-patterns.md:1711	AP-115. platform-semantics-in-capability	technique.capability
+binds	anti-patterns.md:1725	AP-116. no-template-creation-guide	technique.protocol
+binds	anti-patterns.md:1739	AP-117. no-engine-mechanics-as-rules	technique.rules, technique.protocol
+binds	anti-patterns.md:1753	AP-118. no-bind-mechanics-as-prose	technique.inputs, technique.outputs, technique.capability, technique.protocol, technique.rules
+binds	anti-patterns.md:1767	AP-119. procedure-in-io-contract	technique.inputs, technique.outputs
+binds	anti-patterns.md:1781	AP-120. procedure-in-capability	technique.capability
+binds	anti-patterns.md:1795	AP-121. rule-as-protocol-step	technique.protocol
+binds	anti-patterns.md:1809	AP-122. prompt-restates-owned-mechanics	technique
+binds	anti-patterns.md:1823	AP-123. capability-as-op-inventory	technique.capability
+binds	anti-patterns.md:1837	AP-124. alternate-ops-as-protocol-sequence	technique.protocol
+binds	anti-patterns.md:1851	AP-125. technique-ref-in-io-contract	technique.inputs, technique.outputs
+excludes	anti-patterns.md:1865	Draft Hygiene	(no Fires-on line)
+binds	anti-patterns.md:1869	AP-126. cut-comment-jsdoc-verbosity	*
+binds	anti-patterns.md:1883	AP-127. no-dense-prose-after-config-examples	technique
+binds	anti-patterns.md:1897	AP-128. worktree-root-placeholders	*
+binds	anti-patterns.md:1911	AP-129. no-parallel-runbook-when-setup-covers-it	technique.protocol
+excludes	anti-patterns.md:1925	AP-130. variable-description-one-line	`workflow.variables`
+binds	anti-patterns.md:1939	AP-131. bag-value-as-literal	technique
+excludes	anti-patterns.md:1953	AP-132. unproduced-value-read	`activity.steps`
+binds	anti-patterns.md:1967	AP-133. stale-restatement-after-change	technique.capability
+binds	anti-patterns.md:1981	AP-134. artifact-name-is-filename	technique.outputs
+excludes	anti-patterns.md:1995	AP-135. resource-id-names-its-content	`resource`
+binds	anti-patterns.md:2009	AP-136. deployment-path-in-capability	technique.capability
+binds	anti-patterns.md:2023	AP-137. overlapping-rule-scopes	technique.rules
+binds	anti-patterns.md:2037	AP-138. whole-resource-for-one-section	technique
+binds	anti-patterns.md:2051	AP-139. tool-contract-restated-in-protocol	technique.protocol, technique.rules
+binds	anti-patterns.md:2065	AP-140. phase-cited-by-ordinal	technique.rules, technique.inputs, technique.outputs, technique.capability, technique.protocol
+binds	anti-patterns.md:2079	AP-141. unowned-harness-capability	technique
+binds	anti-patterns.md:2093	AP-142. output-without-destination	technique.outputs
+excludes	anti-patterns.md:2107	AP-143. framing-outside-any-section	`resource`
+binds	anti-patterns.md:2121	AP-144. declared-input-never-read	technique.inputs, technique.protocol, technique.rules
+binds	anti-patterns.md:2135	AP-145. apply-omits-declared-input	technique.protocol, technique.inputs
+binds	anti-patterns.md:2149	AP-146. branch-on-undeclared-threshold	technique.protocol, technique.rules
+binds	anti-patterns.md:2163	AP-147. inherited-rules-re-enumerated	technique.rules
+binds	anti-patterns.md:2177	AP-148. reference-without-provenance	technique
+excludes	anti-patterns.md:2191	AP-149. pre-session-prose-defers-to-the-framework	`resource`
+binds	anti-patterns.md:2205	AP-150. instruction-narrates-an-actor	technique.rules, technique.protocol, technique.inputs, technique.outputs, technique.capability
+binds	anti-patterns.md:2219	AP-151. rule-binds-beyond-its-operation	technique.rules
+binds	anti-patterns.md:2233	AP-152. inherited-input-re-declared	technique.inputs, technique.inherited_inputs
+binds	anti-patterns.md:2247	AP-153. schema-semantics-restated	technique.rules, technique.capability
+binds	anti-patterns.md:2261	AP-154. engine-internals-narrated	technique
+binds	anti-patterns.md:2275	AP-155. value-set-in-prose	technique.inputs, technique.outputs
+binds	anti-patterns.md:2289	AP-156. one-invariant-per-rule	technique.rules
+binds	anti-patterns.md:2303	AP-157. call-omits-conditionally-required-argument	technique.protocol, technique.rules
+binds	anti-patterns.md:2317	AP-158. call-omits-required-argument	technique.protocol, technique.rules
+binds	anti-patterns.md:2331	AP-159. call-names-an-undeclared-argument	technique.protocol, technique.rules
+binds	anti-patterns.md:2345	AP-160. protocol-phase-as-list-item	technique.protocol
+binds	anti-patterns.md:2359	AP-161. unreachable-operation-reference	technique.capability, technique.protocol, technique.rules
+binds	anti-patterns.md:2373	AP-162. produce-path-without-a-reading	technique.protocol
+binds	anti-patterns.md:2387	AP-163. construct-folder-without-a-readme	technique
+binds	anti-patterns.md:2401	AP-164. relocation-without-a-preserved-outcome	technique, technique.rules
+binds	anti-patterns.md:2415	AP-165. unproducible-declared-value	technique.outputs, technique.protocol
+binds	design-principles.md:19	1. Workflows Ossify Patterns	technique
+binds	design-principles.md:25	2. Internalize Before Producing	*
+binds	design-principles.md:31	3. Define Complete Scope Before Execution	*
+binds	design-principles.md:37	4. Clarify Before Assuming	*
+binds	design-principles.md:43	5. Maximize Schema Expressiveness	technique
+binds	design-principles.md:49	6. One Authoritative Home	*
+binds	design-principles.md:55	7. Convention Over Invention	*
+binds	design-principles.md:61	8. Confirm Before Irreversible Changes	*
+binds	design-principles.md:67	9. Encode Constraints as Structure	technique.rules
+binds	design-principles.md:73	10. Non-Destructive Updates	*
+excludes	design-principles.md:79	11. Complete Documentation Structure	`readme`
+binds	design-principles.md:85	12. Output Economy	technique.outputs
+binds	design-principles.md:91	13. Separate Contract from Procedure	technique.inputs, technique.outputs, technique.protocol, technique.rules
+binds	design-principles.md:97	14. Single Source of Truth	technique.inputs
+binds	design-principles.md:103	15. Phase by Sequenced Outcome	technique.protocol
+binds	design-principles.md:109	16. Distinguish Designators from Parameters	technique.protocol
+excludes	design-principles.md:115	17. Document in Positive Present	`workflow.description`, `activity.description`, `activity.outcome`, `activity.steps[].options`, `readme`
+binds	design-principles.md:121	18. Prefer Shared Capability	technique
+binds	design-principles.md:127	19. Name Symbols Affirmatively	technique.inputs, technique.outputs, technique.rules
+binds	design-principles.md:133	20. Keep Orchestration in Structure	technique.capability, technique.protocol, technique.rules
+binds	design-principles.md:139	21. Match the Harness Surface	technique
+binds	design-principles.md:145	22. Modular Over Inline	technique
+binds	design-principles.md:151	23. Close the Loop	*
+binds	design-principles.md:157	24. Keep Session Interaction in Activities	technique
+binds	design-principles.md:163	25. Bind Sibling Techniques as Steps	technique.protocol
+binds	design-principles.md:169	26. A Technique Is a Reading	technique.capability, technique.protocol, technique.inputs
+binds	design-principles.md:175	27. State Contract Contribution	technique.capability, technique.protocol, technique.inputs, technique.outputs, technique.rules
+binds	design-principles.md:181	28. Creation Guide for Generated Documents	technique.protocol
+binds	design-principles.md:187	29. Cite Resource Policy; Do Not Restate It	technique.protocol
+binds	design-principles.md:193	30. Resources Stay Abstract	technique
+binds	design-principles.md:199	31. Isolate Conditional Branches as Notes	technique.protocol
+binds	design-principles.md:205	32. Cite Resources at Section Grain	technique
+excludes	design-principles.md:211	33. Pre-Session Prose Stands Alone	`resource`
+binds	design-principles.md:217	34. Edit the Owner	*
+binds	design-principles.md:223	35. Prefer Removing the Thing That Needs a Prohibition	*
+binds	design-principles.md:229	36. A Technique Names Only What Its Reader Holds	technique
+binds	design-principles.md:235	37. An I/O Contract Names the Value	technique.inputs, technique.outputs
+binds	design-principles.md:241	38. A Relocation Records the Outcome It Keeps	technique, technique.rules
+binds	design-principles.md:247	39. A Phase Heading Names the Outcome	technique.protocol
+binds	design-principles.md:253	40. Fan-Out Lives at the Layer That Runs the Work	technique
+binds	design-principles.md:259	41. A Phase States Answers the Tool Has Returned	technique.protocol
+binds	design-principles.md:265	42. A Routine Holds the Codified Path	technique
+excludes	design-principles.md:271	43. A Workflow Borrows Activities	`workflow.activities`
+excludes	design-principles.md:277	44. A Resource Splits for Section Delivery	`resource`
+binds	design-principles.md:283	45. A Rule States One Invariant	technique.rules
+binds	design-principles.md:289	46. A Consumer Binds the Contract	technique
+binds	design-principles.md:295	47. A Calibrated Surface Extends by Wrapping	technique
+binds	convention-conformance.md:12	Reference Conventions	technique
