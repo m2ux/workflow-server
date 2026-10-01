@@ -1,0 +1,128 @@
+id: implementation-join
+version: 1.0.0
+name: Implementation Join
+description: >-
+  Converge the contract-tests and implement fan branches, hoist each branch's
+  containers, confirm contract suites are red against the base tree, settle
+  symbol provenance and residual assumptions, and continue to lean-coding audit.
+variables:
+  reads:
+    - assumptions_log
+    - contract_tests_outputs
+    - implement_outputs
+    - implementation_plan
+    - is_review_mode
+    - planning_folder_path
+    - target_path
+  writes:
+    - name: assumptions_log
+      type: object
+      description: The assumptions log after residual assumptions settle.
+    - name: contract_tests_fail_on_base
+      type: boolean
+      description: Whether the contract-tests branch confirmed failure against the base tree.
+      defaultValue: false
+    - name: contract_tests_path
+      type: string
+      description: Dedicated worktree path the contract-tests branch used.
+      defaultValue: ""
+    - name: contract_tests_branch
+      type: string
+      description: Branch the contract-tests worktree stood on.
+      defaultValue: ""
+    - name: current_task
+      type: object
+      description: The implementation-plan task under provenance review.
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumption was deferred to stakeholders.
+      defaultValue: false
+    - name: has_uncertain_symbols
+      type: boolean
+      description: True when one or more symbols have unconfirmed provenance.
+      defaultValue: false
+    - name: uncertain_symbols
+      type: string
+      description: Symbols whose provenance could not be confirmed, one per line.
+      defaultValue: ""
+required: true
+steps:
+  - kind: action
+    id: take-contract-tests-report
+    when: contract_tests_outputs
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: "{contract_tests_outputs.0.result.contract_tests_fail_on_base}"
+      - action: set
+        target: contract_tests_path
+        value: "{contract_tests_outputs.0.result.contract_tests_path}"
+      - action: set
+        target: contract_tests_branch
+        value: "{contract_tests_outputs.0.result.contract_tests_branch}"
+  - kind: action
+    id: confirm-base-failures
+    actions:
+      - action: validate
+        target: contract_tests_fail_on_base == true
+        message: >-
+          Contract tests did not fail against the base tree. The contract-tests
+          branch must leave a red suite before implementation is joined.
+  - kind: loop
+    id: provenance-settle-cycle
+    name: Symbol Provenance Settle Cycle
+    loopType: forEach
+    variable: current_task
+    over: implementation_plan.tasks
+    steps:
+      - kind: loop
+        id: provenance-retry
+        name: Provenance Retry
+        loopType: doWhile
+        continueWhile:
+          type: simple
+          variable: has_uncertain_symbols
+          operator: ==
+          value: true
+        maxIterations: 3
+        steps:
+          - kind: technique
+            id: self-review
+            technique: task-completion-review
+          - kind: checkpoint
+            id: symbol-provenance-confirmed
+            condition:
+              type: simple
+              variable: has_uncertain_symbols
+              operator: ==
+              value: true
+            message: |-
+              One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
+
+              {uncertain_symbols}
+            options:
+              - id: confirmed
+                label: Symbols are intentional
+                description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
+                effect:
+                  setVariable:
+                    has_uncertain_symbols: false
+              - id: uncertain
+                label: Trace the flagged symbols again
+                description: The flagged symbols remain unaccounted for and the task's self-review runs again over them.
+                effect:
+                  setVariable:
+                    has_uncertain_symbols: true
+  - kind: routine
+    id: settle-assumptions
+    routine: settle-assumptions
+    outputs:
+      assumptions_log: assumptions_log
+      has_deferred_assumptions: has_deferred_assumptions
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Fan containers from contract-tests and implement are hoisted
+  - Contract suites are confirmed red against the base tree
+  - Symbol provenance and residual assumptions are settled at the join

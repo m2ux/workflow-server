@@ -1,7 +1,10 @@
 id: implement
-version: 2.21.1
+version: 2.22.0
 name: Implement Tasks
-description: Execute the implementation plan task by task.
+description: >-
+  Execute the implementation plan task by task in the feature worktree. A branch
+  of the implementation fan; symbol provenance and residual assumptions settle at
+  implementation-join.
 variables:
   reads:
     - branch_name
@@ -85,53 +88,9 @@ steps:
           inputs:
             task_id: "{current_task.id}"
             task_description: "{current_task.description}"
-      - kind: loop
-        id: provenance-settle-cycle
-        name: Symbol Provenance Settle Cycle
-        loopType: doWhile
-        continueWhile:
-          type: simple
-          variable: has_uncertain_symbols
-          operator: ==
-          value: true
-        maxIterations: 3
-        steps:
-          - kind: technique
-            id: self-review
-            technique: task-completion-review
-          - kind: checkpoint
-            id: symbol-provenance-confirmed
-            condition:
-              type: simple
-              variable: has_uncertain_symbols
-              operator: ==
-              value: true
-            message: |-
-              One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
-
-              {uncertain_symbols}
-            options:
-              - id: confirmed
-                label: Symbols are intentional
-                description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
-                effect:
-                  setVariable:
-                    has_uncertain_symbols: false
-              - id: uncertain
-                label: Trace the flagged symbols again
-                description: The flagged symbols remain unaccounted for and the task's self-review runs again over them.
-                effect:
-                  setVariable:
-                    has_uncertain_symbols: true
       - kind: technique
         id: collect-assumptions
         technique: review-assumptions::collect
-  - kind: routine
-    id: settle-assumptions
-    routine: settle-assumptions
-    outputs:
-      assumptions_log: assumptions_log
-      has_deferred_assumptions: has_deferred_assumptions
 exits:
   - id: done
     isDefault: true
