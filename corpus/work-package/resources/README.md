@@ -33,7 +33,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Review comment template, per-category findings fragments, and the scales they share |
 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, corpus and log artifact templates, promotion criteria, and deep-dive guidance from reverse engineering and code forensics literature |
-| `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats |
+| `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration shape and resolution statuses |
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
 | `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.json` — the disposition register the rating cap is computed from |

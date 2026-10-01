@@ -8,7 +8,7 @@
 
 This workflow guides the complete lifecycle of a single work package through its main activities plus a codebase-comprehension sub-flow, entered from design-philosophy or assumptions-review. Each activity has defined techniques, checkpoints, and exits. Activities may be conditional (skipped based on complexity) or looped (repeated on failure), and review mode conditions their steps, checkpoints, and exits.
 
-Assumption and comprehension stages converge agent-resolvable concerns (analyse → challenge → combine) before residual stakeholder asks.
+Where assumptions or comprehension questions are settled, agent-resolvable concerns converge before any residual stakeholder ask.
 
 | # | Activity | Description |
 |---|----------|-------------|
@@ -19,7 +19,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 | 04 | [**Research**](./activities/README.md#04-research-optional) | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | Understand current state, establish baselines |
 | 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Create implementation and test plans |
-| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Post plan summary and assumptions to issue tracker for stakeholder review |
+| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Converge the open assumptions and settle what stays open with the user before implementation |
 | 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
 | 16 | [**Prism Decision**](./activities/README.md#prism-decision) | Settle whether structural analysis takes the full prism pipeline or the inline pass |

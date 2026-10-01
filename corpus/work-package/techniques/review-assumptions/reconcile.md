@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,15 +17,19 @@ Code-analyzable assumptions closed via targeted analysis.
 
 ### assumptions_log
 
-Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining (same `assumptions-log.md` artifact, written back in place).
+Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining, written back in place.
 
-### has_resolvable_assumptions
+#### artifact
 
-Boolean gate driving the reconciliation loop — true while open code-resolvable assumptions remain (another iteration is needed), false once convergence is reached.
+`assumptions-log.md`
 
-### has_open_assumptions
+#### audience
 
-Boolean gate — true iff stakeholder-dependent assumptions remain open after convergence.
+`human`
+
+### assumptions_log_path
+
+Path to the written assumptions log.
 
 ## Protocol
 
@@ -33,8 +37,6 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - Read all open assumptions from the `{assumptions_log}`
 - For each, determine whether targeted code analysis could validate or invalidate it, classifying per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification)
-- If the `{assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set `{has_resolvable_assumptions}` to false and `{has_open_assumptions}` to false.
-- If every open assumption classifies as not code-resolvable, convergence is immediate — set `{has_resolvable_assumptions}` to false and evaluate `{has_open_assumptions}` from the remaining open set.
 
 ### 2. Targeted Analysis
 
@@ -49,17 +51,10 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - Update the `{assumptions_log}` rows in place: write finding + evidence into the Resolution column and Validated / Invalidated / Partially Validated into the Outcome column; remove the Open Assumptions entry of any assumption that resolved
 - Add any newly surfaced assumptions as new rows, Outcome `Open`, with their classification (code-resolvable or not)
-- Emit the scorecard data (see [assumption-reconciliation](../../resources/assumption-reconciliation.md#scorecard)) as a bindable pass result after each pass; do NOT persist count tables in the log — the rows are the record
 - Write Open Assumptions entries to the `manage-artifacts.markdown-line-breaks` rule
+- Emit the log's path as `{assumptions_log_path}`
 
-### 4. Check Convergence
-
-- Re-classify all open assumptions after the analysis pass
-- If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set `{has_resolvable_assumptions}` to true
-- If no open assumptions are code-resolvable, convergence is reached per [Resolvability Classification](../../resources/assumption-reconciliation.md#resolvability-classification): the assumptions log is now the `{assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
-- After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true.
-
-### 5. Update Comprehension Artifact
+### 4. Update Comprehension Artifact
 
 - Write each outcome the analysis settled about the code into the section of `{comprehension_artifact}` that owns it, per [Promotion](../../resources/codebase-comprehension.md#promotion)
   > When no `{comprehension_artifact}` was provided, skip this phase; the findings stay in the assumptions log.

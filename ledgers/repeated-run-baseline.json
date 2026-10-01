@@ -2,18 +2,13 @@
   "note": "Every run of steps two or more activity files carry, each classified once. Stage 1's baseline is the population at the revision the guard landed — 24 runs over 132 activity definitions, 19 at the top level and 5 inside a loop body, against workflows 2a9d07ee — which is the figure the acceptance criterion means by \"the count the search reports at the revision the guard lands\". The file carries fewer as runs close. Re-take the current population with `npx tsx guards/check-repeated-runs.ts`. converging = a named stage of the shared-run plan edits the steps in this run, so the stage retires this entry; suppressed, counted. unassigned = a real repeated run no stage claims; suppressed, counted. provisional = the run's existence turns on an open decision, so it is named in every guard run rather than suppressed. A run absent from this file is unclassified and reported; an entry matching no run is stale and reported. There is no regenerate flag — an entry is a human judgement, and the baseline falls by an entry being deleted.",
   "rationales": {
     "address-then-refresh": "Set the addressed graph, then refer to the index refresh: the pair every case of the index-refresh specimen carries, each naming the graph its own reads key under. Only the graph name, the tree and the identifiers differ; the two-step window is the specimen's own device for evidencing one run under a second address, and a construct naming it would put a reference in front of a single set action and the run it already refers to. No stage claims it.",
-    "analysis-head-into-convergence-loop": "The head of the two analysis activities: collect the assumptions, document, record the log, then the convergence loop and the open-set assembly. The loop at its centre is stage 6's subject, so the stage re-signs this window and retires this entry; what the two activities still share afterwards is a new judgement rather than this one.",
-    "announcement-between-two-runs": "The two hosts that keep the assumption run carry it after the convergence run, with the announcement that produces the gate presentation between them and the record pass after. Both runs are shared already; what repeats is the four step positions and their order. The two differences are the announcement's identifier and whether it renders the presentation itself, and both are host-authored by a recorded decision that keeps the announcement outside the shared body. Converging the window would mean a run whose only unshared step is the one deliberately left to its host.",
-    "artifact-close-out": "Resolve where the artifacts publish, then commit them — the close-out pair the submit and complete activities share. Only the identifiers and one activity-name input differ. No stage claims it.",
     "assumption-run": "The assumption run's core at the four hosts: gate the batch, record the batch answer, then loop the residual items. Stage 5 migrates it, so this entry retires with that stage.",
-    "assumption-run-and-convergence-loop": "The convergence loop and the assumption run sit adjacent at these activities and read as one window: announce, gate the batch, record the batch answer, then loop the residual items. Stage 5 of the shared-run plan migrates the assumption run and stage 6 the loop, so the two stages edit adjacent steps in the same window and this entry retires with the second of them.",
     "assumption-run-per-item-half": "The assumption run's per-item half, inside the forEach: present one assumption, gate it, record the answer. The per-item gate carries its own condition at one host and not at the others, which is the dismissibility question stage 2 owes a decision on. Stage 5 migrates it.",
     "audit-and-fix-cycle": "The audit-and-fix loop body the two workflow-design review activities share: author, validate the schema, apply the fixes, then audit expressiveness and conformance, saving each audit's report after it. Nothing but the step identifiers differs. No stage of the shared-run plan claims it.",
     "audit-pass-pair": "Audit the principles and save that report, then audit the anti-patterns and save that one — two of the five workflow-design audits, each followed by the step that writes its report, at the review activities. The copies differ in identifiers, gates and filenames. No stage claims it.",
     "commit-and-publish-run": "Commit, verify the commit, push the branch, publish the pull request, create it — a five-step publish run at two workflow-design activities, differing only in identifiers, entry gates and one draft flag. No stage claims it, and it is the clearest constituency for a shared-run construct outside the two migrations.",
     "conform-then-log-in-the-audit-family": "Verify the artifact conforms to its guide, then log — the same two security audit workflows, at their reporting activities. One shared operation and one control action, so the window is thin for the same reason as the persist-then-announce pair.",
     "consecutive-control-actions": "Two consecutive control actions whose messages differ at every site. The search admits it because an action step signs as its verbs and targets, and the census discounts it for the same reason: there is no bound work in the window at all.",
-    "convergence-pass": "The convergence pass — reconcile, challenge, combine — and the loop that wraps it. The three-step body is byte-identical at every site it appears, and so is the record-then-loop pair. Stage 6 of the shared-run plan converges it, so these entries retire with that stage.",
     "coverage-map-then-test-review": "Map the diff onto the changed symbols a test reaches, then review the suite against that map — the three points work-package assesses test coverage at: the review-mode pass in validate, the post-implementation review, and the re-review inside its fix-and-revalidate loop. Each copy carries its own gate and its own identifiers, and the graph answer has to be taken again at each because the diff has moved between them, so the repetition is three readings of a changing diff rather than one run written three times. No stage claims it.",
     "dispatch-then-gather-in-the-audit-family": "Log the dispatch, then gather the results — shared by the primary pass of the two security audit workflows, which were authored from one another. The gather binding differs in both of its inputs, so the pair is a copied idiom rather than a settled run.",
     "launch-then-walk": "Open a child session, then walk it — the pair every launch site carries, because a launch reports where the child opens and the walk is what reaches its end. The walk half is already one shared run; what repeats is the two step positions and their order, and the copies differ only in the identifiers and the two gates the work-package host carries. A construct naming the pair would put a reference in front of a single step and the run it already refers to.",
@@ -22,7 +17,8 @@
     "read-the-pull-request-body-back": "View the pull request, then verify the rendered body — the read-back pair at the two work-package activities that touch a pull request body. Both copies are gated, and the two gates differ, which is the drift a shared run would settle.",
     "roster-fan-out-run": "Verify the output files, compose the roster briefs, dispatch the workers — a fan-out run over a roster, shared by two activities of the substrate audit. Its operations are the substrate audit's own dispatch family rather than the orchestration patterns, and no stage of the shared-run plan claims it.",
     "sub-workflow-then-accumulate": "Hand a unit to a sub-workflow, walk the child it opened, read its run manifest, accumulate the result — the per-unit body the two prism analysis activities share, identical field for field. The walk at its centre is already one shared run; what still repeats is the three steps around it. It sits next to stage 7's subject without being named by it, and whether a shared run or a per-element activity fan is its right home is the open question there.",
-    "deprecated-twin-shape": "A run workflow-design carries because it keeps workflow-authoring's shape: workflow-design is the deprecated twin of workflow-authoring, and the copy retires with that workflow. Converging it would edit a workflow whose remaining life is its deprecation."
+    "deprecated-twin-shape": "A run workflow-design carries because it keeps workflow-authoring's shape: workflow-design is the deprecated twin of workflow-authoring, and the copy retires with that workflow. Converging it would edit a workflow whose remaining life is its deprecation.",
+    "collect-then-document": "Collect the assumptions under the activity's own categories, then write the activity's own document — at research and implementation analysis. The categories differ, and the document step resolves to each activity's own technique, so the only shared work is the collect operation. A construct naming the pair would put a reference in front of a single step. No stage claims it."
   },
   "entries": [
     {
@@ -101,45 +97,6 @@
       "rationale": "consecutive-control-actions"
     },
     {
-      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml",
-      "run": [
-        "T:review-assumptions::collect(assumption_categories)",
-        "T:document()",
-        "T:review-assumptions::record()",
-        "R:converge-assumptions()",
-        "T:review-assumptions::assemble-open-set()"
-      ],
-      "verdict": "converging",
-      "rationale": "analysis-head-into-convergence-loop"
-    },
-    {
-      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/06-plan-prepare.yaml",
-      "run": [
-        "T:review-assumptions::record()",
-        "R:converge-assumptions()"
-      ],
-      "verdict": "converging",
-      "rationale": "convergence-pass"
-    },
-    {
-      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml + work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
-      "run": [
-        "R:converge-assumptions()",
-        "T:review-assumptions::assemble-open-set()"
-      ],
-      "verdict": "converging",
-      "rationale": "assumption-run-and-convergence-loop"
-    },
-    {
-      "site": "work-package/activities/13-submit-for-review.yaml + work-package/activities/14-complete.yaml",
-      "run": [
-        "T:resolve-artifact-publish()",
-        "T:manage-git::artifact-commits(activity_name,branch,files,issue_key)"
-      ],
-      "verdict": "unassigned",
-      "rationale": "artifact-close-out"
-    },
-    {
       "site": "workflow-design/activities/09-validate-and-commit.yaml + workflow-design/activities/10-post-update-review.yaml",
       "run": [
         "T:git::commit-regular-files()",
@@ -150,17 +107,6 @@
       ],
       "verdict": "unassigned",
       "rationale": "commit-and-publish-run"
-    },
-    {
-      "site": "work-package/activities/07-assumptions-review.yaml + work-package/activities/08-implement.yaml",
-      "run": [
-        "R:converge-assumptions()",
-        "T:review-assumptions::assemble-open-set()",
-        "R:residual-assumption-interview()",
-        "T:review-assumptions::record()"
-      ],
-      "verdict": "unassigned",
-      "rationale": "announcement-between-two-runs"
     },
     {
       "site": "gitnexus-index-refresh-conformance/activities/01-positive-case.yaml + gitnexus-index-refresh-conformance/activities/02-negative-case.yaml + gitnexus-index-refresh-conformance/activities/03-unindexed-tree-case.yaml",
@@ -298,6 +244,15 @@
       ],
       "verdict": "unassigned",
       "rationale": "audit-and-fix-cycle"
+    },
+    {
+      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml",
+      "run": [
+        "T:review-assumptions::collect(assumption_categories)",
+        "T:document()"
+      ],
+      "verdict": "unassigned",
+      "rationale": "collect-then-document"
     }
   ]
 }

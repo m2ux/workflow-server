@@ -378,34 +378,6 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
-      "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
-      "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
-      "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/TECHNIQUE.md:33",
-      "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "read-resolution",
       "site": "work-package/techniques/review-summary.md:109",
       "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",

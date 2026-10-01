@@ -1,10 +1,9 @@
 id: plan-prepare
-version: 1.12.0
+version: 1.13.0
 name: Plan & Prepare
 description: Design the approach, create the work package plan, and prepare for implementation.
 variables:
   reads:
-    - assumption_outcome
     - branch_name
     - component_git_dir
     - default_branch
@@ -30,21 +29,6 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
-    - name: has_deferred_assumptions
-      type: boolean
-      description: Whether any assumption was deferred to stakeholders.
-      defaultValue: false
-    - name: has_open_assumptions
-      type: boolean
-      description: Whether unresolved assumptions requiring stakeholder input remain.
-      defaultValue: false
-    - name: has_resolvable_assumptions
-      type: boolean
-      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
-      defaultValue: false
-    - name: open_assumptions
-      type: array
-      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: rendered_pr_body
       type: string
       description: The body now live on the PR after the patch.
@@ -52,8 +36,6 @@ variables:
       type: string
       description: The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
 required: true
-techniques:
-  - scatter-gather
 steps:
   - kind: action
     id: env-prerequisites
@@ -105,17 +87,6 @@ steps:
       name: review-assumptions::collect
       inputs:
         assumption_categories: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions
-  - kind: technique
-    id: update-assumptions-log
-    technique: review-assumptions::record
-  - kind: routine
-    id: assumption-convergence
-    routine: converge-assumptions
-    outputs:
-      assumptions_log: assumptions_log
-      has_resolvable_assumptions: has_resolvable_assumptions
-      has_open_assumptions: has_open_assumptions
-      open_assumptions: open_assumptions
   - kind: technique
     id: create-todos
     technique: create-todos

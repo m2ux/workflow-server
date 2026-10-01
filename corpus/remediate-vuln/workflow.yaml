@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.1.0
+version: 3.2.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -76,10 +76,6 @@ variables:
   - name: pr_url
     type: string
     description: URL of the pull request for this remediation, empty while disclosure stays private.
-    defaultValue: ""
-  - name: assumption_outcome
-    type: string
-    description: The outcome the deciding gate gave the assumption under discussion, empty before any gate has decided one.
     defaultValue: ""
   - name: safety_floor_cleared
     type: boolean

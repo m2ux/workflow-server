@@ -1,11 +1,13 @@
 id: residual-assumption-interview
-version: 1.1.0
+version: 2.0.0
 name: Residual Assumption Interview
 description: Gate the residual open assumptions as a batch, record the batch answer, then interview them one at a time where the batch answer asks for it.
 
 inputs:
   - id: assumption_review_presentation
     description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility.
+  - id: assumptions_log_path
+    description: Path to the assumptions log the residual entries sit in.
   - id: has_open_assumptions
     description: Whether irreducible open assumptions remain for this run to settle.
   - id: open_assumptions
@@ -34,22 +36,26 @@ inputs:
     description: GitHub repository as owner/repo.
 
 outputs:
-  - id: assumption_outcome
+  - id: assumptions_log
+    type: object
+    description: The assumptions log with each settled assumption's outcome recorded.
+  - id: assumptions_log_path
     type: string
-    description: The outcome the deciding gate gave the assumption under discussion.
-    values:
-      - confirmed
-      - corrected
-      - deferred
+    description: Path to the assumptions log the record steps wrote.
+    optional: true
   - id: has_deferred_assumptions
     type: boolean
     description: Whether any assumption was deferred to stakeholder review.
 
 internals:
+  - id: assumption_outcome
+    description: The outcome the deciding gate gave the assumption under discussion — confirmed, corrected or deferred — which the record step writes into the log.
   - id: assumption_correction
     description: Text the user typed correcting the assumption under discussion. Unset until a correction is given.
   - id: current_assumption
     description: The assumption under discussion during the individual interview, iterated from the open set.
+  - id: current_assumption_presentation
+    description: Judgement-augmentation context for the assumption under discussion, which its decision gate carries.
   - id: needs_individual_interview
     description: Whether the batch gate asked for each assumption to be settled one at a time. Set by that gate and read by the two steps after it; no host consults it.
 
@@ -67,7 +73,10 @@ steps:
           variable: has_open_assumptions
           operator: ==
           value: true
-    message: "Open assumptions remain, each with the agent's favored position: {assumption_review_presentation}"
+    message: |-
+      Open assumptions remain, each with the agent's favored position ([assumptions log]({assumptions_log_path})):
+
+      {assumption_review_presentation}
     options:
       - id: accept-agent-positions
         label: Accept agent positions
@@ -75,13 +84,14 @@ steps:
         effect:
           setVariable:
             assumption_outcome: confirmed
+            needs_individual_interview: false
       - id: defer-all
         label: Defer all to stakeholders
         description: Queue every listed open assumption for stakeholder review
         effect:
           setVariable:
-            has_deferred_assumptions: true
             assumption_outcome: deferred
+            needs_individual_interview: false
       - id: interview-individually
         label: Interview individually
         description: Walk each residual open assumption one at a time
@@ -90,7 +100,15 @@ steps:
             needs_individual_interview: true
   - kind: technique
     id: record-batch
-    technique: review-assumptions::record
+    technique:
+      name: review-assumptions::record
+      inputs:
+        assumption_outcome: assumption_outcome
+        assumptions_log: assumptions_log
+      outputs:
+        assumptions_log: assumptions_log
+        assumptions_log_path: assumptions_log_path
+        has_deferred_assumptions: has_deferred_assumptions
     when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
   - kind: loop
     id: interview
@@ -99,14 +117,19 @@ steps:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
-    when: needs_individual_interview == true && has_open_assumptions == true
+    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview == true
     steps:
       - kind: technique
         id: present
-        technique: review-assumptions::assemble-one
+        technique:
+          name: review-assumptions::assemble-one
+          inputs:
+            current_assumption: current_assumption
+          outputs:
+            assumption_review_presentation: current_assumption_presentation
       - kind: checkpoint
         id: "decision#{current_assumption.id}"
-        message: "Assumption {current_assumption.id}: {current_assumption.statement}"
+        message: "{current_assumption_presentation}"
         options:
           - id: resolve-inline
             label: Accept the assumption
@@ -126,7 +149,6 @@ steps:
             description: Queue this assumption for stakeholder review
             effect:
               setVariable:
-                has_deferred_assumptions: true
                 assumption_outcome: deferred
       - kind: technique
         id: record
@@ -134,3 +156,10 @@ steps:
           name: review-assumptions::record
           inputs:
             assumption_correction: assumption_correction
+            assumption_outcome: assumption_outcome
+            assumptions_log: assumptions_log
+            current_assumption: current_assumption
+          outputs:
+            assumptions_log: assumptions_log
+            assumptions_log_path: assumptions_log_path
+            has_deferred_assumptions: has_deferred_assumptions

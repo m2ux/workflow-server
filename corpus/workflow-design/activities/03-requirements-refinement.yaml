@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.18.0
+version: 1.19.0
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with its design assumptions reconciled.
 variables:
@@ -7,6 +7,7 @@ variables:
     - assumption_outcome
     - change_category
     - component_git_dir
+    - has_resolvable_assumptions
     - operation_type
     - planning_folder_path
     - pr_number
@@ -138,21 +139,19 @@ steps:
       inputs:
         assumption_source: the refined workflow requirements and the constructs they name
         assumption_categories: "Activity Boundaries, Checkpoint Necessity, Technique Selection, Rule Scope, Variable State, Schema Construct Choice"
-  - kind: technique
-    id: reconcile-assumptions
-    technique: reconcile-design-assumptions
   - kind: loop
     id: assumption-reconciliation
     name: Assumption Reconciliation Loop
-    loopType: while
+    loopType: doWhile
     continueWhile:
       type: simple
       variable: has_resolvable_assumptions
       operator: ==
       value: true
+    maxIterations: 10
     steps:
       - kind: technique
-        id: reconcile-iteration
+        id: reconcile
         technique: reconcile-design-assumptions
   - kind: action
     id: announce-open-judgements
@@ -172,4 +171,4 @@ exits:
     immediate: true
 outcome:
   - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — persisted for drafting, with stakeholder attestation at Gate 2
-  - Audit-resolvable design assumptions converge via a while-loop; open judgements remain in the assumptions log for the late approve-to-commit batch
+  - Audit-resolvable design assumptions converge; open judgements remain in the assumptions log for the late approve-to-commit batch

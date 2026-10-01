@@ -42,7 +42,7 @@ Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.y
 
 ### 04. Research (optional)
 
-Gathers best practices, patterns, and reference material from the knowledge base and external sources to inform the plan, and reconciles or interviews any open assumptions surfaced along the way. Leads to implementation-analysis.
+Gathers best practices, patterns, and reference material from the knowledge base and external sources to inform the plan, and adds the assumptions surfaced along the way to the log. Leads to implementation-analysis.
 
 Definition: [`04-research.yaml`](./04-research.yaml)
 
@@ -66,7 +66,7 @@ Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
 ### 07. Assumptions Review
 
-Settles the open assumptions the plan rests on before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
+Converges the assumptions logged since design philosophy and settles those still open, so the plan rests on settled assumptions before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
 
 Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 
