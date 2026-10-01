@@ -73,4 +73,5 @@ steps:
       open_assumptions: "{open_assumptions}"
     outputs:
       assumptions_log: assumptions_log
+      assumptions_log_path: assumptions_log_path
       has_deferred_assumptions: has_deferred_assumptions
