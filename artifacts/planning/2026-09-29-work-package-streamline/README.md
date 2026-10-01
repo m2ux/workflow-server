@@ -47,8 +47,10 @@ E01 AC4, AC5 and AC8 trace to clause 3's routine work and to the user's directio
 
 ## Delivery order
 
-1. E01 W01 #1046 and W02 #1047, the CI pairing, into `i10/main` and `i10/workflows`.
-2. E01 W03 #1010 into `i10/main`.
+E01 W01 #1046 and W03 #1010 are delivered to `i10/main`. The [progress review](progress-2026-10-01.md) records their evidence and the current CI dependencies.
+
+1. E00's roster correction #1049 into `i10/workflows`.
+2. E01 W02 #1047, with the roster correction, into `i10/workflows`.
 3. E01 W04–W07 #1018 into `i10/workflows`, after merging `i10/workflows` into its branch so its corpus CI file carries the pairing.
 4. E02 W01 #1032 into `i10/workflows`.
 5. E02 W02–W05 #1031 into `i10/main`.
