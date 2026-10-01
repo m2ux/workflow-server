@@ -11,7 +11,7 @@ Reviews existing definitions: enumerates the units, walks them over the surface,
    - Prefer [Run guards on the delta](commands.md#run-guards-on-the-delta): it attributes this step by diffing a merge-base run against this tree.
    - Run the other [checks](commands.md#checks) the change calls for.
 3. **Enumerate units.**
-   - From each home's headings at the commit audited, per the [unit inventory](canon-map.md#unit-inventory).
+   - Every unit [File kinds](canon-map.md#file-kinds) gives an Audit, from each home's headings at the commit audited.
    - Apply each entry as written.
 4. **Walk.**  Walk the units per [Walk](#walk) and the [walk rules](walk-rules.md).
 5. **Attribute.**  Give each finding its origin per [Attribution](#attribution).
