@@ -1,6 +1,6 @@
 # Update mode
 
-Records delivered work on an initiative, its epics and their task issues: links each delivered task to its pull request, ticks the criteria that now hold, closes what is complete, and brings the initiative's project board up to date.
+Records delivered work on an initiative, its epics and their task issues: links each delivered task to its pull request, ticks the criteria that now hold, ticks Done on each complete row, closes what is complete, and brings the initiative's project board up to date.
 
 ## Procedure
 
@@ -39,13 +39,15 @@ Records delivered work on an initiative, its epics and their task issues: links 
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names or implies: run the test, guard or command, or read the code at the file and line it concerns.
    - A criterion that cannot be confirmed stays unticked and is reported with what is missing.
-8. **Tick.**  Tick the confirmed criteria with [Tick criteria](commands.md#tick-criteria).
+8. **Tick.**
+   Tick the confirmed criteria with [Tick criteria](commands.md#tick-criteria). It ticks Done as the [Work Breakdown guide](work-breakdown.md#tables) defines.
+   Link each further pull request on a task that stays unticked, as in step 6.
 9. **Patch.**
    Patch each changed body from its `--fix` file with [Patch body](commands.md#patch-body).
 10. **Close.**
     [Close as completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Update the initiative.**
-    - Run [Update initiative](commands.md#update-initiative), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed.
+    - Run [Update initiative](commands.md#update-initiative), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown guide](work-breakdown.md#tables) defines.
     - It lists each criterion whose citing epics are all delivered as ready to verify. Run the automated test each names, and tick those that pass with [Tick criteria](commands.md#tick-criteria).
     - Put each criterion that names no automated test to the user, who confirms it and ticks it.
     - [Close as completed](commands.md#close-as-completed) the initiative when it reports every criterion ticked.
@@ -63,5 +65,5 @@ Records delivered work on an initiative, its epics and their task issues: links 
       - Fetch the issues and items again and re-run: that re-read confirms every write, and the board is current when it reports nothing to do.
       - An issue added in one pass gets its Status in the next.
 13. **Report.**
-    Report per issue: tasks linked, criteria ticked, criteria left unticked and why, conflicts, what was closed, and each board and assignee change.
+    Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, what was closed, and each board and assignee change.
 

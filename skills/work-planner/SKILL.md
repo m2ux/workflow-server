@@ -36,7 +36,7 @@ Read the file for the mode the request calls for:
   - Fixes for each issue that departs from its template
 - **[Update](references/update-mode.md)**
   - Links from each delivered task to its pull request
-  - Ticks for the criteria that hold
+  - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
   - Closure of complete task issues, epics and initiatives
   - Project board updates
 - **[Hoist](references/hoist-mode.md)**

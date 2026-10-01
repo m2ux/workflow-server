@@ -317,7 +317,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/up
 
 ### Update epic
 
-Links each of an epic's rows to the pull request that delivered it.
+Links each of an epic's rows to the pull request that delivered it, and ticks Done on a row once it is complete.
 
 - It takes the task issues fetched after closing.
 
@@ -327,7 +327,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/up
 
 ### Tick criteria
 
-Ticks confirmed criteria on an epic or an initiative, refusing any not ready to verify.
+Ticks confirmed criteria on an epic or an initiative, refusing any not ready to verify, and ticks Done on a row once it is complete.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/update.py issue-943.json --prs prs.json --tick AC1,AC3 --fix fixed-943.md
@@ -336,7 +336,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/up
 
 ### Update initiative
 
-Reports an initiative's delivery state against its epics.
+Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed.
 
 - It takes the epic JSON fetched after closing.
 

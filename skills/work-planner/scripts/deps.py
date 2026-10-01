@@ -4,8 +4,9 @@ Usage:
   python3 deps.py [I=bodies/initiative.md] E00=bodies/epic-00.md E01=bodies/epic-01.md ...
 
 Each file is an epic issue body holding the agent-engineering Work Breakdown table:
-  | Task | Description | Depends on | Join |
-A delivered task's id links its pull request: | [W01](https://…/pull/950) |.
+  | Done | Task | Description | Depends on | Join |
+A delivered task's id links each pull request that has landed on it:
+  | [ ] | [W01](https://…/pull/950), [W01](https://…/pull/960) | … |
 Cells are read by column name, so the column order does not matter.
 
 A dependency is one of:
@@ -32,7 +33,6 @@ import re
 import sys
 from pathlib import Path
 
-ROW = re.compile(r'^\| (?:W\d\d|\[W\d\d\]\([^)]*\)) \|')
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d:W\d\d')
@@ -51,13 +51,20 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
     for epic, path in epics.items():
         header: list[str] = []
         for line in path.read_text().splitlines():
-            if line.startswith('| Task |'):
-                header = cells(line)
-            elif ROW.match(line):
-                row = dict(zip(header, cells(line)))
-                wid = row.get('Task', '')
-                rows[f'{epic}:{wid}'] = (row.get('Description', ''), row.get('Depends on', ''),
-                                         row.get('Join', ''))
+            if not line.startswith('|'):
+                continue
+            parsed = cells(line)
+            if not header and 'Task' in parsed:
+                header = parsed
+                continue
+            if not header or not parsed or parsed[0] == '---':
+                continue
+            row = dict(zip(header, parsed))
+            wid = row.get('Task', '')
+            if not re.fullmatch(r'W\d\d', wid):
+                continue
+            rows[f'{epic}:{wid}'] = (row.get('Description', ''), row.get('Depends on', ''),
+                                     row.get('Join', ''))
 
     problems = []
     tasks = {}
@@ -107,13 +114,18 @@ def check_initiative(path: Path, tasks: dict) -> list[str]:
 
     problems, header = [], []
     for line in path.read_text().splitlines():
-        if line.startswith('| Epic |'):
-            header = cells(line)
+        if not line.startswith('|'):
             continue
-        if not header or not re.match(r'^\| \[?E\d\d', line):
+        parsed = cells(line)
+        if not header and 'Epic' in parsed:
+            header = parsed
             continue
-        r = dict(zip(header, cells(line)))
+        if not header or not parsed or parsed[0] == '---':
+            continue
+        r = dict(zip(header, parsed))
         epic = r.get('Epic', '')
+        if not EPIC.fullmatch(epic):
+            continue
         written = [x.strip() for x in r.get('Depends on', '').split(',') if x.strip()]
         other = [x for x in written if not (EPIC.fullmatch(x) or INITIATIVE_EPIC.fullmatch(x))]
         direct = needs.get(epic, set())

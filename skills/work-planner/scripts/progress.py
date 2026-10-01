@@ -70,7 +70,7 @@ from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
 from board import Board, Key, PREFIX, PULL_REF, cites, key_of, label, linked_issue, pages, status_of
-from format import LINK, cell, epic_name, phrase
+from format import LINK, cell, epic_name, id_cell, phrase
 from update import PR_REF, PULL_URL, Unreadable, pull_requests
 
 PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
@@ -215,8 +215,9 @@ def main() -> int:
     for k, t in sorted(initiatives.items()):
         scope = (k[0].lower(), t[0])
         initiative_issue[scope] = k
-        for rid, r in board.table(k)[1].items():
-            if (ek := on_board(linked_issue(r[0]))) in epics:
+        header, rows = board.table(k)
+        for rid, r in rows.items():
+            if (ek := on_board(linked_issue(id_cell(header, r)))) in epics:
                 scope_of_epic.setdefault(ek, scope)
                 epic_ids.setdefault(scope, {})[rid] = ek
     for ek, t in sorted(epics.items()):
@@ -225,8 +226,9 @@ def main() -> int:
 
     epic_of: dict[Key, Key] = {}
     for ek in sorted(epics):
-        for r in board.table(ek)[1].values():
-            if (tk := on_board(linked_issue(r[0]))) in tasks:
+        header, rows = board.table(ek)
+        for r in rows.values():
+            if (tk := on_board(linked_issue(id_cell(header, r)))) in tasks:
                 epic_of.setdefault(tk, ek)
     by_reference = {(ek[0].lower(), *t[:2]): ek for ek, t in epics.items()}
     for tk, t in tasks.items():
@@ -293,8 +295,8 @@ def main() -> int:
         """The epic's next task: the task issues that stand for it, and the line naming it."""
         ref = reference(*epics[ek])
         for tid, r in rows.items():
-            backing = on_board(linked_issue(r[0]))
-            if linked_issue(r[0]) and (not backing or status.get(backing) in ACTIVE):
+            backing = on_board(linked_issue(id_cell(header, r)))
+            if linked_issue(id_cell(header, r)) and (not backing or status.get(backing) in ACTIVE):
                 continue
             if not board.row_delivered(ek, tid, ref) and board.met(
                     cell(header, r, 'Depends on'), ek, epic_ids.get(scope_of_epic[ek], {}), f'{ref}:{tid}'):
@@ -336,16 +338,17 @@ def main() -> int:
         board.report(ek)
         header, rows = board.table(ek)
         named = prs_of.get(ek, [])
-        task_issues = {n for r in rows.values() if (n := on_board(linked_issue(r[0])))} | set(owned.get(ek, {}).values())
+        task_issues = {n for r in rows.values() if (n := on_board(linked_issue(id_cell(header, r))))} | set(owned.get(ek, {}).values())
 
         def listed(pr: dict, shown) -> bool:
             return any(shown(n) and cites(pr, n) for n in task_issues)
 
         linked = set()
         for tid, r in rows.items():
-            link = LINK.fullmatch(r[0])
-            pr = by_url.get(link[2]) if link and PULL_URL.search(link[2]) else None
-            if pr:
+            for found in LINK.finditer(id_cell(header, r)):
+                pr = by_url.get(found[2]) if PULL_URL.search(found[2]) else None
+                if not pr:
+                    continue
                 linked.add(pr['html_url'])
                 if within(pr.get('merged_at')):
                     add(completed, ek, f"{DONE} {tid} {task_name(r, header)} — {pr['html_url']}")

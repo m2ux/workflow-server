@@ -14,7 +14,7 @@ optional ("delete the section", in any case), and its Work Breakdown columns.
 Fixed in the body written to --fix, keeping the issue's wording:
   - template sections put in template order, each extra section moving with the one before it
   - Work Breakdown columns put in template order, and missing ones added empty, when every column
-    present is a template column
+    present is a template column. A missing Done column is added as an unticked checkbox
   - table rows padded to the header's width
   - Work Breakdown references given colons (E01 W02 to E01:W02, I05 E00 to I05:E00), and each
     reference to an epic of the same initiative linked to that epic's issue. The epic issues come
@@ -48,7 +48,8 @@ Left to decide, since each needs new content or a judgement:
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
     Non-goals section in an epic or task, since non-goals belong to the initiative, or in a
     standalone issue, whose Proposal states its boundary
-  - a Work Breakdown column the template lacks, or a row id of the wrong form
+  - a Work Breakdown column the template lacks, a Done cell that is not a checkbox, or a row id of
+    the wrong form
   - a Description cell that does not end with the acceptance criteria it delivers (→ AC2, AC5) or
     cites one that does not exist, and a criterion no row delivers
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
@@ -84,6 +85,7 @@ COUNT = re.compile(r'\d[\d,.]*|\b(?:two|three|four|five|six|seven|eight|nine|ten
 HISTORY = re.compile(r'\bmoved to\b|\(was [EW]?\d|\bwas W\d\d|\brenumbered\b|\bformerly\b|\bpreviously\b|'
                      r'\bno longer\b|\bdischarged\b|\bsuperseded\b|\bsubsumed\b|\bused to\b', re.I)
 ROW_ID = {'initiative': re.compile(r'E\d\d'), 'epic': re.compile(r'W\d\d')}
+DONE_BOX = re.compile(r'^\[[ xX]\]$')
 AC = re.compile(r'^- \[[ xX]\] \*\*AC(\d+)\.\*\*')
 REF = re.compile(r'^- \*\*R(\d+)\.\*\*')
 LEAD = re.compile(r'^(\s*)(- )?(\*\*[^*]+?[.:!?]\*\*)[ \t]+(\S.*)$')
@@ -140,13 +142,20 @@ class Template:
                              if h == 'Work Breakdown' and l.startswith('|')), None)
 
 
-def epic_issues(body: str) -> dict[str, int]:
-    """Map each epic number in an initiative's Work Breakdown to the issue its row id links."""
+def work_table(body: str) -> tuple[list[str], list[str]]:
+    """An issue body's Work Breakdown header and its data rows."""
     _, sections = split_sections(body.replace('\r\n', '\n'))
     lines = next((l for h, l in sections if h == 'Work Breakdown'), [])
+    table = [l for l in lines if l.startswith('|')]
+    return (cells(table[0]), table[2:]) if len(table) >= 2 else ([], [])
+
+
+def epic_issues(body: str) -> dict[str, int]:
+    """Map each epic number in an initiative's Work Breakdown to the issue its row id links."""
+    header, rows = work_table(body)
     found = {}
-    for line in [l for l in lines if l.startswith('|')][2:]:
-        epic = re.fullmatch(r'\[E(\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
+    for line in rows:
+        epic = re.fullmatch(r'\[E(\d\d)\]\([^)]*/issues/(\d+)\)', id_cell(header, cells(line)))
         if epic:
             found[epic[1]] = int(epic[2])
     return found
@@ -154,9 +163,7 @@ def epic_issues(body: str) -> dict[str, int]:
 
 def initiative_rows(body: str) -> list[str]:
     """The rows of an initiative's Work Breakdown table."""
-    _, sections = split_sections(body.replace('\r\n', '\n'))
-    lines = next((l for h, l in sections if h == 'Work Breakdown'), [])
-    return [l for l in lines if l.startswith('|')][2:]
+    return work_table(body)[1]
 
 
 def epic_name(title: str) -> str:
@@ -167,7 +174,10 @@ def epic_name(title: str) -> str:
 
 def description(line: str) -> str:
     """A row's Description phrase, without the criteria it cites."""
-    return phrase(cells(line)[1])
+    row = cells(line)
+    if row and DONE_BOX.fullmatch(row[0]):
+        row = row[1:]
+    return phrase(row[1] if len(row) > 1 else '')
 
 
 def cell(header: list[str], r: list[str], column: str) -> str:
@@ -179,6 +189,30 @@ def cell(header: list[str], r: list[str], column: str) -> str:
 def phrase(text: str) -> str:
     """A Description cell's phrase, without the criteria it cites."""
     return text.split(' →', 1)[0].strip()
+
+
+def id_cell(header: list[str], r: list[str]) -> str:
+    """A row's id cell: the Task column, or the Epic column where the table has no Task."""
+    name = 'Task' if 'Task' in header else 'Epic' if 'Epic' in header else ''
+    return cell(header, r, name) if name else (r[0] if r else '')
+
+
+def row_id(text: str) -> str:
+    """The id a cell names: the text of its first link, or the cell itself where it has none."""
+    found = LINK.search(text)
+    return found[1] if found else text.strip()
+
+
+def id_form(text: str) -> str:
+    """The id a cell names once its links are read, where every link names that same id."""
+    bare = re.sub(r'\[([^\]]*)\]\([^)]*\)', r'\1', text)
+    parts = [p.strip() for p in bare.split(',') if p.strip()]
+    return parts[0] if parts and all(p == parts[0] for p in parts) else bare
+
+
+def has_pull(text: str) -> bool:
+    """Whether a cell links a pull request or a commit."""
+    return any('/pull/' in m[2] or '/commit/' in m[2] for m in LINK.finditer(text))
 
 
 def colon_refs(text: str) -> str:
@@ -231,8 +265,9 @@ class Review:
         else:
             self.check_title_shape(name, PREFIX.sub('', title).partition(': ')[2])
         if self.kind == 'epic' and self.initiative:
-            for line in initiative_rows(self.initiative['body'] or ''):
-                epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
+            header, rows = work_table(self.initiative['body'] or '')
+            for line in rows:
+                epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', id_cell(header, cells(line)))
                 if epic and int(epic[2]) == self.issue.get('number') and description(line) != name:
                     self.apply.append(f"initiative row {epic[1]}: Description {name}, the epic's title name")
 
@@ -357,13 +392,14 @@ class Review:
         table = [l for l in by_name.get('Work Breakdown', []) if l.startswith('|')]
         if len(table) < 3 or 'Description' not in cells(table[0]):
             return
-        column = cells(table[0]).index('Description')
+        header = cells(table[0])
+        column = header.index('Description')
         wanted = {int(m[1]) for l in by_name.get('Acceptance Criteria', []) if (m := AC.match(l))}
         delivered: set[int] = set()
         cited: list[tuple[str, set[int]]] = []
         for line in table[2:]:
             r = cells(line)
-            name = LINK.sub(r'\1', r[0])
+            name = row_id(id_cell(header, r))
             cell = r[column] if column < len(r) else ''
             listed = OUTCOMES.search(cell)
             if not listed:
@@ -427,11 +463,18 @@ class Review:
         if unknown:
             self.decide.append(f'Work Breakdown column not in the template: {", ".join(unknown)}')
             return lines
+        if 'Done' in header:
+            at = header.index('Done')
+            for r in rows:
+                value = r[at] if at < len(r) else ''
+                if value and not DONE_BOX.fullmatch(value):
+                    self.decide.append(f'{row_id(id_cell(header, r))}: Done holds more than a checkbox: {value}')
+                    return lines
 
         width = len(header)
         for r in rows:
             if len(r) > width:
-                self.decide.append(f'Work Breakdown row wider than its header: {r[0]}')
+                self.decide.append(f'Work Breakdown row wider than its header: {row_id(id_cell(header, r))}')
                 return lines
         padded = [r + [''] * (width - len(r)) for r in rows]
         if padded != rows:
@@ -442,12 +485,20 @@ class Review:
                 self.fixed.append('Work Breakdown columns added: ' + ', '.join(missing))
             if [c for c in columns if c in header] != header:
                 self.fixed.append('Work Breakdown columns put in template order')
-            padded = [[r[header.index(c)] if c in header else '' for c in columns] for r in padded]
+            padded = [[r[header.index(c)] if c in header else ('[ ]' if c == 'Done' else '')
+                       for c in columns] for r in padded]
+        if 'Done' in columns:
+            at = columns.index('Done')
+            if any(not DONE_BOX.fullmatch(r[at]) for r in padded):
+                for r in padded:
+                    if not DONE_BOX.fullmatch(r[at]):
+                        r[at] = '[ ]'
+                self.fixed.append('Done set to an unticked checkbox')
         pattern = ROW_ID[self.kind]
         for r in padded:
-            if not pattern.fullmatch(re.sub(r'\[([^\]]*)\]\([^)]*\)', r'\1', r[0])):
-                self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: '
-                                   f'{LINK.sub(chr(92) + "1", r[0])}')
+            ident = id_cell(columns, r)
+            if not pattern.fullmatch(id_form(ident)):
+                self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: {row_id(ident)}')
         table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
         if header == columns and padded == rows:
             return lines
@@ -463,14 +514,15 @@ class Review:
         table = [l for l in lines if l.startswith('|')]
         if len(table) < 3 or 'Depends on' not in cells(table[0]):
             return
-        at = cells(table[0]).index('Depends on')
+        header = cells(table[0])
+        at = header.index('Depends on')
         for line in table[2:]:
             r = cells(line)
             items = [LINK.sub(r'\1', x).strip() for x in (r[at] if at < len(r) else '').split(',')]
             prose = [x for x in items if x and not DEPENDENCY[self.kind].fullmatch(x)]
             if prose:
                 what = 'epics' if self.kind == 'initiative' else 'references'
-                self.decide.append(f'{LINK.sub(chr(92) + "1", r[0])}: Depends on holds more than '
+                self.decide.append(f'{row_id(id_cell(header, r))}: Depends on holds more than '
                                    f'{what}: {", ".join(prose)}')
 
     def fix_names(self, lines: list[str]) -> list[str]:
@@ -478,15 +530,22 @@ class Review:
         if self.kind != 'initiative' or not self.epics:
             return lines
         out, named = list(lines), []
-        rows = [i for i, l in enumerate(lines) if l.startswith('|')][2:]
-        for i in rows:
+        table = [i for i, l in enumerate(lines) if l.startswith('|')]
+        if len(table) < 3:
+            return lines
+        header = cells(lines[table[0]])
+        id_at = header.index('Epic') if 'Epic' in header else 0
+        desc_at = header.index('Description') if 'Description' in header else 1
+        for i in table[2:]:
             r = cells(lines[i])
-            epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', r[0])
+            epic = re.fullmatch(r'\[(E\d\d)\]\([^)]*/issues/(\d+)\)', r[id_at] if id_at < len(r) else '')
             name = self.epics.get(int(epic[2])) if epic else None
             if name is None or description(lines[i]) == name:
                 continue
-            cites = r[1].split(' →', 1)
-            r[1] = name + (' →' + cites[1] if len(cites) > 1 else '')
+            while len(r) <= desc_at:
+                r.append('')
+            cites = r[desc_at].split(' →', 1)
+            r[desc_at] = name + (' →' + cites[1] if len(cites) > 1 else '')
             out[i] = row(r)
             named.append(epic[1])
         if named:
@@ -495,9 +554,13 @@ class Review:
 
     def check_shared(self, lines: list[str]) -> None:
         """An issue several row ids link backs several tasks, so it is a reference, not a task's own."""
+        table = [l for l in lines if l.startswith('|')]
+        if len(table) < 3:
+            return
+        header = cells(table[0])
         linked: dict[str, list[str]] = {}
-        for line in [l for l in lines if l.startswith('|')][2:]:
-            m = re.fullmatch(r'\[([EW]\d\d)\]\([^)]*/issues/(\d+)\)', cells(line)[0])
+        for line in table[2:]:
+            m = re.fullmatch(r'\[([EW]\d\d)\]\([^)]*/issues/(\d+)\)', id_cell(header, cells(line)))
             if m:
                 linked.setdefault(m[2], []).append(m[1])
         for issue, rows in linked.items():
