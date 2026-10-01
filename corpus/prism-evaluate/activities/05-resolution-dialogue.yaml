@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 2.3.0
+version: 2.3.1
 name: Resolution Dialogue
 description: Propose mitigations for each evaluation finding one-by-one.
 variables:
@@ -8,7 +8,6 @@ variables:
     - evaluation_description
     - evaluation_output_path
     - evaluation_target_type
-    - finding_disposition
     - target_path
   writes:
     - name: accepted_count

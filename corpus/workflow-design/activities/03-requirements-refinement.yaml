@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.19.0
+version: 1.19.1
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with its design assumptions reconciled.
 variables:
@@ -7,7 +7,6 @@ variables:
     - assumption_outcome
     - change_category
     - component_git_dir
-    - has_resolvable_assumptions
     - operation_type
     - planning_folder_path
     - pr_number
