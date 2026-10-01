@@ -15,10 +15,10 @@ Criterion: every initiative AC1–AC14 passes its named instrument on those tips
 | AC7 | routines guard | `check-routines` against corpus | pass — `routines: OK — every routine's signature matches its body` |
 | AC8 | work-package snapshot walk — review fan | same snapshot matrix as AC1 | pass — same 23/23 run |
 | AC9 | work-package snapshot walk — discovery fan | same snapshot matrix as AC1 | pass — same 23/23 run |
-| AC10 | contract-first specimen — tests from plan | specimen `work-package-task-contract-conformance` / contract-tests fan | |
-| AC11 | contract-first specimen — join runs tests | specimen `work-package-contract-join-conformance` | |
-| AC12 | contract-first specimen — failing test returns | specimen `work-package-contract-join-conformance` | |
-| AC13 | epic audit records re-confirmed | re-read / re-run each epic's audit rounds on tip delta | |
+| AC10 | contract-first specimen — tests from plan | specimen `work-package-task-contract-conformance` / contract-tests fan | pass — `FQLYRH` complete holds, missing field is Error cases; fan `5TMF3H` hoists a red base suite |
+| AC11 | contract-first specimen — join runs tests | specimen `work-package-contract-join-conformance` | pass — `JPY7HO` pass case merges `tests/contract/t1.test.ts`, runs green, exit `done` |
+| AC12 | contract-first specimen — failing test returns | specimen `work-package-contract-join-conformance` | pass — `JPY7HO` rework takes `needs-rework`; dispute takes `needs-contract-tests` |
+| AC13 | epic audit records re-confirmed | re-read / re-run each epic's audit rounds on tip delta | pass — [e05-ac13-audits.md](e05-ac13-audits.md); work-package bytes unchanged since `38a0bae4` |
 | AC14 | epic claim tables / sidecar specimens | re-run each epic's named specimen walks | |
 
 ## Notes
