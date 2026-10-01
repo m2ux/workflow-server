@@ -25,4 +25,4 @@ Units the author step loads while rewriting the subject capability, one path and
 
 ### 2. Load
 
-- The rewrite of `techniques/subject.md` `## Capability` loads only the units in `{units_listed}`. Write that load set into `{units_used}`. `{units_used}` equals `{units_listed}`.
+- Apply each unit in `{units_listed}` to the rewrite of `techniques/subject.md` `## Capability`. Write `{units_used}` as one row per unit: the listing's heading, a tab, and `applied` or `finding:` plus the sentence. A heading absent from `{units_listed}` is not a row.
