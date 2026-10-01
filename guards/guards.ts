@@ -601,6 +601,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'none',
   },
   {
+    id: 'fires-on-ids',
+    script: 'guards/check-fires-on-ids.ts',
+    npmScript: 'check:fires-on',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every construct a canon unit declares it fires on is canon-defined, an authored kind, or a field path its schema declares, each written once in the line form',
+    form: 'none',
+  },
+  {
     id: 'guard-roster',
     script: 'guards/check-guard-roster.ts',
     npmScript: 'check:guard-roster',
