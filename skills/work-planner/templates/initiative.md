@@ -12,7 +12,7 @@
 ## Proposal
 
 - **{{Move}}.**
-  {{What is done, in one or two sentences.}}
+  {{What is done, within the scheme's Succinct items rule.}}
 
 ## Work Breakdown
 

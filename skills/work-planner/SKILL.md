@@ -80,7 +80,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Code references.**
   A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
 - **Succinct items.**
-  Each Problem and Proposal item is one or two sentences. Several things go in a bulleted list, with sub-bullets as needed, never packed into one sentence.
+  Each Problem and Proposal item, and each of its sub-bullets, is at most two lines. A bold opener does not count toward the two. Several distinct points go in a bulleted list, never packed into those two lines.
 - **Bold leads.**
   - A Problem or Proposal item that opens with a bold statement puts its body on the next line, indented under the bullet:
 
