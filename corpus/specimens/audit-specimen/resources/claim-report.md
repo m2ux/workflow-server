@@ -10,12 +10,16 @@ metadata:
 
 ## What this guide is for
 
-The shape of `audit-specimen-report.md` and what each section may claim. A reader opens that document to answer three questions: whether the re-audit records no finding, whether the author load set equals the listing, and whether the ledger has a row for every canon unit.
+The shape of `audit-specimen-report.md` and what each section may claim. The attest script is what decides the three claims. The report quotes its verdict and the files it read.
 
 ## Template
 
 ```markdown
 # Audit Specimen Report
+
+## Verdict
+
+The attest script's stdout.
 
 ## Author load set
 
@@ -41,12 +45,12 @@ One number.
 
 ### listed-equals-used
 
-The two columns of the first table name the same units, in the same order.
+The listing headings and the author headings are the same set. Each author row records `applied` or a finding. The author file is the application record.
 
 ### every-unit-has-a-row
 
-The ledger has one row for every canon unit at the commit walked. A `not-applicable` row quotes the unit's own wording that excludes the subject file.
+The ledger ids are the inventory command's ids. A `not-applicable` row quotes the unit's own wording that excludes the subject file. A `walked` row records `applied` or a finding.
 
-### the-reaudit-count-is-zero
+### one-round-below-baseline
 
-The re-audit count is zero. The findings section keeps the first audit's findings, including the planted sentence.
+`specimen-rounds.txt` holds `1`. `baseline-rounds.txt` holds the baseline audit's round count. The specimen count is lower, and the re-audit findings file is empty.
