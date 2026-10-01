@@ -668,4 +668,55 @@ describe('fires-on-ids guard', () => {
       expect(collect(liveCorpusRoot()!)).toEqual([]);
     });
   });
+
+  describe('requires one Fires-on line under each unit title', () => {
+    const anti = CANON_HOMES[0];
+    const principles = CANON_HOMES[1];
+    const conventions = CANON_HOMES[2];
+
+    function checks(path: string, text: string): string[] {
+      return checkFiresOn([{ path, text }], schemas).map((finding) => finding.check);
+    }
+
+    it('fails an anti-pattern entry that carries no line, and passes a family heading and a Creation Rule', () => {
+      const text = [
+        '## Structural',
+        '',
+        'File smells.',
+        '',
+        '### Smell not stance',
+        '',
+        'An entry detects one defect.',
+        '',
+        '### AP-01. no-inline-content',
+        '',
+        '"Let me just inline that"',
+      ].join('\n');
+      const findings = checkFiresOn([{ path: anti, text }], schemas);
+      expect(findings.map((finding) => [finding.check, finding.site])).toEqual([
+        ['missing-line', `${anti}:9`],
+      ]);
+      expect(findings[0]!.detail).toContain("'AP-01. no-inline-content'");
+    });
+
+    it('fails a numbered principle and a convention section that carry no line, and passes the overview', () => {
+      expect(checks(principles, '# Overview\n\nThe canon.\n\n## 1. Workflows Ossify Patterns\n\nA graph.\n'))
+        .toEqual(['missing-line']);
+      expect(checks(conventions, '# Convention Conformance\n\n## Reference Conventions\n\n| Concern |\n')).toEqual(['missing-line']);
+    });
+
+    it('fails a second line, and a line after other text', () => {
+      const repeated = '### AP-01. name\n\n**Fires on:** `activity`\n\n**Fires on:** `technique`\n';
+      expect(checks(anti, repeated)).toEqual(['repeated-line']);
+      const misplaced = '### AP-01. name\n\n"quote"\n\n**Fires on:** `activity`\n';
+      const findings = checkFiresOn([{ path: anti, text: misplaced }], schemas);
+      expect(findings.map((finding) => finding.check)).toEqual(['misplaced-line']);
+      expect(findings[0]!.site).toBe(`${anti}:5`);
+    });
+
+    it('accepts one line as the first text under the title', () => {
+      const text = '### AP-01. name\n\n**Fires on:** `activity`, `technique`\n\n"quote"\n';
+      expect(checks(anti, text)).toEqual([]);
+    });
+  });
 });
