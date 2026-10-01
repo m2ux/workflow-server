@@ -586,6 +586,8 @@ Contract and reference smells.
 
 ### AP-42. io-agnostic-contract
 
+**Fires on:** `technique.inputs`, `technique.outputs`
+
 "`fix_strategy` from [analyze-failure]"
 
 An I/O id or description names a specific caller.
@@ -597,6 +599,8 @@ An I/O id or description names a specific caller.
 **Fix:** Rewrite the entry generically; drop workflow-internal source/destination naming. See [An I/O Contract Names the Value](./design-principles.md#37-an-io-contract-names-the-value).
 
 ### AP-43. canonical-artifact-ids
+
+**Fires on:** `technique.protocol`, `technique.inputs`, `technique.outputs`
 
 "Read all open assumptions from `assumptions-log.md`"
 
@@ -610,6 +614,8 @@ Protocol cites a filename/path instead of a canonical I/O id.
 
 ### AP-44. artifact-name-in-io
 
+**Fires on:** `technique.protocol`, `technique.inputs`, `technique.outputs`
+
 "Create `NN-{package}-plan.md`"
 
 A filename lives in Protocol instead of the I/O declaration.
@@ -621,6 +627,8 @@ A filename lives in Protocol instead of the I/O declaration.
 **Fix:** Move the filename (literal or token-template) into the I/O declaration; reference identifiers only in Protocol.
 
 ### AP-45. no-opaque-artifact-path-array
+
+**Fires on:** `technique.inputs`, `technique.protocol`
 
 "`all-artifact-paths` / `*-paths` input holding many files"
 
@@ -634,6 +642,8 @@ An opaque path array stands in for named artifact inputs.
 
 ### AP-46. no-resource-caller-backlink
 
+**Fires on:** `resource`
+
 "Composed by [generate-summary]" / "activities bind [analyse-challenge]… via [interview]" / "live on the producing technique: [research]" / "Outputs: the Manual Diff Review section written into `code-review.md`"
 
 A resource backlinks its callers, names where its content lands, or narrates host orchestration.
@@ -645,6 +655,8 @@ A resource backlinks its callers, names where its content lands, or narrates hos
 **Fix:** State what the resource is. Drop the caller, Enforcement, and bind essays. Move role-to-file and orchestration into the owning activity or technique Protocol. See [Resources Stay Abstract](./design-principles.md#30-resources-stay-abstract).
 
 ### AP-47. no-redundant-link-label
+
+**Fires on:** `*`
 
 `deep_scan ([deep-scan](link))`
 
@@ -658,6 +670,8 @@ A hyperlink repeats the plain-text word immediately before it.
 
 ### AP-48. brace-output-references
 
+**Fires on:** `technique.protocol`
+
 "Structure the output"
 
 Protocol refers to "the output" without naming which output id.
@@ -669,6 +683,8 @@ Protocol refers to "the output" without naming which output id.
 **Fix:** Substitute the declared output id (and sub-field when needed) for every vague reference.
 
 ### AP-49. no-delivery-mechanism-narration
+
+**Fires on:** `technique.protocol`
 
 "Resources are attached to technique responses (loaded via get_technique)"
 
@@ -682,6 +698,8 @@ Prose narrates delivery mechanism instead of the imperative + link.
 
 ### AP-50. no-tool-usage-prescription
 
+**Fires on:** `technique.capability`, `technique.protocol`, `technique.rules`, `resource`
+
 "Load [anti-patterns] via `get_resource`" / "call `get_technique { session_index, step_id }`"
 
 Prose prescribes a harness/MCP tool-call recipe.
@@ -693,6 +711,8 @@ Prose prescribes a harness/MCP tool-call recipe.
 **Fix:** Delete the tool recipe. Keep the imperative and the canonical hyperlink or `{id}`. A role boundary stays role prose ("workers source definitions from orchestrator-provided context"), not "do not call `get_workflow`".
 
 ### AP-51. canonical-technique-reference
+
+**Fires on:** `technique.protocol`
 
 "Use `gitnexus_context` on the symbol"
 
@@ -706,6 +726,8 @@ A raw harness tool name is used where a wrapping op exists.
 
 ### AP-52. brace-declared-ids
 
+**Fires on:** `technique.protocol`, `technique.capability`
+
 "Examine target_path" / "for synthesis pass (index 23)" / "`repo_root`" / "`<files>`"
 
 A declared id is used unbraced where a designator is required.
@@ -717,6 +739,8 @@ A declared id is used unbraced where a designator is required.
 **Fix:** Brace as `{declared_id}`. For an orphan value write "when `{declared_id}` is 23". Replace a disguise wrapper with braces.
 
 ### AP-53. dotted-rule-address
+
+**Fires on:** `technique.protocol`
 
 "per the gitnexus index-freshness rule"
 
@@ -730,6 +754,8 @@ A rule is cited in prose instead of its dotted symbol address.
 
 ### AP-54. anchored-protocol-references
 
+**Fires on:** `technique.protocol`
+
 "Apply design framework to structure the approach"
 
 A protocol reference has no resolvable target.
@@ -741,6 +767,8 @@ A protocol reference has no resolvable target.
 **Fix:** Anchor the reference with the matching form, or reword it. A reference with no target is dangling: fix the target or drop the reference.
 
 ### AP-55. hoist-shared-inputs
+
+**Fires on:** `technique.inputs`, `technique.inherited_inputs`
 
 "`### planning-folder` declared on every technique"
 
@@ -754,6 +782,8 @@ The same shared input is redeclared instead of hoisted.
 
 ### AP-56. paren-invocation-args
 
+**Fires on:** `technique.protocol`
+
 "`gitnexus::context {name: <symbol>}`" / "with target_dir in backticks beside a braced value"
 
 Invocation argument names or lists use the wrong typographic namespace.
@@ -765,6 +795,8 @@ Invocation argument names or lists use the wrong typographic namespace.
 **Fix:** Align with [Distinguish Designators from Parameters](./design-principles.md#16-distinguish-designators-from-parameters).
 
 ### AP-57. escape-literal-dollar
+
+**Fires on:** `*`
 
 "costs \$0.05 per call" / "the \$schema field"
 
@@ -778,6 +810,8 @@ A literal \$ is unescaped in rendered prose.
 
 ### AP-58. snake-case-symbols
 
+**Fires on:** `technique.inputs`, `technique.outputs`, `technique.protocol`, `technique.rules`, `resource`
+
 "`check_status` output, `scope` input (case marks direction)" / "kebab symbol id that won't bind"
 
 Symbol ids use the wrong case convention.
@@ -789,6 +823,8 @@ Symbol ids use the wrong case convention.
 **Fix:** Snake every symbol id. Keep a tool-parameter mirror. Keep kebab for a name or a rule.
 
 ### AP-59. constraint-as-blockquote
+
+**Fires on:** `technique.protocol`
 
 "`  - If the PR has not merged, wait`" / "`Compose {status} = {…}. When passed is false, surface the offending entries.`"
 
@@ -802,6 +838,8 @@ A caveat qualifying one instruction sits outside the blockquote note that carrie
 
 ### AP-60. local-rule-as-note
 
+**Fires on:** `technique.rules`, `technique.protocol`
+
 "`## Rules` entry that scopes to only one protocol block"
 
 A local caveat is filed as a global-looking rule.
@@ -813,6 +851,8 @@ A local caveat is filed as a global-looking rule.
 **Fix:** Demote the entry to a `>` note under the block it qualifies; leave workflow-wide constraints in Rules.
 
 ### AP-61. factor-repeated-paths
+
+**Fires on:** `technique`
 
 "`.engineering/artifacts/adr/` repeated four times"
 
@@ -826,6 +866,8 @@ A repeated path literal is not factored into a designator.
 
 ### AP-62. bind-protocol-locals
 
+**Fires on:** `technique.protocol`, `technique.inputs`, `technique.outputs`
+
 "`git -C {$component_git_dir} …` with no bind" / "`Maintain {$resolution_counts}` never read"
 
 A `{$local}` is dead or unbound at the consumer.
@@ -837,6 +879,8 @@ A `{$local}` is dead or unbound at the consumer.
 **Fix:** (a) Name the value at the producer as `` `{$name}` ``. (b) Make the consumer read `{name}`, or drop a vestigial bind.
 
 ### AP-63. backtick-code-tokens
+
+**Fires on:** `*`
 
 "`set worktree_created = true`" / "run 'git -C …'" / "fetch concept-rag://…"
 
@@ -850,6 +894,8 @@ A code token appears bare without backticks.
 
 ### AP-64. boolean-id-shape
 
+**Fires on:** `technique.inputs`, `technique.outputs`, `workflow.variables`, `activity.variables`
+
 "`…_flag` / `not_ready` / ambiguous boolean nouns"
 
 A boolean id is not an affirmative predicate.
@@ -861,6 +907,8 @@ A boolean id is not an affirmative predicate.
 **Fix:** Rename to an affirmative predicate shape. See also [Name Symbols Affirmatively](./design-principles.md#19-name-symbols-affirmatively).
 
 ### AP-65. collection-id-shape
+
+**Fires on:** `technique.inputs`, `technique.outputs`, `workflow.variables`, `activity.variables`
 
 "`assumption_list` / singular id holding a collection"
 
@@ -874,6 +922,8 @@ A collection/map id has the wrong noun shape.
 
 ### AP-66. io-id-shape
 
+**Fires on:** `technique.inputs`, `technique.outputs`
+
 "`summary` / `planning-folder-path` / direction-encoded I/O ids"
 
 An I/O id encodes representation or direction.
@@ -885,6 +935,8 @@ An I/O id encodes representation or direction.
 **Fix:** Rename; hoist one concept to one shared id (`hoist-shared-inputs`). See [Name Symbols Affirmatively](./design-principles.md#19-name-symbols-affirmatively).
 
 ### AP-67. rule-slug-shape
+
+**Fires on:** `technique.rules`
 
 "`do-not-review-unresolved` / process-narration rule slugs"
 
@@ -898,6 +950,8 @@ A rule slug is negation or narration instead of a positive invariant.
 
 ### AP-68. technique-stage-agnostic
 
+**Fires on:** `technique.capability`, `technique.protocol`, `technique.rules`
+
 "return to the planning stage" / "at the validate activity" / "present the … checkpoint" / "after each task, before confirmation" / "flag every removal for explicit confirmation with a diff-style view"
 
 A technique encodes workflow stage, graph position, or a decision gate it cannot own.
@@ -910,6 +964,8 @@ A technique encodes workflow stage, graph position, or a decision gate it cannot
 
 ### AP-69. no-activity-prose-rules
 
+**Fires on:** `activity.rules`
+
 `rules: ["Manual diff review is FIRST", "all reviews must complete before validate"]` (prose rules at the activity level)
 
 An activity carries prose rules: instead of pure mechanics.
@@ -921,6 +977,8 @@ An activity carries prose rules: instead of pure mechanics.
 **Fix:** Delete an entry that restates structure the activity already enforces. Migrate a technique constraint to the owning technique (`single-rule-authority`). Encode an unenforced constraint as `when` or `condition`, an exit `when`, a checkpoint, or `required: false`. A hard gate is `when` or `condition`. Step `required` is a worker hint. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
 
 ### AP-70. capability-group-placement
+
+**Fires on:** `technique`, `workflow.techniques`
 
 "Reusable primitive trapped in a client workflow" / "cross-consumer capability buried under one activity name"
 
