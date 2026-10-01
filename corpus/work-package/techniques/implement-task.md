@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Implement a single task from the work package plan by writing code changes
 
 ### current_task
 
-A single atomic task to implement (description, affected files, dependencies)
+A single atomic task to implement — its goal, deliverables, dependencies, and Contract (Signatures, Behaviours, Error cases, Acceptance)
 
 ### test_plan
 
@@ -35,11 +35,12 @@ Repository-relative paths this task wrote, as the set a commit stages.
 
 ### 1. Understand Context
 
-- Read the `{current_task}` description and requirements from the plan
+- Read the `{current_task}` Contract first — Signatures, Behaviours, Error cases and Acceptance are the public specification this task must satisfy
+- Read the `{current_task}` goal, deliverables and dependencies from the plan
 - Identify affected files, dependencies, and related code
 - Determine the primary edit target `{target_symbol}` — the function, class, or method this task changes — from `{current_task}`
 - Review the `{test_plan}` for acceptance criteria relevant to this task
-- Where the `{current_task}` description is ambiguous or missing context, read the plan document for what it leaves unstated, and record the residual ambiguity in `{task_implementation}`
+- Where the `{current_task}` Contract or description is ambiguous or missing context, read the plan document for what it leaves unstated, and record the residual ambiguity in `{task_implementation}`
 
 ### 2. Pre Edit Impact Check
 

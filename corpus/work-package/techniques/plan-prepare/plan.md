@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Work-package plan artifact — task breakdown, dependencies, ordering, and recorded design decisions.
+Work-package plan artifact — task breakdown, a contract per task, dependencies, ordering, and recorded design decisions.
 
 ## Inputs
 
@@ -17,7 +17,7 @@ Work-package plan artifact — task breakdown, dependencies, ordering, and recor
 
 ### plan_document
 
-Work package plan carrying the task breakdown, the dependencies between tasks, and the design decisions the approach rests on.
+Work package plan carrying the task breakdown, each task's contract, the dependencies between tasks, and the design decisions the approach rests on.
 
 #### artifact
 
@@ -29,7 +29,7 @@ Work package plan carrying the task breakdown, the dependencies between tasks, a
 
 #### tasks
 
-Atomic tasks with explicit dependencies and ordering — each implementable, testable, and committable independently. Ordered by dependency depth (leaves before callers) when target symbols are knowable.
+Atomic tasks with explicit dependencies, ordering and a Contract — each implementable, testable, and committable independently. Ordered by dependency depth (leaves before callers) when target symbols are knowable.
 
 ## Protocol
 
@@ -57,4 +57,5 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 - Create the `{plan_document}` artifact in `{planning_folder_path}`
 - Record consumed artifacts as the template's link-only Inputs list — one line per artifact linking the section that shaped the approach
 - Include task breakdown, dependencies, ordering
+- For each task, write its Contract: Signatures, Behaviours, Error cases and Acceptance, per the [wp-plan](../../resources/wp-plan.md#rules) Contract rule
 - Document design decisions with rationale; fill the link-only slots (problem & scope, success criteria, testing strategy, assumptions) per the template's rules
