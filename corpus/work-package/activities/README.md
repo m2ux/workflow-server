@@ -90,7 +90,7 @@ Definition: [`20-contract-tests.yaml`](./20-contract-tests.yaml)
 
 ### Implementation Join
 
-The implementation fan's join: hoists the contract-tests and implement branch containers and confirms contract suites are red against the base tree. Leads to lean-coding-audit.
+The implementation fan's join: hoists the contract-tests and implement branch containers, confirms contract suites are red against the base tree, runs them against the implementation, and settles symbol provenance and residual assumptions. A failing suite returns to implement; a disputed test reaches the user as a contract ambiguity. Leads to lean-coding-audit when the suite passes.
 
 Definition: [`21-implementation-join.yaml`](./21-implementation-join.yaml)
 
