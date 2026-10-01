@@ -74,6 +74,8 @@ File and packaging smells.
 
 ### AP-01. no-inline-content
 
+**Fires on:** `activity`, `technique`, `resource`
+
 "Let me just inline that"
 
 Content is embedded in a parent file instead of living in its own file.
@@ -85,6 +87,8 @@ Content is embedded in a parent file instead of living in its own file.
 **Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#22-modular-over-inline).
 
 ### AP-02. schema-is-constraint
+
+**Fires on:** `workflow`, `activity`, `technique`
 
 "Let me adjust the schema to match"
 
@@ -98,6 +102,8 @@ The schema is bent to fit content instead of content being fixed to the schema.
 
 ### AP-03. no-partial-implementation
 
+**Fires on:** `*`
+
 "I'll fix the rest later"
 
 Scope is left partially implemented before commit or close-out.
@@ -109,6 +115,8 @@ Scope is left partially implemented before commit or close-out.
 **Fix:** Complete every scope-manifest item, or get approval to shrink scope and update the manifest before committing.
 
 ### AP-04. no-invented-naming
+
+**Fires on:** `*`
 
 "I'll name it [new_thing]"
 
@@ -126,6 +134,8 @@ Session-conduct smells.
 
 ### AP-05. atomic-checkpoints
 
+**Fires on:** `activity.steps`
+
 "Skip/combine these checkpoints"
 
 Multiple independent decisions are collapsed into one checkpoint.
@@ -137,6 +147,8 @@ Multiple independent decisions are collapsed into one checkpoint.
 **Fix:** Restore one checkpoint per atomic decision; split combined options into separate gates.
 
 ### AP-06. no-assumption-execution
+
+**Fires on:** `*`
 
 "The user probably means..."
 
@@ -150,6 +162,8 @@ Execution proceeds on assumed intent instead of asking when uncertain.
 
 ### AP-07. scope-reverify-completion
 
+**Fires on:** `*`
+
 "Done!"
 
 Completion is claimed without re-checking every item in the scope manifest.
@@ -161,6 +175,8 @@ Completion is claimed without re-checking every item in the scope manifest.
 **Fix:** Walk the scope manifest item-by-item and resolve gaps before claiming done.
 
 ### AP-08. one-question-per-message
+
+**Fires on:** `*`
 
 "Here are three questions..."
 
@@ -178,6 +194,8 @@ Prose standing in for a formal construct.
 
 ### AP-09. checkpoint-not-prose
 
+**Fires on:** `activity.description`, `activity.steps`, `technique.protocol`
+
 "Ask the user whether to proceed"
 
 A user decision is written as prose instead of a `kind: checkpoint` step.
@@ -189,6 +207,8 @@ A user decision is written as prose instead of a `kind: checkpoint` step.
 **Fix:** Add a `kind: checkpoint` with `message`, `options`, and `effects` at the decision point in `steps[]`.
 
 ### AP-10. loop-not-prose
+
+**Fires on:** `activity.description`, `activity.steps`, `technique.protocol`
 
 "Repeat this for each item" / "keep revising until it passes"
 
@@ -202,6 +222,8 @@ Iteration is written as prose instead of a `kind: loop` step.
 
 ### AP-11. decision-not-prose
 
+**Fires on:** `activity.description`, `activity.exits`, `workflow.graph`
+
 "If X then do A, otherwise B"
 
 Cross-activity routing is written as prose instead of as exits the workflow graph binds.
@@ -213,6 +235,8 @@ Cross-activity routing is written as prose instead of as exits the workflow grap
 **Fix:** Declare each outcome as an exit — a `when` on each non-default exit, or a checkpoint option that names it — bind every exit in the workflow `graph`, and remove the prose branch recipe.
 
 ### AP-12. artifact-not-buried
+
+**Fires on:** `activity.description`, `technique.capability`, `technique.protocol`, `technique.outputs`
 
 "This produces a report"
 
@@ -226,6 +250,8 @@ Artifact production is buried in description instead of declared on technique Ou
 
 ### AP-13. variable-for-approval
 
+**Fires on:** `activity.description`, `activity.steps`, `activity.variables`, `workflow.variables`
+
 "Track whether the user approved"
 
 Approval or mode-like state is tracked in prose instead of a typed variable.
@@ -237,6 +263,8 @@ Approval or mode-like state is tracked in prose instead of a typed variable.
 **Fix:** Add a `variable` with `type`/`defaultValue` and set it from checkpoint effects; gate later steps on it.
 
 ### AP-14. mode-as-state
+
+**Fires on:** `activity.rules`, `workflow.rules`, `technique.rules`, `activity.variables`, `workflow.variables`, `activity.steps`, `activity.exits`
 
 "In fast mode, skip the research steps"
 
@@ -250,6 +278,8 @@ Mode behaviour is written as rule/description text instead of ordinary state.
 
 ### AP-15. procedure-in-protocol
 
+**Fires on:** `activity.steps`
+
 "First load the workflow, then get the activity"
 
 HOW lives in the step description instead of the technique protocol.
@@ -261,6 +291,8 @@ HOW lives in the step description instead of the technique protocol.
 **Fix:** Move imperative bullets into the technique protocol; leave a one-line WHAT in unbound `description`, or delete `description` entirely when the step is bound (`bound-step-no-description`).
 
 ### AP-16. technique-inputs-declared
+
+**Fires on:** `technique.capability`, `technique.inputs`, `technique.protocol`
 
 "This technique needs a file path"
 
@@ -274,6 +306,8 @@ Required inputs are named in description instead of `inputs[]`.
 
 ### AP-17. bound-step-no-description
 
+**Fires on:** `activity.steps`
+
 "`kind: technique` / `description` / `name` on a bound step"
 
 A bound step still carries description/name prose.
@@ -285,6 +319,8 @@ A bound step still carries description/name prose.
 **Fix:** Bind an existing technique when one fits and delete the description; otherwise enrich that technique's `## Capability` or `## Protocol` and strip the step prose. A one-line non-procedural summary is removed from the step too. N steps that differ only by description are `no-monolith-masking-steps`.
 
 ### AP-18. no-monolith-masking-steps
+
+**Fires on:** `activity.steps`
 
 "N steps bind one technique and differ only by `description`"
 
