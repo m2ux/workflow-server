@@ -271,7 +271,9 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
     it('prefixes each artifact with its CREATING activity\'s filename-derived number', () => {
       // With update-in-place, an artifact keeps the prefix of the activity that
       // first created it; later activities that update it reuse that same file.
-      // So check each artifact against the FIRST activity (walk order) that wrote it.
+      // Shared registers (no owning activity) stay bare. So check each artifact
+      // against the FIRST activity (walk order) that wrote it, unless it is bare.
+      const unprefixed = new Set(['deferred-items.json', 'follow-ups.json']);
       const expected = expectedActivityPrefixes();
       const seen = new Set<string>();
       const wrong: string[] = [];
@@ -280,8 +282,12 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
         expect(prefix, `no filename prefix known for activity ${s.activityId}`).toBeDefined();
         for (const name of s.artifactsWritten) {
           const bare = name.replace(/^\d+-/, '');
-          if (seen.has(bare)) continue; // already created by an earlier activity — keeps its prefix
+          if (seen.has(bare)) continue; // already created by an earlier activity — keeps its name
           seen.add(bare);
+          if (unprefixed.has(bare)) {
+            if (name !== bare) wrong.push(`${s.activityId} created ${name} (expected bare ${bare})`);
+            continue;
+          }
           if (!name.startsWith(`${prefix}-`)) wrong.push(`${s.activityId} created ${name} (expected ${prefix}-*)`);
         }
       }
