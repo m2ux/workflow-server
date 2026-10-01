@@ -155,3 +155,41 @@ describe('an activity whose only step is a routine reference', () => {
     expect(contract.writes).toEqual(['host_verdict']);
   });
 });
+
+describe('an id a routine both reads and updates', () => {
+  const UPDATING = routine({
+    id: 'update-run',
+    inputs: [{ id: 'concern_document', description: 'the document the run reads' }],
+    outputs: [{ id: 'concern_document', type: 'object', description: 'the document with the run applied', optional: true }],
+    steps: [
+      { kind: 'action', id: 'apply', actions: [{ action: 'set', target: 'concern_document', value: '{concern_document}' }] },
+    ] as Step[],
+  });
+
+  async function updatingContract(reference: Record<string, unknown>): Promise<{ reads: string[]; writes: string[] }> {
+    const root = mkdtempSync(join(tmpdir(), 'wf-contract-'));
+    try {
+      const activity = {
+        id: 'host', version: '1.0.0', name: 'Host', required: true,
+        steps: [{ kind: 'routine', id: 'run', routine: 'update-run', ...reference }],
+      } as unknown as Activity;
+      const derived = await deriveActivityContract({
+        activity, workflowDir: root, scopeWorkflowId: 'wf',
+        namespace: new Set(['review_log']), routines: lookupFrom([UPDATING]),
+      });
+      return { reads: [...derived.reads].sort(), writes: [...derived.writes].sort() };
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+
+  it('reads and writes the variable its argument names, where the output is left unbound', async () => {
+    const contract = await updatingContract({ with: { concern_document: '{review_log}' } });
+    expect(contract).toEqual({ reads: ['review_log'], writes: ['review_log'] });
+  });
+
+  it('reads and writes the one variable an argument and an output binding agree on', async () => {
+    const contract = await updatingContract({ with: { concern_document: '{review_log}' }, outputs: { concern_document: 'review_log' } });
+    expect(contract).toEqual({ reads: ['review_log'], writes: ['review_log'] });
+  });
+});

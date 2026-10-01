@@ -34,7 +34,7 @@ export const RoutineOutputSchema = z.object({
   type: z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Type of the output and its bound session variable.'),
   description: z.string().describe('What the value is.'),
   values: z.array(z.string().describe('Allowed string output value.')).min(1).optional().describe('Complete set of allowed values for a string output.'),
-  optional: z.literal(true).optional().describe('Declare `true` to allow this output to remain unbound; omission requires an output binding.'),
+  optional: z.literal(true).optional().describe('Declare `true` to allow this output to remain unbound, where it stays local to that use of the routine; omission requires an output binding, save for an id that is also an input, which its argument binds.'),
 }).strict().describe('Produced value with its type, allowed values, and binding requirement.');
 export type RoutineOutput = z.infer<typeof RoutineOutputSchema>;
 
@@ -56,6 +56,17 @@ export const RoutineSchema = z.object({
 
   steps: z.array(StepSchema).min(1).describe('Nonempty ordered list of steps.'),
 }).strict().describe('Reusable steps with declared inputs, outputs, and internals.').superRefine((routine, ctx) => {
+  // An id the routine both reads and updates names the variable each site supplies, so a default
+  // would stand in for a variable with nowhere to write.
+  const outputIds = new Set((routine.outputs ?? []).map((output) => output.id));
+  (routine.inputs ?? []).forEach((input, index) => {
+    if (input.default === undefined || !outputIds.has(input.id)) return;
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['inputs', index, 'default'],
+      message: `'${input.id}' is both an input and an output, so each site names the variable it reads and updates — it declares no default`,
+    });
+  });
   // A technique step may omit its id, in which case it is derived from the technique reference's
   // last segment. Where that reference is a parameter, the derived id would be the parameter's own
   // name — one identifier for every site, naming the placeholder rather than the technique.

@@ -476,6 +476,28 @@ async function readSignature(
 }
 
 /**
+ * The declared input and output ids of a technique step's bound technique that the step binds no
+ * value to, own and inherited alike. An unbound input resolves out of the bag under its own id, and
+ * an unbound output lands there under its own id, so neither passes through a field a routine's
+ * substitution rewrites.
+ */
+export async function unboundTechniqueIds(
+  step: Step,
+  activityId: string,
+  workflowDir: string,
+  scopeWorkflowId: string,
+): Promise<{ inputs: Array<{ id: string; suppliable: boolean }>; outputs: string[] }> {
+  const ref = step.kind === 'technique' ? techniqueName(step.technique) : undefined;
+  if (!ref) return { inputs: [], outputs: [] };
+  const signature = await readSignature(ref, activityId, workflowDir, scopeWorkflowId);
+  const binding = bindingOf(step);
+  return {
+    inputs: signature.inputs.filter((input) => binding?.inputs?.[input.id] === undefined),
+    outputs: signature.outputs.filter((id) => binding?.outputs?.[id] === undefined),
+  };
+}
+
+/**
  * What an activity reads from and writes to the session bag.
  *
  * The contract covers the workflow's DECLARED variables — the namespace activities carry values
@@ -488,9 +510,9 @@ async function readSignature(
  *
  * Reads are the names the activity consults: a bound op's input under the name-match convention,
  * the `{token}`s of a step binding's values and of the activity's prose, and the variables its
- * gates, conditions, loops and routing test. A name an earlier step of the same activity produces
- * is read internally rather than from the contract — the same closest-producer-before-position
- * rule the provenance annotation applies.
+ * gates, conditions, loops and routing test, a `doWhile`'s continuation test after its body. A name
+ * an earlier step of the same activity produces is read internally rather than from the contract —
+ * the same closest-producer-before-position rule the provenance annotation applies.
  */
 export async function deriveActivityContract(args: {
   activity: Activity;
@@ -573,6 +595,17 @@ export async function deriveActivityContract(args: {
     producedSoFar.add(name);
   };
 
+  // A `doWhile` takes its continuation test after a pass, so the test reads what the body wrote.
+  // Each such test is held against the loop's last body step, in the order `flattenActivitySteps`
+  // visits the body, and read once that step has been taken.
+  const testsAfter = new Map<Step, Condition[]>();
+  const lastOfBody = (loop: Step): Step | undefined => {
+    const body = loop.kind === 'loop' ? (loop.steps as Step[]) : [];
+    const last = body[body.length - 1];
+    if (last === undefined) return undefined;
+    return last.kind === 'loop' ? (lastOfBody(last) ?? last) : last;
+  };
+
   for (const step of flattenActivitySteps(activity)) {
     // Gates and conditions are read before the step's own work.
     if (step.when) whenReads(step.when).forEach(read);
@@ -580,7 +613,12 @@ export async function deriveActivityContract(args: {
     if (step.kind === 'loop') {
       // A loop's predicates are its continuation test and its item-iteration early exit; its entry
       // gate is `when` alone.
-      conditionReads(step.continueWhile).forEach(read);
+      const last = step.loopType === 'doWhile' ? lastOfBody(step) : undefined;
+      if (last !== undefined && step.continueWhile !== undefined) {
+        testsAfter.set(last, [...(testsAfter.get(last) ?? []), step.continueWhile]);
+      } else {
+        conditionReads(step.continueWhile).forEach(read);
+      }
       conditionReads(step.breakCondition).forEach(read);
       // `over` is a plain collection reference (`open_assumptions`, `implementation_plan.tasks`),
       // not a gate expression.
@@ -661,6 +699,17 @@ export async function deriveActivityContract(args: {
       // A routine's bound outputs land the same way a technique's do: the site names where each
       // goes, so the target is what reaches the bag.
       for (const target of Object.values(step.outputs ?? {})) { write(target); operationWrites.add(target); }
+      // An id the routine both reads and updates, bound by argument alone, is updated in the variable
+      // its argument names, as the splice resolves it.
+      const inputIds = new Set((routine?.inputs ?? []).map((input) => input.id));
+      for (const output of routine?.outputs ?? []) {
+        const argument = step.with?.[output.id];
+        if (!inputIds.has(output.id) || step.outputs?.[output.id] !== undefined) continue;
+        if (typeof argument !== 'string' || !/^\{[A-Za-z_][A-Za-z0-9_]*\}$/.test(argument)) continue;
+        const target = argument.slice(1, -1);
+        write(target);
+        operationWrites.add(target);
+      }
     }
 
     if (step.kind === 'checkpoint') {
@@ -686,6 +735,8 @@ export async function deriveActivityContract(args: {
         if (action.action === 'set' && action.target) write(action.target);
       }
     }
+
+    for (const test of testsAfter.get(step) ?? []) conditionReads(test).forEach(read);
   }
 
   // Activity-level routing is read at the boundary, after every step has run.

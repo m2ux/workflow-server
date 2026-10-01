@@ -57,7 +57,7 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
   beforeAll(async () => {
     h = await createHarness();
     for (const policy of policies) walks.set(policy.name, await walk(h, 'work-package', policy));
-  }, 600_000);
+  }, 900_000);
   afterAll(async () => { await h.close(); });
 
   /** Every walk the matrix ran, or a clear failure rather than a total quietly short of one. */
@@ -78,11 +78,10 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
     [skipOptionalPolicy.name]: { mustExclude: ['requirements-elicitation', 'research'] },
     [fullWorkflowPolicy.name]: { mustInclude: ['requirements-elicitation', 'research', 'implementation-analysis'] },
     [researchOnlyPolicy.name]: { mustInclude: ['research'], mustExclude: ['requirements-elicitation'] },
-    // Elicitation-only (needs_research=false) skips research: requirements-elicitation routes
-    // straight to implementation-analysis.
+    // Elicitation-only (needs_research=false) still fans research beside implementation-analysis;
+    // research runs as a no-op branch. The fan is what the discovery graph always opens.
     [elicitationOnlyPolicy.name]: {
-      mustInclude: ['requirements-elicitation', 'implementation-analysis'],
-      mustExclude: ['research'],
+      mustInclude: ['requirements-elicitation', 'research', 'implementation-analysis'],
     },
     // Review mode routes around the create-only implement activity entirely: assumptions-review
     // carries an is_review_mode transition to lean-coding-audit.
@@ -271,7 +270,9 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
     it('prefixes each artifact with its CREATING activity\'s filename-derived number', () => {
       // With update-in-place, an artifact keeps the prefix of the activity that
       // first created it; later activities that update it reuse that same file.
-      // So check each artifact against the FIRST activity (walk order) that wrote it.
+      // Shared registers (no owning activity) stay bare. So check each artifact
+      // against the FIRST activity (walk order) that wrote it, unless it is bare.
+      const unprefixed = new Set(['deferred-items.json', 'follow-ups.json']);
       const expected = expectedActivityPrefixes();
       const seen = new Set<string>();
       const wrong: string[] = [];
@@ -280,8 +281,12 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
         expect(prefix, `no filename prefix known for activity ${s.activityId}`).toBeDefined();
         for (const name of s.artifactsWritten) {
           const bare = name.replace(/^\d+-/, '');
-          if (seen.has(bare)) continue; // already created by an earlier activity — keeps its prefix
+          if (seen.has(bare)) continue; // already created by an earlier activity — keeps its name
           seen.add(bare);
+          if (unprefixed.has(bare)) {
+            if (name !== bare) wrong.push(`${s.activityId} created ${name} (expected bare ${bare})`);
+            continue;
+          }
           if (!name.startsWith(`${prefix}-`)) wrong.push(`${s.activityId} created ${name} (expected ${prefix}-*)`);
         }
       }

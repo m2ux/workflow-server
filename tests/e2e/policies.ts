@@ -26,13 +26,29 @@ export const baseSimulation: Record<string, Record<string, unknown>> = {
   // Set here rather than on assumptions-review because a simulation applies AFTER the activity's
   // own checkpoints, and the gate that reads it is inside that activity — set on the activity
   // itself, the value arrives one activity too late and only the second host's gate is reached.
-  'plan-prepare': { has_open_assumptions: true },
-  'assumptions-review': { needs_plan_revision: false, needs_further_discussion: false, has_deferred_assumptions: false, has_open_assumptions: true },
+  // A routine that holds the open set as an internal reads it under the materialised name its host
+  // gives it, so each host's gate is simulated under both spellings.
+  'plan-prepare': { has_open_assumptions: true, assumptions_review_settle_assumptions_has_open_assumptions: true },
+  'assumptions-review': {
+    needs_plan_revision: false,
+    needs_further_discussion: false,
+    has_deferred_assumptions: false,
+    has_open_assumptions: true,
+    implement_settle_assumptions_has_open_assumptions: true,
+  },
   // strategic-findings-analysis emits review_passed on the finding-free / minor
   // path (work-package #192): with no findings the review-findings checkpoint
   // auto-dismisses (condition_not_met) and this signal drives the transition to
   // submit-for-review. Without it the walk loops strategic-review → plan-prepare.
   'strategic-review': { review_passed: true },
+  // Contract-first join: the walker does not run suites, so the join's fail-on-base and pass
+  // signals stand in for a green contract-tests branch and a green post-merge run.
+  'contract-tests': { contract_tests_fail_on_base: true },
+  'implementation-join': {
+    contract_tests_fail_on_base: true,
+    contract_tests_passed: true,
+    contract_test_failures: [],
+  },
 };
 
 export interface PolicySpec {
@@ -50,11 +66,17 @@ export interface PolicySpec {
  */
 export function makePolicy(spec: PolicySpec): Policy {
   const simulation = { ...baseSimulation, ...(spec.simulate ?? {}) };
+  // Hard gates at the implementation join have no default; without an explicit accept the walker
+  // picks rework and loops implement ↔ join. Every snapshot policy takes the accept path.
+  const joinAccept: Record<string, string> = {
+    'contract-test-disposition': 'dispute-test',
+    'contract-ambiguity': 'accept-implementation',
+  };
   return {
     name: spec.name,
     initialVariables: spec.initialVariables,
     choose(ctx: PolicyContext): string {
-      const choices = spec.choices ?? {};
+      const choices = { ...joinAccept, ...(spec.choices ?? {}) };
       const keyed = choices[`${ctx.activityId}/${ctx.checkpoint.id}`] ?? choices[ctx.checkpoint.id];
       if (keyed && ctx.checkpoint.options.some(o => o.id === keyed)) return keyed;
       return defaultChoice(ctx);

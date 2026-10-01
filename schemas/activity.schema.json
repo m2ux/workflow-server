@@ -528,7 +528,7 @@
                       ],
                       "description": "Literal argument or braced host-variable reference."
                     },
-                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. An input left unbound takes its declared default, then the host variable of the same name; a `kind: technique` input left unbound with no default, or an argument naming no declared input, excludes the referring activity from the load. A `kind: technique` input takes a literal technique reference, a string holding no `{`, since the substitution happens when the definitions load and a braced value has no value then; any other argument to it excludes the referring activity from the load."
+                    "description": "Routine input identifiers mapped to arguments: a braced value (`{host_variable}`) references a host variable, and any other value is a literal. A braced value names the whole path it spells, so `{entry.repo_path}` passes that member. An input left unbound takes its declared default, then the host variable of the same name. An id the routine declares as both an input and an output is one variable it reads and updates: its argument is a braced variable naming no member, and an output binding for it, where present, names the same variable. A `kind: technique` input left unbound with no default, or an argument naming no declared input, excludes the referring activity from the load. A `kind: technique` input takes a literal technique reference, a string holding no `{`, since the substitution happens when the definitions load and a braced value has no value then; any other argument to it excludes the referring activity from the load."
                   },
                   "outputs": {
                     "type": "object",
@@ -536,7 +536,7 @@
                       "type": "string",
                       "description": "Session variable name for the routine output."
                     },
-                    "description": "Routine output identifiers mapped to session variable names. An output left unbound produces no write; only an output declared `optional: true` may be left unbound. Any other unbound output, or a binding naming no declared output, excludes the referring activity from the load."
+                    "description": "Routine output identifiers mapped to session variable names. An optional output left unbound stays local to this use of the routine, written under a name no host variable has; only an output declared `optional: true`, or one whose id is also an input the argument binds, may be left unbound. Any other unbound output, or a binding naming no declared output, excludes the referring activity from the load."
                   },
                   "when": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"

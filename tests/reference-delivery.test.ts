@@ -604,7 +604,8 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('a step-bound fetch annotates own inputs; inherited inputs ride the named contracts', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await mcp.enter(idx, 'post-impl-review');
+      // The review-code step lives on the code-review fan branch; post-impl-review is the join.
+      await mcp.enter(idx, 'code-review');
 
       const result = await client.callTool({
         name: 'get_technique',
@@ -633,11 +634,14 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       // The optional-with-no-producer form needs a technique that has one, and review-code does
       // not: its own optional input resolves to a producing step. `record-attestation` declares
       // `legal_review_note` optional and nothing in the workflow supplies it, so the annotator
-      // reports it as optional rather than warning it unresolved.
-      await mcp.enter(idx, 'submit-for-review');
+      // reports it as optional rather than warning it unresolved. A fresh session opens
+      // submit-for-review — the code-review fan branch cannot exit straight there.
+      const optionalSession = await startSession({ workflow_id: 'work-package', agent_id: 'w2' });
+      const optionalIdx = optionalSession['session_index'] as string;
+      await mcp.enter(optionalIdx, 'submit-for-review');
       const optionalCase = await client.callTool({
         name: 'get_technique',
-        arguments: { session_index: idx, step_id: 'dco-sign-off' },
+        arguments: { session_index: optionalIdx, step_id: 'dco-sign-off' },
       });
       expect(optionalCase.isError).toBeFalsy();
       const optionalText = responseText(optionalCase);
@@ -853,7 +857,35 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
       const stepA = 'evaluate-open-assumptions';
-      const stepB = 'update-assumptions-log';
+
+      // B is the first step binding another member of A's technique group, read from the activity
+      // as a probe session is served it, so the pairing follows the definition wherever the activity
+      // places the sibling. The probe keeps its own delivery ledger, which leaves A undelivered here.
+      const probe = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-12-technique-arrives-entire-probe'),
+        context_mode: 'persistent',
+      });
+      const probeIdx = probe['session_index'] as string;
+      await mcp.enter(probeIdx, 'assumptions-review');
+      const parsed = splitActivityResponse(await getActivity(probeIdx, { bundle: 'full' }));
+      const steps = flattenSteps((parse(parsed.bodyText) as { steps?: StepNode[] }).steps);
+      const techniqueOf = (step: StepNode): string | undefined =>
+        typeof step.technique === 'string'
+          ? step.technique
+          : RECORD_SHAPED(step.technique) && typeof step.technique['name'] === 'string'
+            ? step.technique['name']
+            : undefined;
+      const techniqueA = techniqueOf(steps.find(s => s.id === stepA) ?? {});
+      expect(techniqueA, 'step A binds no technique').toBeDefined();
+      const group = techniqueA!.slice(0, techniqueA!.lastIndexOf('::') + 2);
+      const sibling = steps.find(s => {
+        const name = techniqueOf(s);
+        return s.id !== undefined && name !== undefined && name !== techniqueA && name.startsWith(group);
+      });
+      expect(sibling, `no other ${group} step in the activity`).toBeTruthy();
+      const stepB = sibling!.id!;
       await mcp.enter(idx, 'assumptions-review');
 
       const first = await client.callTool({

@@ -14,7 +14,7 @@ name: Verify
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'i[0-9][0-9]/main']
   pull_request:
   workflow_dispatch:
 
@@ -41,11 +41,30 @@ jobs:
       # record someone has to bump, which hides exactly the divergence these tests exist to catch.
       # A corpus change that breaks the engine reddens the next engine pull request, which is the
       # point rather than the cost.
+      #
+      # An initiative's code and definitions land on its own integration branches, `iNN/main` and
+      # `iNN/workflows`, so a change on one is measured against the initiative's other half where
+      # that branch exists, and against `workflows` otherwise.
+      - name: Resolve the definitions branch this change pairs with
+        id: pair
+        env:
+          BASE: ${{ github.base_ref || github.ref_name }}
+        run: |
+          ref=workflows
+          case "$BASE" in
+            i[0-9][0-9]/main)
+              candidate="${BASE%/main}/workflows"
+              if git ls-remote --exit-code --heads origin "$candidate" > /dev/null; then ref="$candidate"; fi
+              ;;
+          esac
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "Definitions branch: $ref"
+
       - name: Check out the definitions the engine serves
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
-          ref: workflows
+          ref: ${{ steps.pair.outputs.ref }}
           path: workflows
 
       - uses: actions/setup-node@v4

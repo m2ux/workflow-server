@@ -580,7 +580,14 @@ async function executeActivitySteps(
     fetchedStepIds.add(stepId);
     const res = await client.callTool({
       name: 'get_technique',
-      arguments: { session_index: sessionIndex, step_id: stepId, ...(worker ? { agent_id: worker.agentId } : {}) },
+      arguments: {
+        session_index: sessionIndex,
+        step_id: stepId,
+        // Under a fan several activities are in flight; the server refuses a technique fetch that
+        // does not name which branch it serves — the same activity_id get_activity already carries.
+        ...(activityId !== undefined ? { activity_id: activityId } : {}),
+        ...(worker ? { agent_id: worker.agentId } : {}),
+      },
     });
     if (isError(res)) {
       const content = (res as ToolResult).content as Array<{ text?: string }> | undefined;
@@ -654,12 +661,23 @@ function findOrphanCheckpoints(_act: ActivityDef): string[] {
 }
 
 /**
+ * Shared registers with no owning activity — written bare even when the activity
+ * carries an artifactPrefix. Mirrors manage-artifacts::write-artifact and the
+ * deferred-items / follow-ups register guides.
+ */
+const UNPREFIXED_PLANNING_ARTIFACTS = new Set([
+  'deferred-items.json',
+  'follow-ups.json',
+]);
+
+/**
  * Write a stub for each planning-location artifact the activity declares, using
  * find-or-create keyed on the bare filename: if an instance (`<NN>-<bare>` or
  * `<bare>`) already exists in the planning folder, UPDATE it in place (preserving
- * its original number); otherwise CREATE `<prefix>-<bare>` with this activity's
- * prefix. Mirrors the manage-artifacts::write-artifact protocol, so a logical
- * artifact keeps exactly one numbered instance across the whole walk.
+ * its original name); otherwise CREATE `<prefix>-<bare>` with this activity's
+ * prefix, or bare `<bare>` for shared registers. Mirrors the
+ * manage-artifacts::write-artifact protocol, so a logical artifact keeps exactly
+ * one instance across the whole walk.
  */
 function writeArtifactStubs(act: ActivityDef, variables: Record<string, unknown>, planningFolder: string, prefix?: string): string[] {
   const written: string[] = [];
@@ -670,11 +688,13 @@ function writeArtifactStubs(act: ActivityDef, variables: Record<string, unknown>
     // Interpolate {var}; strip braces from any still-unresolved token so the filename is clean.
     const bare = interpolate(art.name, variables).replace(/\{([^}]+)\}/g, '$1');
     const bareRe = new RegExp(`^(\\d+-)?${bare.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
-    // Find-or-create: reuse an existing instance (update in place), else create with this prefix.
+    // Find-or-create: reuse an existing instance (update in place), else create.
     let name = existing.find(f => bareRe.test(f));
     if (!name) {
       const pfx = prefix ?? act.artifactPrefix;
-      name = pfx && !/^\d/.test(bare) ? `${pfx}-${bare}` : bare;
+      name = UNPREFIXED_PLANNING_ARTIFACTS.has(bare) || !pfx || /^\d/.test(bare)
+        ? bare
+        : `${pfx}-${bare}`;
     }
     try {
       writeFileSync(join(planningFolder, name), `<!-- robot-worker stub artifact for activity ${act.id} -->\n`);
