@@ -185,7 +185,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "requirements-elicitation.md",
       ],
       "artifactsWritten": [
-        "03-deferred-items.json",
+        "deferred-items.json",
         "02-assumptions-log.md",
         "03-requirements-elicitation.md",
       ],
@@ -337,7 +337,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "03-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -481,7 +481,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.json",
+        "follow-ups.json",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -586,7 +586,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifactsWritten": [
         "12-strategic-review-n.md",
         "12-architecture-summary.md",
-        "03-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -703,8 +703,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "14-NNNN-decision_title.md",
         "14-token-usage.md",
         "14-session-trace.md",
-        "10-follow-ups.json",
-        "03-deferred-items.json",
+        "follow-ups.json",
+        "deferred-items.json",
         "14-COMPLETE.md",
       ],
       "checkpoints": [
@@ -940,7 +940,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "requirements-elicitation.md",
       ],
       "artifactsWritten": [
-        "03-deferred-items.json",
+        "deferred-items.json",
         "02-assumptions-log.md",
         "03-requirements-elicitation.md",
       ],
@@ -1055,7 +1055,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "03-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -1188,7 +1188,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.json",
+        "follow-ups.json",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -1268,7 +1268,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifactsWritten": [
         "12-strategic-review-n.md",
         "12-architecture-summary.md",
-        "03-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -1385,8 +1385,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "14-NNNN-decision_title.md",
         "14-token-usage.md",
         "14-session-trace.md",
-        "10-follow-ups.json",
-        "03-deferred-items.json",
+        "follow-ups.json",
+        "deferred-items.json",
         "14-COMPLETE.md",
       ],
       "checkpoints": [
@@ -1623,7 +1623,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "requirements-elicitation.md",
       ],
       "artifactsWritten": [
-        "03-deferred-items.json",
+        "deferred-items.json",
         "02-assumptions-log.md",
         "03-requirements-elicitation.md",
       ],
@@ -1775,7 +1775,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "03-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -1919,7 +1919,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.json",
+        "follow-ups.json",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -2024,7 +2024,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifactsWritten": [
         "12-strategic-review-n.md",
         "12-architecture-summary.md",
-        "03-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -2141,8 +2141,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "14-NNNN-decision_title.md",
         "14-token-usage.md",
         "14-session-trace.md",
-        "10-follow-ups.json",
-        "03-deferred-items.json",
+        "follow-ups.json",
+        "deferred-items.json",
         "14-COMPLETE.md",
       ],
       "checkpoints": [
@@ -2474,7 +2474,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -2607,7 +2607,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.json",
+        "follow-ups.json",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -2687,7 +2687,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifactsWritten": [
         "12-strategic-review-n.md",
         "12-architecture-summary.md",
-        "07-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -2804,8 +2804,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "14-NNNN-decision_title.md",
         "14-token-usage.md",
         "14-session-trace.md",
-        "10-follow-ups.json",
-        "07-deferred-items.json",
+        "follow-ups.json",
+        "deferred-items.json",
         "14-COMPLETE.md",
       ],
       "checkpoints": [
@@ -3063,7 +3063,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -3142,7 +3142,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.json",
+        "follow-ups.json",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -3227,7 +3227,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifactsWritten": [
         "12-strategic-review-n.md",
         "12-architecture-summary.md",
-        "07-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -3320,8 +3320,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "14-NNNN-decision_title.md",
         "14-token-usage.md",
         "14-session-trace.md",
-        "10-follow-ups.json",
-        "07-deferred-items.json",
+        "follow-ups.json",
+        "deferred-items.json",
         "14-COMPLETE.md",
       ],
       "checkpoints": [],
@@ -3575,7 +3575,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       ],
       "artifactsWritten": [
         "02-assumptions-log.md",
-        "07-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [
         {
@@ -3708,7 +3708,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-follow-ups.json",
+        "follow-ups.json",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -3788,7 +3788,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifactsWritten": [
         "12-strategic-review-n.md",
         "12-architecture-summary.md",
-        "07-deferred-items.json",
+        "deferred-items.json",
       ],
       "checkpoints": [],
       "gatesReadUnbound": [
@@ -3905,8 +3905,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "14-NNNN-decision_title.md",
         "14-token-usage.md",
         "14-session-trace.md",
-        "10-follow-ups.json",
-        "07-deferred-items.json",
+        "follow-ups.json",
+        "deferred-items.json",
         "14-COMPLETE.md",
       ],
       "checkpoints": [
