@@ -1,0 +1,19 @@
+id: take-case
+version: 1.0.0
+name: Take Case
+description: Open the single fan case.
+variables:
+  reads: []
+  writes: []
+required: true
+steps:
+  - kind: action
+    id: open
+    actions:
+      - action: message
+        message: Opening the contract-tests fan case
+exits:
+  - id: taken
+    isDefault: true
+outcome:
+  - The fan case is open

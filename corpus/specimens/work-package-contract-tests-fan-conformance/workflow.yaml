@@ -1,0 +1,55 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-contract-tests-fan-conformance
+version: 1.0.0
+title: Work Package Contract-Tests Fan Conformance Workflow
+description: >-
+  Hold the implementation fan to one case: a contract-tests stub reports a red suite from the
+  Contract alone beside a stub implement branch, and implementation-join confirms the suite
+  is red against the base tree.
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - fan
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the session's planning folder.
+  - name: case_outcomes
+    type: array
+    description: What the fan landed.
+    defaultValue: []
+  - name: contract_tests_fail_on_base
+    type: boolean
+    description: Whether the contract-tests stub reported failure on base.
+    defaultValue: false
+  - name: contract_tests_path
+    type: string
+    description: Path the stub reports.
+    defaultValue: ""
+  - name: contract_tests_branch
+    type: string
+    description: Branch the stub reports.
+    defaultValue: ""
+initialActivity: take-case
+graph:
+  take-case:
+    taken:
+      - contract-tests
+      - stub-implement
+  contract-tests:
+    done: implementation-join
+  stub-implement:
+    done: implementation-join
+  implementation-join:
+    done: record-case
+  record-case:
+    recorded: report-cases
+  report-cases:
+    reported: __terminal__
+activities:
+  - work-package/21-implementation-join.yaml

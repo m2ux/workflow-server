@@ -74,9 +74,25 @@ Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 
 ### 08. Implement
 
-Executes the implementation plan task by task, turning the plan into committed, tested work. Skipped in review mode (the code already exists). Leads to lean-coding-audit.
+Executes the implementation plan task by task in its own worktree, turning the plan into committed work. A branch of the implementation fan beside contract-tests; both converge on implementation-join. Skipped in review mode (the code already exists).
 
 Definition: [`08-implement.yaml`](./08-implement.yaml)
+
+---
+
+### Contract Tests
+
+Writes each task's contract tests from the Contract alone into a dedicated worktree, and confirms each suite fails against the base tree. A branch of the implementation fan that converges on implementation-join.
+
+Definition: [`20-contract-tests.yaml`](./20-contract-tests.yaml)
+
+---
+
+### Implementation Join
+
+The implementation fan's join: hoists the contract-tests and implement branch containers and confirms contract suites are red against the base tree. Leads to lean-coding-audit.
+
+Definition: [`21-implementation-join.yaml`](./21-implementation-join.yaml)
 
 ---
 

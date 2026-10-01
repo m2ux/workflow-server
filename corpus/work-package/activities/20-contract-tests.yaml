@@ -1,0 +1,74 @@
+id: contract-tests
+version: 1.0.0
+name: Contract Tests
+description: >-
+  Write each task's contract tests from the Contract alone into their own files in a
+  dedicated worktree, and confirm each suite fails against the base tree before
+  implementation lands.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - host_repo_path
+    - implementation_plan
+    - planning_folder_path
+    - target_path
+  writes:
+    - name: contract_tests_branch
+      type: string
+      description: Feature-adjacent branch the contract-tests worktree stands on.
+      defaultValue: ""
+    - name: contract_tests_path
+      type: string
+      description: Dedicated worktree path for contract-test files.
+      defaultValue: ""
+    - name: contract_tests_changed_paths
+      type: array
+      description: Repository-relative paths the contract-tests branch wrote.
+      defaultValue: []
+    - name: contract_tests_fail_on_base
+      type: boolean
+      description: True when every written contract suite fails against the base tree.
+      defaultValue: false
+    - name: current_task
+      type: object
+      description: The implementation-plan task whose Contract is under test.
+required: true
+steps:
+  - kind: technique
+    id: locate-contract-tests-worktree
+    technique: locate-contract-tests-worktree
+  - kind: technique
+    id: create-contract-tests-worktree
+    technique:
+      name: git::create-worktree
+      inputs:
+        branch_name: contract_tests_branch
+        target_path: contract_tests_path
+        create_branch: true
+  - kind: loop
+    id: contract-test-cycle
+    name: Contract Test Cycle
+    loopType: forEach
+    variable: current_task
+    over: implementation_plan.tasks
+    steps:
+      - kind: technique
+        id: write-contract-tests
+        technique: write-contract-tests
+      - kind: technique
+        id: verify-fail-on-base
+        technique: verify-contract-tests-fail
+      - kind: technique
+        id: commit-contract-tests
+        technique:
+          name: commit-contract-test-paths
+          inputs:
+            paths: contract_tests_changed_paths
+            commit_message: "test: contract for {current_task.id}"
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Each task's Contract has a failing test suite in the contract-tests worktree
+  - Every suite fails against the base tree before implementation lands
