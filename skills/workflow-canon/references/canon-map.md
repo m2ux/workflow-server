@@ -30,7 +30,7 @@ An entry can fire against an instance a surface has already judged. Read that su
 
 ## File kinds
 
-Every unit binds until its own text excludes the file kind. `not-applicable` records that wording.
+A unit binds the constructs its Fires-on line names. Author runs [List units for a construct](commands.md#list-units-for-a-construct) once for each construct a draft writes, and loads the units it prints. Audit walks every unit the [unit inventory](#unit-inventory) names, whatever the lines say. On an Audit, `not-applicable` records a unit's own wording that excludes the file in hand.
 
 ## Covering entries
 

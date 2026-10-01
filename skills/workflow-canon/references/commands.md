@@ -67,6 +67,18 @@ grep -n "^## " corpus/canon/resources/anti-patterns.md
 grep -n "^### " corpus/canon/resources/anti-patterns.md
 ```
 
+### List units for a construct
+
+Prints every canon unit that fires on one construct id, with its file and line.
+
+- The id is a construct a draft writes: a bare kind, a field path, `resource`, `readme`, or `*`.
+- A unit is listed when it declares that id, a prefix of it, its bare kind, or `*`.
+- Runs in the server checkout. `--root` names the corpus tree. The listing is printed and not stored.
+
+```bash
+npx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>
+```
+
 ### Fetch unit
 
 Reads one section or entry of a home.
