@@ -39,6 +39,10 @@
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that a live instance can dispatch one activity through one routine and one technique, which serving guards and a sidecar MVW walk measure."
     },
     {
+      "id": "audit-specimen",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is one fix round, an author load set, and a full unit ledger, which a sidecar walk measures."
+    },
+    {
       "id": "exitless-end",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that a walk ending on an activity with no exits completes its session, which a sidecar walk measures."
     },

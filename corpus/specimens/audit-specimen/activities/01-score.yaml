@@ -1,0 +1,58 @@
+id: score
+version: 1.0.0
+name: Score
+description: Score one fix round, the author load set, and the unit ledger.
+required: true
+variables:
+  writes:
+    - name: dispatch_recorded
+      type: boolean
+      description: True once the subject dispatch has executed.
+    - name: units_listed
+      type: string
+      description: Units the listing command prints for technique.capability, one per line.
+    - name: units_used
+      type: string
+      description: Units the author step loads for the capability rewrite, one per line.
+    - name: unit_ledger
+      type: string
+      description: One row per canon unit at this commit, each walked or not-applicable.
+    - name: audit_findings
+      type: string
+      description: Findings of the audit that meets the planted sentence.
+    - name: reaudit_finding_count
+      type: number
+      description: Findings the re-audit records after the planted sentence is removed.
+    - name: reaudit_ledger
+      type: string
+      description: One row per inventory id after the fix, each walked or not-applicable.
+    - name: claim_report
+      type: string
+      description: The report this run wrote, as the guide shapes it.
+    - name: claim_attestation
+      type: string
+      description: The attest script's verdict on the three claims.
+steps:
+  - kind: technique
+    id: record
+    technique: subject
+  - kind: technique
+    id: list-units
+    technique: record-listed-units
+  - kind: technique
+    id: ledger
+    technique: write-ledger
+  - kind: technique
+    id: reaudit
+    technique: close-and-reaudit
+  - kind: technique
+    id: attest
+    technique: attest-claims
+exits:
+  - id: scored
+    isDefault: true
+outcome:
+  - The subject dispatch is recorded ({dispatch_recorded})
+  - The author load set matches the listing ({units_listed}, {units_used})
+  - The ledger names every canon unit ({unit_ledger}) and the first audit names its findings ({audit_findings})
+  - The re-audit ledger ({reaudit_ledger}) records no finding ({reaudit_finding_count}), the report holds the three claims ({claim_report}), and the attest script's verdict is pass ({claim_attestation})
