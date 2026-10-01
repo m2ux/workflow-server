@@ -35,6 +35,7 @@ import json
 import shlex
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 KIND_FOLDERS = {'activities', 'routines', 'techniques', 'resources'}
@@ -105,12 +106,18 @@ def guard_command(server: Path, guards: str | None) -> list[str]:
     return [str(find_tsx(server)), 'guards/check-all.ts']
 
 
-def run_guards(command: list[str], server: Path, tree: Path) -> subprocess.CompletedProcess:
-    try:
-        return subprocess.run([*command, '--corpus-only', '--root', str(tree)], cwd=server,
-                              capture_output=True, text=True)
-    except OSError as err:
-        raise Unmeasured(f'could not start the guards: {err}') from err
+def run_guards(command: list[str], server: Path, tree: Path) -> tuple[int, str]:
+    """The guards' exit code, and their output over tree."""
+    # Node drops what a pipe has not yet taken when a script calls process.exit, so the output
+    # goes to a file, which it writes in full.
+    with tempfile.TemporaryFile('w+') as out:
+        try:
+            code = subprocess.run([*command, '--corpus-only', '--root', str(tree)], cwd=server,
+                                  stdout=out, stderr=subprocess.STDOUT).returncode
+        except OSError as err:
+            raise Unmeasured(f'could not start the guards: {err}') from err
+        out.seek(0)
+        return code, out.read()
 
 
 def check(hook_input: dict, server: Path, guards: str | None) -> int:
@@ -120,14 +127,14 @@ def check(hook_input: dict, server: Path, guards: str | None) -> int:
         return EXIT_PASS
     if not server.is_dir() or not (guards or (server / 'guards' / 'check-all.ts').is_file()):
         raise Unmeasured(f'no server checkout at {server}')
-    run = run_guards(guard_command(server, guards), server, tree)
-    if run.returncode == 0:
+    code, output = run_guards(guard_command(server, guards), server, tree)
+    if code == 0:
         return EXIT_PASS
-    if run.returncode == 1:
+    if code == 1:
         sys.stderr.write(f'Corpus guards report findings in {tree} after editing {path}:\n')
     else:
-        sys.stderr.write(f'Corpus guards could not measure {tree} (exit {run.returncode}):\n')
-    sys.stderr.write(run.stdout + run.stderr)
+        sys.stderr.write(f'Corpus guards could not measure {tree} (exit {code}):\n')
+    sys.stderr.write(output)
     return EXIT_BLOCK
 
 
