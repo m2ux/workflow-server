@@ -5,6 +5,7 @@
       "options": [
         "checkpoint:ambiguous-name-case:rename-ambiguous-symbol.accept-edit-list=abandon",
         "checkpoint:ambiguous-name-case:rename-ambiguous-symbol.accept-edit-list=apply",
+        "checkpoint:assumptions-review:post-summary-review=post-summary",
         "checkpoint:assumptions-review:post-summary-review=skip-posting",
         "checkpoint:assumptions-review:settle-assumptions.interview.interview.decision#{assumptions_review_settle_assumptions_interview_current_assumption.id}=correct-assumption",
         "checkpoint:assumptions-review:settle-assumptions.interview.interview.decision#{assumptions_review_settle_assumptions_interview_current_assumption.id}=defer-to-stakeholder",
@@ -107,6 +108,7 @@
         "checkpoint:scope-and-draft:preservation-check=preserve-more",
         "checkpoint:scope-and-draft:preservation-check=proceed",
         "checkpoint:scope-and-draft:preservation-check=rewrite",
+        "checkpoint:start-work-package:github-issue-missing=create",
         "checkpoint:start-work-package:github-issue-missing=skip",
         "checkpoint:start-work-package:issue-review=cancel",
         "checkpoint:start-work-package:issue-review=create",
@@ -119,6 +121,7 @@
         "checkpoint:start-work-package:issue-verification=create-issue",
         "checkpoint:start-work-package:issue-verification=provide-existing",
         "checkpoint:start-work-package:issue-verification=skip-issue",
+        "checkpoint:start-work-package:jira-project-selection=select",
         "checkpoint:start-work-package:jira-project-selection=specify",
         "checkpoint:start-work-package:platform-selection=github",
         "checkpoint:start-work-package:platform-selection=jira",
