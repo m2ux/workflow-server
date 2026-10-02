@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Comma-separated categories that classify each assumption this pass surfaces.
 
 ### assumption_source
 
-*(optional)* The artifact or bag value the assumptions are drawn from. When absent, the activity's own working context is the source.
+*(optional)* The artifact or bag value the assumptions are drawn from.
 
 ## Outputs
 
@@ -28,7 +28,7 @@ One entry per assumption surfaced this pass: category, risk, statement with rati
 ### 1. Identify the Assumptions
 
 - Identify all implicit decisions and assumptions across `{assumption_source}` — consult the [probe vocabulary](/work-package/resources/assumptions-review.md#probe-vocabulary) and [classification vocabulary](/work-package/resources/assumptions-review.md#classification-vocabulary) when filling entries
-  > Where `{assumption_source}` is absent, take the activity's own findings and working context as the source.
+  > Where `{assumption_source}` is absent, take the findings and working context already in hand.
 
 ### 2. Classify and Rate Each
 
