@@ -21,6 +21,7 @@ steps:
       name: gitnexus::resolve-graph
       inputs:
         graph_name: graph_name
+        tree_path: tree_path
       outputs:
         indexed_tree_path: tree_path
     actions:

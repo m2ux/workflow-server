@@ -212,6 +212,7 @@ steps:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: "{branch_activities}"
+            session_index: session_index
       - kind: action
         id: advance-past-fan
         when: fan_convergence_activity
@@ -292,6 +293,7 @@ steps:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: current_activity
+            session_index: session_index
       - kind: action
         id: note-exiting-activity
         when: worker_result.result_type == "activity_complete"

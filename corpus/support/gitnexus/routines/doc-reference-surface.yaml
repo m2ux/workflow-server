@@ -47,6 +47,8 @@ steps:
           inputs:
             target_file_path: "{target_file}"
             repo_name: repo_name
+          outputs:
+            referencing_files: referencing_files
         actions:
           - action: set
             target: referencing_files

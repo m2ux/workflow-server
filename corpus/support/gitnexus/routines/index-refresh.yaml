@@ -38,6 +38,7 @@ steps:
       name: gitnexus::analyze
       inputs:
         repo_path: repo_path
+        repo_name: repo_name
       outputs:
         stats: stats
   - kind: technique

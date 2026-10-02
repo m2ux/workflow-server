@@ -20,6 +20,7 @@ steps:
       name: gitnexus::resolve-graph
       inputs:
         tree_path: tree_path
+        repo_name: repo_name
       outputs:
         repo_name: repo_name
     actions:

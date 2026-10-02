@@ -25,6 +25,7 @@ steps:
       name: gitnexus::resolve-graph
       inputs:
         tree_path: tree_path
+        repo_name: repo_name
       outputs:
         repo_name: repo_name
   - kind: technique
@@ -34,6 +35,7 @@ steps:
       name: gitnexus::analyze
       inputs:
         repo_path: tree_path
+        repo_name: repo_name
       outputs:
         stats: index_stats
   - kind: technique
@@ -43,5 +45,6 @@ steps:
       name: gitnexus::resolve-graph
       inputs:
         tree_path: tree_path
+        repo_name: repo_name
       outputs:
         repo_name: repo_name
