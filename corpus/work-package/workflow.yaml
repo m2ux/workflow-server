@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 4.9.0
+version: 4.9.1
 title: Work Package Implementation Workflow
 description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, an audit of an existing pull request, or any other deliverable. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -152,27 +152,27 @@ variables:
   - name: test_status
     type: object
     defaultValue: {}
-    description: Last test-check status; validate reads it when the implement fan does not hoist a bare value.
+    description: The latest test-check status.
   - name: failures
     type: array
     defaultValue: []
-    description: Per-test failure detail validate reads when present.
+    description: Per-test failure detail.
   - name: commit_sha
     type: string
     defaultValue: ""
-    description: Tip commit the review path names when no activity has written one yet.
+    description: Tip commit of the change.
   - name: needs_research
     type: boolean
     defaultValue: false
-    description: Whether the discovery fan's research branch does real research work.
+    description: Whether research runs.
   - name: task_implementation
     type: object
     defaultValue: {"summary": ""}
-    description: Per-task implementation record crossing from implement to the join.
+    description: Per-task implementation record.
   - name: changed_files
     type: array
     defaultValue: []
-    description: Changed file paths review branches read; empty until analysis or the join fills them.
+    description: Changed file paths.
 
 initialActivity: start-work-package
 graph:

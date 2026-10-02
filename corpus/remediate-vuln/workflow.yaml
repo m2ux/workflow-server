@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.3.0
+version: 3.3.1
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -179,7 +179,7 @@ variables:
   - name: task_implementation
     type: object
     defaultValue: {"summary": ""}
-    description: Per-task implementation record; implement overwrites; lean-coding may read.
+    description: Per-task implementation record.
 initialActivity: start
 graph:
   start:
