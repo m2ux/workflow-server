@@ -212,7 +212,7 @@ Opens the pull request that merges an integration branch into its long-lived bra
 
 - Run it when [Sync initiative](#sync-initiative) reports that branch unmerged. The initiative stays open until the pull request merges.
 - The title is the initiative's prefix and name: `[I07] Name`.
-- The body lists the initiative's pull requests the branch carries.
+- The body is drafted from [pull-request.md](../templates/pull-request.md).
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07] Name' -f head='i07/main' -f base='main' -F body=@body.md --jq .html_url

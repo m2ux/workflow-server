@@ -15,7 +15,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    Keep one for a new initiative, or for a change whose decisions need a record. A one-epic addition with no open decision goes straight to step 4.
    - Branch a worktree from `origin/engineering` and add `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
    - `README.md` holds the problem, the goal's clauses and their trace to the criteria, design, decisions, reviews and open questions. `inventory.md` holds the evidence.
-   - Open a draft PR against `engineering` for discussion. The user merges it.
+   - Draft the discussion pull request's body from [pull-request.md](../templates/pull-request.md) and open it as a draft against `engineering`. The user merges it.
 4. **Draft bodies.**
    - Draft each body from its template into a local file. Those files are the source for every later edit.
    - A Problem and a Proposal follow the [Work Breakdown guide](work-breakdown.md#problem-and-proposal).
@@ -40,7 +40,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 
    Fold each finding in and record it in the planning record.
 8. **Keep in step.**
-   - After each round, patch every changed issue, update the planning record and the discussion PR body, then commit and push.
+   - After each round, patch every changed issue, update the planning record and the discussion pull request's body from [pull-request.md](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
 9. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
@@ -63,3 +63,5 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 
 - **The discussion PR.**
   Merging it is the user's call. After it merges, repoint the issue links to `engineering`.
+- **Pull request bodies.**
+  Every pull request this mode opens is drafted from [pull-request.md](../templates/pull-request.md).
