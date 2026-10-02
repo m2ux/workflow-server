@@ -40,7 +40,6 @@
         "checkpoint:implementation-join:settle-assumptions.interview.interview.decision#{implementation_join_settle_assumptions_interview_current_assumption.id}=resolve-inline",
         "checkpoint:implementation-join:symbol-provenance-confirmed=confirmed",
         "checkpoint:implementation-join:symbol-provenance-confirmed=uncertain",
-        "checkpoint:intake-and-context:design-intent-batch=cancel-as-create",
         "checkpoint:intake-and-context:design-intent-batch=confirm-create",
         "checkpoint:intake-and-context:design-intent-batch=confirm-intent",
         "checkpoint:intake-and-context:design-intent-batch=confirm-update",
@@ -203,15 +202,6 @@
         "checkpoint:start:short-id-input=provided",
         "checkpoint:start:verify-isolation=authorized",
         "checkpoint:start:verify-isolation=cancel"
-      ]
-    },
-    {
-      "reason": "Declared by a run a library holds, and reached only through the specimen that refers to it \u2014 which declares no checkpoint of its own, so the roster lists it as one a coverage walk covers nothing of. The gates arrive spliced in at load, and no workflow this matrix walks refers to either run, so measuring them means walking the specimen.",
-      "options": [
-        "checkpoint:gate-an-edit:guard-the-edit.accept-blast-radius=hold",
-        "checkpoint:gate-an-edit:guard-the-edit.accept-blast-radius=proceed",
-        "checkpoint:gate-a-rename:guard-the-rename.accept-edit-list=abandon",
-        "checkpoint:gate-a-rename:guard-the-rename.accept-edit-list=apply"
       ]
     }
   ]
