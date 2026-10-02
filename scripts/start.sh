@@ -87,7 +87,6 @@ INSTALL_DIR_SET=0
 # Optional overrides: WORKFLOW_SERVER_WORKFLOWS_BRANCH, WORKFLOW_SERVER_REPO_URL
 HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
 HOST_PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
-INSTALL_HOST_PROJECTS_ROOT="${HOST_PROJECTS_ROOT}"
 HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
 HOST_SCHEMAS_DIR="${HOST_SCHEMAS_DIR:-${SCHEMAS_DIR:-}}"
 HOST_DIST_DIR=""
@@ -151,8 +150,9 @@ FEATURE WORKTREES
 OPTIONS (optional overrides — prefer re-running install to change paths)
   --install-dir=PATH        Install root (corpus default: \$INSTALL/workflows)
   --projects-root=PATH      Checkout root for working_directory. A path under the
-                            install tree is mounted beside the projects root and
-                            does not hold planning. Any other path is the projects root.
+                            install tree is mounted as that checkout, and planning
+                            uses /tmp with the projects-root layout. Any other path
+                            is the projects root.
   --worktree-root=PATH      Optional separate feature-tree root (RW)
   --workflows-dir=PATH      One-off host corpus directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
@@ -396,8 +396,9 @@ if [[ "$PROJECTS_SET" -eq 1 && -n "$CLI_PROJECTS_ROOT" ]]; then
 fi
 HOST_PROJECTS_ROOT="$(abs_path "$HOST_PROJECTS_ROOT")"
 # A projects root under the install tree is the workflow-server local share
-# (or another checkout kept beside it). Planning stays on the install projects
-# root. The passed directory is mounted so working_directory can name a clone there.
+# (or another checkout kept beside it). That directory is the checkout a
+# session binds. Planning uses /tmp with the same <root>/<repo>/.engineering
+# layout as the install projects root.
 share_checkout=0
 if [[ "$PROJECTS_SET" -eq 1 ]]; then
   case "$HOST_PROJECTS_ROOT" in
@@ -406,16 +407,7 @@ if [[ "$PROJECTS_SET" -eq 1 ]]; then
 fi
 if [[ "$share_checkout" -eq 1 ]]; then
   CHECKOUT_HOST_ROOT="$HOST_PROJECTS_ROOT"
-  if [[ -n "$INSTALL_HOST_PROJECTS_ROOT" ]]; then
-    HOST_PROJECTS_ROOT="$(abs_path "$INSTALL_HOST_PROJECTS_ROOT")"
-  else
-    HOST_PROJECTS_ROOT="$(abs_path "$DEFAULT_HOST_PROJECTS_ROOT")"
-  fi
-  case "$HOST_PROJECTS_ROOT" in
-    "$INSTALL_DIR"|"$INSTALL_DIR"/*)
-      die "planning projects root ${HOST_PROJECTS_ROOT} is under the workflow-server install tree"
-      ;;
-  esac
+  HOST_PROJECTS_ROOT="/tmp"
 fi
 if [[ ! -d "$HOST_PROJECTS_ROOT" ]]; then
   echo "Creating projects root: ${HOST_PROJECTS_ROOT}"
