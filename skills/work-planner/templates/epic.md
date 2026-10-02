@@ -18,7 +18,7 @@
 
 ## Acceptance Criteria
 
-- [ ] **AC1.** {{A checkable end-state statement of one invariant.}}
+- [ ] **AC1.** {{An end state of one invariant, kept only as the goal pass's Verifiable rule defines.}}
 
 ## Open questions
 

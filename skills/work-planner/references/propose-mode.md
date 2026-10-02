@@ -10,7 +10,7 @@ Takes the same intake as [plan mode](plan-mode.md) and raises one proposal: an i
 2. **Draft the body.**
    Draft it from [proposal.md](../templates/proposal.md) into a local file. That file is the source for the issue.
    - A Problem and a Proposal follow the [Work Breakdown guide](work-breakdown.md#problem-and-proposal).
-   - Each acceptance criterion comes from a confirmed clause. It meets the [goal pass](review-passes.md#goal-pass) rules One invariant, No counts and Local, and it ends by naming its instrument, as that pass's Verified rule defines.
+   - Each acceptance criterion comes from a confirmed clause. It meets the [goal pass](review-passes.md#goal-pass) rules One invariant, No counts, Local and Verifiable, and it ends by naming its instrument, as that pass's Verified rule defines.
    - The goal pass's trace and its Whole rule read epics. A proposal has none, so those checks are not made. A named test that does not exist yet stays named in the criterion.
 3. **Check the draft.**
    Write the draft as an issue JSON, with its title and labels, and run [Check format](commands.md#check-format) with `--fix`.

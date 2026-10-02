@@ -5,10 +5,10 @@ description: >-
   issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
   Proposals board. Use to propose work or raise a proposal; to plan the work, plan out, scope or
   break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
-  renumber an initiative or epic; to check an issue's format or dependency order; to fold review
-  findings into issues; to sync an initiative or epic with completed work; to hoist or triage
-  orphan issues into an initiative; for a progress summary, standup or status update in Slack; or
-  to revise or update the work-planner skill itself.
+  renumber an initiative or epic; to check an issue's format, its criteria or its dependency
+  order; to fold review findings into issues; to sync an initiative or epic with completed work;
+  to hoist or triage orphan issues into an initiative; for a progress summary, standup or status
+  update in Slack; or to revise or update the work-planner skill itself.
 ---
 
 # Work Planner
@@ -33,6 +33,7 @@ Read the file for the mode the request calls for:
   - Placement on the Proposals board, in Suggested
 - **[Plan](references/plan-mode.md)**
   - Raising, planning and restructuring initiatives and epics
+  - Acceptance criteria that comply with the goal pass when they are written
   - Review passes of a plan against its goal
   - Dependency checks
   - Renumbering of epics and tasks
@@ -40,6 +41,7 @@ Read the file for the mode the request calls for:
 - **[Review](references/review-mode.md)**
   - Checks of existing issues against the templates
   - Fixes for each issue that departs from its template
+  - A check of every acceptance criterion against the verifiable rule
   - A scan for a merged pull request whose task still has an unticked coverage criterion
   - A scan for an initiative criterion still unticked, or ticked early, against the epics that cite it
 - **[Sync](references/sync-mode.md)**

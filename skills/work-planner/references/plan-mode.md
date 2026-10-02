@@ -20,18 +20,19 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Draft each body from its template into a local file. Those files are the source for every later edit.
    - A Problem and a Proposal follow the [Work Breakdown guide](work-breakdown.md#problem-and-proposal).
    - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them.
-   - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the goal pass in `review-passes.md` defines.
-   - Each criterion names its instrument, and a test it names that does not exist yet is planned as work, as the goal pass's Verified rule defines.
+   - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [goal pass](review-passes.md#goal-pass) defines.
+   - Each acceptance criterion is written to this mode's Criteria at creation rule. It ends by naming its instrument as that pass's Verified rule defines. A test it names that does not exist yet is planned as work.
+   - An item a test cannot observe is named as [Coverage reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
 5. **Review the drafts.**
-   - Run the goal pass in `review-passes.md`, and [Check dependencies](commands.md#check-dependencies) over the drafts.
-   - Fold every gap and problem in and run both again. No issue is created while either reports one.
+   - Run the [goal pass](review-passes.md#goal-pass), and [Check dependencies](commands.md#check-dependencies) over the drafts.
+   - Fold every gap and problem in and run both again. No issue is created while either reports one. An acceptance criterion is created only once it complies with this mode's Criteria at creation rule.
 6. **Create issues.**
    Create them with [Create issue](commands.md#create-issue), so that every number exists before it is cited:
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
    2. the epics in dependency order, each citing the initiative and the epics created before it, with placeholders for any it cites that do not exist yet;
    3. a [Patch body](commands.md#patch-body) replacing every remaining placeholder, in the initiative and in any epic that holds one. Grep the local files for `#E[0-9]` until none is left;
-   4. a task issue from `templates/task.md` for each task that needs one, citing its epic;
+   4. a task issue from `templates/task.md` for each task that needs one, citing its epic, its acceptance criteria written to this mode's Criteria at creation rule;
    5. [Check format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch body](commands.md#patch-body) from each fixed body.
 7. **Review.**  Run the passes in `review-passes.md`:
    - the goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
@@ -61,6 +62,9 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
 
 ## Rules
 
+- **Criteria at creation.**
+  - An acceptance criterion complies with the [goal pass](review-passes.md#goal-pass) when it is written, including that pass's Verifiable rule.
+  - The issue that carries it is created only after the criterion complies.
 - **The discussion PR.**
   Merging it is the user's call. After it merges, repoint the issue links to `engineering`.
 - **Pull request bodies.**

@@ -41,7 +41,7 @@ Records work on an initiative, its epics and their task issues: links each task 
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
    Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited and note are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
-   - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names or implies: run the test, guard or command, or read the code at the file and line it concerns.
+   - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names. What counts as coverage is [Coverage reports](work-breakdown.md#coverage-reports).
    - A criterion that cannot be confirmed stays unticked and is reported with what is missing.
 8. **Tick.**
    Tick the confirmed criteria with [Tick criteria](commands.md#tick-criteria). It ticks Done as the [Work Breakdown guide](work-breakdown.md#tables) defines.
@@ -52,8 +52,7 @@ Records work on an initiative, its epics and their task issues: links each task 
     [Close as completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
     - Run [Sync initiative](commands.md#sync-initiative), with the epic JSON fetched after closing and the pull requests from [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests). An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown guide](work-breakdown.md#tables) defines.
-    - It lists each criterion whose citing epics are all delivered as ready to verify. Run the automated test each names, and tick those that pass with [Tick criteria](commands.md#tick-criteria).
-    - Put each criterion that names no automated test to the user, who confirms it and ticks it.
+    - It lists each criterion whose citing epics are all delivered as ready to verify. Verify each as step 7 does, and tick those that pass with [Tick criteria](commands.md#tick-criteria).
     - [Patch body](commands.md#patch-body) the initiative from its `--fix` file when a tick changed it, so the board sync reads every criterion ticked.
     - When it reports an integration branch unmerged, open that pull request with [Open integration pull request](commands.md#open-integration-pull-request) and leave the initiative open.
     - [Close as completed](commands.md#close-as-completed) the initiative when it reports closable, as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
@@ -70,5 +69,5 @@ Records work on an initiative, its epics and their task issues: links each task 
       - Fetch the issues and items again and re-run: that re-read confirms every write, and the board is current when it reports nothing to do.
       - An issue added in one pass gets its Status in the next.
 13. **Report.**
-    Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, what was closed, and each board and assignee change.
+    Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, what was closed, and each board and assignee change. What the report names about criteria is [Coverage reports](work-breakdown.md#coverage-reports).
 

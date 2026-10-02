@@ -31,8 +31,14 @@ Tests each acceptance criterion against the goal the user stated, and each Probl
      Each initiative criterion is **specific** about what holds; **measurable** by a named check or baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause and to the Problem; and **time-bound** by a release tag or another named milestone outside the initiative's own work, where one exists, and otherwise by the epics that cite it.
    - **Local.**
      An initiative criterion names no initiative, epic, task or issue, and is solution-agnostic: Description cells link epics to criteria, never the reverse. One that holds only through another initiative's work is not local: restate what this initiative achieves, or drop it.
+   - **Verifiable.**
+     An acceptance criterion is kept only when a test can fail it. The source is the verifiable characteristic in ISO/IEC/IEEE 29148: a requirement is verifiable when its realisation can be proved, and subjective wording is barred.
+     - Subjective wording is rewritten to an observable pass or fail, or the criterion is removed.
+     - A fact a test can check is kept, such as every option having a description.
+     - A judgment about meaning, such as a claim that a description states what choosing means, is that subjective wording.
+     - An item a test cannot observe is named as [Coverage reports](work-breakdown.md#coverage-reports) defines.
    - **Verified.**
-     - An initiative criterion ends by naming its instrument: an automated test where one can exist, otherwise how the user confirms it.
+     - An initiative criterion ends by naming its instrument. Which instruments keep a criterion is the Verifiable rule.
      - An automated test is an end-to-end walk through the real server, a smoke run of an agent against a live server, a live check on a deployed host, or a guard, fixture suite or check that continuous integration runs. The walk, smoke run or live check is preferred where the criterion is about what a run does.
      - A named test that does not exist yet is work the plan holds: a task in the epic whose subject it tests, or a discrete test-infrastructure epic when the tests serve several criteria. That epic's row cites the criteria its tests verify.
    - **Whole.**

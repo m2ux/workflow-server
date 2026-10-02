@@ -39,10 +39,14 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics [Check dependencies](commands.md#check-dependencies) derives with `I=`;
    - a title whose name is not two or three words or whose subtitle runs past ten: draft a title of the agent-engineering form, and give the initiative row the new name;
    - an issue several row ids link: unlink the ids and cite the issue under References, since it backs several tasks, or give each task its own issue.
-6. **Check dependencies.**
+6. **Check criteria.**
+   Check every acceptance criterion of the issues under review against the [goal pass](review-passes.md#goal-pass) Verifiable rule.
+   - Report each criterion a test cannot fail.
+   - The review is not clear while one remains.
+7. **Check dependencies.**
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch body](commands.md#fetch-body), and run [Check dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in step 5. An initiative Depends on cell takes the epics it derives.
-7. **Coverage.**
+8. **Coverage.**
    For each epic under review, [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) and run [Match pull requests](commands.md#match-pull-requests).
    - **unmet.**
      A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown guide](work-breakdown.md#tables) defines.
@@ -51,8 +55,8 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
      An initiative criterion [sync mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
    - **ticked early.**
      An initiative criterion [sync mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
-   Put each to the user. Verifying and ticking it is [sync mode](sync-mode.md).
-8. **Re-run.**
-   - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep.
-   - Report what changed on each issue.
+   Put each to the user. Verifying and ticking it is [sync mode](sync-mode.md). The report follows [Coverage reports](work-breakdown.md#coverage-reports).
+9. **Re-run.**
+   - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep. A finding from the criteria check is not one the user keeps.
+   - Report what changed on each issue, including each finding the criteria check reported.
 
