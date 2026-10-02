@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.0.2
 ---
 
 ## Capability
@@ -11,13 +11,17 @@ The work-type category of an already-tracked issue, with an ambiguity flag when 
 
 ### issue_record
 
-The tracked issue as returned by the platform's read technique — carries the issue's type field, labels, title, and body.
+The tracked issue — its type field, labels, title, and body.
 
 ## Outputs
 
 ### issue_type
 
-The issue category (`feature`, `bug`, `task`, `enhancement`, `epic`); unset when `issue_type_ambiguous` is `true`.
+The issue category. Unset when `{issue_type_ambiguous}` is true.
+
+#### values
+
+`feature` `bug` `task` `enhancement` `epic`
 
 ### issue_type_ambiguous
 

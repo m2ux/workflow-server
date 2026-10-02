@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.1.2
 ---
 
 ## Capability
@@ -70,4 +70,4 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 
 ### worktree-distinct-from-planning-folder
 
-The planning folder is never anchored under `{target_path}`: the worktree carries the edits and the server owns the artifact folder.
+The planning folder is never anchored under `{target_path}`. The worktree carries the edits.

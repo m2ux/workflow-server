@@ -2,12 +2,12 @@
 name: readme-seed
 description: Work-package planning-folder README seed profile — Progress inventory, classifier vocabulary, and mode-exclusion map for create-readme.
 metadata:
-  version: 2.1.1
+  version: 2.1.2
 ---
 
 # Work Package README Seed
 
-Fill data for the planning-folder README. Layout and policy live in [Planning Folder README Guide](/meta/resources/planning-readme.md) ([Template](/meta/resources/planning-readme.md#template)).
+Fill data for the planning-folder README. Policy lives in [Rules](/meta/resources/planning-readme.md#rules). The fill shape is [Template](/meta/resources/planning-readme.md#template).
 
 ## Classifier
 
