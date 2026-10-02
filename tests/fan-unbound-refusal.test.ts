@@ -1,5 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { createHarness, type Harness } from './e2e/harness.js';
 
 /**
@@ -89,6 +90,12 @@ describe('next_activity opens a fan only on an exit the graph binds to it', () =
     }
     const ended = await advance({ session_index: idx, activity_id: '__terminal__', from_activity: 'combine-probes', exit: 'settled' });
     expect(ended.isError).toBeFalsy();
+    const session = JSON.parse(readFileSync(
+      join(harness.workspaceDir, '.engineering/artifacts/planning/fan-after-end/session.json'),
+      'utf8',
+    )) as { status: string; history: Array<{ type: string }> };
+    expect(session.status).toBe('completed');
+    expect(session.history.some((entry) => entry.type === 'workflow_completed')).toBe(true);
 
     const refused = await advance({ session_index: idx, activity_id: FAN });
     expect(refused.isError).toBe(true);
