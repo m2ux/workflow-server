@@ -14,9 +14,10 @@ Every command the skill runs, one spec per operation. The mode files name a spec
 - **Boards.**
   A project board sits under `users/{owner}`, or `orgs/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`.
 - **Example values.**  Substitute the real ones:
-  - `936` an initiative issue, `943` and `937` its epics, `637` a task issue, `874` an orphan, `946` an initiative off the board;
+  - `936` an initiative issue, `943` and `937` its epics, `637` a task issue, `874` an orphan, `946` an initiative off the board, `960` a proposal;
   - `950` a pull request, `I07` and `I08` initiative numbers;
   - board `9`, the Canon theme's, and `419167630` its Status field id;
+  - `1` the Initiative template board, `13` a board copied from it;
   - `m2ux` the user.
 
 ## Issues
@@ -47,10 +48,10 @@ gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" > issues.
 
 ### List initiative titles
 
-Lists every initiative, epic and task title, for finding the next initiative number.
+Lists every numbered initiative, epic and task title, for finding the next initiative number. A proposal's `[I]` title is not listed.
 
 ```bash
-gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I'
+gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I[0-9]'
 ```
 
 ### Find initiative issue
@@ -107,6 +108,14 @@ Lists the labels that exist in the repository.
 
 ```bash
 gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'
+```
+
+### Create label
+
+Creates a label. A proposal needs `type:proposal` when [List labels](#list-labels) does not show it.
+
+```bash
+gh api --method POST repos/{owner}/{repo}/labels -f name='type:proposal' -f color='1D76DB' -f description='A goal proposed as an initiative' --jq .name
 ```
 
 ### Add labels
@@ -228,6 +237,28 @@ Prints the number of the open board for one theme, by the theme's name that open
 gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | startswith("Canon: ")) | .number'
 ```
 
+### Create board
+
+Copies the Initiative template into a new open board, links the copy to the repository, and prints the new board's number.
+
+- The template is the open board titled `Initiative template`. The copy carries its Status options: Backlog, Ready, In Progress, In Review and Done.
+- The title is the new board's title: a theme board's title from [Themes and boards](../SKILL.md#themes-and-boards), or `Proposals`.
+- The copy's JSON is one project, and `.number` is the new board.
+
+```bash
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Initiative template") | .number'
+gh project copy 1 --source-owner {owner} --target-owner {owner} --title 'Canon: Definitions Checked Against the Design Canon' --format json --jq .number
+gh project link 13 --owner {owner} --repo {repo}
+```
+
+### Find proposals board
+
+Prints the number of the open board titled `Proposals`.
+
+```bash
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Proposals") | .number'
+```
+
 ### Fetch board fields
 
 Saves a board's fields.
@@ -250,6 +281,22 @@ Saves a board's items with their Status, each carrying its issue whole.
 
 ```bash
 gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=419167630" > items.json
+```
+
+### Add issue to board
+
+Adds an issue to a board and prints the new item's id. The issue's `id` comes from [Fetch issue](#fetch-issue), not its number.
+
+```bash
+gh api --method POST users/{owner}/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id
+```
+
+### Set item status
+
+Sets one board item's Status. The body names the Status field id and the option id, both taken from [Fetch board fields](#fetch-board-fields): `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
+
+```bash
+gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-backlog.json --jq .id
 ```
 
 ## Scripts

@@ -61,7 +61,7 @@ Records work on an initiative, its epics and their task issues: links each task 
     Sync it after the issues are patched and any closable issue is closed, fetching the issues again first. An open initiative whose criteria are all ticked is In Review.
     - **Find it.**
       - The board is the initiative's theme board, per SKILL.md's [Themes and boards](../SKILL.md#themes-and-boards): run [Find theme board](commands.md#find-theme-board) with its theme.
-      - When no open board carries that theme, ask the user to create it, and sync the board once it exists.
+      - When no open board carries that theme, create it with [Create board](commands.md#create-board), titled as [Themes and boards](../SKILL.md#themes-and-boards) states, then sync it.
     - **Plan.**
       - Run [Fetch board fields](commands.md#fetch-board-fields) and [Find Status field](commands.md#find-status-field), then [Fetch board items with Status](commands.md#fetch-board-items-with-status).
       - Run [Plan board changes](commands.md#plan-board-changes) with the user from [Find user](commands.md#find-user), which prints the call for each board and assignee change.
