@@ -4,12 +4,11 @@
 
 ## Changes
 
-{{One sentence on what changed and why it was needed. Then one heading per domain the changes sit in, such as the loader, the guards, the unit tests or the sidecar. Under each heading, one bullet per functional change in that domain. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines for a Proposal. Each item is at most two lines. A bold opener does not count toward the two.}}
+{{One sentence on what changed and why it was needed. Then one heading per domain the changes sit in, such as the loader, the guards, the unit tests or the sidecar. Under each heading, one bullet per functional change in that domain. The bullet opens with a bold lead, as the scheme's Bold leads rule lays one out. The change is at most two lines, the lead included: the lead names what it does, and the behavior is the single line under it.}}
 
 ### {{Domain}}
 
-- **{{What it does.}}**
-  {{The behavior as it is.}}
+- **{{What it does.}}** {{The behavior as it is.}}
 
 ## Test plan
 
