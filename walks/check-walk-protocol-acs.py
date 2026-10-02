@@ -66,14 +66,86 @@ def call_site_bindings(text: str) -> list[list[str]]:
     return sites
 
 
-def option_descriptions(text: str) -> list[str]:
-    descriptions = []
-    for match in re.finditer(
-        r"- id: .+\n(?:        .+\n)*?        description: (.+)",
-        text,
-    ):
-        descriptions.append(match.group(1).strip())
-    return descriptions
+def _indent(line: str) -> int:
+    return len(line) - len(line.lstrip(" "))
+
+
+def _in_checkpoint(lines: list[str], options_at: int, options_indent: int) -> bool:
+    for k in range(options_at - 1, -1, -1):
+        line = lines[k]
+        if not line.strip():
+            continue
+        if _indent(line) >= options_indent:
+            continue
+        if re.match(r"\s*(?:- )?kind:\s+checkpoint\s*$", line):
+            return True
+        if re.match(r"\s*(?:- )?kind:\s+", line):
+            return False
+    return False
+
+
+def options_missing_description(text: str) -> list[str]:
+    """Option ids under a checkpoint whose description is missing or empty."""
+    lines = text.splitlines()
+    missing: list[str] = []
+    i = 0
+    n = len(lines)
+    while i < n:
+        match = re.match(r"^(\s*)options:\s*$", lines[i])
+        if not match or not _in_checkpoint(lines, i, len(match.group(1))):
+            i += 1
+            continue
+        options_indent = len(match.group(1))
+        i += 1
+        while i < n:
+            line = lines[i]
+            if not line.strip():
+                i += 1
+                continue
+            indent = _indent(line)
+            if indent <= options_indent:
+                break
+            id_match = re.match(r"^\s*- id:\s*(\S+)\s*$", line)
+            if not id_match:
+                i += 1
+                continue
+            option_id = id_match.group(1)
+            item_indent = indent
+            i += 1
+            description = ""
+            while i < n:
+                inner = lines[i]
+                if not inner.strip():
+                    i += 1
+                    continue
+                inner_indent = _indent(inner)
+                if inner_indent <= item_indent:
+                    break
+                desc_match = re.match(r"^\s*description:\s*(.*)$", inner)
+                if not desc_match:
+                    i += 1
+                    continue
+                rest = desc_match.group(1).strip().strip("\"'")
+                if rest in ("", ">", ">-", "|", "|-", ">"):
+                    desc_indent = inner_indent
+                    i += 1
+                    chunks: list[str] = []
+                    while i < n:
+                        nxt = lines[i]
+                        if not nxt.strip():
+                            i += 1
+                            continue
+                        if _indent(nxt) <= desc_indent:
+                            break
+                        chunks.append(nxt.strip())
+                        i += 1
+                    description = " ".join(chunks).strip()
+                else:
+                    description = rest
+                    i += 1
+            if not description:
+                missing.append(option_id)
+    return missing
 
 
 def check() -> list[str]:
@@ -147,17 +219,13 @@ def check() -> list[str]:
     if "{checkpoint_reply}" not in take:
         fail("AC18", "take-activity does not resume when the reply is set")
 
-    routing = re.compile(r"leads to|routes to|goes to", re.I)
-    for rel in (
-        "corpus/meta/activities/04-end-workflow.yaml",
-        "corpus/workflow-design/activities/06-scope-and-draft.yaml",
-    ):
-        descriptions = option_descriptions(read(rel))
-        if not descriptions:
-            fail("AC19", f"{rel} has no option description")
-        for description in descriptions:
-            if routing.search(description):
-                fail("AC19", f"{rel} option says where the run goes: {description}")
+    corpus = ROOT / "corpus"
+    for path in sorted(corpus.rglob("*")):
+        if path.suffix not in {".yaml", ".yml"}:
+            continue
+        rel = str(path.relative_to(ROOT))
+        for option_id in options_missing_description(path.read_text()):
+            fail("AC19", f"{rel} option '{option_id}' has no description")
 
     fan_dir = ROOT / "corpus/meta/techniques/fan"
     use_clause = re.compile(r"^\*?\*?Use[d]? (this|when|to|for)\b", re.I)
