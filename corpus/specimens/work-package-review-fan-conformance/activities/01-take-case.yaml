@@ -1,7 +1,7 @@
 id: take-case
-version: 1.0.0
+version: 1.0.1
 name: Take Case
-description: Bind the next fixture case — inline structural, then full-prism deferral.
+description: Bind the next fixture case.
 variables:
   reads:
     - case_index
@@ -42,4 +42,4 @@ exits:
   - id: taken
     isDefault: true
 outcome:
-  - The next case's pipeline mode is set
+  - Whether the next case takes the inline structural pass or full prism

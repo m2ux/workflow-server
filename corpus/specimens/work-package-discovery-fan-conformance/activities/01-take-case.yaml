@@ -1,7 +1,7 @@
 id: take-case
-version: 1.0.0
+version: 1.0.1
 name: Take Case
-description: Bind the next fixture case — research needed, then research skipped.
+description: Bind the next fixture case.
 variables:
   reads:
     - case_index
@@ -39,4 +39,4 @@ exits:
   - id: taken
     isDefault: true
 outcome:
-  - The next case's needs_research flag is set
+  - Whether the next case needs research

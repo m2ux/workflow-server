@@ -1,5 +1,5 @@
 id: report-cases
-version: 1.0.0
+version: 1.0.1
 name: Report Cases
 description: Write the case report for the contract-join walk.
 variables:
@@ -19,4 +19,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - The case report is written
+  - What each case landed: which case was walked, whether the suite passed, and the exit it took

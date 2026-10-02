@@ -1,7 +1,7 @@
 id: take-case
-version: 1.0.0
+version: 1.0.1
 name: Take Case
-description: Bind the next fixture case — a complete Contract, then a Contract missing Error cases.
+description: Bind the next fixture case.
 variables:
   reads:
     - case_index
@@ -40,4 +40,4 @@ exits:
   - id: taken
     isDefault: true
 outcome:
-  - The next case's Contract completeness flag is set
+  - Whether the next case's Contract includes every field

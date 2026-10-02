@@ -1,7 +1,7 @@
 id: take-case
-version: 1.0.0
+version: 1.0.1
 name: Take Case
-description: Bind the next fixture case — an implementation run, then a review run, over one fixture change.
+description: Bind the next fixture case.
 variables:
   reads:
     - case_index
@@ -40,4 +40,4 @@ exits:
   - id: taken
     isDefault: true
 outcome:
-  - The next case's review flag is set, an implementation run and then a review run of one fixture change
+  - Whether the next case is a review run
