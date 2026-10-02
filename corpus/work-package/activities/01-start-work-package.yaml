@@ -638,6 +638,7 @@ steps:
     options:
       - id: create
         label: Create issue
+        description: Create the issue as it stands drafted.
       - id: edit
         label: Edit issue
         description: Make changes before creating

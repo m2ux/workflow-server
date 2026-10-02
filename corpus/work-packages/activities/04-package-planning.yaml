@@ -32,10 +32,12 @@ steps:
     options:
       - id: proceed
         label: Proceed to prioritization
+        description: The package plans stand, and prioritization starts.
         effect:
           exit: done
       - id: revise
         label: Revise plans
+        description: A package plan is wrong and the plans are revised.
         effect:
           exit: revise
 exits:

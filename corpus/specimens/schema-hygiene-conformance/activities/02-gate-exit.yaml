@@ -26,10 +26,12 @@ steps:
     options:
       - id: halt
         label: "Halt"
+        description: End the activity here, ahead of the step after the gate.
         effect:
           exit: halted
       - id: go-on
         label: "Go on"
+        description: Continue, so the step after the gate runs.
         effect:
           exit: finished
   - kind: action
