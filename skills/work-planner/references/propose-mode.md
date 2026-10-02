@@ -21,8 +21,8 @@ Takes the same intake as [plan mode](plan-mode.md) and raises one proposal: an i
    - Add `enhancement`, `bug`, `tech-debt`, `workflows` and a `priority: *` as they apply. There is no `theme:*` label and no assignee.
    - Create it with [Create issue](commands.md#create-issue).
 5. **Place it.**
-   - Find the board with [Find proposals board](commands.md#find-proposals-board). When it prints nothing, create the board with [Create board](commands.md#create-board), titled `Proposals`.
+   - Find the board with [Find proposals board](commands.md#find-proposals-board). When it prints nothing, create the board with [Create proposals board](commands.md#create-proposals-board).
    - [Fetch issue](commands.md#fetch-issue) for the new issue's id, then [Add issue to board](commands.md#add-issue-to-board).
-   - [Fetch board fields](commands.md#fetch-board-fields), then [Set item status](commands.md#set-item-status) to Backlog.
-   - Leave the issue unassigned. An issue in Backlog has no assignee, per [Themes and boards](../SKILL.md#themes-and-boards).
+   - [Fetch board fields](commands.md#fetch-board-fields), then [Set item status](commands.md#set-item-status) to Suggested.
+   - Leave the issue unassigned. Suggested has no assignee, per [Themes and boards](../SKILL.md#themes-and-boards).
 6. **Report.**  Give the issue's URL and the board's.

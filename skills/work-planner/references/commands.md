@@ -18,6 +18,7 @@ Every command the skill runs, one spec per operation. The mode files name a spec
   - `950` a pull request, `I07` and `I08` initiative numbers;
   - board `9`, the Canon theme's, and `419167630` its Status field id;
   - `1` the Initiative template board, `13` a board copied from it;
+  - `14` the Proposals template, `15` the Proposals board;
   - `m2ux` the user.
 
 ## Issues
@@ -242,13 +243,26 @@ gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.cl
 Copies the Initiative template into a new open board, links the copy to the repository, and prints the new board's number.
 
 - The template is the open board titled `Initiative template`. The copy carries its Status options: Backlog, Ready, In Progress, In Review and Done.
-- The title is the new board's title: a theme board's title from [Themes and boards](../SKILL.md#themes-and-boards), or `Proposals`.
+- The title is the new board's title: a theme board's title from [Themes and boards](../SKILL.md#themes-and-boards).
 - The copy's JSON is one project, and `.number` is the new board.
 
 ```bash
 gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Initiative template") | .number'
 gh project copy 1 --source-owner {owner} --target-owner {owner} --title 'Canon: Definitions Checked Against the Design Canon' --format json --jq .number
 gh project link 13 --owner {owner} --repo {repo}
+```
+
+### Create proposals board
+
+Copies the Proposals template into a new open board, links the copy to the repository, and prints the new board's number.
+
+- The template is the open board titled `Proposals template`. The copy carries its Status options, listed under Proposals in [Themes and boards](../SKILL.md#themes-and-boards).
+- The title is `Proposals`.
+
+```bash
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Proposals template") | .number'
+gh project copy 14 --source-owner {owner} --target-owner {owner} --title 'Proposals' --format json --jq .number
+gh project link 15 --owner {owner} --repo {repo}
 ```
 
 ### Find proposals board
