@@ -20,9 +20,9 @@ variables:
     type: boolean
     defaultValue: false
     description: True when the work package reviews an existing PR instead of producing a new implementation.
-  - name: skip_optional_activities
+  - name: optional_activities_declined
     type: boolean
-    description: Whether to skip optional discovery activities (elicitation and research).
+    description: Whether the user declined the optional discovery activities, elicitation and research.
     defaultValue: false
   - name: target_path
     type: string

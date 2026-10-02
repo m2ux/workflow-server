@@ -52,7 +52,7 @@ variables:
         - web-retrieval
         - mixed
       defaultValue: repo-only
-    - name: context_scope_uncertain
+    - name: needs_context_scope
       type: boolean
       description: True when research run evidence cannot decide repo-only vs web-retrieval vs mixed for context_scope.
       defaultValue: false
@@ -126,8 +126,8 @@ steps:
         target: context_scope
         value: "{research_outputs.0.result.context_scope}"
       - action: set
-        target: context_scope_uncertain
-        value: "{research_outputs.0.result.context_scope_uncertain}"
+        target: needs_context_scope
+        value: "{research_outputs.0.result.needs_context_scope}"
       - action: set
         target: research_document
         value: "{research_outputs.0.result.research_document}"
@@ -199,7 +199,7 @@ steps:
     id: context-scope-declaration
     condition:
       type: simple
-      variable: context_scope_uncertain
+      variable: needs_context_scope
       operator: ==
       value: true
     message: The research run's evidence settles no single provenance scope for the sources that informed the design.
@@ -212,21 +212,21 @@ steps:
         effect:
           setVariable:
             context_scope: repo-only
-            context_scope_uncertain: false
+            needs_context_scope: false
       - id: web-retrieval
         label: External web sources used for design decisions
         description: Web search, external docs, or third-party references informed the approach
         effect:
           setVariable:
             context_scope: web-retrieval
-            context_scope_uncertain: false
+            needs_context_scope: false
       - id: mixed
         label: Both repository and external sources used
         description: Mix of codebase analysis and external references
         effect:
           setVariable:
             context_scope: mixed
-            context_scope_uncertain: false
+            needs_context_scope: false
   - kind: technique
     id: create-plan
     technique: plan

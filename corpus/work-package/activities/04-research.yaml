@@ -22,7 +22,7 @@ variables:
         - web-retrieval
         - mixed
       defaultValue: repo-only
-    - name: context_scope_uncertain
+    - name: needs_context_scope
       type: boolean
       description: True when research run evidence cannot decide repo-only vs web-retrieval vs mixed for context_scope.
       defaultValue: false
@@ -61,7 +61,7 @@ steps:
         target: has_reconcilable_research
         value: false
       - action: set
-        target: context_scope_uncertain
+        target: needs_context_scope
         value: false
   - kind: technique
     id: research-knowledge-base
@@ -90,7 +90,7 @@ steps:
     technique: document
   - kind: action
     id: announce-derived-context-scope
-    when: needs_research == true && context_scope_uncertain != true
+    when: needs_research == true && needs_context_scope != true
     actions:
       - action: message
         message: "Research context scope derived as `{context_scope}`."

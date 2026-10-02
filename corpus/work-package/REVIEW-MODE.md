@@ -20,7 +20,7 @@ When activated, review mode:
 
 ### State-Driven Activation
 
-Review mode is driven by `is_review_mode`, plus the gap flags `review_mode_ambiguous` and `review_pr_missing` for the cases where derivation cannot settle mode or PR identity.
+Review mode is driven by `is_review_mode`, plus the gap flags `needs_review_mode` and `needs_review_pr` for the cases where derivation cannot settle mode or PR identity.
 
 A derive-first detection step early in `start-work-package` (`detect-review-mode`) recognizes review intent and PR identity from `{user_request}` / `{pr_reference}`. When mode and PR are clear, the run continues without activation confirms. When mode is ambiguous, `review-mode-detection` asks; when review mode is active but the PR is missing, `review-pr-reference` asks. Everything mode-specific downstream is a conditional step, checkpoint, or exit that reads `is_review_mode`, and mode-specific variable values (e.g. `needs_elicitation = false`) are set by an ordinary control step gated the same way.
 
@@ -67,8 +67,8 @@ The `detect-review-mode` step in `start-work-package` derives review mode from u
 
 Clear review intent with a parseable PR number or URL skips activation confirms and announces the derived mode. Confirms fire only on gaps:
 
-- **Mode unclear** — `review_mode_ambiguous` → `review-mode-detection` (review vs new implementation)
-- **PR missing** — `review_pr_missing` → `review-pr-reference` (number or URL)
+- **Mode unclear** — `needs_review_mode` → `review-mode-detection` (review vs new implementation)
+- **PR missing** — `needs_review_pr` → `review-pr-reference` (number or URL)
 
 When the first derive pass already checked out the PR branch, a second bind is skipped. When the PR was supplied only at the gap confirm, a follow-up `capture-pr-reference` bind completes checkout and ticket extract.
 

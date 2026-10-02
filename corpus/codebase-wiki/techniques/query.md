@@ -55,8 +55,7 @@ Parts of the question the wiki does not cover, surfaced so the caller can decide
 
 ### 4. Persist If Requested
 
-- When `{persist_answer}` is true, hold the page file as `{$page_filename}` and the answer body as `{$answer_body}`.
-- Write that page via [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md) (*bare_filename*=`{page_filename}`, *artifact_content*=`{answer_body}`, *target_dir*=`{wiki_path}`), then apply [maintain-index-log](./maintain-index-log.md) (*mutated_pages*=`{page_filename}`, *operation_summary*=`{wiki_question}`) so the new page enters the catalog and ledger.
+- When `{persist_answer}` is true, write the answer as a page under `{wiki_path}` and record its slug as `{answer_page}`.
 
 ## Rules
 

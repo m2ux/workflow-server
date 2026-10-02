@@ -64,7 +64,7 @@ variables:
       type: boolean
       description: Whether any assumption was deferred to stakeholders.
       defaultValue: false
-    - name: has_uncertain_symbols
+    - name: needs_symbol_confirmation
       type: boolean
       description: True when one or more symbols have unconfirmed provenance.
       defaultValue: false
@@ -171,7 +171,7 @@ steps:
         loopType: doWhile
         continueWhile:
           type: simple
-          variable: has_uncertain_symbols
+          variable: needs_symbol_confirmation
           operator: ==
           value: true
         maxIterations: 3
@@ -183,7 +183,7 @@ steps:
             id: symbol-provenance-confirmed
             condition:
               type: simple
-              variable: has_uncertain_symbols
+              variable: needs_symbol_confirmation
               operator: ==
               value: true
             message: |-
@@ -196,13 +196,13 @@ steps:
                 description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
                 effect:
                   setVariable:
-                    has_uncertain_symbols: false
+                    needs_symbol_confirmation: false
               - id: uncertain
                 label: Trace the flagged symbols again
                 description: The flagged symbols remain unaccounted for.
                 effect:
                   setVariable:
-                    has_uncertain_symbols: true
+                    needs_symbol_confirmation: true
   - kind: routine
     id: settle-assumptions
     routine: settle-assumptions

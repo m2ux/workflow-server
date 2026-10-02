@@ -44,9 +44,9 @@ variables:
     - name: problem_type
       type: string
       description: Problem or inventive-goal classification (e.g. defect, inventive-improvement).
-    - name: skip_optional_activities
+    - name: optional_activities_declined
       type: boolean
-      description: Whether to skip optional discovery activities (elicitation and research).
+      description: Whether the user declined the optional discovery activities, elicitation and research.
       defaultValue: false
     - name: ticket_disposition
       type: string
@@ -103,7 +103,7 @@ steps:
             problem_complexity: complex
             needs_elicitation: true
             needs_research: true
-            skip_optional_activities: false
+            optional_activities_declined: false
       - id: elicitation-only
         label: Elicitation only (skip research)
         description: Requirements unclear but domain is well-understood
@@ -112,7 +112,7 @@ steps:
             problem_complexity: moderate
             needs_elicitation: true
             needs_research: false
-            skip_optional_activities: false
+            optional_activities_declined: false
       - id: research-only
         label: Research only (skip elicitation)
         description: Requirements clear but need to research best practices
@@ -121,7 +121,7 @@ steps:
             problem_complexity: moderate
             needs_elicitation: false
             needs_research: true
-            skip_optional_activities: false
+            optional_activities_declined: false
       - id: skip-optional
         label: Skip optional activities
         description: Well-defined issue — no additional discovery needed
@@ -130,7 +130,7 @@ steps:
             problem_complexity: simple
             needs_elicitation: false
             needs_research: false
-            skip_optional_activities: true
+            optional_activities_declined: true
   - kind: technique
     id: determine-path
     technique: determine-path

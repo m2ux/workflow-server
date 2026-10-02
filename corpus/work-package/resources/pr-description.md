@@ -153,7 +153,7 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 `{ENG_PLANNING_PATH}` is the planning root relative to the root of the checkout `{ENG_BRANCH}` belongs to, so it carries the `.engineering/` segment only when the artifacts live directly in that checkout.
 
-**Issue-skipped placeholder** (when `issue_skipped == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional):
+**Issue-skipped placeholder** (when `issue_creation_declined == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional):
 
 ```markdown
 🐛 _Issue: skipped_  📐 `Engineering`
@@ -197,7 +197,7 @@ The Engineering link is present and resolves to a committed file on the remote. 
 
 ### Issue line present
 
-The Issue line is present. When `issue_skipped` is true it renders the [Issue-skipped placeholder](#link-row-forms) rather than dropping the line or carrying a fabricated number.
+The Issue line is present. When `issue_creation_declined` is true it renders the [Issue-skipped placeholder](#link-row-forms) rather than dropping the line or carrying a fabricated number.
 
 ### Changes grouped by component
 

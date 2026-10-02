@@ -110,9 +110,9 @@ variables:
     - name: issue_record
       type: object
       description: The tracked issue as its platform returned it.
-    - name: issue_skipped
+    - name: issue_creation_declined
       type: boolean
-      description: Whether issue creation was skipped by user.
+      description: Whether the user declined issue creation.
       defaultValue: false
     - name: issue_type
       type: string
@@ -123,7 +123,7 @@ variables:
         - task
         - enhancement
         - epic
-    - name: issue_type_ambiguous
+    - name: needs_issue_type
       type: boolean
       description: Whether the tracked issue's own signals leave its type unsettled.
       defaultValue: false
@@ -156,9 +156,9 @@ variables:
     - name: pr_number
       type: string
       description: Pull request number.
-    - name: pr_skipped
+    - name: pr_creation_declined
       type: boolean
-      description: Whether PR creation was skipped by user.
+      description: Whether the user declined pull-request creation.
       defaultValue: false
     - name: pr_url
       type: string
@@ -178,7 +178,7 @@ variables:
       type: string
       description: The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings.
       defaultValue: ""
-    - name: review_mode_ambiguous
+    - name: needs_review_mode
       type: boolean
       description: True when review vs create intent cannot be derived confidently from the request.
       defaultValue: false
@@ -186,7 +186,7 @@ variables:
       type: boolean
       description: Whether the PR reference has been captured in review mode.
       defaultValue: false
-    - name: review_pr_missing
+    - name: needs_review_pr
       type: boolean
       description: True when review mode is active but no PR number or URL could be derived.
       defaultValue: false
@@ -230,7 +230,7 @@ steps:
     technique: review-mode-detection
   - kind: action
     id: announce-derived-review-mode
-    when: is_review_mode == true && review_mode_ambiguous != true
+    when: is_review_mode == true && needs_review_mode != true
     actions:
       - action: message
         message: "Review mode derived from the request."
@@ -244,7 +244,7 @@ steps:
           operator: ==
           value: true
         - type: simple
-          variable: review_pr_missing
+          variable: needs_review_pr
           operator: "!="
           value: true
         - type: simple
@@ -257,7 +257,7 @@ steps:
     id: review-mode-detection
     condition:
       type: simple
-      variable: review_mode_ambiguous
+      variable: needs_review_mode
       operator: ==
       value: true
     message: Review vs new-implementation intent is unclear from the request.
@@ -268,14 +268,14 @@ steps:
         effect:
           setVariable:
             is_review_mode: true
-            review_mode_ambiguous: false
+            needs_review_mode: false
       - id: new-implementation
         label: No, new implementation
         description: This is new work, not a review
         effect:
           setVariable:
             is_review_mode: false
-            review_mode_ambiguous: false
+            needs_review_mode: false
   - kind: action
     id: mark-review-pr-captured
     condition:
@@ -286,7 +286,7 @@ steps:
           operator: ==
           value: true
         - type: simple
-          variable: review_pr_missing
+          variable: needs_review_pr
           operator: "!="
           value: true
         - type: simple
@@ -306,7 +306,7 @@ steps:
           operator: ==
           value: true
         - type: simple
-          variable: review_pr_missing
+          variable: needs_review_pr
           operator: ==
           value: true
     message: "Review mode needs a PR reference (number or URL)."
@@ -317,14 +317,14 @@ steps:
         effect:
           setVariable:
             review_pr_captured: true
-            review_pr_missing: false
+            needs_review_pr: false
       - id: cancel-review
         label: Cancel review mode
         description: Switch to standard work package mode
         effect:
           setVariable:
             is_review_mode: false
-            review_pr_missing: false
+            needs_review_pr: false
   - kind: technique
     id: capture-pr-reference
     technique: review-mode-detection
@@ -475,7 +475,7 @@ steps:
         description: Proceed without (not recommended for non-trivial work)
         effect:
           setVariable:
-            issue_skipped: true
+            issue_creation_declined: true
   - kind: checkpoint
     id: platform-selection
     condition:
@@ -516,7 +516,7 @@ steps:
           operator: "!="
           value: true
         - type: simple
-          variable: issue_skipped
+          variable: issue_creation_declined
           operator: "!="
           value: true
         - type: simple
@@ -616,7 +616,7 @@ steps:
   - kind: technique
     id: derive-issue-type
     technique: issue-type-detection
-    when: is_review_mode != true && needs_issue_creation != true && issue_skipped != true
+    when: is_review_mode != true && needs_issue_creation != true && issue_creation_declined != true
   - kind: checkpoint
     id: issue-type-selection
     condition:
@@ -627,7 +627,7 @@ steps:
           operator: ==
           value: true
         - type: simple
-          variable: issue_type_ambiguous
+          variable: needs_issue_type
           operator: ==
           value: true
     message: The drafted issue's type is unsettled.
@@ -638,35 +638,35 @@ steps:
         effect:
           setVariable:
             issue_type: feature
-            issue_type_ambiguous: false
+            needs_issue_type: false
       - id: bug
         label: Bug
         description: Defect in existing functionality
         effect:
           setVariable:
             issue_type: bug
-            issue_type_ambiguous: false
+            needs_issue_type: false
       - id: task
         label: Task
         description: Technical work not directly user-facing
         effect:
           setVariable:
             issue_type: task
-            issue_type_ambiguous: false
+            needs_issue_type: false
       - id: enhancement
         label: Enhancement
         description: Improvement to existing functionality
         effect:
           setVariable:
             issue_type: enhancement
-            issue_type_ambiguous: false
+            needs_issue_type: false
       - id: epic
         label: Epic (Jira only)
         description: Large feature spanning multiple stories/tasks
         effect:
           setVariable:
             issue_type: epic
-            issue_type_ambiguous: false
+            needs_issue_type: false
   - kind: checkpoint
     id: issue-review
     condition:
@@ -705,7 +705,7 @@ steps:
   - kind: technique
     id: lookup-current-user
     technique: atlassian::user-info
-    when: issue_platform == 'jira' && issue_skipped != true
+    when: issue_platform == 'jira' && issue_creation_declined != true
   - kind: technique
     id: assign-issue-jira
     technique:
@@ -713,14 +713,14 @@ steps:
       inputs:
         issueIdOrKey: "{issue_number}"
         fields: "{ assignee: { accountId: {accountId} } }"
-    when: issue_skipped != true && issue_platform == 'jira'
+    when: issue_creation_declined != true && issue_platform == 'jira'
   - kind: technique
     id: transition-issue-jira
     technique:
       name: atlassian::transition-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
-    when: issue_skipped != true && issue_platform == 'jira'
+    when: issue_creation_declined != true && issue_platform == 'jira'
   - kind: technique
     id: assign-issue-github
     technique:
@@ -728,7 +728,7 @@ steps:
       inputs:
         repo_path: component_git_dir
         assignee: "@me"
-    when: issue_skipped != true && issue_platform == 'github'
+    when: issue_creation_declined != true && issue_platform == 'github'
   - kind: technique
     id: initialize-planning-folder
     technique:
@@ -853,13 +853,13 @@ steps:
         description: Open a draft pull request from the feature branch, linked to the issue
         effect:
           setVariable:
-            pr_skipped: false
+            pr_creation_declined: false
       - id: skip-pr
         label: Skip PR for now
         description: Continue without a pull request (can create later)
         effect:
           setVariable:
-            pr_skipped: true
+            pr_creation_declined: true
   - kind: technique
     id: create-pr
     technique:
@@ -867,7 +867,7 @@ steps:
       inputs:
         issue_number: "{issue_number}"
         issue_platform: "{issue_platform}"
-    when: is_review_mode != true && use_existing_pr == false && pr_skipped != true
+    when: is_review_mode != true && use_existing_pr == false && pr_creation_declined != true
     actions:
       - action: set
         target: pr_exists
@@ -891,7 +891,7 @@ steps:
           variable: pr_number
           operator: exists
         - type: simple
-          variable: issue_skipped
+          variable: issue_creation_declined
           operator: "!="
           value: true
         - type: simple
@@ -915,7 +915,7 @@ steps:
           variable: pr_number
           operator: exists
         - type: simple
-          variable: issue_skipped
+          variable: issue_creation_declined
           operator: "!="
           value: true
         - type: simple

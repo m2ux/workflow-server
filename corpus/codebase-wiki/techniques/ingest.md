@@ -57,10 +57,9 @@ A one-line description of this ingest for the log ledger — the area covered (`
 ### 2. Read Raw Source
 
 - Read the raw source for `{target_area}` in place at `{raw_baseline_commit}` — the immutable baseline. Do not copy source into the wiki.
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[resolve-graph](/gitnexus/techniques/resolve-graph.md)(*tree_path*: the source tree the baseline was pinned from) and take its `{repo_name}` as the graph every technique below addresses, and its `{graph_inventory}` for the commit that graph was built at. An empty `{repo_name}` means the tree carries no index, and the reads below are grep and file reads instead.
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[verify-index](/gitnexus/techniques/verify-index.md) against `{repo_name}` and read its `{index_stale}`, per `gitnexus.index-freshness-first` — a graph built before `{raw_baseline_commit}` describes a tree the citations do not point at.
-- Take the area's structure from the graph so claims about it rest on evidence rather than inference: [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: `{target_area}` as keywords, *repo_name*: `{repo_name}`) whose `{query_report}` gives the execution flows the area participates in, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`, *repo_name*: `{repo_name}`) for each symbol a page names, whose `{context_report}` gives the callers and callees that become the `related[]` the cascade in step 5 acts on.
-  > - A caller reached through a macro body or named only in a type position is absent from either answer, per `gitnexus.edges-the-parser-cannot-see`. Where the area is built on generated code, a claim of completeness rests on a grep alongside the graph, and the page says which was done.
+- Read the graph covering the source tree the baseline was pinned from, and whether that graph is behind `{raw_baseline_commit}`. An absent graph means the reads below are grep and file reads.
+- Take the area's flows, and the callers and callees of each symbol a page names, from that graph. Those callers and callees become the `related[]` the cascade in step 5 acts on.
+  > - A caller reached through a macro body or named only in a type position is absent from the graph. Where the area is built on generated code, a claim of completeness rests on a grep alongside the graph, and the page says which was done.
 - If `{task_knowledge}` was supplied, read it as a second source of claims for the same pages.
 
 ### 3. Classify Into Typed Pages
@@ -77,13 +76,12 @@ A one-line description of this ingest for the log ledger — the area covered (`
 
 ### 5. Cascade Related Pages
 
-- Hold the slugs of the pages this pass wrote as `{$subject_slugs}`, and the slugs of the related pages as `{$related_slugs}`.
-- Apply [cross-link](./cross-link.md) (*subject_pages*=`{subject_slugs}`, *related_pages*=`{related_slugs}`) to insert `[[wikilink]]` relationships between the new or changed pages and their related pages, and to update the `related[]` frontmatter on both ends.
+- Insert `[[wikilink]]` relationships between the pages this pass wrote and their related pages, and update the `related[]` frontmatter on both ends.
 - Update any related page whose claims are affected by this area's change (for example a caller's source-summary or a comparison that references the changed entity).
 
 ### 6. Write Pages
 
-- Write each page by delegating to [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md), binding `bare_filename` to the page's `{$page_slug}.md`, `artifact_content` to the page body, and `target_dir` to `{wiki_path}` (or the typed subfolder beneath it). The find-or-create behavior of `write-artifact` augments an existing page in place and creates a new one otherwise.
+- Write each page under `{wiki_path}`, named for its slug, creating it or augmenting the existing page in place.
 
 ## Rules
 
@@ -97,7 +95,7 @@ When a page already covers the area, augment it with new sections and deeper det
 
 ### delegate-file-writes
 
-Page file IO is delegated to `work-package::manage-artifacts::write-artifact` — ingest composes page content and citations, it does not re-implement file writing.
+Ingest composes page content and citations. The page file is written under `{wiki_path}`.
 
 ### cite-the-task-too
 
