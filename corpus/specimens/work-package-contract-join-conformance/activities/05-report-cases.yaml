@@ -19,4 +19,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - What each case landed: which case was walked, whether the suite passed, and the exit it took
+  - "What each case landed: which case was walked, whether the suite passed, and the exit it took"

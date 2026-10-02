@@ -1,18 +1,14 @@
 id: implementation-join
 version: 1.1.1
 name: Implementation Join
-description: >-
-  Converge the contract-tests and implement fan branches, hoist each branch's
-  containers, confirm contract suites are red against the base tree, run them
-  against the implementation, settle symbol provenance and residual assumptions,
-  and continue to lean-coding audit. A failing suite returns to the implementer;
-  a disputed test reaches the user as a contract ambiguity.
+description: Join the contract-test results with the implementation.
 variables:
   reads:
     - implement_outputs
     - branch_name
     - component_git_dir
     - contract_tests_outputs
+    - default_branch
     - implementation_plan
     - is_review_mode
     - planning_folder_path
@@ -113,8 +109,7 @@ steps:
       - action: validate
         target: contract_tests_fail_on_base == true
         message: >-
-          Contract tests did not fail against the base tree. The contract-tests
-          branch must leave a red suite before implementation is joined.
+          Contract tests did not fail against the base tree. Leave a red suite on the contract-tests branch.
   - kind: technique
     id: merge-contract-tests
     technique: merge-contract-tests
@@ -223,7 +218,6 @@ exits:
   - id: done
     isDefault: true
 outcome:
-  - Fan containers from contract-tests and implement are hoisted
-  - Contract suites are confirmed red against the base tree, then green against the implementation
-  - A failing suite returns to the implementer; a disputed test reaches the user as a contract ambiguity
-  - Symbol provenance and residual assumptions are settled at the join once the suite passes
+  - Contract tests and the implementation are both in hand
+  - The contract suites fail on the base tree and pass on the implementation
+  - Symbol provenance is settled and the residual assumptions are settled

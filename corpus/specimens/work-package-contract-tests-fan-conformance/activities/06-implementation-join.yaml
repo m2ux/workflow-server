@@ -43,4 +43,4 @@ exits:
   - id: done
     isDefault: true
 outcome:
-  - Fan containers hoisted; red on base confirmed
+  - The contract-test and implementation results are both in hand, and the suite is red on the base tree

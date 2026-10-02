@@ -7,6 +7,8 @@ metadata:
 
 # Provenance Log Guide
 
+## Record
+
 Creation guide for bare filename `provenance-log.md`. An append-only record of who did what: one row per task, added as the task completes. Its columns are fixed because rows accumulate across a run and a reader compares them.
 
 ## Template

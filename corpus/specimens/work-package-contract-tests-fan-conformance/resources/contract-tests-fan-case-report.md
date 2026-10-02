@@ -16,3 +16,9 @@ metadata:
 |---|---|---|---|
 | 1 | yes/no | path | branch |
 ```
+
+## Rules
+
+### a-row-names-the-worktree-the-fan-wrote
+
+Each row records whether the suite failed on the base tree, and the worktree path and branch the fan left. A row that names the path the case was designed to use, rather than the path the walk wrote, has reported the fixture as the result.

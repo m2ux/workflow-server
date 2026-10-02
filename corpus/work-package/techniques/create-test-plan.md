@@ -13,6 +13,14 @@ Create test strategy and test plan with cases and acceptance criteria
 
 The work package [plan](../resources/plan-guide.md#template), whose task breakdown scopes test coverage to each task and its dependencies.
 
+### query_report
+
+*(optional)* Execution flows related to the work, already read by the run.
+
+### context_report
+
+*(optional)* Callers and callees of a symbol in that work, already read by the run.
+
 ## Outputs
 
 ### test_plan_document
@@ -44,7 +52,7 @@ Test [strategy](../resources/test-plan-guide.md#test-plan-structure) and accepta
 - Create specific test cases for each requirement
 - Include boundary conditions, error paths, and edge cases
 - Link each test case to its requirement and acceptance criterion
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md)(*search_query*: `{$concept}`) to find existing test patterns for related concepts and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{$symbol}`) to identify error-path callees as edge-case test candidates.
+- Where `{query_report}` is present, take existing test patterns from it. Where `{context_report}` is present, take error-path callees from it.
 
 ### 4. Write Artifact
 

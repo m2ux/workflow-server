@@ -4,7 +4,7 @@ name: Check Contracts
 description: Verify every task in the case's plan carries Signatures, Behaviours, Error cases and Acceptance.
 variables:
   reads:
-    - plan_path
+    - plan_document
   writes:
     - name: contract_check_held
       type: boolean

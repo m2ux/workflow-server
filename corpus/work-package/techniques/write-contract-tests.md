@@ -11,7 +11,7 @@ Write integration tests for one plan task from its Contract alone.
 
 ### current_task
 
-The plan task under test, including its Contract: Signatures, Behaviours, Error cases, Acceptance.
+The plan task under test, including its Contract.
 
 ### contract_tests_path
 
@@ -27,12 +27,12 @@ Repository-relative paths this task's contract tests wrote.
 
 ### 1. Read the Contract Only
 
-- Read `{current_task}` Contract fields: Signatures, Behaviours, Error cases, Acceptance
+- Read the Contract on `{current_task}` per the [plan guide](/work-package/resources/plan-guide.md#rules)
 - Goal, deliverables, and any plan section outside that Contract are out of scope
 - Implementation source is out of scope
 
 ### 2. Write Tests
 
-- Write integration tests under `{contract_tests_path}` that assert the Contract's Signatures, Behaviours, Error cases and Acceptance
+- Write integration tests under `{contract_tests_path}` that assert that Contract
 - Place them in files of their own, named for the task id
 - Emit `{contract_tests_changed_paths}` as the paths written

@@ -9,6 +9,8 @@ metadata:
 
 # Work Package Plan Guide
 
+## Specification
+
 The work package plan is the detailed implementation specification: enough detail for an implementer to begin work.
 
 ## When to Write the Plan
@@ -69,7 +71,7 @@ Create it when the work package has 3+ distinct tasks, modifies multiple compone
 
 ## Testing Strategy
 
-[One line: Test cases and acceptance matrix: [test plan](test-plan-guide.md). Add ONLY ordering or fixture constraints the test plan does not carry.]
+[One line: Test cases and acceptance matrix: `test-plan.md`. Add ONLY ordering or fixture constraints the test plan does not carry.]
 
 ## Dependencies & Risks
 

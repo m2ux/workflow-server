@@ -34,7 +34,7 @@ Definition: [`15-codebase-comprehension.yaml`](./15-codebase-comprehension.yaml)
 
 ### 03. Requirements Elicitation (optional)
 
-Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so planning starts from agreed requirements. Skipped in review mode (requirements come from the ticket). Leads to research or directly to implementation-analysis.
+Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so planning starts from agreed requirements. Skipped in review mode (requirements come from the ticket). Both exits fan to research and implementation-analysis together.
 
 Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.yaml)
 
@@ -50,7 +50,7 @@ Definition: [`04-research.yaml`](./04-research.yaml)
 
 ### 05. Implementation Analysis (optional)
 
-Analyzes the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. A branch of the discovery fan beside research when both run; otherwise leads alone to plan-prepare.
+Analyzes the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. A branch of the discovery fan beside research; both converge on plan-prepare.
 
 Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yaml)
 
@@ -66,7 +66,7 @@ Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
 ### 07. Assumptions Review
 
-Converges the assumptions logged since design philosophy and settles those still open, so the plan rests on settled assumptions before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
+Converges the assumptions logged since design philosophy and settles those still open, so the plan rests on settled assumptions before code is written. May loop back for further discussion, deeper comprehension, or plan revision. Review mode continues to lean-coding audit. An approved set fans to contract-tests and implement together.
 
 Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 

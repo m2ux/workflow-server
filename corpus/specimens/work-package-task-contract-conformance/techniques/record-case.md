@@ -21,9 +21,9 @@ Whether the check held.
 
 Fields the check found absent.
 
-### plan_path
+### plan_document
 
-Path of the plan written for the case.
+The plan written for the case.
 
 ### case_outcomes
 
@@ -39,4 +39,4 @@ The list with this case's outcome appended: whether the case wrote every Contrac
 
 ### 1. Record Outcome
 
-- Append this case to `{case_outcomes}` from `{contract_complete}`, `{contract_check_held}`, `{contract_check_missing}`, and `{plan_path}`
+- Append this case to `{case_outcomes}` from `{contract_complete}`, `{contract_check_held}`, `{contract_check_missing}`, and `{plan_document}`

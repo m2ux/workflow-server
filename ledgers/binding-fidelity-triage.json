@@ -401,18 +401,18 @@
       "rationale": "agent-applied-result"
     },
     {
-      "check": "dead-output",
-      "site": "work-package-discovery-fan-conformance/techniques/surface-assumptions.md",
-      "detail": "output 'surfaced_assumptions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "specimen-surface-stub"
-    },
-    {
       "check": "binding-resolution",
       "site": "work-package/activities/06-plan-prepare.yaml[reconcile-research-candidates]",
       "detail": "step technique 'research/reconcile' does not resolve",
       "verdict": "harmless",
       "rationale": "group-technique-path"
+    },
+    {
+      "check": "dead-output",
+      "site": "github/techniques/post-pr-review.md",
+      "detail": "output 'posted_review_id' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
     },
     {
       "check": "read-resolution",

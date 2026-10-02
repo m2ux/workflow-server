@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -25,17 +25,12 @@ One entry per assumption surfaced this pass: category, risk, statement with rati
 
 ## Protocol
 
-### 1. Identify the Assumptions
+### 1. Surface From the Source
 
-- Identify all implicit decisions and assumptions across `{assumption_source}` — consult the [probe vocabulary](../resources/assumptions-review.md#probe-vocabulary) and [classification vocabulary](../resources/assumptions-review.md#classification-vocabulary) when filling entries
-  > Where `{assumption_source}` is absent, take the findings and working context already in hand.
+- Surface the assumptions `{assumption_source}` carries. Classify each by `{assumption_categories}` and rate it from the [classification vocabulary](../resources/assumptions-review.md#classification-vocabulary). The [probe vocabulary](../resources/assumptions-review.md#probe-vocabulary) is what counts as an assumption.
+  > Where `{assumption_source}` is absent, emit an empty `{surfaced_assumptions}`.
 
-### 2. Classify and Rate Each
-
-- Classify each by a category from `{assumption_categories}`
-- Assign a risk letter (**H** / **M** / **L**) from the [classification vocabulary](../resources/assumptions-review.md#classification-vocabulary)
-
-### 3. Emit the Surface
+### 2. Emit the Surface
 
 - Emit `{surfaced_assumptions}` as the list of classified entries.
   > Where none are significant, emit an empty list.

@@ -77,7 +77,8 @@ A one-line description of this ingest for the log ledger — the area covered (`
 
 ### 5. Cascade Related Pages
 
-- Apply [cross-link](./cross-link.md) to insert `[[wikilink]]` relationships between the new or changed pages and their related pages, and to update the `related[]` frontmatter on both ends.
+- Hold the slugs of the pages this pass wrote as `{$subject_slugs}`, and the slugs of the related pages as `{$related_slugs}`.
+- Apply [cross-link](./cross-link.md) (*subject_pages*=`{subject_slugs}`, *related_pages*=`{related_slugs}`) to insert `[[wikilink]]` relationships between the new or changed pages and their related pages, and to update the `related[]` frontmatter on both ends.
 - Update any related page whose claims are affected by this area's change (for example a caller's source-summary or a comparison that references the changed entity).
 
 ### 6. Write Pages

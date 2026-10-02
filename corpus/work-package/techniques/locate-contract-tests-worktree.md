@@ -11,14 +11,15 @@ The branch and directory for contract-test files.
 
 ### contract_tests_branch
 
-`{branch_name}` with `-contract-tests` appended.
+The branch the contract-test files stand on.
 
 ### contract_tests_path
 
-The parent directory of `{target_path}`, plus the basename of `{planning_folder_path}` with `-contract-tests` appended.
+The directory the contract-test files stand in.
 
 ## Protocol
 
-### 1. Name the Branch and Directory
+### 1. Name the Targets
 
-- Emit `{contract_tests_branch}` and `{contract_tests_path}`
+- Set `{contract_tests_branch}` to `{branch_name}` with `-contract-tests` appended.
+- Set `{contract_tests_path}` to the parent directory of `{target_path}`, plus the basename of `{planning_folder_path}` with `-contract-tests` appended.

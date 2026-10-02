@@ -43,7 +43,7 @@ The assumptions [log](../resources/assumptions-review.md#assumptions-log-templat
 
 ### 2. Append Each Surface
 
-- Append every entry of `{research_assumptions}` and every entry of `{analysis_assumptions}` as one table row each — ID, phase, category, risk, statement with rationale — per the log template
+- Append every entry of `{research_assumptions}` and every entry of `{analysis_assumptions}` as one table row each, per the [log template](../resources/assumptions-review.md#assumptions-log-template)
   > Where a surface is absent or empty, append nothing for it.
 
 ### 3. Emit

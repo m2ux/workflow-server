@@ -7,6 +7,8 @@ metadata:
 
 # Prior Feedback Triage Guide
 
+## Register
+
 Creation guide for bare filename `prior-feedback-triage.json`. Answers: what did earlier readers already say, which of it still stands, and does any of it cap the verdict. Author class and blocker class are fields of this register in particular, because the rating cap is derived from them.
 
 ## Template

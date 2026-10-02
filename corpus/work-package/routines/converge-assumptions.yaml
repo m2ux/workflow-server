@@ -29,10 +29,6 @@ outputs:
   - id: assumptions_log
     type: object
     description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
-  - id: assumptions_log_path
-    type: string
-    description: Path to the written assumptions log.
-    optional: true
   - id: has_open_assumptions
     type: boolean
     description: Whether unresolved assumptions requiring stakeholder input remain.
@@ -43,6 +39,8 @@ outputs:
     optional: true
 
 internals:
+  - id: query_report
+    description: Execution flows read for this work before reconciliation.
   - id: has_resolvable_assumptions
     description: Whether a round left an assumption targeted analysis can still resolve, which keeps the loop running.
 
@@ -59,14 +57,22 @@ steps:
     maxIterations: 10
     steps:
       - kind: technique
+        id: query-flows
+        technique:
+          name: gitnexus::query
+          inputs:
+            search_query: problem_statement
+          outputs:
+            query_report: query_report
+      - kind: technique
         id: reconcile
         technique:
           name: review-assumptions::reconcile
           inputs:
             assumptions_log: assumptions_log
+            query_report: query_report
           outputs:
             assumptions_log: assumptions_log
-            assumptions_log_path: assumptions_log_path
       # Named for the pass rather than for its first step: a reference id and the body step it
       # prefixes compose into one identifier, so two segments spelled alike read as a fault.
       - kind: routine

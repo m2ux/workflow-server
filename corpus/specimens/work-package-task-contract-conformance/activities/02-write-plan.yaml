@@ -7,9 +7,9 @@ variables:
     - contract_complete
     - planning_folder_path
   writes:
-    - name: plan_path
+    - name: plan_document
       type: string
-      description: Path of the plan written for the case.
+      description: The plan written for the case.
       defaultValue: ""
 required: true
 steps:

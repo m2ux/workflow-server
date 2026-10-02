@@ -10,7 +10,7 @@ Preparing the subject is what keeps the case true on its hundredth walk. The reb
 
 The run's first output is the graph it resolved, and all three reference sites bind it under the one name `repo_name`, which is the address each case works under. The positive case records the host repository's graph as `host_graph_name`, and the stale-graph case takes its own from the preparation that built it. The report reads both, so its header names both graphs and every row names in its graph column the one that answered it, with the host repository's path beside the positive and negative rows' outcomes and the prepared checkout's path beside the stale-graph row's.
 
-What the walk evidences is the reference under three bindings: the same run resolves under `gitnexus::area-comprehension` three times, its steps — a nested run and two per-item passes among them — splice into each activity under that activity's prefix, and its six outputs land under the names the reference sites bind. The closing activity reports all three against the shared [case report](/conformance/resources/case-report.md) guide.
+What the walk evidences is the reference under three bindings: the same run resolves under `gitnexus::area-comprehension` three times, its steps — a nested run and two per-item passes among them — splice into each activity under that activity's prefix, and the five outputs the reference sites bind land under those names. `repo_name` stays unbound. The closing activity reports all three against the shared [case report](/conformance/resources/case-report.md) guide.
 
 | Activity | Refers to | Binding |
 |---|---|---|

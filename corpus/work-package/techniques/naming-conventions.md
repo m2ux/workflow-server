@@ -25,6 +25,10 @@ The issue number — the branch-name issue segment.
 
 *(optional)* Whether this work package is in review mode, where the branch name is already captured from the PR reference.
 
+### host_repo_path
+
+The checkout the feature worktree sits inside, which `{target_path}` is not.
+
 ## Outputs
 
 ### branch_name
@@ -55,7 +59,7 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 
    Stop and report when `{issue_type}` is unset: the prefix is part of the branch and pull-request identity and is expensive to change once a pull request is open, so an unsettled category is never this step's to guess.
 - Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
-- Set `{branch_name}` to `{$branch_type_prefix}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
+- Set `{branch_name}` to `{branch_type_prefix}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
 
 ### 3. Locate the Worktree
 
@@ -66,8 +70,8 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 
 ### target-path-is-the-worktree
 
-`{target_path}` names the feature worktree, and "inside `{target_path}`" means that worktree rather than the checkout at `{host_repo_path}`. It sits under `{$checkout_root}/.worktrees/` — never under `{planning_folder_path}`, never under `{host_repo_path}` itself, and never anchored to a home directory or an install root.
+`{target_path}` names the feature worktree, and "inside `{target_path}`" means that worktree rather than the checkout at `{host_repo_path}`. It sits under `{checkout_root}/.worktrees/` — never under `{planning_folder_path}`, never under `{host_repo_path}` itself, and never anchored to a home directory or an install root.
 
 ### worktree-distinct-from-planning-folder
 
-The planning folder is never anchored under `{target_path}`. The worktree carries the edits.
+The planning folder is never anchored under `{target_path}`. The worktree carries the edits, and the server owns the artifact folder.

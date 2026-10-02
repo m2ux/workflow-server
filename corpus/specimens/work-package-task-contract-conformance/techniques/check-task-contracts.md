@@ -9,9 +9,9 @@ Verify every task in the case's plan carries a complete Contract.
 
 ## Inputs
 
-### plan_path
+### plan_document
 
-Path of the plan written for the case.
+The plan written for the case.
 
 ## Outputs
 
@@ -27,6 +27,6 @@ The Contract field names absent from any task; empty when the check holds.
 
 ### 1. Check Contracts
 
-- Read the plan at `{plan_path}`
+- Read `{plan_document}`
 - For each `### Task` heading under Implementation Tasks, read its Contract block
 - Emit `{contract_check_held}` and `{contract_check_missing}`

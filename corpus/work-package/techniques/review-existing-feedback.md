@@ -13,6 +13,22 @@ Prior PR feedback accounted for in the review verdict — dispositions and block
 
 The URL of the PR under review, captured during PR-reference detection. Identifies the PR whose existing comments and reviews are ingested.
 
+### prior_issue_comments
+
+Top-level comments already listed for the pull request.
+
+### prior_pr_reviews
+
+Reviews already listed for the pull request.
+
+### prior_review_comments
+
+Review comments already listed for the pull request.
+
+### base_branch
+
+The branch the pull request targets.
+
 ## Outputs
 
 ### prior_feedback_triage
@@ -35,9 +51,7 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 
 ### 1. Ingest All Prior Feedback
 
-- Apply [list-issue-comments](/github/techniques/list-issue-comments.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`); retain `{issue_comments}`. Record them against `{review_pr_url}`.
-- Apply [list-pr-reviews](/github/techniques/list-pr-reviews.md)(*repo_path*=`{component_git_dir}`); retain `{pr_reviews}`.
-- Apply [list-pr-review-comments](/github/techniques/list-pr-review-comments.md)(*repo_path*=`{component_git_dir}`); retain `{pr_review_comments}`.
+- Take `{prior_issue_comments}`, `{prior_pr_reviews}`, and `{prior_review_comments}` as the prior feedback, and record them against `{review_pr_url}`.
 - Include both human and bot authors — a bot finding is signal, not noise. Do this before any independent code, structural, or test analysis, so the existing signal frames the review rather than being reconciled after a verdict is formed.
 
 ### 2. Triage Each Prior Finding
@@ -48,7 +62,7 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
   - **Superseded** — the concern was valid but a later commit or a subsequent comment resolves it; record the resolving change.
 - Tag each row with the author class (human / bot) and whether the original concern is blocker-class (it asserts a correctness, safety, data-loss, or runtime-failure defect) or non-blocker (style, preference, question).
 - Tag any reported runtime error so it is traceable as a reported failure downstream — captured once here.
-- Apply [view-pr](/github/techniques/view-pr.md)(*repo_path*=`{component_git_dir}`) and set `{base_branch}` from the op output. Disposition a reported check failure against it, not against the report alone: a check failing on both the branch and `{base_branch}` is Refuted as pre-existing, and one failing only on the branch is Confirmed. The comment reporting it says a check is red, which is true either way.
+- Disposition a reported check failure against `{base_branch}`, not against the report alone: a check failing on both the branch and `{base_branch}` is Refuted as pre-existing, and one failing only on the branch is Confirmed. The comment reporting it says a check is red, which is true either way.
 
 ### 3. Derive the Rating Cap
 

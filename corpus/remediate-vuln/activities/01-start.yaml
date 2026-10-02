@@ -1,5 +1,5 @@
 id: start
-version: 2.4.1
+version: 2.4.2
 name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
 variables:
@@ -77,16 +77,8 @@ steps:
       - id: provided
         label: URL Provided
         description: Proceed with this URL
-  - kind: action
-    id: record-sec-vuln-url
-    condition:
-      type: simple
-      variable: sec_vuln_url
-      operator: notExists
-    actions:
-      - action: set
-        target: sec_vuln_url
-        message: Record the advisory URL supplied at sec-vuln-url-input, so the value the gate collected is in the bag rather than held only in the exchange.
+        effect:
+          recordReply: sec_vuln_url
   - kind: action
     id: resolve-target
     actions:
@@ -119,16 +111,8 @@ steps:
       - id: provided
         label: URL Provided
         description: Proceed with this URL
-  - kind: action
-    id: record-private-fork-url
-    condition:
-      type: simple
-      variable: private_fork_url
-      operator: notExists
-    actions:
-      - action: set
-        target: private_fork_url
-        message: Record the private fork URL supplied at private-fork-url-input, so the remote configuration below reads it from the bag rather than from the exchange.
+        effect:
+          recordReply: private_fork_url
   - kind: technique
     id: configure-sec-vuln-remote
     technique: security-setup::configure-security-remote
@@ -159,16 +143,8 @@ steps:
       - id: provided
         label: Short ID Provided
         description: Proceed with this slug
-  - kind: action
-    id: record-short-id
-    condition:
-      type: simple
-      variable: short_id
-      operator: notExists
-    actions:
-      - action: set
-        target: short_id
-        message: Record the advisory slug supplied at short-id-input, so the branch name below is built from the bag rather than from the exchange.
+        effect:
+          recordReply: short_id
   - kind: technique
     id: initialize-security-branch
     technique: security-setup::initialize-security-branch

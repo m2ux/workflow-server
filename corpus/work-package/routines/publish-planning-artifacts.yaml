@@ -33,14 +33,26 @@ outputs:
     description: The engineering checkout's branch name — the ref engineering-artifact hyperlinks resolve against.
 
 internals:
+  - id: modified_paths
+    description: Tracked paths carrying modifications in the engineering checkout.
   - id: publishable_files
     description: Every changed file under the planning folder, which the commit carries.
 
 steps:
   - kind: technique
+    id: read-working-state
+    technique:
+      name: git::read-working-state
+      inputs:
+        repo_path: host_repo_path
+      outputs:
+        modified_paths: modified_paths
+  - kind: technique
     id: resolve
     technique:
       name: resolve-artifact-publish
+      inputs:
+        modified_paths: modified_paths
       outputs:
         artifact_publish_ref: artifact_publish_ref
         publishable_files: publishable_files

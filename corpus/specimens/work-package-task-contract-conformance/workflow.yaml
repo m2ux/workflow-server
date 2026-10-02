@@ -26,9 +26,9 @@ variables:
     type: boolean
     description: Whether the case under walk writes every Contract field.
     defaultValue: true
-  - name: plan_path
+  - name: plan_document
     type: string
-    description: Repository-relative path of the plan written for the case.
+    description: The plan written for the case.
     defaultValue: ""
   - name: contract_check_held
     type: boolean

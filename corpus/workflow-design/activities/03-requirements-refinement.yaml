@@ -18,10 +18,6 @@ variables:
     - name: assumptions_log
       type: object
       description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.
-    - name: assumptions_log_path
-      type: string
-      description: Path to the written design-assumptions log.
-      defaultValue: ""
     - name: design_context
       type: string
       description: Text the reader typed naming reference workflows, integration points, operators and triggers before elicitation. Absent where the reader proceeded without it.

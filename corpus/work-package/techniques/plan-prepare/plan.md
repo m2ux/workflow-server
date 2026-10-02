@@ -40,7 +40,7 @@ Atomic tasks with explicit dependencies, ordering and a Contract — each implem
 
 ### 2. Load Guidance
 
-- Use attached [wp-plan](../../resources/plan-guide.md#rules) for plan template and guidance
+- Follow the [plan guide](/work-package/resources/plan-guide.md#rules) for the plan template
 - Review `{design_philosophy_doc}`, `{requirements}`, `{analysis_document}`, `{research_document}`
 
 ### 3. Apply Design Framework
@@ -57,5 +57,5 @@ Atomic tasks with explicit dependencies, ordering and a Contract — each implem
 - Create the `{plan_document}` artifact in `{planning_folder_path}`
 - Record consumed artifacts as the template's link-only Inputs list — one line per artifact linking the section that shaped the approach
 - Include task breakdown, dependencies, ordering
-- For each task, write its Contract: Signatures, Behaviours, Error cases and Acceptance, per the [wp-plan](../../resources/plan-guide.md#rules) Contract rule
+- For each task, write its Contract per the [plan guide](/work-package/resources/plan-guide.md#rules)
 - Document design decisions with rationale; fill the link-only slots (problem & scope, success criteria, testing strategy, assumptions) per the template's rules

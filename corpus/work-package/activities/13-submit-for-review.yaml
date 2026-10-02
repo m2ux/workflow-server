@@ -79,6 +79,9 @@ variables:
       type: string
       description: Concise multi-line summary of the reviewer's comments, one tagged line per comment.
       defaultValue: ""
+    - name: review_event
+      type: string
+      description: The GitHub review event the prepared comment posts with.
     - name: review_posted
       type: boolean
       description: Whether review summary was posted to PR (review mode).
@@ -206,8 +209,16 @@ steps:
         artifact_content: review_summary
     when: is_review_mode == true && review_posted == true
   - kind: technique
-    id: post-pr-review
+    id: prepare-review-comment
     technique: update-pr::post-review-comment
+    when: is_review_mode == true && review_posted == true
+  - kind: technique
+    id: post-pr-review
+    technique:
+      name: github::post-pr-review
+      inputs:
+        repo_path: component_git_dir
+        body: review_summary
     when: is_review_mode == true && review_posted == true
   - kind: checkpoint
     id: dco-sign-off-confirmation

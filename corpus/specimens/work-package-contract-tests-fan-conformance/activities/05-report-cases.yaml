@@ -19,4 +19,4 @@ exits:
   - id: reported
     isDefault: true
 outcome:
-  - What each case landed: whether the suite failed on the base tree, and the worktree path and branch
+  - "What each case landed: whether the suite failed on the base tree, and the worktree path and branch"

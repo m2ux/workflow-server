@@ -28,7 +28,8 @@ The full issue URL whose verbatim (or equivalent GitHub-reference) presence in t
 ### 1. Locate Fragment
 
 - If no `changes/` directory exists at the `{target_path}` repository root, set `{fragment_references_issue}` = null and skip the remaining steps.
-- When `{changes_fragment}` is present, that body is the fragment. Otherwise, locate the fragment that ties to this issue, pull request, or work package.
+- Locate the fragment for this issue, pull request, or work package.
+  > When `{changes_fragment}` is present, that body is the fragment.
 
 ### 2. Verify Issue Reference
 

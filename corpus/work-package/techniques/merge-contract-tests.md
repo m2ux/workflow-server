@@ -18,6 +18,10 @@ Worktree that holds the contract-test commits.
 
 Branch the contract-tests worktree stands on.
 
+### default_branch
+
+The repository's default branch, which the contract-test branch is compared with.
+
 ## Outputs
 
 ### contract_tests_merged_paths
@@ -28,7 +32,7 @@ Repository-relative paths copied into `{target_path}`.
 
 ### 1. List Contract-Test Paths
 
-- From `{contract_tests_path}`, list the repository-relative paths the `{contract_tests_branch}` tip added over the merge-base with the default branch (contract-test files only)
+- From `{contract_tests_path}`, list the repository-relative paths the `{contract_tests_branch}` tip added over the merge-base with `{default_branch}` (contract-test files only)
 
 ### 2. Copy Into Implement Worktree
 

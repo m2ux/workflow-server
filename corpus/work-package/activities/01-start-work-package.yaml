@@ -4,7 +4,6 @@ name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
   reads:
-    - base_branch
     - branch_name
     - component_git_dir
     - issue_request
@@ -56,6 +55,18 @@ variables:
       type: string
       description: PR number of the draft pull request already open for this branch.
       defaultValue: ""
+    - name: prior_issue_comments
+      type: array
+      description: Top-level comments listed for the pull request under review.
+      defaultValue: []
+    - name: prior_pr_reviews
+      type: array
+      description: Reviews listed for the pull request under review.
+      defaultValue: []
+    - name: prior_review_comments
+      type: array
+      description: Review comments listed for the pull request under review.
+      defaultValue: []
     - name: github_issue_found
       type: boolean
       description: Whether a GitHub issue linked to the Jira ticket was found in the target repo.
@@ -338,6 +349,41 @@ steps:
       - action: set
         target: headless_mode
         value: true
+  - kind: technique
+    id: list-issue-comments
+    technique:
+      name: github::list-issue-comments
+      inputs:
+        repo_path: component_git_dir
+        issue_number: pr_number
+      outputs:
+        issue_comments: prior_issue_comments
+    when: is_review_mode == true
+  - kind: technique
+    id: list-pr-reviews
+    technique:
+      name: github::list-pr-reviews
+      inputs:
+        repo_path: component_git_dir
+      outputs:
+        pr_reviews: prior_pr_reviews
+    when: is_review_mode == true
+  - kind: technique
+    id: list-pr-review-comments
+    technique:
+      name: github::list-pr-review-comments
+      inputs:
+        repo_path: component_git_dir
+      outputs:
+        pr_review_comments: prior_review_comments
+    when: is_review_mode == true
+  - kind: technique
+    id: read-pr-base
+    technique:
+      name: github::view-pr
+      inputs:
+        repo_path: component_git_dir
+    when: is_review_mode == true
   - kind: technique
     id: ingest-prior-feedback
     technique: review-existing-feedback

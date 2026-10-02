@@ -1448,24 +1448,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/create-test-plan.md:47",
-      "op": "context",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/create-test-plan.md:47",
-      "op": "gitnexus",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/create-test-plan.md:47",
-      "op": "query",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/work-package/techniques/design-philosophy/classify.md:35",
       "op": "gitnexus",
       "verdict": "fix-later",
@@ -1486,30 +1468,6 @@
     {
       "site": "corpus/work-package/techniques/finalize-documentation/ensure-docs.md:43",
       "op": "doc",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/implement-task.md:46",
-      "op": "gitnexus",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/implement-task.md:46",
-      "op": "impact",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/implement-task.md:48",
-      "op": "context",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/implement-task.md:64",
-      "op": "detect-changes",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -1562,12 +1520,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/issue-type-detection.md:31",
-      "op": "naming-conventions",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/work-package/techniques/manage-artifacts/TECHNIQUE.md:55",
       "op": "verify-artifact-links",
       "verdict": "fix-later",
@@ -1600,24 +1552,6 @@
     {
       "site": "corpus/work-package/techniques/manage-git/detect-merge-strategy.md:18",
       "op": "view-repo",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/naming-conventions.md:45",
-      "op": "issue-type-detection",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/plan-prepare/plan.md:46",
-      "op": "gitnexus",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/plan-prepare/plan.md:46",
-      "op": "impact",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -1700,30 +1634,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-assumptions/reconcile.md:42",
-      "op": "context",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/review-assumptions/reconcile.md:42",
-      "op": "cypher",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/review-assumptions/reconcile.md:42",
-      "op": "gitnexus",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/review-assumptions/reconcile.md:42",
-      "op": "query",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/work-package/techniques/review-assumptions/TECHNIQUE.md:40",
       "op": "context",
       "verdict": "fix-later",
@@ -1802,30 +1712,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-existing-feedback.md:38",
-      "op": "list-issue-comments",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/review-existing-feedback.md:39",
-      "op": "list-pr-reviews",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/review-existing-feedback.md:40",
-      "op": "list-pr-review-comments",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/review-existing-feedback.md:51",
-      "op": "view-pr",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/work-package/techniques/review-summary.md:75",
       "op": "view-pr",
       "verdict": "fix-later",
@@ -1874,12 +1760,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/verify-fragment.md:31",
-      "op": "changes-folder",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/work-package/techniques/update-pr/create-pr.md:39",
       "op": "create-pr",
       "verdict": "fix-later",
@@ -1894,18 +1774,6 @@
     {
       "site": "corpus/work-package/techniques/update-pr/mark-ready.md:29",
       "op": "mark-ready",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/update-pr/post-review-comment.md:35",
-      "op": "post-pr-review",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/update-pr/post-review-comment.md:35",
-      "op": "render",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

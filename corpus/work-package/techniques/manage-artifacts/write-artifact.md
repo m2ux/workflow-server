@@ -11,7 +11,7 @@ Planning-folder artifact write keyed on bare filename — one numbered instance 
 
 ### artifact_prefix
 
-*(optional)* The numeric `artifactPrefix` that orders artifacts (e.g., `09`); server-provided. Unbound when the bare name has no owning activity (see Create the First).
+*(optional)* The numeric `artifactPrefix` that orders artifacts (e.g., `09`); server-provided.
 
 ### bare_filename
 
@@ -48,7 +48,7 @@ Find-or-create, keyed on the bare filename:
 
 - **If exactly one instance exists → UPDATE that file in place,** writing `{artifact_content}` to it. Keep its existing name (prefixed or bare); do NOT create a second copy under a different number. (e.g. `assumptions-log.md` created as `02-assumptions-log.md` stays `02-assumptions-log.md` when a later write updates it.)
 - **If no instance exists → CREATE** under `{target_dir}` and write `{artifact_content}` into it:
-  - bare `{bare_filename}` when `{bare_filename}` is a shared register with no owning activity — `deferred-items.json` and `follow-ups.json` (`artifact-prefix`) — or when `{artifact_prefix}` is unbound
+  - bare `{bare_filename}` when that name is a shared register with no owning activity, or when `{artifact_prefix}` is unbound
   - `{artifact_prefix}-{bare_filename}` (e.g. `09-code-review.md`) when `{artifact_prefix}` is bound and the bare name is not one of those shared registers; the first write's prefix becomes the artifact's permanent number
 
 ### 3. Guard the Mint

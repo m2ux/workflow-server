@@ -1,12 +1,7 @@
 # Security Vulnerability Remediation Workflow (remediate-vuln)
 
 ## Overview
-A highly isolated workflow for remediating security vulnerabilities without public disclosure. It owns only the security-specific setup; every other activity is borrowed from the `work-package` workflow and runs with `stealth_mode: true`, which structurally gates out all public-disclosure side-effects (PR rendering and creation, issue-tracker posting, PR review lifecycle) and enables the private-remote isolation checks at submission.
-
-## Privacy model
-
-- `stealth_mode` (always `true` here) is the structural no-disclosure gate consumed by the shared work-package activities.
-- `push_remote` is always the private `security` remote; the shared submit activity verifies it resolves to a private repository and confirms with the user before any push.
+A workflow for remediating security vulnerabilities on the private `security` remote. It owns the security-specific setup. Every other activity is borrowed from `work-package`. Submission verifies that remote and confirms with the user before any push.
 
 ## Activities
 

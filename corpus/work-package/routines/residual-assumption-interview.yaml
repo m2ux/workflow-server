@@ -6,8 +6,6 @@ description: Gate the residual open assumptions as a batch, record the batch ans
 inputs:
   - id: assumption_review_presentation
     description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility.
-  - id: assumptions_log_path
-    description: Path to the assumptions log the residual entries sit in.
   - id: has_open_assumptions
     description: Whether irreducible open assumptions remain for this run to settle.
   - id: open_assumptions
@@ -39,10 +37,6 @@ outputs:
   - id: assumptions_log
     type: object
     description: The assumptions log with each settled assumption's outcome recorded.
-  - id: assumptions_log_path
-    type: string
-    description: Path to the assumptions log the record steps wrote.
-    optional: true
   - id: has_deferred_assumptions
     type: boolean
     description: Whether any assumption was deferred to stakeholder review.
@@ -74,7 +68,7 @@ steps:
           operator: ==
           value: true
     message: |-
-      Open assumptions remain, each with the agent's favored position ([assumptions log]({assumptions_log_path})):
+      Open assumptions remain, each with the agent's favored position:
 
       {assumption_review_presentation}
     options:
@@ -107,7 +101,6 @@ steps:
         assumptions_log: assumptions_log
       outputs:
         assumptions_log: assumptions_log
-        assumptions_log_path: assumptions_log_path
         has_deferred_assumptions: has_deferred_assumptions
     when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
   - kind: loop
@@ -161,5 +154,4 @@ steps:
             current_assumption: current_assumption
           outputs:
             assumptions_log: assumptions_log
-            assumptions_log_path: assumptions_log_path
             has_deferred_assumptions: has_deferred_assumptions

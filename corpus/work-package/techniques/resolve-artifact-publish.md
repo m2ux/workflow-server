@@ -13,6 +13,10 @@ Resolve the engineering checkout's publish branch and the planning-folder files 
 
 Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.
 
+### modified_paths
+
+The tracked paths carrying modifications in the engineering checkout, already read by the run.
+
 ## Outputs
 
 ### artifact_publish_ref
@@ -31,7 +35,7 @@ Every changed file under `{planning_folder_path}`, including `README.md`, the li
 
 ### 2. Collect the Publishable Files
 
-- Collect every changed path under `{planning_folder_path}` as `{publishable_files}` (`git -C {eng_git_dir} status --porcelain` restricted to that folder), and emit `{eng_branch}` as `{artifact_publish_ref}`.
+- Keep every path in `{modified_paths}` that sits under `{planning_folder_path}`, and hold that set as `{publishable_files}`. Emit `{eng_branch}` as `{artifact_publish_ref}`.
 
 ## Rules
 

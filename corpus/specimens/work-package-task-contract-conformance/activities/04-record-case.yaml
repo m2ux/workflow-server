@@ -9,7 +9,7 @@ variables:
     - contract_check_held
     - contract_check_missing
     - contract_complete
-    - plan_path
+    - plan_document
   writes:
     - name: case_outcomes
       type: array

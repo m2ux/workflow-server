@@ -13,6 +13,14 @@ Code-analyzable assumptions closed via targeted analysis.
 
 *(optional)* Existing comprehension [corpus artifact](../../resources/codebase-comprehension.md#corpus-artifact-template) to augment with findings.
 
+### query_report
+
+*(optional)* Execution flows already read for this work.
+
+### context_report
+
+*(optional)* Callers, callees, and flow membership already read for a symbol in this work.
+
 ## Outputs
 
 ### assumptions_log
@@ -27,9 +35,6 @@ Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-
 
 `human`
 
-### assumptions_log_path
-
-Path to the written assumptions log.
 
 ## Protocol
 
@@ -41,7 +46,7 @@ Path to the written assumptions log.
 ### 2. Targeted Analysis
 
 - For each code-resolvable assumption, perform focused investigation within the codebase at `{target_path}`: trace relevant code paths, examine implementations, diff between versions, compare behavior
-- Use the [gitnexus](/gitnexus/techniques/TECHNIQUE.md) techniques as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[query](/gitnexus/techniques/query.md) for concept-driven flow discovery, [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md) for symbol-level caller/callee/process inspection, and [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[cypher](/gitnexus/techniques/cypher.md) for custom traces (e.g. error-path or ordering assumptions).
+- Where `{query_report}` is present, take concept-driven flows from it. Where `{context_report}` is present, take symbol callers, callees, and flow membership from it.
 - Record evidence for every finding, naming the code in words linked to its lines
 - Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)
 - Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies
@@ -52,7 +57,6 @@ Path to the written assumptions log.
 - Update the `{assumptions_log}` rows in place: write finding + evidence into the Resolution column and Validated / Invalidated / Partially Validated into the Outcome column; remove the Open Assumptions entry of any assumption that resolved
 - Add any newly surfaced assumptions as new rows, Outcome `Open`, with their classification (code-resolvable or not)
 - Write Open Assumptions entries to the `manage-artifacts.markdown-line-breaks` rule
-- Emit the log's path as `{assumptions_log_path}`
 
 ### 4. Update Comprehension Artifact
 
@@ -70,15 +74,3 @@ Reconciliation runs autonomously, without user interaction. Converged results bi
 
 When emitting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis.
 
-### handoff-to-residue
-
-What the residual decision receives, and where each element comes from.
-
-| Element | Source |
-|---------|--------|
-| **The irreducible open set** | Assumptions classified as not-code-resolvable after analyse (and combine, when used) |
-| **Non-resolvability rationale** | The classification rationale recorded for each open assumption |
-| **Technical context** | Findings from analyse / challenge cycles — validated assumptions, code patterns, partial evidence |
-| **Alternatives context** | Constraints and patterns that inform the residual decision space |
-
-Reconcile supplies evidence and flags only; it assembles no presentation of the residual set.

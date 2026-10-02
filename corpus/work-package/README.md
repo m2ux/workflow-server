@@ -46,62 +46,7 @@ The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) tec
 
 ## Workflow Flow
 
-```mermaid
-graph TD
-    startNode(["Start"]) --> SWP["01 start-work-package"]
-    SWP -->|"done"| DP["02 design-philosophy"]
-
-    DP -->|"revise-classification"| DP
-    DP -->|"done"| CC["codebase-comprehension"]
-
-    CC -->|"needs-elicitation"| REL["03 requirements-elicitation"]
-    CC -->|"research-needed / comprehension-complete"| RS["04 research"]
-    CC -->|"research-needed / comprehension-complete"| IA["05 implementation-analysis"]
-    CC -->|"skip-optional-activities"| PP["06 plan-prepare"]
-
-    REL -->|"elicitation-incomplete"| REL
-    REL -->|"research-needed / no-research-needed"| RS
-    REL -->|"research-needed / no-research-needed"| IA
-    RS -->|"done"| PP
-    IA -->|"done"| PP
-
-    PP -->|"revise"| PP
-    PP -->|"done"| AR["07 assumptions-review"]
-
-    AR -->|"needs-further-discussion"| AR
-    AR -->|"needs-comprehension"| CC
-    AR -->|"needs-plan-revision"| PP
-    AR -->|"review-mode"| LCA["09 lean-coding-audit"]
-    AR -->|"assumptions-approved"| CT["20 contract-tests"]
-    AR -->|"assumptions-approved"| IMP["08 implement"]
-
-    CT -->|"done"| IJ["21 implementation-join"]
-    IMP -->|"done"| IJ
-    IJ -->|"needs-rework"| IMP
-    IJ -->|"needs-contract-tests"| CT
-    IJ -->|"done"| LCA["09 lean-coding-audit"]
-    LCA -->|"done"| PD["16 prism-decision"]
-    PD -->|"remeasure"| PD
-    PD -->|"done"| CR["17 code-review"]
-    PD -->|"done"| SA["18 structural-analysis"]
-    PD -->|"done"| TSR["19 test-suite-review"]
-    CR -->|"done"| PIR["10 post-impl-review"]
-    SA -->|"done"| PIR
-    TSR -->|"done"| PIR
-    PIR -->|"has-blocker"| IMP
-    PIR -->|"done"| VAL["11 validate"]
-    VAL -->|"done"| SR["12 strategic-review"]
-
-    SR -->|"review-failed"| PP
-    SR -->|"needs-more-review"| SR
-    SR -->|"review-mode / review-passed"| SFR["13 submit-for-review"]
-
-    SFR -->|"provide-input"| SFR
-    SFR -->|"review-requires-changes"| PP
-    SFR -->|"review-mode / review-approved / abort"| COMP["14 complete"]
-
-    COMP -->|"done"| doneNode(["End"])
-```
+Activity order and the exits between activities are the `graph` in [workflow.yaml](./workflow.yaml).
 
 ---
 ## Orchestration Model

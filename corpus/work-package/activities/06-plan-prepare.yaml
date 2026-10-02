@@ -1,7 +1,7 @@
 id: plan-prepare
 version: 1.14.0
 name: Plan & Prepare
-description: Raise the discovery fan's research gates, write the assumptions the branches surfaced, design the approach, and prepare for implementation.
+description: Design the approach and prepare the plan and the test plan.
 variables:
   reads:
     - assumptions_log
@@ -37,6 +37,9 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
+    - name: query_report
+      type: object
+      description: Execution flows related to this work.
     - name: changed_files
       type: array
       description: Ordered list of changed file paths, hoisted from the implementation-analysis branch when the discovery fan ran.
@@ -85,7 +88,7 @@ steps:
     actions:
       - action: validate
         target: workflows.worktree.present == true
-        message: "The workflows worktree is missing. Add it per SETUP.md."
+        message: "The workflows worktree is missing. Add the workflows worktree beside this checkout."
       - action: validate
         target: target_path != null
         message: "`{target_path}` is unset, so there is no worktree to plan against."
@@ -205,7 +208,7 @@ steps:
     options:
       - id: repo-only
         label: Repository only — no external web sources used
-        description: All research was based on codebase and local knowledge (default)
+        description: All research was based on codebase and local knowledge
         effect:
           setVariable:
             context_scope: repo-only
@@ -228,8 +231,17 @@ steps:
     id: create-plan
     technique: plan
   - kind: technique
+    id: find-test-patterns
+    technique:
+      name: gitnexus::query
+      inputs:
+        search_query: problem_statement
+  - kind: technique
     id: create-test-plan
-    technique: create-test-plan
+    technique:
+      name: create-test-plan
+      inputs:
+        query_report: query_report
   - kind: technique
     id: present-solution-overview
     technique:

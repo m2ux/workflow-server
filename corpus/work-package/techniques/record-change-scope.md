@@ -31,4 +31,4 @@ The task record: the approach, residual ambiguity, tests left unrun, and any hig
 
 ### 1. Record the Scope
 
-- Emit `{task_implementation}` from `{task_record}`, `{change_report}`, and `{target_symbol}`
+- Add the symbols and flows in `{change_report}` to `{task_record}`, and record whether `{target_symbol}` is the primary edit target. The result is `{task_implementation}`.

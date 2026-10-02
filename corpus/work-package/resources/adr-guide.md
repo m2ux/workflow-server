@@ -7,6 +7,8 @@ metadata:
 
 # Architecture Decision Record Guide
 
+## Record
+
 Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records. An ADR outlives the work package that produced it, so it is written for someone with no memory of the run: what forced the decision, what was chosen, what that costs, and what was turned down.
 
 ## Template
