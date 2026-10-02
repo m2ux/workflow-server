@@ -13,13 +13,19 @@ Reviews existing definitions: enumerates the units, walks them over the surface,
 3. **Enumerate units.**
    - Every unit [File kinds](canon-map.md#file-kinds) gives an Audit, from each home's headings at the commit audited.
    - Apply each entry as written.
-4. **Walk.**  Walk the units per [Walk](#walk) and the [walk rules](walk-rules.md).
+4. **Walk.**
+   - Walk the units per [Walk](#walk) and the [walk rules](walk-rules.md).
+   - An audit that cannot read the change surface in one pass splits the unread change-surface paths across sub-agents, in disjoint slices.
+   - The parent keeps the ledger in [Walk](#walk).
+   - Every sub-agent return follows [Rules](#rules).
 5. **Attribute.**  Give each finding its origin per [Attribution](#attribution).
 6. **Verify Highs.**
    - Re-derive each High from the cited file and the entry alone. Withdraw what that re-derivation does not reproduce. Downgrade what supports only a lesser issue.
    - Spot-confirm Mediums: the construct exists and the class is right.
    - Only confirmed findings drive fixes.
-7. **Report.**  Report in the layout [Which report](reporting.md#which-report) names.
+7. **Report.**
+   - Report in the layout [Which report](reporting.md#which-report) names.
+   - Give the header the status [Coverage header](reporting.md#coverage-header) defines.
 8. **File a mechanised Detect.**
    - A Detect applied by pattern is a guard candidate. Name what it keys on and file it against the registry.
    - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.
@@ -49,7 +55,7 @@ Reviews existing definitions: enumerates the units, walks them over the surface,
 - **Prior residual.**
   - `unread` paths in the latest findings register under `.engineering/artifacts/planning/`.
   - Re-derive the enumeration at this commit and inherit dispositions by path. A path absent from the tree leaves the worklist.
-  - Reading starts at the residual, and the pass hands on a smaller one or records why not.
+  - Reading starts at the residual. The walk follows [Rules](#rules). Paths a stop leaves unread are the next residual.
 - **Second entry.**
   - Where a graph gives one activity two entry points, both are on the surface.
   - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.
@@ -78,3 +84,13 @@ Hunk lines are not the surface. A unit read from a hunk is not `walked`. A refer
 - **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.
 - **`fix`**
   Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.
+
+## Rules
+
+- **Continue.**
+  When unread paths remain, a sub-agent return, including one with no new finding, is followed by the next unread slice in the same turn.
+  - Record what that slice read, and fold any finding, before the next slice starts.
+  - A note that the slice needs nothing further does not end the audit.
+- **Stop.**
+  The audit ends when the ledger is closed, or when the user says stop.
+  - The ledger is closed when every change-surface path is read whole and every criterion is `walked`, `not-applicable`, or `blocked` with a reason.

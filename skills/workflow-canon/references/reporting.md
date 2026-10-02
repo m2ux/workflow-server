@@ -51,7 +51,7 @@ Divergences only. A unit walked cleanly has no row.
 | Unit | The section title or anchor, as the home spells it |
 | Status | `not-applicable` with the unit's own reason, or `blocked` with what prevented the walk |
 
-Total the `blocked` rows. That figure is the unit residual. A family `blocked` over most of the surface counts once, however many entries it holds. One row per unwalked unit of every home, accounted from the headings at the commit audited ([canon-map](./canon-map.md#unit-inventory)). A ledger that cannot account for every unit is a partial walk.
+Total the `blocked` rows. That figure is the unit residual. A family `blocked` over most of the surface counts once, however many entries it holds. One row per unwalked unit of every home, accounted from the headings at the commit audited ([canon-map](./canon-map.md#unit-inventory)). A ledger that cannot account for every unit is a partial walk. Its status is the [coverage header](#coverage-header).
 
 ## File coverage
 
@@ -64,7 +64,17 @@ Independent of the unit ledger: every unit can be `walked` while the surface sta
 
 A scan hit is `read` only when the file was then inspected whole. A scan is evidence for a finding, not a path disposition. `read` and `unread` sum to the enumeration; where they do not, the report states the list that was walked.
 
-List the `unread` paths. The next audit starts there. An existence claim over a list that still has `unread` paths says so on the finding.
+List the `unread` paths. While any remain, the header's status is the [coverage header](#coverage-header). An existence claim over a list that still has `unread` paths says so on the finding.
+
+## Coverage header
+
+Whether the audit is finished.
+
+- **In progress.**
+  A header that still has unread paths or blocked criteria, including when its ledger does not account for every unit.
+  - The note is not the finished audit.
+- **Finished.**
+  Every change-surface path is `read`, and every criterion is `walked` or `not-applicable`.
 
 ## Which report
 
@@ -87,7 +97,7 @@ In the chat, or in a file the user named:
 ~~~markdown
 # Canon Audit — `{target}`
 
-**Base ref:** `{ref}` · **Coverage:** N of N units × N of N paths — **N unit-paths walked of N** · **Change surface:** N files (touched: N · closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
+**Status:** in progress | finished · **Base ref:** `{ref}` · **Coverage:** N of N units × N of N paths — **N unit-paths walked of N** · **Change surface:** N files (touched: N · closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
 
 **Verdict:** Live N · Contract N · Hygiene N, at that coverage. Residual: **N files `unread`** of N, **N criteria units `blocked`** of N. Live and Contract converge to zero over the coverage measured. Hygiene ratchets against the prior pass's N.
 
@@ -123,4 +133,4 @@ read N · unread N.
 ## Known
 ~~~
 
-Omit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. The header's units × paths bound every figure under it, and each header figure reconciles against a list in the body. Live or Contract at zero over a partial grid is a statement about that part. A Live or Contract count that rose says a fix moved a defect.
+Omit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. The header's units × paths bound every figure under it, and each header figure reconciles against a list in the body. Status is the [coverage header](#coverage-header). Live or Contract at zero over a partial grid is a statement about that part. A Live or Contract count that rose says a fix moved a defect.
