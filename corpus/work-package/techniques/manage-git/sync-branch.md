@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ The default branch (typically `main`) fetched and rebased/merged into `{branch_n
 
 ### 1. Bring the Branch Current
 
-- From `{target_path}`, fetch the default branch and rebase or merge it into `{branch_name}` to bring the feature branch current.
+- From `{target_path}`, fetch `{default_branch}` and rebase or merge it into `{branch_name}` to bring the feature branch current.
 
 ### 2. Resolve Conflicts
 

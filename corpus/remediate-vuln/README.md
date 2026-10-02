@@ -7,7 +7,6 @@ A highly isolated workflow for remediating security vulnerabilities without publ
 
 - `stealth_mode` (always `true` here) is the structural no-disclosure gate consumed by the shared work-package activities.
 - `push_remote` is always the private `security` remote; the shared submit activity verifies it resolves to a private repository and confirms with the user before any push.
-- Workflow rules additionally forbid public GitHub tools, pushes to `origin`, and advisory-identifying strings in outbound research queries.
 
 ## Activities
 

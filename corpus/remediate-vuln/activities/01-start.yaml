@@ -1,5 +1,5 @@
 id: start
-version: 2.4.0
+version: 2.4.1
 name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
 variables:
@@ -107,7 +107,7 @@ steps:
     actions:
       - action: validate
         target: signing.configured == true
-        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running.
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Set commit signing on this repository and re-run.
   - kind: checkpoint
     id: private-fork-url-input
     condition:
@@ -174,7 +174,7 @@ steps:
     technique: security-setup::initialize-security-branch
   - kind: checkpoint
     id: verify-isolation
-    message: "The `security` remote and local branch are configured against {sec_vuln_url}, and this run creates no public PR or issue."
+    message: "The `security` remote and local branch are configured against {sec_vuln_url}."
     options:
       - id: authorized
         label: Yes, proceed
@@ -209,7 +209,7 @@ steps:
     actions:
       - action: validate
         target: origin_untracked != false
-        message: "The current branch in {target_path} still tracks an upstream on origin, so a push could reach the public remote. Run git branch --unset-upstream in {target_path} and re-run."
+        message: "The current branch in {target_path} tracks an upstream on origin. Run git branch --unset-upstream in {target_path} and re-run."
   - kind: technique
     id: verify-artifact-conformance
     technique: verify-artifact-conforms
@@ -217,14 +217,14 @@ steps:
     id: announce-completion
     actions:
       - action: log
-        message: Security initialization complete. Public disclosure paths disabled.
+        message: Security initialization complete. The private remote and advisory branch are in place.
 exits:
   - id: done
     isDefault: true
   - id: abort
     immediate: true
 outcome:
-  - "The workflow is locked into isolation: every public disclosure path is disabled for the rest of the fix"
-  - All git operations have a private-only destination — the fix cannot be pushed to a public repository
-  - The fix develops on a dedicated advisory branch off the private fork, never touching a public branch
-  - Planning happens entirely off any public surface — no PR or Issue link is ever recorded
+  - The run uses the private remote and the private planning folder
+  - Every git operation targets the private security remote
+  - The fix develops on a dedicated advisory branch off the private fork
+  - Planning artifacts carry the private remote and the advisory branch

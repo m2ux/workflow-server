@@ -34,7 +34,7 @@ Definition: [`15-codebase-comprehension.yaml`](./15-codebase-comprehension.yaml)
 
 ### 03. Requirements Elicitation (optional)
 
-Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so that planning starts from agreed requirements rather than guesses. Skipped in review mode (requirements come from the ticket). Leads to research or directly to implementation-analysis.
+Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so planning starts from agreed requirements. Skipped in review mode (requirements come from the ticket). Leads to research or directly to implementation-analysis.
 
 Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.yaml)
 
@@ -138,7 +138,7 @@ Definition: [`19-test-suite-review.yaml`](./19-test-suite-review.yaml)
 
 ### 10. Post-Implementation Review
 
-The automated review fan's join: raises the manual diff review gates, runs the full prism pipeline when chosen, classifies the branches' findings, and runs the fix cycle. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
+The automated review fan's join: raises the manual diff review gates, runs the full prism pipeline when chosen, classifies the branches' findings, and runs the fix cycle. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author. A critical blocker routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
@@ -146,7 +146,7 @@ Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
 ### 11. Validate
 
-Validates the implementation against tests, build, format, and lint checks when the local environment can run them. In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
+Validates the implementation against tests, build, format, and lint checks when the local environment can run them. In review mode it documents failures as findings and assesses coverage. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
 
 Definition: [`11-validate.yaml`](./11-validate.yaml)
 

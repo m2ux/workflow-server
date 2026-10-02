@@ -1,5 +1,5 @@
 id: complete
-version: 1.15.1
+version: 1.15.2
 name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
@@ -220,6 +220,6 @@ outcome:
   - Lessons learned are captured to improve future work packages
   - Every link a reader follows out of the planning folder resolves at the ref the artifacts are published on
   - The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces
-  - Reference monorepo left untouched
+  - Reference monorepo matches the tree it was read from
   - A review run ends with its review posted and the author's disposition outstanding
   - Ready for next work package

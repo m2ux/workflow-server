@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -50,7 +50,7 @@ Atomic tasks with explicit dependencies, ordering and a Contract — each implem
 - Break work into atomic tasks with explicit dependencies
   > When `{strategic_fix_selection}` is bound, the tasks address the strategic-review findings it names, in the priority it gives.
 - Define task ordering — never assume ordering is obvious
-- When the target symbols are knowable, apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: each knowable target symbol, *direction*: `upstream`) to bound task scope and order tasks by dependency depth (edit leaves before callers).
+- Order tasks by dependency depth, leaves before callers, from the symbols named in `{analysis_document}` and `{requirements}`
 
 ### 4. Write Plan
 

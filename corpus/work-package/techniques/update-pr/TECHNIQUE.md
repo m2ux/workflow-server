@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.7.1
+  version: 2.7.2
 ---
 
 ## Capability
@@ -48,10 +48,6 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 ### pr-body-conformance
 
 A rendered body satisfies every criterion in [Rules](../../resources/pr-description.md#rules), which is their home — the guide that lays out the body owns what a conforming body looks like. Each failure is one finding named by the criterion it breaks.
-
-### draft-first
-
-Create PRs as drafts initially. Convert to ready-for-review only when a later step directs it.
 
 ### posting
 

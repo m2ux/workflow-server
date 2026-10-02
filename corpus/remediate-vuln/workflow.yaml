@@ -1,8 +1,8 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.3.2
+version: 3.3.3
 title: Security Vulnerability Remediation Workflow
-description: Remediate security vulnerabilities without public disclosure.
+description: Remediate security vulnerabilities on the private remote.
 author: m2ux
 tags:
   - security
