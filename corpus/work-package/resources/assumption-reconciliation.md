@@ -10,9 +10,9 @@ metadata:
 
 # Assumption Reconciliation
 
-Log-integration shape for assumption reconciliation. Status vocabulary and row update rules below; fill the [assumptions log template](assumptions-review.md#assumptions-log-template) accordingly.
-
 ## Resolvability Classification
+
+Log-integration shape for assumption reconciliation. Status vocabulary and row update rules below; fill the [assumptions log template](assumptions-review.md#assumptions-log-template) accordingly.
 
 Which assumptions code analysis can settle, and which it cannot. Every open assumption takes one of these three classifications, and the classification is what decides whether another analysis pass is warranted.
 

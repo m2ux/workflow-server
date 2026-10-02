@@ -33,6 +33,6 @@ A JSON array, one object per deferred item.
 
 - **Out-of-scope only** — entries are conscious deferrals beyond this package. In-task remainders belong in the [follow-ups register](./follow-ups-guide.md#template).
 - **One entry per item, updated in place** — raising an issue for an item fills its `issue`; an entry is never deleted.
-- **Created lazily, unprefixed** — the register is created as bare `deferred-items.json` when the first deferred item appears; a run that defers nothing has no register. Any activity may be the one that defers first, so the register has no owning activity and takes no `artifactPrefix`.
+- **Created lazily, unprefixed** — the register is created as bare `deferred-items.json` when the first deferred item appears; a run that defers nothing has no register.
 - **IDs in append order** — each entry takes `D-<n>`, one past the highest ID the register holds.
 - **Point, don't restate** — other artifacts point at an entry per `canonical-home-map.link-only-slots`; the entry here is the single statement of the item.

@@ -10,9 +10,9 @@ metadata:
 
 # Architecture Review Guide
 
-Architecture review evaluates significant design decisions against quality attributes, constraints, and trade-offs, and records them as an **Architecture Decision Record (ADR)** — a lightweight document capturing one decision with its context, rationale, and consequences.
-
 ## Architectural Significance
+
+Architecture review evaluates significant design decisions against quality attributes, constraints, and trade-offs, and records them as an **Architecture Decision Record (ADR)** — a lightweight document capturing one decision with its context, rationale, and consequences.
 
 A decision is architecturally significant when it:
 

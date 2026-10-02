@@ -17,7 +17,7 @@ Whether the case wrote every Contract field.
 
 Whether the check held.
 
-### contract_check_missing
+### absent_contract_fields
 
 Fields the check found absent.
 
@@ -39,4 +39,4 @@ The list with this case's outcome appended: whether the case wrote every Contrac
 
 ### 1. Record Outcome
 
-- Append this case to `{case_outcomes}` from `{contract_complete}`, `{contract_check_held}`, `{contract_check_missing}`, and `{plan_document}`
+- Append this case to `{case_outcomes}` from `{contract_complete}`, `{contract_check_held}`, `{absent_contract_fields}`, and `{plan_document}`

@@ -43,7 +43,7 @@ outputs:
 
 internals:
   - id: assumption_outcome
-    description: The outcome the deciding gate gave the assumption under discussion — confirmed, corrected or deferred — which the record step writes into the log.
+    description: The outcome the deciding gate gave the assumption under discussion, which the record step writes into the log.
   - id: assumption_correction
     description: Text the user typed correcting the assumption under discussion. Unset until a correction is given.
   - id: current_assumption

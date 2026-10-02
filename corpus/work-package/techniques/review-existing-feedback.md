@@ -11,7 +11,7 @@ Prior PR feedback accounted for in the review verdict — dispositions and block
 
 ### review_pr_url
 
-The URL of the PR under review, captured during PR-reference detection. Identifies the PR whose existing comments and reviews are ingested.
+The URL of the PR whose existing comments and reviews are ingested.
 
 ### prior_issue_comments
 
@@ -33,7 +33,7 @@ The branch the pull request targets.
 
 ### prior_feedback_triage
 
-The triage table: one row per prior comment or review thread, each marked Confirmed, Refuted, or Superseded with the reasoning for that disposition and the author and class (human or bot, blocker or non-blocker) of the original. A reported runtime error in a thread is captured here once, tagged as a reported failure, so downstream reported-failure triage consumes it rather than re-reading the thread.
+The triage table: one row per prior comment or review thread, each marked Confirmed, Refuted, or Superseded with the reasoning for that disposition and the author and class (human or bot, blocker or non-blocker) of the original. A reported runtime error in a thread is one row, tagged as a reported failure.
 
 #### artifact
 

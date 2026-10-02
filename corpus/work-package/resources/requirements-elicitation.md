@@ -10,9 +10,9 @@ metadata:
 
 # Requirements Elicitation Guide
 
-Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist.
-
 ## Canonical Home
+
+Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist.
 
 The document this guide produces is the [canonical home](./canonical-home-map.md#map) for the problem statement, scope, and success criteria. Downstream artifacts link here.
 

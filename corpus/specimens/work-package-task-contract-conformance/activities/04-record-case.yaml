@@ -7,7 +7,7 @@ variables:
     - case_index
     - case_outcomes
     - contract_check_held
-    - contract_check_missing
+    - absent_contract_fields
     - contract_complete
     - plan_document
   writes:

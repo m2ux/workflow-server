@@ -61,8 +61,6 @@ Key changes to validate:
 *Commands will be added after implementation.*
 ```
 
-After implementation, update the plan with: hyperlinked Test IDs pointing to actual test locations, detailed steps reflecting the actual implementation, verified Running Tests commands, and hyperlinked symbols in the Overview.
-
 **Template (Final):**
 
 ```markdown

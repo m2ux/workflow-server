@@ -27,6 +27,8 @@ The work package's [test plan](../../resources/test-plan-guide.md#test-plan-stru
 
 ### 2. Hyperlink Each Test to Its Source
 
+- Update the plan with hyperlinked Test IDs pointing at the test locations, the steps the implementation took, the Running Tests commands, and hyperlinked symbols in the Overview.
+
 - Add hyperlinks to actual test source file locations per the test-ID form in [Rules](../../resources/test-plan-guide.md#rules) (definition line, `**`-suffixed disabled tests) and `manage-artifacts.hyperlink-conventions`.
 
 ### 3. Verify Every Link Resolves

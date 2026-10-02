@@ -13,6 +13,10 @@ State what the assumptions review settled in each case.
 
 One outcome per case walked.
 
+### planning_folder_path
+
+The planning folder the report is written into.
+
 ## Outputs
 
 ### assumptions_review_case_report

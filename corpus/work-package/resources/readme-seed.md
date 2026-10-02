@@ -65,31 +65,7 @@ Initial Status icons are from [Status vocabulary](/meta/resources/planning-readm
 
 ## Row ownership
 
-Which activity owns which rows, per [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
-
-| @ | Rows |
-|---|------|
-| 01 | Start work package |
-| 02 | Design philosophy · Assumptions log |
-| 03 | Requirements elicitation |
-| 04 | KB research |
-| 05 | Implementation analysis |
-| 06 | Work package plan · Test plan |
-| 07 | Assumptions review |
-| 08 | Implementation · Provenance log |
-| 09 | Lean-coding audit · Lean change |
-| 10 | Post-implementation review · Change block index · Architecture summary |
-| 11 | Validation |
-| 12 | Strategic review |
-| 13 | Submit for review |
-| 14 | Close-out · Token usage · Session trace |
-| 15 | Codebase comprehension |
-| 16 | Prism decision |
-| 17 | Code review |
-| 18 | Structural analysis |
-| 19 | Test suite review |
-| 20 | Contract tests |
-| 21 | Implementation join |
+Which activity owns which rows is the [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map).
 
 ## Mode exclusion map
 

@@ -29,7 +29,7 @@ True once the review comment is posted to the `{pr_number}` PR; false when posti
 
 ### posted_review_id
 
-The id of the review this run posted, which a later run supplies to replace the body in place. Empty before a review has been posted.
+The id of the review this run posted. Empty before a review has been posted.
 
 ### review_event
 
@@ -43,7 +43,7 @@ The GitHub review event for `{review_type}`: `APPROVE`, `REQUEST_CHANGES`, or `C
 
 ### 2. Resolve the Review Verdict
 
-- Resolve `{review_type}` against the Overall Rating already rendered in `{review_summary}`, per the review-mode [Review Type Selection](../../resources/review-mode.md#review-type-selection) table: `Request Changes` → `request-changes`, `Comment Only` → `comment`, `Approve` → `approve`. When `{review_type}` is unset, that table yields it. When it is set, it MUST NOT be more permissive than the table yields for the rendered rating: the rating already honours the Prior Feedback Triage rating cap, so a supplied `approve` over a capped rating would post a verdict the summary's own body contradicts. Hold the resolved value at the table's value and report the discrepancy rather than posting the more permissive one.
+- Resolve `{review_type}` against the Overall Rating already rendered in `{review_summary}`, per the review-mode [Review Type Selection](../../resources/review-mode.md#review-type-selection) table: `Request Changes` → `request-changes`, `Comment Only` → `comment`, `Approve` → `approve`. When `{review_type}` is unset, that table yields it. When it is set, it MUST NOT be more permissive than the table yields for the rendered rating, so a supplied `approve` over a capped rating would post a verdict the summary's own body contradicts. Hold the resolved value at the table's value and report the discrepancy rather than posting the more permissive one.
 - Map `{review_type}` to `{review_event}`: `approve` → `APPROVE`, `request-changes` → `REQUEST_CHANGES`, `comment` → `COMMENT`.
 
 ### 3. Post the Review

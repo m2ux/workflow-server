@@ -11,7 +11,7 @@ Judgement-augmentation context over the whole residual open-assumption set, orde
 
 ### open_assumptions
 
-The residual open assumptions to assemble, each carrying its statement, category and the agent's position. Empty where analyse-challenge resolved every assumption.
+The residual open assumptions to assemble, each carrying its statement, category and the agent's position. Empty when none remain open.
 
 ## Outputs
 
@@ -27,8 +27,7 @@ Judgement-augmentation context for every open assumption, each entry on the [Ass
 
 ### 2. Order the Set
 
-- Order the entries by decision impact
-  > At five or more entries, group them by theme and order the themes by impact.
+- Order the entries by decision impact.
 
 ### 3. Emit the Presentation
 

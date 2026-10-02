@@ -13,6 +13,10 @@ Write the contract-join case report.
 
 One outcome per case.
 
+### planning_folder_path
+
+The planning folder the report is written into.
+
 ## Outputs
 
 ### contract_join_case_report

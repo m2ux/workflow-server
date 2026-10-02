@@ -64,7 +64,11 @@ variables:
     defaultValue: []
   - name: join_exit
     type: string
-    description: Exit the join took — done, needs-rework, or needs-contract-tests.
+    description: Exit the join took.
+    values:
+      - done
+      - needs-rework
+      - needs-contract-tests
     defaultValue: ""
 initialActivity: take-case
 graph:

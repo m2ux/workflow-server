@@ -9,9 +9,9 @@ metadata:
 
 # Design Framework Guide
 
-Systematic solution design: explore the solution space conventional-before-inventive and record trade-offs with rationale.
-
 ## Design Framework: TRIZICS Approach
+
+Systematic solution design: explore the solution space conventional-before-inventive and record trade-offs with rationale.
 
 Uses the **TRIZICS Software Design** methodology, adapted from systematic innovation principles. Five areas:
 

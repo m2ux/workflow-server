@@ -10,7 +10,7 @@ variables:
       type: boolean
       description: Whether every task's Contract carried all four fields.
       defaultValue: false
-    - name: contract_check_missing
+    - name: absent_contract_fields
       type: array
       description: Contract fields the check found absent.
       defaultValue: []

@@ -19,7 +19,7 @@ The plan written for the case.
 
 True when every Implementation Task carries Signatures, Behaviours, Error cases and Acceptance.
 
-### contract_check_missing
+### absent_contract_fields
 
 The Contract field names absent from any task; empty when the check holds.
 
@@ -29,4 +29,4 @@ The Contract field names absent from any task; empty when the check holds.
 
 - Read `{plan_document}`
 - For each `### Task` heading under Implementation Tasks, read its Contract block
-- Emit `{contract_check_held}` and `{contract_check_missing}`
+- Emit `{contract_check_held}` and `{absent_contract_fields}`

@@ -33,6 +33,6 @@ A JSON array, one object per follow-up.
 
 - **In-task only** — entries are work that must finish, or be explicitly dropped, before package completion. Conscious out-of-scope deferrals belong in the [deferred-items register](./deferred-items-guide.md#template).
 - **One entry per item, updated in place** — a closed item is marked `done`; an entry is never deleted.
-- **Created lazily, unprefixed** — the register is created as bare `follow-ups.json` when the first in-task follow-up appears; a run with none has no register. Any activity may be the one that logs first, so the register has no owning activity and takes no `artifactPrefix`.
+- **Created lazily, unprefixed** — the register is created as bare `follow-ups.json` when the first in-task follow-up appears; a run with none has no register.
 - **IDs in append order** — each entry takes `F-<n>`, one past the highest ID the register holds.
 - **Point, don't restate** — other artifacts point at an entry per `canonical-home-map.link-only-slots`; the entry here is the single statement of the item.
