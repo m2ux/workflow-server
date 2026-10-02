@@ -50,7 +50,8 @@ Never pass `--name=workflow-server` or `--host-port=3000`; the reload script ref
 |------|------|------|
 | `--build` | Engine worktree under test (absolute path) | Host `tsc`; the image rebuilds when lockfile or Dockerfile drifted |
 | `--workflows-dir` | Dedicated corpus worktree containing `corpus/` | Definitions served |
-| `working_directory` | Stable clone under the isolated projects root | Repo binding and planning |
+| `working_directory` | Stable clone under the isolated projects root | Repo binding |
+| Planning root | `<project>/.engineering/artifacts/planning` of the primary project checkout | Session artifacts. Not a worktree, and not the workflow-server local share |
 
 Never bind the shared `.worktrees/workflows` dest. Run the reload script from a checkout whose `http.md` describes host compile. The engine worktree's `node_modules` must match its lockfile or the cycle falls back to an image rebuild. `--no-build` moves only the corpus bind. Definition edits on a mounted tree resolve on the next tool call. Name a pairing with a distinct `--image` tag; later cycles inherit everything and take `--name` alone. Confirm `compile  : host tsc` and no `Building` in the log.
 
@@ -70,8 +71,8 @@ npx tsx guards/check-all.ts --root <corpus-worktree> --serving-only
 
 ## Bring the sidecar up
 
-1. Clone the target at `<projects-root>/workflow-server` so origin derivation yields `owner/repo`. A `working_directory` outside the bind returns `unmapped-root`.
-2. If a specimen must edit the changed files, add a worktree of that branch under the projects root and pass it as `working_directory`.
+1. Clone the target at `<projects-root>/workflow-server` so origin derivation yields `owner/repo`. A `working_directory` outside the bind returns `unmapped-root`. That clone is the checkout under work. Planning is written at `<project>/.engineering/artifacts/planning` of the primary project checkout, not in the clone and not in a worktree.
+2. If a specimen must edit the changed files, add a worktree of that branch under the projects root and pass it as `working_directory`. Planning still goes to the primary project checkout.
 3. Reload:
 
 ```bash
