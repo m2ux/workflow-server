@@ -41,9 +41,10 @@ export interface ServerConfig {
    * missing value as `workspaceDir` (single-root layout).
    * With `--repo=owner/repo` (pinned), this is
    * `$HOST_PROJECTS_ROOT/<repo>/.engineering` (basename checkout — not owner/repo).
-   * Unpinned, a multi-root session plans at `<project>/.engineering` of the
-   * primary project checkout. A branch worktree and a clone under the
-   * workflow-server local share do not hold planning.
+   * Unpinned, a multi-root session plans at `<projects-root>/<repo>/.engineering`.
+   * A branch worktree uses the checkout above `.worktrees`. A clone under the
+   * workflow-server local share uses that same layout on this process's
+   * projects root.
    */
   engineeringDir?: string;
   /**

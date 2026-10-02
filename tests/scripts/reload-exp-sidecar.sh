@@ -435,7 +435,7 @@ CORPUS="$(cd "$CORPUS" && pwd)"
 [[ -d "${CORPUS}/corpus" ]] || die "corpus not found (expected ${CORPUS}/corpus)"
 
 # A projects root under the workflow-server install tree is a checkout mount, not a planning
-# home. Planning stays at <install-projects-root>/<repo>/.engineering/artifacts/planning.
+# home. Planning for that session is /tmp/<repo>/.engineering/artifacts/planning.
 # Empty leaves start.sh on the install root, which the install instance also writes to.
 if [[ -z "$PROJECTS" ]] && command -v docker >/dev/null 2>&1; then
   PROJECTS="$(container_bind_source "$NAME" "$CONTAINER_PROJECTS_ROOT")"

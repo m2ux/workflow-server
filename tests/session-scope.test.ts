@@ -163,11 +163,11 @@ describe('session scope (multi-root)', () => {
     expect(root.engineeringDir).toBe(resolve('/home/u/projects/dev/workflow-server/.engineering'));
   });
 
-  it('plans a local-share clone at the primary project checkout', () => {
+  it('plans a local-share clone on the process projects root', () => {
     const scope = buildSessionScope({
       ...MULTI_ROOT,
       engineeringDir: '/var/lib/workflow-server/projects',
-      hostProjectsRoot: '/home/u/projects/dev',
+      hostProjectsRoot: '/tmp',
       checkoutRoot: '/var/lib/workflow-server/exp-projects',
     });
     const clone = '/var/lib/workflow-server/exp-projects/workflow-server';

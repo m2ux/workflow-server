@@ -253,7 +253,7 @@ export function resolveSessionRoot(
     throw new Error(
       'start_session: repo is required when the server is bound to a projects multi-root ' +
         '(HOST_PROJECTS_ROOT). Pass working_directory so the server derives owner/repo from that checkout\'s origin, or pass repo: "owner/repo" when creating a transient session without a working_directory. ' +
-        'Planning lives at <project>/.engineering/artifacts/planning/ of the primary project checkout.',
+        'Planning lives at <projects-root>/<repo>/.engineering/artifacts/planning/.',
     );
   }
 
@@ -321,9 +321,9 @@ export function planningProjectFolder(
   if (primary && !isLocalSharePath(primary) && !pathIsUnder(primary, scope.checkoutRoot)) return primary;
   if (!multi || shareBound || isLocalSharePath(multi)) {
     throw new Error(
-      'start_session: planning artifacts are written at <project>/.engineering/artifacts/planning of the primary project checkout. ' +
-        'They are not written in a worktree or under the workflow-server local share. ' +
-        `The checkout '${checkout.hostRepoPath}' has no primary project checkout outside those trees.`,
+      'start_session: planning artifacts are written at <projects-root>/<repo>/.engineering/artifacts/planning. ' +
+        'A clone under the workflow-server local share does not hold them, and this process has no projects root outside that share. ' +
+        `The checkout is '${checkout.hostRepoPath}'.`,
     );
   }
   return resolve(multi, repoCheckoutBasename(checkout.repo));
