@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ Path of the plan written into `{planning_folder_path}`.
 
 ### 1. Write Plan
 
-- Write `{plan_path}` as `work-package-plan.md` in `{planning_folder_path}` with one Implementation Task named `Fixture task`
+- Write `{plan_path}` in `{planning_folder_path}` with one Implementation Task named `Fixture task`
 - Include Goal and Deliverables for that task
 - When `{contract_complete}` is true, write the Contract with Signatures, Behaviours, Error cases and Acceptance, each one concrete line
 - When `{contract_complete}` is false, write the Contract with Signatures, Behaviours and Acceptance only — omit Error cases
