@@ -30,7 +30,7 @@ Read the file for the mode the request calls for:
 - **[Propose](references/propose-mode.md)**
   - The same intake as Plan: a confirmed goal and the evidence behind it
   - One proposal issue, titled `[I]` with no number
-  - Placement on the Proposals board, in Backlog
+  - Placement on the Proposals board, in Suggested
 - **[Plan](references/plan-mode.md)**
   - Raising, planning and restructuring initiatives and epics
   - Review passes of a plan against its goal
@@ -133,7 +133,18 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **Standalone issues.**  A standalone issue sits on no board.
 - **Proposals.**
   - The board is titled `Proposals`. It holds proposal issues, the incoming funnel for work that may become an initiative.
-  - When no open board has that title, [Create board](references/commands.md#create-board) creates it.
+  - Its copy source is the open board titled `Proposals template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status.
+  - When no open board is titled `Proposals`, [Create proposals board](references/commands.md#create-proposals-board) creates it.
+  - **Suggested.**
+    Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
+  - **Considering.**
+    Someone is weighing the goal, the evidence and the criteria. That person is the assignee.
+  - **Approved.**
+    Qualified to become an initiative. The assignee is the user.
+  - **Held.**
+    Not now. It stays on the board, with no assignee.
+  - **Declined.**
+    It will not become an initiative. It has no assignee.
 - **A new theme.**
   - It needs its label and its board before an initiative takes it.
   - [Create board](references/commands.md#create-board) copies the Initiative template, titles the copy as above, and links it to the repository.
@@ -143,7 +154,7 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **GitHub CLI (`gh`).**
   - Logged in through its keyring, with the `repo` scope for issues and pull requests and the `project` scope for project boards.
   - Issue and pull request calls go through REST (`gh api`), never GraphQL, and every call needs full host permissions.
-  - A board is created with `gh project`, as [Create board](references/commands.md#create-board) specifies.
+  - A board is created with `gh project`, as [Create board](references/commands.md#create-board) and [Create proposals board](references/commands.md#create-proposals-board) specify.
 - **Sandbox.**
   `scripts/sbx` in the workspace checkout, the one holding this skill, runs the skill's scripts under bubblewrap with no network. `<workspace>` in the mode files stands for that checkout.
 - **Python 3.10 or later.**
