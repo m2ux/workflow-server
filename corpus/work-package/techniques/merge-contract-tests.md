@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Bring the contract-test files from the contract-tests worktree into the implement worktree so the join can run them against the implementation.
+Bring the contract-test files from the contract-tests worktree into the feature worktree.
 
 ## Inputs
 
@@ -33,5 +33,6 @@ Repository-relative paths copied into `{target_path}`.
 ### 2. Copy Into Implement Worktree
 
 - For each path, copy the file content from `{contract_tests_path}` into the same path under `{target_path}`
-- Do not overwrite an implement-branch file at the same path — contract tests live in files of their own; a collision is a definition defect to stop on
+- Copy a path only when that path is absent under `{target_path}`
+  > A path already present is omitted from `{contract_tests_merged_paths}`
 - Emit `{contract_tests_merged_paths}` as the paths written under `{target_path}`

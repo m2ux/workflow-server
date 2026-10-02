@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Write integration tests for one plan task from its Contract alone.
 
 ### current_task
 
-The plan task under test — its Contract (Signatures, Behaviours, Error cases, Acceptance) is the only specification this technique may read. Goal, deliverables and approach text are out of scope.
+The plan task under test, including its Contract: Signatures, Behaviours, Error cases, Acceptance.
 
 ### contract_tests_path
 
@@ -34,5 +34,5 @@ Repository-relative paths this task's contract tests wrote.
 ### 2. Write Tests
 
 - Write integration tests under `{contract_tests_path}` that assert the Contract's Signatures, Behaviours, Error cases and Acceptance
-- Place them in files of their own (a path the implement branch does not write), named for the task id
+- Place them in files of their own, named for the task id
 - Emit `{contract_tests_changed_paths}` as the paths written

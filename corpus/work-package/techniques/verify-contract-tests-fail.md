@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Paths this task wrote.
 
 ### default_branch
 
-*(optional)* Base branch name; unbound when the create-worktree step has not emitted it — then resolve from the worktree's upstream HEAD.
+*(optional)* Base branch name.
 
 ## Outputs
 
@@ -31,6 +31,6 @@ True when the suite for this task fails against the base tree; false when it pas
 
 ### 1. Run Against Base
 
-- In `{contract_tests_path}`, ensure HEAD carries only the contract-test files on top of the default branch (no implementation)
+- In `{contract_tests_path}`, ensure HEAD carries only the contract-test files on top of `{default_branch}`
 - Run the project's test command scoped to `{contract_tests_changed_paths}`
 - Set `{contract_tests_fail_on_base}` true when the run fails for reasons the Contract names (missing symbols, unmet behaviours); false when every assertion passes

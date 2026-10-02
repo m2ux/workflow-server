@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ The outcome list with the case just walked appended.
 
 ### pipeline_mode
 
-The prism mode the structural branch took.
+The prism pipeline mode for this case.
 
 ### code_review_report
 
@@ -23,7 +23,7 @@ The test suite review report for this case.
 
 ### structural_findings
 
-Structural findings for this case. Empty when `{pipeline_mode}` is `full-prism`.
+Structural findings for this case.
 
 ### case_outcomes
 

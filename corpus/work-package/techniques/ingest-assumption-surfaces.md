@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Append the bound assumption surfaces into the assumptions log.
 
 ### assumptions_log
 
-*(optional)* The assumptions log already on disk, when an earlier activity started one.
+*(optional)* The assumptions log already on disk.
 
 ## Outputs
 
