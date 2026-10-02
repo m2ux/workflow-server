@@ -1,5 +1,5 @@
 ---
-name: test-plan
+name: test-plan-guide
 description: Test plan templates and test-design principles.
 metadata:
   version: 1.3.2

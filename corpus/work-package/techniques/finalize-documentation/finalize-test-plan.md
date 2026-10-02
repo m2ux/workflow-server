@@ -11,13 +11,13 @@ Finalize the test plan by linking each test case to its actual source location.
 
 ### test_plan_document
 
-The [test plan](../../resources/test-plan.md#test-plan-structure) artifact for this work package.
+The [test plan](../../resources/test-plan-guide.md#test-plan-structure) artifact for this work package.
 
 ## Outputs
 
 ### finalized_test_plan
 
-The work package's [test plan](../../resources/test-plan.md#test-plan-structure) with each test case linked to its actual test source file and line.
+The work package's [test plan](../../resources/test-plan-guide.md#test-plan-structure) with each test case linked to its actual test source file and line.
 
 ## Protocol
 
@@ -27,7 +27,7 @@ The work package's [test plan](../../resources/test-plan.md#test-plan-structure)
 
 ### 2. Hyperlink Each Test to Its Source
 
-- Add hyperlinks to actual test source file locations per the test-ID form in [Rules](../../resources/test-plan.md#rules) (definition line, `**`-suffixed disabled tests) and `manage-artifacts.hyperlink-conventions`.
+- Add hyperlinks to actual test source file locations per the test-ID form in [Rules](../../resources/test-plan-guide.md#rules) (definition line, `**`-suffixed disabled tests) and `manage-artifacts.hyperlink-conventions`.
 
 ### 3. Verify Every Link Resolves
 

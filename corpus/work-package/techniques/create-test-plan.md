@@ -11,13 +11,13 @@ Create test strategy and test plan with cases and acceptance criteria
 
 ### plan_document
 
-The work package [plan](../resources/wp-plan.md#template), whose task breakdown scopes test coverage to each task and its dependencies.
+The work package [plan](../resources/plan-guide.md#template), whose task breakdown scopes test coverage to each task and its dependencies.
 
 ## Outputs
 
 ### test_plan_document
 
-Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance criteria
+Test [strategy](../resources/test-plan-guide.md#test-plan-structure) and acceptance criteria
 
 #### artifact
 
@@ -31,7 +31,7 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 
 ### 1. Load Guidance
 
-- Take the artifact shape from the [test-plan templates](../resources/test-plan.md#templates) and the test-design principles from the same resource; the authoring rules below govern the content
+- Take the artifact shape from the [test-plan templates](../resources/test-plan-guide.md#templates) and the test-design principles from the same resource; the authoring rules below govern the content
 
 ### 2. Define Strategy
 
@@ -59,4 +59,4 @@ Skip formal test plan for: simple bug fixes with obvious test cases, documentati
 
 ### structure-and-fill
 
-The artifact's section set, its table shape, its test-ID and test-case forms, its acceptance matrix and its content boundaries are the guide's [Rules](../resources/test-plan.md#rules). Symbol and test hyperlinks follow `manage-artifacts.hyperlink-conventions`.
+The artifact's section set, its table shape, its test-ID and test-case forms, its acceptance matrix and its content boundaries are the guide's [Rules](../resources/test-plan-guide.md#rules). Symbol and test hyperlinks follow `manage-artifacts.hyperlink-conventions`.

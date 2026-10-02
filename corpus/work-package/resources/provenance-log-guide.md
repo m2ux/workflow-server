@@ -1,5 +1,5 @@
 ---
-name: provenance-log
+name: provenance-log-guide
 description: Creation guide for bare filename `provenance-log.md` — one row per task recording which assistant and model did it, the prompt class, and whether external sources informed it.
 metadata:
   order: 31

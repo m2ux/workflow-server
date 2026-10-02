@@ -1,5 +1,5 @@
 ---
-name: prior-feedback-triage
+name: prior-feedback-triage-guide
 description: Creation guide for bare filename `prior-feedback-triage.json` — the register of every prior comment and review on the PR under review, each with its disposition, author class, and blocker class.
 metadata:
   order: 29

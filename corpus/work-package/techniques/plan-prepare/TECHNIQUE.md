@@ -25,11 +25,11 @@ Design philosophy [artifact](../../resources/design-framework.md#design-philosop
 
 ### plan_document
 
-Work package [plan](../../resources/wp-plan.md#template) with task breakdown, a contract per task, and dependencies
+Work package [plan](../../resources/plan-guide.md#template) with task breakdown, a contract per task, and dependencies
 
 
 ## Rules
 
 ### tasks-are-code-changes-only
 
-A plan task names a code or artifact change — the source edits, schema changes and doc updates that satisfy the goal. Verification is not a task, and neither is a raw command; the forbidden shapes are listed under [Rules](../../resources/wp-plan.md#rules).
+A plan task names a code or artifact change — the source edits, schema changes and doc updates that satisfy the goal. Verification is not a task, and neither is a raw command; the forbidden shapes are listed under [Rules](../../resources/plan-guide.md#rules).

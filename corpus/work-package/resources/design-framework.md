@@ -104,7 +104,7 @@ Ask: "What would the ideal solution look like if there were no constraints?" The
 
 ## Solution Synthesis & Design
 
-The synthesis lands in the homes the [canonical-home map](./canonical-home-map.md#map) names: the approach, its alternatives and the trade-offs between them in the [work package plan](./wp-plan.md#template); the success criteria in [requirements elicitation](./requirements-elicitation.md#document-template). This guide supplies the method that reaches them.
+The synthesis lands in the homes the [canonical-home map](./canonical-home-map.md#map) names: the approach, its alternatives and the trade-offs between them in the [work package plan](./plan-guide.md#template); the success criteria in [requirements elicitation](./requirements-elicitation.md#document-template). This guide supplies the method that reaches them.
 
 Design validation questions:
 

@@ -1,5 +1,5 @@
 ---
-name: complete-wp-guide
+name: close-out-guide
 description: Template and fill rules for the COMPLETE.md close-out document.
 metadata:
   version: 2.2.3

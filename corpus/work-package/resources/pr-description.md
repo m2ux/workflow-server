@@ -165,7 +165,7 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 _Jira: [{JIRA_ISSUE_KEY}](https://{JIRA_DOMAIN}/browse/{JIRA_ISSUE_KEY})_
 ```
 
-ADR and test-plan links are added to the row when those artifacts exist (see [architecture-review](architecture-review.md), [test-plan](test-plan.md)).
+ADR and test-plan links are added to the row when those artifacts exist (see [architecture-review](architecture-review.md), [test-plan](test-plan-guide.md)).
 
 ## Rules
 

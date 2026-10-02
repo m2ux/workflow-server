@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.1
+  version: 2.5.2
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ A single atomic task to implement — its goal, deliverables, dependencies, and 
 
 ### test_plan
 
-*(optional)* Test [plan](../resources/test-plan.md#test-plan-structure) with strategy and acceptance criteria for guidance
+*(optional)* Test [plan](../resources/test-plan-guide.md#test-plan-structure) with strategy and acceptance criteria for guidance
 
 ### target_symbol
 
@@ -59,8 +59,8 @@ Repository-relative paths this task wrote, as the set a commit stages.
 ### 3. Verify Locally
 
 - Check for obvious regressions in affected code
-- If the code changes do not compile, review the error messages, fix the issues, and retry
-- Where the suite cannot run here, update any test this diff invalidates on its own face — a reordered positional assertion, an assertion naming a renamed symbol — and record which tests remain unrun in `{task_implementation}`
+  > If the code changes do not compile, review the error messages, fix the issues, and retry
+  > Where the suite cannot run here, update any test this diff invalidates on its own face — a reordered positional assertion, an assertion naming a renamed symbol — and record which tests remain unrun in `{task_implementation}`
 
 ### 4. Record
 

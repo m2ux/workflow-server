@@ -35,4 +35,4 @@ Path of the plan written into `{planning_folder_path}`.
 - Include Goal and Deliverables for that task
 - When `{contract_complete}` is true, write the Contract with Signatures, Behaviours, Error cases and Acceptance, each one concrete line
 - When `{contract_complete}` is false, write the Contract with Signatures, Behaviours and Acceptance only — omit Error cases
-- Follow the Contract field names the [wp-plan](/work-package/resources/wp-plan.md#rules) guide requires
+- Follow the Contract field names the [wp-plan](/work-package/resources/plan-guide.md#rules) guide requires

@@ -39,4 +39,4 @@ The register's bare filename, with the entry's `issue` filled.
 
 ### 1. Link Entry to Issue
 
-- Set the `issue` of `{current_deferred_item}` in `{deferred_items_register}` to `{deferred_item_issue_number}` and `{deferred_item_issue_url}`, in the shape the [register template](../../resources/deferred-items.md#template) gives that field.
+- Set the `issue` of `{current_deferred_item}` in `{deferred_items_register}` to `{deferred_item_issue_number}` and `{deferred_item_issue_url}`, in the shape the [register template](../../resources/deferred-items-guide.md#template) gives that field.

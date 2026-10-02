@@ -22,8 +22,8 @@ The canonical home for each shared fact category.
 | Research findings and recommended approach | `kb-research.md` |
 | Test cases and acceptance matrix | `test-plan.md` |
 | Review findings (code, test, structural, lean-coding, manual-diff) | `code-review.md` and the reviews' own artifacts — consolidated surfaces reference findings by ID + disposition |
-| In-task follow-ups | `follow-ups.json` (see [follow-ups](./follow-ups.md)) |
-| Out-of-scope deferred items | `deferred-items.json` (see [deferred-items](./deferred-items.md)) |
+| In-task follow-ups | `follow-ups.json` (see [follow-ups](./follow-ups-guide.md)) |
+| Out-of-scope deferred items | `deferred-items.json` (see [deferred-items](./deferred-items-guide.md)) |
 | Token counts and cost estimates | `token-usage.md` — the close-out, retrospective and session trace link it and restate no figure, so one ledger produces one artifact |
 | Mechanical execution record (dispatches, tool calls, durations, errors) | `session-trace.md` (see [session-trace](/meta/resources/session-trace.md)) |
 

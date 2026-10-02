@@ -18,4 +18,4 @@ Work package plan; its task breakdown, dependencies, and ordering are the source
 ### 1. Create Todos
 
 - Register one TODO per task in `{plan_document.tasks}`, in the plan's own order and carrying its dependencies
-- The plan's [Implementation Tasks](../../resources/wp-plan.md#template) section already governs what a task may be; a TODO adds tracking, not a second breakdown
+- The plan's [Implementation Tasks](../../resources/plan-guide.md#template) section already governs what a task may be; a TODO adds tracking, not a second breakdown

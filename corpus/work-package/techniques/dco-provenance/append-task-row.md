@@ -39,7 +39,7 @@ One of: `code-generation` | `refactoring` | `test-writing` | `docs` | `mixed`
 
 ### context_scope
 
-The provenance scope of the sources that informed the work, on the value set the [Rules](../../resources/provenance-log.md#rules) admit for that column.
+The provenance scope of the sources that informed the work, on the value set the [Rules](../../resources/provenance-log-guide.md#rules) admit for that column.
 
 #### default
 
@@ -63,8 +63,8 @@ The updated provenance log, with the appended task row
 
 ### 1. Create the Log Where It Is Absent
 
-- Create the `{provenance_log}` when it does not exist, per [provenance-log](../../resources/provenance-log.md#template).
+- Create the `{provenance_log}` when it does not exist, per [provenance-log](../../resources/provenance-log-guide.md#template).
 
 ### 2. Append the Row
 
-- Append one row from `{task_id}`, `{assistant_name}`, `{model_id}`, `{prompt_class}`, `{context_scope}` and `{task_description}`, per the guide's [Rules](../../resources/provenance-log.md#rules).
+- Append one row from `{task_id}`, `{assistant_name}`, `{model_id}`, `{prompt_class}`, `{context_scope}` and `{task_description}`, per the guide's [Rules](../../resources/provenance-log-guide.md#rules).

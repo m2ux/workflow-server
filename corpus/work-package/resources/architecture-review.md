@@ -37,7 +37,7 @@ Avoid three progressive anti-patterns (Ford & Richards): **Covering Your Assets*
 
 ## Record Shape
 
-The record's skeleton, its per-section fill guidance and its fill rules are the [ADR creation guide](adr.md#template)'s, with the guide's [Rules](adr.md#rules) governing what a conforming record carries. This guide adds the status lifecycle below, and the significance and discipline criteria above, which decide whether a record is written at all.
+The record's skeleton, its per-section fill guidance and its fill rules are the [ADR creation guide](adr-guide.md#template)'s, with the guide's [Rules](adr-guide.md#rules) governing what a conforming record carries. This guide adds the status lifecycle below, and the significance and discipline criteria above, which decide whether a record is written at all.
 
 ## Status Lifecycle
 
@@ -57,4 +57,4 @@ New ADR: `Accepted` + `Supersedes: ADR: Old Decision` · Old ADR: `Superseded by
 
 ## Writing Style
 
-Be specific about trade-offs and measurable criteria; describe paths not taken. The record's length budget is the [ADR creation guide](adr.md#rules)'s. Tone and attribution: [agent-conduct](/meta/techniques/agent-conduct.md). Artifact prose discipline: [manage-artifacts](../techniques/manage-artifacts/TECHNIQUE.md) (`plain-technical-language`, `single-source-and-link`).
+Be specific about trade-offs and measurable criteria; describe paths not taken. The record's length budget is the [ADR creation guide](adr-guide.md#rules)'s. Tone and attribution: [agent-conduct](/meta/techniques/agent-conduct.md). Artifact prose discipline: [manage-artifacts](../techniques/manage-artifacts/TECHNIQUE.md) (`plain-technical-language`, `single-source-and-link`).
