@@ -92,6 +92,8 @@ HOST_SCHEMAS_DIR="${HOST_SCHEMAS_DIR:-${SCHEMAS_DIR:-}}"
 HOST_DIST_DIR=""
 WORKTREE_SET=0
 PROJECTS_SET=0
+CLI_PROJECTS_ROOT=""
+CHECKOUT_HOST_ROOT=""
 WORKFLOWS_SET=0
 SCHEMAS_SET=0
 
@@ -147,7 +149,10 @@ FEATURE WORKTREES
 
 OPTIONS (optional overrides — prefer re-running install to change paths)
   --install-dir=PATH        Install root (corpus default: \$INSTALL/workflows)
-  --projects-root=PATH      One-off host projects root (RW; covers nested .worktrees)
+  --projects-root=PATH      Checkout root for working_directory. A path under the
+                            install tree is mounted as that checkout, and planning
+                            uses /tmp with the projects-root layout. Any other path
+                            is the projects root.
   --worktree-root=PATH      Optional separate feature-tree root (RW)
   --workflows-dir=PATH      One-off host corpus directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
@@ -273,8 +278,8 @@ while [[ $# -gt 0 ]]; do
     --data-dir) INSTALL_DIR="${2:?}"; INSTALL_DIR_SET=1; shift 2 ;;
     --worktree-root=*) HOST_WORKTREE_ROOT="${1#*=}"; WORKTREE_SET=1; shift ;;
     --worktree-root) HOST_WORKTREE_ROOT="${2:?}"; WORKTREE_SET=1; shift 2 ;;
-    --projects-root=*) HOST_PROJECTS_ROOT="${1#*=}"; PROJECTS_SET=1; shift ;;
-    --projects-root) HOST_PROJECTS_ROOT="${2:?}"; PROJECTS_SET=1; shift 2 ;;
+    --projects-root=*) CLI_PROJECTS_ROOT="${1#*=}"; HOST_PROJECTS_ROOT="${CLI_PROJECTS_ROOT}"; PROJECTS_SET=1; shift ;;
+    --projects-root) CLI_PROJECTS_ROOT="${2:?}"; HOST_PROJECTS_ROOT="${CLI_PROJECTS_ROOT}"; PROJECTS_SET=1; shift 2 ;;
     --workflows-dir=*) HOST_WORKFLOWS_DIR="${1#*=}"; WORKFLOWS_SET=1; shift ;;
     --workflows-dir) HOST_WORKFLOWS_DIR="${2:?}"; WORKFLOWS_SET=1; shift 2 ;;
     --schemas-dir=*) HOST_SCHEMAS_DIR="${1#*=}"; SCHEMAS_SET=1; shift ;;
@@ -386,7 +391,24 @@ HOST_STATE_DIR="${HOST_STATE_DIR:-${INSTALL_DIR}/state}"
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
 # Resolve + create roots before bind-mount (must exist for docker -v).
+if [[ "$PROJECTS_SET" -eq 1 && -n "$CLI_PROJECTS_ROOT" ]]; then
+  HOST_PROJECTS_ROOT="$(abs_path "$CLI_PROJECTS_ROOT")"
+fi
 HOST_PROJECTS_ROOT="$(abs_path "$HOST_PROJECTS_ROOT")"
+# A projects root under the install tree is the workflow-server local share
+# (or another checkout kept beside it). That directory is the checkout a
+# session binds. Planning uses /tmp with the same <root>/<repo>/.engineering
+# layout as the install projects root.
+share_checkout=0
+if [[ "$PROJECTS_SET" -eq 1 ]]; then
+  case "$HOST_PROJECTS_ROOT" in
+    "$INSTALL_DIR"|"$INSTALL_DIR"/*) share_checkout=1 ;;
+  esac
+fi
+if [[ "$share_checkout" -eq 1 ]]; then
+  CHECKOUT_HOST_ROOT="$HOST_PROJECTS_ROOT"
+  HOST_PROJECTS_ROOT="/tmp"
+fi
 if [[ ! -d "$HOST_PROJECTS_ROOT" ]]; then
   echo "Creating projects root: ${HOST_PROJECTS_ROOT}"
   mkdir -p "$HOST_PROJECTS_ROOT" || die "failed to create projects root: ${HOST_PROJECTS_ROOT}"
@@ -529,6 +551,12 @@ if [[ -n "$ENV_FILE" ]]; then
 fi
 
 DOCKER_RUN+=(-v "${HOST_PROJECTS_ROOT}:${CONTAINER_PROJECTS_ROOT}")
+if [[ -n "$CHECKOUT_HOST_ROOT" ]]; then
+  CONTAINER_CHECKOUT_ROOT="${CONTAINER_INSTALL_DIR}/exp-projects"
+  DOCKER_RUN+=(-v "${CHECKOUT_HOST_ROOT}:${CONTAINER_CHECKOUT_ROOT}")
+  DOCKER_RUN+=(-e "HOST_CHECKOUT_ROOT=${CHECKOUT_HOST_ROOT}")
+  DOCKER_RUN+=(-e "WORKFLOW_SERVER_CHECKOUT_ROOT=${CONTAINER_CHECKOUT_ROOT}")
+fi
 if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
   DOCKER_RUN+=(-v "${HOST_WORKTREE_ROOT}:${CONTAINER_WORKTREE_ROOT}")
 fi
@@ -546,6 +574,10 @@ DOCKER_RUN+=("${DOCKER_ARGS[@]+"${DOCKER_ARGS[@]}"}")
 DOCKER_RUN+=("$FULL_IMAGE")
 
 echo "Starting ${FULL_IMAGE}"
+echo "  projects   : ${HOST_PROJECTS_ROOT}"
+if [[ -n "$CHECKOUT_HOST_ROOT" ]]; then
+  echo "  checkout   : ${CHECKOUT_HOST_ROOT}"
+fi
 if [[ "$HOST_PORT" == "0" ]]; then
   echo "  MCP URL    : http://127.0.0.1:<ephemeral>/mcp"
 else
