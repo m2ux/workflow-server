@@ -1224,7 +1224,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       activity_id: DestinationSchema.describe(
-        'Where the run goes next, read from the graph where the graph states it: naming `from_activity` and `exit` together settles the destination, including its shape, so an exit the graph fans opens one branch per element of the collection it names whatever this field holds. What this field decides is the walk\'s opening, where nothing is retired yet — the `initialActivity` from get_workflow — and any exit the graph leaves unbound, as an activity id or `__terminal__`.',
+        'Where the run goes next, read from the graph where the graph states it: naming `from_activity` and `exit` together settles the destination, including its shape, so an exit the graph fans opens one branch per element of the collection it names whatever this field holds. What this field decides is the walk\'s opening, where nothing is retired yet — the `initialActivity` from get_workflow — and a call naming no exit the retiring activity declares, as an activity id or `__terminal__`. A fan opens only on an exit the graph binds to it, so a list or instance fan here with no binding behind it is refused.',
       ),
       from_activity: z.string().optional().describe(
         'The activity this call is exiting — the one `exit`, `step_manifest`, `variables_changed` and `artifacts_produced` belong to, instance-qualified (`challenge-pass#1`) where the graph runs that activity once per element of a collection. Required whenever anything is in flight, which is every call but a session\'s first, so a call always names the activity it is returning rather than leaving the server to infer it. Omitted only on that first call, when the frontier is empty.',
@@ -1244,7 +1244,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         'Whether the in-progress Progress mark for this activity is committed and pushed before the worker spawns. Recorded as a `progress_published` event, so an activity opened without one is answerable from the session rather than only from whoever was watching the working tree at the time. Omit only where the session has no planning folder to mark.',
       ),
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, from_activity, exit, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, from_activity, exit: namedExit, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
+      // An empty exit names none, and every reading below takes it that way.
+      const exit = namedExit === '' ? undefined : namedExit;
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1272,7 +1274,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // The graph is the single home for the routing, so a call that names the activity it retires
       // and the exit that activity took has said everything the destination follows from, and the
       // destination it enters is the one the graph binds there. `activity_id` carries the walk's
-      // opening, where nothing is retired yet, and any exit the graph leaves unbound.
+      // opening, where nothing is retired yet, and a call naming no exit the retiring activity declares.
       //
       // The shape of a destination is part of what the graph states: an exit bound to a fan opens
       // one branch per element of the collection it names. Reading the destination off the caller
@@ -1299,6 +1301,33 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             `Activity '${retiring}' binds exit '${fanning[0]!.exit}' to a fan, so 'exit' is required on this transition to say which destination it takes.`,
           );
         }
+      }
+
+      // A fan's branches, its width and the join they converge on are all read off the graph, so a
+      // fan the call names with no binding behind it — on a walk's opening, or off a call naming no
+      // exit the retiring activity declares — would open branches that converge nowhere. The load
+      // binds every declared exit, so the second case is an exit missing or undeclared.
+      if (boundDestination === undefined && isFan(destination)) {
+        const opened = `Cannot open the fan to '${targets.join(', ')}'`;
+        if (retiring === undefined) {
+          throw new Error(state.status === 'completed'
+            ? `${opened}: the walk has ended, and a fan opens only on an exit the graph binds to it.`
+            : `${opened} on the walk's opening, where nothing is retired. A fan opens only on an exit the graph binds to it; `
+              + `the walk opens on '${result.value.initialActivity}'.`);
+        }
+        // T2 has refused a missing exit off an activity that binds a fan, so with no exit named the
+        // retiring activity binds none; only a named, undeclared exit leaves a fan to point at.
+        const bindings = getExitBindings(result.value, retiring);
+        const fanningExits = exit === undefined ? [] : bindings.filter((b) => isFan(b.to)).map((b) => `'${b.exit}'`);
+        const where = exit === undefined
+          ? `off '${retiring}' with no 'exit' named`
+          : `off '${retiring}' through exit '${exit}', which '${retiring}' does not declare`;
+        const remedy = fanningExits.length > 0
+          ? `name the exit '${retiring}' took: ${fanningExits.join(', ')} ${fanningExits.length > 1 ? 'open fans' : 'opens a fan'}`
+          : bindings.length > 0
+            ? `'${retiring}' binds no fan to any exit, so the run goes where its exit binds`
+            : `'${retiring}' declares no exit, so name an activity id or \`__terminal__\``;
+        throw new Error(`${opened} ${where}. A fan opens only on an exit the graph binds to it: ${remedy}.`);
       }
 
       // T9: a branch return names the meeting point the graph derives, checked on EVERY return

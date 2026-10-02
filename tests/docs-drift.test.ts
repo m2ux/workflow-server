@@ -104,4 +104,24 @@ describe('product documentation drift', () => {
     }
     expect(hits, `retarget ghost paths:\n${hits.join('\n')}`).toEqual([]);
   });
+
+  /**
+   * A line anchor names the line that holds its symbol, so an edit above it moves the target and
+   * leaves the link reading as if it still landed. Only a label that is an identifier is checked:
+   * a descriptive label ("unchanged marker") names no token a line can be searched for.
+   */
+  it('anchors each identifier-labelled source link on a line that holds its label', () => {
+    const link = /\[([A-Za-z_][A-Za-z0-9_]*)\]\(\.\.\/(src\/[^#)]+)#L(\d+)\)/g;
+    const misses: string[] = [];
+    const sources = new Map<string, string[]>();
+    for (const f of files.filter((path) => path.startsWith('docs/') && path.endsWith('.md'))) {
+      for (const [, label, path, line] of read(f).matchAll(link)) {
+        const lines = sources.get(path!) ?? readFileSync(join(ROOT, path!), 'utf-8').split('\n');
+        sources.set(path!, lines);
+        const held = lines[Number(line) - 1] ?? '';
+        if (!new RegExp(`(?<![A-Za-z0-9_])${label}(?![A-Za-z0-9_])`).test(held)) misses.push(`${f}: [${label}](${path}#L${line})`);
+      }
+    }
+    expect(misses, `re-anchor each link on the line holding its label:\n${misses.join('\n')}`).toEqual([]);
+  });
 });

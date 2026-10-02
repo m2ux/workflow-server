@@ -124,6 +124,11 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
   // here so the table stays auditable and neither reads as unconsumed.
   'present-yielded-checkpoint': () => { /* returns user_selection; no gate reads it */ },
   'respond-yielded-checkpoint': () => { /* returns effects; no gate reads it */ },
+  // take-activity skips the advance when checkpoint_reply is bound, so this entry
+  // carries the activity the session already stands on and does not move the pointer.
+  'resume-entered-activity': (bag, next) => {
+    bag['worker_result'] = next();
+  },
   'resume-yielded-worker': (bag, next) => {
     const envelope = next();
     if (envelope.result_type === 'none') {
@@ -226,15 +231,32 @@ interface Walk {
 }
 
 /**
- * Walk the loop until its continuation test fails or the scripted envelopes run out.
- * `initialActivity` primes the pointer the way `prime-initial-activity` does; the loop's own test is
- * `current_activity != null`, which the YAML declares as a structured condition under
- * `continueWhile`.
+ * Apply the action steps before the loop, in order, honouring each step's `when`.
+ * That is the opening of a walk: a second walk at one site, or a walk opened on the
+ * activity the session already stands on.
  */
-function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'): Walk {
+function opensWalk(prior: Bag): Bag {
+  const bag: Bag = { ...prior };
+  for (const step of routineDef().steps) {
+    if (step.kind === 'loop') break;
+    if (step.kind !== 'action') continue;
+    if (step.when !== undefined && !evaluateWhenExpression(step.when, bag)) continue;
+    applySets(step as LoopStep, bag);
+  }
+  return bag;
+}
+
+/**
+ * Walk the loop until its continuation test fails or the scripted envelopes run out.
+ * `initialActivity` primes the pointer the way `prime-initial-activity` does, unless `seed`
+ * is the bag `opensWalk` already produced. The loop's own test is `current_activity != null`.
+ */
+function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis', seed?: Bag): Walk {
   const def = loop();
   const body = def.steps;
-  const bag: Bag = { current_activity: initialActivity, client_session_index: 'AAAAAA' };
+  const bag: Bag = seed
+    ? { ...seed }
+    : { current_activity: initialActivity, client_session_index: 'AAAAAA' };
   const queue = [...envelopes];
   const iterations: string[][] = [];
   const log: string[] = [];
@@ -531,6 +553,70 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     expect(result.minted).toEqual(['worker:implementation-analysis']);
     expect(result.bag['current_activity']).toBeNull();
     expect(result.bag['worker_agent_id']).toBeNull();
+  });
+
+  it('opens a second walk with nothing retired', (ctx) => {
+    const prime = routineDef().steps.find((s) => s.id === 'prime-initial-activity');
+    const clearsRetired = prime?.actions?.some((a) => a.action === 'set' && a.target === 'from_activity' && a.value == null)
+      && prime?.actions?.some((a) => a.action === 'set' && a.target === 'worker_result' && a.value == null);
+    if (!clearsRetired) { ctx.skip(); return; }
+
+    const opened = opensWalk({
+      initial_activity: 'start',
+      from_activity: 'plan-prepare',
+      worker_result: { result_type: 'activity_complete', next_activity_id: 'research' },
+      trace_tokens: ['previous-walk'],
+    });
+    expect(opened['from_activity']).toBeNull();
+    expect(opened['worker_result']).toBeNull();
+    expect(opened['trace_tokens']).toEqual([]);
+    expect(opened['current_activity']).toBe('start');
+  });
+
+  it('advances once when the walk opens on the activity the session already stands on', (ctx) => {
+    const resume = routineDef().steps.find((s) => s.id === 'resume-standing-activity');
+    if (!resume?.actions?.some((a) => a.target === 'stands_on_activity' && a.value === true)) { ctx.skip(); return; }
+
+    const opened = opensWalk({
+      standing_activity: 'plan-prepare',
+      initial_activity: 'start',
+      from_activity: 'old',
+      worker_result: { result_type: 'activity_complete' },
+    });
+    expect(opened['stands_on_activity']).toBe(true);
+    expect(opened['current_activity']).toBe('plan-prepare');
+    expect(opened['from_activity']).toBe('plan-prepare');
+
+    const result = walk(
+      [complete('research'), complete(TERMINAL)],
+      'plan-prepare',
+      opened,
+    );
+    // The standing activity is carried, not advanced onto. The next activity is the one advance.
+    expect(result.iterations[0]).toContain('enter-activity');
+    expect(result.iterations[0]).toContain('spend-entered-activity');
+    expect(result.log.filter((entry) => entry === 'advance')).toEqual(['advance']);
+    expect(result.bag['stands_on_activity']).toBe(false);
+  });
+
+  it('resumes a yielded checkpoint without advancing', (ctx) => {
+    const body = loop().steps;
+    if (!body.some((step) => step.id === 'resume-entered-activity')) { ctx.skip(); return; }
+
+    const result = walk(
+      [complete('research'), complete(TERMINAL)],
+      'plan-prepare',
+      {
+        current_activity: 'plan-prepare',
+        worker_result: { result_type: 'checkpoint_pending' },
+        checkpoint_reply: 'confirm',
+        client_session_index: 'AAAAAA',
+      },
+    );
+    expect(result.iterations[0]).toContain('resume-entered-activity');
+    expect(result.iterations[0]).not.toContain('enter-activity');
+    expect(result.log.filter((entry) => entry === 'advance')).toEqual(['advance']);
+    expect(result.bag['checkpoint_reply']).toBeNull();
   });
 
   it('never commits an activity after the pointer has moved off it', () => {
