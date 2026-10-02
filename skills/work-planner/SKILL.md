@@ -124,13 +124,14 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **Standalone issues.**  A standalone issue sits on no board.
 - **A new theme.**
   - It needs its label and its board before an initiative takes it.
-  - The user creates the board in GitHub as a copy of the Initiative template board, titled and linked as above, since the REST API can do neither.
+  - [Create board](references/commands.md#create-board) copies the Initiative template, titles the copy as above, and links it to the repository.
 
 ## Dependencies
 
 - **GitHub CLI (`gh`).**
   - Logged in through its keyring, with the `repo` scope for issues and pull requests and the `project` scope for project boards.
-  - Every call goes through REST (`gh api`), never GraphQL, and needs full host permissions.
+  - Issue and pull request calls go through REST (`gh api`), never GraphQL, and every call needs full host permissions.
+  - A board is created with `gh project`, as [Create board](references/commands.md#create-board) specifies.
 - **Sandbox.**
   `scripts/sbx` in the workspace checkout, the one holding this skill, runs the skill's scripts under bubblewrap with no network. `<workspace>` in the mode files stands for that checkout.
 - **Python 3.10 or later.**
