@@ -49,6 +49,7 @@ Read the file for the mode the request calls for:
   - Attribution of each finding to the diff, to the base ref, or to a prior pass
   - Re-derivation of each High before it drives a fix
   - A report, standalone or in the layout a workflow run's guide owns
+  - Sub-agent slices for a change surface one pass cannot read, continued until the ledger closes or the user stops
   - Guard candidates for each Detect applied by pattern
 - **[Revise](references/revise-mode.md)**
   - To make changes to this skill's own files
@@ -80,6 +81,8 @@ Read the file for the mode the request calls for:
 - **The server's AGENTS.md.**
   It owns the check commands, the worktree a run measures, and binding-fidelity triage.
 - **workflow-server MCP.**  For fetching a canon section inside a workflow session.
+- **Sub-agents.**
+  Where the harness has them, for the unread slices of an audit one pass cannot read.
 
 ## Rules
 
