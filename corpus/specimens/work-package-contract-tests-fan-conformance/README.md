@@ -5,7 +5,7 @@ A specimen of the implementation fan: a contract-tests stub and a stub implement
 | Activity | Borrows | Role |
 |---|---|---|
 | `take-case` | nothing | opens the case |
-| `surface-contract-tests` | nothing | stub contract-tests branch (red on base) |
+| `contract-tests` | nothing | stub contract-tests branch (red on base) |
 | `stub-implement` | nothing | stub implement branch |
 | `implementation-join` | nothing (specimen-local hoist) | hoists and validates |
 | `record-case` / `report-cases` | nothing | case report |

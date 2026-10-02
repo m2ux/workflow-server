@@ -21,6 +21,8 @@ Where assumptions or comprehension questions are settled, agent-resolvable conce
 | 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Discovery fan join — research gates, assumption ingest, plan |
 | 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Converge the open assumptions and settle what stays open with the user before implementation |
 | 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
+| 20 | [**Contract Tests**](./activities/README.md#contract-tests) | Implementation fan branch — contract suites that fail on the base tree |
+| 21 | [**Implementation Join**](./activities/README.md#implementation-join) | Implementation fan join — hoist both branches, run the suites, settle provenance |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
 | 16 | [**Prism Decision**](./activities/README.md#prism-decision) | Settle whether structural analysis takes the full prism pipeline or the inline pass |
 | 17 | [**Code Review**](./activities/README.md#code-review) | Automated review fan branch — code findings |
@@ -70,9 +72,14 @@ graph TD
     AR -->|"needs-comprehension"| CC
     AR -->|"needs-plan-revision"| PP
     AR -->|"review-mode"| LCA["09 lean-coding-audit"]
+    AR -->|"assumptions-approved"| CT["20 contract-tests"]
     AR -->|"assumptions-approved"| IMP["08 implement"]
 
-    IMP -->|"done"| LCA
+    CT -->|"done"| IJ["21 implementation-join"]
+    IMP -->|"done"| IJ
+    IJ -->|"needs-rework"| IMP
+    IJ -->|"needs-contract-tests"| CT
+    IJ -->|"done"| LCA["09 lean-coding-audit"]
     LCA -->|"done"| PD["16 prism-decision"]
     PD -->|"remeasure"| PD
     PD -->|"done"| CR["17 code-review"]
@@ -86,6 +93,7 @@ graph TD
     VAL -->|"done"| SR["12 strategic-review"]
 
     SR -->|"review-failed"| PP
+    SR -->|"needs-more-review"| SR
     SR -->|"review-mode / review-passed"| SFR["13 submit-for-review"]
 
     SFR -->|"provide-input"| SFR

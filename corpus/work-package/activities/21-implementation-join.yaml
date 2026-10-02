@@ -1,5 +1,5 @@
 id: implementation-join
-version: 1.1.0
+version: 1.1.1
 name: Implementation Join
 description: >-
   Converge the contract-tests and implement fan branches, hoist each branch's
@@ -128,12 +128,10 @@ steps:
       Contract tests failed against the implementation:
 
       {contract_test_failures}
-
-      Rework the implementation to satisfy the Contract, or dispute a test as a contract ambiguity.
     options:
       - id: rework-implementation
         label: Rework the implementation
-        description: Return the failing tasks to the implementer
+        description: The failing assertions are Contract failures.
         effect:
           exit: needs-rework
       - id: dispute-test
@@ -146,8 +144,6 @@ steps:
       A contract test is disputed. The Contract and the failing assertions are:
 
       {contract_test_failures}
-
-      Settle whether the implementation should change, the tests (and Contract) should change, or the current implementation is accepted against a revised reading.
     options:
       - id: revise-implementation
         label: Revise the implementation
@@ -208,7 +204,7 @@ steps:
                     has_uncertain_symbols: false
               - id: uncertain
                 label: Trace the flagged symbols again
-                description: The flagged symbols remain unaccounted for and the task's self-review runs again over them.
+                description: The flagged symbols remain unaccounted for.
                 effect:
                   setVariable:
                     has_uncertain_symbols: true

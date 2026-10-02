@@ -1,5 +1,5 @@
 id: structural-analysis
-version: 1.0.0
+version: 1.0.1
 name: Structural Analysis
 description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
 variables:
@@ -18,12 +18,6 @@ steps:
       name: prism/structural-analysis
       outputs:
         structural_analysis: structural_findings
-  - kind: action
-    id: defer-full-prism
-    when: pipeline_mode == 'full-prism'
-    actions:
-      - action: log
-        message: Full prism pipeline runs at post-implementation review
 exits:
   - id: done
     isDefault: true

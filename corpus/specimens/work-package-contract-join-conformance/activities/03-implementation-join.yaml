@@ -52,12 +52,10 @@ steps:
       Specimen join — contract tests failed against the implementation:
 
       {contract_test_failures}
-
-      Rework the implementation to satisfy the Contract, or dispute a test as a contract ambiguity.
     options:
       - id: rework-implementation
         label: Rework the implementation
-        description: Return the failing tasks to the implementer
+        description: The failing assertions are Contract failures.
         effect:
           exit: needs-rework
       - id: dispute-test
@@ -70,8 +68,6 @@ steps:
       Specimen join — a contract test is disputed. The Contract and the failing assertions are:
 
       {contract_test_failures}
-
-      Settle whether the implementation should change, the tests should change, or the current implementation is accepted.
     options:
       - id: revise-implementation
         label: Revise the implementation

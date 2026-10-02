@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.3.1
+version: 3.3.2
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -101,6 +101,10 @@ variables:
     type: boolean
     description: Whether the run reviews an existing pull request, always false in this workflow.
     defaultValue: false
+  - name: stealth_mode
+    type: boolean
+    description: Whether every public-disclosure side-effect is suppressed.
+    defaultValue: true
   - name: skip_optional_activities
     type: boolean
     description: Whether to skip optional discovery activities (elicitation and research).
