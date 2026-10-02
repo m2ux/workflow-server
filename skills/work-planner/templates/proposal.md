@@ -16,7 +16,7 @@
 
 ## Acceptance Criteria
 
-- [ ] **AC1.** {{One invariant, a condition that holds or does not, meeting the goal pass rules that apply to a proposal: one invariant, no stale counts, and local. It ends by naming its instrument: the automated test that verifies it, or how the user confirms it.}}
+- [ ] **AC1.** {{One invariant, a condition that holds or does not, meeting the goal pass rules that apply to a proposal: one invariant, no stale counts, local, and verifiable. It ends by naming its instrument, as that pass's Verified rule defines.}}
 
 ## Non-goals
 

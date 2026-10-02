@@ -20,8 +20,8 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Draft each body from its template into a local file. Those files are the source for every later edit.
    - A Problem and a Proposal follow the [Work Breakdown guide](work-breakdown.md#problem-and-proposal).
    - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them.
-   - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the goal pass in `review-passes.md` defines.
-   - Each criterion names its instrument, and a test it names that does not exist yet is planned as work, as the goal pass's Verified rule defines.
+   - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [goal pass](review-passes.md#goal-pass) defines.
+   - Each criterion is kept only as that pass's Verifiable rule defines, and it ends by naming its instrument as that pass's Verified rule defines. A test it names that does not exist yet is planned as work.
    - The initiative closes as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
 5. **Review the drafts.**
    - Run the goal pass in `review-passes.md`, and [Check dependencies](commands.md#check-dependencies) over the drafts.
