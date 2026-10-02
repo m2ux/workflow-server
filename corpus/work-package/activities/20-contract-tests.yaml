@@ -1,5 +1,5 @@
 id: contract-tests
-version: 1.1.0
+version: 1.2.0
 name: Contract Tests
 description: >-
   Write each task's contract tests from the Contract alone into their own files in a
@@ -34,6 +34,18 @@ variables:
       type: boolean
       description: True when every written contract suite fails against the base tree.
       defaultValue: false
+    - name: task_fails_on_base
+      type: boolean
+      description: Whether the task under test fails against the base tree.
+      defaultValue: false
+    - name: all_contract_tests_fail_on_base
+      type: boolean
+      description: Whether every task so far fails against the base tree.
+      defaultValue: true
+    - name: contract_tests_ran
+      type: boolean
+      description: Whether the cycle wrote a contract suite for at least one task.
+      defaultValue: false
     - name: commit_sha
       type: string
       description: HEAD the contract-tests worktree stands on after create-worktree.
@@ -62,6 +74,18 @@ steps:
         branch_name: contract_tests_branch
         target_path: contract_tests_path
         create_branch: true
+  - kind: action
+    id: arm-base-failure
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: false
+      - action: set
+        target: all_contract_tests_fail_on_base
+        value: true
+      - action: set
+        target: contract_tests_ran
+        value: false
   - kind: loop
     id: contract-test-cycle
     name: Contract Test Cycle
@@ -74,10 +98,26 @@ steps:
         technique: write-contract-tests
       - kind: technique
         id: verify-fail-on-base
-        technique: verify-contract-tests-fail
+        technique:
+          name: verify-contract-tests-fail
+          outputs:
+            contract_tests_fail_on_base: task_fails_on_base
+      - kind: action
+        id: note-task-ran
+        actions:
+          - action: set
+            target: contract_tests_ran
+            value: true
+      - kind: action
+        id: note-task-not-red
+        when: task_fails_on_base != true
+        actions:
+          - action: set
+            target: all_contract_tests_fail_on_base
+            value: false
       - kind: technique
         id: commit-contract-tests
-        when: contract_tests_fail_on_base == true
+        when: task_fails_on_base == true
         technique:
           name: manage-git::commit-paths
           inputs:
@@ -85,6 +125,13 @@ steps:
             commit_message: "test: contract for {current_task.id}"
             target_path: contract_tests_path
             branch_name: contract_tests_branch
+  - kind: action
+    id: publish-base-failure
+    when: contract_tests_ran == true && all_contract_tests_fail_on_base == true
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: true
 exits:
   - id: done
     isDefault: true
