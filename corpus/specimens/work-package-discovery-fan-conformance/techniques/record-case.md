@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -33,10 +33,10 @@ One outcome per case taken so far.
 
 ### case_outcomes
 
-The list with this case's outcome appended.
+The list with this case's outcome appended: whether research was needed, how many assumptions each surface holds, and whether the assumptions log is present.
 
 ## Protocol
 
 ### 1. Record Outcome
 
-- Append one entry to `{case_outcomes}`: `{needs_research}`, the lengths of `{research_assumptions}` and `{analysis_assumptions}`, and whether `{assumptions_log}` is present
+- Append this case to `{case_outcomes}`

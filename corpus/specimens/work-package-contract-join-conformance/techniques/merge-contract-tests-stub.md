@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,4 +17,4 @@ Stub merge of contract-test files into the implement worktree.
 
 ### 1. Merge
 
-- Set `{contract_tests_merged_paths}` to `["tests/contract/t1.test.ts"]`
+- Emit `{contract_tests_merged_paths}`

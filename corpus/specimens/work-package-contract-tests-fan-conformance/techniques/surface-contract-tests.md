@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -25,6 +25,4 @@ Stub branch `feat/0-contract-tests`.
 
 ### 1. Surface
 
-- Set `{contract_tests_fail_on_base}` true
-- Set `{contract_tests_path}` to `contract-tests-worktree`
-- Set `{contract_tests_branch}` to `feat/0-contract-tests`
+- Emit `{contract_tests_fail_on_base}`, `{contract_tests_path}`, and `{contract_tests_branch}`

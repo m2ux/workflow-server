@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -33,11 +33,10 @@ One outcome per case taken so far.
 
 ### case_outcomes
 
-The list with this case's outcome appended: the pipeline mode, whether each report was present, and whether structural findings are present.
+The list with this case's outcome appended: the pipeline mode, whether the code review report is present, whether the test suite review report is present, and how many structural findings are present. Where the pipeline mode is `full-prism`, structural findings are empty.
 
 ## Protocol
 
 ### 1. Record Outcome
 
-- Append one entry to `{case_outcomes}`: `{pipeline_mode}`, whether `{code_review_report}` is present, whether `{test_suite_review_report}` is present, and the length of `{structural_findings}`
-  > Where `{pipeline_mode}` is `full-prism`, `{structural_findings}` is empty.
+- Append this case to `{case_outcomes}`

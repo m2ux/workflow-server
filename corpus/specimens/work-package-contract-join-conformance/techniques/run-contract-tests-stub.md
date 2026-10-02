@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,11 +21,10 @@ True only when `{case_kind}` is `pass`.
 
 ### contract_test_failures
 
-Empty on pass; one failure naming Acceptance otherwise.
+Empty when `{case_kind}` is `pass`; otherwise one failure, `Acceptance: caller receives true`.
 
 ## Protocol
 
 ### 1. Run
 
-- When `{case_kind}` is `pass`, set `{contract_tests_passed}` true and `{contract_test_failures}` to `[]`
-- Otherwise set `{contract_tests_passed}` false and `{contract_test_failures}` to `["Acceptance: caller receives true"]`
+- Emit `{contract_tests_passed}` and `{contract_test_failures}`

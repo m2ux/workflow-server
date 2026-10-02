@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,10 +29,10 @@ Outcomes so far.
 
 ### case_outcomes
 
-List with this case appended.
+The list with this case appended: which case was walked, whether the suite passed, and the exit the case took.
 
 ## Protocol
 
 ### 1. Record
 
-- Append `{case_kind}`, `{contract_tests_passed}`, and `{join_exit}` to `{case_outcomes}`
+- Append this case to `{case_outcomes}`

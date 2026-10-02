@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -29,11 +29,10 @@ One outcome per case taken so far.
 
 ### case_outcomes
 
-The list with this case's outcome appended: whether it was a review run, the steps the review ran after collecting, whether the batch gate was raised and with what, the outcome each assumption carries in the log, and whether any was deferred.
+The list with this case's outcome appended: whether it was a review run, the steps the review ran after collecting, whether the batch gate was raised and the presentation its message carried, the outcome each assumption carries in the log, and whether any was deferred. A review run records the gate and the presentation as absent.
 
 ## Protocol
 
 ### 1. Record Outcome
 
-- Append one entry to `{case_outcomes}`: `{is_review_mode}`, the steps the review ran after collecting, in order, whether the batch gate was raised and the presentation its message carried, the Outcome cell of each row the case added to `{assumptions_log}`, and `{has_deferred_assumptions}`
-  > A review run's entry records the gate and the presentation as absent.
+- Append this case to `{case_outcomes}`

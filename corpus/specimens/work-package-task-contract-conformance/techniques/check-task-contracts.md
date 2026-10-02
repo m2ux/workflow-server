@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -28,6 +28,5 @@ The Contract field names absent from any task; empty when the check holds.
 ### 1. Check Contracts
 
 - Read the plan at `{plan_path}`
-- For each `### Task` heading under Implementation Tasks, confirm its Contract block names Signatures, Behaviours, Error cases and Acceptance
-- Set `{contract_check_held}` true when every task carries all four fields; otherwise false
-- Set `{contract_check_missing}` to the field names absent from any task
+- For each `### Task` heading under Implementation Tasks, read its Contract block
+- Emit `{contract_check_held}` and `{contract_check_missing}`

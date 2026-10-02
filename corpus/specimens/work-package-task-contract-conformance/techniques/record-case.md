@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,10 +33,10 @@ One outcome per case taken so far.
 
 ### case_outcomes
 
-The list with this case's outcome appended.
+The list with this case's outcome appended: whether the case wrote every Contract field, the plan path, whether the check held, and the field names it found absent.
 
 ## Protocol
 
 ### 1. Record Outcome
 
-- Append one entry to `{case_outcomes}`: `{contract_complete}`, `{plan_path}`, `{contract_check_held}`, and `{contract_check_missing}`
+- Append this case to `{case_outcomes}`

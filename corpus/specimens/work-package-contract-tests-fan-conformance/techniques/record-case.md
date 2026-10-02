@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,10 +29,10 @@ Outcomes so far.
 
 ### case_outcomes
 
-List with this case appended.
+The list with this case appended: whether the suite failed against the base tree, the worktree path, and the branch.
 
 ## Protocol
 
 ### 1. Record
 
-- Append `{contract_tests_fail_on_base}`, `{contract_tests_path}`, `{contract_tests_branch}` to `{case_outcomes}`
+- Append this case to `{case_outcomes}`
