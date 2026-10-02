@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 ## Capability
 
-Implement a single task from the work package plan by writing code changes
+Implement a single task by writing code changes
 
 ## Inputs
 
@@ -17,15 +17,23 @@ A single atomic task to implement — its goal, deliverables, dependencies, and 
 
 *(optional)* Test [plan](../resources/test-plan.md#test-plan-structure) with strategy and acceptance criteria for guidance
 
-## Outputs
-
 ### target_symbol
 
-The primary edit target — the function, class, or method this task changes, derived from `{current_task}`.
+The function, class, or method this task changes.
+
+### impact_report
+
+Blast radius of that symbol: direct callers, the flows reached, and a risk level.
+
+### context_report
+
+Callers, callees, and the flows that symbol participates in.
+
+## Outputs
 
 ### task_implementation
 
-Code changes for a single task
+Code changes for a single task: a brief summary of the approach taken, a high or critical blast-radius rating and the symbols it names when the radius rates that high, residual ambiguity the task leaves, and tests left unrun.
 
 ### changed_paths
 
@@ -33,36 +41,29 @@ Repository-relative paths this task wrote, as the set a commit stages.
 
 ## Protocol
 
-### 1. Understand Context
+### 1. Read the task
 
 - Read the `{current_task}` Contract first — Signatures, Behaviours, Error cases and Acceptance are the public specification this task must satisfy
-- Read the `{current_task}` goal, deliverables and dependencies from the plan
-- Identify affected files, dependencies, and related code
-- Determine the primary edit target `{target_symbol}` — the function, class, or method this task changes — from `{current_task}`
+- Read the `{current_task}` goal, deliverables and dependencies
+- Before editing, emit the blast-radius note on `{task_implementation}`
+- Read `{context_report}` for the callers and callees of `{target_symbol}`
 - Review the `{test_plan}` for acceptance criteria relevant to this task
 - Where the `{current_task}` Contract or description is ambiguous or missing context, read the plan document for what it leaves unstated, and record the residual ambiguity in `{task_implementation}`
 
-### 2. Pre Edit Impact Check
-
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: `{target_symbol}`, *direction*: `upstream`) before any edit
-- Read the resulting `{impact_report}`; where it reports HIGH or CRITICAL risk, record that level and the symbols it names in `{task_implementation}` before editing
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{target_symbol}`) to understand callers/callees of the symbol
-
-### 3. Write Code
+### 2. Write Code
 
 - Implement the code changes for this task
 - Follow existing code patterns and conventions in the target codebase
 - For Rust projects, follow TDD best practices from [tdd-concepts-rust](../resources/tdd-concepts-rust.md)
 
-### 4. Verify Locally
+### 3. Verify Locally
 
 - Check for obvious regressions in affected code
 - If the code changes do not compile, review the error messages, fix the issues, and retry
 - Where the suite cannot run here, update any test this diff invalidates on its own face — a reordered positional assertion, an assertion naming a renamed symbol — and record which tests remain unrun in `{task_implementation}`
 
-### 5. Post Edit Verification
+### 4. Record
 
-- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[detect-changes](/gitnexus/techniques/detect-changes.md) before commit to confirm the changes affect only the expected symbols and execution flows
 - Record the `{task_implementation}` for this task, capturing a brief summary of the approach taken
 - Emit `{changed_paths}` as the repository-relative paths this task wrote
 

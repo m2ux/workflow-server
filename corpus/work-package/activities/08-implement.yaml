@@ -1,5 +1,5 @@
 id: implement
-version: 2.22.0
+version: 2.23.0
 name: Implement Tasks
 description: >-
   Execute the implementation plan task by task in the feature worktree. A branch
@@ -28,6 +28,18 @@ variables:
     - name: changed_paths
       type: array
       description: Repository-relative paths the task under construction wrote.
+    - name: target_symbol
+      type: string
+      description: The function, class, or method the task under construction changes.
+    - name: task_impact
+      type: object
+      description: Blast radius of the symbol about to be edited — callers, flows reached, and a risk level.
+    - name: context_report
+      type: object
+      description: Callers, callees, and flows of the symbol about to be edited.
+    - name: change_report
+      type: object
+      description: Symbols and flows the task's diff touches.
     - name: commit_sha
       type: string
       description: SHA of the commit carrying the task under construction, empty where it staged nothing.
@@ -55,8 +67,38 @@ steps:
     over: implementation_plan.tasks
     steps:
       - kind: technique
+        id: name-edit-target
+        technique: name-edit-target
+      - kind: technique
+        id: pre-edit-impact
+        technique:
+          name: gitnexus::impact
+          inputs:
+            target: target_symbol
+            direction: upstream
+          outputs:
+            impact_report: task_impact
+      - kind: technique
+        id: pre-edit-context
+        technique:
+          name: gitnexus::context
+          inputs:
+            name: target_symbol
+      - kind: technique
         id: implement-task
-        technique: implement-task
+        technique:
+          name: implement-task
+          inputs:
+            impact_report: task_impact
+      - kind: technique
+        id: post-edit-changes
+        technique: gitnexus::detect-changes
+      - kind: technique
+        id: record-change-scope
+        technique:
+          name: record-change-scope
+          inputs:
+            task_record: task_implementation
       - kind: technique
         id: run-tests
         technique:
