@@ -7,8 +7,9 @@ issues.json is every issue in the repository as `gh api --paginate
 "repos/{owner}/{repo}/issues?state=all&per_page=100"` returns it: the pages' arrays one after
 another. Pull requests are skipped.
 
-An agent-engineering issue is one whose title starts with an [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz]
-prefix; an open issue without one is standalone, and every standalone issue is a hoist candidate.
+An agent-engineering issue is one whose title starts with an [I], [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz]
+prefix. [I] is a proposal. An open issue without one of these prefixes is standalone, and every
+standalone issue is a hoist candidate.
 An orphan is one that no open agent-engineering issue's body links, by URL or by #n; one that only
 closed agent-engineering issues cite is still an orphan, and the listing names those citers. A cited
 standalone issue is one that open agent-engineering issues link, as a reference or in prose, though
@@ -26,7 +27,8 @@ import re
 import sys
 from pathlib import Path
 
-AGENT_ENGINEERING = re.compile(r'^\[I\d\d(?::E\d\d(?::W\d\d)?)?\] ')
+AGENT_ENGINEERING = re.compile(r'^\[I(?:\d\d(?::E\d\d(?::W\d\d)?)?)?\] ')
+OPEN_INITIATIVE_OR_EPIC = re.compile(r'^\[I\d\d(?::E\d\d)?\] ')
 PLANNING = re.compile(r'https://github\.com/[^)\s]*/(?:tree|blob)/[^)\s]*planning/[^)\s]*')
 
 
@@ -86,7 +88,7 @@ def main() -> int:
         print()
 
     print('--- open initiatives and epics')
-    for i in sorted((i for i in agent_engineering if i['state'] == 'open' and not re.match(r'^\[I\d\d:E\d\d:W', i['title'])),
+    for i in sorted((i for i in agent_engineering if i['state'] == 'open' and OPEN_INITIATIVE_OR_EPIC.match(i['title'])),
                     key=lambda i: i['title']):
         themes = [l for l in labels(i) if l.startswith('theme:')]
         print(f"#{i['number']} {i['title']}  [{', '.join(themes)}]")
