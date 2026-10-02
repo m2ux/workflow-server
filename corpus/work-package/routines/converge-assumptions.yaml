@@ -61,7 +61,7 @@ steps:
         routine: challenge-concerns
         with:
           challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
-          concern_document: assumptions_log
+          concern_document: "{assumptions_log}"
         outputs:
           concern_document: assumptions_log
           concerns_agent_resolvable: has_resolvable_assumptions

@@ -107,7 +107,7 @@ steps:
         routine: challenge-concerns
         with:
           challenge_perspectives: '["pedagogy", "rejected-paths"]'
-          concern_document: comprehension_log
+          concern_document: "{comprehension_log}"
         outputs:
           concern_document: comprehension_log
           concerns_agent_resolvable: needs_comprehension
