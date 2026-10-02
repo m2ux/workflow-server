@@ -38,6 +38,16 @@ export interface SessionScope {
   engineeringDir: string;
   installDir?: string;
   /**
+   * Server path of an extra checkout mount. A session may bind a repository
+   * from a checkout under it. Planning is not written there.
+   */
+  checkoutRoot?: string;
+  /**
+   * Host path of the projects bind. When that path is the workflow-server
+   * local share, the bind is a checkout root and not a planning home.
+   */
+  hostProjectsRoot?: string;
+  /**
    * Planning relative dir for the active write root.
    * Multi-root always uses `artifacts/planning` under each eng checkout
    * (`<checkout>/.engineering` is the eng root).
@@ -98,6 +108,8 @@ export function buildSessionScope(config: ServerConfig): SessionScope {
       engineeringMultiRoot: engineeringDir,
       engineeringDir,
       installDir: installDir ?? dirname(engineeringDir),
+      ...(config.checkoutRoot ? { checkoutRoot: resolve(config.checkoutRoot) } : {}),
+      ...(config.hostProjectsRoot ? { hostProjectsRoot: resolve(config.hostProjectsRoot) } : {}),
       // Eng root is `<checkout>/.engineering` → planning at artifacts/planning.
       planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
     };
@@ -107,6 +119,8 @@ export function buildSessionScope(config: ServerConfig): SessionScope {
     mode: 'single',
     engineeringDir,
     ...(installDir !== undefined ? { installDir } : {}),
+    ...(config.checkoutRoot ? { checkoutRoot: resolve(config.checkoutRoot) } : {}),
+    ...(config.hostProjectsRoot ? { hostProjectsRoot: resolve(config.hostProjectsRoot) } : {}),
     planningRelativeDir:
       config.planningRelativeDir?.trim() ||
       (config.engineeringDir && config.engineeringDir !== config.workspaceDir
@@ -239,7 +253,7 @@ export function resolveSessionRoot(
     throw new Error(
       'start_session: repo is required when the server is bound to a projects multi-root ' +
         '(HOST_PROJECTS_ROOT). Pass working_directory so the server derives owner/repo from that checkout\'s origin, or pass repo: "owner/repo" when creating a transient session without a working_directory. ' +
-        'Planning lives at <project>/.engineering/artifacts/planning/ of the top-level project folder holding that checkout.',
+        'Planning lives at <project>/.engineering/artifacts/planning/ of the primary project checkout.',
     );
   }
 
@@ -251,8 +265,8 @@ export function resolveSessionRoot(
 
 /**
  * The project folder a checkout belongs to: the top-level folder under the
- * projects multi-root that holds it. A nested clone, a branch worktree, and the
- * project checkout itself all name the same one.
+ * projects multi-root that holds it. A nested clone and the project checkout
+ * itself name the same one when both sit under that root.
  */
 export function projectFolderOf(multiRoot: string, checkout: string): string {
   const top = relative(resolve(multiRoot), resolve(checkout)).split(sep)[0];
@@ -260,12 +274,66 @@ export function projectFolderOf(multiRoot: string, checkout: string): string {
   return resolve(multiRoot, top);
 }
 
+const WORKTREES_SEGMENT = `${sep}.worktrees${sep}`;
+const SHARE_SEGMENT = `${sep}.local${sep}share${sep}workflow-server${sep}`;
+
+/** Primary checkout above a `.worktrees` segment. Absent when the path holds none. */
+export function primaryCheckoutOf(checkout: string): string | undefined {
+  const resolved = resolve(checkout);
+  const at = resolved.indexOf(WORKTREES_SEGMENT);
+  if (at === -1) return undefined;
+  return resolved.slice(0, at);
+}
+
+/** True when `path` is the workflow-server local share or a directory under it. */
+export function isLocalSharePath(path: string): boolean {
+  const resolved = resolve(path);
+  const share = `${sep}.local${sep}share${sep}workflow-server`;
+  return resolved.includes(SHARE_SEGMENT) || resolved.endsWith(share);
+}
+
+function pathIsUnder(path: string, root: string | undefined): boolean {
+  if (!root) return false;
+  const resolved = resolve(path);
+  const base = resolve(root);
+  return resolved === base || resolved.startsWith(base + sep);
+}
+
 /**
- * Engineering root of the project a session is opened from. Under a projects
- * multi-root it is the `.engineering` of the top-level project folder holding the
- * checkout, shared by every clone and worktree inside that folder and kept apart
- * from other top-level folders, whatever their origin. A single-root process
- * keeps its one engineering root.
+ * Project folder that holds planning for this checkout. A branch worktree
+ * plans at the primary checkout above `.worktrees`. A checkout under the
+ * workflow-server local share, or under the extra checkout mount, plans at
+ * `<projects-root>/<repo>` of a projects root that is not that share.
+ */
+export function planningProjectFolder(
+  scope: SessionScope,
+  checkout: { hostRepoPath: string; repo: string },
+): string {
+  const primary = primaryCheckoutOf(checkout.hostRepoPath);
+  const multi = scope.engineeringMultiRoot;
+  const folder = primary ?? (multi ? projectFolderOf(multi, checkout.hostRepoPath) : resolve(checkout.hostRepoPath));
+  const shareBound =
+    (scope.hostProjectsRoot !== undefined && isLocalSharePath(scope.hostProjectsRoot))
+    || (multi !== undefined && isLocalSharePath(multi));
+  const underCheckoutMount = pathIsUnder(folder, scope.checkoutRoot) || pathIsUnder(checkout.hostRepoPath, scope.checkoutRoot);
+  const underShare = isLocalSharePath(folder) || isLocalSharePath(checkout.hostRepoPath) || (shareBound && multi !== undefined && pathIsUnder(folder, multi));
+  if (!primary && !underCheckoutMount && !underShare) return folder;
+  if (primary && !isLocalSharePath(primary) && !pathIsUnder(primary, scope.checkoutRoot)) return primary;
+  if (!multi || shareBound || isLocalSharePath(multi)) {
+    throw new Error(
+      'start_session: planning artifacts are written at <project>/.engineering/artifacts/planning of the primary project checkout. ' +
+        'They are not written in a worktree or under the workflow-server local share. ' +
+        `The checkout '${checkout.hostRepoPath}' has no primary project checkout outside those trees.`,
+    );
+  }
+  return resolve(multi, repoCheckoutBasename(checkout.repo));
+}
+
+/**
+ * Engineering root of the project a session is opened from. Planning lives at
+ * that project's `.engineering`. A branch worktree and a clone under the
+ * workflow-server local share bind the repository and do not hold planning.
+ * A single-root process keeps its one engineering root.
  */
 export function resolveCheckoutSessionRoot(
   scope: SessionScope,
@@ -273,7 +341,7 @@ export function resolveCheckoutSessionRoot(
 ): ResolvedSessionRoot {
   if (scope.mode === 'multi' && scope.engineeringMultiRoot) {
     return {
-      engineeringDir: resolve(projectFolderOf(scope.engineeringMultiRoot, checkout.hostRepoPath), '.engineering'),
+      engineeringDir: resolve(planningProjectFolder(scope, checkout), '.engineering'),
       planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
       repo: checkout.repo,
     };
@@ -352,6 +420,9 @@ export function mappedWorkingRoots(
   const out = new Set<string>();
   if (scope.engineeringMultiRoot) {
     out.add(resolve(scope.engineeringMultiRoot));
+  }
+  if (scope.checkoutRoot) {
+    out.add(resolve(scope.checkoutRoot));
   }
   out.add(resolve(scope.engineeringDir));
   for (const raw of searchRoots) {

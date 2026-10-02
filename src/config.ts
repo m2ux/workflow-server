@@ -41,9 +41,16 @@ export interface ServerConfig {
    * missing value as `workspaceDir` (single-root layout).
    * With `--repo=owner/repo` (pinned), this is
    * `$HOST_PROJECTS_ROOT/<repo>/.engineering` (basename checkout — not owner/repo).
-   * Unpinned, a multi-root session plans under the top-level project folder holding the checkout it was opened from.
+   * Unpinned, a multi-root session plans at `<project>/.engineering` of the
+   * primary project checkout. A branch worktree and a clone under the
+   * workflow-server local share do not hold planning.
    */
   engineeringDir?: string;
+  /**
+   * Server path of an extra checkout mount. Sessions may derive a repository
+   * from a checkout under it. Planning stays on the projects root.
+   */
+  checkoutRoot?: string;
   /**
    * Normalised `owner/repo` when the server was bound via `--repo` /
    * `WORKFLOW_SERVER_REPO`. Absent when bound by an explicit workspace path.
@@ -663,20 +670,25 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
   // callers see the configured slug without a second argument.
   setPlanningRelativeDir(planningRelativeDir);
   const hostPaths = resolveHostPathPresentation(process.env);
+  const checkoutServer = process.env['WORKFLOW_SERVER_CHECKOUT_ROOT']?.trim();
+  const checkoutHost = process.env['HOST_CHECKOUT_ROOT']?.trim();
   // Server-side projects root for the map: engineering multi-root when set,
   // else workspace (single-root / nested bind).
   const serverProjectsRoot = roots.engineeringDir;
   const pathPresentation = buildPathPresentationMap({
     serverProjectsRoot,
     hostProjectsRoot: hostPaths.hostProjectsRoot,
-    serverWorktreeRoot: roots.workspaceDir,
-    hostWorktreeRoot: hostPaths.hostWorktreeRoot ?? hostPaths.hostProjectsRoot,
+    serverWorktreeRoot: checkoutServer ? resolve(checkoutServer) : roots.workspaceDir,
+    hostWorktreeRoot: checkoutHost
+      ? resolve(checkoutHost)
+      : (hostPaths.hostWorktreeRoot ?? hostPaths.hostProjectsRoot),
   });
   return {
     workflowDir: resolveWorkflowDir(argv),
     schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
     workspaceDir: roots.workspaceDir,
     engineeringDir: roots.engineeringDir,
+    ...(checkoutServer ? { checkoutRoot: resolve(checkoutServer) } : {}),
     ...(roots.repo !== undefined ? { repo: roots.repo } : {}),
     ...(roots.installDir !== undefined ? { installDir: roots.installDir } : {}),
     planningRelativeDir,
