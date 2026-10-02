@@ -1,30 +1,36 @@
 ---
 name: work-planner
 description: >-
-  Plans and maintains agent-engineering work on GitHub: [Ixx] initiative issues, their [Ixx:Eyy]
-  epics and [Ixx:Eyy:Wzz] tasks, and each theme's project board. Use to plan the work, plan out,
-  scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure,
-  review or renumber an initiative or epic; to check an issue's format or dependency order; to fold
-  review findings into issues; to sync an initiative or epic with completed work; to hoist or
-  triage orphan issues into an initiative; for a progress summary, standup or status update in
-  Slack; or to revise or update the work-planner skill itself.
+  Plans and maintains agent-engineering work on GitHub: [I] proposal issues, [Ixx] initiative
+  issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
+  Proposals board. Use to propose work or raise a proposal; to plan the work, plan out, scope or
+  break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
+  renumber an initiative or epic; to check an issue's format or dependency order; to fold review
+  findings into issues; to sync an initiative or epic with completed work; to hoist or triage
+  orphan issues into an initiative; for a progress summary, standup or status update in Slack; or
+  to revise or update the work-planner skill itself.
 ---
 
 # Work Planner
 
 Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan:
 
+- **Proposal**  States a goal in an initiative's sections, with no Work Breakdown.
 - **Initiative**  States a goal and lists its epics.
 - **Epic**  Lists its tasks in a Work Breakdown table.
 - **Task**  One pull request's worth of work.
 - **Standalone issue**  Work outside any initiative.
 
-Each theme's project board shows where its items stand. A planning record holds what the issues leave out: the evidence, the decisions and each review.
+Each theme's project board shows where its items stand. The Proposals board holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 
 ## Modes
 
 Read the file for the mode the request calls for:
 
+- **[Propose](references/propose-mode.md)**
+  - The same intake as Plan: a confirmed goal and the evidence behind it
+  - One proposal issue, titled `[I]` with no number
+  - Placement on the Proposals board, in Backlog
 - **[Plan](references/plan-mode.md)**
   - Raising, planning and restructuring initiatives and epics
   - Review passes of a plan against its goal
@@ -60,6 +66,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 
 | Level | Title | Labels |
 | --- | --- | --- |
+| Proposal | `[I] Name: Subtitle` | `type:proposal` |
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
 | Epic | `[I07:E00] Name: Subtitle` | `type:epic`, its initiative's `theme:*` |
 | Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
@@ -68,12 +75,14 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Numbers.**
   - `I` is the initiative number, `E` the epic within it, and `W` the task within the epic.
   - Initiatives and epics count from `00`, and tasks from `W01`.
+  - A proposal's prefix is `[I]`, with no number.
 - **Titles.**
   - The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a colon, and a subtitle stating the outcome.
   - The name is two or three words and the subtitle a succinct summary of at most ten, both in title case: `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define Reliable`.
   - A standalone issue's title is the same without the prefix.
 - **Bodies.**
-  - Every body follows its template: [initiative.md](templates/initiative.md), [epic.md](templates/epic.md), [task.md](templates/task.md), and [issue.md](templates/issue.md) for a standalone issue outside any initiative.
+  - Every body follows its template: [proposal.md](templates/proposal.md), [initiative.md](templates/initiative.md), [epic.md](templates/epic.md), [task.md](templates/task.md), and [issue.md](templates/issue.md) for a standalone issue outside any initiative.
+  - A proposal has the initiative's sections without the Work Breakdown table.
   - A task or standalone issue has an epic's structure without the Work Breakdown table.
   - Keep the section order and the table columns.
   - Fill each `{{…}}` and delete a section the template marks as optional when it has nothing to say.
@@ -122,6 +131,9 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **Assignees.**
   An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee.
 - **Standalone issues.**  A standalone issue sits on no board.
+- **Proposals.**
+  - The board is titled `Proposals`. It holds proposal issues, the incoming funnel for work that may become an initiative.
+  - When no open board has that title, [Create board](references/commands.md#create-board) creates it.
 - **A new theme.**
   - It needs its label and its board before an initiative takes it.
   - [Create board](references/commands.md#create-board) copies the Initiative template, titles the copy as above, and links it to the repository.

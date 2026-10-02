@@ -1,6 +1,6 @@
 # Review mode
 
-Checks existing initiative, epic, task and standalone issues against the templates, and fixes them.
+Checks existing proposal, initiative, epic, task and standalone issues against the templates, and fixes them.
 
 ## Procedure
 
@@ -13,7 +13,7 @@ Checks existing initiative, epic, task and standalone issues against the templat
    - An initiative's fetch includes every epic its table links, closed epics included, and its format check takes each with `--epic`.
    - A closed epic's own body is checked only when the epic is named.
 3. **Check.**
-   Check each issue with [Check format](commands.md#check-format): an epic with its initiative's JSON, an initiative with each of its epics'. It reports three kinds of finding:
+   Check each issue with [Check format](commands.md#check-format): an epic with its initiative's JSON, an initiative with each of its epics', a proposal with neither. It reports three kinds of finding:
    - **fixed.**
      Structural changes that keep the wording, already made in `fixed-943.md`, with the body diff printed.
    - **apply.**  A title or label change to make on the issue.

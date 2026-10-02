@@ -1,4 +1,4 @@
-"""Check an initiative, epic, task or standalone issue against its agent-engineering template, and
+"""Check a proposal, initiative, epic, task or standalone issue against its agent-engineering template, and
 fix what is mechanical.
 
 Usage:
@@ -6,8 +6,8 @@ Usage:
   python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
-from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task, and no prefix a
-standalone issue, which belongs to no initiative and takes templates/issue.md. The format is read
+from the title prefix: [I] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task, and no
+prefix a standalone issue, which belongs to no initiative and takes templates/issue.md. The format is read
 from templates/<kind>.md beside this script: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
@@ -30,7 +30,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
-  - a type:* label that does not match the title's level, or any type:* label on a standalone issue
+  - a type:* label that does not match the title's level, a theme:* label on a proposal, or any type:* label on a standalone issue
   - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
@@ -74,6 +74,7 @@ from pathlib import Path
 
 TEMPLATES = Path(__file__).resolve().parent.parent / 'templates'
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
+PROPOSAL = re.compile(r'^\[I\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
@@ -235,6 +236,16 @@ class Review:
 
     def run(self) -> str | None:
         title = self.issue['title']
+        if PROPOSAL.match(title):
+            self.kind, self.number = 'proposal', None
+            rest = title[3:].strip()
+            if ': ' not in rest:
+                self.decide.append('title has no "Name: Subtitle" after the prefix')
+            else:
+                name, _, subtitle = rest.partition(': ')
+                self.check_title_shape(name, subtitle)
+            self.check_labels()
+            return self.check_body()
         m = PREFIX.match(title)
         if not m:
             self.kind, self.number = 'issue', None
@@ -289,11 +300,14 @@ class Review:
     def check_labels(self) -> None:
         labels = self.labels()
         want = f'type:{self.kind}'
+        themes = [l for l in labels if l.startswith('theme:')]
         wrong = [l for l in labels if l.startswith('type:') and l != want]
+        if self.kind == 'proposal':
+            wrong += themes
         if wrong or want not in labels:
             self.apply.append('labels: ' + ', '.join([f'remove {l}' for l in wrong] +
                                                       ([f'add {want}'] if want not in labels else [])))
-        if self.kind != 'task' and not any(l.startswith('theme:') for l in labels):
+        if self.kind in ('initiative', 'epic') and not themes:
             self.decide.append('no theme:* label')
 
     def check_body(self) -> str:
@@ -315,7 +329,7 @@ class Review:
         for h in names:
             if h == 'Non-goals' and self.kind == 'issue':
                 self.decide.append('Non-goals: a standalone issue states its boundary in the Proposal')
-            elif h == 'Non-goals' and self.kind != 'initiative':
+            elif h == 'Non-goals' and self.kind not in ('initiative', 'proposal'):
                 self.decide.append('Non-goals belong to the initiative: lift any that bound it into the '
                                    "initiative's Non-goals, then remove the section")
             elif h not in template.headings:
@@ -336,7 +350,7 @@ class Review:
                 self.check_non_goals(section[1])
             elif h == 'Acceptance Criteria':
                 section[1] = self.fix_list(section[1], 'AC', checkbox=True)
-                if self.kind == 'initiative':
+                if self.kind in ('initiative', 'proposal'):
                     self.check_initiative_criteria(section[1])
                 else:
                     self.check_criteria(section[1])
