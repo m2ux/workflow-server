@@ -33,6 +33,7 @@ Read the file for the mode the request calls for:
   - Placement on the Proposals board, in Suggested
 - **[Plan](references/plan-mode.md)**
   - Raising, planning and restructuring initiatives and epics
+  - Acceptance criteria that comply with the goal pass when they are written
   - Review passes of a plan against its goal
   - Dependency checks
   - Renumbering of epics and tasks
