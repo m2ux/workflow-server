@@ -1,34 +1,24 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Derive the contract-tests worktree path and branch from the feature worktree naming.
-
-## Inputs
-
-
-
+The branch and directory for contract-test files.
 
 ## Outputs
 
 ### contract_tests_branch
 
-`{branch_name}-contract-tests` — a sibling branch cut for contract-test files alone.
+`{branch_name}` with `-contract-tests` appended.
 
 ### contract_tests_path
 
-`<checkout>/.worktrees/<slug>-contract-tests/` beside `{target_path}`.
+The parent directory of `{target_path}`, plus the basename of `{planning_folder_path}` with `-contract-tests` appended.
 
 ## Protocol
 
-### 1. Name the Branch
+### 1. Name the Branch and Directory
 
-- Set `{contract_tests_branch}` to `{branch_name}-contract-tests`
-
-### 2. Locate the Worktree
-
-- Take the parent of `{target_path}` as the `.worktrees/` directory
-- Set `{contract_tests_path}` to that parent plus the basename of `{planning_folder_path}` with `-contract-tests` appended and a trailing slash
+- Emit `{contract_tests_branch}` and `{contract_tests_path}`

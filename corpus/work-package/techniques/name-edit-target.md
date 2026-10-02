@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -20,6 +20,8 @@ A single atomic task — its goal, deliverables, dependencies, and Contract (Sig
 The function, class, or method this task changes.
 
 ## Protocol
+
+### 1. Name the Symbol
 
 - Read the `{current_task}` Contract — Signatures, Behaviours, Error cases and Acceptance — then its goal, deliverables and dependencies
 - Emit `{target_symbol}`

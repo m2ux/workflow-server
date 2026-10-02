@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -28,5 +28,7 @@ The function, class, or method this task changes.
 The task record: the approach, residual ambiguity, tests left unrun, and any high or critical blast-radius rating from the input record, plus the symbols and flows the diff touches and whether those symbols are the primary edit target.
 
 ## Protocol
+
+### 1. Record the Scope
 
 - Emit `{task_implementation}`
