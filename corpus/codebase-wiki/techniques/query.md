@@ -55,7 +55,7 @@ Parts of the question the wiki does not cover, surfaced so the caller can decide
 
 ### 4. Persist If Requested
 
-- When `{persist_answer}` is true, write the answer as a page under `{wiki_path}` and record its slug as `{answer_page}`.
+- When `{persist_answer}` is true, write the answer as a page under `{wiki_path}` and hold its slug as `{$answer_page}`.
 
 ## Rules
 

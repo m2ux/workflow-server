@@ -26,62 +26,8 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/codebase-wiki/techniques/ingest.md:60",
-      "op": "gitnexus",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/ingest.md:60",
-      "op": "resolve-graph",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/ingest.md:61",
-      "op": "verify-index",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/ingest.md:62",
-      "op": "context",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/ingest.md:62",
-      "op": "query",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/ingest.md:80",
-      "op": "cross-link",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/ingest.md:85",
-      "op": "`work-package::manage-artifacts::write-artifact`",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/codebase-wiki/techniques/maintain-index-log.md:58",
       "op": "`work-package::manage-artifacts::write-artifact`",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/query.md:58",
-      "op": "`work-package::manage-artifacts::write-artifact`",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/codebase-wiki/techniques/query.md:58",
-      "op": "maintain-index-log",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -1780,12 +1726,6 @@
     {
       "site": "corpus/work-package/techniques/update-pr/render.md:28",
       "op": "update-pr-description",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/work-package/techniques/update-pr/TECHNIQUE.md:58",
-      "op": "post-pr-review",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

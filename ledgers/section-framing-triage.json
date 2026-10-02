@@ -256,32 +256,12 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/architecture-review.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "work-package/resources/architecture-summary.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/assumption-reconciliation.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "work-package/resources/codebase-comprehension.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/design-framework.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/issue-creation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -292,11 +272,6 @@
     },
     {
       "site": "work-package/resources/jira-issue-creation.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/requirements-elicitation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },

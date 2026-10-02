@@ -338,18 +338,6 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
       "site": "remediate-vuln :: work-package/complete",
       "name": "issue_number",
       "verdict": "fix-later",
@@ -584,18 +572,6 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "substrate-node-security-audit :: scope-setup",
-      "name": "target_submodule",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "substrate-node-security-audit :: scope-setup",
-      "name": "workspace_root",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
       "site": "substrate-node-security-audit :: sub-reconnaissance",
       "name": "in_scope",
       "verdict": "fix-later",
@@ -624,18 +600,6 @@
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "work-package :: start-work-package",
-      "name": "issue_title",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "work-package :: start-work-package",
-      "name": "jira_issue_key",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "work-package :: submit-for-review",
@@ -670,6 +634,42 @@
     {
       "site": "workflow-design :: requirements-refinement",
       "name": "assumption_outcome",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: scope-setup",
+      "name": "target_submodule",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: scope-setup",
+      "name": "workspace_root",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: start-work-package",
+      "name": "issue_title",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: start-work-package",
+      "name": "jira_issue_key",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     }

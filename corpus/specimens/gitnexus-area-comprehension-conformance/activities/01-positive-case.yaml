@@ -10,9 +10,6 @@ variables:
     - name: host_graph_name
       type: string
       description: Name of the graph covering the host repository, which the positive and negative cases address and the report names as the source of their answers.
-    - name: repo_name
-      type: string
-      description: The graph every answer in this run came from, which a report naming those answers names too.
     - name: positive_index_stats
       type: object
       description: File, symbol and process counts the graph holds.

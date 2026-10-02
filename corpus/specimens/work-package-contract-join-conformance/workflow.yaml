@@ -64,8 +64,9 @@ variables:
     defaultValue: []
   - name: join_exit
     type: string
-    description: Exit the join took.
+    description: Exit the join took. Empty until the join chooses one.
     values:
+      - ""
       - done
       - needs-rework
       - needs-contract-tests

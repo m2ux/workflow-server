@@ -24,7 +24,6 @@ steps:
     technique:
       name: gitnexus::resolve-graph
       inputs:
-        repo_name: repo_name
         tree_path: tree_path
         repo_name: repo_name
       outputs:
@@ -35,7 +34,6 @@ steps:
     technique:
       name: gitnexus::analyze
       inputs:
-        repo_name: repo_name
         repo_path: tree_path
         repo_name: repo_name
       outputs:
@@ -46,7 +44,6 @@ steps:
     technique:
       name: gitnexus::resolve-graph
       inputs:
-        repo_name: repo_name
         tree_path: tree_path
         repo_name: repo_name
       outputs:

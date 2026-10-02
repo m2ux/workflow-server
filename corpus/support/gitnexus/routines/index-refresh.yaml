@@ -6,12 +6,6 @@ description: >-
   read reports it behind, and read again so what follows is measured against the tree as it stands.
 
 inputs:
-  - id: repo_name
-    description: >-
-      Name of the indexed graph the read and rebuild address. Unbound, the host variable of the same
-      name supplies it; the empty default leaves a host with no such variable to the single-graph
-      omission the gitnexus techniques already allow.
-    default: ""
   - id: repo_path
     description: Filesystem path of the tree a rebuild walks and keys its index under.
   - id: repo_name
@@ -43,7 +37,6 @@ steps:
     technique:
       name: gitnexus::analyze
       inputs:
-        repo_name: repo_name
         repo_path: repo_path
         repo_name: repo_name
       outputs:
