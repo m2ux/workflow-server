@@ -259,10 +259,10 @@ steps:
       session_index: child_session_index
       initial_activity: child_initial_activity
       enter_activity: workflow-engine::take-activity
-      planning_folder_path: child_planning_folder_path
     outputs:
       current_activity: current_activity
       from_activity: from_activity
+      trace_tokens: child_trace_tokens
   - kind: technique
     id: read-prism-manifest
     when: pipeline_mode == 'full-prism'

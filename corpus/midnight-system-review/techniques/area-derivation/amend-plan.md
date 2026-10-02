@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The current derived areas being amended.
 ### probe_budget_per_area
 
 Maximum probes plannable per area; amendments stay within two to this many probes per area.
+
+### plan_amendment
+
+*(optional)* Text the reader typed naming the areas, coverage or probes the investigation plan changes, and how. Unset until an amendment is given.
 
 ## Outputs
 
@@ -39,7 +43,7 @@ The amended plan document, updated in place.
 
 ### 1. Apply Amendment
 
-- Interpret the user's amendment direction — captured from the amend response at the investigation-plan-approved checkpoint: which areas, coverage, or probes to change and how — against the current `{investigation_areas}`: add, merge, split, or drop areas; adjust per-area probe selections — staying within two to `{probe_budget_per_area}` probes per area; re-ground any changed area in the [subsystem-map](../../resources/subsystem-map.md).
+- Apply `{plan_amendment}` against the current `{investigation_areas}`: add, merge, split, or drop areas; adjust per-area probe selections — staying within two to `{probe_budget_per_area}` probes per area; re-ground any changed area in the [subsystem-map](../../resources/subsystem-map.md).
 
 ### 2. Update Plan
 

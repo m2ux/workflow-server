@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Publish the in-progress mark for every branch a graph destination fans, then ope
 
 ### fan_destination
 
-The destination exactly as the graph names it — a list of members, or one activity together with the collection to run it over. Passed through unread.
+The destination exactly as the graph names it — a list of members, or one activity together with the collection to run it over.
 
 ### from_activity
 
@@ -45,7 +45,11 @@ Every branch the destination opened, each as the id that addresses it, in the or
 
 ### barrier_destination
 
-The activity the branches converge on — what the run continues from once every branch has been retired.
+The activity the branches converge on.
+
+### advance_trace_tokens
+
+The opaque trace token the fan-opening `next_activity` call returned in `_meta.trace_token`, as a one-entry list. Empty when the server returned none.
 
 ## Protocol
 

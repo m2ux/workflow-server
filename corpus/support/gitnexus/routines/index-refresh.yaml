@@ -14,6 +14,8 @@ inputs:
     default: ""
   - id: repo_path
     description: Filesystem path of the tree a rebuild walks and keys its index under.
+  - id: repo_name
+    description: Name of the graph the reads address.
 
 outputs:
   - id: stats
@@ -43,6 +45,7 @@ steps:
       inputs:
         repo_name: repo_name
         repo_path: repo_path
+        repo_name: repo_name
       outputs:
         stats: stats
   - kind: technique

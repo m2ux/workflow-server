@@ -26,10 +26,12 @@ steps:
     options:
       - id: proceed
         label: Proceed with planning
+        description: The package inventory stands, and planning starts.
         effect:
           exit: done
       - id: refine
         label: Refine scope
+        description: The package inventory is wrong and the scope is revised.
         effect:
           exit: refine
 exits:

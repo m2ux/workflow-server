@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.9.0
+version: 4.10.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
@@ -7,16 +7,16 @@ variables:
     - client_session_index
     - client_workflow_completed
     - component_path
+    - from_activity
     - host_repo_path
     - planning_folder_path
     - target_workflow_id
     - target_workflow_outcomes
     - worker_result
   writes:
-    - name: client_walk_resumes
-      type: boolean
-      description: Whether close-out returned the client session to its walk, which resumes on the activity the session stands on.
-      defaultValue: false
+    - name: trace_tokens
+      type: array
+      description: The trace token of every advance the client run made, the terminal advance last
     - name: worker_result
       type: object
       description: The envelope the advance onto `__terminal__` closed on
@@ -43,13 +43,11 @@ steps:
     options:
       - id: confirm
         label: Confirm closure
-        description: Mark the session complete and exit
+        description: The outcomes stand as reported and the session is complete
       - id: return
         label: Return to workflow
-        description: Some outcomes are unmet — re-dispatch the orchestrator to address them
+        description: Some outcomes are unmet and the client workflow has more to do on them
         effect:
-          setVariable:
-            client_walk_resumes: true
           exit: return
   - kind: technique
     id: complete-client-session
@@ -63,10 +61,22 @@ steps:
         exit_id: "{worker_result.activity_exit}"
         step_manifest: "{worker_result.steps_completed}"
         variables_changed: "{worker_result.variables_changed}"
+    actions:
+      - action: set
+        target: trace_tokens
+        value: "{advance_trace_tokens}"
+        description: The token the terminal advance returned, appended to the client run's tokens.
   - kind: technique
     id: revise-session-metrics
     technique: workflow-engine::revise-session-metrics
     when: client_workflow_completed == true && planning_folder_path != ''
+  - kind: technique
+    id: persist-client-completion
+    when: client_workflow_completed == true && planning_folder_path != ''
+    technique:
+      name: workflow-engine::commit-and-persist
+      inputs:
+        activity_id: from_activity
   - kind: action
     id: announce-completion
     actions:
@@ -81,3 +91,4 @@ exits:
   - id: completed
     isDefault: true
   - id: return
+    immediate: true

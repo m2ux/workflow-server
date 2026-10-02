@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 ## Capability
@@ -18,7 +18,7 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
 - Bind each declared input id `I` into the concrete input map, in this precedence:
    1. If `I` appears in `step.technique.inputs`, resolve its source-expression (literal / rename / template, per the deviation forms below) and bind that value.
    2. Else if this activity runs as one instance of a graph fan and `I` is that fan's per-instance parameter, bind the value the block on this delivery carries. The projection is server-computed and reaches this context alone; the shared bag holds the collection, not this instance's element.
-   3. Else if the variable bag holds a variable named `I`, bind its value — the implicit same-name bind, which carries zero per-step data.
+   3. Else if the variable bag holds a variable named `I` with a value other than null, bind its value — the implicit same-name bind, which carries zero per-step data. A name set to null is cleared: it binds nothing.
    4. Else if the input declares a `default`, use it.
    5. Else the input is unsatisfied — surface it as a binding gap (the call-site must supply it via a `step.technique.inputs` deviation, or the signature must declare a `default`).
 - Resolve a string deviation by the disambiguation rule: a string that matches the bag-name grammar (`^[a-z_][a-z0-9_]*(\.[a-z0-9_]+)*$`) AND resolves in the variable bag is a rename reference, binding the named variable's value (`inputs: { check_id: failed_check_id }`); otherwise it is a literal (`inputs: { scope: '--workspace' }`); a string containing `{…}` is always a template, interpolating `{path}` against the bag, walking dotted paths into nested objects, then substituting and binding the result (`inputs: { scope: '-p {current_task.crate}' }`).

@@ -45,10 +45,12 @@ steps:
     options:
       - id: proceed
         label: Proceed with analysis
+        description: The planning folder stands, and analysis starts.
         effect:
           exit: done
       - id: adjust
         label: Adjust structure
+        description: The folder structure is wrong and is adjusted.
         effect:
           exit: adjust
 exits:

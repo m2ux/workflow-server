@@ -1,17 +1,21 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-The live session record — its variable bag and its execution trace — for a consumer that reasons over what the session has actually done.
+The live session record — its variable bag, the activities it stands on, and its execution trace — for a consumer that reasons over where the session stands and what it has done.
 
 ## Outputs
 
 ### session_state
 
 The session's variable bag as the server holds it.
+
+### in_flight
+
+The activities the session stands on: one on an ordinary walk, one per branch while a fan runs. Empty before the session's first advance and after its advance onto `__terminal__`.
 
 ### execution_trace
 
@@ -21,7 +25,7 @@ Completed activities, checkpoint decisions, artifacts produced, and the event hi
 
 ### 1. Inspect Session
 
-- Read the session through the `inspect_session` tool: `view: variables` yields `{session_state}`; `view: activities`, `view: checkpoints` and `view: history` each yield a slice of `{execution_trace}`, and `view: summary` yields both products in one call.
+- Read the session through the `inspect_session` tool: `view: variables` yields `{session_state}`; `view: activities` yields `{in_flight}` as its `current`; `view: activities`, `view: checkpoints` and `view: history` each yield a slice of `{execution_trace}`, and `view: summary` yields every product in one call.
 ## Rules
 
 ### session-file-is-not-a-source

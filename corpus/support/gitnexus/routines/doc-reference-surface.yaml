@@ -23,8 +23,6 @@ outputs:
 internals:
   - id: target_file
     description: The file the run holds, whose referencers that pass enumerates.
-  - id: file_referencers
-    description: The files linking to the file the run holds, which that pass appends to the referencers.
 
 steps:
   - kind: routine
@@ -48,10 +46,10 @@ steps:
           name: gitnexus::reference-lookup
           inputs:
             target_file_path: "{target_file}"
+            repo_name: repo_name
           outputs:
-            referencing_files: file_referencers
+            referencing_files: referencing_files
         actions:
           - action: set
             target: referencing_files
-            value: "{file_referencers}"
             description: The files linking to this target, appended to the referencers the run holds.

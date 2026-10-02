@@ -1418,12 +1418,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/conduct-retrospective/retrospective.md:47",
-      "op": "resolve-trace-at-close-out",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/work-package/techniques/create-issue/create-github.md:28",
       "op": "create-issue",
       "verdict": "fix-later",

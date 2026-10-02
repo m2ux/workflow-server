@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 2.3.1
+version: 2.4.0
 name: Resolution Dialogue
 description: Propose mitigations for each evaluation finding one-by-one.
 variables:
@@ -28,6 +28,12 @@ variables:
         - modify
         - skip
         - discuss
+    - name: mitigation_context
+      type: string
+      description: Text the reader typed supplying context for the finding under discussion
+    - name: mitigation_discussion
+      type: array
+      description: Every context the reader typed for the finding under discussion, in the order given
     - name: mitigation_plan_path
       type: string
       description: Path to the `MITIGATION-PLAN.md` artifact
@@ -87,10 +93,19 @@ steps:
                     finding_disposition: skip
               - id: discuss
                 label: Discuss
-                description: Supply context and see a revised proposal
+                description: The reply supplies context the revised proposal takes into account
                 effect:
                   setVariable:
                     finding_disposition: discuss
+                  recordReply: mitigation_context
+          - kind: action
+            id: gather-discussion
+            when: finding_disposition == 'discuss'
+            actions:
+              - action: set
+                target: mitigation_discussion
+                value: "{mitigation_context}"
+                description: The context just given, appended to the contexts the finding is discussed under.
       - kind: technique
         id: record-decision
         technique: resolve-findings::record-finding-decision
@@ -99,6 +114,10 @@ steps:
             target: accepted_mitigations
             value: "{finding_decision}"
             description: Append the finding's recorded disposition.
+          - action: set
+            target: mitigation_discussion
+            value: null
+            description: Clear the contexts the finding just recorded was discussed under.
   - kind: technique
     id: compile-plan
     technique: resolve-findings::compile-plan

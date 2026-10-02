@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -26,11 +26,11 @@ Orchestrator agent identity for this session.
 
 ### 2. Resolve the activity to open with
 
-- Call `get_workflow_status { session_index }`; take the activity `in_flight` names when it holds one, otherwise the `initialActivity` that `get_workflow` returns. A session that has not entered an activity reports `in_flight` empty, so the workflow's own first activity is the only id to reach for; a session part-way through names the cursor to resume on
+- Call `get_workflow_status { session_index }`. Where `in_flight` names an activity, the session already stands on it, and that activity is carried without an advance. Otherwise the first advance enters the `initialActivity` that `get_workflow` returns; a session that has entered no activity reports `in_flight` empty
 
 ### 3. Walk the workflow to its end
 
-- Open with that activity and take one at a time under the `activity-loop` run, whose steps decide every branch of a turn — which technique enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this technique; no route hands over the file that declares it, and reading one to execute from is outside this role (`orchestrator-conduct.no-domain-work`)
+- Take one activity at a time under the `activity-loop` run, whose steps decide every branch of a turn — which technique enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this technique; no route hands over the file that declares it, and reading one to execute from is outside this role (`orchestrator-conduct.no-domain-work`)
   > - Every entry is a worker dispatch — never execute steps inline (`orchestrator-conduct.no-inline-on-resume`, `orchestrator-conduct.no-domain-work`).
   > - Where a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable.
 
@@ -50,4 +50,4 @@ Honor `dispatch-activity.no-get-activity-from-orchestrator`, `dispatch-activity.
 
 ### resolve-trace-at-close-out
 
-At client finalize / retrospective close-out, honor `dispatch-activity.resolve-trace-at-close-out`.
+At close-out, honor `dispatch-activity.resolve-trace-at-close-out`.

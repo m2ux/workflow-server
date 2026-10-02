@@ -24,14 +24,17 @@ steps:
     options:
       - id: accept
         label: Accept priority order
+        description: The execution order stands.
         effect:
           exit: done
       - id: adjust
         label: Adjust priorities
+        description: The execution order is wrong and the priorities are adjusted.
         effect:
           exit: adjust
       - id: revisit
         label: Revisit package plans
+        description: A package plan is wrong and the plans are revised before the order is set again.
         effect:
           exit: revisit
 exits:

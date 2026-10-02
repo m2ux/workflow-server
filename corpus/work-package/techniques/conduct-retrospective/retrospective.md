@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.1
+  version: 1.8.0
 ---
 
 ## Capability
@@ -47,7 +47,7 @@ The items cut from the retrospective that still deserve to survive, each carryin
 
 ### 2. Resolve Session Trace
 
-- Resolve `{trace_tokens}` once at close-out per [resolve-trace-at-close-out](/meta/techniques/workflow-engine/dispatch-activity.md#resolve-trace-at-close-out); skip when empty (no fabrication).
+- Resolve the run's trace once with `get_trace { session_index }`, the server's in-memory record of this session, which holds no event from before a server restart; skip when it holds no events (no fabrication).
 - Write `{session_trace_document}` under `{planning_folder_path}` via find-or-update (`manage-artifacts.artifact-prefix`) following the [session-trace template](/meta/resources/session-trace.md#template) — mechanical execution only, no token or cost figure.
 
 ### 3. Conduct Retrospective

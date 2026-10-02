@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.6.0
+version: 1.7.0
 name: Validate and Commit
 description: "A verified findings register with the operator's disposition, and for an authored change its commit, pull request and close-out record."
 variables:
@@ -33,6 +33,9 @@ variables:
       type: boolean
       description: Whether the operator approved the change for commit.
       defaultValue: false
+    - name: draft_revision
+      type: string
+      description: Text the operator typed naming the files to revise before commit and the change each needs.
     - name: has_coverage_gap
       type: boolean
       description: Whether any enumeration unit was blocked rather than walked.
@@ -214,8 +217,9 @@ steps:
             commit_approved: true
       - id: return-to-draft
         label: Return to drafting
-        description: The change is not ready; re-enter drafting to revise the files.
+        description: The change is not ready. The reply names the files to revise and the change each needs.
         effect:
+          recordReply: draft_revision
           exit: return-to-draft
   - kind: technique
     id: compose-publication

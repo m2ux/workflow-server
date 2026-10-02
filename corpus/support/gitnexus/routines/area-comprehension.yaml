@@ -55,6 +55,7 @@ steps:
     with:
       repo_name: "{repo_name}"
       repo_path: "{repo_path}"
+      repo_name: "{repo_name}"
     outputs:
       stats: index_stats
       index_stale: index_stale
@@ -64,6 +65,7 @@ steps:
       name: gitnexus::query
       inputs:
         search_query: search_query
+        repo_name: repo_name
       outputs:
         query_report: query_report
   - kind: loop
@@ -81,6 +83,7 @@ steps:
           inputs:
             name: "{area_symbol.name}"
             file_path: "{area_symbol.filePath}"
+            repo_name: repo_name
         actions:
           - action: set
             target: symbol_contexts
@@ -99,6 +102,7 @@ steps:
           name: gitnexus::read-process
           inputs:
             process_name: "{area_process.summary}"
+            repo_name: repo_name
         actions:
           - action: set
             target: flow_traces

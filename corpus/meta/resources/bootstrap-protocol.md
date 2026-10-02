@@ -25,9 +25,9 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
    When the response includes `client.session_index`, the client workflow is already open. Keep the
    returned `session_index` as the meta index. Call `get_workflow { session_index: client.session_index }`
-   and then `next_activity { session_index: client.session_index, activity_id: client.workflow.initialActivity }`.
-   Do not call `get_workflow` or `next_activity` on the meta session for this opening. The remaining
-   steps of this protocol do not apply on that path.
+   and read the bundle it returns: from here on its techniques govern, and the first `next_activity`
+   they make enters `client.workflow.initialActivity`. Do not call `get_workflow` or `next_activity` on
+   the meta session for this opening. The remaining steps of this protocol do not apply on that path.
 
 2. Keep two values from a session response: the `session_index` it returns, a 6-character base32
    string, and the `repo` binding it echoes. Later text calls them `meta_session_index` and

@@ -4,10 +4,15 @@ name: Positive Case
 description: Refer to the area comprehension over a concept the graph's flows rank into.
 variables:
   reads:
-    - positive_repo_path
+    - host_repo_path
     - positive_search_query
-    - positive_tree_path
   writes:
+    - name: host_graph_name
+      type: string
+      description: Name of the graph covering the host repository, which the positive and negative cases address and the report names as the source of their answers.
+    - name: repo_name
+      type: string
+      description: The graph every answer in this run came from, which a report naming those answers names too.
     - name: positive_index_stats
       type: object
       description: File, symbol and process counts the graph holds.
@@ -28,12 +33,19 @@ variables:
 required: true
 steps:
   - kind: routine
+    id: name-host-graph
+    routine: gitnexus::covering-graph
+    with:
+      tree_path: "{host_repo_path}"
+    outputs:
+      repo_name: host_graph_name
+  - kind: routine
     id: comprehend-ranked-area
     routine: gitnexus::area-comprehension
     with:
       search_query: "{positive_search_query}"
-      tree_path: "{positive_tree_path}"
-      repo_path: "{positive_repo_path}"
+      tree_path: "{host_repo_path}"
+      repo_path: "{host_repo_path}"
     outputs:
       index_stats: positive_index_stats
       index_stale: positive_index_stale
@@ -44,4 +56,5 @@ exits:
   - id: comprehended
     isDefault: true
 outcome:
+  - The case named the graph covering the host repository, or said no indexed graph covers it
   - The run named the graph, brought it current, landed the flows a ranked concept falls in, and read a connection report per symbol and a trace per flow across its two per-item passes

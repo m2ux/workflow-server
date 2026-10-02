@@ -1,9 +1,10 @@
 id: report-cases
-version: 1.2.0
+version: 1.3.0
 name: Report Cases
 description: State what the run landed under each binding, and which graph answered it.
 variables:
   reads:
+    - host_repo_path
     - positive_graph_name
     - positive_stats
     - positive_index_stale
@@ -18,7 +19,10 @@ required: true
 steps:
   - kind: technique
     id: report
-    technique: report-cases
+    technique:
+      name: report-cases
+      inputs:
+        positive_tree_path: host_repo_path
 exits:
   - id: reported
     isDefault: true

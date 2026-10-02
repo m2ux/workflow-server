@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.9.1
+version: 1.10.0
 name: Scope and Draft
 description: "A confirmed file manifest for the change, with every file it names authored against its schema."
 variables:
@@ -18,6 +18,9 @@ variables:
     - name: current_file
       type: object
       description: The file currently being drafted.
+    - name: draft_revision
+      type: string
+      description: Text the operator typed naming the files to revise before commit and the change each needs.
     - name: schema_conforms
       type: boolean
       description: True when the file just authored parses and conforms to its schema.
@@ -183,6 +186,14 @@ steps:
         id: apply-removal-disposition
         technique: yaml-authoring
         when: has_unflagged_removals == true && removal_disposition == 'restored'
+  - kind: action
+    id: spend-draft-revision
+    when: scope_manifest_confirmed == true
+    actions:
+      - action: set
+        target: draft_revision
+        value: null
+        description: Clear the revision the drafting just applied.
   - kind: technique
     id: author-workflow-readme
     technique: readme-authoring

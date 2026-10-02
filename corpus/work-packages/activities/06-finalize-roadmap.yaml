@@ -27,10 +27,12 @@ steps:
     options:
       - id: begin
         label: Begin implementation
+        description: The roadmap stands, and implementation starts.
         effect:
           exit: done
       - id: refine
         label: Refine roadmap
+        description: The roadmap is wrong and is refined.
         effect:
           exit: refine
 exits:

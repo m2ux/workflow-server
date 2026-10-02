@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 ### worker_agent_id
 
 The identity now holding the advanced activity: the one the batch was carried under when the continuation succeeded, or a freshly minted one when it did not and a replacement was spawned in its place.
+
+### advance_trace_tokens
+
+The opaque trace token the advancing `next_activity` call returned in `_meta.trace_token`, as a one-entry list. Empty when the server returned none.
 
 ## Protocol
 

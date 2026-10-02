@@ -26,6 +26,7 @@ steps:
       inputs:
         repo_name: repo_name
         tree_path: tree_path
+        repo_name: repo_name
       outputs:
         repo_name: repo_name
   - kind: technique
@@ -36,6 +37,7 @@ steps:
       inputs:
         repo_name: repo_name
         repo_path: tree_path
+        repo_name: repo_name
       outputs:
         stats: index_stats
   - kind: technique
@@ -46,5 +48,6 @@ steps:
       inputs:
         repo_name: repo_name
         tree_path: tree_path
+        repo_name: repo_name
       outputs:
         repo_name: repo_name

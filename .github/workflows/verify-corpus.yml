@@ -86,6 +86,9 @@ jobs:
       - name: Coverage roster accounts for every product
         run: bash workflows/walks/check-roster.sh
 
+      - name: Walk-protocol definitions hold
+        run: python3 workflows/walks/check-walk-protocol.py && python3 workflows/walks/check-walk-protocol.py --self-test
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
