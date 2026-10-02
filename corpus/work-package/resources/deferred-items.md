@@ -2,12 +2,14 @@
 name: deferred-items
 description: Template and rules for the single deferred-items register every other artifact points at.
 metadata:
-  version: 2.0.1
+  version: 2.0.2
 ---
 
 # Deferred Items Register Guide
 
-The register is the one canonical home for work consciously deferred **out of scope** for this work package — descoped requirements, deferred assumptions, and review findings deferred at a checkpoint. In-task work that still belongs inside the package lives in [follow-ups](./follow-ups.md). Every other artifact points here for out-of-scope deferrals (see the [canonical-home map](./canonical-home-map.md#map)); none restates it.
+## Canonical Home
+
+The register is the one canonical home for work consciously deferred **out of scope** for this work package — descoped requirements, deferred assumptions, and review findings deferred at a checkpoint. In-task work that still belongs inside the package lives in [follow-ups](./follow-ups.md). Every other artifact points here for out-of-scope deferrals (see the [canonical-home map](./canonical-home-map.md#map)).
 
 ## Template
 

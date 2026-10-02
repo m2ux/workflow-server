@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.7.1
 ---
 
 ## Capability
@@ -62,5 +62,5 @@ The items cut from the retrospective that still deserve to survive, each carryin
 
 - Update the work package plan status only for **this** work package's own PR (`{pr_number}` as defined above).
   > - **Implementation path:** the status advances where that pull request has merged, and holds at its current value where it has not.
-  > - **Review-mode path:** a status keyed to an audited third-party pull request does not advance. Where this work package opened one of its own (rare), only that pull request's merge advances the status; otherwise the review close-out outcome is left to the close-out, with no merge-gated flip.
+  > - **Review-mode path:** where `{is_review_mode}` is true, a status keyed to an audited third-party pull request does not advance. Where this work package opened one of its own (rare), only that pull request's merge advances the status; otherwise the review close-out outcome is left to the close-out, with no merge-gated flip.
 - Record the final outcome in the planning artifacts under `{planning_folder_path}`.

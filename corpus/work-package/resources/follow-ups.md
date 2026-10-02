@@ -2,12 +2,14 @@
 name: follow-ups
 description: Template and rules for the in-task follow-ups register (work still inside the current package).
 metadata:
-  version: 2.0.2
+  version: 2.0.3
 ---
 
 # Follow-Ups Register Guide
 
-The register is the one canonical home for **in-task** follow-ups — work still owed inside the current work package before close-out. Out-of-scope deferrals live in [deferred-items](./deferred-items.md). Every other artifact points here for in-task items; none restates it.
+## Canonical Home
+
+The register is the one canonical home for **in-task** follow-ups — work still owed inside the current work package before close-out. Out-of-scope deferrals live in [deferred-items](./deferred-items.md). Every other artifact points here for in-task items.
 
 ## Template
 

@@ -2,13 +2,15 @@
 name: pr-description
 description: PR description templates and link-row rendering forms.
 metadata:
-  version: 1.9.0
+  version: 1.9.1
   order: 12
   legacy_id: 12
 ---
 
 
 # Pull Request Description Guide
+
+## When This Guide Applies
 
 Apply this guide to all PRs that introduce features, fix bugs, refactor, make architectural changes, or update dependencies with breaking changes. Simplified descriptions are acceptable for documentation-only changes, typo fixes, non-breaking dependency bumps, and automated/generated changes.
 

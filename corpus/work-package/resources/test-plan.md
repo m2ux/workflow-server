@@ -2,7 +2,7 @@
 name: test-plan
 description: Test plan templates and test-design principles.
 metadata:
-  version: 1.3.1
+  version: 1.3.2
   order: 11
   legacy_id: 11
 ---
@@ -10,7 +10,11 @@ metadata:
 
 # Test Plan Creation Guide
 
-Test plans document *what* will be tested and *why*, with direct traceability to source code. They complement the ADR: the ADR records what was decided and why; the test plan records how those decisions are validated. Like the ADR (Proposed → Accepted), the plan starts as a placeholder and becomes complete after implementation.
+Test plans document *what* will be tested and *why*, with direct traceability to source code.
+
+## Lifecycle
+
+They complement the ADR: the ADR records what was decided and why; the test plan records how those decisions are validated. The plan starts as a placeholder and becomes complete after implementation.
 
 ## TDD Principles for Test Design
 

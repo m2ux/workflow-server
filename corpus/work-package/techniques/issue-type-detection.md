@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -36,4 +36,4 @@ The issue category (`feature`, `bug`, `task`, `enhancement`, `epic`); unset when
 ### 3. Report Ambiguity Where They Do Not
 
 - When they are absent, or name more than one category (an issue whose body holds both a defect and an enhancement), set `{issue_type_ambiguous}` to `true` and leave `{issue_type}` unset.
-   > Do not pick a category unaided. `{issue_type}` fixes the branch-name prefix ([naming-conventions](./naming-conventions.md)), which is expensive to change once a PR is open, so an unsettled category is never a guess here.
+   > Do not pick a category unaided. `{issue_type}` fixes the branch-name prefix, which is expensive to change once a PR is open, so an unsettled category is never a guess here.

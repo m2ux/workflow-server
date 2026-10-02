@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -20,10 +20,6 @@ The issue title — slugified into the branch-name description segment.
 ### issue_number
 
 The issue number — the branch-name issue segment.
-
-### component_name
-
-Basename of the component being worked on — used as the first path segment of the personal-layout worktree path.
 
 ### is_review_mode
 
@@ -47,7 +43,7 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 
 ### 2. Compose the Branch Name
 
-- Set `{$branch_type_prefix}` from `{issue_type}`, which is one of the five categories [issue-type-detection](./issue-type-detection.md) settles. The table is total, so no run supplies a prefix of its own:
+- Set `{$branch_type_prefix}` from `{issue_type}`, one of `feature`, `bug`, `task`, `enhancement`, or `epic`. The table is total, so no run supplies a prefix of its own:
 
    | `{issue_type}` | `{$branch_type_prefix}` | Why |
    |---|---|---|

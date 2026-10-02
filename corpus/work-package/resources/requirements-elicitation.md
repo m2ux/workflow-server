@@ -2,7 +2,7 @@
 name: requirements-elicitation
 description: Reference material for requirements elicitation methodology, including question domains, anti-patterns, and the document template.
 metadata:
-  version: 3.0.1
+  version: 3.0.2
   order: 5
   legacy_id: 5
 ---
@@ -12,9 +12,9 @@ metadata:
 
 Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist.
 
-Goals: discover what the user actually needs (which may differ from the initial ask), clarify ambiguities before they become implementation assumptions, establish scope boundaries, define measurable success criteria.
+## Canonical Home
 
-The document this guide produces is the [canonical home](./canonical-home-map.md#map) for the problem statement, scope, and success criteria — downstream artifacts (plan, philosophy, test plan, close-out) link here and never restate them.
+The document this guide produces is the [canonical home](./canonical-home-map.md#map) for the problem statement, scope, and success criteria. Downstream artifacts link here.
 
 ## Question Domain Reference
 

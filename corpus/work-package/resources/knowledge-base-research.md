@@ -2,7 +2,7 @@
 name: knowledge-base-research
 description: Research findings template and citation rules — knowledge-base and web findings in one list, each linked to its source.
 metadata:
-  version: 2.0.1
+  version: 2.0.2
   order: 7
   legacy_id: 7
 ---
@@ -10,9 +10,13 @@ metadata:
 
 # Knowledge Base Research Guide
 
-Before designing a solution, research the knowledge base and the web to surface best practices, design patterns, architectural guidance, documentation conventions, and testing strategies — informed design reuses proven approaches instead of reinventing them. Research findings fill the artifact template below.
+## Purpose
 
-**Full research** when the work package involves architectural decisions, multiple possible implementation approaches, an unfamiliar or complex domain, or performance/reliability requirements. **Lightweight research** acceptable for simple well-understood changes, work following established patterns, or minor bug fixes with clear solutions.
+Before designing a solution, research the knowledge base and the web to surface best practices, design patterns, architectural guidance, documentation conventions, and testing strategies. Research findings fill the artifact template below.
+
+## When to Research
+
+**Full research** when the work package involves architectural decisions, multiple possible implementation approaches, an unfamiliar or complex domain, or performance/reliability requirements. **Lightweight research** is enough for simple well-understood changes, work following established patterns, or minor bug fixes with clear solutions.
 
 ## Planning Artifact
 

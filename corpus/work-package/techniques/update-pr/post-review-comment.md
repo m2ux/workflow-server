@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -40,7 +40,7 @@ The id of the review this run posted, which a later run supplies to replace the 
 
 ### 3. Post the Review
 
-- Apply [post-pr-review](/github/techniques/post-pr-review.md)(*repo_path*=`{component_git_dir}`, *body*=`{review_summary}`, *review_event*=`{$review_event}`); set `{review_posted}` and `{posted_review_id}` from the op. This is a pull-request review, not a description body update ([render](./render.md)).
+- Apply [post-pr-review](/github/techniques/post-pr-review.md)(*repo_path*=`{component_git_dir}`, *body*=`{review_summary}`, *review_event*=`{$review_event}`); set `{review_posted}` and `{posted_review_id}` from the op. This posts a pull-request review. It does not update the description body.
    > Where this run already posted a review, supply *review_id*=`{posted_review_id}` so the body is replaced in place and the review keeps its id, its state and its comment thread; take `{$live_review_body}` from the op as the body currently on the review.
 
 ### 4. Reconcile Before Replacing
@@ -52,4 +52,4 @@ The id of the review this run posted, which a later run supplies to replace the 
 
 ### review-comment-not-body-render
 
-This op posts a pull-request review via [post-pr-review](/github/techniques/post-pr-review.md). It is not [render](./render.md), which updates the PR description body from a template. Never substitute a description update for the review comment.
+This op posts a pull-request review via [post-pr-review](/github/techniques/post-pr-review.md). It does not update the PR description body. Never substitute a description update for the review comment.

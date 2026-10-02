@@ -2,14 +2,18 @@
 name: wp-plan
 description: Guidelines for creating the work package plan artifact.
 metadata:
-  version: 1.4.0
+  version: 1.4.1
   order: 10
   legacy_id: 10
 ---
 
 # Work Package Plan Guide
 
-The work package plan is the detailed implementation specification: enough detail for an implementer to begin work. Create it when the work package has 3+ distinct tasks, modifies multiple components or files, requires architectural decisions, or has performance/quality targets.
+The work package plan is the detailed implementation specification: enough detail for an implementer to begin work.
+
+## When to Write the Plan
+
+Create it when the work package has 3+ distinct tasks, modifies multiple components or files, requires architectural decisions, or has performance/quality targets.
 
 ## Template
 
