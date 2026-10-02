@@ -133,7 +133,7 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **Standalone issues.**  A standalone issue sits on no board.
 - **Proposals.**
   - The board is titled `Proposals`. It holds proposal issues, the incoming funnel for work that may become an initiative.
-  - Its copy source is the open board titled `Proposals template`. That template carries Priority: High, Medium and Low.
+  - Its copy source is the open board titled `Proposals template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status.
   - When no open board is titled `Proposals`, [Create proposals board](references/commands.md#create-proposals-board) creates it.
   - **Suggested.**
     Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
