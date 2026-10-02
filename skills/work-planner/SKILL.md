@@ -81,7 +81,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
   - The name is two or three words and the subtitle a succinct summary of at most ten, both in title case: `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define Reliable`.
   - A standalone issue's title is the same without the prefix.
 - **Bodies.**
-  - Every body follows its template: [proposal.md](templates/proposal.md), [initiative.md](templates/initiative.md), [epic.md](templates/epic.md), [task.md](templates/task.md), and [issue.md](templates/issue.md) for a standalone issue outside any initiative.
+  - Every body follows its template: [proposal.md](templates/proposal.md), [initiative.md](templates/initiative.md), [epic.md](templates/epic.md), [task.md](templates/task.md), [issue.md](templates/issue.md) for a standalone issue outside any initiative, and [pull-request.md](templates/pull-request.md) for a pull request.
   - A proposal has the initiative's sections without the Work Breakdown table.
   - A task or standalone issue has an epic's structure without the Work Breakdown table.
   - Keep the section order and the table columns.
