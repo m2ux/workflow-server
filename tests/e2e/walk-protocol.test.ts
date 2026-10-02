@@ -1,12 +1,9 @@
 /**
- * AC14–AC26 of epic I00:E06.
+ * Walk-protocol definitions, read off the corpus tree this suite is pointed at.
  *
- * AC14, AC15 and AC18 are walked in `tests/batch-loop-walk.test.ts`: that walker applies the
- * loop's own sets. The criteria here are declarations. The server does not execute technique
- * prose, so each test reads the definition the criterion names.
- *
- * AC27, the engine refusal, is `tests/fan-unbound-refusal.test.ts`, a harness walk of a fixture
- * corpus. A sidecar walk would repeat that refusal and would not run the loop's sets.
+ * The opening, the standing walk, and the resume are walked in `tests/batch-loop-walk.test.ts`.
+ * The checks here read declarations. The server does not execute technique prose.
+ * The unbound-fan refusal is `tests/fan-unbound-refusal.test.ts`.
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
@@ -16,17 +13,17 @@ import { describe, expect, it } from 'vitest';
 import { liveCorpusRoot } from '../corpus-root.js';
 
 const root = liveCorpusRoot();
-const script = root === null ? '' : join(root, 'walks/check-walk-protocol-acs.py');
+const script = root === null ? '' : join(root, 'walks/check-walk-protocol.py');
 
 describe.skipIf(script === '' || !existsSync(script))('walk-protocol file check', () => {
   it('holds on the corpus tree', () => {
     const out = execFileSync('python3', [script], { encoding: 'utf8' });
-    expect(out).toContain('AC14–AC26 hold');
+    expect(out).toContain('walk-protocol definitions hold');
   });
 
-  it('fails AC14 when the opening clear is gone', () => {
+  it('fails when the opening clear is gone', () => {
     const out = execFileSync('python3', [script, '--self-test'], { encoding: 'utf8' });
-    expect(out).toContain('fails AC14');
+    expect(out).toContain('fails the opening check');
   });
 });
 
@@ -56,7 +53,7 @@ function techniqueName(step: YamlStep): string | undefined {
 }
 
 describe.skipIf(root === null)('walk-protocol declarations', () => {
-  it('AC16: enter-fan and take-activity declare the trace tokens they capture', () => {
+  it('enter-fan and take-activity declare the trace tokens they capture', () => {
     for (const rel of [
       'corpus/meta/techniques/fan/enter-fan.md',
       'corpus/meta/techniques/workflow-engine/take-activity.md',
@@ -72,7 +69,7 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
     expect(ids).toEqual(expect.arrayContaining(['enter-activity', 'enter-fan', 'resume-entered-activity']));
   });
 
-  it('AC19: each option this epic rewrote states what choosing it means', () => {
+  it('each option states what choosing it means', () => {
     const files = [
       'corpus/meta/activities/04-end-workflow.yaml',
       'corpus/workflow-design/activities/06-scope-and-draft.yaml',
@@ -111,7 +108,7 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
     expect(bare).toEqual([]);
   });
 
-  it('AC21: each finalize-activity output describes its value', () => {
+  it('each finalize-activity output describes its value', () => {
     const outputs = section(
       readCorpus('corpus/meta/techniques/workflow-engine/finalize-activity.md'),
       '## Outputs',
@@ -127,7 +124,7 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
     }
   });
 
-  it('AC22: the workflow-engine Capability states no placement', () => {
+  it('the workflow-engine Capability states no placement', () => {
     const capability = section(
       readCorpus('corpus/meta/techniques/workflow-engine/TECHNIQUE.md'),
       '## Capability',
@@ -136,7 +133,7 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
     expect(capability).not.toMatch(/\bplacement\b/i);
   });
 
-  it('AC23: no specimen defaults a home path', () => {
+  it('no specimen defaults a home path', () => {
     const homes: string[] = [];
     const walk = (dir: string): void => {
       for (const name of readdirSync(dir)) {
@@ -150,17 +147,17 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
     expect(homes).toEqual([]);
   });
 
-  it('AC24: workflow-design routes 09 to retrospective in create and in review', () => {
+  it('workflow-design routes 09 to retrospective in create and in review', () => {
     const readme = readCorpus('corpus/workflow-design/activities/README.md');
     expect(readme).toContain('Leads to [Retrospective](#11-retrospective) in create and review modes');
   });
 
-  it('AC25: the last retirement returns the name and whether the barrier is met', () => {
+  it('the last retirement returns the name and whether the barrier is met', () => {
     const text = readCorpus('corpus/meta/techniques/fan/retire-branch.md');
     expect(text).toContain("reports that activity's `name` and `barrier.met` true");
   });
 
-  it('AC26: the terminal advance commits the completed session', () => {
+  it('the terminal advance commits the completed session', () => {
     const doc = parseYaml(readCorpus('corpus/meta/activities/04-end-workflow.yaml')) as { steps: YamlStep[] };
     const ids = doc.steps.map((step) => step.id);
     const terminal = ids.indexOf('complete-client-session');
