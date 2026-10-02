@@ -22,6 +22,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them.
    - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [goal pass](review-passes.md#goal-pass) defines.
    - Each criterion is kept only as that pass's Verifiable rule defines, and it ends by naming its instrument as that pass's Verified rule defines. A test it names that does not exist yet is planned as work.
+   - An item a test cannot observe is named as [Coverage reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
 5. **Review the drafts.**
    - Run the goal pass in `review-passes.md`, and [Check dependencies](commands.md#check-dependencies) over the drafts.

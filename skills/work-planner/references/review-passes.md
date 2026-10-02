@@ -36,6 +36,7 @@ Tests each acceptance criterion against the goal the user stated, and each Probl
      - Subjective wording is rewritten to an observable pass or fail, or the criterion is removed.
      - A fact a test can check is kept, such as every option having a description.
      - A judgment about meaning, such as a claim that a description states what choosing means, is that subjective wording.
+     - An item a test cannot observe is named as [Coverage reports](work-breakdown.md#coverage-reports) defines.
    - **Verified.**
      - An initiative criterion ends by naming its instrument. Which instruments keep a criterion is the Verifiable rule.
      - An automated test is an end-to-end walk through the real server, a smoke run of an agent against a live server, a live check on a deployed host, or a guard, fixture suite or check that continuous integration runs. The walk, smoke run or live check is preferred where the criterion is about what a run does.

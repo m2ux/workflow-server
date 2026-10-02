@@ -1,6 +1,6 @@
 # Work Breakdown guide
 
-How the Work Breakdown tables are written, read and kept current, and what a Problem and a Proposal hold. Issue bodies carry the tables and nothing about them: the conventions live here.
+How the Work Breakdown tables are written, read and kept current, what a plan or coverage report names, and what a Problem and a Proposal hold. Issue bodies carry the tables and nothing about them: the conventions live here.
 
 ## Tables
 
@@ -36,6 +36,16 @@ How the Work Breakdown tables are written, read and kept current, and what a Pro
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
 - **Joins.**
   The tasks that can land in the same pull request as this one. Each lists the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
+
+## Coverage reports
+
+- **Unobservable items.**
+  An item a test cannot observe is named in the plan or the coverage report. It stays in the report.
+- **The check matches the criterion.**
+  - A file or string check counts as coverage only when the criterion is a fact about that file.
+  - A criterion about a run is covered by a run that shows it.
+- **The specified set.**
+  A coverage report lists every acceptance criterion the work under review is specified to cover.
 
 ## Numbering
 

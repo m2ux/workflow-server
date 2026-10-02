@@ -55,7 +55,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
      An initiative criterion [sync mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
    - **ticked early.**
      An initiative criterion [sync mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
-   Put each to the user. Verifying and ticking it is [sync mode](sync-mode.md).
+   Put each to the user. Verifying and ticking it is [sync mode](sync-mode.md). The report follows [Coverage reports](work-breakdown.md#coverage-reports).
 9. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep. A finding from the criteria check is not one the user keeps.
    - Report what changed on each issue, including each finding the criteria check reported.
