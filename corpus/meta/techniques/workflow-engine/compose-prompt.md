@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.10.0
+  version: 2.11.0
 ---
 
 ## Capability
@@ -20,10 +20,6 @@ Map of placeholder name → value. Must include `session_index`, `workflow_id`, 
 ### holds_prior_deliveries
 
 Whether `agent_id` names a context that already received content under this session — true when continuing a worker onto the next activity of its batch, false for a freshly minted identity.
-
-### checkpoint_reply
-
-*(optional)* The reply the server returned on clearing the checkpoint the worker yielded. Present only on a continuation past that gate.
 
 ## Outputs
 

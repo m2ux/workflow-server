@@ -1,10 +1,10 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-area-comprehension-conformance
-version: 1.2.0
+version: 1.3.0
 title: GitNexus Area Comprehension Conformance Workflow
 description: >-
-  Hold the gitnexus area-comprehension run to three cases. The positive case names a concept the
-  graph's execution flows rank into, so the run names the graph, brings it current, lands the flows
+  Hold the gitnexus area-comprehension run to three cases. The positive and negative cases read the
+  host repository. The positive case names a concept the graph's execution flows rank into, so the run names the graph, brings it current, lands the flows
   and their symbols, and reads each symbol's connections and each flow's trace. The negative case
   names a concept no flow ranks into, so the query lands no process and no process symbol, both
   per-item passes run zero times, and the contexts and traces stay empty — the fallback the run
@@ -21,38 +21,20 @@ techniques:
   activity:
     - variable-binding
 variables:
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to.
   - name: repo_name
     type: string
-    description: Name of the indexed graph every operation in the run addresses, which the stale-graph case rebinds to the graph of the checkout it prepares.
-    defaultValue: workflow-server
-  - name: current_graph_name
-    type: string
-    description: Name of the graph current with its tree, which the positive and negative cases resolve `{repo_name}` to from the tree they name, and which the report names as the source of their answers.
-    defaultValue: workflow-server
+    description: The graph every gitnexus operation in the run addresses as its `{repo_name}`.
   - name: positive_search_query
     type: string
     description: A concept the graph's execution flows rank into, whose area the positive case reads.
     defaultValue: technique loader composition
-  - name: positive_tree_path
-    type: string
-    description: Filesystem path of the tree whose answers the positive case wants, which names the graph to address.
-    defaultValue: /home/mike1/projects/dev/workflow-server
-  - name: positive_repo_path
-    type: string
-    description: Filesystem path of the tree the positive case's rebuild walks and keys its index under.
-    defaultValue: /home/mike1/projects/dev/workflow-server
   - name: negative_search_query
     type: string
     description: A concept no execution flow ranks into, so the negative case's query lands no process.
     defaultValue: zzqx quiddity nonesuch
-  - name: negative_tree_path
-    type: string
-    description: Filesystem path of the tree whose answers the negative case wants, which names the graph to address.
-    defaultValue: /home/mike1/projects/dev/workflow-server
-  - name: negative_repo_path
-    type: string
-    description: Filesystem path of the tree the negative case's rebuild walks and keys its index under.
-    defaultValue: /home/mike1/projects/dev/workflow-server
   - name: stale_graph_search_query
     type: string
     description: A concept the prepared checkout's one execution flow ranks into, whose area the stale-graph case reads off the graph as rebuilt.

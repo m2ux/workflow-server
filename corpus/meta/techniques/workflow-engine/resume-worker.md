@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -12,10 +12,6 @@ Continue the worker that already holds an activity under the delivery identity i
 ### worker_agent_id
 
 Server-side worker identity the worker's dispatch bound — the identity the delivery ledger is keyed on.
-
-### checkpoint_reply
-
-*(optional)* The reply the server returned on clearing the checkpoint the worker yielded. Present only on a continuation past that gate.
 
 ## Outputs
 

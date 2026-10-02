@@ -20,6 +20,6 @@ Definition: [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.y
 
 ### 04. End Workflow
 
-Closes out the client workflow: it verifies the client workflow's outcomes against final state, generates a session summary, and surfaces a completion checkpoint. The outcomes come from a list the client workflow seeded, or from what its own activities reported as they completed. Final state is already durably persisted by the server on every authenticated call, so no agent-side persist step is needed. If outcomes are unmet, the user can return to [Dispatch Client Workflow](#03-dispatch-client-workflow), whose walk resumes on the activity the client session stands on; otherwise the advance onto `__terminal__` completes the client session, and the session is closed.
+Closes out the client workflow: it verifies the client workflow's outcomes against final state, generates a session summary, and surfaces a completion checkpoint. The outcomes come from a list the client workflow seeded, or from what its own activities reported as they completed. If outcomes are unmet, the user can return to [Dispatch Client Workflow](#03-dispatch-client-workflow), whose walk resumes on the activity the client session stands on; otherwise the advance onto `__terminal__` completes the client session, and the session metrics are revised and committed with the planning folder, whose session record holds that completed state.
 
 Definition: [`04-end-workflow.yaml`](./04-end-workflow.yaml)

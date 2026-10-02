@@ -46,7 +46,7 @@ A graph built with its program-dependence layers answers two questions the call 
 
 | Technique | Does |
 |-----------|------|
-| [`resolve-graph`](resolve-graph.md) | Names the graph a technique addresses, and what else is indexed |
+| [`resolve-graph`](resolve-graph.md) | Names the graph a technique addresses or the tree a named graph was built from, and what else is indexed |
 | [`verify-index`](verify-index.md) | Reads what a graph holds and how far behind its tree it is |
 | [`analyze`](analyze.md) | Rebuilds a tree's index, with or without its program-dependence layers |
 | [`rename`](rename.md) | Reports or writes a graph-driven multi-file rename |

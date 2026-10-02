@@ -1,12 +1,11 @@
 id: negative-case
-version: 1.0.0
+version: 1.1.0
 name: Negative Case
 description: Refer to the area comprehension over a concept no flow ranks into.
 variables:
   reads:
-    - negative_repo_path
+    - host_repo_path
     - negative_search_query
-    - negative_tree_path
   writes:
     - name: repo_name
       type: string
@@ -35,8 +34,8 @@ steps:
     routine: gitnexus::area-comprehension
     with:
       search_query: "{negative_search_query}"
-      tree_path: "{negative_tree_path}"
-      repo_path: "{negative_repo_path}"
+      tree_path: "{host_repo_path}"
+      repo_path: "{host_repo_path}"
     outputs:
       repo_name: repo_name
       index_stats: negative_index_stats

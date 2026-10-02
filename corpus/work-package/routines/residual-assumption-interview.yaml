@@ -103,7 +103,10 @@ steps:
     steps:
       - kind: technique
         id: present
-        technique: review-assumptions::assemble-one
+        technique:
+          name: review-assumptions::assemble-one
+          inputs:
+            current_assumption: current_assumption
       - kind: checkpoint
         id: "decision#{current_assumption.id}"
         message: "Assumption {current_assumption.id}: {current_assumption.statement}"

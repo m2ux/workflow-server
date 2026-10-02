@@ -1,5 +1,5 @@
 id: tool-surface
-version: 1.0.0
+version: 1.1.0
 name: Tool Surface
 description: >-
   Name the graph covering a tree, building one where the inventory covers it with none, then map
@@ -30,5 +30,7 @@ steps:
     id: map-tools
     technique:
       name: gitnexus::tool-map
+      inputs:
+        repo_name: repo_name
       outputs:
         tool_inventory: tool_inventory

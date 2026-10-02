@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -31,6 +31,10 @@ Canonical agent technique this context follows for the activity — default work
 
 The envelope this entry closes on — one of three tagged result types. The `checkpoint_pending` or `activity_complete` envelope is the one the activity produced, which this context composes because it carried the activity. The `workflow_complete` envelope, `{ result_type: "workflow_complete" }`, is the one an advance onto `__terminal__` closes on: the session is completed, and no activity was carried.
 
+### advance_trace_tokens
+
+The opaque trace tokens this entry accumulated, one per `next_activity` call that returned `_meta.trace_token`. Empty when the server returned none.
+
 ## Protocol
 
 ### 1. Advance the session
@@ -38,12 +42,13 @@ The envelope this entry closes on — one of three tagged result types. The `che
 - Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`
   > - A first entry has no prior activity to retire, so `{from_activity}`, `{exit_id}`, `{step_manifest}` and `{variables_changed}` are all unset together.
   > - When `{activity_id}` is `__terminal__`, this advance completes the session: hold the `workflow_complete` envelope as `{worker_result}`, and end here.
-  > - When `{stands_on_activity}` is true, skip this phase.
+  > - When `{stands_on_activity}` is true, or `{checkpoint_reply}` is bound, skip this phase.
 
 ### 2. Carry the activity
 
 - Follow `{agent_technique}` here — [activity-worker](./activity-worker.md) by default — with `{variable_bag}` supplying the bindings its steps resolve against: call `get_activity { session_index, context_tokens }`, execute the activity's steps, and finalise per [finalize-activity](./finalize-activity.md); hold what that produced as `{worker_result}`
-  > Delivery is scoped to this context's own identity, which one context legitimately holds for a session it owns (`agent-id-scopes-delivery`).
+  > - Pass `{checkpoint_reply}` to `{agent_technique}` where it is bound.
+  > - Delivery is scoped to this context's own identity, which one context legitimately holds for a session it owns (`agent-id-scopes-delivery`).
 
 ### 3. Account for the activity
 

@@ -22,7 +22,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`handle-sub-workflow`](handle-sub-workflow.md) | Launch a workflow as a child of the current session, and report where it opens and where it writes |
 | [`list-workflows`](list-workflows.md) | Retrieve the catalog of available workflows |
 | [`present-checkpoint-to-user`](present-checkpoint-to-user.md) | Load the active checkpoint's details and present them to the user |
-| [`read-session`](read-session.md) | The live session record — its variable bag and its execution trace — for a consumer that reasons over what the session has actually done |
+| [`read-session`](read-session.md) | The live session record — its variable bag, the activities it stands on, and its execution trace — for a consumer that reasons over where the session stands and what it has done |
 | [`respond-checkpoint`](respond-checkpoint.md) | Send the user's selection back to the server, clearing the active checkpoint |
 | [`resume-from-checkpoint`](resume-from-checkpoint.md) | Continue execution after the orchestrator resolves a checkpoint |
 | [`resume-worker`](resume-worker.md) | Continue the worker that already holds an activity under the delivery identity its dispatch bound, or replace it where that context is gone |

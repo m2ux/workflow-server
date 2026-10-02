@@ -25,10 +25,12 @@ steps:
     options:
       - id: proceed
         label: Context is correct, proceed
+        description: The captured context stands, and package planning starts.
         effect:
           exit: done
       - id: revise
         label: Revise analysis
+        description: The captured context is wrong and the analysis is revised.
         effect:
           exit: revise
 exits:

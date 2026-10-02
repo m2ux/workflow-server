@@ -1,5 +1,5 @@
 id: scope-setup
-version: 2.3.0
+version: 2.4.0
 name: Scope Setup
 description: Set up the audit scope and planning folder.
 variables:
@@ -7,6 +7,7 @@ variables:
     - audit_prompt_template
     - gitnexus_available
     - planning_folder_path
+    - repo_name
     - target_submodule
     - user_request
     - workspace_root

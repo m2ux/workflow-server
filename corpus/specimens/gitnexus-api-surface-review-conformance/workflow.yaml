@@ -1,11 +1,11 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-api-surface-review-conformance
-version: 1.3.0
+version: 1.4.0
 title: GitNexus API Surface Review Conformance Workflow
 description: >-
-  Hold the gitnexus api-surface-review run to two cases. The positive case names a tree whose graph
-  serves API routes that nothing in the tree fetches, so the run names that graph, maps the routes
-  it serves and lands an empty shape report, the check covering only routes with a consumer. The
+  Hold the gitnexus api-surface-review run to two cases. The positive case names the host
+  repository, a tree whose graph serves API routes that nothing in the tree fetches, so the run names
+  that graph, maps the routes it serves and lands an empty shape report, the check covering only routes with a consumer. The
   negative case prepares a throwaway checkout of source that serves no route, so the run builds its
   graph and both reads land empty — the fallback the run promises for a tree that serves no API,
   distinct from a tree whose routes were mapped and found consistent.
@@ -19,10 +19,9 @@ techniques:
   activity:
     - variable-binding
 variables:
-  - name: positive_tree_path
+  - name: host_repo_path
     type: string
-    description: A tree whose graph serves API routes that nothing in the tree fetches, so the positive case maps the routes and its shape report is empty.
-    defaultValue: /home/mike1/projects/dev/workflow-server
+    description: Absolute path to the host repository the session belongs to.
 initialActivity: positive-case
 graph:
   positive-case:

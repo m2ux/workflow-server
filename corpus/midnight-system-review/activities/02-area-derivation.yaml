@@ -1,5 +1,5 @@
 id: area-derivation
-version: 1.1.0
+version: 1.2.0
 name: Area Derivation
 description: Derive bounded investigation areas from the change surface and subsystem map, and secure approval of the investigation plan.
 variables:
@@ -12,6 +12,9 @@ variables:
     - name: investigation_areas
       type: array
       description: The amended area list, re-emitted for the next approval pass and for the area-probe loop.
+    - name: plan_amendment
+      type: string
+      description: Text the reader typed naming the areas, coverage or probes the investigation plan changes, and how.
     - name: plan_approved
       type: boolean
       description: Investigation-plan gate — set by the investigation-plan-approved checkpoint's approve option
@@ -49,7 +52,9 @@ steps:
                 plan_approved: true
           - id: amend
             label: Amend the plan
-            description: Coverage or probe selection needs adjustment — provide the amendment direction; the plan is amended and re-presented.
+            description: The reply names the amendment the coverage or probe selection takes — the areas, coverage or probes to change and how.
+            effect:
+              recordReply: plan_amendment
       - kind: technique
         id: amend-plan
         technique: amend-plan

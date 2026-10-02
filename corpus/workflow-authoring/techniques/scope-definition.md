@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -24,6 +24,10 @@ Whether the inventoried content removals are approved. False means the manifest 
 ### workflow_id
 
 The id of the workflow being created or updated.
+
+### draft_revision
+
+*(optional)* Text the operator typed naming the files to revise before commit and the change each needs. Unset until a revision is asked for.
 
 ## Outputs
 
@@ -58,6 +62,7 @@ Number of entries in `{manifest_entries}`.
 - Enumerate every file to create, modify or remove with its full path under `{target_path}/{workflow_id}/`: path, action, kind and a one-line statement of the change — no implicit files; capture the entries as `{manifest_entries}`
 - When `{change_constraints}` is present, add every file its co-change set names, and check each new identifier against its collision set before the manifest fixes a name
 - When `{removals_approved}` is false, record the flagged content as preserved and drop the corresponding remove entries
+- When `{draft_revision}` names a file the enumeration leaves out, add an entry for it carrying the change the revision gives
 - Set `{file_count}` to the number of entries in `{manifest_entries}`
 
 ### 3. Assemble the Structural Design

@@ -1,5 +1,5 @@
 id: index-refresh
-version: 1.1.0
+version: 1.2.0
 name: Index Refresh
 description: >-
   Read what a graph holds and how far behind its tree it has fallen, rebuild that tree where the
@@ -8,6 +8,8 @@ description: >-
 inputs:
   - id: repo_path
     description: Filesystem path of the tree a rebuild walks and keys its index under.
+  - id: repo_name
+    description: Name of the graph the reads address.
 
 outputs:
   - id: stats
@@ -24,6 +26,8 @@ steps:
     id: read-index
     technique:
       name: gitnexus::verify-index
+      inputs:
+        repo_name: repo_name
       outputs:
         stats: stats
         index_stale: index_stale
@@ -34,6 +38,7 @@ steps:
       name: gitnexus::analyze
       inputs:
         repo_path: repo_path
+        repo_name: repo_name
       outputs:
         stats: stats
   - kind: technique
@@ -41,6 +46,8 @@ steps:
     when: index_stale
     technique:
       name: gitnexus::verify-index
+      inputs:
+        repo_name: repo_name
       outputs:
         stats: stats
         index_stale: index_stale

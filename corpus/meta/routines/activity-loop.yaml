@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.2.0
+version: 1.3.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -28,9 +28,8 @@ inputs:
   - id: completes_session
     default: true
     description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
-  - id: resumes_walk
-    default: false
-    description: Whether the session stands on `from_activity`, where an earlier walk left it. The walk then opens on that activity and carries it without an advance.
+  - id: standing_activity
+    description: The activity the session stands on, where an earlier walk left it. The walk opens on that activity and carries it without an advance. Unset, the walk opens on `initial_activity`.
 
 outputs:
   - id: current_activity
@@ -39,6 +38,9 @@ outputs:
   - id: from_activity
     type: string
     description: The activity an advance retires, which every entry names as the one its exit belongs to.
+  - id: trace_tokens
+    type: array
+    description: The trace token of every advance the walk made, in the order it made them. A walk opened on `standing_activity` appends to the tokens the host holds.
 
 internals:
   - id: fan_convergence_activity
@@ -53,22 +55,40 @@ steps:
       - action: validate
         target: session_index
         message: Cannot walk a session without a session_index; the session must be open
+  # The host holds from_activity, worker_result and the walk's tokens from any earlier walk, so each
+  # opening step clears what that walk retired: the walk's first advance retires nothing.
   - kind: action
     id: prime-initial-activity
+    when: "!standing_activity"
     actions:
       - action: set
         target: current_activity
         value: "{initial_activity}"
+      - action: set
+        target: from_activity
+        value: null
+      - action: set
+        target: worker_result
+        value: null
+      - action: set
+        target: trace_tokens
+        value: []
   - kind: action
     id: resume-standing-activity
-    when: resumes_walk == true
+    when: standing_activity
     actions:
       - action: set
         target: current_activity
-        value: "{from_activity}"
+        value: "{standing_activity}"
+      - action: set
+        target: from_activity
+        value: "{standing_activity}"
       - action: set
         target: stands_on_activity
         value: true
+      - action: set
+        target: worker_result
+        value: null
   - kind: loop
     id: activity-cycle
     name: Activity Cycle
@@ -93,9 +113,14 @@ steps:
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
             variable_bag: variables
+        actions:
+          - action: set
+            target: trace_tokens
+            value: "{advance_trace_tokens}"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: technique
         id: enter-activity
-        when: "!worker_agent_id && !worker_result.next_activity_fans"
+        when: "!worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != 'checkpoint_pending'"
         technique:
           name: enter_activity
           inputs:
@@ -107,6 +132,11 @@ steps:
             variables_changed: "{worker_result.variables_changed}"
             stands_on_activity: stands_on_activity
             variable_bag: variables
+        actions:
+          - action: set
+            target: trace_tokens
+            value: "{advance_trace_tokens}"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: action
         id: spend-entered-activity
         when: stands_on_activity
@@ -136,6 +166,11 @@ steps:
             variables_changed: "{worker_result.variables_changed}"
           outputs:
             barrier_destination: fan_convergence_activity
+        actions:
+          - action: set
+            target: trace_tokens
+            value: "{advance_trace_tokens}"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: technique
         id: spawn-branches
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -168,7 +203,8 @@ steps:
             actions:
               - action: set
                 target: trace_tokens
-                description: The token this retirement returned, appended to the run's accumulated tokens.
+                value: "{advance_trace_tokens}"
+                description: The token this retirement returned, appended to the tokens the walk holds.
       - kind: technique
         id: persist-the-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -176,6 +212,7 @@ steps:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: "{branch_activities}"
+            session_index: session_index
       - kind: action
         id: advance-past-fan
         when: fan_convergence_activity
@@ -217,7 +254,7 @@ steps:
             checkpoint_resolution: user_selection
       - kind: technique
         id: resume-yielded-worker
-        when: worker_result.result_type == "checkpoint_pending"
+        when: worker_result.result_type == "checkpoint_pending" && worker_agent_id
         technique:
           name: workflow-engine::resume-worker
           inputs:
@@ -226,6 +263,21 @@ steps:
             worker_agent_id: worker_agent_id
             checkpoint_reply: checkpoint_reply
             variable_bag: variables
+      - kind: technique
+        id: resume-entered-activity
+        when: worker_result.result_type == "checkpoint_pending" && !worker_agent_id
+        technique:
+          name: enter_activity
+          inputs:
+            activity_id: current_activity
+            session_index: session_index
+            agent_technique: workflow-engine::activity-worker
+            variable_bag: variables
+        actions:
+          - action: set
+            target: trace_tokens
+            value: "{advance_trace_tokens}"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: action
         id: clear-checkpoint-reply
         when: checkpoint_reply
@@ -241,6 +293,7 @@ steps:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: current_activity
+            session_index: session_index
       - kind: action
         id: note-exiting-activity
         when: worker_result.result_type == "activity_complete"

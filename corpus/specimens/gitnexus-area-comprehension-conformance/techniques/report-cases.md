@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -9,9 +9,17 @@ State what the area-comprehension run landed under its positive, negative and st
 
 ## Inputs
 
-### current_graph_name
+### host_graph_name
 
-Name of the graph current with its tree, which the positive and negative cases addressed.
+Name of the graph covering the host repository, which the positive and negative cases addressed.
+
+### positive_tree_path
+
+Filesystem path of the host repository whose graph the positive case addressed.
+
+### negative_tree_path
+
+Filesystem path of the host repository whose graph the negative case addressed.
 
 ### stale_graph_fixture_path
 
@@ -99,8 +107,9 @@ Three rows for the one run: the graph and bindings each case took, whether each 
 
 ### 1. Fill the Table
 
-- Fill the table from the three cases — the positive against `{positive_index_stats}`, `{positive_index_stale}`, `{positive_query_report}`, `{positive_symbol_contexts}` and `{positive_flow_traces}`, the negative against `{negative_index_stats}`, `{negative_index_stale}`, `{negative_query_report}`, `{negative_symbol_contexts}` and `{negative_flow_traces}`, and a third row named `stale-graph-case` against `{stale_graph_index_stats}`, `{stale_graph_index_stale}`, `{stale_graph_query_report}`, `{stale_graph_symbol_contexts}` and `{stale_graph_flow_traces}` — per [Template](/conformance/resources/case-report.md#template), with `{current_graph_name}` and `{stale_graph_name}` both named in the header and each row naming in its `Graph` column the one its answers came from.
-   > The positive and negative rows name `{current_graph_name}` there, and the `stale-graph-case` row names `{stale_graph_name}`, so a reader sees which graph each row's answers came from.
+- Fill the table from the three cases — the positive against `{positive_index_stats}`, `{positive_index_stale}`, `{positive_query_report}`, `{positive_symbol_contexts}` and `{positive_flow_traces}`, the negative against `{negative_index_stats}`, `{negative_index_stale}`, `{negative_query_report}`, `{negative_symbol_contexts}` and `{negative_flow_traces}`, and a third row named `stale-graph-case` against `{stale_graph_index_stats}`, `{stale_graph_index_stale}`, `{stale_graph_query_report}`, `{stale_graph_symbol_contexts}` and `{stale_graph_flow_traces}` — per [Template](/conformance/resources/case-report.md#template), with `{host_graph_name}` and `{stale_graph_name}` both named in the header and each row naming in its `Graph` column the one its answers came from.
+   > The positive and negative rows name `{host_graph_name}` there, and the `stale-graph-case` row names `{stale_graph_name}`, so a reader sees which graph each row's answers came from.
+   > The positive and negative rows' `Inputs` columns carry `{positive_tree_path}` and `{negative_tree_path}`, the host repository the session opened from, so each row says which checkout its graph covers.
    > A `{negative_query_report}` with no process and no process symbol is a concept no flow ranks into, its definitions filling or not; both per-item passes ran zero times, so `{negative_symbol_contexts}` and `{negative_flow_traces}` are empty by construction, and the row names that fallback rather than reading the area as read and found unconnected.
    > The `stale-graph-case` row's mark is a true staleness flag on the nested refresh's first read, a rebuild, then the second read's verdict; `{stale_graph_index_stale}` holds that verdict, and `{stale_graph_query_report}`, `{stale_graph_symbol_contexts}` and `{stale_graph_flow_traces}` were taken from the graph as rebuilt, so the row names the rebuild that preceded them rather than reading the flag as a graph that was current from the start.
    > The `stale-graph-case` row's `Inputs` column carries `{stale_graph_fixture_path}`, the checkout the case prepared for this walk. The tree is throwaway and the reader has no standing name to look it up by, so the path is what says which tree that row's answers describe.

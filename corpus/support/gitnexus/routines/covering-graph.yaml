@@ -1,0 +1,29 @@
+id: covering-graph
+version: 1.0.0
+name: Covering Graph
+description: >-
+  Name the graph covering a tree, and stop where no indexed graph covers it.
+
+inputs:
+  - id: tree_path
+    description: Filesystem path of the tree whose answers are wanted.
+
+outputs:
+  - id: repo_name
+    type: string
+    description: The name the operations downstream address as their graph.
+
+steps:
+  - kind: technique
+    id: resolve
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: tree_path
+        repo_name: repo_name
+      outputs:
+        repo_name: repo_name
+    actions:
+      - action: validate
+        target: repo_name != ''
+        message: "No indexed graph covers `{tree_path}`. Index that tree, or bind a tree a graph covers."

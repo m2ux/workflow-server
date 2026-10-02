@@ -1,10 +1,10 @@
 id: positive-case
-version: 1.2.0
+version: 1.3.0
 name: Positive Case
 description: Refer to the API surface review over a tree whose graph serves routes nothing fetches.
 variables:
   reads:
-    - positive_tree_path
+    - host_repo_path
   writes:
     - name: positive_route_inventory
       type: object
@@ -18,10 +18,17 @@ variables:
 required: true
 steps:
   - kind: routine
+    id: name-host-graph
+    routine: gitnexus::covering-graph
+    with:
+      tree_path: "{host_repo_path}"
+    outputs:
+      repo_name: positive_repo_name
+  - kind: routine
     id: review-served-tree
     routine: gitnexus::api-surface-review
     with:
-      tree_path: "{positive_tree_path}"
+      tree_path: "{host_repo_path}"
     outputs:
       route_inventory: positive_route_inventory
       shape_report: positive_shape_report
@@ -30,4 +37,5 @@ exits:
   - id: reviewed
     isDefault: true
 outcome:
+  - The case named the graph covering the host repository, or said no indexed graph covers it
   - The run named the graph covering a tree that serves routes, mapped those routes, and landed an empty shape report, the check covering only routes with a consumer and no route in this tree having one

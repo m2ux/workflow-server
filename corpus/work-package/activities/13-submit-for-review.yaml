@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.26.1
+version: 1.27.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -343,13 +343,13 @@ steps:
     options:
       - id: proceed-with-override
         label: Proceed with override
-        description: Acknowledge the deviation and continue.
+        description: Acknowledge the deviation.
         effect:
           setVariable:
             body_conforms: true
       - id: provide-input
         label: Provide missing input
-        description: The missing input (a pushed engineering branch, an issue rationale) is available to supply
+        description: The missing input (a pushed engineering branch, an issue rationale) is now in place in the repository
         effect:
           setVariable:
             body_conforms: false
