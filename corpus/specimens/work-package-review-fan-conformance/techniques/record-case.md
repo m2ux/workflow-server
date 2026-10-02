@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -39,4 +39,4 @@ The list with this case's outcome appended: the pipeline mode, whether the code 
 
 ### 1. Record Outcome
 
-- Append this case to `{case_outcomes}`
+- Append this case to `{case_outcomes}` from `{pipeline_mode}`, `{code_review_report}`, `{test_suite_review_report}`, and `{structural_findings}`

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -39,4 +39,4 @@ The list with this case's outcome appended: whether research was needed, how man
 
 ### 1. Record Outcome
 
-- Append this case to `{case_outcomes}`
+- Append this case to `{case_outcomes}` from `{needs_research}`, `{research_assumptions}`, `{analysis_assumptions}`, and `{assumptions_log}`

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -31,4 +31,4 @@ The task record: the approach, residual ambiguity, tests left unrun, and any hig
 
 ### 1. Record the Scope
 
-- Emit `{task_implementation}`
+- Emit `{task_implementation}` from `{task_record}`, `{change_report}`, and `{target_symbol}`

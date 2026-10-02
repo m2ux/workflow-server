@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -35,4 +35,4 @@ The list with this case's outcome appended: whether it was a review run, the ste
 
 ### 1. Record Outcome
 
-- Append this case to `{case_outcomes}`
+- Append this case to `{case_outcomes}` from `{is_review_mode}`, `{assumptions_log}`, and `{has_deferred_assumptions}`

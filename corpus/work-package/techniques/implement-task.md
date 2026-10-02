@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.5.1
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ Repository-relative paths this task wrote, as the set a commit stages.
 
 - Read the `{current_task}` Contract first — Signatures, Behaviours, Error cases and Acceptance are the public specification this task must satisfy
 - Read the `{current_task}` goal, deliverables and dependencies
-- Before editing, emit the blast-radius note on `{task_implementation}`
+- Before editing, read `{impact_report}` and emit the blast-radius note on `{task_implementation}`
 - Read `{context_report}` for the callers and callees of `{target_symbol}`
 - Review the `{test_plan}` for acceptance criteria relevant to this task
 - Where the `{current_task}` Contract or description is ambiguous or missing context, read the plan document for what it leaves unstated, and record the residual ambiguity in `{task_implementation}`

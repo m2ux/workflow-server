@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -35,4 +35,4 @@ The list with this case appended: which case was walked, whether the suite passe
 
 ### 1. Record
 
-- Append this case to `{case_outcomes}`
+- Append this case to `{case_outcomes}` from `{case_kind}`, `{contract_tests_passed}`, and `{join_exit}`

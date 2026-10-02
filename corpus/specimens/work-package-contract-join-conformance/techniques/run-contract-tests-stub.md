@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -27,4 +27,4 @@ Empty when `{case_kind}` is `pass`; otherwise one failure, `Acceptance: caller r
 
 ### 1. Run
 
-- Emit `{contract_tests_passed}` and `{contract_test_failures}`
+- Emit `{contract_tests_passed}` and `{contract_test_failures}` from `{case_kind}`

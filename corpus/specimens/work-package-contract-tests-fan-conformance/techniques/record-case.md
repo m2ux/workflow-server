@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -35,4 +35,4 @@ The list with this case appended: whether the suite failed against the base tree
 
 ### 1. Record
 
-- Append this case to `{case_outcomes}`
+- Append this case to `{case_outcomes}` from `{contract_tests_fail_on_base}`, `{contract_tests_path}`, and `{contract_tests_branch}`
