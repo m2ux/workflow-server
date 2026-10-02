@@ -21,6 +21,26 @@ describe('declared values', () => {
     ]);
   });
 
+  it('records every admitted value when a step sets the output from its values', () => {
+    const steps = [
+      'When those signals settle on one category, set `{issue_type}` to that member of its `#### values`.',
+    ];
+    expect(findingsForValueSet(
+      'work-package::issue-type-detection::issue_type',
+      ['feature', 'bug', 'task', 'enhancement', 'epic'],
+      steps,
+    )).toEqual([]);
+  });
+
+  it('does not treat a values citation of another output as this set', () => {
+    const findings = findingsForValueSet(
+      'work-package::issue-type-detection::issue_type',
+      ['feature', 'bug'],
+      ['Set `{other}` to that member of its `#### values`.'],
+    );
+    expect(findings.map((finding) => finding.check)).toEqual(['value-unassigned', 'value-unassigned']);
+  });
+
   it('passes a later step that names the value it leaves standing', () => {
     const steps = [
       'Record the home member with reach `home`.',

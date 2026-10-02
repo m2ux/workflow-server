@@ -11,6 +11,9 @@
  * A set whose only home is prose is `value-set-in-prose` and is outside this check: the declaration
  * is what makes the set readable.
  *
+ * A step that sets the output to a member of its `#### values` records every member of that set.
+ * The phase names the output and the set; it does not repeat the members.
+ *
  * Hard zero. Run: npx tsx guards/check-declared-values.ts [--root <workflows-dir>] [--json]
  */
 import { readdirSync, existsSync, statSync } from 'node:fs';
@@ -32,14 +35,34 @@ function recordedTokens(step: string): Set<string> {
 }
 
 /**
+ * The output id a site names. `workflow::technique::issue_type` is `issue_type`.
+ * A bare site used by a unit test is that id.
+ */
+function outputId(site: string): string {
+  const qualified = site.split('::').pop() ?? site;
+  return qualified.split('.')[0] ?? qualified;
+}
+
+/**
+ * A step records the whole admitted set when it sets this output to a member of its `#### values`.
+ */
+function recordsAdmittedSet(step: string, id: string): boolean {
+  if (id.length === 0 || !step.includes('#### values')) return false;
+  return step.includes(`{${id}}`) || recordedTokens(step).has(id);
+}
+
+/**
  * Findings for one closed set against the technique's protocol steps, in authored order.
  * `site` is the output, or the output and the field, already qualified by the caller.
  */
 export function findingsForValueSet(site: string, values: string[], steps: string[]): Finding[] {
   const admitted = new Set(values);
+  const id = outputId(site);
   const findings: Finding[] = [];
   for (const value of values) {
-    const recordedAt = steps.flatMap((step, index) => (recordedTokens(step).has(value) ? [index] : []));
+    const recordedAt = steps.flatMap((step, index) => (
+      recordedTokens(step).has(value) || recordsAdmittedSet(step, id) ? [index] : []
+    ));
     if (recordedAt.length === 0) {
       findings.push({
         check: 'value-unassigned',
@@ -50,8 +73,9 @@ export function findingsForValueSet(site: string, values: string[], steps: strin
     }
     const first = recordedAt[0] ?? 0;
     for (let index = first + 1; index < steps.length; index++) {
-      const tokens = recordedTokens(steps[index] ?? '');
-      if (tokens.has(value)) continue;
+      const step = steps[index] ?? '';
+      const tokens = recordedTokens(step);
+      if (tokens.has(value) || recordsAdmittedSet(step, id)) continue;
       const sibling = [...tokens].find((token) => admitted.has(token));
       if (sibling === undefined) continue;
       findings.push({
