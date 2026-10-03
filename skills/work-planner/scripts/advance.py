@@ -13,7 +13,8 @@ an order line for each kind when nothing is In Progress and no initiative has a 
 line for an initiative In Progress with no priority, a tie line when labelled initiatives share
 the highest rank, a wait line for an open pull request, and a next line for epics.
 --unplanned names an initiative the user left with no priority. It returns to Backlog once its
-open pull requests have completed, and its epics return with it.
+open pull requests have completed, and its epics return with it. --parallel names each initiative
+in a tie the user leaves in place. Those initiatives move to In Progress.
 """
 import argparse
 import json
@@ -27,7 +28,7 @@ from format import cell, id_cell, row_id
 from sync import PR_REF, Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-RANK = re.compile(r'^priority: ([1-5])$')
+RANK = re.compile(r'^priority: ([1-9]\d*)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 DEBT = {'bug', 'tech-debt'}
 PLACED = ('Backlog', 'Ready', 'In Progress')
@@ -38,7 +39,7 @@ def label_names(issue: dict) -> set[str]:
 
 
 def rank(issue: dict) -> int | None:
-    """The initiative's priority, 5 highest. Two labels count as the higher number."""
+    """The initiative's priority. A larger number is higher. Two labels count as the larger."""
     found = [int(matched.group(1)) for name in label_names(issue) if (matched := RANK.fullmatch(name))]
     return max(found) if found else None
 
@@ -104,12 +105,14 @@ def is_next(board: Board, initiative: tuple[str, int], epic: tuple[str, int] | N
 
 
 class Queue:
-    def __init__(self, issues: dict, status: dict, prs: list[dict], home: str, unplanned: set):
+    def __init__(self, issues: dict, status: dict, prs: list[dict], home: str, unplanned: set,
+                 parallel: set):
         self.issues = issues
         self.status = status
         self.prs = prs
         self.home = home
         self.unplanned = unplanned
+        self.parallel = parallel
         self.shelved: set = set()
         self.board = Board(issues, [], home, prs)
         self.wanted: dict = {}
@@ -238,6 +241,12 @@ class Queue:
         top = max(rank(self.issues[key]) for key in labelled)
         tied = [key for key in labelled if rank(self.issues[key]) == top]
         if len(tied) > 1:
+            if set(tied) <= self.parallel:
+                for key in tied:
+                    self.place(key, 'In Progress')
+                    self.activate(key)
+                self.release(keys, set(tied) | self.demoted)
+                return
             self.notes.append('  tie ' + ', '.join(self.line(key) for key in sorted(tied)))
             staying = [key for key in tied if self.status.get(key) == 'In Progress']
             if len(staying) == 1:
@@ -259,6 +268,12 @@ class Queue:
             return
         if incumbents:
             ranked = sorted(incumbents, key=lambda key: rank(self.issues[key]) or 0, reverse=True)
+            leaders = [key for key in ranked if (rank(self.issues[key]) or 0) == (rank(self.issues[ranked[0]]) or 0)]
+            if len(leaders) > 1:
+                self.notes.append('  tie ' + ', '.join(self.line(key) for key in sorted(leaders)))
+                keep = {choice} if self.status.get(choice) == 'Ready' else set()
+                self.release(keys, keep | set(leaders) | self.demoted)
+                return
             self.demote(ranked[0])
             if names := self.ready_names(ranked[0]):
                 self.notes.append(f"  next {self.line(ranked[0])}: {', '.join(names)}")
@@ -290,18 +305,16 @@ class Queue:
             self.order(open_initiatives)
             self.park()
             return
-        blocked = set()
+        asked = set()
         for key in in_progress:
             if rank(self.issues[key]) is not None or key in self.unplanned:
                 continue
-            blocked.add((key[0].lower(), kind(self.issues[key])))
+            asked.add((key[0].lower(), kind(self.issues[key])))
             self.notes.append(f'  ask {self.line(key)}: priority')
         for key in in_progress:
             if key not in self.unplanned or rank(self.issues[key]) is not None:
                 continue
-            slot = (key[0].lower(), kind(self.issues[key]))
             if urls := self.pulls(key):
-                blocked.add(slot)
                 self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(urls)}")
             else:
                 self.shelve(key)
@@ -309,10 +322,10 @@ class Queue:
         for key in open_initiatives:
             if self.status.get(key) in ('Done', 'In Review') or key in self.shelved:
                 continue
-            if rank(self.issues[key]) is None:
-                continue
             slot = (key[0].lower(), kind(self.issues[key]))
-            if slot in blocked:
+            if slot in asked:
+                continue
+            if rank(self.issues[key]) is None and key not in self.unplanned:
                 continue
             groups.setdefault(slot, []).append(key)
         for keys in groups.values():
@@ -320,20 +333,20 @@ class Queue:
         self.park()
 
 
-def unplanned_keys(specs: list[str], issues: dict, status: dict) -> set:
-    """Issues named to --unplanned, as a number or owner/repo#number."""
+def named_keys(specs: list[str], issues: dict, status: dict, flag: str) -> set:
+    """Issues named to a repeatable flag, as a number or owner/repo#number."""
     found = set()
     for spec in specs:
         if '#' in spec:
             repo, number = spec.rsplit('#', 1)
             key = (repo, int(number))
             if key not in issues:
-                sys.exit(f'--unplanned {spec} is not on the board')
+                sys.exit(f'--{flag} {spec} is not on the board')
             found.add(key)
             continue
         matches = [key for key in issues if key in status and key[1] == int(spec)]
         if len(matches) != 1:
-            sys.exit(f'--unplanned {spec} matches {len(matches)} issues')
+            sys.exit(f'--{flag} {spec} matches {len(matches)} issues')
         found.add(matches[0])
     return found
 
@@ -348,6 +361,7 @@ def main() -> int:
     parser.add_argument('--assignee')
     parser.add_argument('--others', nargs='*', default=[])
     parser.add_argument('--unplanned', action='append', default=[])
+    parser.add_argument('--parallel', action='append', default=[])
     args = parser.parse_args()
     for name in ('items', 'prs', 'board', 'fields', 'out', 'assignee'):
         if not getattr(args, name):
@@ -367,7 +381,9 @@ def main() -> int:
         status[key] = status_of(item)
         item_ids[key] = item['id']
     home = Counter(key[0] for key in issues).most_common(1)[0][0] if issues else ''
-    queue = Queue(issues, status, pull_requests(args.prs), home, unplanned_keys(args.unplanned, issues, status))
+    queue = Queue(issues, status, pull_requests(args.prs), home,
+                  named_keys(args.unplanned, issues, status, 'unplanned'),
+                  named_keys(args.parallel, issues, status, 'parallel'))
     queue.decide()
 
     field = next((item for item in pages(args.fields) if item.get('name') == 'Status'), None)

@@ -117,7 +117,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Next number.**
   Find the next initiative number with [List Initiative Titles](references/commands.md#list-initiative-titles).
 - **Labels.**
-  - Besides the type and theme, add `enhancement`, `bug`, `tech-debt` and `priority: 1` through `priority: 5` as they apply. `priority: 5` is highest.
+  - Besides the type and theme, add `enhancement`, `bug`, `tech-debt` and `priority:` with a positive integer as they apply. A larger number is higher. There is no maximum.
   - **Example.**  workflow-server adds `workflows`.
   - Only labels that exist, as [List Labels](references/commands.md#list-labels) shows.
 

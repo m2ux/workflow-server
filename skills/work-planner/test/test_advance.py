@@ -39,7 +39,8 @@ def epic(number: int, which: str, *tasks: tuple[str, str, str], repo: str = 'o/r
     return issue(number, f'[I{which}] Epic {number}: Work', body=body, repo=repo)
 
 
-def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = ()) -> str:
+def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = (),
+          parallel: tuple[str, ...] = ()) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         items_path, prs_path, fields = root / 'items.json', root / 'prs.json', root / 'fields.json'
@@ -47,6 +48,7 @@ def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str
         prs_path.write_text(''.join(json.dumps(row) + '\n' for row in prs or []))
         fields.write_text(json.dumps(FIELDS))
         extra = [arg for spec in unplanned for arg in ('--unplanned', spec)]
+        extra += [arg for spec in parallel for arg in ('--parallel', spec)]
         done = run('advance.py', '--items', str(items_path), '--prs', str(prs_path),
                    '--board', 'users/o/projectsV2/9', '--fields', str(fields),
                    '--out', str(root / 'out'), '--assignee', 'me', *extra)
@@ -243,6 +245,44 @@ class Queue(unittest.TestCase):
         self.assertIn('wait #1 [I01] Mid: Current:', out)
         self.assertIn('[I03] Low: Waiting: Ready → Backlog', out)
         self.assertNotIn('[I02] High: Next: Backlog → Ready', out)
+
+    def test_a_confirmed_tie_starts_in_parallel(self):
+        first = initiative(1, 'First: Tied', (f"[E00]({url('issues', 3)})", ''), priority='priority: 5')
+        second = initiative(2, 'Second: Tied', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
+        out = queue(staged((first, 'Backlog'), (second, 'Backlog'),
+                           (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
+                    parallel=('1', '2'))
+        self.assertIn('[I01] First: Tied: Backlog → In Progress', out)
+        self.assertIn('[I02] Second: Tied: Backlog → In Progress', out)
+        self.assertIn('[I01:E00] Epic 3: Work: Backlog → Ready', out)
+        self.assertIn('[I02:E00] Epic 4: Work: Backlog → Ready', out)
+        self.assertNotIn('tie ', out)
+
+    def test_incumbents_that_share_a_rank_are_a_tie(self):
+        low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 4)})", ''), priority='priority: 3')
+        same = initiative(2, 'Same: Current', (f"[E00]({url('issues', 5)})", ''), priority='priority: 3')
+        high = initiative(3, 'High: Next', (f"[E00]({url('issues', 6)})", ''), priority='priority: 5')
+        out = queue(staged((low, 'In Progress'), (same, 'In Progress'), (high, 'Backlog'),
+                           (epic(4, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                           (epic(5, '02:E00', ('W01', 'Go', '')), 'In Progress'),
+                           (epic(6, '03:E00', ('W01', 'Go', '')), 'Backlog')))
+        self.assertIn('tie ', out)
+        self.assertNotIn('→ In Progress', out)
+        self.assertNotIn('→ Ready', out)
+
+    def test_an_unplanned_wait_clears_a_ready_initiative_that_is_not_the_choice(self):
+        bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 4)})", ''), priority='')
+        choice = initiative(2, 'High: Next', (f"[E00]({url('issues', 5)})", ''), priority='priority: 5')
+        extra = initiative(3, 'Low: Waiting', (f"[E00]({url('issues', 6)})", ''), priority='priority: 1')
+        out = queue(staged((bare, 'In Progress'), (choice, 'Ready'), (extra, 'Ready'),
+                           (epic(4, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                           (epic(5, '02:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (epic(6, '03:E00', ('W01', 'Go', '')), 'Backlog')),
+                    [pr(9, '[I01:E00] Open')], unplanned=('1',))
+        self.assertIn('wait #1 [I01] Bare: Current:', out)
+        self.assertIn('[I03] Low: Waiting: Ready → Backlog', out)
+        self.assertNotIn('[I02] High: Next: Ready →', out)
 
 
 if __name__ == '__main__':
