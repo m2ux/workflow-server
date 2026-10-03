@@ -32,9 +32,9 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
    2. the epics in dependency order, each citing the initiative and the epics created before it, with placeholders for any it cites that do not exist yet;
    3. a [Patch Body](commands.md#patch-body) replacing every remaining placeholder, in the initiative and in any epic that holds one. Grep the local files for `#E[0-9]` until none is left;
-   4. a task issue from `templates/task.md` for each task that needs one, citing its epic, its acceptance criteria written to this mode's Criteria at creation rule;
+   4. a task issue from the [task template](../templates/task.md) for each task that needs one, citing its epic, its acceptance criteria written to this mode's Criteria at creation rule;
    5. [Check Format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch Body](commands.md#patch-body) from each fixed body.
-7. **Review.**  Run the passes in `review-passes.md`:
+7. **Review.**  Run the [Review Passes](review-passes.md):
    - The goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
    - The consistency pass, after every round of edits;
    - The ordering pass, whenever tasks or dependencies change.

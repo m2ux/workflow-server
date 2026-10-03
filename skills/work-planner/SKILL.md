@@ -167,7 +167,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **git.**
   - For the planning record: the long-lived engineering worktree. Records live under `artifacts/planning/` and are edited on that worktree.
   - For delivery: each initiative's integration branches, which its pull requests target, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
-- **Sub-agents.**  Where the harness has them, for plan mode's broad evidence sweeps.
+- **Sub-agents.**  Where the harness has them, for [Plan Mode](references/plan-mode.md)'s broad evidence sweeps.
 
 ## Rules
 

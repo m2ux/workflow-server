@@ -14,7 +14,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 | **Existing task** | criteria and design in a task that has its own issue | subsumed |
 | **New task** | a row in an existing epic, with its criteria | kept as the task's issue, or subsumed |
 | **New epic** | an epic in an existing initiative | kept as the epic's issue, or subsumed |
-| **New initiative** | an initiative, raised in plan mode | kept as the initiative's issue, or subsumed |
+| **New initiative** | an initiative, raised in [Plan Mode](plan-mode.md) | kept as the initiative's issue, or subsumed |
 | **Leave** | nothing; the orphan is not initiative work | stays open, in the standalone layout |
 
 - **Kept.**
@@ -35,7 +35,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
   - Otherwise keep the orphan when its work needs discussion or evidence of its own, as a task with its own issue does.
   - Subsume it when its detail fits in rows, criteria and a reference.
 - **Left.**
-  An orphan left in place keeps no agent-engineering prefix, and takes the formatting rules of a standalone issue: the title form, `templates/issue.md`, and the scheme's rules for bodies, code references and succinct items.
+  An orphan left in place keeps no agent-engineering prefix, and takes the formatting rules of a standalone issue: the title form, the [issue template](../templates/issue.md), and the scheme's rules for bodies, code references and succinct items.
 - **Bodies state the result.**
   - No body says work was hoisted, migrated or subsumed, or names where it came from.
   - A reference to the orphan says what detail it holds (`The evidence walks and the carve-outs.`).
@@ -69,10 +69,10 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
      - Number it where it can start, with [Renumber Tasks](commands.md#renumber-tasks) when a task no pull request names must move.
      - Keep or subsume the orphan.
    - **New epic.**
-     - Draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves.
-     - Follow plan mode's steps for creating and linking an epic.
+     - Draft the epic from the [epic template](../templates/epic.md) and its row in the initiative, with the initiative criteria it serves.
+     - Follow [Plan Mode](plan-mode.md)'s steps for creating and linking an epic.
      - Keep or subsume the orphan.
-   - **New initiative.**  Run plan mode with the orphan as its input. Keep or subsume the orphan.
+   - **New initiative.**  Run [Plan Mode](plan-mode.md) with the orphan as its input. Keep or subsume the orphan.
    - **Kept.**
      Post the original-body comment, then rewrite the orphan by its kind's rules with [Retitle Issue](commands.md#retitle-issue), [Add Labels](commands.md#add-labels) and [Patch Body](commands.md#patch-body), carrying its evidence into Problem and its design into Proposal.
    - **Leave.**
