@@ -41,10 +41,17 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
   - When the choice is not the initiative In Progress, and no pull request of that initiative is open, it moves to Ready and the choice moves to In Progress.
   - An initiative In Review or Done is left as it stands.
 - **Epics.**
-  - On the initiative that is In Progress, a partly completed epic is In Progress, an epic that is next moves to Ready, and any other Ready epic of it moves to Backlog. An epic In Review or Done is left as it stands.
+  - On the initiative that is In Progress:
+    - A partly completed epic is In Progress.
+    - An epic that is next moves to Ready.
+    - Any other Ready epic of it moves to Backlog.
+    - An epic In Review or Done is left as it stands.
   - An epic is next when every dependency in its Depends on cell is delivered and its Open Questions section is empty. Delivered is the reading [Plan Board Changes](commands.md#plan-board-changes) uses.
   - Partly completed means a delivered task row on an epic that is not closed as completed.
-  - On an initiative that moves from In Progress to Ready, each partly completed epic is Ready, and each epic In Progress, In Review or Ready becomes Ready. An epic in Backlog that is not partly completed stays in Backlog.
+  - On an initiative that moves from In Progress to Ready:
+    - Each partly completed epic is Ready.
+    - Each epic In Progress, In Review or Ready becomes Ready.
+    - An epic in Backlog that is not partly completed stays in Backlog.
   - A Ready epic of any other initiative moves to Backlog.
   - The epics a Ready initiative would start are reported and not moved.
 - **The queue.**
