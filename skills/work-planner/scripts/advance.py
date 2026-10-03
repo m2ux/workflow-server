@@ -175,7 +175,7 @@ class Queue:
                 self.place(epic_key, 'Backlog')
 
     def demote(self, key: tuple[str, int]) -> None:
-        """The initiative returns to Ready, and the epics that had left Backlog return with it."""
+        """The initiative is Ready, and so is each partly completed epic and each epic out of Backlog."""
         self.place(key, 'Ready')
         self.demoted.add(key)
         rows_of, _ = self.load(key)
