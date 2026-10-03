@@ -65,7 +65,9 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
 - **Integration branches.**
-  - Each long-lived branch an initiative changes (`main`, `workflows`, `workspace`) has an integration branch, named for the initiative and that branch and cut from it: `i07/main`.
+  - Each long-lived branch an initiative changes has an integration branch, named for the initiative and that branch and cut from it.
+  - **Example.**
+    workflow-server's long-lived branches are `main`, `workflows` and `workspace`, and an integration branch cut from `main` is `i07/main`.
   - Every pull request delivering the initiative's work targets its integration branch, never the long-lived branch.
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
@@ -91,6 +93,11 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 - **Evidence that may be cited.**
   A boundary with a sibling epic is plain language. Code, a merged pull request, and an issue outside this initiative may be cited.
 
-## What Bodies Leave Out
+## Rules
 
-An initiative or epic body does not narrate the order work runs in, why, or how the tables work: Depends on states order, and this guide states the rest. Longest chains, ordering reviews and their reasons go in the planning record. How the plan changed is left out too, as the skill's rules state.
+- **Order.**
+  An initiative or epic body does not narrate the order work runs in, why, or how the tables work. Depends on states the order, and this guide states the rest.
+- **Chains and reviews.**
+  Longest chains, ordering reviews and their reasons go in the planning record.
+- **Change.**
+  How the plan changed is left out, as the skill's [Rules](../SKILL.md#rules) state.

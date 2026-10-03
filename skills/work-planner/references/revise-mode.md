@@ -1,6 +1,6 @@
 # Revise Mode
 
-Changes the skill itself: SKILL.md, its references, templates and scripts. Every revision follows the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md); a change that departs from them is not complete.
+Changes the skill itself: SKILL.md, its references, templates and scripts.
 
 ## Procedure
 
@@ -26,3 +26,8 @@ Changes the skill itself: SKILL.md, its references, templates and scripts. Every
 7. **Deliver.**  Commit, push, and report what changed in each file.
 8. **Revise the guidelines.**
    When the user states a new rule for how the skill is written, add it in the same change: to the [skill guidelines](../../guidelines.md) when it binds every skill, or to this skill's [guidelines](guidelines.md) when it binds this skill alone.
+
+## Rules
+
+- **Complete.**
+  A change that departs from the [skill guidelines](../../guidelines.md) or this skill's [guidelines](guidelines.md) is not complete.

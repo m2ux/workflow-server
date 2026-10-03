@@ -38,14 +38,19 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
 5. **Give the initiatives off the board.**
    For each `unresolved` line naming an initiative not on the board (`I08 in owner/repo`), find its issue with [Find Initiative Issue](commands.md#find-initiative-issue) in that repository, take it with [Fetch Issue](commands.md#fetch-issue), and re-run [Summarise Progress](commands.md#summarise-progress) with `--initiatives`.
 6. **Write the paragraph for management.**
-   Write it from the Initiatives and Completed sections, and re-run [Summarise Progress](commands.md#summarise-progress) with the same arguments and `--summary`. The paragraph:
-   - is one paragraph in plain language: what the window delivered, as outcomes for the initiatives it serves;
-   - carries no references, links, task ids or tool names;
-   - leaves out work in progress and next;
-   - with nothing completed, says so in one sentence.
+   Write it from the Initiatives and Completed sections, to this mode's The paragraph rule, and re-run [Summarise Progress](commands.md#summarise-progress) with the same arguments and `--summary`.
 7. **Report.**
    - Report the summary verbatim in a fenced block, so the user copies it unaltered.
    - Put any `unresolved` line it prints to stderr beneath:
      - a dependency on an issue off the board, which reads as blocked;
      - an epic whose Work Breakdown cannot be read, summarised without its tasks; review mode fixes its body.
+
+## Rules
+
+- **The paragraph.**
+  The paragraph for management:
+  - is one paragraph in plain language: what the window delivered, as outcomes for the initiatives it serves;
+  - carries no references, links, task ids or tool names;
+  - leaves out work in progress and next;
+  - with nothing completed, says so in one sentence.
 

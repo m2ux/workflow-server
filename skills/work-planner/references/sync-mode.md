@@ -35,7 +35,7 @@ Records work on an initiative, its epics and their task issues: links each task 
      A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
    - **note.**  A row links its task issue. Link the pull request as in step 4.
    - **open questions.**
-     Work on the epic has started while its Open Questions section remains. Stop and ready the epic in [Plan Mode](plan-mode.md), since the answers may reshape it.
+     The epic's Open Questions section remains. This mode's Open questions rule says what follows.
    - **ready to verify.**  Criteria whose delivering rows are all delivered.
    - **ticked early.**
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
@@ -57,7 +57,7 @@ Records work on an initiative, its epics and their task issues: links each task 
     - When it reports an integration branch unmerged, open that pull request with [Open Integration Pull Request](commands.md#open-integration-pull-request) and leave the initiative open.
     - [Close as Completed](commands.md#close-as-completed) the initiative when it reports closable, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 12. **Sync the board.**
-    Sync it after the issues are patched and any closable issue is closed, fetching the issues again first. An open initiative whose criteria are all ticked is In Review.
+    Sync it after the issues are patched and any closable issue is closed, fetching the issues again first. An open initiative is set In Review as this mode's In Review rule states.
     - **Find it.**
       - The board is the initiative's theme board, per SKILL.md's [Themes and Boards](../SKILL.md#themes-and-boards): run [Find Theme Board](commands.md#find-theme-board) with its theme.
       - When no open board carries that theme, create it with [Create Board](commands.md#create-board), titled as [Themes and Boards](../SKILL.md#themes-and-boards) states, then sync it.
@@ -70,4 +70,11 @@ Records work on an initiative, its epics and their task issues: links each task 
       - An issue added in one pass gets its Status in the next.
 13. **Report.**
     Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, what was closed, and each board and assignee change. What the report names about criteria is [Coverage Reports](work-breakdown.md#coverage-reports).
+
+## Rules
+
+- **Open questions.**
+  An epic is not synced while its Open Questions section remains. Ready it in [Plan Mode](plan-mode.md) first.
+- **In Review.**
+  An open initiative whose criteria are all ticked is In Review.
 

@@ -7,7 +7,8 @@ Every command the skill runs, one spec per operation. The mode files name a spec
 - **Repository.**
   `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run `gh` commands inside a checkout of the repository that holds the issues. `{other}` is a further repository the board's issues live in.
 - **Bodies.**
-  - Bodies and long comments always go through a file (`-F body=@file`), never inline, which avoids quoting and the workspace's dynamic-shell restrictions.
+  - Bodies and long comments always go through a file (`-F body=@file`), never inline, which avoids quoting.
+  - **Example.**  workflow-server's dynamic-shell restrictions deny a body inlined in the command.
   - Keep these files in a working directory outside the repository.
 - **Scripts.**
   Scripts run under `sbx`, invoked by its absolute path from `<workspace>`, the checkout holding this skill.
@@ -16,7 +17,7 @@ Every command the skill runs, one spec per operation. The mode files name a spec
 - **Example values.**  Substitute the real ones:
   - `936` an initiative issue, `943` and `937` its epics, `637` a task issue, `874` an orphan, `946` an initiative off the board, `960` a proposal;
   - `950` a pull request, `I07` and `I08` initiative numbers;
-  - board `9`, the Canon theme's, and `419167630` its Status field id;
+  - board `9`, workflow-server's Canon theme, and `419167630` its Status field id;
   - `1` the Initiative Template board, `13` a board copied from it;
   - `14` the Proposals Template, `15` the Proposals board;
   - `m2ux` the user.

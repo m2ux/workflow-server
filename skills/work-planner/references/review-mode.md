@@ -40,9 +40,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - a title whose name is not two or three words or whose subtitle runs past ten: draft a title of the agent-engineering form, and give the initiative row the new name;
    - an issue several row ids link: unlink the ids and cite the issue under References, since it backs several tasks, or give each task its own issue.
 6. **Check criteria.**
-   Check every acceptance criterion of the issues under review against the [Goal Pass](review-passes.md#goal-pass) Verifiable rule.
-   - Report each criterion a test cannot fail.
-   - The review is not clear while one remains.
+   Check every acceptance criterion of the issues under review against the [Goal Pass](review-passes.md#goal-pass) Verifiable rule, and report each a test cannot fail. This mode's Criteria check rule says when the review is clear.
 7. **Check Dependencies.**
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in step 5. An initiative Depends on cell takes the epics it derives.
@@ -57,6 +55,12 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
      An initiative criterion [Sync Mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
    Put each to the user. Verifying and ticking it is [Sync Mode](sync-mode.md). The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
 9. **Re-run.**
-   - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep. A finding from the criteria check is not one the user keeps.
+   - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
+
+## Rules
+
+- **Criteria check.**
+  - The review is not clear while a criterion a test cannot fail remains.
+  - A finding from that check is not one the user keeps.
 

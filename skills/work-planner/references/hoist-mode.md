@@ -31,7 +31,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
   - That issue's References cite the orphan for the detail it holds, so nothing it recorded is lost.
   - The orphan is then closed with a comment naming the issue that took it.
 - **Keep or subsume.**
-  - An orphan that already references detailed planning, a folder of markdown files such as `artifacts/planning/2026-09-10-activity-representation/`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes.
+  - An orphan that already references detailed planning, a folder of markdown files such as workflow-server's `artifacts/planning/2026-09-10-activity-representation/`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes.
   - Otherwise keep the orphan when its work needs discussion or evidence of its own, as a task with its own issue does.
   - Subsume it when its detail fits in rows, criteria and a reference.
 - **Left.**
@@ -55,7 +55,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
    - for a placement in an existing epic, the row it would add (Description, criteria, Depends on, Joins), or the existing task that already delivers it;
    - Leave, when no initiative's goal covers it, or when it is not planned work.
 
-   A candidate whose work an existing criterion already states is subsumed into the issue holding that criterion, with no new row; for a cited standalone issue, that is usually the issue citing it.
+   A candidate whose work an existing criterion already states follows this mode's Already stated rule.
 4. **Offer.**
    - Offer each orphan to the user: a plain paragraph on what the orphan asks and where it fits, then the placements as options with the recommended one first, and Leave last.
    - Placing an orphan in another initiative's issue needs that answer as its approval.
@@ -88,3 +88,8 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
    - Fold every finding in.
 7. **Report.**
    Report each orphan's placement, the issues changed, created or closed, and the orphans left.
+
+## Rules
+
+- **Already stated.**
+  A candidate whose work an existing criterion already states is subsumed into the issue holding that criterion, with no new row. For a cited standalone issue, that issue is usually the one citing it.

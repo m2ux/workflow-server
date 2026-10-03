@@ -88,7 +88,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
   - A task or standalone issue has an epic's structure without the Work Breakdown table.
   - Keep the section order and the table columns.
   - Fill each `{{…}}` and delete a section the template marks as optional when it has nothing to say.
-  - What a body leaves out is in the [Work Breakdown Guide](references/work-breakdown.md).
+  - What a body leaves out is in the [Work Breakdown Guide](references/work-breakdown.md#rules).
 - **Code references.**
   A body references code as a link on the words it supports, a permalink pinned to a commit with its line anchors, never a bare `path:line`: `the [extrinsic type](…/blob/<sha>/runtime/src/lib.rs#L1231-L1232)`.
 - **Succinct items.**
@@ -110,7 +110,8 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Next number.**
   Find the next initiative number with [List Initiative Titles](references/commands.md#list-initiative-titles).
 - **Labels.**
-  - Besides the type and theme, add `enhancement`, `bug`, `tech-debt`, `workflows` and a `priority: *` as they apply.
+  - Besides the type and theme, add `enhancement`, `bug`, `tech-debt` and a `priority: *` as they apply.
+  - **Example.**  workflow-server adds `workflows`.
   - Only labels that exist, as [List Labels](references/commands.md#list-labels) shows.
 
 ## Themes and Boards
