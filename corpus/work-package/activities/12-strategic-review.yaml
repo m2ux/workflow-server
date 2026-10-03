@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.24.0
+version: 2.25.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -99,10 +99,6 @@ variables:
     - name: rendered_pr_body
       type: string
       description: The body now live on the PR after the patch.
-    - name: resign_unsigned_commits_requested
-      type: boolean
-      description: Whether the unsigned commits in the branch range are to be re-signed.
-      defaultValue: false
     - name: review_passed
       type: boolean
       description: Whether strategic review passed.
@@ -127,14 +123,6 @@ variables:
     - name: strategic_review_findings
       type: array
       description: The findings the scope and artifact review produced, each under the designator its report defines.
-    - name: unsigned_commit_list_summary
-      type: string
-      description: Short human-readable summary of the unsigned commits; empty when every commit is signed.
-      defaultValue: ""
-    - name: unsigned_commits_in_pr
-      type: boolean
-      description: True when any commit in the branch range lacks a valid GPG signature.
-      defaultValue: false
 required: true
 steps:
   - kind: technique
@@ -179,37 +167,6 @@ steps:
       inputs:
         pr_template_variant: final
     when: is_review_mode != true && stealth_mode != true
-  - kind: checkpoint
-    id: unsigned-commits-prompt
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: unsigned_commits_in_pr
-          operator: ==
-          value: true
-    message: "Commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-signing rewrites branch history and may require a force-with-lease push."
-    options:
-      - id: resign-all
-        label: Yes — re-sign all unsigned commits
-        description: Every unsigned commit in the range carries a signature afterwards
-        effect:
-          setVariable:
-            resign_unsigned_commits_requested: true
-      - id: decline-resign
-        label: No — proceed without re-signing
-        description: The history stands as it is, with its unsigned commits noted
-        effect:
-          setVariable:
-            resign_unsigned_commits_requested: false
-  - kind: technique
-    id: resign-unsigned-commits
-    technique: resign-commits
-    when: is_review_mode != true && resign_unsigned_commits_requested == true
   - kind: technique
     id: verify-artifact-conformance
     technique:

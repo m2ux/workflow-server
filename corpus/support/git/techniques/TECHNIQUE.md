@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.9.0
+  version: 5.10.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ NEVER run destructive or irreversible operations (force push to protected branch
 
 ### no-hook-skipping
 
-NEVER skip hooks (`--no-verify`, `--no-gpg-sign`) unless the user explicitly requests it.
+NEVER skip hooks (`--no-verify`) unless the user explicitly requests it.
 
 ### explicit-commit
 
@@ -45,7 +45,7 @@ Follow Conventional Commits: `type(optional-scope): description`. Common types: 
 
 ### dco-sign-off
 
-All commits made via this technique use `git commit -s`. The `Signed-off-by` trailer is required by DCO and harmless when not. Adding it by default avoids the failure-then-retry pattern when target repos enforce DCO via a pre-commit hook.
+All commits made via this technique use `git commit -s --no-gpg-sign`. The `Signed-off-by` trailer is the DCO record. The commit carries no GPG signature.
 
 ### infrastructure-engineering-path
 

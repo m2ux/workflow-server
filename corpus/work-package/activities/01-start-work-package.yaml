@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.29.0
+version: 3.30.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -415,12 +415,6 @@ steps:
       type: simple
       variable: host_repo_path
       operator: exists
-  - kind: action
-    id: verify-signing-precondition
-    actions:
-      - action: validate
-        target: signing.configured == true
-        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing).
   - kind: routine
     id: analyze-repo-with-gitnexus
     routine: ensure-graph-index
