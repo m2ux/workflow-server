@@ -1,7 +1,7 @@
 ---
 name: work-planner
 description: >-
-  Plans and maintains agent-engineering work on GitHub: [I] proposal issues, [Ixx] initiative
+  Plans and maintains agent-engineering work on GitHub: proposal issues, [Ixx] initiative
   issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
   Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
   scope the solution, plan out, scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
@@ -70,7 +70,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 
 | Level | Title | Labels |
 | --- | --- | --- |
-| Proposal | `[I] Name: Subtitle` | `type:proposal` |
+| Proposal | `Name: Subtitle`, with no prefix | `type:proposal` |
 | Initiative | `[I07] Name: Subtitle` | `type:initiative`, a `theme:*` |
 | Epic | `[I07:E00] Name: Subtitle` | `type:epic`, its initiative's `theme:*` |
 | Task | `[I07:E00:W01] Name: Subtitle` | `type:task` |
@@ -79,7 +79,6 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Numbers.**
   - `I` is the initiative number, `E` the epic within it, and `W` the task within the epic.
   - Initiatives and epics count from `00`, and tasks from `W01`.
-  - A proposal's prefix is `[I]`, with no number.
 - **Titles.**
   - The prefix separates levels with colons (`[I07:E00:W01]`), then a short name, a colon, and a subtitle stating the outcome.
   - The name is two or three words and the subtitle a succinct summary of at most ten, in [title case](references/guidelines.md#titles): `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define Reliable`.

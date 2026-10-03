@@ -1,6 +1,6 @@
 # Review Passes
 
-The method for the goal pass, the consistency pass, and the ordering pass. [Review Mode](review-mode.md) and [Plan Mode](plan-mode.md) run them. The requirements they share are the [review criteria](review-criteria.md).
+The method for the goal pass, the consistency pass, and the ordering pass. The requirements they share are the [review criteria](review-criteria.md).
 
 ## Fetch
 

@@ -50,7 +50,7 @@ gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" > issues.
 
 ### List Initiative Titles
 
-Lists every numbered initiative, epic and task title, for finding the next initiative number. A proposal's `[I]` title is not listed.
+Lists every numbered initiative, epic and task title, for finding the next initiative number. A proposal has no prefix, so it is not listed.
 
 ```bash
 gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I[0-9]'

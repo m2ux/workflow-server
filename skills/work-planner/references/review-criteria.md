@@ -8,7 +8,7 @@ Criteria that apply to one kind of issue. A review of that kind uses its section
 
 ### Proposal
 
-A proposal states the problem, the boundary, and the goal clauses. The design, the acceptance criteria, and the Work Breakdown are written in [Plan Mode](plan-mode.md).
+A proposal states the problem, the boundary, and the goal clauses.
 
 #### Problem
 

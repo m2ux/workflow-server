@@ -29,6 +29,8 @@ The rules this skill's own files follow beyond the [skill guidelines](../../guid
 - **Terms.**  The scheme is agent-engineering: an agent-engineering prefix, title, issue or table.
 - **Examples.**
   A name, label, branch, path or board that belongs to one project is an example. The rule states what holds for every project.
+- **Consumers.**
+  A document states what it is and what it requires. A document may cite its own rules. The documents that use it are the ones that cite it.
 
 ## Mode files
 

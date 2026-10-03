@@ -1,6 +1,6 @@
 # Propose Mode
 
-Scopes the problem: the friction, the evidence, and the boundary, and states the goal as clauses someone could observe. It raises one proposal, titled `[I]` with no number, on the board titled `Proposals`.
+Scopes the problem: the friction, the evidence, and the boundary, and states the goal as clauses someone could observe. It raises one proposal on the board titled `Proposals`.
 
 ## Procedure
 
@@ -20,7 +20,7 @@ Scopes the problem: the friction, the evidence, and the boundary, and states the
    Write the draft as an issue JSON, with its title and labels, and run [Check Format](commands.md#check-format) with `--fix`.
    Fold every finding in and run it again. No issue is created while it reports one.
 5. **Create the issue.**
-   - The title is `[I] Name: Subtitle`, per the scheme.
+   - The title is `Name: Subtitle`, per the scheme.
    - The label is `type:proposal`. When [List Labels](commands.md#list-labels) does not show it, create it with [Create Label](commands.md#create-label).
    - Add the further labels per the scheme. There is no `theme:*` label and no assignee.
    - Create it with [Create Issue](commands.md#create-issue).
