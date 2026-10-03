@@ -18,7 +18,7 @@ Changes the skill itself: SKILL.md, its references, templates and scripts.
    - The description, when the skill's reach changed;
    - One line per item, bold leads on their own line, and sub-bullets for discrete points;
    - Each rule stated once, and no description of replaced behaviour left anywhere;
-   - Every command named by link to its spec in [commands.md](commands.md);
+   - Every command named by link to its spec in [Commands](commands.md);
    - Every link and anchor resolving.
 6. **Verify.**
    - [Run Tests](commands.md#run-tests) when a script, template or test changed.

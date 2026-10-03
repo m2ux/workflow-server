@@ -83,7 +83,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
   - The name is two or three words and the subtitle a succinct summary of at most ten, in [title case](references/guidelines.md#titles): `[I07:E06] Reliability Evaluation: Briefs, Measures and the Thresholds That Define Reliable`.
   - A standalone issue's title is the same without the prefix.
 - **Bodies.**
-  - Every body follows its template: [proposal.md](templates/proposal.md), [initiative.md](templates/initiative.md), [epic.md](templates/epic.md), [task.md](templates/task.md), [issue.md](templates/issue.md) for a standalone issue outside any initiative, and [pull-request.md](templates/pull-request.md) for a pull request.
+  - Every body follows its template: a [proposal](templates/proposal.md), an [initiative](templates/initiative.md), an [epic](templates/epic.md), a [task](templates/task.md), a [standalone issue](templates/issue.md), and a [pull request](templates/pull-request.md).
   - A proposal has the initiative's sections without the Work Breakdown table.
   - A task or standalone issue has an epic's structure without the Work Breakdown table.
   - Keep the section order and the table columns.
@@ -172,7 +172,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 ## Rules
 
 - **Work Breakdown Guide.**
-  Every mode reads [work-breakdown.md](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables, and what a [Problem and a Proposal](references/work-breakdown.md#problem-and-proposal) hold.
+  Every mode reads the [Work Breakdown Guide](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables, and what a [Problem and a Proposal](references/work-breakdown.md#problem-and-proposal) hold.
 - **Decisions.**
   - Ask them one at a time, each with a recommended option.
   - Record each answer in the affected issues and, when there is one, the planning record.
@@ -185,4 +185,4 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on Issue](references/commands.md#comment-on-issue).
   - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.
 - **Commands**
-  Every command one spec in [commands.md](references/commands.md), with the conventions they share.
+  Every command one spec in [Commands](references/commands.md), with the conventions they share.

@@ -8,7 +8,7 @@ Takes the same intake as [Plan Mode](plan-mode.md) and raises one proposal: an i
    - Confirm the goal and gather the evidence as [Plan Mode](plan-mode.md) does under Understand the request and Gather evidence.
    - The proposal issue holds the goal, the evidence and the decisions.
 2. **Draft the body.**
-   Draft it from [proposal.md](../templates/proposal.md) into a local file. That file is the source for the issue.
+   Draft it from the [proposal template](../templates/proposal.md) into a local file. That file is the source for the issue.
    - A Problem and a Proposal follow the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal).
    - Each acceptance criterion comes from a confirmed clause. It meets the [Goal Pass](review-passes.md#goal-pass) rules One invariant, No counts, Local and Verifiable, and it ends by naming its instrument, as that pass's Verified rule defines. This mode's Goal pass rule names the checks a proposal skips.
 3. **Check the draft.**

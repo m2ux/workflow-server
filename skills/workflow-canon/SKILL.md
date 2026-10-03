@@ -95,7 +95,7 @@ Read the file for the mode the request calls for:
   A single question about the canon takes no mode: fetch that entry, answer, and stop.
 - **Walks.**  Every walk of the canon's units follows the [walk rules](references/walk-rules.md).
 - **Commands.**
-  Every spec runs under the shared conventions at the top of [commands.md](references/commands.md).
+  Every spec runs under the shared conventions at the top of [Commands](references/commands.md).
 - **Edit guard.**
   A failure the [edit guard](references/commands.md#run-the-edit-guard) returns after an edit is closed, or stated as unmeasured, before the next edit.
 - **Commit gate.**

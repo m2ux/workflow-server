@@ -72,9 +72,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 ## Links
 
 - **Files.**
-  A reference to another markdown file in the skill is a relative link, never a code span: [commands.md](work-planner/references/commands.md), not `commands.md`.
+  A reference to another markdown file in the skill is a relative link, never a code span.
 - **Link text.**
-  The link sits on the name of the thing it points to: the mode's name, the guide's name, the command spec's name.
+  The link sits on the noun that names the thing: the mode, the guide, the command, the template.
 - **Resolution.**  Every link resolves to a file that exists, and every anchor to a heading in it.
 
 ## Commands

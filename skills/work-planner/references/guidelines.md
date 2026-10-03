@@ -31,4 +31,4 @@ The rules this skill's own files follow beyond the [skill guidelines](../../guid
 ## Commands
 
 - **Shared conventions.**
-  The top of [commands.md](commands.md) also holds how bodies go through files and where boards sit.
+  The top of [Commands](commands.md) also holds how bodies go through files and where boards sit.
