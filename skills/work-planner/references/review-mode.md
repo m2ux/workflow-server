@@ -1,6 +1,6 @@
 # Review Mode
 
-Checks existing proposal, initiative, epic, task and standalone issues against the templates, and fixes them.
+Checks existing proposal, initiative, epic, task and standalone issues against their templates and against the rules that bind them, and fixes them.
 
 ## Procedure
 
@@ -22,7 +22,11 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - Apply them without asking.
    - Read the diff to confirm it changes structure only, then [Patch Body](commands.md#patch-body) from `fixed-943.md`.
    - Make the title and label changes the check names, with [Retitle Issue](commands.md#retitle-issue), [Add Labels](commands.md#add-labels) and [Remove Label](commands.md#remove-label).
-5. **Decide the rest.**  Decide each remaining finding with the user, with its content drafted:
+5. **Check the rules.**
+   Run the [Review Passes](review-passes.md) on the issues under review: the goal pass, the consistency pass, and the ordering pass.
+   - A proposal, against [Propose Mode](propose-mode.md)'s Problem scope rule.
+   - An initiative or epic body, against the [Work Breakdown Guide](work-breakdown.md)'s [Rules](work-breakdown.md#rules) and the skill's [Rules](../SKILL.md#rules) for what a body states.
+6. **Decide the rest.**  Decide each remaining finding with the user, with its content drafted:
    - A missing section: draft it from the issue and its epics;
    - Non-Goals in an epic or task: lift any that bound the initiative into the initiative's Non-Goals, then remove the section; in a standalone issue, fold them into the Proposal as a closing boundary;
    - An extra section: keep it, fold it into a template section, or remove it;
@@ -39,12 +43,12 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - A Depends on cell holding prose: reduce it to references; for an initiative, to the epics [Check Dependencies](commands.md#check-dependencies) derives with `I=`;
    - A title whose name is not two or three words or whose subtitle runs past ten: draft a title of the agent-engineering form, and give the initiative row the new name;
    - An issue several row ids link: unlink the ids and cite the issue under References, since it backs several tasks, or give each task its own issue.
-6. **Check criteria.**
+7. **Check criteria.**
    Check every acceptance criterion of the issues under review against the [Goal Pass](review-passes.md#goal-pass) Verifiable rule, and report each a test cannot fail. This mode's Criteria check rule says when the review is clear.
-7. **Check Dependencies.**
+8. **Check Dependencies.**
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
-   - Put each problem it reports to the user as in step 5. An initiative Depends on cell takes the epics it derives.
-8. **Coverage.**
+   - Put each problem it reports to the user as in Decide the rest. An initiative Depends on cell takes the epics it derives.
+9. **Coverage.**
    For each epic under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Match Pull Requests](commands.md#match-pull-requests).
    - **Unmet.**
      A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
@@ -54,12 +58,14 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - **Ticked early.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
    Put each to the user. Verifying and ticking it is [Sync Mode](sync-mode.md). The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
-9. **Re-run.**
+10. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
 
 ## Rules
 
+- **The rules.**
+  The review checks each issue against the rules that bind its kind, and against its template.
 - **Criteria check.**
   - The review is not clear while a criterion a test cannot fail remains.
   - A finding from that check is not one the user keeps.

@@ -5,7 +5,7 @@ description: >-
   issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
   Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
   scope the solution, plan out, scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
-  renumber an initiative or epic; to check an issue's format, its criteria or its dependency
+  renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
   order; to fold review findings into issues; to sync an initiative or epic with completed work;
   to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
   or to revise or update the work-planner skill itself.
@@ -41,8 +41,8 @@ Read the file for the mode the request calls for:
   - Renumbering of epics and tasks
   - Folding review findings into issues
 - **[Review](references/review-mode.md)**
-  - Checks of existing issues against the templates
-  - Fixes for each issue that departs from its template
+  - Checks of existing issues against the templates and against the rules that bind them
+  - Fixes for each issue that departs from its template or from those rules
   - A check of every acceptance criterion against the verifiable rule
   - A scan for a merged pull request whose task still has an unticked coverage criterion
   - A scan for an initiative criterion still unticked, or ticked early, against the epics that cite it
