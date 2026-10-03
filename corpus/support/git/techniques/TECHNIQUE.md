@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.10.0
+  version: 5.11.0
 ---
 
 ## Capability
@@ -45,7 +45,11 @@ Follow Conventional Commits: `type(optional-scope): description`. Common types: 
 
 ### dco-sign-off
 
-All commits made via this technique use `git commit -s --no-gpg-sign`. The `Signed-off-by` trailer is the DCO record. The commit carries no GPG signature.
+Every commit this technique makes carries a `Signed-off-by` trailer.
+
+### commits-are-unsigned
+
+Every commit this technique makes carries no GPG signature.
 
 ### infrastructure-engineering-path
 
