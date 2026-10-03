@@ -165,7 +165,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **Python 3.10 or later.**
   Standard library only, for the scripts in `scripts/` and their tests in `test/`.
 - **git.**
-  - For the planning record: a worktree of the `engineering` branch, whose records live under `artifacts/planning/`.
+  - For the planning record: the long-lived engineering worktree. Records live under `artifacts/planning/` and are edited on that worktree.
   - For delivery: each initiative's integration branches, which its pull requests target, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
 - **Sub-agents.**  Where the harness has them, for plan mode's broad evidence sweeps.
 

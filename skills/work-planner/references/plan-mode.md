@@ -13,9 +13,9 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Delegate broad sweeps to parallel sub-agents, and spot-check what they return before recording it.
 3. **Planning record.**
    Keep one for a new initiative, or for a change whose decisions need a record. A one-epic addition with no open decision goes straight to step 4.
-   - Branch a worktree from `origin/engineering` and add `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
+   - Add `artifacts/planning/<yyyy-mm-dd>-<slug>/` on the long-lived engineering worktree, as [Dependencies](../SKILL.md#dependencies) describes.
    - `README.md` holds the problem, the goal's clauses and their trace to the criteria, design, decisions, reviews and open questions. `inventory.md` holds the evidence.
-   - Draft the discussion pull request's body from [pull-request.md](../templates/pull-request.md) and open it as a draft against `engineering`. The user merges it.
+   - Draft the discussion pull request's body from [pull-request.md](../templates/pull-request.md) and open it as a draft. The user merges it.
 4. **Draft bodies.**
    - Draft each body from its template into a local file. Those files are the source for every later edit.
    - A Problem and a Proposal follow the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal).
@@ -66,6 +66,6 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
   - An acceptance criterion complies with the [Goal Pass](review-passes.md#goal-pass) when it is written, including that pass's Verifiable rule.
   - The issue that carries it is created only after the criterion complies.
 - **The discussion PR.**
-  Merging it is the user's call. After it merges, repoint the issue links to `engineering`.
+  Merging it is the user's call.
 - **Pull request bodies.**
   Every pull request this mode opens is drafted from [pull-request.md](../templates/pull-request.md).

@@ -84,8 +84,6 @@ Runs after every round of edits.
 - **Open Questions.**
   - Each has a recommendation in the planning record, and holds only what is undecided; a settled point moves to the planning record.
   - An epic whose first task is next has none.
-- **Links.**
-  A link to an unmerged planning branch breaks when the branch merges; list those to repoint.
 - **Non-Goals.**
   - Only the initiative has them: one succinct sentence each on what the initiative does not do, naming no initiative, epic, task or issue, and no owner.
   - A boundary between sibling epics belongs in their Proposals.
