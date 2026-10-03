@@ -2,7 +2,12 @@
 
 Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which reads the local drafts. Fetch every issue first, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
 
-Report findings split by area, one problem/solution pair per finding, each with a severity. Verify every finding against its source before stating it, and quote the file:line that establishes it. Put findings that need a decision to the user.
+## Report
+
+1. **Split by area.**  Report findings split by area.
+2. **One pair.**  One problem/solution pair per finding, each with a severity.
+3. **Verify.**  Verify every finding against its source before stating it, and quote the file:line that establishes it.
+4. **Decide.**  Put findings that need a decision to the user.
 
 ## Goal Pass
 
