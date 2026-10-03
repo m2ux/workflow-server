@@ -52,10 +52,10 @@ Read the file for the mode the request calls for:
   - Closure of complete task issues, epics and initiatives
   - The theme board brought current with its issues
 - **[Advance](references/advance-mode.md)**
-  - Sync of the board's open initiatives, so Status matches delivery
-  - A parallel work map when nothing is In Progress and no initiative has a priority
-  - The highest priority number In Progress together, and the next number Ready together
-  - Partly completed epics In Progress on a running initiative, and its next unstarted epic Ready
+  - Sync of the board's open initiatives
+  - A parallel work map for initiatives with no priority
+  - Placement of the highest set as In Progress and the next set as Ready
+  - Placement of a partly completed epic as In Progress and the next unstarted epic as Ready
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task
