@@ -23,6 +23,8 @@ A proposal states the problem, the boundary, and the goal clauses. The design, t
 
 ## Initiative
 
+An initiative states the goal as criteria and lists the epics that deliver them. The trace from the goal to that work, and what defeats the goal from outside, are reviewed here.
+
 ### Problem
 
 - A Problem states the friction as it is now, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
@@ -89,6 +91,8 @@ What defeats the goal from outside the clauses:
 
 ## Epic
 
+An epic states one slice of the initiative's design and lists the tasks that deliver it.
+
 ### Problem
 
 - A Problem states the friction of this epic, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
@@ -132,6 +136,8 @@ An epic criterion meets the [shared acceptance criteria](#shared-acceptance-crit
 
 ## Task
 
+A task states one pull request's worth of its epic's design.
+
 ### Problem
 
 - A Problem states the friction of this task, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
@@ -150,6 +156,8 @@ A task criterion meets the [shared acceptance criteria](#shared-acceptance-crite
 
 ## Any issue
 
+These criteria bind every issue, whatever its kind.
+
 ### Title
 
 - The name is two or three words and the subtitle a succinct summary of at most ten, in title case.
@@ -166,7 +174,7 @@ A task criterion meets the [shared acceptance criteria](#shared-acceptance-crite
 
 ## Shared acceptance criteria
 
-Criteria shared by an initiative, an epic, and a task:
+An initiative criterion, an epic criterion, and a task criterion each meet these. A kind adds its own under its Acceptance Criteria.
 
 - States an end state, not an activity.
 - Names or implies the instrument that observes it: a test, a guard, a command or a measure.
