@@ -254,15 +254,19 @@ class Queue:
                     self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(urls)}")
             if self.status.get(choice) == 'In Progress':
                 self.activate(choice)
+            keep = {choice} if self.status.get(choice) in ('Ready', 'In Progress') else set()
+            self.release(keys, keep | self.demoted)
             return
         if incumbents:
-            for key in incumbents:
-                self.demote(key)
-                if names := self.ready_names(key):
-                    self.notes.append(f"  next {self.line(key)}: {', '.join(names)}")
+            ranked = sorted(incumbents, key=lambda key: rank(self.issues[key]) or 0, reverse=True)
+            self.demote(ranked[0])
+            if names := self.ready_names(ranked[0]):
+                self.notes.append(f"  next {self.line(ranked[0])}: {', '.join(names)}")
+            for key in ranked[1:]:
+                self.shelve(key)
             self.place(choice, 'In Progress')
             self.activate(choice)
-            self.release(keys, self.demoted | {choice})
+            self.release(keys, self.demoted | self.shelved | {choice})
             return
         if self.status.get(choice) == 'In Progress':
             self.activate(choice)
@@ -401,7 +405,8 @@ def main() -> int:
         print(note)
     for note in dict.fromkeys(queue.board.unresolved):
         print(f'  unresolved: {note}')
-    print(f'  current: {current}, to do: {todo}' + ('' if todo else ' (the queue is current)'))
+    open_question = any(note.strip().startswith(('order ', 'ask ', 'tie ')) for note in queue.notes)
+    print(f'  current: {current}, to do: {todo}' + ('' if todo or open_question else ' (the queue is current)'))
     return 0
 
 

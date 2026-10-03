@@ -219,6 +219,31 @@ class Queue(unittest.TestCase):
                     [pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')])
         self.assertIn('[I01:E00] Epic 2: Work: Ready → In Progress', out)
 
+    def test_the_lower_of_two_incumbents_returns_to_backlog(self):
+        low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 4)})", ''), priority='priority: 2')
+        mid = initiative(2, 'Mid: Current', (f"[E00]({url('issues', 5)})", ''), priority='priority: 3')
+        high = initiative(3, 'High: Next', (f"[E00]({url('issues', 6)})", ''), priority='priority: 5')
+        out = queue(staged((low, 'In Progress'), (mid, 'In Progress'), (high, 'Backlog'),
+                           (epic(4, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                           (epic(5, '02:E00', ('W01', 'Go', '')), 'In Progress'),
+                           (epic(6, '03:E00', ('W01', 'Go', '')), 'Backlog')))
+        self.assertIn('[I02] Mid: Current: In Progress → Ready', out)
+        self.assertIn('[I01] Low: Current: In Progress → Backlog', out)
+        self.assertIn('[I03] High: Next: Backlog → In Progress', out)
+
+    def test_a_lower_ready_initiative_leaves_while_a_pull_request_holds_the_slot(self):
+        incumbent = initiative(1, 'Mid: Current', (f"[E00]({url('issues', 4)})", ''), priority='priority: 3')
+        choice = initiative(2, 'High: Next', (f"[E00]({url('issues', 5)})", ''), priority='priority: 5')
+        extra = initiative(3, 'Low: Waiting', (f"[E00]({url('issues', 6)})", ''), priority='priority: 1')
+        out = queue(staged((incumbent, 'In Progress'), (choice, 'Backlog'), (extra, 'Ready'),
+                           (epic(4, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                           (epic(5, '02:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (epic(6, '03:E00', ('W01', 'Go', '')), 'Backlog')),
+                    [pr(9, '[I01:E00] Open')])
+        self.assertIn('wait #1 [I01] Mid: Current:', out)
+        self.assertIn('[I03] Low: Waiting: Ready → Backlog', out)
+        self.assertNotIn('[I02] High: Next: Backlog → Ready', out)
+
 
 if __name__ == '__main__':
     unittest.main()
