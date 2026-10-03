@@ -7,8 +7,8 @@ description: >-
   break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
   renumber an initiative or epic; to check an issue's format, its criteria or its dependency
   order; to fold review findings into issues; to sync an initiative or epic with completed work;
-  to hoist or triage orphan issues into an initiative; for a progress summary, standup or status
-  update in Slack; or to revise or update the work-planner skill itself.
+  to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
+  or to revise or update the work-planner skill itself.
 ---
 
 # Work Planner
@@ -54,7 +54,7 @@ Read the file for the mode the request calls for:
   - Placements for each in an existing or new initiative, epic or task
   - Migration or subsumption of the orphans the user places
   - Formatting of orphans with target's rules and deprecating body
-- **[Progress](references/progress-mode.md)**
+- **[Standup](references/standup-mode.md)**
   - Standup summaries of a theme's board for a Slack channel
   - A paragraph for management on what the window accomplished
   - What completed, what is in progress and what is next
