@@ -194,7 +194,7 @@ class Next(unittest.TestCase):
         items = [self.ready(10, 0, ['priority: 1']), self.ready(11, 1), self.ready(12, 2, ['priority: 5']),
                  self.ready(13, 3, ['priority: 4']), self.ready(14, 4, ['priority: 3'])]
         refs = [line.split('*')[1].split(' ')[0] for line in section(summary(items), 'Next')]
-        self.assertEqual(refs, ['I01:E02', 'I01:E03', 'I01:E04', 'I01:E00', 'I01:E01'])
+        self.assertEqual(refs, ['I01:E02', 'I01:E03', 'I01:E01', 'I01:E04', 'I01:E00'])
 
     def test_first_five_and_a_count_of_the_rest(self):
         lines = section(summary([self.ready(10 + n, n) for n in range(7)]), 'Next')

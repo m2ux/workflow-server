@@ -28,7 +28,7 @@ from format import cell, id_cell, row_id
 from sync import PR_REF, Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-RANK = re.compile(r'^priority: ([1-9]\d*)$')
+RANK = re.compile(r'^priority: ([1-5])$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 DEBT = {'bug', 'tech-debt'}
 PLACED = ('Backlog', 'Ready', 'In Progress')
@@ -39,7 +39,7 @@ def label_names(issue: dict) -> set[str]:
 
 
 def rank(issue: dict) -> int | None:
-    """The initiative's priority. A larger number is higher. Two labels count as the larger."""
+    """The initiative's priority, 5 highest. Two labels count as the higher number."""
     found = [int(matched.group(1)) for name in label_names(issue) if (matched := RANK.fullmatch(name))]
     return max(found) if found else None
 

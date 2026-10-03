@@ -16,12 +16,12 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
 4. **Plan.**
    Run [Plan Queue](commands.md#plan-queue). Ask only from a line it prints. The queue is not finished while an `order`, `ask`, or `tie` line is printed.
    - **Order.**
-     Ask which of the listed initiatives are `bug` or `tech-debt`, and for an order of that list and of the others. A larger number is higher. One left unordered stays in Backlog.
+     Ask which of the listed initiatives are `bug` or `tech-debt`, and for an order of that list and of the others, each from `priority: 5` down to `priority: 1`. One left unordered stays in Backlog.
    - **Ask.**
-     An `ask` line names an initiative In Progress with no priority label. Ask for a positive integer, or none. A larger number is higher. A number keeps it In Progress. None sends it to Backlog once its open pull requests have completed, passed as `--unplanned`.
+     An `ask` line names an initiative In Progress with no priority label. Ask for `priority: 5` down to `priority: 1`, or none. A number keeps it In Progress. None sends it to Backlog once its open pull requests have completed, passed as `--unplanned`.
    - **Tie.**
      Ask whether one of the named initiatives is ahead, or they stay tied. One that is already Ready stays Ready until the answer and is not the choice.
-     - When one is ahead, raise its priority by one number.
+     - When one is ahead, raise its priority by one number, up to `priority: 5`. When it is already 5, lower the other by one.
      - When they stay tied, run [Plan Queue](commands.md#plan-queue) with `--parallel` for each of them. Both move to In Progress.
    - **Waiting.**
      A `wait` line names an open pull request. The incumbent stays In Progress.
@@ -40,10 +40,10 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
 - **Slots.**
   Per repository on the board, one open initiative with neither `bug` nor `tech-debt` may be In Progress, and one with either label may be. The label is what lets the second run beside the first. Initiatives that share the highest rank, and that the user leaves tied, may be In Progress together in that same kind. An initiative In Review fills neither slot.
 - **Priorities.**
-  - A priority label is `priority:` and a positive integer. A larger number is higher. There is no maximum: a board can rank as many initiatives as it holds. Two such labels on one initiative count as the larger number.
+  - The labels are `priority: 5` down to `priority: 1`. `priority: 5` is highest. Two such labels on one initiative count as the higher number.
   - An initiative in Backlog with no priority label stays in Backlog.
   - An initiative in Ready with no priority label moves to Backlog, and its epics move to Backlog with it.
-  - Two labelled initiatives of one slot that share the highest rank are a tie. Neither moves until the user answers. One that is In Progress stays. One that is Ready stays Ready and is not the choice. A Ready initiative outside the tie moves to Backlog. When the user leaves the tie, both move to In Progress. When the user names one ahead, its priority is raised by one number.
+  - Two labelled initiatives of one slot that share the highest rank are a tie. Neither moves until the user answers. One that is In Progress stays. One that is Ready stays Ready and is not the choice. A Ready initiative outside the tie moves to Backlog. When the user leaves the tie, both move to In Progress. When the user names one ahead, its priority is raised by one number, up to `priority: 5`, or the other is lowered by one when the leader is already 5.
   - An unlabelled initiative is not a choice for a slot.
 - **Initiatives.**
   - The choice is the labelled initiative of a slot with the strictly highest rank, apart from one In Review or Done.
