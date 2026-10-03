@@ -320,7 +320,8 @@ gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-back
 
 Adds the folder for one planning record on the long-lived engineering worktree.
 
-- The path is `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
+- The path is `artifacts/planning/<yyyy-mm-dd>-<slug>/`. The date is the day the record is opened.
+- The slug is lowercase words separated by hyphens, a short name of the work. An issue or pull request number, when the work has one, is its last segment.
 - Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
 
 ```bash
