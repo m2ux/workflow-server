@@ -35,9 +35,9 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    4. a task issue from `templates/task.md` for each task that needs one, citing its epic, its acceptance criteria written to this mode's Criteria at creation rule;
    5. [Check Format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch Body](commands.md#patch-body) from each fixed body.
 7. **Review.**  Run the passes in `review-passes.md`:
-   - the goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
-   - the consistency pass, after every round of edits;
-   - the ordering pass, whenever tasks or dependencies change.
+   - The goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
+   - The consistency pass, after every round of edits;
+   - The ordering pass, whenever tasks or dependencies change.
 
    Fold each finding in and record it in the planning record.
 8. **Keep in step.**

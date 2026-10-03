@@ -42,8 +42,8 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
 7. **Report.**
    - Report the summary verbatim in a fenced block, so the user copies it unaltered.
    - Put any `unresolved` line it prints to stderr beneath:
-     - a dependency on an issue off the board, which reads as blocked;
-     - an epic whose Work Breakdown cannot be read, summarised without its tasks; review mode fixes its body.
+     - A dependency on an issue off the board, which reads as blocked;
+     - An epic whose Work Breakdown cannot be read, summarised without its tasks; review mode fixes its body.
 
 ## Rules
 

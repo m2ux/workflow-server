@@ -46,13 +46,13 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 
 1. **Fetch.**  Fetch every issue with [Fetch All Issues](commands.md#fetch-all-issues).
 2. **List candidates.**  Run [List Orphans](commands.md#list-orphans). It prints:
-   - the orphans;
-   - the cited standalone issues, each with its labels, the agent-engineering issues citing it and any planning folder it links;
-   - the open initiatives and epics a placement can name.
+   - The orphans;
+   - The cited standalone issues, each with its labels, the agent-engineering issues citing it and any planning folder it links;
+   - The open initiatives and epics a placement can name.
 3. **Triage.**
    Read each orphan whole, with its comments from [Fetch Comments](commands.md#fetch-comments), and the bodies of the initiatives and epics whose themes and criteria it touches. Note any planning folder it references, in its body or its comments. For each orphan, draft:
-   - the placements that fit, best first, each naming its target and whether the orphan is kept or subsumed;
-   - for a placement in an existing epic, the row it would add (Description, criteria, Depends on, Joins), or the existing task that already delivers it;
+   - The placements that fit, best first, each naming its target and whether the orphan is kept or subsumed;
+   - For a placement in an existing epic, the row it would add (Description, criteria, Depends on, Joins), or the existing task that already delivers it;
    - Leave, when no initiative's goal covers it, or when it is not planned work.
 
    A candidate whose work an existing criterion already states follows this mode's Already stated rule.

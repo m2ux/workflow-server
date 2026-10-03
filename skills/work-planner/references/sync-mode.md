@@ -27,17 +27,17 @@ Records work on an initiative, its epics and their task issues: links each task 
    - [Close as Completed](commands.md#close-as-completed) when it reports closable.
 6. **Sync each epic.**
    Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. It reports:
-   - **conflict.**
+   - **Conflict.**
      A row linked to a pull request whose title names another epic, or tasks sharing a pull request that do not name each other in Joins. Put it to the user.
-   - **unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
-   - **in flight.**  Open pull requests still linked from no row. Match them as in step 4.
-   - **uncited.**
+   - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
+   - **In flight.**  Open pull requests still linked from no row. Match them as in step 4.
+   - **Uncited.**
      A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
-   - **note.**  A row links its task issue. Link the pull request as in step 4.
-   - **open questions.**
+   - **Note.**  A row links its task issue. Link the pull request as in step 4.
+   - **Open questions.**
      The epic's Open Questions section remains. This mode's Open questions rule says what follows.
-   - **ready to verify.**  Criteria whose delivering rows are all delivered.
-   - **ticked early.**
+   - **Ready to verify.**  Criteria whose delivering rows are all delivered.
+   - **Ticked early.**
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
    Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited and note are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**

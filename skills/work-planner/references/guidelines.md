@@ -18,6 +18,11 @@ The rules this skill's own files follow beyond the [skill guidelines](../../guid
   - A short word stays lowercase unless it is first or last: a, an, the, and, but, or, nor, for, as, at, by, in, of, on, to, up, with.
   - Each part of a hyphenated word is capitalized.
 
+## Procedure
+
+- **Sub-bullets.**
+  A sub-bullet under a numbered procedure step is in sentence case. The first word is capitalized, and a name keeps its own capitals.
+
 ## Prose
 
 - **One home per rule.**  A rule's home can also be the Work Breakdown Guide or the goal pass.

@@ -18,9 +18,9 @@ Tests each acceptance criterion against the goal the user stated, and each Probl
 3. **Trace up.**
    Every criterion traces to a clause. One that traces to none is scope the user did not ask for: remove it, or put it to the user.
 4. **Each criterion.**  Each criterion:
-   - states an end state, not an activity;
-   - names or implies the instrument that observes it: a test, a guard, a command or a measure;
-   - is unambiguous, so two readers agree on whether it holds.
+   - States an end state, not an activity;
+   - Names or implies the instrument that observes it: a test, a guard, a command or a measure;
+   - Is unambiguous, so two readers agree on whether it holds.
 
    It also meets these rules:
    - **One invariant.**
@@ -97,14 +97,14 @@ Runs after every round of edits.
 Checks dependencies as a graph, then renumbers.
 
 1. Run [Check Dependencies](commands.md#check-dependencies) over the live bodies. It reports:
-   - unknown references;
-   - backward references: a task depending on a later task in its epic, or an epic depending on a later epic;
-   - cycles;
-   - dependencies listed twice, or already implied by another in the same cell;
+   - Unknown references;
+   - Backward references: a task depending on a later task in its epic, or an epic depending on a later epic;
+   - Cycles;
+   - Dependencies listed twice, or already implied by another in the same cell;
    - Joins pairs that are one-way, or where one task depends on the other, directly or through a task outside the pair;
-   - initiative Depends on cells that name a task, or differ from the epics the epics' tasks depend on;
-   - as advisory, numbering that does not follow start order;
-   - the longest chains, and the tasks every one of them shares.
+   - Initiative Depends on cells that name a task, or differ from the epics the epics' tasks depend on;
+   - As advisory, numbering that does not follow start order;
+   - The longest chains, and the tasks every one of them shares.
 2. Read each task for dependencies the table omits. A task that measures, extends or consumes another task's output depends on it, even when the text never says so.
 3. Fix a backward reference by moving the task to the epic that owns its inputs. When the task duplicates work the later epic already does, remove it instead.
 4. Renumber so that epics run in number order and tasks are numbered in the order they can start, touching only work not yet delivered.
