@@ -2,46 +2,50 @@
 
 The requirements every review uses, scoped to the kind of issue and to the section under review. A pass or a mode checks the section against its criteria here, and does not restate them.
 
-## Proposal
+## Local
+
+Criteria that apply to one kind of issue. A review of that kind uses its section, and the sections under it.
+
+### Proposal
 
 A proposal states the problem, the boundary, and the goal clauses. The design, the acceptance criteria, and the Work Breakdown are written in [Plan Mode](plan-mode.md).
 
-### Problem
+#### Problem
 
 - A Problem states the friction as it is now. Its evidence is a count or a code link for that friction, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
 - A Problem that describes the plan is a finding.
 
-### Goal
+#### Goal
 
 - Each clause is an outcome someone could observe.
 - A clause does not describe the change.
 
-### Non-Goals
+#### Non-Goals
 
 - One succinct sentence each on what the proposal does not do.
 - A non-goal names no initiative, epic, task or issue, and no owner.
 
-## Initiative
+### Initiative
 
 An initiative states the goal as criteria and lists the epics that deliver them. The trace from the goal to that work, and what defeats the goal from outside, are reviewed here.
 
-### Problem
+#### Problem
 
 - A Problem states the friction as it is now, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
 - A Problem that describes the plan is a finding.
 
-### Proposal
+#### Proposal
 
 - A Proposal states the design, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
 - A Proposal names no epic, task, or acceptance criterion of its own initiative.
 
-### Trace
+#### Trace
 
 - A clause with no initiative criterion is a gap.
 - An initiative criterion no epic delivers, or that its epics' criteria only partly make true, is a gap.
 - A criterion that traces to no clause is scope the user did not ask for.
 
-### Work Breakdown
+#### Work Breakdown
 
 - An epic row's Description is the epic's title name, and its Coverage names the initiative criteria the epic serves.
 - Depends on names epics only, never tasks, and only the epics this epic's tasks depend on that another named epic does not already cover.
@@ -49,7 +53,7 @@ An initiative states the goal as criteria and lists the epics that deliver them.
 - An epic depending on a later epic is a backward reference.
 - Numbering that does not follow start order is advisory.
 
-### Acceptance Criteria
+#### Acceptance Criteria
 
 An initiative criterion meets the [shared acceptance criteria](#shared-acceptance-criteria), and:
 
@@ -59,24 +63,24 @@ An initiative criterion meets the [shared acceptance criteria](#shared-acceptanc
   Each initiative criterion is **specific** about what holds; **measurable** by a named check or baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause and to the Problem; and **time-bound** by a release tag or another named milestone outside the initiative's own work, where one exists, and otherwise by the epics that cite it.
 - **Local.**
   An initiative criterion names no initiative, epic, task or issue, and is solution-agnostic: Description cells link epics to criteria, never the reverse. One that holds only through another initiative's work is not local: restate what this initiative achieves, or drop it.
-### Whole
+#### Whole
 
 An initiative criterion states what the initiative achieves as a whole. One that restates a single epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to the epic.
 
-### Verified
+#### Verified
   - An initiative criterion ends by naming its instrument. Which instruments keep a criterion is the [Verifiable](#verifiable) rule.
   - An automated test is an end-to-end walk through the real server, a smoke run of an agent against a live server, a live check on a deployed host, or a guard, fixture suite or check that continuous integration runs. The walk, smoke run or live check is preferred where the criterion is about what a run does.
   - A named test that does not exist yet is work the plan holds: a task in the epic whose subject it tests, or a discrete test-infrastructure epic when the tests serve several criteria. That epic's row cites the criteria its tests verify.
 
-### Non-Goals
+#### Non-Goals
 
 - Only the initiative has them: one succinct sentence each on what the initiative does not do, naming no initiative, epic, task or issue, and no owner.
 
-### References
+#### References
 
 - A cross-initiative overlap is recorded in References. An approved edit to another initiative's issue stays minimal.
 
-### Outside threats
+#### Outside threats
 
 What defeats the goal from outside the clauses:
 
@@ -89,21 +93,21 @@ What defeats the goal from outside the clauses:
   Between the artifacts the plan produces and the implementations that read them.
 - **In-flight work.**  Changes elsewhere that alter the ground the plan stands on.
 
-## Epic
+### Epic
 
 An epic states one slice of the initiative's design and lists the tasks that deliver it.
 
-### Problem
+#### Problem
 
 - A Problem states the friction of this epic, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
 - A Problem that describes the plan is a finding.
 
-### Proposal
+#### Proposal
 
 - A Proposal states the design of this epic, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
 - A boundary with a sibling epic is plain language in the Proposals, not a non-goal.
 
-### Work Breakdown
+#### Work Breakdown
 
 - A task row's Description is at most eight words, with no semicolon, and names what the row delivers.
 - Detail in a longer Description that no cited criterion already states becomes a new criterion of one invariant, cited by the row.
@@ -120,59 +124,63 @@ An epic states one slice of the initiative's design and lists the tasks that del
 - Two epics or tasks claiming one piece of work have one owner, and the boundary is stated in both.
 - The same outcome as a task in two epics is a duplicate: remove one, or raise the initiative's.
 
-### Acceptance Criteria
+#### Acceptance Criteria
 
 An epic criterion meets the [shared acceptance criteria](#shared-acceptance-criteria). Contradictions between acceptance criteria in one epic are findings.
 
-### Open Questions
+#### Open Questions
 
 - Each has a recommendation in the planning record, and holds only what is undecided. A settled point moves to the planning record.
 - An epic whose first task is next has none.
 
-### Title
+#### Title
 
 - The epic's `[Ixx:Eyy]` prefix matches its row in the initiative's Work Breakdown table.
 - The initiative row carries the epic's title name.
 
-## Task
+### Task
 
 A task states one pull request's worth of its epic's design.
 
-### Problem
+#### Problem
 
 - A Problem states the friction of this task, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
 
-### Proposal
+#### Proposal
 
 - A Proposal states the design of this task, as the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) defines.
 
-### Acceptance Criteria
+#### Acceptance Criteria
 
 A task criterion meets the [shared acceptance criteria](#shared-acceptance-criteria).
 
-### Open Questions
+#### Open Questions
 
 - Each holds only what is undecided, and is resolved before the task starts.
 
-## Any issue
+## Shared
+
+Criteria that every review uses, whatever the kind. Further groups can be added here.
+
+### Any issue
 
 These criteria bind every issue, whatever its kind.
 
-### Title
+#### Title
 
 - The name is two or three words and the subtitle a succinct summary of at most ten, in title case.
 - Its title has the agent-engineering form.
 
-### Stale references
+#### Stale references
 
 - Task and epic numbers, issue links, and wording from a superseded decision are stale.
 
-### Body
+#### Body
 
 - A body states the plan as it is. It carries no change narrative, as the skill's [Rules](../SKILL.md#rules) state.
 - A name the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal) excludes is a finding.
 
-## Shared acceptance criteria
+### Shared acceptance criteria
 
 An initiative criterion, an epic criterion, and a task criterion each meet these. A kind adds its own under its Acceptance Criteria.
 
@@ -182,7 +190,7 @@ An initiative criterion, an epic criterion, and a task criterion each meet these
 - **One invariant.**
   Each criterion states a single condition that holds or does not. One joining several is split, and the Description cells cite the new ones.
 
-### Verifiable
+#### Verifiable
 
 An acceptance criterion is kept only when a test can fail it. The source is the verifiable characteristic in ISO/IEC/IEEE 29148: a requirement is verifiable when its realisation can be proved, and subjective wording is barred.
   - Subjective wording is rewritten to an observable pass or fail, or the criterion is removed.
