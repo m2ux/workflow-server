@@ -17,11 +17,7 @@ The README.md of a planning record is its entry point. It answers what the work 
 
 [What the system does now and why that is a problem, then the consequences. Two paragraphs.]
 
-## Solution Overview
-
-[What the change does and how it works, then the link to the plan. Two paragraphs.]
-
-## Internal Links
+## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
@@ -42,9 +38,7 @@ The README.md of a planning record is its entry point. It answers what the work 
   Two or three sentences: what this delivers, why it matters, and the benefit.
 - **Problem Overview.**
   Two paragraphs in plain language: what the system does now and why that is a problem, then the consequences.
-- **Solution Overview.**
-  Two paragraphs in plain language: what the change does and how it works, then the link to the plan.
-- **Internal Links.**
+- **Artifacts.**
   - One row for every artifact in the record other than README.md, added when the file is produced.
   - The link sits on the artifact's name. The row says what the artifact holds, and the artifact is the home of that content.
 - **Links.**

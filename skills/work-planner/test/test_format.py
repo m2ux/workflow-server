@@ -98,9 +98,8 @@ class PlanIds(unittest.TestCase):
 
 
 def proposal_body() -> str:
-    return ('## Overview\n\nThe end state.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
-            '## Proposal\n\n- **Move.**\n  What is done.\n\n## Acceptance Criteria\n\n'
-            '- [ ] **AC1.** Holds, as the user confirms from a production run.\n\n'
+    return ('## Overview\n\nThe problem.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
+            '## Goal\n\n- The bad key is rejected.\n\n'
             '## Non-Goals\n\n- It leaves the runtime alone.\n\n'
             '## References\n\n- **R1.** [Note](https://example.com) — The note.\n')
 
@@ -127,9 +126,11 @@ class Proposal(unittest.TestCase):
 
     def test_a_work_breakdown_follows_the_initiative_template(self):
         text = proposal_body().replace(
-            '## Acceptance Criteria',
+            '## Non-Goals',
+            '## Proposal\n\nMove.\n\n'
             '## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n'
-            '| --- | --- | --- | --- | --- |\n| E00 | Work | AC1 | | |\n\n## Acceptance Criteria')
+            '| --- | --- | --- | --- | --- |\n| E00 | Work | AC1 | | |\n\n'
+            '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n## Non-Goals')
         r = Review(issue(1, '[I] Key Validation: Reject Bad Keys', body=text, labels=('type:proposal',)))
         r.run()
         self.assertTrue(any('initiative template' in item for item in r.decide))

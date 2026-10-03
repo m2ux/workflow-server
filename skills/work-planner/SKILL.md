@@ -3,8 +3,8 @@ name: work-planner
 description: >-
   Plans and maintains agent-engineering work on GitHub: [I] proposal issues, [Ixx] initiative
   issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
-  Proposals board. Use to propose work or raise a proposal; to plan the work, plan out, scope or
-  break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
+  Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
+  scope the solution, plan out, scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
   renumber an initiative or epic; to check an issue's format, its criteria or its dependency
   order; to fold review findings into issues; to sync an initiative or epic with completed work;
   to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
@@ -15,7 +15,7 @@ description: >-
 
 Work Planner plans work as GitHub issues and keeps the plan current until the work is delivered. The issues are the plan:
 
-- **Proposal**  States a goal in an initiative's sections, with no Work Breakdown.
+- **Proposal**  States the problem and the goal, with no Work Breakdown.
 - **Initiative**  States a goal and lists its epics.
 - **Epic**  Lists its tasks in a Work Breakdown table.
 - **Task**  One pull request's worth of work.
@@ -28,10 +28,12 @@ Each theme's project board shows where its items stand. The Proposals board hold
 Read the file for the mode the request calls for:
 
 - **[Propose](references/propose-mode.md)**
-  - Confirming a goal and gathering the evidence behind it
+  - Scoping the problem: the friction, the evidence, and the boundary
+  - Stating the goal as clauses someone could observe
   - Raising one proposal issue
   - Placing it on the Proposals board
 - **[Plan](references/plan-mode.md)**
+  - Taking a proposal's problem and goal as the scope it plans
   - Raising, planning and restructuring initiatives and epics
   - Acceptance criteria that comply with the goal pass when they are written
   - Review passes of a plan against its goal
