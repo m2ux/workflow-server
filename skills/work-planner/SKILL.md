@@ -115,7 +115,9 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 
 ## Themes and boards
 
-Every initiative belongs to one theme, and each theme has one project board.
+Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.
+
+- **Example.**  workflow-server's themes.
 
 | Theme | Label | Description |
 | --- | --- | --- |
@@ -127,7 +129,7 @@ Every initiative belongs to one theme, and each theme has one project board.
 - **One theme.**
   An initiative carries one `theme:*` label, and each of its epics carries the same one.
 - **One board per theme.**
-  - Its title is the theme's name, a colon, and its description: `Canon: Definitions Checked Against the Design Canon`.
+  - Its title is the theme's name, a colon, and its description. In the example, Canon is `Canon: Definitions Checked Against the Design Canon`.
   - It is linked to the repository.
   - It holds the theme's initiatives, their epics and their task issues.
 - **Assignees.**
