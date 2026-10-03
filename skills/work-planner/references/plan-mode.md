@@ -13,8 +13,7 @@ Raises or restructures an initiative and its epics, and keeps them current as wo
    - Delegate broad sweeps to parallel sub-agents, and spot-check what they return before recording it.
 3. **Planning record.**
    Keep one for a new initiative, or for a change whose decisions need a record. A one-epic addition with no open decision goes straight to step 4.
-   - Add the record with [Add Planning Record](commands.md#add-planning-record).
-   - `README.md` holds the problem, the goal's clauses and their trace to the criteria, design, decisions, reviews and open questions. `inventory.md` holds the evidence.
+   - Add the record with [Add Planning Record](commands.md#add-planning-record), and fill it as the [planning layout](planning-layout.md) describes.
    - Draft the discussion pull request's body from the [pull request template](../templates/pull-request.md) and open it as a draft. The user merges it.
 4. **Draft bodies.**
    - Draft each body from its template into a local file. Those files are the source for every later edit.
