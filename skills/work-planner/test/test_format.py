@@ -101,7 +101,7 @@ def proposal_body() -> str:
     return ('## Overview\n\nThe end state.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
             '## Proposal\n\n- **Move.**\n  What is done.\n\n## Acceptance Criteria\n\n'
             '- [ ] **AC1.** Holds, as the user confirms from a production run.\n\n'
-            '## Non-goals\n\n- It leaves the runtime alone.\n\n'
+            '## Non-Goals\n\n- It leaves the runtime alone.\n\n'
             '## References\n\n- **R1.** [Note](https://example.com) — The note.\n')
 
 

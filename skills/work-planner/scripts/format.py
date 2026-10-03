@@ -22,7 +22,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
     issue is an epic
   - an initiative row's Description set to its epic's title name, the part before the colon,
     for each epic given with --epic
-  - prose Non-goals made a bulleted list, one sentence per bullet
+  - prose Non-Goals made a bulleted list, one sentence per bullet
   - a Problem or Proposal item that opens with a bold statement given its body on the next line,
     indented under the bullet, except a bulleted item with sub-bullets, whose line introducing
     them stays on, or rejoins, its bold statement's line
@@ -47,7 +47,7 @@ Left to decide, since each needs new content or a judgement:
   - any other acceptance criterion that may state several invariants (a semicolon in its statement)
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
-    Non-goals section in an epic or task, since non-goals belong to the initiative, or in a
+    Non-Goals section in an epic or task, since non-goals belong to the initiative, or in a
     standalone issue, whose Proposal states its boundary
   - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
@@ -327,11 +327,11 @@ class Review:
             if h not in names and h not in template.optional:
                 self.decide.append(f'required section missing: {h}')
         for h in names:
-            if h == 'Non-goals' and self.kind == 'issue':
-                self.decide.append('Non-goals: a standalone issue states its boundary in the Proposal')
-            elif h == 'Non-goals' and self.kind not in ('initiative', 'proposal'):
-                self.decide.append('Non-goals belong to the initiative: lift any that bound it into the '
-                                   "initiative's Non-goals, then remove the section")
+            if h == 'Non-Goals' and self.kind == 'issue':
+                self.decide.append('Non-Goals: a standalone issue states its boundary in the Proposal')
+            elif h == 'Non-Goals' and self.kind not in ('initiative', 'proposal'):
+                self.decide.append('Non-Goals belong to the initiative: lift any that bound it into the '
+                                   "initiative's Non-Goals, then remove the section")
             elif h not in template.headings:
                 self.decide.append(f'extra section: {h}')
 
@@ -345,7 +345,7 @@ class Review:
                 self.check_shared(section[1])
             elif h in ('Problem', 'Proposal'):
                 section[1] = self.fix_leads(section[1], h)
-            elif h == 'Non-goals':
+            elif h == 'Non-Goals':
                 section[1] = self.fix_bullets(section[1], h)
                 self.check_non_goals(section[1])
             elif h == 'Acceptance Criteria':
@@ -719,10 +719,10 @@ class Review:
             text = LINK.sub(r'\1', line[2:])
             words = ' '.join(text.split()[:6])
             if len(SENTENCE.split(text.strip())) > 1:
-                self.decide.append(f'Non-goals: not one sentence: "{words}…"')
+                self.decide.append(f'Non-Goals: not one sentence: "{words}…"')
             named = sorted(set(REFERENCE.findall(line)))
             if named:
-                self.decide.append(f'Non-goals: names {", ".join(named)}; a non-goal names no initiative, epic, '
+                self.decide.append(f'Non-Goals: names {", ".join(named)}; a non-goal names no initiative, epic, '
                                    f'task or issue: "{words}…"')
 
     def fix_list(self, lines: list[str], tag: str, checkbox: bool) -> list[str]:

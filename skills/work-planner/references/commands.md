@@ -17,13 +17,13 @@ Every command the skill runs, one spec per operation. The mode files name a spec
   - `936` an initiative issue, `943` and `937` its epics, `637` a task issue, `874` an orphan, `946` an initiative off the board, `960` a proposal;
   - `950` a pull request, `I07` and `I08` initiative numbers;
   - board `9`, the Canon theme's, and `419167630` its Status field id;
-  - `1` the Initiative template board, `13` a board copied from it;
-  - `14` the Proposals template, `15` the Proposals board;
+  - `1` the Initiative Template board, `13` a board copied from it;
+  - `14` the Proposals Template, `15` the Proposals board;
   - `m2ux` the user.
 
 ## Issues
 
-### Fetch issue
+### Fetch Issue
 
 Saves an issue whole, as JSON, for the scripts that read issues.
 
@@ -31,15 +31,15 @@ Saves an issue whole, as JSON, for the scripts that read issues.
 gh api repos/{owner}/{repo}/issues/943 > issue-943.json
 ```
 
-### Fetch body
+### Fetch Body
 
-Saves an issue's body alone, for [Check dependencies](#check-dependencies), the renumber scripts and an original-body comment.
+Saves an issue's body alone, for [Check Dependencies](#check-dependencies), the renumber scripts and an original-body comment.
 
 ```bash
 gh api repos/{owner}/{repo}/issues/943 --jq .body > live-943.md
 ```
 
-### Fetch all issues
+### Fetch All Issues
 
 Saves every issue in the repository; the scripts skip the pull requests among them.
 
@@ -47,7 +47,7 @@ Saves every issue in the repository; the scripts skip the pull requests among th
 gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" > issues.json
 ```
 
-### List initiative titles
+### List Initiative Titles
 
 Lists every numbered initiative, epic and task title, for finding the next initiative number. A proposal's `[I]` title is not listed.
 
@@ -55,7 +55,7 @@ Lists every numbered initiative, epic and task title, for finding the next initi
 gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request==null) | .title' | grep '^\[I[0-9]'
 ```
 
-### Find initiative issue
+### Find Initiative Issue
 
 Prints an initiative's issue number, found by its title's prefix.
 
@@ -63,7 +63,7 @@ Prints an initiative's issue number, found by its title's prefix.
 gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("[I08]")) | .number'
 ```
 
-### Find user
+### Find User
 
 Prints the login `gh` runs as, the user assigned to work from Ready on.
 
@@ -71,7 +71,7 @@ Prints the login `gh` runs as, the user assigned to work from Ready on.
 gh api user --jq .login
 ```
 
-### Fetch comments
+### Fetch Comments
 
 Prints an issue's comments.
 
@@ -79,7 +79,7 @@ Prints an issue's comments.
 gh api --paginate repos/{owner}/{repo}/issues/874/comments
 ```
 
-### Create issue
+### Create Issue
 
 Creates an issue from a body file, with its title and labels, and prints its number.
 
@@ -87,7 +87,7 @@ Creates an issue from a body file, with its title and labels, and prints its num
 gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00] Name: Subtitle' -F body=@epic.md -f 'labels[]=type:epic' -f 'labels[]=enhancement' --jq .number
 ```
 
-### Patch body
+### Patch Body
 
 Replaces an issue's body from a file.
 
@@ -95,7 +95,7 @@ Replaces an issue's body from a file.
 gh api --method PATCH repos/{owner}/{repo}/issues/943 -F body=@epic.md --jq .number
 ```
 
-### Retitle issue
+### Retitle Issue
 
 Replaces an issue's title.
 
@@ -103,7 +103,7 @@ Replaces an issue's title.
 gh api --method PATCH repos/{owner}/{repo}/issues/943 -f title='[I07:E00] Name: Subtitle' --jq .title
 ```
 
-### List labels
+### List Labels
 
 Lists the labels that exist in the repository.
 
@@ -111,15 +111,15 @@ Lists the labels that exist in the repository.
 gh api "repos/{owner}/{repo}/labels?per_page=100" --jq '.[].name'
 ```
 
-### Create label
+### Create Label
 
-Creates a label. A proposal needs `type:proposal` when [List labels](#list-labels) does not show it.
+Creates a label. A proposal needs `type:proposal` when [List Labels](#list-labels) does not show it.
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/labels -f name='type:proposal' -f color='1D76DB' -f description='A goal proposed as an initiative' --jq .name
 ```
 
-### Add labels
+### Add Labels
 
 Adds labels to an issue.
 
@@ -127,7 +127,7 @@ Adds labels to an issue.
 gh api --method POST repos/{owner}/{repo}/issues/943/labels -f 'labels[]=type:epic' --jq '.[].name'
 ```
 
-### Remove label
+### Remove Label
 
 Removes one label from an issue.
 
@@ -135,7 +135,7 @@ Removes one label from an issue.
 gh api --method DELETE repos/{owner}/{repo}/issues/943/labels/type:initiative --jq '.[].name'
 ```
 
-### Comment on issue
+### Comment on Issue
 
 Posts a comment: one line inline, anything longer from a file.
 
@@ -144,7 +144,7 @@ gh api --method POST repos/{owner}/{repo}/issues/637/comments -f body='Delivered
 gh api --method POST repos/{owner}/{repo}/issues/874/comments -F body=@comment-874.md --jq .html_url
 ```
 
-### Close as completed
+### Close as Completed
 
 Closes an issue whose work is done.
 
@@ -152,7 +152,7 @@ Closes an issue whose work is done.
 gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
 ```
 
-### Close as not planned
+### Close as Not Planned
 
 Closes an issue whose work another issue tracks.
 
@@ -160,9 +160,9 @@ Closes an issue whose work another issue tracks.
 gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_reason=not_planned --jq .state
 ```
 
-## Pull requests
+## Pull Requests
 
-### Fetch initiative pull requests
+### Fetch Initiative Pull Requests
 
 Saves the pull requests that name one initiative, its epic pull requests and the integration pull requests titled `[I07] Name`.
 
@@ -170,7 +170,7 @@ Saves the pull requests that name one initiative, its epic pull requests and the
 gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
 ```
 
-### Fetch all initiative pull requests
+### Fetch All Initiative Pull Requests
 
 Saves the pull requests that name any initiative, appending each further repository's with `>>`.
 
@@ -179,7 +179,7 @@ gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] 
 gh api --paginate "repos/{owner}/{other}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' >> prs.json
 ```
 
-### Retitle pull request
+### Retitle Pull Request
 
 Replaces a pull request's title.
 
@@ -187,7 +187,7 @@ Replaces a pull request's title.
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f title='[I07:E00] Purpose' --jq .title
 ```
 
-### Retarget pull request
+### Retarget Pull Request
 
 Points a pull request at another base branch, such as its initiative's integration branch.
 
@@ -195,7 +195,7 @@ Points a pull request at another base branch, such as its initiative's integrati
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/main' --jq .base.ref
 ```
 
-### Patch pull request body
+### Patch Pull Request Body
 
 Replaces a pull request's body.
 
@@ -205,7 +205,7 @@ Replaces a pull request's body.
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .html_url
 ```
 
-### Create integration branch
+### Create Integration Branch
 
 Cuts an initiative's integration branch from the tip of a long-lived branch on the remote.
 
@@ -216,11 +216,11 @@ Cuts an initiative's integration branch from the tip of a long-lived branch on t
 git fetch origin main && git push origin origin/main:refs/heads/i07/main
 ```
 
-### Open integration pull request
+### Open Integration Pull Request
 
 Opens the pull request that merges an integration branch into its long-lived branch.
 
-- Run it when [Sync initiative](#sync-initiative) reports that branch unmerged. The initiative stays open until the pull request merges.
+- Run it when [Sync Initiative](#sync-initiative) reports that branch unmerged. The initiative stays open until the pull request merges.
 - The title is the initiative's prefix and name: `[I07] Name`.
 - The body is drafted from [pull-request.md](../templates/pull-request.md).
 
@@ -228,9 +228,9 @@ Opens the pull request that merges an integration branch into its long-lived bra
 gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07] Name' -f head='i07/main' -f base='main' -F body=@body.md --jq .html_url
 ```
 
-## Project boards
+## Project Boards
 
-### Find theme board
+### Find Theme Board
 
 Prints the number of the open board for one theme, by the theme's name that opens its title.
 
@@ -238,34 +238,34 @@ Prints the number of the open board for one theme, by the theme's name that open
 gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | startswith("Canon: ")) | .number'
 ```
 
-### Create board
+### Create Board
 
-Copies the Initiative template into a new open board, links the copy to the repository, and prints the new board's number.
+Copies the Initiative Template into a new open board, links the copy to the repository, and prints the new board's number.
 
-- The template is the open board titled `Initiative template`. The copy carries its Status options: Backlog, Ready, In Progress, In Review and Done.
-- The title is the new board's title: a theme board's title from [Themes and boards](../SKILL.md#themes-and-boards).
+- The template is the open board titled `Initiative Template`. The copy carries its Status options: Backlog, Ready, In Progress, In Review and Done.
+- The title is the new board's title: a theme board's title from [Themes and Boards](../SKILL.md#themes-and-boards).
 - The copy's JSON is one project, and `.number` is the new board.
 
 ```bash
-gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Initiative template") | .number'
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Initiative Template") | .number'
 gh project copy 1 --source-owner {owner} --target-owner {owner} --title 'Canon: Definitions Checked Against the Design Canon' --format json --jq .number
 gh project link 13 --owner {owner} --repo {repo}
 ```
 
-### Create proposals board
+### Create Proposals Board
 
-Copies the Proposals template into a new open board, links the copy to the repository, and prints the new board's number.
+Copies the Proposals Template into a new open board, links the copy to the repository, and prints the new board's number.
 
-- The template is the open board titled `Proposals template`. The copy carries its Status options, listed under Proposals in [Themes and boards](../SKILL.md#themes-and-boards).
+- The template is the open board titled `Proposals Template`. The copy carries its Status options, listed under Proposals in [Themes and Boards](../SKILL.md#themes-and-boards).
 - The title is `Proposals`.
 
 ```bash
-gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Proposals template") | .number'
+gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Proposals Template") | .number'
 gh project copy 14 --source-owner {owner} --target-owner {owner} --title 'Proposals' --format json --jq .number
 gh project link 15 --owner {owner} --repo {repo}
 ```
 
-### Find proposals board
+### Find Proposals Board
 
 Prints the number of the open board titled `Proposals`.
 
@@ -273,7 +273,7 @@ Prints the number of the open board titled `Proposals`.
 gh api --paginate "users/{owner}/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Proposals") | .number'
 ```
 
-### Fetch board fields
+### Fetch Board Fields
 
 Saves a board's fields.
 
@@ -281,7 +281,7 @@ Saves a board's fields.
 gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" > fields.json
 ```
 
-### Find Status field
+### Find Status Field
 
 Prints the id of a board's Status field.
 
@@ -289,7 +289,7 @@ Prints the id of a board's Status field.
 gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
 ```
 
-### Fetch board items with Status
+### Fetch Board Items with Status
 
 Saves a board's items with their Status, each carrying its issue whole.
 
@@ -297,17 +297,17 @@ Saves a board's items with their Status, each carrying its issue whole.
 gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=419167630" > items.json
 ```
 
-### Add issue to board
+### Add Issue to Board
 
-Adds an issue to a board and prints the new item's id. The issue's `id` comes from [Fetch issue](#fetch-issue), not its number.
+Adds an issue to a board and prints the new item's id. The issue's `id` comes from [Fetch Issue](#fetch-issue), not its number.
 
 ```bash
 gh api --method POST users/{owner}/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id
 ```
 
-### Set item status
+### Set Item Status
 
-Sets one board item's Status. The body names the Status field id and the option id, both taken from [Fetch board fields](#fetch-board-fields): `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
+Sets one board item's Status. The body names the Status field id and the option id, both taken from [Fetch Board Fields](#fetch-board-fields): `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
 
 ```bash
 gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-backlog.json --jq .id
@@ -315,18 +315,18 @@ gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-back
 
 ## Scripts
 
-### Check dependencies
+### Check Dependencies
 
 Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
 
 - It also reports dependencies listed twice or already implied, and Joins pairs.
-- It reads bodies from [Fetch body](#fetch-body), or local drafts.
+- It reads bodies from [Fetch Body](#fetch-body), or local drafts.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deps.py I=live-936.md E00=live-943.md E01=live-937.md
 ```
 
-### Renumber epics
+### Renumber Epics
 
 Renumbers an initiative's epics by the map given, in the files given.
 
@@ -337,18 +337,18 @@ Renumbers an initiative's epics by the map given, in the files given.
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-*.md
 ```
 
-### Renumber tasks
+### Renumber Tasks
 
 Renumbers one epic's tasks by the map given, in the files given.
 
 - It renumbers `E01 Wxx` and `E01:Wxx` everywhere, and bare `Wxx` inside E01's own body.
-- It rewrites and refuses as [Renumber epics](#renumber-epics) does.
+- It rewrites and refuses as [Renumber Epics](#renumber-epics) does.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
 ```
 
-### Check format
+### Check Format
 
 Checks one issue against its template, and with `--fix` writes the body with the mechanical fixes made.
 
@@ -361,17 +361,17 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/fo
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/format.py issue-936.json --epic issue-943.json --epic issue-937.json --fix fixed-936.md
 ```
 
-### List orphans
+### List Orphans
 
 Lists the hoist candidates, and the open initiatives and epics they could join.
 
-- It reads [Fetch all issues](#fetch-all-issues).
+- It reads [Fetch All Issues](#fetch-all-issues).
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/orphans.py issues.json
 ```
 
-### Match pull requests
+### Match Pull Requests
 
 Reports an epic's delivery state against the pull requests that name it.
 
@@ -382,7 +382,7 @@ Reports an epic's delivery state against the pull requests that name it.
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json
 ```
 
-### Sync task issue
+### Sync Task Issue
 
 Records the pull request that delivered a task issue, ticks its criteria, and reports whether it is closable.
 
@@ -390,20 +390,20 @@ Records the pull request that delivered a task issue, ticks its criteria, and re
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --pr 950 --tick AC1 --fix fixed-637.md
 ```
 
-### Sync epic
+### Sync Epic
 
 Links each named task's id to a pull request naming the epic, open or merged, and ticks Done on a row once it is complete.
 
-- It reports the same delivery state as [Match pull requests](#match-pull-requests).
+- It reports the same delivery state as [Match Pull Requests](#match-pull-requests).
 - A row whose id links its task issue links the pull request instead.
-- A task is delivered as the [Work Breakdown guide](work-breakdown.md#delivery) defines.
+- A task is delivered as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - It takes the epic's task issues. A linked pull request that does not cite a task's issue is reported uncited.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
 ```
 
-### Tick criteria
+### Tick Criteria
 
 Ticks confirmed criteria on an epic or an initiative, refusing any not ready to verify, and ticks Done on a row once it is complete.
 
@@ -412,37 +412,37 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sy
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
 ```
 
-### Sync initiative
+### Sync Initiative
 
 Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed.
 
-- It takes the epic JSON fetched after closing, and the pull requests from [Fetch initiative pull requests](#fetch-initiative-pull-requests).
+- It takes the epic JSON fetched after closing, and the pull requests from [Fetch Initiative Pull Requests](#fetch-initiative-pull-requests).
 - It reads each pull request's base and head ref. A pull request naming an epic associates the integration branch it targets.
-- It reports closable as the [Work Breakdown guide](work-breakdown.md#delivery) defines. An integration branch with no merged pull request is reported unmerged.
+- It reports closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. An integration branch with no merged pull request is reported unmerged.
 - Without the pull requests, an initiative whose criteria are all ticked is not closable.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --prs prs.json
 ```
 
-### Plan board changes
+### Plan Board Changes
 
 Derives each issue's Status and assignees, and prints the call for each issue to add, item to remove, Status to set and assignee to add or remove.
 
 - Give an issue it reports unresolved with `--others`.
-- `--assignee` is the user [Find user](#find-user) prints.
+- `--assignee` is the user [Find User](#find-user) prints.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
 ```
 
-### Summarise progress
+### Summarise Progress
 
-Prints the standup from [Fetch board items with Status](#fetch-board-items-with-status) and [Fetch all initiative pull requests](#fetch-all-initiative-pull-requests).
+Prints the standup from [Fetch Board Items with Status](#fetch-board-items-with-status) and [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
 
 - `--since` opens the window on another date than a week before today.
 - `--initiative I08` limits it to one initiative, or `owner/repo:I08` where that number names initiatives in several repositories.
-- `--initiatives` gives the initiatives off the board, each from [Fetch issue](#fetch-issue).
+- `--initiatives` gives the initiatives off the board, each from [Fetch Issue](#fetch-issue).
 - `--summary` gives the paragraph for management.
 
 ```bash
@@ -452,7 +452,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/pr
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08 --summary summary.txt
 ```
 
-### Run tests
+### Run Tests
 
 Runs the skill's script tests.
 

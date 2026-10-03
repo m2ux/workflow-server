@@ -1,4 +1,4 @@
-# Hoist mode
+# Hoist Mode
 
 Brings the tracker's standalone issues into the agent-engineering structure: each one the user chooses joins an existing initiative, epic or task, or a new one. Every open issue with no agent-engineering prefix is a candidate, in two groups:
 
@@ -24,10 +24,10 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 - **Original body.**
   - A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first.
   - The comment opens with a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan.
-  - Take the body live with [Fetch body](commands.md#fetch-body), since `issues.json` can be stale by the time the orphan is applied. The comment file is the lead line, a blank line, then that body word for word, posted with [Comment on issue](commands.md#comment-on-issue).
+  - Take the body live with [Fetch Body](commands.md#fetch-body), since `issues.json` can be stale by the time the orphan is applied. The comment file is the lead line, a blank line, then that body word for word, posted with [Comment on Issue](commands.md#comment-on-issue).
   - A subsumed orphan closes with its body as it is.
 - **Subsumed.**
-  - The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, kept as the [goal pass](review-passes.md#goal-pass) Verifiable rule defines, and its design goes into the Proposal.
+  - The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, kept as the [Goal Pass](review-passes.md#goal-pass) Verifiable rule defines, and its design goes into the Proposal.
   - That issue's References cite the orphan for the detail it holds, so nothing it recorded is lost.
   - The orphan is then closed with a comment naming the issue that took it.
 - **Keep or subsume.**
@@ -44,13 +44,13 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 
 ## Procedure
 
-1. **Fetch.**  Fetch every issue with [Fetch all issues](commands.md#fetch-all-issues).
-2. **List candidates.**  Run [List orphans](commands.md#list-orphans). It prints:
+1. **Fetch.**  Fetch every issue with [Fetch All Issues](commands.md#fetch-all-issues).
+2. **List candidates.**  Run [List Orphans](commands.md#list-orphans). It prints:
    - the orphans;
    - the cited standalone issues, each with its labels, the agent-engineering issues citing it and any planning folder it links;
    - the open initiatives and epics a placement can name.
 3. **Triage.**
-   Read each orphan whole, with its comments from [Fetch comments](commands.md#fetch-comments), and the bodies of the initiatives and epics whose themes and criteria it touches. Note any planning folder it references, in its body or its comments. For each orphan, draft:
+   Read each orphan whole, with its comments from [Fetch Comments](commands.md#fetch-comments), and the bodies of the initiatives and epics whose themes and criteria it touches. Note any planning folder it references, in its body or its comments. For each orphan, draft:
    - the placements that fit, best first, each naming its target and whether the orphan is kept or subsumed;
    - for a placement in an existing epic, the row it would add (Description, criteria, Depends on, Joins), or the existing task that already delivers it;
    - Leave, when no initiative's goal covers it, or when it is not planned work.
@@ -66,7 +66,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
      - Subsume the orphan.
    - **New task.**
      - Draft the row and its criteria in the epic.
-     - Number it where it can start, with [Renumber tasks](commands.md#renumber-tasks) when a task no pull request names must move.
+     - Number it where it can start, with [Renumber Tasks](commands.md#renumber-tasks) when a task no pull request names must move.
      - Keep or subsume the orphan.
    - **New epic.**
      - Draft the epic from `templates/epic.md` and its row in the initiative, with the initiative criteria it serves.
@@ -74,17 +74,17 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
      - Keep or subsume the orphan.
    - **New initiative.**  Run plan mode with the orphan as its input. Keep or subsume the orphan.
    - **Kept.**
-     Post the original-body comment, then rewrite the orphan by its kind's rules with [Retitle issue](commands.md#retitle-issue), [Add labels](commands.md#add-labels) and [Patch body](commands.md#patch-body), carrying its evidence into Problem and its design into Proposal.
+     Post the original-body comment, then rewrite the orphan by its kind's rules with [Retitle Issue](commands.md#retitle-issue), [Add Labels](commands.md#add-labels) and [Patch Body](commands.md#patch-body), carrying its evidence into Problem and its design into Proposal.
    - **Leave.**
-     - Run [Check format](commands.md#check-format) on the orphan.
-     - When its body needs rewriting, post the original-body comment, then rewrite it by a standalone issue's rules with [Patch body](commands.md#patch-body), carrying its content into the template's sections.
+     - Run [Check Format](commands.md#check-format) on the orphan.
+     - When its body needs rewriting, post the original-body comment, then rewrite it by a standalone issue's rules with [Patch Body](commands.md#patch-body), carrying its content into the template's sections.
    - **Subsumed.**
      - Cite the orphan under the taking issue's References (`- **Rn.** [Element Shape](…/issues/874) — The operations surveyed and their prose entries.`), and any planning it references as its own entry.
-     - Close it: [Comment on issue](commands.md#comment-on-issue) with `Tracked in [I07:E01](…/issues/937) W04.`, then [Close as not planned](commands.md#close-as-not-planned).
+     - Close it: [Comment on Issue](commands.md#comment-on-issue) with `Tracked in [I07:E01](…/issues/937) W04.`, then [Close as Not Planned](commands.md#close-as-not-planned).
      - The work stays planned in the taking issue, which is where that work is tracked.
 6. **Review.**
-   - Run [Check format](commands.md#check-format) on every issue the hoist changed or created.
-   - Run [Check dependencies](commands.md#check-dependencies) on each initiative that gained a task or epic.
+   - Run [Check Format](commands.md#check-format) on every issue the hoist changed or created.
+   - Run [Check Dependencies](commands.md#check-dependencies) on each initiative that gained a task or epic.
    - Fold every finding in.
 7. **Report.**
    Report each orphan's placement, the issues changed, created or closed, and the orphans left.

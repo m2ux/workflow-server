@@ -183,7 +183,7 @@ class DoneColumn(unittest.TestCase):
                       '## Work Breakdown\n\n| Done | Epic | Description | Depends on |\n'
                       '| --- | --- | --- | --- |\n'
                       '| [x] | [E00](https://github.com/o/r/issues/3) | Work → AC1 | |\n\n'
-                      '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n## Non-goals\n\n- Out.\n\n'
+                      '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n## Non-Goals\n\n- Out.\n\n'
                       '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
         epic_fixed = Review(issue(2, '[I01:E00] First: Epic', body=epic)).run()
         initiative_fixed = Review(issue(1, '[I01] First: Initiative', body=initiative)).run()

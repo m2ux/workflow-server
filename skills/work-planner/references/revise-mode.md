@@ -1,4 +1,4 @@
-# Revise mode
+# Revise Mode
 
 Changes the skill itself: SKILL.md, its references, templates and scripts. Every revision follows the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md); a change that departs from them is not complete.
 
@@ -21,7 +21,7 @@ Changes the skill itself: SKILL.md, its references, templates and scripts. Every
    - every command named by link to its spec in [commands.md](commands.md);
    - every link and anchor resolving.
 6. **Verify.**
-   - [Run tests](commands.md#run-tests) when a script, template or test changed.
+   - [Run Tests](commands.md#run-tests) when a script, template or test changed.
    - Confirm SKILL.md's frontmatter still opens and closes with `---` and holds `name` and `description`.
 7. **Deliver.**  Commit, push, and report what changed in each file.
 8. **Revise the guidelines.**

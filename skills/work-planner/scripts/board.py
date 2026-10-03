@@ -23,7 +23,7 @@ Status, first match wins:
   In Review    an open pull request ready for review names it: its title names the epic by the
                initiative's row id, and for a task issue its title or body also cites the issue
   In Progress  an open draft pull request names it, or it is an epic with a delivered row
-  Ready        every dependency in its row is delivered and it has no Open questions
+  Ready        every dependency in its row is delivered and it has no Open Questions
   Backlog      otherwise
 An open initiative is In Review when every acceptance criterion is ticked, which holds while it
 waits for its integration branches to merge. It is In Progress when any epic is Done, In Review or
@@ -106,7 +106,7 @@ def criteria_met(issue: dict) -> bool:
 
 def open_questions(issue: dict) -> bool:
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
-    return any(l.strip() for h, lines in sections if h == 'Open questions' for l in lines)
+    return any(l.strip() for h, lines in sections if h == 'Open Questions' for l in lines)
 
 
 def rows(issue: dict) -> tuple[list[str], list[list[str]]]:
