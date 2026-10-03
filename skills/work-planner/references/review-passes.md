@@ -1,6 +1,11 @@
 # Review Passes
 
-Each pass reads the issues as they stand on GitHub, except the goal pass that gates creation, which reads the local drafts. Fetch every issue first, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
+Each pass reads the issues as they stand on GitHub.
+
+## Fetch
+
+1. **Issues.**  Fetch every issue first, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
+2. **Drafts.**  The goal pass that gates creation reads the local drafts.
 
 ## Report
 
