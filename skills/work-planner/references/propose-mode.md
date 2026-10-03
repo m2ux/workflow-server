@@ -34,4 +34,4 @@ Scopes the problem: the friction, the evidence, and the boundary, and states the
 ## Rules
 
 - **Problem scope.**
-  A proposal states the problem, the boundary, and the goal clauses. The design, the acceptance criteria, and the Work Breakdown are written in [Plan Mode](plan-mode.md).
+  A proposal meets the [Proposal](review-criteria.md#proposal) criteria.

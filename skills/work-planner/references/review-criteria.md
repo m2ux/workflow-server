@@ -109,8 +109,7 @@ An epic states one slice of the initiative's design and lists the tasks that del
 
 #### Work Breakdown
 
-- A task row's Description is at most eight words, with no semicolon, and names what the row delivers.
-- Detail in a longer Description that no cited criterion already states becomes a new criterion of one invariant, cited by the row.
+- A task row's Description follows the [Work Breakdown Guide](work-breakdown.md#tables). A detail it carries beyond that phrase is a criterion of one invariant, cited by the row.
 - Coverage names the epic criteria the task must meet. Each row's criteria are the ones its work makes true: a row does not claim a criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet it.
 - An epic criterion no task row delivers is a gap.
 - A task delivering more than three criteria no other task delivers is split into tasks one pull request each can deliver.
@@ -123,6 +122,7 @@ An epic states one slice of the initiative's design and lists the tasks that del
 - Numbering that does not follow start order is advisory.
 - Two epics or tasks claiming one piece of work have one owner, and the boundary is stated in both.
 - The same outcome as a task in two epics is a duplicate: remove one, or raise the initiative's.
+- An issue that several row ids link backs several tasks. No row id links it, and the epic cites it under References, or each task has its own issue.
 
 #### Acceptance Criteria
 
@@ -188,7 +188,7 @@ An initiative criterion, an epic criterion, and a task criterion each meet these
 - Names or implies the instrument that observes it: a test, a guard, a command or a measure.
 - Is unambiguous, so two readers agree on whether it holds.
 - **One invariant.**
-  Each criterion states a single condition that holds or does not. One joining several is split, and the Description cells cite the new ones.
+  Each criterion states a single condition that holds or does not. One joining several is split, and the Description cells cite the new ones. A condition over a list of subjects is one condition.
 
 #### Verifiable
 

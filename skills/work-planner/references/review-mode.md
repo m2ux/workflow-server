@@ -57,33 +57,33 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 - **Missing section.**
   Draft a missing section from the issue and its epics.
 - **Non-Goals.**
-  Non-Goals in an epic or task: lift any that bound the initiative into the initiative's Non-Goals, then remove the section. In a standalone issue, fold them into the Proposal as a closing boundary.
+  An epic or task that carries Non-Goals fails the [Initiative](review-criteria.md#initiative) Non-Goals criteria. Lift any that bound the initiative into the initiative's Non-Goals, then remove the section. In a standalone issue, fold them into the Proposal as a closing boundary.
 - **Extra section.**
   Keep an extra section, fold it into a template section, or remove it.
 - **Wrong template.**
   A body that follows another kind's template is rewritten in its own kind's layout, or the issue is retitled to the kind it follows.
 - **Change narrative.**
-  Wording that narrates how the plan changed is restated as the plan is.
+  Wording that narrates how the plan changed fails the [Any issue](review-criteria.md#any-issue) Body criteria. Restate it as the plan is.
 - **Task grain.**
-  A task delivering more than three criteria no other task delivers is split into tasks one pull request each can deliver, with the rows and their criteria drafted.
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for a task that delivers more than three criteria no other task delivers.
 - **Local criterion.**
-  An initiative criterion or non-goal that names an initiative, epic, task or issue is restated locally, or a criterion that holds only through another initiative's work is dropped.
+  Apply the initiative [Acceptance Criteria](review-criteria.md#acceptance-criteria) Local rule.
 - **Counted criterion.**
-  An initiative criterion that carries a count is measured against a named baseline or check.
+  Apply the initiative [Acceptance Criteria](review-criteria.md#acceptance-criteria) No counts rule.
 - **Instrument.**
-  An initiative criterion that names no instrument names its instrument, and any missing test is planned, as the goal pass's Verified rule defines.
+  Apply the initiative [Verified](review-criteria.md#verified) rule.
 - **Description.**
-  A Description cell over eight words or holding a semicolon is shortened to a phrase naming what the row delivers. Any detail no cited criterion carries is restated as a new criterion of one invariant, cited by the row.
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for Description.
 - **Coverage.**
-  A Coverage cell that does not name the criteria the row delivers is mapped to them, from its text and each criterion's wording. A criterion no row delivers needs a row, or belongs in another epic.
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for Coverage.
 - **One invariant.**
-  A criterion that may state several invariants is split, each new criterion added at the end of the list and cited from the rows that deliver it.
+  Apply the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) One invariant rule.
 - **Work Breakdown prose.**
-  Prose in the Work Breakdown outside its table moves any design content into the Proposal, and drops narration of order and its reasons.
+  Prose in the Work Breakdown outside its table fails the [Work Breakdown Guide](work-breakdown.md#rules) Order rule. Move any design content into the Proposal.
 - **Depends on.**
-  A Depends on cell holding prose is reduced to references. For an initiative, to the epics [Check Dependencies](commands.md#check-dependencies) derives with `I=`.
+  Apply the [Epic](review-criteria.md#epic) or [Initiative](review-criteria.md#initiative) Work Breakdown criteria for Depends on. For an initiative, the cell takes the epics [Check Dependencies](commands.md#check-dependencies) derives with `I=`.
 - **Title.**
-  A title whose name is not two or three words, or whose subtitle runs past ten, is drafted in the agent-engineering form, and the initiative row takes the new name.
+  Apply the [Any issue](review-criteria.md#any-issue) Title criteria, and the [Epic](review-criteria.md#epic) Title criteria for an epic. The initiative row takes the epic's new name.
 - **Several tasks.**
-  An issue several row ids link is unlinked, and the issue is cited under References, since it backs several tasks, or each task is given its own issue.
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for an issue several row ids link.
 

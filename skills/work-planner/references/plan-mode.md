@@ -17,7 +17,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - A Problem and a Proposal follow the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal). The initiative's Problem and Non-Goals are the proposal's, when a proposal was taken.
    - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them. Each criterion comes from a confirmed clause.
    - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [review criteria](review-criteria.md) for an initiative define.
-   - Each acceptance criterion is written to this mode's Criteria at creation rule. It ends by naming its instrument as that pass's Verified rule defines. A test it names that does not exist yet is planned as work.
+   - Each acceptance criterion is written to this mode's Criteria at creation rule. It ends by naming its instrument as the [Verified](review-criteria.md#verified) rule defines. A test it names that does not exist yet is planned as work.
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 4. **Review the drafts.**
@@ -49,9 +49,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
      - Put each to the user with its recommendation, record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.
      - Then delete the question; the section goes with the last one.
    - **One condition per criterion.**
-     - Read each criterion for conditions joined by "and" or a list of clauses that different tasks make true.
-     - Split each such criterion, adding the new ones at the end of the list, and cite each from the rows that deliver it.
-     - A condition over a list of subjects ("every reader reads `when` alone: the validator, the guards …") is one condition.
+     Read each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria). Split one that joins several, adding the new ones at the end of the list, and cite each from the rows that deliver it.
 
    Run the goal pass, and the ordering pass when tasks or dependencies change.
 9. **Deliver.**  As work lands, run [Sync Mode](sync-mode.md).
