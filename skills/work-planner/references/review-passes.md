@@ -2,22 +2,6 @@
 
 The method for the goal pass, the consistency pass, and the ordering pass. The requirements they share are the [review criteria](review-criteria.md).
 
-## Fetch
-
-Each pass reads its inputs first.
-
-1. **Issues.**  Fetch each issue the pass reads, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
-2. **Drafts.**  The goal pass that gates creation reads the local drafts.
-
-## Report
-
-A pass states each finding this way.
-
-1. **Split by area.**  Report findings split by area.
-2. **One pair.**  One problem/solution pair per finding, each with a severity.
-3. **Verify.**  Verify every finding against its source before stating it, and quote the file:line that establishes it.
-4. **Decide.**  Put findings that need a decision to the user.
-
 ## Goal Pass
 
 Tests the drafts against the [review criteria](review-criteria.md) for the issue's kind. It runs on the drafts before any issue is created, and again whenever the goal, a criterion, a Problem, a Proposal, or an epic changes.
@@ -61,6 +45,22 @@ Checks dependencies as a graph, then renumbers. A failure is one the [initiative
    Update each initiative Depends on cell to the list [Check Dependencies](commands.md#check-dependencies) gives, and re-run it until it reports no problems.
 6. **Chains.**
    Record the longest chains from its output in the planning record. Issue bodies do not narrate order or its reasons.
+
+## Fetch
+
+Each pass reads its inputs first.
+
+1. **Issues.**  Fetch each issue the pass reads, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
+2. **Drafts.**  The goal pass that gates creation reads the local drafts.
+
+## Report
+
+A pass states each finding this way.
+
+1. **Split by area.**  Report findings split by area.
+2. **One pair.**  One problem/solution pair per finding, each with a severity.
+3. **Verify.**  Verify every finding against its source before stating it, and quote the file:line that establishes it.
+4. **Decide.**  Put findings that need a decision to the user.
 
 ## Folding Findings
 
