@@ -463,11 +463,10 @@ Decides which initiatives and epics on a theme board move between Backlog, Ready
 - `--assignee` is the user [Find User](#find-user) prints.
 - Give an issue it reports unresolved with `--others`.
 - `--unplanned` names an initiative the user left with no priority, as a number or `owner/repo#number`.
-- `--parallel` names each initiative in a tie the user leaves in place, in that same form. Both move to In Progress.
-- An `order` line lists one kind of initiative for the user to order. An `ask` line names an initiative In Progress with no priority label.
-- An `order`, `ask`, or `tie` line is a question. The queue is not finished while one is printed. After the answer, fetch the items again and run the command again.
-- A `tie` line asks whether one named initiative is ahead, or they stay tied. Neither moves until the answer. `--parallel` is the stay-tied answer.
-- A `wait` line names an open pull request. The incumbent stays In Progress. A Ready initiative that is not the choice moves to Backlog.
+- An `order` line lists the initiatives for a parallel work map. The same priority number runs together.
+- An `ask` line names an initiative In Progress with no priority label.
+- An `order` or `ask` line is a question. The queue is not finished while one is printed. After the answer, fetch the items again and run the command again.
+- A `wait` line names an open pull request. That initiative stays In Progress. The highest set still moves to In Progress.
 - A `next` line names epics, as the Report rule in [Advance Mode](advance-mode.md#rules) says.
 
 ```bash

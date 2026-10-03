@@ -39,8 +39,7 @@ def epic(number: int, which: str, *tasks: tuple[str, str, str], repo: str = 'o/r
     return issue(number, f'[I{which}] Epic {number}: Work', body=body, repo=repo)
 
 
-def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = (),
-          parallel: tuple[str, ...] = ()) -> str:
+def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = ()) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         items_path, prs_path, fields = root / 'items.json', root / 'prs.json', root / 'fields.json'
@@ -48,7 +47,6 @@ def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str
         prs_path.write_text(''.join(json.dumps(row) + '\n' for row in prs or []))
         fields.write_text(json.dumps(FIELDS))
         extra = [arg for spec in unplanned for arg in ('--unplanned', spec)]
-        extra += [arg for spec in parallel for arg in ('--parallel', spec)]
         done = run('advance.py', '--items', str(items_path), '--prs', str(prs_path),
                    '--board', 'users/o/projectsV2/9', '--fields', str(fields),
                    '--out', str(root / 'out'), '--assignee', 'me', *extra)
@@ -64,10 +62,8 @@ class Queue(unittest.TestCase):
         out = queue(staged((first, 'Ready'), (second, 'Backlog'),
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')))
-        self.assertIn('[I02] High: Next: Backlog → Ready', out)
-        self.assertIn('[I01] Low: Later: Ready → Backlog', out)
-        self.assertIn('next #2 [I02] High: Next: E00', out)
-        self.assertNotIn('[I02:E00]', out.split('next', 1)[0])
+        self.assertIn('[I02] High: Next: Backlog → In Progress', out)
+        self.assertNotIn('[I01] Low: Later: Ready →', out)
 
     def test_a_higher_priority_takes_in_progress_once_pull_requests_finish(self):
         low = initiative(1, 'Low: Current',
@@ -81,10 +77,9 @@ class Queue(unittest.TestCase):
         out = queue(staged((low, 'In Progress'), (high, 'Backlog'), (started, 'Backlog'),
                            (waiting, 'Backlog'), (nxt, 'Backlog')), merged)
         self.assertIn('[I01] Low: Current: In Progress → Ready', out)
-        self.assertIn('[I01:E00] Epic 3: Work: Backlog → Ready', out)
+        self.assertNotIn('[I01:E00] Epic 3: Work: Backlog →', out)
         self.assertNotIn('Epic 4', out)
         self.assertIn('[I02] High: Next: Backlog → In Progress', out)
-        self.assertIn('[I02:E00] Epic 5: Work: Backlog → Ready', out)
 
     def test_an_open_pull_request_holds_the_swap(self):
         low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''))
@@ -93,9 +88,9 @@ class Queue(unittest.TestCase):
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'In Progress'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
                     [pr(9, '[I01:E00] Open')])
-        self.assertIn('wait #1 [I01] Low: Current: open pull request https://github.com/o/r/pull/9', out)
-        self.assertNotIn('→', out)
-        self.assertIn('to do: 0', out)
+        self.assertIn('wait #1 [I01] Low: Current:', out)
+        self.assertIn('[I02] High: Next: Backlog → In Progress', out)
+        self.assertNotIn('[I01] Low: Current: In Progress →', out)
 
     def test_in_review_does_not_fill_the_slot(self):
         reviewing = initiative(1, 'Done: Waiting', (f"[E00]({url('issues', 3)})", ''), priority='priority: 5')
@@ -103,7 +98,7 @@ class Queue(unittest.TestCase):
         out = queue(staged((reviewing, 'In Review'), (nxt, 'Backlog'),
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'Done'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')))
-        self.assertIn('[I02] Next: Up: Backlog → Ready', out)
+        self.assertIn('[I02] Next: Up: Backlog → In Progress', out)
         self.assertNotIn('[I01] Done: Waiting:', out)
 
     def test_a_debt_initiative_has_its_own_slot(self):
@@ -114,7 +109,7 @@ class Queue(unittest.TestCase):
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'In Progress'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')))
         self.assertIn('[I02] Debt: Next: Backlog → Ready', out)
-        self.assertNotIn('[I01] Feature: Current:', out)
+        self.assertNotIn('[I01] Feature: Current: In Progress →', out)
 
     def test_an_unlabelled_backlog_initiative_stays_there(self):
         bare = initiative(1, 'Bare: None', (f"[E00]({url('issues', 3)})", ''), priority='')
@@ -122,7 +117,7 @@ class Queue(unittest.TestCase):
         out = queue(staged((bare, 'Backlog'), (ranked, 'Backlog'),
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')))
-        self.assertIn('[I02] Ranked: High: Backlog → Ready', out)
+        self.assertIn('[I02] Ranked: High: Backlog → In Progress', out)
         self.assertNotIn('[I01] Bare: None:', out)
 
     def test_a_labelled_tie_promotes_neither(self):
@@ -131,8 +126,9 @@ class Queue(unittest.TestCase):
         out = queue(staged((later, 'Ready'), (earlier, 'Backlog'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog'),
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog')))
-        self.assertIn('tie ', out)
-        self.assertNotIn('→', out)
+        self.assertIn('[I01] Earlier: Same: Backlog → In Progress', out)
+        self.assertIn('[I02] Later: Same: Ready → In Progress', out)
+        self.assertNotIn('tie ', out)
 
     def test_an_unlabelled_ready_initiative_returns_to_backlog(self):
         bare = initiative(1, 'Bare: Ready', (f"[E00]({url('issues', 2)})", ''), priority='')
@@ -146,15 +142,16 @@ class Queue(unittest.TestCase):
         out = queue(staged((feature, 'Backlog'), (debt, 'Backlog'),
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')))
-        self.assertIn('order ordinary: #1 [I01] Feature: One', out)
-        self.assertIn('order debt: #2 [I02] Debt: One', out)
+        self.assertIn('order: #1 [I01] Feature: One, #2 [I02] Debt: One', out)
         self.assertNotIn('→', out)
+        self.assertNotIn('the queue is current', out)
 
     def test_an_in_progress_initiative_without_priority_is_asked(self):
         bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 2)})", ''), priority='')
         out = queue(staged((bare, 'In Progress'), (epic(2, '01:E00', ('W01', 'Go', '')), 'In Progress')))
-        self.assertIn('ask #1 [I01] Bare: Current: priority', out)
+        self.assertIn('order: #1 [I01] Bare: Current', out)
         self.assertNotIn('→', out)
+        self.assertNotIn('the queue is current', out)
 
     def test_an_unplanned_initiative_waits_for_its_pull_request(self):
         bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 3)})", ''), priority='')
@@ -164,7 +161,7 @@ class Queue(unittest.TestCase):
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
                     [pr(9, '[I01:E00] Open')], unplanned=('1',))
         self.assertIn('wait #1 [I01] Bare: Current: open pull request https://github.com/o/r/pull/9', out)
-        self.assertNotIn('→', out)
+        self.assertIn('[I02] Next: Up: Backlog → In Progress', out)
 
     def test_an_unplanned_initiative_returns_to_backlog_with_its_epics(self):
         bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 3)})", ''), priority='')
@@ -174,7 +171,7 @@ class Queue(unittest.TestCase):
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')), unplanned=('1',))
         self.assertIn('[I01] Bare: Current: In Progress → Backlog', out)
         self.assertIn('[I01:E00] Epic 3: Work: In Progress → Backlog', out)
-        self.assertIn('[I02] Next: Up: Backlog → Ready', out)
+        self.assertIn('[I02] Next: Up: Backlog → In Progress', out)
 
     def test_a_pull_request_without_the_epic_does_not_hold_the_swap(self):
         low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''))
@@ -184,6 +181,7 @@ class Queue(unittest.TestCase):
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
                     [pr(9, '[I01] Open')])
         self.assertIn('[I01] Low: Current: In Progress → Ready', out)
+        self.assertIn('[I02] High: Next: Backlog → In Progress', out)
         self.assertNotIn('wait ', out)
 
     def test_each_repository_has_its_own_slot(self):
@@ -192,8 +190,8 @@ class Queue(unittest.TestCase):
         out = queue(staged((here, 'Backlog'), (there, 'Backlog'),
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
                            (epic(4, '01:E00', ('W01', 'Go', ''), repo='o/s'), 'Backlog')))
-        self.assertIn('[I01] Here: One: Backlog → Ready', out)
-        self.assertIn('[I01] There: One: Backlog → Ready', out)
+        self.assertIn('[I01] Here: One: Backlog → In Progress', out)
+        self.assertIn('o/s#1 [I01] There: One: Backlog → In Progress', out)
 
     def test_only_the_next_epic_of_the_in_progress_initiative_is_ready(self):
         current = initiative(1, 'Current: Work',
@@ -244,7 +242,7 @@ class Queue(unittest.TestCase):
                     [pr(9, '[I01:E00] Open')])
         self.assertIn('wait #1 [I01] Mid: Current:', out)
         self.assertIn('[I03] Low: Waiting: Ready → Backlog', out)
-        self.assertNotIn('[I02] High: Next: Backlog → Ready', out)
+        self.assertIn('[I02] High: Next: Backlog → In Progress', out)
 
     def test_a_confirmed_tie_starts_in_parallel(self):
         first = initiative(1, 'First: Tied', (f"[E00]({url('issues', 3)})", ''), priority='priority: 5')
@@ -252,7 +250,7 @@ class Queue(unittest.TestCase):
         out = queue(staged((first, 'Backlog'), (second, 'Backlog'),
                            (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
-                    parallel=('1', '2'))
+                    )
         self.assertIn('[I01] First: Tied: Backlog → In Progress', out)
         self.assertIn('[I02] Second: Tied: Backlog → In Progress', out)
         self.assertIn('[I01:E00] Epic 3: Work: Backlog → Ready', out)
@@ -267,9 +265,10 @@ class Queue(unittest.TestCase):
                            (epic(4, '01:E00', ('W01', 'Go', '')), 'In Progress'),
                            (epic(5, '02:E00', ('W01', 'Go', '')), 'In Progress'),
                            (epic(6, '03:E00', ('W01', 'Go', '')), 'Backlog')))
-        self.assertIn('tie ', out)
-        self.assertNotIn('→ In Progress', out)
-        self.assertNotIn('→ Ready', out)
+        self.assertNotIn('tie ', out)
+        self.assertIn('[I03] High: Next: Backlog → In Progress', out)
+        self.assertIn('[I01] Low: Current: In Progress → Ready', out)
+        self.assertIn('[I02] Same: Current: In Progress → Ready', out)
 
     def test_an_unplanned_wait_clears_a_ready_initiative_that_is_not_the_choice(self):
         bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 4)})", ''), priority='')
@@ -281,8 +280,8 @@ class Queue(unittest.TestCase):
                            (epic(6, '03:E00', ('W01', 'Go', '')), 'Backlog')),
                     [pr(9, '[I01:E00] Open')], unplanned=('1',))
         self.assertIn('wait #1 [I01] Bare: Current:', out)
-        self.assertIn('[I03] Low: Waiting: Ready → Backlog', out)
-        self.assertNotIn('[I02] High: Next: Ready →', out)
+        self.assertNotIn('[I03] Low: Waiting: Ready →', out)
+        self.assertIn('[I02] High: Next: Ready → In Progress', out)
 
 
 if __name__ == '__main__':
