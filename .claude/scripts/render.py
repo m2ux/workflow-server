@@ -25,7 +25,11 @@ def claude_config(workspace: Path, home: Path, policy: dict) -> dict:
     allow.extend(policy["tools"])
     config["permissions"] = {"allow": allow, "additionalDirectories": policy["directories"]}
     command = f"python3 {shlex.quote(str(workspace / '.claude/hooks/adapter.py'))}"
-    config["hooks"] = {"PreToolUse": [hook_group(command, "Bash|Shell|WebFetch")]}
+    guard = f"python3 {shlex.quote(str(workspace / '.claude/hooks/edit_guard.py'))}"
+    config["hooks"] = {
+        "PreToolUse": [hook_group(command, "Bash|Shell|WebFetch")],
+        "PostToolUse": [hook_group(guard, "Edit|Write|MultiEdit|StrReplace", timeout=120)],
+    }
     return config
 
 

@@ -11,8 +11,8 @@ def as_json(value) -> str:
     return json.dumps(value, indent=2) + "\n"
 
 
-def hook_group(command: str, matcher: str) -> dict:
-    return {"matcher": matcher, "hooks": [{"type": "command", "command": command, "timeout": 5}]}
+def hook_group(command: str, matcher: str, timeout: int = 5) -> dict:
+    return {"matcher": matcher, "hooks": [{"type": "command", "command": command, "timeout": timeout}]}
 
 
 

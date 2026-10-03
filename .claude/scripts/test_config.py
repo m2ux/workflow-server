@@ -35,6 +35,11 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(patterns, load_policy()["shell"])
         command = shlex.split(config["hooks"]["PreToolUse"][0]["hooks"][0]["command"])
         self.assertEqual(Path(command[1]), ROOT / ".claude/hooks/adapter.py")
+        group = config["hooks"]["PostToolUse"][0]
+        self.assertEqual(group["matcher"], "Edit|Write|MultiEdit|StrReplace")
+        guard = group["hooks"][0]
+        self.assertEqual(guard["timeout"], 120)
+        self.assertEqual(Path(shlex.split(guard["command"])[1]), ROOT / ".claude/hooks/edit_guard.py")
         result = subprocess.run(command, input=json.dumps({"tool_name": "Bash", "cwd": str(ROOT),
                                 "tool_input": {"command": "git status"}}),
                                 text=True, capture_output=True, cwd="/tmp", check=True)

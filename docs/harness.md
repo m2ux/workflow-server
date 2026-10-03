@@ -66,6 +66,12 @@ Claude import; **Include Third-Party Plugins, Skills, and Other Configs** must
 be enabled in Cursor Settings → Agents → Third-Party Imports. Its `Shell`
 input is accepted by the same adapter. [Cursor compatibility reference](https://prod.cursor.com/docs/reference/third-party-hooks)
 
+The same settings register `.claude/hooks/edit_guard.py` after Edit, Write, MultiEdit, and StrReplace.
+It runs the workflow-canon edit guard at `skills/workflow-canon/scripts/edit_guard.py`. A failure the
+branch introduced exits 2 with the report on stderr and as `additional_context`, so Claude and Cursor's
+import both hand it back after the edit. The permission adapter stays on PreToolUse; this hook does not
+grant or deny the edit.
+
 Codex registers `.codex/hooks/adapter.py` for both hook events and discovers the
 registrations beside its configuration. Start a new session
 in the trusted workspace, open `/hooks`, and review and trust both registrations.
