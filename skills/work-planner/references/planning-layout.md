@@ -10,8 +10,8 @@ A planning record is the folder [Add Planning Record](commands.md#add-planning-r
 
 ## README.md
 
-The problem, the goal's clauses and their trace to the criteria, the design, the decisions, the reviews and the open questions.
+The entry point of the record. Its shape is the [planning README](planning-readme.md).
 
 ## Further files
 
-Any file beyond README.md. The process chooses the names. The evidence is one such file when the record keeps it apart from README.md.
+Any file beyond README.md. The process chooses the names. Each one is a row in the README's Internal Links.
