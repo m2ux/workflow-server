@@ -30,7 +30,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   One sentence on what the skill does, then a bulleted list with one item for each thing it acts on.
 - **Modes.**
   - Each mode is its bold name, without the word "mode", linking to its reference file.
-  - Beneath it, a bulleted summary of what the mode does: each item describes an action or capability of the mode, not a procedure step.
+  - Beneath it, a bulleted summary of the work the mode does:
+    - Each item is an action or a capability of the mode, not a procedure step.
+    - A distinction from another mode stays in the file that owns it.
 - **Rules.**
   A statement that binds every mode goes in Rules, never as loose prose in another section.
 - **Dependencies.**

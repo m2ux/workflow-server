@@ -28,9 +28,9 @@ Each theme's project board shows where its items stand. The Proposals board hold
 Read the file for the mode the request calls for:
 
 - **[Propose](references/propose-mode.md)**
-  - The same intake as Plan: a confirmed goal and the evidence behind it
-  - One proposal issue, titled `[I]` with no number
-  - Placement on the Proposals board, in Suggested
+  - Confirming a goal and gathering the evidence behind it
+  - Raising one proposal issue
+  - Placing it on the Proposals board
 - **[Plan](references/plan-mode.md)**
   - Raising, planning and restructuring initiatives and epics
   - Acceptance criteria that comply with the goal pass when they are written
