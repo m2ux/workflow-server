@@ -324,7 +324,10 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 - `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
 - The slug is lowercase words separated by hyphens, a short name of the work.
 - The folder's files are the [planning layout](planning-layout.md).
-- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
+- Edits are made on that worktree.
+- The record is committed and pushed on that checkout.
+- That branch takes no further worktree and no branch.
+  - A host rule that changes go through a pull request is not a reason to cut one.
 
 ```bash
 mkdir -p artifacts/planning/<yyyy-mm-dd>[-<ref>]-<slug>

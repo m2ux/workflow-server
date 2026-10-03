@@ -11,7 +11,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 2. **Planning record.**
    Keep one for a new initiative, or for a change whose decisions need a record. A one-epic addition with no open decision goes straight to Draft bodies.
    - Add the record with [Add Planning Record](commands.md#add-planning-record), and fill it as the [planning layout](planning-layout.md) describes.
-   - Draft the discussion pull request's body from the [pull request template](../templates/pull-request.md) and open it as a draft. The user merges it.
+   - Commit and push it as [Add Planning Record](commands.md#add-planning-record) states.
 3. **Draft bodies.**
    - Draft each body from its template into a local file. Those files are the source for every later edit.
    - A Problem and a Proposal follow the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal). The initiative's Problem and Non-Goals are the proposal's, when a proposal was taken.
@@ -40,7 +40,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 
    State each finding as [Report](review-passes.md#report) states. Fold each finding in and record it in the planning record.
 7. **Keep in step.**
-   - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
+   - After each round, patch every changed issue, update the planning record, and commit and push it as [Add Planning Record](commands.md#add-planning-record) states.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
@@ -62,7 +62,3 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 - **Criteria at creation.**
   - An acceptance criterion complies with the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) and, for an initiative, its [Acceptance Criteria](review-criteria.md#acceptance-criteria) when it is written.
   - The issue that carries it is created only after the criterion complies.
-- **The discussion PR.**
-  Merging it is the user's call.
-- **Pull request bodies.**
-  Every pull request this mode opens is drafted from the [pull request template](../templates/pull-request.md).
