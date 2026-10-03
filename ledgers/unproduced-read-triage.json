@@ -1,7 +1,7 @@
 {
   "note": "One judgement per activity and variable the activity-variables guard reports as an unproduced read: a name the workflow file declares with no defaultValue or an empty one, that no step produces and the server does not seed, so every run reads it unset or empty. A fix-later entry suppresses the finding; a live-bug entry keeps it reported. An unproduced read no entry covers fails the guard; an entry matching no finding is reported stale and leaves with the change that gives the value its producer. There is no regeneration command.",
   "rationales": {
-    "input-without-a-producer": "A value the run needs from outside — usually from the user's request — that no step reads out of the request, asks for at a gate, or derives. Fixed by binding it the way the workflow's first activity binds its other inputs.",
+    "input-without-a-producer": "A value the run needs from outside \u2014 usually from the user's request \u2014 that no step reads out of the request, asks for at a gate, or derives. Fixed by binding it the way the workflow's first activity binds its other inputs.",
     "placeholder-default-without-a-producer": "As input-without-a-producer, with a declared empty default (\"\" or []) standing in for the value, so every run reads it empty rather than unset. Fixed the same way; the empty default goes once the value has a producer.",
     "relayed-by-a-parent-trigger": "A parent workflow's trigger lists the value in passContext, which the agent relays into this session; the server seeds nothing, and a run started on its own never receives it. Fixed by binding it from the request when absent, so both kinds of run carry it.",
     "derived-value-never-gathered": "A value the activity reads as a summary of another session's results, which no step gathers. Fixed by gathering it at the step that has those results, or by dropping the read where the consumer already falls back to the per-activity record."
@@ -326,13 +326,13 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "site": "remediate-vuln :: work-package/code-review",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "site": "remediate-vuln :: work-package/code-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
@@ -370,12 +370,6 @@
     {
       "site": "remediate-vuln :: work-package/design-philosophy",
       "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/implement",
-      "name": "implementation_plan",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
@@ -542,6 +536,18 @@
       "rationale": "input-without-a-producer"
     },
     {
+      "site": "remediate-vuln :: work-package/test-suite-review",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/test-suite-review",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
       "site": "remediate-vuln :: work-package/validate",
       "name": "pr_number",
       "verdict": "fix-later",
@@ -566,18 +572,6 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "substrate-node-security-audit :: scope-setup",
-      "name": "target_submodule",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "substrate-node-security-audit :: scope-setup",
-      "name": "workspace_root",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
       "site": "substrate-node-security-audit :: sub-reconnaissance",
       "name": "in_scope",
       "verdict": "fix-later",
@@ -586,12 +580,6 @@
     {
       "site": "substrate-node-security-audit :: sub-reconnaissance",
       "name": "workspace_root",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "work-package :: implement",
-      "name": "implementation_plan",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
@@ -612,18 +600,6 @@
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "work-package :: start-work-package",
-      "name": "issue_title",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "work-package :: start-work-package",
-      "name": "jira_issue_key",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "work-package :: submit-for-review",
@@ -658,6 +634,42 @@
     {
       "site": "workflow-design :: requirements-refinement",
       "name": "assumption_outcome",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "name": "pr_number",
+      "verdict": "fix-later",
+      "rationale": "placeholder-default-without-a-producer"
+    },
+    {
+      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "name": "target_path",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: scope-setup",
+      "name": "target_submodule",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "substrate-node-security-audit :: scope-setup",
+      "name": "workspace_root",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: start-work-package",
+      "name": "issue_title",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
+      "site": "work-package :: start-work-package",
+      "name": "jira_issue_key",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     }

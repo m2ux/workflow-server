@@ -1,0 +1,140 @@
+id: contract-tests
+version: 1.2.0
+name: Contract Tests
+description: >-
+  Write each task's contract tests from the Contract alone into their own files in a
+  dedicated worktree, and confirm each suite fails against the base tree before
+  implementation lands.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - implementation_plan
+    - host_repo_path
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - target_path
+    - target_repo
+  writes:
+    - name: contract_tests_branch
+      type: string
+      description: Feature-adjacent branch the contract-tests worktree stands on.
+      defaultValue: ""
+    - name: contract_tests_path
+      type: string
+      description: Dedicated worktree path for contract-test files.
+      defaultValue: ""
+    - name: contract_tests_changed_paths
+      type: array
+      description: Repository-relative paths the contract-tests branch wrote.
+      defaultValue: []
+    - name: contract_tests_fail_on_base
+      type: boolean
+      description: True when every written contract suite fails against the base tree.
+      defaultValue: false
+    - name: task_fails_on_base
+      type: boolean
+      description: Whether the task under test fails against the base tree.
+      defaultValue: false
+    - name: all_contract_tests_fail_on_base
+      type: boolean
+      description: Whether every task so far fails against the base tree.
+      defaultValue: true
+    - name: contract_tests_ran
+      type: boolean
+      description: Whether the cycle wrote a contract suite for at least one task.
+      defaultValue: false
+    - name: commit_sha
+      type: string
+      description: HEAD the contract-tests worktree stands on after create-worktree.
+      defaultValue: ""
+    - name: default_branch
+      type: string
+      description: Default branch create-worktree records.
+      defaultValue: ""
+    - name: worktree_created
+      type: boolean
+      description: Whether create-worktree created the contract-tests worktree.
+      defaultValue: false
+    - name: current_task
+      type: object
+      description: The implementation-plan task whose Contract is under test.
+required: true
+steps:
+  - kind: technique
+    id: locate-contract-tests-worktree
+    technique: locate-contract-tests-worktree
+  - kind: technique
+    id: create-contract-tests-worktree
+    technique:
+      name: git::create-worktree
+      inputs:
+        branch_name: contract_tests_branch
+        target_path: contract_tests_path
+        create_branch: true
+  - kind: action
+    id: arm-base-failure
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: false
+      - action: set
+        target: all_contract_tests_fail_on_base
+        value: true
+      - action: set
+        target: contract_tests_ran
+        value: false
+  - kind: loop
+    id: contract-test-cycle
+    name: Contract Test Cycle
+    loopType: forEach
+    variable: current_task
+    over: implementation_plan.tasks
+    steps:
+      - kind: technique
+        id: write-contract-tests
+        technique: write-contract-tests
+      - kind: technique
+        id: verify-fail-on-base
+        technique:
+          name: verify-contract-tests-fail
+          outputs:
+            contract_tests_fail_on_base: task_fails_on_base
+      - kind: action
+        id: note-task-ran
+        actions:
+          - action: set
+            target: contract_tests_ran
+            value: true
+      - kind: action
+        id: note-task-not-red
+        when: task_fails_on_base != true
+        actions:
+          - action: set
+            target: all_contract_tests_fail_on_base
+            value: false
+      - kind: technique
+        id: commit-contract-tests
+        when: task_fails_on_base == true
+        technique:
+          name: manage-git::commit-paths
+          inputs:
+            paths: contract_tests_changed_paths
+            commit_message: "test: contract for {current_task.id}"
+            target_path: contract_tests_path
+            branch_name: contract_tests_branch
+  - kind: action
+    id: publish-base-failure
+    when: contract_tests_ran == true && all_contract_tests_fail_on_base == true
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: true
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Each task's Contract has a failing test suite in the contract-tests worktree
+  - Every suite fails against the base tree before implementation lands

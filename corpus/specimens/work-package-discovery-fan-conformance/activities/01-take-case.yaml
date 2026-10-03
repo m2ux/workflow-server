@@ -1,0 +1,42 @@
+id: take-case
+version: 1.0.1
+name: Take Case
+description: Bind the next fixture case.
+variables:
+  reads:
+    - case_index
+  writes:
+    - name: case_index
+      type: number
+      description: How many cases have been taken.
+      defaultValue: 0
+    - name: needs_research
+      type: boolean
+      description: Whether the research branch does real work.
+required: true
+steps:
+  - kind: action
+    id: take-skip-research-case
+    when: case_index == 1
+    actions:
+      - action: set
+        target: needs_research
+        value: false
+      - action: set
+        target: case_index
+        value: 2
+  - kind: action
+    id: take-research-needed-case
+    when: case_index == 0
+    actions:
+      - action: set
+        target: needs_research
+        value: true
+      - action: set
+        target: case_index
+        value: 1
+exits:
+  - id: taken
+    isDefault: true
+outcome:
+  - Whether the next case needs research

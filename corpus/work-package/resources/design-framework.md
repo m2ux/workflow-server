@@ -9,9 +9,9 @@ metadata:
 
 # Design Framework Guide
 
-Systematic solution design: explore the solution space conventional-before-inventive and record trade-offs with rationale.
-
 ## Design Framework: TRIZICS Approach
+
+Systematic solution design: explore the solution space conventional-before-inventive and record trade-offs with rationale.
 
 Uses the **TRIZICS Software Design** methodology, adapted from systematic innovation principles. Five areas:
 
@@ -104,7 +104,7 @@ Ask: "What would the ideal solution look like if there were no constraints?" The
 
 ## Solution Synthesis & Design
 
-The synthesis lands in the homes the [canonical-home map](./canonical-home-map.md#map) names: the approach, its alternatives and the trade-offs between them in the [work package plan](./wp-plan.md#template); the success criteria in [requirements elicitation](./requirements-elicitation.md#document-template). This guide supplies the method that reaches them.
+The synthesis lands in the homes the [canonical-home map](./canonical-home-map.md#map) names: the approach, its alternatives and the trade-offs between them in the [work package plan](./plan-guide.md#template); the success criteria in [requirements elicitation](./requirements-elicitation.md#document-template). This guide supplies the method that reaches them.
 
 Design validation questions:
 

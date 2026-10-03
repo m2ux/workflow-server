@@ -8,7 +8,6 @@ variables:
     - evaluation_description
     - evaluation_output_path
     - evaluation_target_type
-    - finding_disposition
     - target_path
   writes:
     - name: accepted_count

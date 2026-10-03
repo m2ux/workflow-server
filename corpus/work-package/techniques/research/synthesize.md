@@ -35,7 +35,7 @@ Documented assumptions about pattern applicability — where a pattern's fit to 
 
 Provenance scope of the sources that informed the design: `repo-only` where no external web source did, `web-retrieval` where only a web source did, `mixed` where both a repository or knowledge-base source and a web source did.
 
-### context_scope_uncertain
+### needs_context_scope
 
 True where the run's evidence settles none of the three `{context_scope}` values, false where one of them is established.
 
@@ -49,5 +49,5 @@ True where the run's evidence settles none of the three `{context_scope}` values
 
 ### 2. Scope the Provenance
 
-- Emit `{context_scope}` from which of `{kb_findings}` and `{web_findings}` carried a source that informed the design, and `{context_scope_uncertain}` from whether that evidence settles one value
-  > Where the evidence settles none of the three, leave `{context_scope}` at its bound value and emit `{context_scope_uncertain}` true.
+- Emit `{context_scope}` from which of `{kb_findings}` and `{web_findings}` carried a source that informed the design, and `{needs_context_scope}` from whether that evidence settles one value
+  > Where the evidence settles none of the three, leave `{context_scope}` at its bound value and emit `{needs_context_scope}` true.

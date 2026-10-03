@@ -4,7 +4,6 @@ name: Validate and Commit
 description: The validated workflow change committed on the session feature branch with a pull request against the workflows branch, or the compliance report committed in review mode.
 variables:
   reads:
-    - assumptions_log_path
     - compliance_report
     - component_git_dir
     - draft_attestation_path
@@ -166,7 +165,7 @@ steps:
       variable: operation_type
       operator: "!="
       value: review
-    message: "Workflow '{workflow_id}' ready to commit ([design specification]({specification_path}), [assumptions log]({assumptions_log_path}) open judgements when has_open_assumptions={has_open_assumptions}, [impact analysis]({impact_analysis_path}), [draft attestation]({draft_attestation_path}), [planning README]({planning_folder_path}/README.md))."
+    message: "Workflow '{workflow_id}' ready to commit ([design specification]({specification_path}), open judgements when has_open_assumptions={has_open_assumptions}, [impact analysis]({impact_analysis_path}), [draft attestation]({draft_attestation_path}), [planning README]({planning_folder_path}/README.md))."
     options:
       - id: approved
         label: Approved — commit

@@ -1,0 +1,25 @@
+id: structural-analysis
+version: 1.0.1
+name: Structural Analysis
+description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+variables:
+  reads:
+    - pipeline_mode
+  writes:
+    - name: structural_findings
+      type: array
+      description: The structural-analysis findings for this change from the inline pass.
+required: true
+steps:
+  - kind: technique
+    id: structural-analysis-inline
+    when: pipeline_mode != 'full-prism'
+    technique:
+      name: prism/structural-analysis
+      outputs:
+        structural_analysis: structural_findings
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Structural findings from the inline pass are ready for triage at the review fan's join, or the join runs the full prism pipeline

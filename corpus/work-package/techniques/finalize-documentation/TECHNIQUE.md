@@ -11,11 +11,11 @@ The documentation a closing work package leaves behind, and the planning-folder 
 
 ### adr
 
-*(optional)* The [Architecture Decision Record](../../resources/adr.md#template) created for this work package, if one exists
+*(optional)* The [Architecture Decision Record](../../resources/adr-guide.md#template) created for this work package, if one exists
 
 ### test_plan
 
-The [test plan](../../resources/test-plan.md#test-plan-structure) artifact for this work package
+The [test plan](../../resources/test-plan-guide.md#test-plan-structure) artifact for this work package
 
 ### planning_folder_path
 
@@ -29,7 +29,7 @@ The merged PR number, cross-referenced when recording the ADR implementation out
 
 ### completion_document
 
-[Close-out summary](../../resources/complete-wp-guide.md#template) of delivered work, test coverage, and deferred items
+[Close-out summary](../../resources/close-out-guide.md#template) of delivered work, test coverage, and deferred items
 
 
 ## Rules

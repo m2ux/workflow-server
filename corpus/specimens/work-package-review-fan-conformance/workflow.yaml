@@ -1,0 +1,92 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-review-fan-conformance
+version: 1.0.0
+title: Work Package Review Fan Conformance Workflow
+description: >-
+  Hold the automated review fan by borrowing the three work-package branch activities and walking
+  them side by side into a join that hoists each branch container. Two cases: the inline structural
+  path, and the full-prism deferral on the structural branch.
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - fan
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the session's planning folder.
+  - name: target_repo
+    type: string
+    description: GitHub repository as owner/repo.
+  - name: target_path
+    type: string
+    description: The checkout under review.
+    defaultValue: .
+  - name: component_git_dir
+    type: string
+    description: The git working tree under review.
+    defaultValue: .
+  - name: branch_name
+    type: string
+    description: The branch under review.
+    defaultValue: main
+  - name: pr_number
+    type: string
+    description: The pull request number.
+    defaultValue: "0"
+  - name: problem_statement
+    type: string
+    description: The fixture problem the change answers.
+    defaultValue: The review fan opens three checkpoint-free branches.
+  - name: requirements
+    type: array
+    description: The fixture requirements the change is held to.
+    defaultValue:
+      - The three branches converge on one join.
+  - name: changed_files
+    type: array
+    description: Ordered list of changed file paths.
+    defaultValue: ['src/example.ts']
+  - name: pipeline_mode
+    type: string
+    description: The prism mode the structural branch takes.
+    values:
+      - single
+      - full-prism
+    defaultValue: single
+  - name: case_index
+    type: number
+    description: How many cases have been taken.
+    defaultValue: 0
+  - name: case_outcomes
+    type: array
+    description: What each case's fan landed in the join's bare reports.
+    defaultValue: []
+initialActivity: take-case
+graph:
+  take-case:
+    taken:
+      - code-review
+      - structural-analysis
+      - test-suite-review
+  code-review:
+    done: gather-reviews
+  structural-analysis:
+    done: gather-reviews
+  test-suite-review:
+    done: gather-reviews
+  gather-reviews:
+    gathered: record-case
+  record-case:
+    more-cases: take-case
+    all-cases: report-cases
+  report-cases:
+    reported: __terminal__
+activities:
+  - work-package/17-code-review.yaml
+  - work-package/18-structural-analysis.yaml
+  - work-package/19-test-suite-review.yaml

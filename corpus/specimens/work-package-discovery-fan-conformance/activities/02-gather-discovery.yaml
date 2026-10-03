@@ -1,0 +1,56 @@
+id: gather-discovery
+version: 1.0.0
+name: Gather Discovery
+description: Hoist each branch container and write the surfaced assumptions once, as plan-prepare does.
+variables:
+  reads:
+    - assumptions_log
+    - branch_name
+    - component_git_dir
+    - implementation_analysis_outputs
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - research_outputs
+    - target_path
+    - target_repo
+  writes:
+    - name: analysis_assumptions
+      type: array
+      description: Assumptions hoisted from the implementation-analysis branch.
+      defaultValue: []
+    - name: research_assumptions
+      type: array
+      description: Assumptions hoisted from the research branch.
+      defaultValue: []
+    - name: assumptions_log
+      type: object
+      description: The assumptions log after the one ingest write.
+required: true
+steps:
+  - kind: action
+    id: take-research-fan
+    actions:
+      - action: set
+        target: research_assumptions
+        value: "{research_outputs.0.result.research_assumptions}"
+  - kind: action
+    id: take-analysis-fan
+    actions:
+      - action: set
+        target: analysis_assumptions
+        value: "{implementation_analysis_outputs.0.result.analysis_assumptions}"
+  - kind: technique
+    id: ingest
+    technique:
+      name: work-package::ingest-assumption-surfaces
+      inputs:
+        research_assumptions: research_assumptions
+        analysis_assumptions: analysis_assumptions
+        assumptions_log: assumptions_log
+exits:
+  - id: gathered
+    isDefault: true
+outcome:
+  - Discovery assumptions reach the log through one writer

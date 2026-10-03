@@ -1,0 +1,104 @@
+id: implementation-join
+version: 1.0.0
+name: Implementation Join
+description: >-
+  Specimen join — merge and run stubs, then the disposition and ambiguity gates
+  the work-package join raises when the suite is red.
+variables:
+  reads:
+    - case_kind
+    - contract_tests_fail_on_base
+  writes:
+    - name: contract_tests_merged_paths
+      type: array
+      description: Paths the merge stub reports.
+      defaultValue: []
+    - name: contract_tests_passed
+      type: boolean
+      description: Whether the run stub reports green.
+      defaultValue: false
+    - name: contract_test_failures
+      type: array
+      description: Failures the run stub reports.
+      defaultValue: []
+    - name: join_exit
+      type: string
+      description: Exit taken — done, needs-rework, or needs-contract-tests.
+      defaultValue: ""
+required: true
+steps:
+  - kind: action
+    id: confirm-base-failures
+    actions:
+      - action: validate
+        target: contract_tests_fail_on_base == true
+        message: Contract tests did not fail against the base tree.
+  - kind: technique
+    id: merge-contract-tests
+    technique: merge-contract-tests-stub
+  - kind: action
+    id: note-merged-paths
+    when: contract_tests_merged_paths
+    actions:
+      - action: message
+        message: "Merged contract-test paths: {contract_tests_merged_paths}."
+  - kind: technique
+    id: run-contract-tests
+    technique: run-contract-tests-stub
+  - kind: checkpoint
+    id: contract-test-disposition
+    when: contract_tests_passed != true
+    message: |-
+      Specimen join — contract tests failed against the implementation:
+
+      {contract_test_failures}
+    options:
+      - id: rework-implementation
+        label: Rework the implementation
+        description: The failing assertions are Contract failures.
+        effect:
+          exit: needs-rework
+      - id: dispute-test
+        label: Dispute a test
+        description: The failure is a Contract ambiguity for the user to settle
+  - kind: checkpoint
+    id: contract-ambiguity
+    when: contract_tests_passed != true
+    message: |-
+      Specimen join — a contract test is disputed. The Contract and the failing assertions are:
+
+      {contract_test_failures}
+    options:
+      - id: revise-implementation
+        label: Revise the implementation
+        description: The Contract holds; the implementer reworks the failing tasks
+        effect:
+          exit: needs-rework
+      - id: revise-tests
+        label: Revise the contract tests
+        description: The Contract or its tests are wrong; the contract-tests branch rewrites them
+        effect:
+          exit: needs-contract-tests
+      - id: accept-implementation
+        label: Accept the implementation
+        description: The disputed reading is settled; treat the suite as passing for this join
+        effect:
+          setVariable:
+            contract_tests_passed: true
+            contract_test_failures: []
+  - kind: action
+    id: mark-done-exit
+    when: contract_tests_passed == true
+    actions:
+      - action: set
+        target: join_exit
+        value: done
+exits:
+  - id: needs-rework
+    immediate: true
+  - id: needs-contract-tests
+    immediate: true
+  - id: done
+    isDefault: true
+outcome:
+  - The join ran the suite and took the case's disposition

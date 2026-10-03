@@ -23,13 +23,13 @@ The code changes produced for `{current_task}` — the files changed and the app
 
 ## Outputs
 
-### has_uncertain_symbols
+### needs_symbol_confirmation
 
 `true` when one or more symbols cannot be confirmed against the codebase, declared dependencies, or new symbols introduced by this task; `false` when every referenced symbol resolves cleanly
 
 ### uncertain_symbols
 
-Multi-line list of uncertain symbols (one per line: symbol name + the file/line where it was seen). Empty string when `{has_uncertain_symbols}` is false.
+Multi-line list of uncertain symbols (one per line: symbol name + the file/line where it was seen). Empty string when `{needs_symbol_confirmation}` is false.
 
 ## Protocol
 
@@ -37,7 +37,7 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 
 - Enumerate every symbol `{task_implementation}` introduces or references, in code and in the documents it wrote — change files, architecture decision records, test plans included
 - Establish each one's provenance per [Verification](../resources/symbol-provenance.md#verification), against the codebase, the declared dependencies, and the symbols `{current_task}` creates
-- Populate `{uncertain_symbols}` with every symbol that does not resolve — one per line, with the file and line where it was seen. Set `{has_uncertain_symbols}` to `true` when that list is non-empty, otherwise `false` with an empty `{uncertain_symbols}`.
+- Populate `{uncertain_symbols}` with every symbol that does not resolve — one per line, with the file and line where it was seen. Set `{needs_symbol_confirmation}` to `true` when that list is non-empty, otherwise `false` with an empty `{uncertain_symbols}`.
 
 ### 2. Run Quality Checks
 
@@ -49,8 +49,8 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 
 ### documentation-reflects-code
 
-Every symbol a document names exists in the code it describes, per [Provenance](../resources/symbol-provenance.md#provenance). A name that cannot be verified leaves `{has_uncertain_symbols}` true rather than standing on an assumption.
+Every symbol a document names exists in the code it describes, per [Provenance](../resources/symbol-provenance.md#provenance). A name that cannot be verified leaves `{needs_symbol_confirmation}` true rather than standing on an assumption.
 
 ### assumptions-to-the-log
 
-Assumptions surfaced during the task are recorded as rows in the [assumptions log](../resources/assumptions-review.md#assumptions-log-template) — including a null row when none arise, so the log shows the review ran. This review adds no per-task log sections of its own; symbol-verification failures surface through `{has_uncertain_symbols}`, not the log.
+Assumptions surfaced during the task are recorded as rows in the [assumptions log](../resources/assumptions-review.md#assumptions-log-template) — including a null row when none arise, so the log shows the review ran. This review adds no per-task log sections of its own; symbol-verification failures surface through `{needs_symbol_confirmation}`, not the log.

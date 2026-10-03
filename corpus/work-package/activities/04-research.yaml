@@ -1,12 +1,12 @@
 id: research
-version: 2.20.0
+version: 2.23.1
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 variables:
   reads:
-    - assumption_outcome
     - branch_name
     - component_git_dir
+    - needs_research
     - planning_folder_path
     - pr_number
     - problem_statement
@@ -14,12 +14,6 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumption_review_presentation
-      type: object
-      description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility — with a link to the assumptions log.
-    - name: assumptions_log
-      type: object
-      description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
     - name: context_scope
       type: string
       description: Provenance scope of AI-generated code in this work package.
@@ -28,165 +22,89 @@ variables:
         - web-retrieval
         - mixed
       defaultValue: repo-only
-    - name: context_scope_uncertain
+    - name: needs_context_scope
       type: boolean
       description: True when research run evidence cannot decide repo-only vs web-retrieval vs mixed for context_scope.
-      defaultValue: false
-    - name: has_deferred_assumptions
-      type: boolean
-      description: Whether any assumption was deferred to stakeholders.
-      defaultValue: false
-    - name: has_open_assumptions
-      type: boolean
-      description: Whether unresolved assumptions requiring stakeholder input remain.
       defaultValue: false
     - name: has_reconcilable_research
       type: boolean
       description: Whether open research-reconcilable candidates remain — gaps further knowledge-base or web research could close.
       defaultValue: false
-    - name: has_resolvable_assumptions
-      type: boolean
-      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
-      defaultValue: false
     - name: needs_research
       type: boolean
       description: Whether research phase is needed.
       defaultValue: false
-    - name: open_assumptions
+    - name: research_assumptions
       type: array
-      description: The residual open assumptions awaiting a stakeholder judgement.
+      description: Assumptions this research pass surfaced.
+      defaultValue: []
     - name: research_candidates
       type: array
       description: Inventory of open research gaps, each triaged as reconcilable-by-research or irreconcilable, with its rationale.
-    - name: research_direction
-      type: string
-      description: Text the user typed naming the candidate and the focus for a further research pass.
+      defaultValue: []
+    - name: research_document
+      type: object
+      description: The research findings document produced when research ran.
 required: false
-techniques:
-  - scatter-gather
 steps:
+  - kind: action
+    id: skip-when-not-needed
+    when: needs_research == false
+    actions:
+      - action: set
+        target: research_assumptions
+        value: []
+      - action: set
+        target: research_candidates
+        value: []
+      - action: set
+        target: has_reconcilable_research
+        value: false
+      - action: set
+        target: needs_context_scope
+        value: false
   - kind: technique
     id: research-knowledge-base
+    when: needs_research == true
     technique: research
   - kind: technique
     id: synthesize
+    when: needs_research == true
     technique: synthesize
   - kind: technique
     id: triage-research-candidates
+    when: needs_research == true
     technique: triage
-  - kind: loop
-    id: research-reconciliation
-    name: Research Reconciliation Loop
-    loopType: doWhile
-    continueWhile:
-      type: simple
-      variable: has_reconcilable_research
-      operator: ==
-      value: true
-    maxIterations: 10
-    steps:
-      - kind: technique
-        id: reconcile-research-candidates
-        technique: reconcile
-        when: has_reconcilable_research == true
-      - kind: checkpoint
-        id: research-convergence
-        condition:
-          type: simple
-          variable: has_reconcilable_research
-          operator: ==
-          value: false
-        message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}."
-        defaultOption: accept-research
-        autoAdvanceMs: 30000
-        options:
-          - id: accept-research
-            label: Accept — proceed to planning
-            description: Research is complete; the remaining open candidates are irreconcilable by research.
-          - id: request-more
-            label: Direct further research
-            description: The reply names the candidate and the focus for a further research pass.
-            effect:
-              recordReply: research_direction
-              setVariable:
-                has_reconcilable_research: true
   - kind: technique
-    id: collect-assumptions
+    id: surface-assumptions
+    when: needs_research == true
     technique:
-      name: review-assumptions::collect
+      name: surface-assumptions
       inputs:
         assumption_categories: Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment
+      outputs:
+        surfaced_assumptions: research_assumptions
   - kind: technique
     id: document
+    when: needs_research == true
     technique: document
-  - kind: technique
-    id: update-assumptions-log
-    technique: review-assumptions::record
-  - kind: routine
-    id: assumption-convergence
-    routine: converge-assumptions
-    outputs:
-      assumptions_log: assumptions_log
-      has_resolvable_assumptions: has_resolvable_assumptions
-      has_open_assumptions: has_open_assumptions
-      open_assumptions: open_assumptions
-  - kind: technique
-    id: present-resolved-assumptions
-    technique: review-assumptions::assemble-open-set
+  - kind: action
+    id: announce-derived-context-scope
+    when: needs_research == true && needs_context_scope != true
     actions:
       - action: message
-        message: |-
-          **Assumptions**
-
-          {assumption_review_presentation}
+        message: "Research context scope derived as `{context_scope}`."
   - kind: action
     id: close-research-phase
+    when: needs_research == true
     actions:
       - action: set
         target: needs_research
         value: false
-  - kind: action
-    id: announce-derived-context-scope
-    when: context_scope_uncertain != true
-    actions:
-      - action: message
-        message: "Research context scope derived as `{context_scope}`."
-  - kind: checkpoint
-    id: context-scope-declaration
-    condition:
-      type: simple
-      variable: context_scope_uncertain
-      operator: ==
-      value: true
-    message: The research run's evidence settles no single provenance scope for the sources that informed the design.
-    defaultOption: repo-only
-    autoAdvanceMs: 15000
-    options:
-      - id: repo-only
-        label: Repository only — no external web sources used
-        description: All research was based on codebase and local knowledge (default)
-        effect:
-          setVariable:
-            context_scope: repo-only
-            context_scope_uncertain: false
-      - id: web-retrieval
-        label: External web sources used for design decisions
-        description: Web search, external docs, or third-party references informed the approach
-        effect:
-          setVariable:
-            context_scope: web-retrieval
-            context_scope_uncertain: false
-      - id: mixed
-        label: Both repository and external sources used
-        description: Mix of codebase analysis and external references
-        effect:
-          setVariable:
-            context_scope: mixed
-            context_scope_uncertain: false
 exits:
   - id: done
     isDefault: true
 outcome:
-  - Best practices identified from multiple sources
-  - Patterns validated and mapped to requirements
-  - Risks and anti-patterns documented
+  - Best practices identified from multiple sources when research was needed
+  - Patterns validated and mapped to requirements when research was needed
+  - Assumptions surfaced from this research pass

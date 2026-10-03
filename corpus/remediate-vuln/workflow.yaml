@@ -1,8 +1,8 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.1.0
+version: 3.3.3
 title: Security Vulnerability Remediation Workflow
-description: Remediate security vulnerabilities without public disclosure.
+description: Remediate security vulnerabilities on the private remote.
 author: m2ux
 tags:
   - security
@@ -77,10 +77,6 @@ variables:
     type: string
     description: URL of the pull request for this remediation, empty while disclosure stays private.
     defaultValue: ""
-  - name: assumption_outcome
-    type: string
-    description: The outcome the deciding gate gave the assumption under discussion, empty before any gate has decided one.
-    defaultValue: ""
   - name: safety_floor_cleared
     type: boolean
     description: Whether the applied simplifications hold the ponytail safety floor.
@@ -105,9 +101,13 @@ variables:
     type: boolean
     description: Whether the run reviews an existing pull request, always false in this workflow.
     defaultValue: false
-  - name: skip_optional_activities
+  - name: stealth_mode
     type: boolean
-    description: Whether to skip optional discovery activities (elicitation and research).
+    description: Whether every public-disclosure side-effect is suppressed.
+    defaultValue: true
+  - name: optional_activities_declined
+    type: boolean
+    description: Whether the user declined the optional discovery activities, elicitation and research.
     defaultValue: false
   - name: question_domains
     type: array
@@ -122,6 +122,7 @@ variables:
     defaultValue: false
   - name: implementation_plan
     type: object
+    defaultValue: {}
     description: "Implementation plan ({ task_count, tasks: [{ id, description, status }] })."
   - name: gitnexus_indexed
     type: boolean
@@ -150,6 +151,39 @@ variables:
     type: boolean
     description: Whether the host supports squash merge, always false in this workflow.
     defaultValue: false
+  - name: research_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the research branch of the discovery fan.
+  - name: implementation_analysis_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the implementation-analysis branch of the discovery fan.
+  - name: code_review_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the code-review branch of the review fan.
+  - name: structural_analysis_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the structural-analysis branch of the review fan.
+  - name: test_suite_review_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the test-suite-review branch of the review fan.
+  - name: changed_files
+    type: array
+    defaultValue: []
+    description: Changed file paths.
+  - name: needs_research
+    type: boolean
+    defaultValue: false
+    description: Whether research does real research work.
+
+  - name: task_implementation
+    type: object
+    defaultValue: {"summary": ""}
+    description: Per-task implementation record.
 initialActivity: start
 graph:
   start:
@@ -159,11 +193,15 @@ graph:
     done: codebase-comprehension
     revise-classification: design-philosophy
   requirements-elicitation:
-    research-needed: research
-    no-research-needed: implementation-analysis
+    research-needed:
+      - research
+      - implementation-analysis
+    no-research-needed:
+      - research
+      - implementation-analysis
     elicitation-incomplete: requirements-elicitation
   research:
-    done: implementation-analysis
+    done: plan-prepare
   implementation-analysis:
     done: plan-prepare
   plan-prepare:
@@ -181,6 +219,15 @@ graph:
     done: prism-decision
   prism-decision:
     remeasure: prism-decision
+    done:
+      - code-review
+      - structural-analysis
+      - test-suite-review
+  code-review:
+    done: post-impl-review
+  structural-analysis:
+    done: post-impl-review
+  test-suite-review:
     done: post-impl-review
   post-impl-review:
     done: validate
@@ -202,9 +249,13 @@ graph:
     done: __terminal__
   codebase-comprehension:
     needs-elicitation: requirements-elicitation
-    research-needed: research
+    research-needed:
+      - research
+      - implementation-analysis
     skip-optional-activities: plan-prepare
-    comprehension-complete: implementation-analysis
+    comprehension-complete:
+      - research
+      - implementation-analysis
 activities:
   - work-package/02-design-philosophy.yaml
   - work-package/03-requirements-elicitation.yaml
@@ -215,6 +266,9 @@ activities:
   - work-package/08-implement.yaml
   - work-package/09-lean-coding-audit.yaml
   - work-package/16-prism-decision.yaml
+  - work-package/17-code-review.yaml
+  - work-package/18-structural-analysis.yaml
+  - work-package/19-test-suite-review.yaml
   - work-package/10-post-impl-review.yaml
   - work-package/11-validate.yaml
   - work-package/12-strategic-review.yaml

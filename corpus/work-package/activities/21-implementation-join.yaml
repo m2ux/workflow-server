@@ -1,0 +1,223 @@
+id: implementation-join
+version: 1.1.1
+name: Implementation Join
+description: Join the contract-test results with the implementation.
+variables:
+  reads:
+    - implement_outputs
+    - branch_name
+    - component_git_dir
+    - contract_tests_outputs
+    - default_branch
+    - implementation_plan
+    - is_review_mode
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - target_path
+    - target_repo
+  writes:
+    - name: task_implementation
+      type: object
+      description: Per-task implementation record hoisted from the implement fan.
+    - name: test_status
+      type: object
+      description: Test status hoisted from the implement fan.
+    - name: failures
+      type: array
+      description: Test failures hoisted from the implement fan.
+    - name: commit_sha
+      type: string
+      description: Commit tip hoisted from the implement fan.
+    - name: assumptions_log
+      type: object
+      description: The assumptions log after residual assumptions settle.
+    - name: contract_tests_fail_on_base
+      type: boolean
+      description: Whether the contract-tests branch confirmed failure against the base tree.
+      defaultValue: false
+    - name: contract_tests_path
+      type: string
+      description: Dedicated worktree path the contract-tests branch used.
+      defaultValue: ""
+    - name: contract_tests_branch
+      type: string
+      description: Branch the contract-tests worktree stood on.
+      defaultValue: ""
+    - name: contract_tests_merged_paths
+      type: array
+      description: Contract-test paths copied into the implement worktree.
+      defaultValue: []
+    - name: contract_tests_passed
+      type: boolean
+      description: True when every merged contract suite passes against the implementation.
+      defaultValue: false
+    - name: contract_test_failures
+      type: array
+      description: Failing assertions when the suite is red against the implementation.
+      defaultValue: []
+    - name: current_task
+      type: object
+      description: The implementation-plan task under provenance review.
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumption was deferred to stakeholders.
+      defaultValue: false
+    - name: needs_symbol_confirmation
+      type: boolean
+      description: True when one or more symbols have unconfirmed provenance.
+      defaultValue: false
+    - name: uncertain_symbols
+      type: string
+      description: Symbols whose provenance could not be confirmed, one per line.
+      defaultValue: ""
+required: true
+steps:
+  - kind: action
+    id: take-contract-tests-report
+    when: contract_tests_outputs
+    actions:
+      - action: set
+        target: contract_tests_fail_on_base
+        value: "{contract_tests_outputs.0.result.contract_tests_fail_on_base}"
+      - action: set
+        target: contract_tests_path
+        value: "{contract_tests_outputs.0.result.contract_tests_path}"
+      - action: set
+        target: contract_tests_branch
+        value: "{contract_tests_outputs.0.result.contract_tests_branch}"
+  - kind: action
+    id: take-implement-fan
+    when: implement_outputs
+    actions:
+      - action: set
+        target: task_implementation
+        value: "{implement_outputs.0.result.task_implementation}"
+      - action: set
+        target: test_status
+        value: "{implement_outputs.0.result.test_status}"
+      - action: set
+        target: failures
+        value: "{implement_outputs.0.result.failures}"
+      - action: set
+        target: commit_sha
+        value: "{implement_outputs.0.result.commit_sha}"
+  - kind: action
+    id: confirm-base-failures
+    actions:
+      - action: validate
+        target: contract_tests_fail_on_base == true
+        message: >-
+          Contract tests did not fail against the base tree. Leave a red suite on the contract-tests branch.
+  - kind: technique
+    id: merge-contract-tests
+    technique: merge-contract-tests
+  - kind: technique
+    id: run-contract-tests
+    technique: run-contract-tests
+  - kind: checkpoint
+    id: contract-test-disposition
+    when: contract_tests_passed != true
+    message: |-
+      Contract tests failed against the implementation:
+
+      {contract_test_failures}
+    options:
+      - id: rework-implementation
+        label: Rework the implementation
+        description: The failing assertions are Contract failures.
+        effect:
+          exit: needs-rework
+      - id: dispute-test
+        label: Dispute a test
+        description: The failure is a Contract ambiguity for the user to settle
+  - kind: checkpoint
+    id: contract-ambiguity
+    when: contract_tests_passed != true
+    message: |-
+      A contract test is disputed. The Contract and the failing assertions are:
+
+      {contract_test_failures}
+    options:
+      - id: revise-implementation
+        label: Revise the implementation
+        description: The Contract holds; the implementer reworks the failing tasks
+        effect:
+          exit: needs-rework
+      - id: revise-tests
+        label: Revise the contract tests
+        description: The Contract or its tests are wrong; the contract-tests branch rewrites them
+        effect:
+          exit: needs-contract-tests
+      - id: accept-implementation
+        label: Accept the implementation
+        description: The disputed reading is settled; treat the suite as passing for this join
+        effect:
+          setVariable:
+            contract_tests_passed: true
+            contract_test_failures: []
+  - kind: loop
+    id: provenance-settle-cycle
+    name: Symbol Provenance Settle Cycle
+    loopType: forEach
+    variable: current_task
+    over: implementation_plan.tasks
+    when: contract_tests_passed == true
+    steps:
+      - kind: loop
+        id: provenance-retry
+        name: Provenance Retry
+        loopType: doWhile
+        continueWhile:
+          type: simple
+          variable: needs_symbol_confirmation
+          operator: ==
+          value: true
+        maxIterations: 3
+        steps:
+          - kind: technique
+            id: self-review
+            technique: task-completion-review
+          - kind: checkpoint
+            id: symbol-provenance-confirmed
+            condition:
+              type: simple
+              variable: needs_symbol_confirmation
+              operator: ==
+              value: true
+            message: |-
+              One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
+
+              {uncertain_symbols}
+            options:
+              - id: confirmed
+                label: Symbols are intentional
+                description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
+                effect:
+                  setVariable:
+                    needs_symbol_confirmation: false
+              - id: uncertain
+                label: Trace the flagged symbols again
+                description: The flagged symbols remain unaccounted for.
+                effect:
+                  setVariable:
+                    needs_symbol_confirmation: true
+  - kind: routine
+    id: settle-assumptions
+    routine: settle-assumptions
+    when: contract_tests_passed == true
+    outputs:
+      assumptions_log: assumptions_log
+      has_deferred_assumptions: has_deferred_assumptions
+exits:
+  - id: needs-rework
+    immediate: true
+  - id: needs-contract-tests
+    immediate: true
+  - id: done
+    isDefault: true
+outcome:
+  - Contract tests and the implementation are both in hand
+  - The contract suites fail on the base tree and pass on the implementation
+  - Symbol provenance is settled and the residual assumptions are settled

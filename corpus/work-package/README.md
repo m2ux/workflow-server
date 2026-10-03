@@ -8,7 +8,7 @@
 
 This workflow guides the complete lifecycle of a single work package through its main activities plus a codebase-comprehension sub-flow, entered from design-philosophy or assumptions-review. Each activity has defined techniques, checkpoints, and exits. Activities may be conditional (skipped based on complexity) or looped (repeated on failure), and review mode conditions their steps, checkpoints, and exits.
 
-Assumption and comprehension stages converge agent-resolvable concerns (analyse → challenge → combine) before residual stakeholder asks.
+Where assumptions or comprehension questions are settled, agent-resolvable concerns converge before any residual stakeholder ask.
 
 | # | Activity | Description |
 |---|----------|-------------|
@@ -16,14 +16,19 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 | 02 | [**Design Philosophy**](./activities/README.md#02-design-philosophy) | Classify problem, assess complexity, determine workflow path |
 | 15 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension-optional) | Build/augment mental model of codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](./activities/README.md#03-requirements-elicitation-optional) | Clarify requirements through stakeholder conversation |
-| 04 | [**Research**](./activities/README.md#04-research-optional) | Gather best practices from knowledge base and web |
-| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | Understand current state, establish baselines |
-| 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Create implementation and test plans |
-| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Post plan summary and assumptions to issue tracker for stakeholder review |
+| 04 | [**Research**](./activities/README.md#04-research-optional) | Discovery fan branch — knowledge-base and web research |
+| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | Discovery fan branch — baselines and gaps |
+| 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | Discovery fan join — research gates, assumption ingest, plan |
+| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | Converge the open assumptions and settle what stays open with the user before implementation |
 | 08 | [**Implement**](./activities/README.md#08-implement) | Execute tasks with implement-test-commit cycles |
+| 20 | [**Contract Tests**](./activities/README.md#contract-tests) | Implementation fan branch — contract suites that fail on the base tree |
+| 21 | [**Implementation Join**](./activities/README.md#implementation-join) | Implementation fan join — hoist both branches, run the suites, settle provenance |
 | 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
 | 16 | [**Prism Decision**](./activities/README.md#prism-decision) | Settle whether structural analysis takes the full prism pipeline or the inline pass |
-| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | Manual diff review, code review, structural analysis, test review |
+| 17 | [**Code Review**](./activities/README.md#code-review) | Automated review fan branch — code findings |
+| 18 | [**Structural Analysis**](./activities/README.md#structural-analysis) | Automated review fan branch — inline structural pass |
+| 19 | [**Test Suite Review**](./activities/README.md#test-suite-review) | Automated review fan branch — coverage map and test findings |
+| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | Review fan join — manual diff gates, full prism when chosen, classify, fix cycle |
 | 11 | [**Validate**](./activities/README.md#11-validate) | Run tests, build, and lint checks |
 | 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | Ensure minimal, focused changes |
 | 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | Push PR, mark ready, handle reviewer feedback |
@@ -41,51 +46,7 @@ The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) tec
 
 ## Workflow Flow
 
-```mermaid
-graph TD
-    startNode(["Start"]) --> SWP["01 start-work-package"]
-    SWP -->|"done"| DP["02 design-philosophy"]
-
-    DP -->|"revise-classification"| DP
-    DP -->|"done"| CC["codebase-comprehension"]
-
-    CC -->|"needs-elicitation"| REL["03 requirements-elicitation"]
-    CC -->|"research-needed"| RS["04 research"]
-    CC -->|"skip-optional-activities"| PP["06 plan-prepare"]
-    CC -->|"comprehension-complete"| IA["05 implementation-analysis"]
-
-    REL -->|"elicitation-incomplete"| REL
-    REL -->|"research-needed"| RS
-    REL -->|"no-research-needed"| IA
-    RS -->|"done"| IA
-    IA -->|"done"| PP
-
-    PP -->|"revise"| PP
-    PP -->|"done"| AR["07 assumptions-review"]
-
-    AR -->|"needs-further-discussion"| AR
-    AR -->|"needs-comprehension"| CC
-    AR -->|"needs-plan-revision"| PP
-    AR -->|"review-mode"| LCA["09 lean-coding-audit"]
-    AR -->|"assumptions-approved"| IMP["08 implement"]
-
-    IMP -->|"done"| LCA
-    LCA -->|"done"| PD["16 prism-decision"]
-    PD -->|"remeasure"| PD
-    PD -->|"done"| PIR["10 post-impl-review"]
-    PIR -->|"has-blocker"| IMP
-    PIR -->|"done"| VAL["11 validate"]
-    VAL -->|"done"| SR["12 strategic-review"]
-
-    SR -->|"review-failed"| PP
-    SR -->|"review-mode / review-passed"| SFR["13 submit-for-review"]
-
-    SFR -->|"provide-input"| SFR
-    SFR -->|"review-requires-changes"| PP
-    SFR -->|"review-mode / review-approved / abort"| COMP["14 complete"]
-
-    COMP -->|"done"| doneNode(["End"])
-```
+Activity order and the exits between activities are the `graph` in [workflow.yaml](./workflow.yaml).
 
 ---
 ## Orchestration Model

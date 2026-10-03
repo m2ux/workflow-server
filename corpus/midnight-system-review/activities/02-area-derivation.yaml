@@ -4,7 +4,6 @@ name: Area Derivation
 description: Derive bounded investigation areas from the change surface and subsystem map, and secure approval of the investigation plan.
 variables:
   reads:
-    - plan_approved
     - planning_folder_path
     - probe_budget_per_area
     - target_repo_path

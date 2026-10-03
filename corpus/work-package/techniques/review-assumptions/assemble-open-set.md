@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,13 +11,13 @@ Judgement-augmentation context over the whole residual open-assumption set, orde
 
 ### open_assumptions
 
-The residual open assumptions to assemble, each carrying its statement, category and the agent's position. Empty where analyse-challenge resolved every assumption.
+The residual open assumptions to assemble, each carrying its statement, category and the agent's position. Empty when none remain open.
 
 ## Outputs
 
 ### assumption_review_presentation
 
-Judgement-augmentation context for every open assumption, each entry on the [Assumptions Log Template](../../resources/assumptions-review.md#assumptions-log-template) field shape, closing with a link to the assumptions log.
+Judgement-augmentation context for every open assumption, each entry on the [Assumptions Log Template](../../resources/assumptions-review.md#assumptions-log-template) field shape.
 
 ## Protocol
 
@@ -27,9 +27,8 @@ Judgement-augmentation context for every open assumption, each entry on the [Ass
 
 ### 2. Order the Set
 
-- Order the entries by decision impact
-  > At five or more entries, group them by theme and order the themes by impact.
+- Order the entries by decision impact.
 
 ### 3. Emit the Presentation
 
-- Close with a markdown link to the assumptions log and emit `{assumption_review_presentation}`
+- Emit `{assumption_review_presentation}`

@@ -2,7 +2,7 @@
 name: canonical-home-map
 description: The one artifact that homes each shared fact category, and the link-only slot rule every other template follows.
 metadata:
-  version: 1.0.2
+  version: 1.0.3
 ---
 
 # Canonical Home Map
@@ -17,12 +17,13 @@ The canonical home for each shared fact category.
 | Problem classification | `design-philosophy.md` (plus a 2–4 sentence ticket-derived statement — written before requirements exists, so it carries its own budgeted statement) |
 | Assumptions and their outcomes | `assumptions-log.md` |
 | Design decisions, alternatives, planning risks | `work-package-plan.md` (durable decisions graduate to an ADR at completion) |
+| Task contracts (signatures, behaviours, error cases, acceptance) | `work-package-plan.md` (each task's Contract block) |
 | Baseline metrics, gaps, measurement strategy | `implementation-analysis.md` |
 | Research findings and recommended approach | `kb-research.md` |
 | Test cases and acceptance matrix | `test-plan.md` |
 | Review findings (code, test, structural, lean-coding, manual-diff) | `code-review.md` and the reviews' own artifacts — consolidated surfaces reference findings by ID + disposition |
-| In-task follow-ups | `follow-ups.json` (see [follow-ups](./follow-ups.md)) |
-| Out-of-scope deferred items | `deferred-items.json` (see [deferred-items](./deferred-items.md)) |
+| In-task follow-ups | `follow-ups.json` (see [follow-ups](./follow-ups-guide.md)) |
+| Out-of-scope deferred items | `deferred-items.json` (see [deferred-items](./deferred-items-guide.md)) |
 | Token counts and cost estimates | `token-usage.md` — the close-out, retrospective and session trace link it and restate no figure, so one ledger produces one artifact |
 | Mechanical execution record (dispatches, tool calls, durations, errors) | `session-trace.md` (see [session-trace](/meta/resources/session-trace.md)) |
 

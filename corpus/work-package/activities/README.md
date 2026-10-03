@@ -34,7 +34,7 @@ Definition: [`15-codebase-comprehension.yaml`](./15-codebase-comprehension.yaml)
 
 ### 03. Requirements Elicitation (optional)
 
-Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so that planning starts from agreed requirements rather than guesses. Skipped in review mode (requirements come from the ticket). Leads to research or directly to implementation-analysis.
+Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so planning starts from agreed requirements. Skipped in review mode (requirements come from the ticket). Both exits fan to research and implementation-analysis together.
 
 Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.yaml)
 
@@ -42,7 +42,7 @@ Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.y
 
 ### 04. Research (optional)
 
-Gathers best practices, patterns, and reference material from the knowledge base and external sources to inform the plan, and reconciles or interviews any open assumptions surfaced along the way. Leads to implementation-analysis.
+Gathers best practices, patterns, and reference material from the knowledge base and external sources, and surfaces assumptions as a value. A branch of the discovery fan when research is needed; converges on plan-prepare. Research's soft gates live at the join.
 
 Definition: [`04-research.yaml`](./04-research.yaml)
 
@@ -50,7 +50,7 @@ Definition: [`04-research.yaml`](./04-research.yaml)
 
 ### 05. Implementation Analysis (optional)
 
-Analyzes the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. Leads to plan-prepare.
+Analyzes the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. A branch of the discovery fan beside research; both converge on plan-prepare.
 
 Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yaml)
 
@@ -58,7 +58,7 @@ Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yam
 
 ### 06. Plan & Prepare
 
-Designs the approach and produces the work-package plan (task breakdown) and test plan, then prepares the branch and PR for implementation. This is the convergence point for all optional discovery paths, and the target that rework loops return to. Leads to assumptions-review.
+The discovery fan's join: raises research's gates, writes the assumptions the branches surfaced into the log once, then designs the approach and produces the work-package plan and test plan. Convergence point for all optional discovery paths, and the target that rework loops return to. Leads to assumptions-review.
 
 Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
@@ -66,7 +66,7 @@ Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
 ### 07. Assumptions Review
 
-Settles the open assumptions the plan rests on before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
+Converges the assumptions logged since design philosophy and settles those still open, so the plan rests on settled assumptions before code is written. May loop back for further discussion, deeper comprehension, or plan revision. Review mode continues to lean-coding audit. An approved set fans to contract-tests and implement together.
 
 Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 
@@ -74,9 +74,25 @@ Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 
 ### 08. Implement
 
-Executes the implementation plan task by task, turning the plan into committed, tested work. Skipped in review mode (the code already exists). Leads to lean-coding-audit.
+Executes the implementation plan task by task in its own worktree, turning the plan into committed work. A branch of the implementation fan beside contract-tests; both converge on implementation-join. Skipped in review mode (the code already exists).
 
 Definition: [`08-implement.yaml`](./08-implement.yaml)
+
+---
+
+### Contract Tests
+
+Writes each task's contract tests from the Contract alone into a dedicated worktree, and confirms each suite fails against the base tree. A branch of the implementation fan that converges on implementation-join.
+
+Definition: [`20-contract-tests.yaml`](./20-contract-tests.yaml)
+
+---
+
+### Implementation Join
+
+The implementation fan's join: hoists the contract-tests and implement branch containers, confirms contract suites are red against the base tree, runs them against the implementation, and settles symbol provenance and residual assumptions. A failing suite returns to implement; a disputed test reaches the user as a contract ambiguity. Leads to lean-coding-audit when the suite passes.
+
+Definition: [`21-implementation-join.yaml`](./21-implementation-join.yaml)
 
 ---
 
@@ -90,15 +106,39 @@ Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
 
 ### Prism Decision
 
-Settles which structural analysis post-implementation review runs — the full prism pipeline or the single inline pass — on an assessed recommendation where the change is complex. Leads to post-impl-review, or measures the change again.
+Settles which structural analysis the review fan and its join run — the full prism pipeline or the single inline pass — on an assessed recommendation where the change is complex. Leads to the automated review fan, or measures the change again.
 
 Definition: [`16-prism-decision.yaml`](./16-prism-decision.yaml)
 
 ---
 
+### Code Review
+
+Reviews the change's code for architecture, error handling, safety and project-specific patterns. A branch of the automated review fan that converges on post-impl-review.
+
+Definition: [`17-code-review.yaml`](./17-code-review.yaml)
+
+---
+
+### Structural Analysis
+
+Runs the single inline structural pass when prism-decision settled that mode. A branch of the automated review fan; the full prism pipeline runs at post-impl-review.
+
+Definition: [`18-structural-analysis.yaml`](./18-structural-analysis.yaml)
+
+---
+
+### Test Suite Review
+
+Maps diff coverage and reviews the test suite for gaps, assertion quality and anti-patterns. A branch of the automated review fan that converges on post-impl-review.
+
+Definition: [`19-test-suite-review.yaml`](./19-test-suite-review.yaml)
+
+---
+
 ### 10. Post-Implementation Review
 
-Reviews implementation quality, catching issues before validation. Each review states its findings in one report. Structural analysis takes the pass prism-decision settled. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. A critical blocker routes back to implement for remediation; otherwise leads to validate.
+The automated review fan's join: raises the manual diff review gates, runs the full prism pipeline when chosen, classifies the branches' findings, and runs the fix cycle. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author. A critical blocker routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
@@ -106,7 +146,7 @@ Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
 ### 11. Validate
 
-Validates the implementation against tests, build, format, and lint checks when the local environment can run them. In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
+Validates the implementation against tests, build, format, and lint checks when the local environment can run them. In review mode it documents failures as findings and assesses coverage. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
 
 Definition: [`11-validate.yaml`](./11-validate.yaml)
 

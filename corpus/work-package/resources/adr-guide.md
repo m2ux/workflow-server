@@ -1,11 +1,13 @@
 ---
-name: adr
+name: adr-guide
 description: Creation guide for bare filename `NNNN-{decision_title}.md` — the architecture decision record, in standard ADR form, carrying at least one rejected alternative and opening at Proposed status.
 metadata:
   order: 32
 ---
 
 # Architecture Decision Record Guide
+
+## Record
 
 Creation guide for the sequentially numbered `NNNN-{decision_title}.md` records. An ADR outlives the work package that produced it, so it is written for someone with no memory of the run: what forced the decision, what was chosen, what that costs, and what was turned down.
 

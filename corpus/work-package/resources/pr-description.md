@@ -2,13 +2,15 @@
 name: pr-description
 description: PR description templates and link-row rendering forms.
 metadata:
-  version: 1.9.0
+  version: 1.9.1
   order: 12
   legacy_id: 12
 ---
 
 
 # Pull Request Description Guide
+
+## When This Guide Applies
 
 Apply this guide to all PRs that introduce features, fix bugs, refactor, make architectural changes, or update dependencies with breaking changes. Simplified descriptions are acceptable for documentation-only changes, typo fixes, non-breaking dependency bumps, and automated/generated changes.
 
@@ -151,7 +153,7 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 `{ENG_PLANNING_PATH}` is the planning root relative to the root of the checkout `{ENG_BRANCH}` belongs to, so it carries the `.engineering/` segment only when the artifacts live directly in that checkout.
 
-**Issue-skipped placeholder** (when `issue_skipped == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional):
+**Issue-skipped placeholder** (when `issue_creation_declined == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional):
 
 ```markdown
 🐛 _Issue: skipped_  📐 `Engineering`
@@ -163,7 +165,7 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 _Jira: [{JIRA_ISSUE_KEY}](https://{JIRA_DOMAIN}/browse/{JIRA_ISSUE_KEY})_
 ```
 
-ADR and test-plan links are added to the row when those artifacts exist (see [architecture-review](architecture-review.md), [test-plan](test-plan.md)).
+ADR and test-plan links are added to the row when those artifacts exist (see [architecture-review](architecture-review.md); the test plan artifact is `test-plan.md`).
 
 ## Rules
 
@@ -195,7 +197,7 @@ The Engineering link is present and resolves to a committed file on the remote. 
 
 ### Issue line present
 
-The Issue line is present. When `issue_skipped` is true it renders the [Issue-skipped placeholder](#link-row-forms) rather than dropping the line or carrying a fabricated number.
+The Issue line is present. When `issue_creation_declined` is true it renders the [Issue-skipped placeholder](#link-row-forms) rather than dropping the line or carrying a fabricated number.
 
 ### Changes grouped by component
 

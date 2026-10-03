@@ -2,7 +2,7 @@
   "note": "Triage of the section-framing guard's findings. A resource cited by anchor is delivered one section at a time, so prose above the first '##' reaches whoever loads the whole file and nobody who asks for a section. The guard finds every such site mechanically; whether the prose is an obligation or an orientation is a judgement, and this file records it. orientation-only = the framing says what the resource is and who reads it, so a section consumer needs none of it. operative-owed-a-section = the framing states a rule that binds work the section consumer does, which is real debt: suppressed here and counted, to be closed by moving the rule into a section a citer can request. A site absent from this file is untriaged and reported; an entry matching nothing is stale and reported.",
   "rationales": {
     "orientation-only": "The framing names the resource, its subject and its reader. A consumer that asks for one section can apply that section without it, so nothing is stranded. This is the shape the creation guides share: 'Creation guide for bare filename X', then what the document answers.",
-    "operative-owed-a-section": "The framing states a rule rather than an orientation, and a consumer citing a section never receives it. Closing this means moving the rule into a section a citer can request, or into the technique that applies it — a content change in the owning workflow, not a triage entry. Counted here so the debt is visible rather than silent."
+    "operative-owed-a-section": "The framing states a rule rather than an orientation, and a consumer citing a section never receives it. Closing this means moving the rule into a section a citer can request, or into the technique that applies it \u2014 a content change in the owning workflow, not a triage entry. Counted here so the debt is visible rather than silent."
   },
   "entries": [
     {
@@ -256,47 +256,12 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/adr.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/architecture-review.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "work-package/resources/architecture-summary.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/assumption-reconciliation.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "work-package/resources/codebase-comprehension.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/deferred-items.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/design-framework.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/follow-ups.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/issue-creation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -307,31 +272,6 @@
     },
     {
       "site": "work-package/resources/jira-issue-creation.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/knowledge-base-research.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/pr-description.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/prior-feedback-triage.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/provenance-log.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/requirements-elicitation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -351,17 +291,7 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/test-plan.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "work-package/resources/test-suite-review.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "work-package/resources/wp-plan.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
@@ -472,11 +402,6 @@
     },
     {
       "site": "workflow-design/resources/findings-satellite.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "workflow-design/resources/follow-ups.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },

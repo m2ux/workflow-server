@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 4.4.0
+version: 4.9.1
 title: Work Package Implementation Workflow
 description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, an audit of an existing pull request, or any other deliverable. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -20,9 +20,9 @@ variables:
     type: boolean
     defaultValue: false
     description: True when the work package reviews an existing PR instead of producing a new implementation.
-  - name: skip_optional_activities
+  - name: optional_activities_declined
     type: boolean
-    description: Whether to skip optional discovery activities (elicitation and research).
+    description: Whether the user declined the optional discovery activities, elicitation and research.
     defaultValue: false
   - name: target_path
     type: string
@@ -52,10 +52,6 @@ variables:
       - task
       - enhancement
       - epic
-  - name: assumption_outcome
-    type: string
-    description: The outcome given the assumption under discussion. Empty before one has been decided.
-    defaultValue: ""
   - name: user_request
     type: string
     description: The user's free-form request that opened this work package.
@@ -102,6 +98,7 @@ variables:
     defaultValue: ""
   - name: implementation_plan
     type: object
+    defaultValue: {}
     description: The ordered tasks the change is built from, each with its crate and description.
   - name: issue_title
     type: string
@@ -122,6 +119,61 @@ variables:
     type: string
     description: The issue key, URL, or surrounding text the user supplied when opening the work package, or typed in reply to the issue-verification gate.
     defaultValue: ""
+  # Fan barriers write these containers; empty default covers skip-optional → join paths.
+  - name: research_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the research branch of the discovery fan.
+  - name: implementation_analysis_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the implementation-analysis branch of the discovery fan.
+  - name: code_review_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the code-review branch of the review fan.
+  - name: structural_analysis_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the structural-analysis branch of the review fan.
+  - name: test_suite_review_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the test-suite-review branch of the review fan.
+  - name: contract_tests_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the contract-tests branch of the implementation fan.
+  - name: implement_outputs
+    type: array
+    defaultValue: []
+    description: Fan container for the implement branch of the implementation fan.
+
+  - name: test_status
+    type: object
+    defaultValue: {}
+    description: The latest test-check status.
+  - name: failures
+    type: array
+    defaultValue: []
+    description: Per-test failure detail.
+  - name: commit_sha
+    type: string
+    defaultValue: ""
+    description: Tip commit of the change.
+  - name: needs_research
+    type: boolean
+    defaultValue: false
+    description: Whether research runs.
+  - name: task_implementation
+    type: object
+    defaultValue: {"summary": ""}
+    description: Per-task implementation record.
+  - name: changed_files
+    type: array
+    defaultValue: []
+    description: Changed file paths.
+
 initialActivity: start-work-package
 graph:
   start-work-package:
@@ -130,11 +182,15 @@ graph:
     done: codebase-comprehension
     revise-classification: design-philosophy
   requirements-elicitation:
-    research-needed: research
-    no-research-needed: implementation-analysis
+    research-needed:
+      - research
+      - implementation-analysis
+    no-research-needed:
+      - research
+      - implementation-analysis
     elicitation-incomplete: requirements-elicitation
   research:
-    done: implementation-analysis
+    done: plan-prepare
   implementation-analysis:
     done: plan-prepare
   plan-prepare:
@@ -145,13 +201,30 @@ graph:
     needs-plan-revision: plan-prepare
     needs-further-discussion: assumptions-review
     review-mode: lean-coding-audit
-    assumptions-approved: implement
+    assumptions-approved:
+      - contract-tests
+      - implement
+  contract-tests:
+    done: implementation-join
   implement:
+    done: implementation-join
+  implementation-join:
     done: lean-coding-audit
+    needs-rework: implement
+    needs-contract-tests: contract-tests
   lean-coding-audit:
     done: prism-decision
   prism-decision:
     remeasure: prism-decision
+    done:
+      - code-review
+      - structural-analysis
+      - test-suite-review
+  code-review:
+    done: post-impl-review
+  structural-analysis:
+    done: post-impl-review
+  test-suite-review:
     done: post-impl-review
   post-impl-review:
     done: validate
@@ -173,6 +246,10 @@ graph:
     done: __terminal__
   codebase-comprehension:
     needs-elicitation: requirements-elicitation
-    research-needed: research
+    research-needed:
+      - research
+      - implementation-analysis
     skip-optional-activities: plan-prepare
-    comprehension-complete: implementation-analysis
+    comprehension-complete:
+      - research
+      - implementation-analysis

@@ -1,8 +1,8 @@
 ---
 name: assumption-reconciliation
-description: Resolvability classification, assumptions-log integration shape, resolution statuses, and scorecard format for assumption reconciliation.
+description: Resolvability classification, assumptions-log integration shape, and resolution statuses for assumption reconciliation.
 metadata:
-  version: 1.4.0
+  version: 1.5.0
   order: 26
   legacy_id: 26
 ---
@@ -10,9 +10,9 @@ metadata:
 
 # Assumption Reconciliation
 
-Log-integration shape and scorecard format for assumption reconciliation. Status vocabulary and row update rules below; fill the [assumptions log template](assumptions-review.md#assumptions-log-template) accordingly.
-
 ## Resolvability Classification
+
+Log-integration shape for assumption reconciliation. Status vocabulary and row update rules below; fill the [assumptions log template](assumptions-review.md#assumptions-log-template) accordingly.
 
 Which assumptions code analysis can settle, and which it cannot. Every open assumption takes one of these three classifications, and the classification is what decides whether another analysis pass is warranted.
 
@@ -73,12 +73,3 @@ The log holds one table row per assumption (see the [assumptions log template](a
 ### Markdown formatting rule
 
 Bold-label entries follow the [markdown-line-breaks](../techniques/manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule.
-
-## Scorecard
-
-Scorecard shape (counts only — not persisted in the log):
-
-```
-Total: N | Validated: N | Invalidated: N | Partially Validated: N | Open: N
-Convergence iterations: N | Newly surfaced: N
-```

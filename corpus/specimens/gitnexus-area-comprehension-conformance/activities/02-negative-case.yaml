@@ -7,9 +7,6 @@ variables:
     - host_repo_path
     - negative_search_query
   writes:
-    - name: repo_name
-      type: string
-      description: The graph every answer in this run came from, which a report naming those answers names too.
     - name: negative_index_stats
       type: object
       description: File, symbol and process counts the graph holds.
@@ -37,7 +34,6 @@ steps:
       tree_path: "{host_repo_path}"
       repo_path: "{host_repo_path}"
     outputs:
-      repo_name: repo_name
       index_stats: negative_index_stats
       index_stale: negative_index_stale
       query_report: negative_query_report

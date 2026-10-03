@@ -1,0 +1,22 @@
+id: report-cases
+version: 1.0.1
+name: Report Cases
+description: Write the case report.
+variables:
+  reads:
+    - case_outcomes
+    - planning_folder_path
+  writes:
+    - name: contract_tests_fan_case_report
+      type: object
+      description: What the fan landed.
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - "What each case landed: whether the suite failed on the base tree, and the worktree path and branch"

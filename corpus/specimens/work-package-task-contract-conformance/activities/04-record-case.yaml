@@ -1,0 +1,29 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the write and Contract check landed for the case just walked.
+variables:
+  reads:
+    - case_index
+    - case_outcomes
+    - contract_check_held
+    - absent_contract_fields
+    - contract_complete
+    - plan_document
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What each case's write and check landed.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: more-cases
+    when: case_index < 2
+  - id: all-cases
+    isDefault: true
+outcome:
+  - One outcome per case walked

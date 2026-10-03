@@ -49,7 +49,7 @@ The out-of-scope deferrals register, named by its bare filename.
 
 ### completion_document
 
-[Close-out summary](../../resources/complete-wp-guide.md#template) of delivered work, test coverage, and the open work its registers hold.
+[Close-out summary](../../resources/close-out-guide.md#template) of delivered work, test coverage, and the open work its registers hold.
 
 #### artifact
 
@@ -67,7 +67,7 @@ Path to the written close-out document, for user-facing links.
 
 ### 1. Create Completion Document
 
-- Create the `{completion_document}` at the `{planning_folder_path}` following the close-out [Template](../../resources/complete-wp-guide.md#template) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files. Emit its path as `{completion_document_path}`.
+- Create the `{completion_document}` at the `{planning_folder_path}` following the close-out [Template](../../resources/close-out-guide.md#template) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files. Emit its path as `{completion_document_path}`.
 
 ### 2. Summarise What Was Delivered
 
@@ -80,7 +80,7 @@ Path to the written close-out document, for user-facing links.
 
 ### 4. State Open Work
 
-- Read `{follow_ups_register}` and `{deferred_items_register}` in `{planning_folder_path}` (shapes per the [follow-ups template](../../resources/follow-ups.md#template) and [deferred-items template](../../resources/deferred-items.md#template)), then write Open Work as one line per register that exists, carrying its open count, each open entry's ID and one-line item, and a link to each issue raised from it. Omit the section when neither register exists.
+- Read `{follow_ups_register}` and `{deferred_items_register}` in `{planning_folder_path}` (shapes per the [follow-ups template](../../resources/follow-ups-guide.md#template) and [deferred-items template](../../resources/deferred-items-guide.md#template)), then write Open Work as one line per register that exists, carrying its open count, each open entry's ID and one-line item, and a link to each issue raised from it. Omit the section when neither register exists.
 
 ### 5. Link Supporting Records
 

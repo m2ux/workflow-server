@@ -16,6 +16,7 @@ inputs:
 outputs:
   - id: repo_name
     type: string
+    optional: true
     description: The graph every answer in this run came from, which a report naming those answers names too.
   - id: index_stats
     type: object

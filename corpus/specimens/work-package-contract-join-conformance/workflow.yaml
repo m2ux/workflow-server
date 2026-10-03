@@ -1,0 +1,88 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-contract-join-conformance
+version: 1.0.0
+title: Work Package Contract Join Conformance Workflow
+description: >-
+  Hold the implementation join's contract-test run to three cases. The pass case
+  merges and runs green. The rework case fails and returns to the implementer.
+  The dispute case fails, reaches the user as a contract ambiguity, and revises tests.
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the session's planning folder.
+  - name: case_index
+    type: number
+    description: How many cases have been taken.
+    defaultValue: 0
+  - name: case_kind
+    type: string
+    description: Which disposition case is under walk — pass, rework, or dispute.
+    defaultValue: pass
+    values:
+      - pass
+      - rework
+      - dispute
+  - name: contract_tests_fail_on_base
+    type: boolean
+    description: Seeded true — suites already failed on the base tree.
+    defaultValue: true
+  - name: contract_tests_path
+    type: string
+    description: Stub contract-tests worktree path.
+    defaultValue: contract-tests-worktree
+  - name: contract_tests_branch
+    type: string
+    description: Stub contract-tests branch.
+    defaultValue: feat/0-contract-tests
+  - name: target_path
+    type: string
+    description: Stub implement worktree path.
+    defaultValue: implement-worktree
+  - name: contract_tests_merged_paths
+    type: array
+    description: Paths the merge stub reports.
+    defaultValue: []
+  - name: contract_tests_passed
+    type: boolean
+    description: Whether the run stub reports green.
+    defaultValue: false
+  - name: contract_test_failures
+    type: array
+    description: Failures the run stub reports.
+    defaultValue: []
+  - name: case_outcomes
+    type: array
+    description: What each case's join landed.
+    defaultValue: []
+  - name: join_exit
+    type: string
+    description: Exit the join took. Empty until the join chooses one.
+    values:
+      - ""
+      - done
+      - needs-rework
+      - needs-contract-tests
+    defaultValue: ""
+initialActivity: take-case
+graph:
+  take-case:
+    taken: prepare-join
+  prepare-join:
+    prepared: implementation-join
+  implementation-join:
+    done: record-case
+    needs-rework: record-case
+    needs-contract-tests: record-case
+  record-case:
+    more-cases: take-case
+    all-cases: report-cases
+  report-cases:
+    reported: __terminal__

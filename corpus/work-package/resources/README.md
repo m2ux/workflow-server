@@ -14,8 +14,8 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `implementation-analysis` | Implementation Analysis | Analysis framework and document template |
 | `knowledge-base-research` | Knowledge Base Research | Research findings artifact template — knowledge-base and web findings in one list — and citation rules |
 | `design-framework` | Design Framework | TRIZICS solution-design methodology applied at plan time, plus the design-philosophy artifact template |
-| `wp-plan` | Work Package Plan | Plan document template with task breakdown format |
-| `test-plan` | Test Plan | Test plan templates and test-design principles |
+| `plan-guide` | Work Package Plan | Plan document template with task breakdown format |
+| `test-plan-guide` | Test Plan | Test plan templates and test-design principles |
 | `pr-description` | PR Description | PR description templates, link-row rendering forms, and the conformance criteria a rendered body satisfies |
 | `assumptions-review` | Assumptions Review | Assumption collection, classification, and document formats |
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
@@ -26,19 +26,19 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `strategic-review` | Strategic Review | Strategic review field list and report template |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective methodology and section template |
-| `complete-wp-guide` | Complete Work Package | Close-out document template and fill rules |
+| `close-out-guide` | Close-out | Close-out document template and fill rules |
 | `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (titles naming each change, linked to its line) — the report renders as a code-review.md section |
-| `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact points at |
-| `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |
+| `deferred-items-guide` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact points at |
+| `follow-ups-guide` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope deferred items) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Review comment template, per-category findings fragments, and the scales they share |
 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, corpus and log artifact templates, promotion criteria, and deep-dive guidance from reverse engineering and code forensics literature |
-| `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats |
+| `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration shape and resolution statuses |
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
-| `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.json` — the disposition register the rating cap is computed from |
-| `provenance-log` | Provenance Log | Creation guide: `provenance-log.md` — one appended row per task |
-| `adr` | Architecture Decision Record | Creation guide: `NNNN-{decision_title}.md` — standard ADR form with at least one rejected alternative |
+| `prior-feedback-triage-guide` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.json` — the disposition register the rating cap is computed from |
+| `provenance-log-guide` | Provenance Log | Creation guide: `provenance-log.md` — one appended row per task |
+| `adr-guide` | Architecture Decision Record | Creation guide: `NNNN-{decision_title}.md` — standard ADR form with at least one rejected alternative |
 
 ## Planning artifact to guide map
 
@@ -50,16 +50,16 @@ Which guide owns each persisted filename's shape.
 | `requirements-elicitation.md` | [requirements-elicitation](requirements-elicitation.md) |
 | `implementation-analysis.md` | [implementation-analysis](implementation-analysis.md) |
 | `assumptions-log.md` | [assumptions-review](assumptions-review.md) |
-| `deferred-items.json` | [deferred-items](deferred-items.md) |
-| `follow-ups.json` | [follow-ups](follow-ups.md) |
-| `test-plan.md` | [test-plan](test-plan.md) |
+| `deferred-items.json` | [deferred-items-guide](deferred-items-guide.md) |
+| `follow-ups.json` | [follow-ups-guide](follow-ups-guide.md) |
+| `test-plan.md` | [test-plan-guide](test-plan-guide.md) |
 | `code-review.md` | [rust-substrate-code-review](rust-substrate-code-review.md#report-template) |
 | `test-suite-review.md` | [test-suite-review](test-suite-review.md) |
 | `session-trace.md` | [session-trace](/meta/resources/session-trace.md) |
 | `change-block-index.md` | [manual-diff-review](manual-diff-review.md#file-index-generation) |
 | `token-usage.md` | [token-usage](/meta/resources/token-usage.md) |
-| `provenance-log.md` | [provenance-log](provenance-log.md) |
-| `NNNN-{decision_title}.md` | [adr](adr.md) |
+| `provenance-log.md` | [provenance-log-guide](provenance-log-guide.md) |
+| `NNNN-{decision_title}.md` | [adr-guide](adr-guide.md) |
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
 | `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
 | `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md#corpus-artifact-template) |
@@ -67,5 +67,5 @@ Which guide owns each persisted filename's shape.
 | `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md` | [pr-review-response](pr-review-response.md) |
 | `kb-research.md` | [knowledge-base-research](knowledge-base-research.md) |
 | `design-philosophy.md` | [design-framework](design-framework.md) |
-| `COMPLETE.md` | [complete-wp-guide](complete-wp-guide.md) |
-| `work-package-plan.md` | [wp-plan](wp-plan.md) |
+| `COMPLETE.md` | [close-out-guide](close-out-guide.md) |
+| `work-package-plan.md` | [plan-guide](plan-guide.md) |

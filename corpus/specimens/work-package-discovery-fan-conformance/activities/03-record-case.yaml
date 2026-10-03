@@ -1,0 +1,29 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the discovery fan landed for the case just walked.
+variables:
+  reads:
+    - analysis_assumptions
+    - assumptions_log
+    - case_index
+    - case_outcomes
+    - needs_research
+    - research_assumptions
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What each case's fan landed at the join.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: more-cases
+    when: case_index < 2
+  - id: all-cases
+    isDefault: true
+outcome:
+  - One outcome per case walked

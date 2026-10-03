@@ -1,0 +1,46 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the join landed for the case.
+variables:
+  reads:
+    - case_index
+    - case_kind
+    - case_outcomes
+    - contract_tests_passed
+    - join_exit
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What each case's join landed.
+      defaultValue: []
+    - name: join_exit
+      type: string
+      description: Exit inferred when an immediate exit was taken.
+      defaultValue: ""
+required: true
+steps:
+  - kind: action
+    id: infer-rework-exit
+    when: join_exit == "" && case_kind == "rework"
+    actions:
+      - action: set
+        target: join_exit
+        value: needs-rework
+  - kind: action
+    id: infer-dispute-exit
+    when: join_exit == "" && case_kind == "dispute"
+    actions:
+      - action: set
+        target: join_exit
+        value: needs-contract-tests
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: more-cases
+    when: case_index < 3
+  - id: all-cases
+    isDefault: true
+outcome:
+  - One outcome per case walked

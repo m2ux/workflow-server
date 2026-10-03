@@ -1,0 +1,25 @@
+id: record-case
+version: 1.0.0
+name: Record Case
+description: Record what the fan join landed.
+variables:
+  reads:
+    - case_outcomes
+    - contract_tests_fail_on_base
+    - contract_tests_path
+    - contract_tests_branch
+  writes:
+    - name: case_outcomes
+      type: array
+      description: What the fan landed.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: record
+    technique: record-case
+exits:
+  - id: recorded
+    isDefault: true
+outcome:
+  - One outcome for the fan walk

@@ -1,0 +1,26 @@
+id: check-contracts
+version: 1.0.0
+name: Check Contracts
+description: Verify every task in the case's plan carries Signatures, Behaviours, Error cases and Acceptance.
+variables:
+  reads:
+    - plan_document
+  writes:
+    - name: contract_check_held
+      type: boolean
+      description: Whether every task's Contract carried all four fields.
+      defaultValue: false
+    - name: absent_contract_fields
+      type: array
+      description: Contract fields the check found absent.
+      defaultValue: []
+required: true
+steps:
+  - kind: technique
+    id: check
+    technique: check-task-contracts
+exits:
+  - id: checked
+    isDefault: true
+outcome:
+  - The Contract check result for the case's plan

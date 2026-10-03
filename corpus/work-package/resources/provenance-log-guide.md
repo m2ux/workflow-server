@@ -1,11 +1,13 @@
 ---
-name: provenance-log
+name: provenance-log-guide
 description: Creation guide for bare filename `provenance-log.md` — one row per task recording which assistant and model did it, the prompt class, and whether external sources informed it.
 metadata:
   order: 31
 ---
 
 # Provenance Log Guide
+
+## Record
 
 Creation guide for bare filename `provenance-log.md`. An append-only record of who did what: one row per task, added as the task completes. Its columns are fixed because rows accumulate across a run and a reader compares them.
 

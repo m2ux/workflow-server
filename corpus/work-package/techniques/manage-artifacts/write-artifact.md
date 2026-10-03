@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -46,12 +46,14 @@ Find-or-create, keyed on the bare filename:
 
 ### 2. Update It, or Create the First
 
-- **If exactly one instance exists → UPDATE that file in place,** writing `{artifact_content}` to it. Keep its existing numeric prefix; do NOT create a second copy under a different number. (e.g. `assumptions-log.md` created as `02-assumptions-log.md` stays `02-assumptions-log.md` when a later write updates it.)
-- **If no instance exists → CREATE** `{artifact_prefix}-{bare_filename}` (e.g. `09-code-review.md`) under `{target_dir}` and write `{artifact_content}` into it. The first write's prefix becomes the artifact's permanent number.
+- **If exactly one instance exists → UPDATE that file in place,** writing `{artifact_content}` to it. Keep its existing name (prefixed or bare); do NOT create a second copy under a different number. (e.g. `assumptions-log.md` created as `02-assumptions-log.md` stays `02-assumptions-log.md` when a later write updates it.)
+- **If no instance exists → CREATE** under `{target_dir}` and write `{artifact_content}` into it:
+  - bare `{bare_filename}` when that name is a shared register with no owning activity, or when `{artifact_prefix}` is unbound
+  - `{artifact_prefix}-{bare_filename}` (e.g. `09-code-review.md`) when `{artifact_prefix}` is bound and the bare name is not one of those shared registers; the first write's prefix becomes the artifact's permanent number
 
 ### 3. Guard the Mint
 
-- **Mint-attempt guard:** Before creating under `{artifact_prefix}-{bare_filename}`, re-scan for any `<NN>-{bare_filename}`. If one appeared (race or stale listing), fall through to the update above instead of creating. Never mint a second numbered instance of the same bare filename.
+- **Mint-attempt guard:** Before creating, re-scan for any `<NN>-{bare_filename}` or bare `{bare_filename}`. If one appeared (race or stale listing), fall through to the update above instead of creating. Never mint a second instance of the same bare filename.
 - Preserve OTHER artifacts (different bare filenames) — never overwrite a sibling that is a different logical artifact.
 
 ### 4. Return the Path

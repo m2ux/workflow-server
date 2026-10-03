@@ -1,0 +1,53 @@
+id: take-case
+version: 1.0.0
+name: Take Case
+description: Bind the next disposition case — pass, then rework, then dispute.
+variables:
+  reads:
+    - case_index
+  writes:
+    - name: case_index
+      type: number
+      description: How many cases have been taken.
+      defaultValue: 0
+    - name: case_kind
+      type: string
+      description: Which disposition case is under walk.
+      defaultValue: pass
+required: true
+steps:
+  - kind: action
+    id: take-dispute-case
+    when: case_index == 2
+    actions:
+      - action: set
+        target: case_kind
+        value: dispute
+      - action: set
+        target: case_index
+        value: 3
+  - kind: action
+    id: take-rework-case
+    when: case_index == 1
+    actions:
+      - action: set
+        target: case_kind
+        value: rework
+      - action: set
+        target: case_index
+        value: 2
+  - kind: action
+    id: take-pass-case
+    when: case_index == 0
+    actions:
+      - action: set
+        target: case_kind
+        value: pass
+      - action: set
+        target: case_index
+        value: 1
+exits:
+  - id: taken
+    isDefault: true
+outcome:
+  - The next disposition case is bound

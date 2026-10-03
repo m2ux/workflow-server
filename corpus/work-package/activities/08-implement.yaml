@@ -1,15 +1,16 @@
 id: implement
-version: 2.20.0
+version: 2.23.0
 name: Implement Tasks
-description: Execute the implementation plan task by task.
+description: >-
+  Execute the implementation plan task by task in the feature worktree. A branch
+  of the implementation fan; symbol provenance and residual assumptions settle at
+  implementation-join.
 variables:
   reads:
     - branch_name
     - component_git_dir
-    - has_uncertain_symbols
     - host_repo_path
     - implementation_plan
-    - is_review_mode
     - planning_folder_path
     - pr_number
     - problem_statement
@@ -18,19 +19,27 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumption_outcome
-      type: string
-      description: The outcome given the assumption under discussion. Empty before one has been decided.
-      defaultValue: ""
-    - name: assumption_review_presentation
-      type: object
-      description: Judgement-augmentation context per open assumption — decision space, non-resolvability rationale, technical context, agent's position, reversibility — with a link to the assumptions log.
     - name: assumptions_log
       type: object
       description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+    - name: task_implementation
+      type: object
+      description: Per-task implementation record gathered into the implement fan container.
     - name: changed_paths
       type: array
       description: Repository-relative paths the task under construction wrote.
+    - name: target_symbol
+      type: string
+      description: The function, class, or method the task under construction changes.
+    - name: task_impact
+      type: object
+      description: Blast radius of the symbol about to be edited — callers, flows reached, and a risk level.
+    - name: context_report
+      type: object
+      description: Callers, callees, and flows of the symbol about to be edited.
+    - name: change_report
+      type: object
+      description: Symbols and flows the task's diff touches.
     - name: commit_sha
       type: string
       description: SHA of the commit carrying the task under construction, empty where it staged nothing.
@@ -42,33 +51,10 @@ variables:
       type: array
       description: Per-test failure detail when any failed
       defaultValue: []
-    - name: has_deferred_assumptions
-      type: boolean
-      description: Whether any assumption was deferred to stakeholders.
-      defaultValue: false
-    - name: has_open_assumptions
-      type: boolean
-      description: Whether unresolved assumptions requiring stakeholder input remain.
-      defaultValue: false
-    - name: has_resolvable_assumptions
-      type: boolean
-      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
-      defaultValue: false
-    - name: has_uncertain_symbols
-      type: boolean
-      description: True when one or more symbols in the task under construction have unconfirmed provenance.
-      defaultValue: false
-    - name: open_assumptions
-      type: array
-      description: The residual open assumptions awaiting a stakeholder judgement.
     - name: test_status
       type: object
       description: "The test check's status — `{ check_id, passed, diagnostics }`."
       defaultValue: {}
-    - name: uncertain_symbols
-      type: string
-      description: "Symbols whose provenance could not be confirmed against the codebase or declared dependencies, one per line."
-      defaultValue: ""
 required: true
 techniques:
   - scatter-gather
@@ -81,8 +67,38 @@ steps:
     over: implementation_plan.tasks
     steps:
       - kind: technique
+        id: name-edit-target
+        technique: name-edit-target
+      - kind: technique
+        id: pre-edit-impact
+        technique:
+          name: gitnexus::impact
+          inputs:
+            target: target_symbol
+            direction: upstream
+          outputs:
+            impact_report: task_impact
+      - kind: technique
+        id: pre-edit-context
+        technique:
+          name: gitnexus::context
+          inputs:
+            name: target_symbol
+      - kind: technique
         id: implement-task
-        technique: implement-task
+        technique:
+          name: implement-task
+          inputs:
+            impact_report: task_impact
+      - kind: technique
+        id: post-edit-changes
+        technique: gitnexus::detect-changes
+      - kind: technique
+        id: record-change-scope
+        technique:
+          name: record-change-scope
+          inputs:
+            task_record: task_implementation
       - kind: technique
         id: run-tests
         technique:
@@ -104,74 +120,9 @@ steps:
           inputs:
             task_id: "{current_task.id}"
             task_description: "{current_task.description}"
-      - kind: loop
-        id: provenance-settle-cycle
-        name: Symbol Provenance Settle Cycle
-        loopType: doWhile
-        continueWhile:
-          type: simple
-          variable: has_uncertain_symbols
-          operator: ==
-          value: true
-        maxIterations: 3
-        steps:
-          - kind: technique
-            id: self-review
-            technique: task-completion-review
-          - kind: checkpoint
-            id: symbol-provenance-confirmed
-            condition:
-              type: simple
-              variable: has_uncertain_symbols
-              operator: ==
-              value: true
-            message: |-
-              One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
-
-              {uncertain_symbols}
-            options:
-              - id: confirmed
-                label: Symbols are intentional
-                description: The flagged symbols were introduced intentionally by this task, or were verified by hand.
-                effect:
-                  setVariable:
-                    has_uncertain_symbols: false
-              - id: uncertain
-                label: Trace the flagged symbols again
-                description: The flagged symbols remain unaccounted for and the task's self-review runs again over them.
-                effect:
-                  setVariable:
-                    has_uncertain_symbols: true
       - kind: technique
         id: collect-assumptions
         technique: review-assumptions::collect
-  - kind: routine
-    id: assumption-convergence
-    routine: converge-assumptions
-    outputs:
-      assumptions_log: assumptions_log
-      has_resolvable_assumptions: has_resolvable_assumptions
-      has_open_assumptions: has_open_assumptions
-      open_assumptions: open_assumptions
-  - kind: technique
-    id: present-resolved-assumptions
-    technique: review-assumptions::assemble-open-set
-    when: is_review_mode != true
-    actions:
-      - action: message
-        message: |-
-          **Assumptions**
-
-          {assumption_review_presentation}
-  - kind: routine
-    id: residual-assumptions
-    routine: residual-assumption-interview
-    outputs:
-      assumption_outcome: assumption_outcome
-      has_deferred_assumptions: has_deferred_assumptions
-  - kind: technique
-    id: update-assumptions-log
-    technique: review-assumptions::record
 exits:
   - id: done
     isDefault: true

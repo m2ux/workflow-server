@@ -1,0 +1,97 @@
+$schema: ../../../schemas/workflow.schema.json
+id: work-package-discovery-fan-conformance
+version: 1.0.0
+title: Work Package Discovery Fan Conformance Workflow
+description: >-
+  Hold the discovery fan by borrowing research and implementation-analysis and walking them side by
+  side into a join that hoists each branch container and writes the surfaced assumptions once. Two
+  cases: research needed, and research skipped (no-op branch).
+author: m2ux
+tags:
+  - work-package
+  - conformance
+  - fan
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the session's planning folder.
+  - name: target_repo
+    type: string
+    description: GitHub repository as owner/repo.
+  - name: target_path
+    type: string
+    description: The checkout under analysis.
+    defaultValue: .
+  - name: component_git_dir
+    type: string
+    description: The git working tree under analysis.
+    defaultValue: .
+  - name: branch_name
+    type: string
+    description: The branch under analysis.
+    defaultValue: main
+  - name: pr_number
+    type: string
+    description: The pull request number.
+    defaultValue: "0"
+  - name: problem_statement
+    type: string
+    description: The fixture problem the change answers.
+    defaultValue: Discovery fan opens research beside implementation analysis.
+  - name: requirements
+    type: array
+    description: The fixture requirements.
+    defaultValue:
+      - Both branches converge on one join that writes the assumptions log once.
+  - name: needs_research
+    type: boolean
+    description: Whether the research branch does real work.
+    defaultValue: false
+  - name: is_review_mode
+    type: boolean
+    description: Whether the case is a review run.
+    defaultValue: false
+  - name: base_branch
+    type: string
+    description: Base branch for analysis.
+    defaultValue: main
+  - name: component_name
+    type: string
+    description: Component name for analysis.
+    defaultValue: workflow-server
+  - name: case_index
+    type: number
+    description: How many cases have been taken.
+    defaultValue: 0
+  - name: case_outcomes
+    type: array
+    description: What each case's fan landed at the join.
+    defaultValue: []
+  - name: assumptions_log
+    type: object
+    defaultValue: {"assumptions": []}
+    description: Seeded log the join ingest writes into.
+initialActivity: take-case
+graph:
+  take-case:
+    taken:
+      - research
+      - implementation-analysis
+  research:
+    done: gather-discovery
+  implementation-analysis:
+    done: gather-discovery
+  gather-discovery:
+    gathered: record-case
+  record-case:
+    more-cases: take-case
+    all-cases: report-cases
+  report-cases:
+    reported: __terminal__
+activities:
+  - work-package/04-research.yaml
+  - work-package/05-implementation-analysis.yaml

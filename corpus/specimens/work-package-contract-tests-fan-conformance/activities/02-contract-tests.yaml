@@ -1,0 +1,29 @@
+id: contract-tests
+version: 1.0.0
+name: Contract Tests
+description: Stub the contract-tests branch — report a red suite written from the Contract alone.
+variables:
+  reads: []
+  writes:
+    - name: contract_tests_fail_on_base
+      type: boolean
+      description: True — the stub suite fails on the base tree.
+      defaultValue: false
+    - name: contract_tests_path
+      type: string
+      description: Stub worktree path.
+      defaultValue: ""
+    - name: contract_tests_branch
+      type: string
+      description: Stub branch name.
+      defaultValue: ""
+required: true
+steps:
+  - kind: technique
+    id: surface
+    technique: surface-contract-tests
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The contract-tests branch reports a red suite

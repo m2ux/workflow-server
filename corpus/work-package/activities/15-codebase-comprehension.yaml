@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.14.3
+version: 1.14.4
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
@@ -15,7 +15,7 @@ variables:
     - pr_number
     - problem_statement
     - requirements
-    - skip_optional_activities
+    - optional_activities_declined
     - target_path
     - target_repo
   writes:
@@ -164,7 +164,7 @@ exits:
   - id: research-needed
     when: needs_elicitation == false && needs_research == true
   - id: skip-optional-activities
-    when: skip_optional_activities == true
+    when: optional_activities_declined == true
   - id: comprehension-complete
     isDefault: true
 outcome:

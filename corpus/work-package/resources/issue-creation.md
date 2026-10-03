@@ -2,12 +2,14 @@
 name: issue-creation
 description: Reference material for creating a tracker issue on any platform. Provides the body template, anti-patterns, and section rules.
 metadata:
-  version: 3.0.2
+  version: 3.0.3
   order: 3
   legacy_id: 3
 ---
 
 # Issue Creation Guide
+
+## What an Issue Holds
 
 Reference material for creating a tracker issue. The body template below is the issue's content on any platform; a platform guide states only where that content sits in its own fields — [jira-issue-creation](jira-issue-creation.md) for Jira.
 
@@ -94,6 +96,6 @@ Required sections: Problem Statement, Goal, Scope, User Stories. Optional: Succe
 
 - **Problem Statement** — the most critical section; must pass the "5 Whys" test so the root problem is clear. If a draft reads like a solution ("We need to add X using library Y"), ask "what user problem does this solve?" and rewrite.
 - **Goal** — one sentence, user capability or outcome; use verbs like "enable", "allow", "improve", "reduce"; avoid technical terms unless describing constraints; multiple approaches should be able to satisfy it.
-- **Scope** — be specific about what's included; explain *why* items are out of scope (deferred, already solved, different feature); out-of-scope items may become future issues. An issue raised from a deferred item carries its [register](deferred-items.md#template) entry ID, and the register entry records the issue.
+- **Scope** — be specific about what's included; explain *why* items are out of scope (deferred, already solved, different feature); out-of-scope items may become future issues. An issue raised from a deferred item carries its [register](deferred-items-guide.md#template) entry ID, and the register entry records the issue.
 - **User Stories** — each independently valuable; personas represent real users (researcher, developer, librarian), never "as a developer, I want a table"; acceptance criteria are observable outcomes testable without knowing the implementation.
 - **Success Metrics** — measure problem resolution, not implementation completion (not "table is created"); include baselines when available; consider both quantitative and qualitative measures.

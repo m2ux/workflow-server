@@ -1,5 +1,5 @@
 id: graph-for-tree
-version: 1.0.0
+version: 1.0.1
 name: Graph For Tree
 description: >-
   Name the graph covering a tree, build one where the inventory covers that tree with none, and name

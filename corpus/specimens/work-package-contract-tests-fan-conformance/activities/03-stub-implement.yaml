@@ -1,0 +1,19 @@
+id: stub-implement
+version: 1.0.0
+name: Stub Implement
+description: Stub the implement branch — mark the task delivered without writing code.
+variables:
+  reads: []
+  writes: []
+required: true
+steps:
+  - kind: action
+    id: mark-done
+    actions:
+      - action: message
+        message: Implement stub branch finished.
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The implement stub is done

@@ -21,9 +21,9 @@ The originating user request and any context gathered so far — the signal sour
 
 ### is_review_mode
 
-`true` when the request is a clear review of an existing PR, `false` for clear new implementation; unset when `review_mode_ambiguous` is `true`.
+`true` when the request is a clear review of an existing PR, `false` for clear new implementation; unset when `needs_review_mode` is `true`.
 
-### review_mode_ambiguous
+### needs_review_mode
 
 `true` only when review vs create intent cannot be derived confidently from `{user_request}` (rare). Common clear-intent paths leave this `false`.
 
@@ -35,7 +35,7 @@ The originating user request and any context gathered so far — the signal sour
 
 *(optional)* The numeric PR identifier resolved from the reference (set in review mode when known). Empty when unresolved.
 
-### review_pr_missing
+### needs_review_pr
 
 `true` when review mode is active (or will be after an ambiguity confirm) and no PR number or URL could be derived from `{pr_reference}` or `{user_request}`. `false` when a PR identity is already known.
 
@@ -56,11 +56,11 @@ The originating user request and any context gathered so far — the signal sour
 
 ### 2. Settle the Mode
 
-- When intent is clear, set `{is_review_mode}` accordingly and set `{review_mode_ambiguous}` to `false`. When the signal is ambiguous, set `{review_mode_ambiguous}` to `true` and leave `{is_review_mode}` unset.
+- When intent is clear, set `{is_review_mode}` accordingly and set `{needs_review_mode}` to `false`. When the signal is ambiguous, set `{needs_review_mode}` to `true` and leave `{is_review_mode}` unset.
 
 ### 3. Resolve the Pull Request
 
-- When `{is_review_mode}` is `true` (or will be after a gap confirm that selected review), obtain the PR reference in one pass: take `{pr_reference}` if supplied, else parse a PR number or URL from `{user_request}`. When a reference is present, record `{review_pr_url}` and `{pr_number}`, set `{review_pr_missing}` to `false`. When none can be derived, set `{review_pr_missing}` to `true` and leave `{pr_number}` / `{review_pr_url}` empty — do not prompt inside this technique; the activity gap-gates that confirm.
+- When `{is_review_mode}` is `true` (or will be after a gap confirm that selected review), obtain the PR reference in one pass: take `{pr_reference}` if supplied, else parse a PR number or URL from `{user_request}`. When a reference is present, record `{review_pr_url}` and `{pr_number}`, set `{needs_review_pr}` to `false`. When none can be derived, set `{needs_review_pr}` to `true` and leave `{pr_number}` / `{review_pr_url}` empty — do not prompt inside this technique; the activity gap-gates that confirm.
 
 ### 4. Check Out the Branch
 

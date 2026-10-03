@@ -1,13 +1,7 @@
 # Security Vulnerability Remediation Workflow (remediate-vuln)
 
 ## Overview
-A highly isolated workflow for remediating security vulnerabilities without public disclosure. It owns only the security-specific setup; every other activity is borrowed from the `work-package` workflow and runs with `stealth_mode: true`, which structurally gates out all public-disclosure side-effects (PR rendering and creation, issue-tracker posting, PR review lifecycle) and enables the private-remote isolation checks at submission.
-
-## Privacy model
-
-- `stealth_mode` (always `true` here) is the structural no-disclosure gate consumed by the shared work-package activities.
-- `push_remote` is always the private `security` remote; the shared submit activity verifies it resolves to a private repository and confirms with the user before any push.
-- Workflow rules additionally forbid public GitHub tools, pushes to `origin`, and advisory-identifying strings in outbound research queries.
+A workflow for remediating security vulnerabilities on the private `security` remote. It owns the security-specific setup. Every other activity is borrowed from `work-package`. Submission verifies that remote and confirms with the user before any push.
 
 ## Activities
 
@@ -23,7 +17,10 @@ A highly isolated workflow for remediating security vulnerabilities without publ
 | 08 | implement | work-package | Task-cycle implementation with provenance log |
 | 09 | lean-coding-audit | work-package | Over-engineering audit |
 | 16 | prism-decision | work-package | Full prism pipeline or inline structural pass |
-| 10 | post-impl-review | work-package | Code/diff/test review |
+| 17 | code-review | work-package | Review fan branch — code findings |
+| 18 | structural-analysis | work-package | Review fan branch — inline structural pass |
+| 19 | test-suite-review | work-package | Review fan branch — coverage map and test findings |
+| 10 | post-impl-review | work-package | Review fan join — manual diff gates, full prism when chosen, classify, fix cycle |
 | 11 | validate | work-package | Build/test/lint suite |
 | 12 | strategic-review | work-package | Scope/minimality review + commit-signature scan and re-sign |
 | 13 | submit-for-review | work-package | DCO attestation, private-remote isolation checks, push to `security` |
@@ -35,7 +32,11 @@ flowchart LR
   start --> design-philosophy --> codebase-comprehension
   codebase-comprehension --> requirements-elicitation --> research
   codebase-comprehension --> implementation-analysis --> plan-prepare --> assumptions-review --> implement
-  implement --> lean-coding-audit --> prism-decision --> post-impl-review --> validate --> strategic-review --> submit-for-review --> complete
+  implement --> lean-coding-audit --> prism-decision
+  prism-decision --> code-review --> post-impl-review
+  prism-decision --> structural-analysis --> post-impl-review
+  prism-decision --> test-suite-review --> post-impl-review
+  post-impl-review --> validate --> strategic-review --> submit-for-review --> complete
   strategic-review -. findings .-> plan-prepare
 ```
 
