@@ -38,9 +38,9 @@ epic's repository.
   In progress  epics and task issues In Progress or In Review, each epic with its open pull
                requests that cite none of its task issues In Progress or In Review, ready for
                review (In Review) or draft, or else, with no line under it, its next task.
-  Next         epics and task issues Ready, ranked by priority label (highest, high, medium or
-               none, low, lowest), then by reference; the first five, and a count of the rest. An
-               epic names its next task.
+  Next         epics and task issues Ready, ranked by priority label (priority: 5 down to
+               priority: 1; no label sorts with priority: 3), then by reference; the first five,
+               and a count of the rest. An epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
 task issue, if it has one, is on the board and not In Progress or In Review. A task is undelivered
 while every pull request its id links is open. A task issue that
@@ -75,8 +75,7 @@ from board import Board, Key, PREFIX, PULL_REF, cites, key_of, label, linked_iss
 from format import LINK, cell, epic_name, id_cell, phrase
 from sync import PR_REF, PULL_URL, Unreadable, pull_requests
 
-PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
-            'priority: low': 4, 'priority: lowest': 5}
+PRIORITY = {f'priority: {n}': 5 - n for n in range(1, 6)}
 UNRANKED = 2
 SHOWN = 5
 DONE, WORKING, REVIEW, DRAFT, READY = '✅', '🔄', '👀', '📝', '▶️'

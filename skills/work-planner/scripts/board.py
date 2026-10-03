@@ -23,7 +23,8 @@ Status, first match wins:
   In Review    an open pull request ready for review names it: its title names the epic by the
                initiative's row id, and for a task issue its title or body also cites the issue
   In Progress  an open draft pull request names it
-  Ready        a task whose every dependency is delivered and that has no Open Questions
+  Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
+               and that has no Open Questions
   Backlog      a task otherwise
 An initiative or an epic with an open pull request is In Review or In Progress from that. With
 none, Ready or Backlog already on the board is left as it stands. In Progress is left when a row
@@ -272,6 +273,7 @@ def main() -> int:
     header, epic_rows = rows(initiative)
     epic_ids = {row_id(id_cell(header, r)): n for r in epic_rows if (n := linked_issue(id_cell(header, r)))}
     status: dict[Key, str | None] = {}
+    task_epic: dict[Key, Key] = {}
 
     def pr_status(epic_key: str, cite: Key | None = None) -> str | None:
         """In Review for an open pull request ready for review naming the issue, In Progress for an
@@ -319,6 +321,7 @@ def main() -> int:
                 status[task_issue] = 'Ready'
             else:
                 status[task_issue] = 'Backlog'
+            task_epic[task_issue] = number
         if epic['state'] == 'closed':
             status[number] = 'Done' if completed(epic) else None
         elif (found := pr_status(epic_key)) == 'In Review':
@@ -380,6 +383,9 @@ def main() -> int:
             status[key] = 'In Progress'
         else:
             status[key] = 'Backlog'
+    for task_key, epic_key in task_epic.items():
+        if status.get(task_key) == 'Ready' and status.get(epic_key) not in ('Ready', 'In Progress'):
+            status[task_key] = 'Backlog'
 
     print(f"{args.board}: Status field {field['id']}")
     current, todo = 0, 0

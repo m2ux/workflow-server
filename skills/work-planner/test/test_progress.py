@@ -191,8 +191,8 @@ class Next(unittest.TestCase):
                           labels=labels), 'Ready')
 
     def test_ranked_by_priority_label_then_reference(self):
-        items = [self.ready(10, 0, ['priority: low']), self.ready(11, 1), self.ready(12, 2, ['priority: highest']),
-                 self.ready(13, 3, ['priority: high']), self.ready(14, 4, ['priority: medium'])]
+        items = [self.ready(10, 0, ['priority: 1']), self.ready(11, 1), self.ready(12, 2, ['priority: 5']),
+                 self.ready(13, 3, ['priority: 4']), self.ready(14, 4, ['priority: 3'])]
         refs = [line.split('*')[1].split(' ')[0] for line in section(summary(items), 'Next')]
         self.assertEqual(refs, ['I01:E02', 'I01:E03', 'I01:E01', 'I01:E04', 'I01:E00'])
 

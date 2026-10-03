@@ -462,9 +462,11 @@ Decides which initiatives and epics on a theme board move between Backlog, Ready
 - `--items` is [Fetch Board Items with Status](#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
 - `--assignee` is the user [Find User](#find-user) prints.
 - Give an issue it reports unresolved with `--others`.
-- `blocked: priorities` means an open initiative has no priority label, and nothing moves. Each `hold` line names one.
-- A `wait` line names an open pull request. The In Progress initiative stays until that pull request is no longer open.
-- A `next` line names the epics a Ready initiative would start once it is In Progress.
+- `--unplanned` names an initiative the user left with no priority, as a number or `owner/repo#number`.
+- An `order` line lists one kind of initiative for the user to order. An `ask` line names an initiative In Progress with no priority label.
+- A `tie` line names labelled initiatives that share the highest rank. The queue does not choose between them.
+- A `wait` line names an open pull request. Nothing in that slot moves until every such pull request is done.
+- A `next` line names epics, as the Report rule in [Advance Mode](advance-mode.md#rules) says.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/advance.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux

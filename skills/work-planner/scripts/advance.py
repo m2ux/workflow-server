@@ -8,24 +8,12 @@ items.json is the board's items with the Status field, as board.py reads them. p
 sync.py reads it. fields.json is the board's fields. An issue the rows depend on that is not on
 the board is given with --others.
 
-One ordinary initiative, and one labelled bug or tech-debt, may be In Progress per repository.
-The highest-priority open initiative of that kind is the choice. Priority, highest first, is
-priority: highest, high, medium, low, lowest, and a tie breaks toward the lower initiative number.
-An initiative In Review is not a choice and does not fill the slot. When none of that kind is In
-Progress, the choice moves to Ready and every other Ready initiative of that kind moves to
-Backlog. When a lower one is In Progress and a pull request of it is open, it stays and the swap
-waits. When no pull request of it is open, it moves to Ready and the choice moves to In Progress.
-
-A partly completed epic has a delivered task row and is not closed as completed. On the initiative
-that is In Progress, a partly completed epic is In Progress, and an epic that is next moves to
-Ready: its Depends on cell is delivered and its Open Questions section is empty. Any other Ready
-epic of it moves to Backlog. On an initiative this run moves from In Progress to Ready, a partly
-completed epic stays Ready, and an epic that was In Progress, In Review or Ready moves to Ready.
-A Ready epic of any other initiative moves to Backlog.
-
-Nothing moves while an open initiative has no priority label. Printed: the gh call for each Status
-and assignee change, a wait line for a swap held by an open pull request, and a next line naming
-the epics a Ready initiative would start with.
+The moves are the Advance mode rules. Printed: the gh call for each Status and assignee change,
+an order line for each kind when nothing is In Progress and no initiative has a priority, an ask
+line for an initiative In Progress with no priority, a tie line when labelled initiatives share
+the highest rank, a wait line for an open pull request, and a next line for epics.
+--unplanned names an initiative the user left with no priority. It returns to Backlog once its
+open pull requests have completed, and its epics return with it.
 """
 import argparse
 import json
@@ -36,11 +24,10 @@ from pathlib import Path
 
 from board import Board, assignee_calls, key_of, label, linked_issue, open_questions, option_name, pages, rows, status_of
 from format import cell, id_cell, row_id
-from progress import PRIORITY
-from sync import Unreadable, pull_requests
+from sync import PR_REF, Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-PENDING = re.compile(r'^\[I(\d\d)(?::E\d\d)?\]')
+RANK = re.compile(r'^priority: ([1-5])$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 DEBT = {'bug', 'tech-debt'}
 PLACED = ('Backlog', 'Ready', 'In Progress')
@@ -51,8 +38,9 @@ def label_names(issue: dict) -> set[str]:
 
 
 def rank(issue: dict) -> int | None:
-    found = [PRIORITY[name] for name in label_names(issue) if name in PRIORITY]
-    return min(found) if found else None
+    """The initiative's priority, 5 highest. Two labels count as the higher number."""
+    found = [int(matched.group(1)) for name in label_names(issue) if (matched := RANK.fullmatch(name))]
+    return max(found) if found else None
 
 
 def kind(issue: dict) -> str:
@@ -73,7 +61,7 @@ def pending(prs: list[dict], tag: str, repos: set[str]) -> list[str]:
     """Open pull requests of an initiative, in its repository or an epic's."""
     found = []
     for pr in prs:
-        matched = PENDING.match(pr.get('title') or '')
+        matched = PR_REF.match(pr.get('title') or '')
         if pr.get('state') != 'open' or not matched or matched[1] != tag:
             continue
         home = PULL_HOME.search(pr.get('html_url') or '')
@@ -116,11 +104,13 @@ def is_next(board: Board, initiative: tuple[str, int], epic: tuple[str, int] | N
 
 
 class Queue:
-    def __init__(self, issues: dict, status: dict, prs: list[dict], home: str):
+    def __init__(self, issues: dict, status: dict, prs: list[dict], home: str, unplanned: set):
         self.issues = issues
         self.status = status
         self.prs = prs
         self.home = home
+        self.unplanned = unplanned
+        self.shelved: set = set()
         self.board = Board(issues, [], home, prs)
         self.wanted: dict = {}
         self.notes: list[str] = []
@@ -215,25 +205,61 @@ class Queue:
             if self.wanted.get(key, self.status.get(key)) == 'Ready':
                 self.place(key, 'Backlog')
 
+    def shelve(self, key: tuple[str, int]) -> None:
+        """The initiative and its open epics return to Backlog."""
+        self.place(key, 'Backlog')
+        self.shelved.add(key)
+        rows_of, _ = self.load(key)
+        for _row_name, epic_key, _depends in rows_of:
+            issue = self.issues.get(epic_key)
+            if issue and issue['state'] == 'open' and self.status.get(epic_key) != 'Done':
+                self.place(epic_key, 'Backlog')
+
+    def pulls(self, key: tuple[str, int]) -> list[str]:
+        return pending(self.prs, tags(self.issues[key]['title'])[0], self.repos(key))
+
+    def ready_names(self, key: tuple[str, int]) -> list[str]:
+        rows_of, _epics = self.load(key)
+        return [row_name for row_name, epic_key, _depends in rows_of
+                if self.wanted.get(epic_key, self.status.get(epic_key)) == 'Ready']
+
+    def order(self, keys: list[tuple[str, int]]) -> None:
+        """The two lists the user orders when the board has no priority and nothing In Progress."""
+        for name in ('ordinary', 'debt'):
+            found = [key for key in keys if kind(self.issues[key]) == name
+                     and self.status.get(key) not in ('Done', 'In Review')]
+            body = ', '.join(self.line(key) for key in sorted(found)) or 'none'
+            self.notes.append(f'  order {name}: {body}')
+
     def group(self, keys: list[tuple[str, int]]) -> None:
-        keys.sort(key=lambda key: (rank(self.issues[key]), int(tags(self.issues[key]['title'])[0]), key[1]))
-        choice = keys[0]
-        incumbents = [key for key in keys if self.status.get(key) == 'In Progress' and key != choice]
-        held = {key: pending(self.prs, tags(self.issues[key]['title'])[0], self.repos(key)) for key in incumbents}
-        blockers = [key for key, urls in held.items() if urls]
-        if blockers:
-            for key in blockers:
-                self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(held[key])}")
-            for key in incumbents:
-                if key not in blockers:
-                    self.demote(key)
+        labelled = [key for key in keys if rank(self.issues[key]) is not None]
+        if not labelled:
+            return
+        top = max(rank(self.issues[key]) for key in labelled)
+        tied = [key for key in labelled if rank(self.issues[key]) == top]
+        if len(tied) > 1:
+            self.notes.append('  tie ' + ', '.join(self.line(key) for key in sorted(tied)))
+            staying = [key for key in tied if self.status.get(key) == 'In Progress']
+            if len(staying) == 1:
+                self.activate(staying[0])
+            self.release(keys, set(tied) | self.demoted)
+            return
+        choice = tied[0]
+        incumbents = [key for key in keys if self.wanted.get(key, self.status.get(key)) == 'In Progress'
+                      and key != choice and key not in self.shelved]
+        held = {key: self.pulls(key) for key in incumbents}
+        if any(held.values()):
+            for key, urls in held.items():
+                if urls:
+                    self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(urls)}")
             if self.status.get(choice) == 'In Progress':
                 self.activate(choice)
-            self.release(keys, set(blockers) | self.demoted | ({choice} if self.status.get(choice) == 'In Progress' else set()))
             return
         if incumbents:
             for key in incumbents:
                 self.demote(key)
+                if names := self.ready_names(key):
+                    self.notes.append(f"  next {self.line(key)}: {', '.join(names)}")
             self.place(choice, 'In Progress')
             self.activate(choice)
             self.release(keys, self.demoted | {choice})
@@ -249,27 +275,63 @@ class Queue:
     def decide(self) -> None:
         open_initiatives = [key for key, issue in self.issues.items()
                             if is_initiative(issue) and issue['state'] == 'open' and key in self.status]
-        missing = [key for key in open_initiatives if rank(self.issues[key]) is None]
-        if missing:
-            for key in sorted(missing):
-                self.notes.append(f'  hold {self.line(key)}: no priority')
-            self.notes.append('  blocked: priorities')
-            return
-        groups: dict[tuple[str, str], list] = {}
-        for key in open_initiatives:
-            if self.status.get(key) in ('Done', 'In Review'):
-                continue
-            groups.setdefault((key[0].lower(), kind(self.issues[key])), []).append(key)
         for key in open_initiatives:
             self.load(key)
+        for key in open_initiatives:
+            if rank(self.issues[key]) is None and self.status.get(key) == 'Ready':
+                self.shelve(key)
+        in_progress = [key for key in open_initiatives if self.status.get(key) == 'In Progress']
+        labelled = [key for key in open_initiatives if rank(self.issues[key]) is not None]
+        if not in_progress and not labelled:
+            self.order(open_initiatives)
+            self.park()
+            return
+        blocked = set()
+        for key in in_progress:
+            if rank(self.issues[key]) is not None or key in self.unplanned:
+                continue
+            blocked.add((key[0].lower(), kind(self.issues[key])))
+            self.notes.append(f'  ask {self.line(key)}: priority')
+        for key in in_progress:
+            if key not in self.unplanned or rank(self.issues[key]) is not None:
+                continue
+            slot = (key[0].lower(), kind(self.issues[key]))
+            if urls := self.pulls(key):
+                blocked.add(slot)
+                self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(urls)}")
+            else:
+                self.shelve(key)
+        groups: dict[tuple[str, str], list] = {}
+        for key in open_initiatives:
+            if self.status.get(key) in ('Done', 'In Review') or key in self.shelved:
+                continue
+            if rank(self.issues[key]) is None:
+                continue
+            slot = (key[0].lower(), kind(self.issues[key]))
+            if slot in blocked:
+                continue
+            groups.setdefault(slot, []).append(key)
         for keys in groups.values():
             self.group(keys)
         self.park()
-        for key, issue in self.issues.items():
-            if is_initiative(issue) and self.wanted.get(key, self.status.get(key)) == 'Ready':
-                if any(note.startswith(f'  next {self.line(key)}:') for note in self.notes):
-                    continue
-                self.coming(key)
+
+
+def unplanned_keys(specs: list[str], issues: dict, status: dict) -> set:
+    """Issues named to --unplanned, as a number or owner/repo#number."""
+    found = set()
+    for spec in specs:
+        if '#' in spec:
+            repo, number = spec.rsplit('#', 1)
+            key = (repo, int(number))
+            if key not in issues:
+                sys.exit(f'--unplanned {spec} is not on the board')
+            found.add(key)
+            continue
+        matches = [key for key in issues if key in status and key[1] == int(spec)]
+        if len(matches) != 1:
+            sys.exit(f'--unplanned {spec} matches {len(matches)} issues')
+        found.add(matches[0])
+    return found
 
 
 def main() -> int:
@@ -281,6 +343,7 @@ def main() -> int:
     parser.add_argument('--out')
     parser.add_argument('--assignee')
     parser.add_argument('--others', nargs='*', default=[])
+    parser.add_argument('--unplanned', action='append', default=[])
     args = parser.parse_args()
     for name in ('items', 'prs', 'board', 'fields', 'out', 'assignee'):
         if not getattr(args, name):
@@ -300,7 +363,7 @@ def main() -> int:
         status[key] = status_of(item)
         item_ids[key] = item['id']
     home = Counter(key[0] for key in issues).most_common(1)[0][0] if issues else ''
-    queue = Queue(issues, status, pull_requests(args.prs), home)
+    queue = Queue(issues, status, pull_requests(args.prs), home, unplanned_keys(args.unplanned, issues, status))
     queue.decide()
 
     field = next((item for item in pages(args.fields) if item.get('name') == 'Status'), None)
@@ -321,11 +384,10 @@ def main() -> int:
     print(f"{args.board}: Status field {field['id']}")
     current = todo = 0
     governed = [key for key, issue in issues.items() if key in status and (is_initiative(issue) or key in queue.parents)]
-    blocked = any(note.strip() == 'blocked: priorities' for note in queue.notes)
     for key in sorted(governed):
         title = queue.line(key)
         new = queue.wanted.get(key)
-        if blocked or new is None or new == status.get(key):
+        if new is None or new == status.get(key):
             current += 1
             continue
         calls = assignee_calls(key, new, issues[key], args.assignee)

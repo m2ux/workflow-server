@@ -1,6 +1,6 @@
 # Advance mode
 
-Decides which initiatives and epics on a theme board are Ready or In Progress, after [Sync Mode](sync-mode.md) has recorded delivery. One ordinary initiative and one bug or tech-debt initiative may be In Progress per repository. A higher priority takes that place once the incumbent's open pull requests have completed, and a partly completed epic of the initiative that steps down is Ready.
+Decides which initiatives and epics on a theme board are Ready or In Progress, after [Sync Mode](sync-mode.md) has recorded delivery. One ordinary initiative and one bug or tech-debt initiative may be In Progress per repository. A higher priority takes that place once every open pull request of the incumbent has completed.
 
 ## Procedure
 
@@ -10,40 +10,58 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
 2. **Sync.**
    Run [Sync Mode](sync-mode.md) for each open initiative on the board, so Status matches delivery before the queue is decided.
 3. **Priorities.**
-   - List every open initiative on the board with no priority label.
-   - When the list is empty, go on.
-   - Recommend one label for each, from its goal against the initiatives on the board that already have one. The labels are this mode's Priorities rule.
-   - Confirm the whole list with the user, then add each confirmed label with [Add Labels](commands.md#add-labels).
+   - When nothing is In Progress and no open initiative has a priority label, ask for two orders. In Review is not In Progress.
+     - Ordinary initiatives, from `priority: 5` down to `priority: 1`.
+     - Initiatives labelled `bug` or `tech-debt`, the same labels, as their own list.
+     - An initiative left unordered stays in Backlog.
+   - When an initiative In Progress has no priority label, ask for `priority: 5` down to `priority: 1`, or none.
+     - A number keeps it In Progress. Add the label with [Add Labels](commands.md#add-labels).
+     - None sends it to Backlog once its open pull requests have completed. Run [Plan Queue](commands.md#plan-queue) with `--unplanned` for that issue.
+   - Add each confirmed label with [Add Labels](commands.md#add-labels), then continue.
 4. **Fetch.**
    - [Fetch Board Fields](commands.md#fetch-board-fields), [Find Status Field](commands.md#find-status-field), and [Fetch Board Items with Status](commands.md#fetch-board-items-with-status).
    - [Fetch All Initiative Pull Requests](commands.md#fetch-all-initiative-pull-requests) for the board's repository, appending each further repository the board's issues live in.
    - [Find User](commands.md#find-user) for the assignee.
 5. **Plan.**
-   Run [Plan Queue](commands.md#plan-queue). When it prints `blocked: priorities`, return to step 3.
+   Run [Plan Queue](commands.md#plan-queue).
+   - **Order.** An `order` line lists one kind. Ask as step 3 does, then run it again.
+   - **Ask.**
+     An `ask` line names an initiative In Progress with no priority label. Ask as step 3 does.
+   - **Tie.**
+     A `tie` line names labelled initiatives that share the highest rank. The queue does not choose between them.
+   - **Waiting.**
+     A `wait` line names an open pull request. Nothing in that slot moves until every such pull request is done.
+   - **Next.**
+     A `next` line names epics, as this mode's Report rule says.
+   - Give an issue it reports unresolved with `--others`, then run it again.
 6. **Write.**
    - Run each call it prints.
-   - When it reports unresolved, fetch that issue with [Fetch Issue](commands.md#fetch-issue) and re-run with `--others`.
    - Fetch the items again and re-run. The queue is current when it reports nothing to do.
 7. **Report.**
-   - Each move, each swap waiting on an open pull request, and the epics a Ready initiative would start with.
-   - A hold line names an open initiative that still has no priority label.
+   - Each move, each `order`, `ask`, `tie` and `wait` line, and each `next` line.
 
 ## Rules
 
 - **Slots.**
-  Per repository on the board, one open initiative with neither `bug` nor `tech-debt` may be In Progress, and one open initiative with either label may be. An initiative In Review fills neither slot.
+  Per repository on the board, one open initiative with neither `bug` nor `tech-debt` may be In Progress, and one with either label may be. The label is what lets the second run beside the first. An initiative In Review fills neither slot.
 - **Priorities.**
-  Nothing on the board moves while any open initiative lacks a priority label. Highest first, the labels are `priority: highest`, `priority: high`, `priority: medium`, `priority: low` and `priority: lowest`. A tie breaks toward the lower initiative number.
+  - The labels are `priority: 5` down to `priority: 1`. `priority: 5` is highest. Two such labels on one initiative count as the higher number.
+  - An initiative in Backlog with no priority label stays in Backlog.
+  - An initiative in Ready with no priority label moves to Backlog, and its epics move to Backlog with it.
+  - Two labelled initiatives of one slot that share the highest rank are a tie. The one In Progress stays. When the slot is empty, neither moves to Ready.
+  - Initiative number orders only a tie among unlabelled initiatives, and an unlabelled initiative is not a choice for a slot.
 - **Initiatives.**
-  - The choice is the highest-priority open initiative of a slot, apart from one In Review or Done.
-  - When none of that slot is In Progress, the choice moves to Ready, and every other Ready initiative of that slot moves to Backlog.
-  - When the choice is not the initiative In Progress, and a pull request of that initiative is open, the initiative stays In Progress and the choice is not moved.
-  - When the choice is not the initiative In Progress, and no pull request of that initiative is open, it moves to Ready and the choice moves to In Progress.
+  - The choice is the labelled initiative of a slot with the strictly highest rank, apart from one In Review or Done.
+  - When none of that slot is In Progress, the choice moves to Ready. Any other Ready initiative of that slot moves to Backlog.
+  - When the choice outranks the initiative In Progress, nothing in the slot moves while any open pull request of an incumbent is open. The pull request is one [Sync Mode](sync-mode.md) would match: its title names the epic, `[Ixx:Eyy]`.
+  - When every such pull request is done, each incumbent moves to Ready and the choice moves to In Progress.
+  - An initiative the user leaves unplanned stays In Progress while such a pull request is open, and nothing else takes the slot. It then moves to Backlog, and its epics move to Backlog with it.
+  - Advance moves an initiative to In Progress only in that swap. Sync moves a Ready initiative to In Progress when one of its epics has an open pull request.
   - An initiative In Review or Done is left as it stands.
 - **Epics.**
   - On the initiative that is In Progress:
-    - A partly completed epic is In Progress.
-    - An epic that is next moves to Ready.
+    - A partly completed epic is In Progress. Open questions do not change that.
+    - An epic that is next, and has not started, moves to Ready.
     - Any other Ready epic of it moves to Backlog.
     - An epic In Review or Done is left as it stands.
   - An epic is next when every dependency in its Depends on cell is delivered and its Open Questions section is empty. Delivered is the reading [Plan Board Changes](commands.md#plan-board-changes) uses.
@@ -53,6 +71,10 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
     - Each epic In Progress, In Review or Ready becomes Ready.
     - An epic in Backlog that is not partly completed stays in Backlog.
   - A Ready epic of any other initiative moves to Backlog.
-  - The epics a Ready initiative would start are reported and not moved.
+- **Tasks.**
+  A task is Ready only when its epic is Ready or In Progress. [Plan Board Changes](commands.md#plan-board-changes) follows that. This mode does not move task issues.
+- **Report.**
+  - For an initiative that moved from In Progress to Ready, the `next` line names the epics that are Ready.
+  - For an initiative that took an empty slot, the `next` line names the unstarted next epics, and those epics stay in Backlog.
 - **The queue.**
   [Plan Board Changes](commands.md#plan-board-changes) leaves an initiative or an epic in Ready or Backlog when no pull request is open, and leaves In Progress when delivery has started. This mode is what moves them.
