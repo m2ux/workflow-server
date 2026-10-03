@@ -20,7 +20,7 @@ Changes the skill itself: SKILL.md and its references. Every revision follows th
    - the description, when the skill's reach changed;
    - one line per item, bold leads on their own line, and sub-bullets for discrete points;
    - each rule stated once, and no description of replaced behaviour left anywhere;
-   - every command named by link to its spec in [commands.md](commands.md);
+   - every command named by link to its spec in [Commands](commands.md);
    - every link and anchor resolving.
 6. **Verify.**
    Confirm SKILL.md's frontmatter still opens and closes with `---` and holds `name` and `description`.

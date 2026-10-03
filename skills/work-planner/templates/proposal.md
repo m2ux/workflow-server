@@ -1,24 +1,19 @@
 ## Overview
 
-{{One paragraph: what this proposal achieves, stated as the end state. Name the goal the reviews will test against.}}
+{{One paragraph: the problem this proposal scopes. Name the goal the clauses state.}}
 
 ## Problem
 
-{{One sentence on the friction, then one bullet per facet, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule.}}
+{{One sentence on the friction, then one bullet per facet, as the [Work Breakdown Guide](../references/work-breakdown.md#problem-and-proposal) defines. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule.}}
 
 - **{{Facet}}.**
   {{The evidence.}}
 
-## Proposal
+## Goal
 
-- **{{Move}}.**
-  {{What is done, within the scheme's Succinct items rule, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines.}}
+- {{A clause: an outcome someone could observe. Not a description of the change.}}
 
-## Acceptance Criteria
-
-- [ ] **AC1.** {{One invariant, a condition that holds or does not, meeting the goal pass rules that apply to a proposal: one invariant, no stale counts, local, and verifiable. It ends by naming its instrument, as that pass's Verified rule defines.}}
-
-## Non-goals
+## Non-Goals
 
 - {{One succinct sentence on what this proposal does not do. It names no initiative, epic, task or issue, and no owner.}}
 

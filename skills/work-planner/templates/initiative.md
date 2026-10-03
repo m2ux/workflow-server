@@ -4,7 +4,7 @@
 
 ## Problem
 
-{{One sentence on the friction, then one bullet per facet, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule.}}
+{{One sentence on the friction, then one bullet per facet, as the [Work Breakdown Guide](../references/work-breakdown.md#problem-and-proposal) defines. Each bullet opens with a bold statement laid out by the scheme's Bold leads rule.}}
 
 - **{{Facet}}.**
   {{The evidence.}}
@@ -12,7 +12,7 @@
 ## Proposal
 
 - **{{Move}}.**
-  {{What is done, within the scheme's Succinct items rule, as the [Work Breakdown guide](../references/work-breakdown.md#problem-and-proposal) defines.}}
+  {{What is done, within the scheme's Succinct items rule, as the [Work Breakdown Guide](../references/work-breakdown.md#problem-and-proposal) defines.}}
 
 ## Work Breakdown
 
@@ -22,9 +22,9 @@
 
 ## Acceptance Criteria
 
-- [ ] **AC1.** {{One invariant, a condition that holds or does not, meeting the goal pass criterion rules: SMART, no stale counts, local, whole, and verifiable. It ends by naming its instrument, as that pass's Verified rule defines.}}
+- [ ] **AC1.** {{One invariant, a condition that holds or does not, meeting the [initiative criteria](../references/review-criteria.md#acceptance-criteria): SMART, no stale counts, local, whole, and verifiable. It ends by naming its instrument, as the [Verified](../references/review-criteria.md#verified) rule defines.}}
 
-## Non-goals
+## Non-Goals
 
 - {{One succinct sentence on what this initiative does not do. It names no initiative, epic, task or issue, and no owner.}}
 

@@ -1,4 +1,4 @@
-# Work Breakdown guide
+# Work Breakdown Guide
 
 How the Work Breakdown tables are written, read and kept current, what a plan or coverage report names, and what a Problem and a Proposal hold. Issue bodies carry the tables and nothing about them: the conventions live here.
 
@@ -29,7 +29,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
 - **Depends on.**
   References only, with no prose, and only what no other entry in the cell already implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
-  - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check dependencies](commands.md#check-dependencies) derives it from the epic tables.
+  - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check Dependencies](commands.md#check-dependencies) derives it from the epic tables.
 - **Task grain.**
   - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
@@ -37,7 +37,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
 - **Joins.**
   The tasks that can land in the same pull request as this one. Each lists the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
 
-## Coverage reports
+## Coverage Reports
 
 - **Unobservable items.**
   An item a test cannot observe is named in the plan or the coverage report. It stays in the report.
@@ -49,7 +49,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
 
 ## Numbering
 
-Epics are numbered in the order they run, and tasks in the order they can start, so every dependency points to an earlier epic or an earlier task. [Check dependencies](commands.md#check-dependencies) reports numbering that does not follow start order as advisory, because older initiatives predate the rule.
+Epics are numbered in the order they run, and tasks in the order they can start, so every dependency points to an earlier epic or an earlier task. [Check Dependencies](commands.md#check-dependencies) reports numbering that does not follow start order as advisory, because older initiatives predate the rule.
 
 Work a pull request names keeps its number: an epic once a pull request names it, and a task once its id links a pull request, open or merged. Renumbering touches only a task whose id links no pull request, and an epic no pull request names.
 
@@ -63,9 +63,11 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   A pull request delivers one task, or a set of tasks that name each other in Joins. A further pull request on a task that is not yet Done delivers that same task, or tasks that name it in Joins.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
-  - [Sync mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
+  - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
 - **Integration branches.**
-  - Each long-lived branch an initiative changes (`main`, `workflows`, `workspace`) has an integration branch, named for the initiative and that branch and cut from it: `i07/main`.
+  - Each long-lived branch an initiative changes has an integration branch, named for the initiative and that branch and cut from it.
+  - **Example.**
+    workflow-server's long-lived branches are `main`, `workflows` and `workspace`, and an integration branch cut from `main` is `i07/main`.
   - Every pull request delivering the initiative's work targets its integration branch, never the long-lived branch.
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
@@ -91,6 +93,11 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 - **Evidence that may be cited.**
   A boundary with a sibling epic is plain language. Code, a merged pull request, and an issue outside this initiative may be cited.
 
-## What bodies leave out
+## Rules
 
-An initiative or epic body does not narrate the order work runs in, why, or how the tables work: Depends on states order, and this guide states the rest. Longest chains, ordering reviews and their reasons go in the planning record. How the plan changed is left out too, as the skill's rules state.
+- **Order.**
+  An initiative or epic body does not narrate the order work runs in, why, or how the tables work. Depends on states the order, and this guide states the rest.
+- **Chains and reviews.**
+  Longest chains, ordering reviews and their reasons go in the planning record.
+- **Change.**
+  How the plan changed is left out, as the skill's [Rules](../SKILL.md#rules) state.

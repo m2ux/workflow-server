@@ -98,28 +98,27 @@ class PlanIds(unittest.TestCase):
 
 
 def proposal_body() -> str:
-    return ('## Overview\n\nThe end state.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
-            '## Proposal\n\n- **Move.**\n  What is done.\n\n## Acceptance Criteria\n\n'
-            '- [ ] **AC1.** Holds, as the user confirms from a production run.\n\n'
-            '## Non-goals\n\n- It leaves the runtime alone.\n\n'
+    return ('## Overview\n\nThe problem.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
+            '## Goal\n\n- The bad key is rejected.\n\n'
+            '## Non-Goals\n\n- It leaves the runtime alone.\n\n'
             '## References\n\n- **R1.** [Note](https://example.com) — The note.\n')
 
 
 class Proposal(unittest.TestCase):
     def test_a_proposal_needs_no_theme_and_no_work_breakdown(self):
-        r = Review(issue(1, '[I] Key Validation: Reject Bad Keys', body=proposal_body(),
+        r = Review(issue(1, 'Key Validation: Reject Bad Keys', body=proposal_body(),
                          labels=('type:proposal',)))
         r.run()
         self.assertEqual(r.decide, [])
         self.assertEqual(r.apply, [])
 
-    def test_a_missing_type_label_is_applied(self):
-        r = Review(issue(1, '[I] Key Validation: Reject Bad Keys', body=proposal_body()))
+    def test_an_unprefixed_issue_does_not_become_a_proposal(self):
+        r = Review(issue(1, 'Key Validation: Reject Bad Keys', body=proposal_body()))
         r.run()
-        self.assertIn('labels: add type:proposal', r.apply)
+        self.assertNotIn('labels: add type:proposal', r.apply)
 
     def test_a_theme_label_is_removed(self):
-        r = Review(issue(1, '[I] Key Validation: Reject Bad Keys', body=proposal_body(),
+        r = Review(issue(1, 'Key Validation: Reject Bad Keys', body=proposal_body(),
                          labels=('type:proposal', 'theme:canon')))
         r.run()
         self.assertIn('labels: remove theme:canon', r.apply)
@@ -127,10 +126,12 @@ class Proposal(unittest.TestCase):
 
     def test_a_work_breakdown_follows_the_initiative_template(self):
         text = proposal_body().replace(
-            '## Acceptance Criteria',
+            '## Non-Goals',
+            '## Proposal\n\nMove.\n\n'
             '## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n'
-            '| --- | --- | --- | --- | --- |\n| E00 | Work | AC1 | | |\n\n## Acceptance Criteria')
-        r = Review(issue(1, '[I] Key Validation: Reject Bad Keys', body=text, labels=('type:proposal',)))
+            '| --- | --- | --- | --- | --- |\n| E00 | Work | AC1 | | |\n\n'
+            '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n## Non-Goals')
+        r = Review(issue(1, 'Key Validation: Reject Bad Keys', body=text, labels=('type:proposal',)))
         r.run()
         self.assertTrue(any('initiative template' in item for item in r.decide))
 

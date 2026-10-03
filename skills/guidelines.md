@@ -30,7 +30,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   One sentence on what the skill does, then a bulleted list with one item for each thing it acts on.
 - **Modes.**
   - Each mode is its bold name, without the word "mode", linking to its reference file.
-  - Beneath it, a bulleted summary of what the mode does: each item describes an action or capability of the mode, not a procedure step.
+  - Beneath it, a bulleted summary of the work the mode does:
+    - Each item is an action or a capability of the mode, not a procedure step.
+    - A distinction from another mode stays in the file that owns it.
 - **Rules.**
   A statement that binds every mode goes in Rules, never as loose prose in another section.
 - **Dependencies.**
@@ -70,9 +72,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 ## Links
 
 - **Files.**
-  A reference to another markdown file in the skill is a relative link, never a code span: [commands.md](work-planner/references/commands.md), not `commands.md`.
+  A reference to another markdown file in the skill is a relative link, never a code span.
 - **Link text.**
-  The link sits on the name of the thing it points to: the mode's name, the guide's name, the command spec's name.
+  The link sits on the noun that names the thing: the mode, the guide, the command, the template.
 - **Resolution.**  Every link resolves to a file that exists, and every anchor to a heading in it.
 
 ## Commands

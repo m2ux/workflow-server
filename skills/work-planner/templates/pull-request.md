@@ -10,11 +10,11 @@
 
 - **{{What it does.}}** {{The behavior as it is.}}
 
-## Test plan
+## Test Plan
 
 - [ ] **T1.** {{A check that the change holds.}}
 
-## Open questions
+## Open Questions
 
 - {{An undecided point. Resolve it, then delete the section.}}
 

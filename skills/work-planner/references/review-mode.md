@@ -1,6 +1,6 @@
-# Review mode
+# Review Mode
 
-Checks existing proposal, initiative, epic, task and standalone issues against the templates, and fixes them.
+Checks existing proposal, initiative, epic, task and standalone issues against their templates and against the rules that bind them, and fixes them.
 
 ## Procedure
 
@@ -9,54 +9,82 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - Naming another initiative's issue approves format edits to it.
    - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
 2. **Fetch.**
-   Fetch each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites, with [Fetch issue](commands.md#fetch-issue).
+   Fetch the issues under review as [Fetch](review-passes.md#fetch) states: each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites.
    - An initiative's fetch includes every epic its table links, closed epics included, and its format check takes each with `--epic`.
    - A closed epic's own body is checked only when the epic is named.
 3. **Check.**
-   Check each issue with [Check format](commands.md#check-format): an epic with its initiative's JSON, an initiative with each of its epics', a proposal with neither. It reports three kinds of finding:
-   - **fixed.**
+   Check each issue with [Check Format](commands.md#check-format): an epic with its initiative's JSON, an initiative with each of its epics', a proposal with neither. It reports three kinds of finding:
+   - **Fixed.**
      Structural changes that keep the wording, already made in `fixed-943.md`, with the body diff printed.
-   - **apply.**  A title or label change to make on the issue.
-   - **decide.**  Anything needing new content or a judgement.
+   - **Apply.**  A title or label change to make on the issue.
+   - **Decide.**  Anything needing new content or a judgement.
 4. **Apply the mechanical fixes.**
    - Apply them without asking.
-   - Read the diff to confirm it changes structure only, then [Patch body](commands.md#patch-body) from `fixed-943.md`.
-   - Make the title and label changes the check names, with [Retitle issue](commands.md#retitle-issue), [Add labels](commands.md#add-labels) and [Remove label](commands.md#remove-label).
-5. **Decide the rest.**  Decide each remaining finding with the user, with its content drafted:
-   - a missing section: draft it from the issue and its epics;
-   - Non-goals in an epic or task: lift any that bound the initiative into the initiative's Non-goals, then remove the section; in a standalone issue, fold them into the Proposal as a closing boundary;
-   - an extra section: keep it, fold it into a template section, or remove it;
-   - a body that follows another kind's template: rewrite it in its own kind's layout, or retitle the issue to the kind it follows;
-   - wording that narrates how the plan changed: restate it as the plan is;
-   - a task delivering more than three criteria no other task delivers: split it into tasks one pull request each can deliver, drafting the rows and their criteria;
-   - an initiative criterion or non-goal naming an initiative, epic, task or issue: restate it locally, or drop a criterion that holds only through another initiative's work;
-   - an initiative criterion that carries a count: measure it against a named baseline or check;
-   - an initiative criterion that names no instrument: name its instrument, and plan any missing test, as the goal pass's Verified rule defines;
-   - a Description cell over eight words or holding a semicolon: shorten it to a phrase naming what the row delivers, and restate any detail no cited criterion carries as a new criterion of one invariant, cited by the row;
-   - an Coverage cell that does not name the criteria the row delivers: map the row to them, from its text and each criterion's wording; a criterion no row delivers needs a row, or belongs in another epic;
-   - a criterion that may state several invariants: split it, adding each new criterion at the end of the list, and cite it from the rows that deliver it;
-   - prose in the Work Breakdown outside its table: move any design content into the Proposal, and drop narration of order and its reasons;
-   - a Depends on cell holding prose: reduce it to references; for an initiative, to the epics [Check dependencies](commands.md#check-dependencies) derives with `I=`;
-   - a title whose name is not two or three words or whose subtitle runs past ten: draft a title of the agent-engineering form, and give the initiative row the new name;
-   - an issue several row ids link: unlink the ids and cite the issue under References, since it backs several tasks, or give each task its own issue.
-6. **Check criteria.**
-   Check every acceptance criterion of the issues under review against the [goal pass](review-passes.md#goal-pass) Verifiable rule.
-   - Report each criterion a test cannot fail.
-   - The review is not clear while one remains.
-7. **Check dependencies.**
-   - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch body](commands.md#fetch-body), and run [Check dependencies](commands.md#check-dependencies).
-   - Put each problem it reports to the user as in step 5. An initiative Depends on cell takes the epics it derives.
-8. **Coverage.**
-   For each epic under review, [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) and run [Match pull requests](commands.md#match-pull-requests).
-   - **unmet.**
-     A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown guide](work-breakdown.md#tables) defines.
-   For an initiative under review, [Fetch initiative pull requests](commands.md#fetch-initiative-pull-requests) and run [Sync initiative](commands.md#sync-initiative) with every epic its table links.
-   - **ready to verify.**
-     An initiative criterion [sync mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
-   - **ticked early.**
-     An initiative criterion [sync mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
-   Put each to the user. Verifying and ticking it is [sync mode](sync-mode.md). The report follows [Coverage reports](work-breakdown.md#coverage-reports).
-9. **Re-run.**
-   - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep. A finding from the criteria check is not one the user keeps.
+   - Read the diff to confirm it changes structure only, then [Patch Body](commands.md#patch-body) from `fixed-943.md`.
+   - Make the title and label changes the check names, with [Retitle Issue](commands.md#retitle-issue), [Add Labels](commands.md#add-labels) and [Remove Label](commands.md#remove-label).
+5. **Check the rules.**
+   Run the [Review Passes](review-passes.md) on the issues under review: the goal pass, the consistency pass, and the ordering pass.
+   - A proposal, against [Propose Mode](propose-mode.md)'s Problem scope rule.
+   - An initiative or epic body, against the [Work Breakdown Guide](work-breakdown.md)'s [Rules](work-breakdown.md#rules) and the skill's [Rules](../SKILL.md#rules) for what a body states.
+   State each finding as [Report](review-passes.md#report) states.
+6. **Decide.**
+   Check every issue under review against each rule in this mode's Rules from Missing section through Several tasks, and decide the finding with the user. Draft the content the rule states.
+7. **Check criteria.**
+   Check every acceptance criterion of the issues under review against the [Verifiable](review-criteria.md#verifiable) rule, and report each a test cannot fail. This mode's Criteria check rule says when the review is clear.
+8. **Check Dependencies.**
+   - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
+   - Put each problem it reports to the user as in Decide. An initiative Depends on cell takes the epics it derives.
+9. **Coverage.**
+   For each epic under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Match Pull Requests](commands.md#match-pull-requests).
+   - **Unmet.**
+     A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
+   For an initiative under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Initiative](commands.md#sync-initiative) with every epic its table links.
+   - **Ready to verify.**
+     An initiative criterion [Sync Mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
+   - **Ticked early.**
+     An initiative criterion [Sync Mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
+   Put each to the user. Verifying and ticking it is [Sync Mode](sync-mode.md). The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
+10. **Re-run.**
+   - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
+
+## Rules
+
+- **The rules.**
+  The review checks each issue against the rules that bind its kind, and against its template.
+- **Criteria check.**
+  - The review is not clear while a criterion a test cannot fail remains.
+  - A finding from that check is not one the user keeps.
+- **Missing section.**
+  Draft a missing section from the issue and its epics.
+- **Non-Goals.**
+  An epic or task that carries Non-Goals fails the [Initiative](review-criteria.md#initiative) Non-Goals criteria. Lift any that bound the initiative into the initiative's Non-Goals, then remove the section. In a standalone issue, fold them into the Proposal as a closing boundary.
+- **Extra section.**
+  Keep an extra section, fold it into a template section, or remove it.
+- **Wrong template.**
+  A body that follows another kind's template is rewritten in its own kind's layout, or the issue is retitled to the kind it follows.
+- **Change narrative.**
+  Wording that narrates how the plan changed fails the [Any issue](review-criteria.md#any-issue) Body criteria. Restate it as the plan is.
+- **Task grain.**
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for a task that delivers more than three criteria no other task delivers.
+- **Local criterion.**
+  Apply the initiative [Acceptance Criteria](review-criteria.md#acceptance-criteria) Local rule.
+- **Counted criterion.**
+  Apply the initiative [Acceptance Criteria](review-criteria.md#acceptance-criteria) No counts rule.
+- **Instrument.**
+  Apply the initiative [Verified](review-criteria.md#verified) rule.
+- **Description.**
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for Description.
+- **Coverage.**
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for Coverage.
+- **One invariant.**
+  Apply the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) One invariant rule.
+- **Work Breakdown prose.**
+  Prose in the Work Breakdown outside its table fails the [Work Breakdown Guide](work-breakdown.md#rules) Order rule. Move any design content into the Proposal.
+- **Depends on.**
+  Apply the [Epic](review-criteria.md#epic) or [Initiative](review-criteria.md#initiative) Work Breakdown criteria for Depends on. For an initiative, the cell takes the epics [Check Dependencies](commands.md#check-dependencies) derives with `I=`.
+- **Title.**
+  Apply the [Any issue](review-criteria.md#any-issue) Title criteria, and the [Epic](review-criteria.md#epic) Title criteria for an epic. The initiative row takes the epic's new name.
+- **Several tasks.**
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for an issue several row ids link.
 

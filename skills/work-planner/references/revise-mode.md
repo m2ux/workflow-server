@@ -1,6 +1,6 @@
-# Revise mode
+# Revise Mode
 
-Changes the skill itself: SKILL.md, its references, templates and scripts. Every revision follows the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md); a change that departs from them is not complete.
+Changes the skill itself: SKILL.md, its references, templates and scripts.
 
 ## Procedure
 
@@ -15,14 +15,19 @@ Changes the skill itself: SKILL.md, its references, templates and scripts. Every
    - Write it to the guidelines' layout, prose, link and command rules as it is written, not in a later pass.
 5. **Check against the guidelines.**
    Read every changed file against each section of both guidelines, and fix what departs:
-   - the description, when the skill's reach changed;
-   - one line per item, bold leads on their own line, and sub-bullets for discrete points;
-   - each rule stated once, and no description of replaced behaviour left anywhere;
-   - every command named by link to its spec in [commands.md](commands.md);
-   - every link and anchor resolving.
+   - The description, when the skill's reach changed;
+   - One line per item, bold leads on their own line, and sub-bullets for discrete points;
+   - Each rule stated once, and no description of replaced behaviour left anywhere;
+   - Every command named by link to its spec in [Commands](commands.md);
+   - Every link and anchor resolving.
 6. **Verify.**
-   - [Run tests](commands.md#run-tests) when a script, template or test changed.
+   - [Run Tests](commands.md#run-tests) when a script, template or test changed.
    - Confirm SKILL.md's frontmatter still opens and closes with `---` and holds `name` and `description`.
 7. **Deliver.**  Commit, push, and report what changed in each file.
 8. **Revise the guidelines.**
    When the user states a new rule for how the skill is written, add it in the same change: to the [skill guidelines](../../guidelines.md) when it binds every skill, or to this skill's [guidelines](guidelines.md) when it binds this skill alone.
+
+## Rules
+
+- **Complete.**
+  A change that departs from the [skill guidelines](../../guidelines.md) or this skill's [guidelines](guidelines.md) is not complete.
