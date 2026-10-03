@@ -29,7 +29,7 @@ A placement is the choice of where an orphan's work goes. The table states what 
   - Take the body live with [Fetch Body](commands.md#fetch-body), since `issues.json` can be stale by the time the orphan is applied. The comment file is the lead line, a blank line, then that body word for word, posted with [Comment on Issue](commands.md#comment-on-issue).
   - A subsumed orphan closes with its body as it is.
 - **Subsumed.**
-  - The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, kept as the [Goal Pass](review-passes.md#goal-pass) Verifiable rule defines, and its design goes into the Proposal.
+  - The orphan's work folds into the issue that takes it: its outcomes become criteria of one invariant each, kept as the [Verifiable](review-criteria.md#verifiable) rule defines, and its design goes into the Proposal.
   - That issue's References cite the orphan for the detail it holds, so nothing it recorded is lost.
   - The orphan is then closed with a comment naming the issue that took it.
 - **Keep or subsume.**

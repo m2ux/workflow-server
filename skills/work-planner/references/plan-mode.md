@@ -16,12 +16,12 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - Draft each body from its template into a local file. Those files are the source for every later edit.
    - A Problem and a Proposal follow the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal). The initiative's Problem and Non-Goals are the proposal's, when a proposal was taken.
    - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them. Each criterion comes from a confirmed clause.
-   - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [Goal Pass](review-passes.md#goal-pass) defines.
+   - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [review criteria](review-criteria.md) for an initiative define.
    - Each acceptance criterion is written to this mode's Criteria at creation rule. It ends by naming its instrument as that pass's Verified rule defines. A test it names that does not exist yet is planned as work.
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 4. **Review the drafts.**
-   - Run the [Goal Pass](review-passes.md#goal-pass), including its trace and its Whole rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
+   - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
    - Fold every gap and problem in and run both again. No issue is created while either reports one. An acceptance criterion is created only once it complies with this mode's Criteria at creation rule.
 5. **Create issues.**
    Create them with [Create Issue](commands.md#create-issue), so that every number exists before it is cited:
@@ -59,7 +59,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 ## Rules
 
 - **Criteria at creation.**
-  - An acceptance criterion complies with the [Goal Pass](review-passes.md#goal-pass) when it is written, including that pass's Verifiable rule.
+  - An acceptance criterion complies with the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) and, for an initiative, its [Acceptance Criteria](review-criteria.md#acceptance-criteria) when it is written.
   - The issue that carries it is created only after the criterion complies.
 - **The discussion PR.**
   Merging it is the user's call.
