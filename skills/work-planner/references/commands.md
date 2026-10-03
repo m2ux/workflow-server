@@ -448,9 +448,29 @@ Derives each issue's Status and assignees, and prints the call for each issue to
 
 - Give an issue it reports unresolved with `--others`.
 - `--assignee` is the user [Find User](#find-user) prints.
+- An initiative or an epic with no open pull request keeps Ready or Backlog, and keeps In Progress when delivery has started. In Review then becomes In Progress. One not yet on the board is added at Backlog, or at In Progress when delivery has started. [Advance Mode](advance-mode.md#rules) sets the queue.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
+```
+
+### Plan Queue
+
+Decides which initiatives and epics on a theme board move between Backlog, Ready and In Progress, and prints the call for each Status and assignee change.
+
+- The rules are [Advance Mode](advance-mode.md).
+- `--items` is [Fetch Board Items with Status](#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
+- `--assignee` is the user [Find User](#find-user) prints.
+- Give an issue it reports unresolved with `--others`.
+- `--unplanned` names an initiative the user left with no priority, as a number or `owner/repo#number`.
+- An `order` line lists the initiatives for a parallel work map. The same priority number runs together.
+- An `ask` line names an initiative In Progress with no priority label.
+- An `order` or `ask` line is a question. The queue is not finished while one is printed. After the answer, fetch the items again and run the command again.
+- A `wait` line names an open pull request. That initiative stays In Progress. The highest set still moves to In Progress.
+- A `next` line names epics, as the Report rule in [Advance Mode](advance-mode.md#rules) says.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/advance.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux
 ```
 
 ### Summarise Progress

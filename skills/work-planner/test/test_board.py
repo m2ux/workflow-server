@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import SCRIPTS, initiative_body, issue, item, run, url
+from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, pr, run, url
 
 sys.path.insert(0, str(SCRIPTS))
 from board import assignee_calls  # noqa: E402
@@ -97,6 +97,57 @@ class InitiativeStatus(unittest.TestCase):
         out = self.planned(initiative, epic, 'Backlog', 'Ready', 'In Progress', 'Done', held='Ready')
         self.assertIn('set #1 [I01] First: Initiative: Ready → In Progress', out)
         self.assertNotIn('In Review', out)
+
+    def open_pair(self, initiative_status: str, epic_status: str, epic: dict | None = None,
+                  pulls: str = '') -> str:
+        epic = epic or issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        initiative = issue(1, '[I01] First: Initiative',
+                           body=initiative_body((f"[E00]({url('issues', 2)})", '')))
+        initiative['id'], epic['id'] = 11, 12
+        if initiative_status != 'Backlog':
+            initiative['assignees'] = [{'login': 'me'}]
+        if epic_status != 'Backlog':
+            epic['assignees'] = [{'login': 'me'}]
+        on_board = [item(initiative, initiative_status), item(epic, epic_status)]
+        on_board[0]['id'], on_board[1]['id'] = 100, 101
+        with tempfile.TemporaryDirectory() as tmp:
+            root, epic_path = Path(tmp, 'initiative.json'), Path(tmp, 'epic.json')
+            fields, items, prs = Path(tmp, 'fields.json'), Path(tmp, 'items.json'), Path(tmp, 'prs.json')
+            root.write_text(json.dumps(initiative))
+            epic_path.write_text(json.dumps(epic))
+            fields.write_text(json.dumps(board_fields('Backlog', 'Ready', 'In Progress', 'Done')))
+            items.write_text(json.dumps(on_board))
+            prs.write_text(pulls)
+            done = run('board.py', str(root), '--epics', str(epic_path), '--prs', str(prs),
+                       '--board', 'users/o/projectsV2/9', '--fields', str(fields), '--items', str(items),
+                       '--out', str(Path(tmp, 'out')), '--assignee', 'me')
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_an_unstarted_epic_stays_in_backlog(self):
+        out = self.open_pair('Backlog', 'Backlog')
+        self.assertNotIn('→ Ready', out)
+        self.assertIn('to do: 0', out)
+
+    def test_a_ready_initiative_with_no_delivery_stays_ready(self):
+        out = self.open_pair('Ready', 'Backlog')
+        self.assertNotIn('→ Backlog', out)
+        self.assertIn('to do: 0', out)
+
+    def test_a_delivered_epic_leaves_in_review(self):
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', '')))
+        merged = json.dumps(pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')) + '\n'
+        out = self.open_pair('In Progress', 'In Review', epic, merged)
+        self.assertIn('set #2 [I01:E00] First: Epic: In Review → In Progress', out)
+
+    def test_a_ready_epic_with_a_delivered_row_stays_ready(self):
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', '')))
+        merged = json.dumps(pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')) + '\n'
+        out = self.open_pair('Ready', 'Ready', epic, merged)
+        self.assertNotIn('→ In Progress', out)
+        self.assertIn('to do: 0', out)
 
 
 if __name__ == '__main__':

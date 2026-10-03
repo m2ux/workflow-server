@@ -22,12 +22,20 @@ Status, first match wins:
   (removed)    closed any other way
   In Review    an open pull request ready for review names it: its title names the epic by the
                initiative's row id, and for a task issue its title or body also cites the issue
-  In Progress  an open draft pull request names it, or it is an epic with a delivered row
-  Ready        every dependency in its row is delivered and it has no Open Questions
-  Backlog      otherwise
+  In Progress  an open draft pull request names it
+  Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
+               and that has no Open Questions
+  Backlog      a task otherwise
+An initiative or an epic with an open pull request is In Review or In Progress from that. With
+none, Ready or Backlog already on the board is left as it stands. In Progress is left when a row
+has been delivered or an epic is Done, and In Review then becomes In Progress. When work has not
+started, an In Progress or In Review entry becomes Backlog. One not yet on the board is In
+Progress when a row has been delivered or an epic is Done, and Backlog when work has not started.
+Advance mode moves Ready, Backlog and, when no pull request is open, In Progress.
+
 An open initiative is In Review when every acceptance criterion is ticked, which holds while it
-waits for its integration branches to merge. It is In Progress when any epic is Done, In Review or
-In Progress, Ready when any epic is Ready, and Backlog otherwise.
+waits for its integration branches to merge. It is In Progress when any epic is In Review or In
+Progress.
 
 The board's Status field offers Backlog, Ready, In Progress and Done. In Review is optional: on a
 board whose Status lacks it, an issue In Review is set In Progress.
@@ -62,6 +70,7 @@ RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
 STATUSES = ('Backlog', 'Ready', 'In Progress', 'Done')
 OPTIONAL = {'In Review': 'In Progress'}
+QUEUE, STARTED = 'queue', 'started'
 
 
 def pages(path: str) -> list:
@@ -264,6 +273,7 @@ def main() -> int:
     header, epic_rows = rows(initiative)
     epic_ids = {row_id(id_cell(header, r)): n for r in epic_rows if (n := linked_issue(id_cell(header, r)))}
     status: dict[Key, str | None] = {}
+    task_epic: dict[Key, Key] = {}
 
     def pr_status(epic_key: str, cite: Key | None = None) -> str | None:
         """In Review for an open pull request ready for review naming the issue, In Progress for an
@@ -311,28 +321,29 @@ def main() -> int:
                 status[task_issue] = 'Ready'
             else:
                 status[task_issue] = 'Backlog'
+            task_epic[task_issue] = number
         if epic['state'] == 'closed':
             status[number] = 'Done' if completed(epic) else None
         elif (found := pr_status(epic_key)) == 'In Review':
             status[number] = 'In Review'
-        elif found or delivered_any:
+        elif found:
             status[number] = 'In Progress'
-        elif not open_questions(epic) and board.met(cell(header, r, 'Depends on'), root, epic_ids, f'E{epic_key}'):
-            status[number] = 'Ready'
+        elif delivered_any:
+            status[number] = STARTED
         else:
-            status[number] = 'Backlog'
+            status[number] = QUEUE
 
     epic_status = [status.get(n) for n in epic_ids.values()]
     if initiative['state'] == 'closed':
         status[root] = 'Done' if completed(initiative) else None
     elif criteria_met(initiative):
         status[root] = 'In Review'
-    elif any(s in ('Done', 'In Review', 'In Progress') for s in epic_status):
+    elif any(s in ('In Review', 'In Progress') for s in epic_status):
         status[root] = 'In Progress'
-    elif 'Ready' in epic_status:
-        status[root] = 'Ready'
+    elif any(s in ('Done', STARTED) for s in epic_status):
+        status[root] = STARTED
     else:
-        status[root] = 'Backlog'
+        status[root] = QUEUE
 
     field = next((f for f in pages(args.fields) if f.get('name') == 'Status'), None)
     if not field:
@@ -361,6 +372,20 @@ def main() -> int:
                 cited = re.compile(rf"{re.escape(content['html_url'])}\b")
                 if any(cited.search(i.get('body') or '') for i in (initiative, *epics.values(), *tasks.values())):
                     status[key] = None
+
+    for key, wanted in list(status.items()):
+        if wanted not in (QUEUE, STARTED):
+            continue
+        held_status = on_board[key][1] if key in on_board else None
+        if held_status in ('Ready', 'Backlog'):
+            status[key] = held_status
+        elif wanted == STARTED and (held_status in ('In Progress', 'In Review') or key not in on_board):
+            status[key] = 'In Progress'
+        else:
+            status[key] = 'Backlog'
+    for task_key, epic_key in task_epic.items():
+        if status.get(task_key) == 'Ready' and status.get(epic_key) not in ('Ready', 'In Progress'):
+            status[task_key] = 'Backlog'
 
     print(f"{args.board}: Status field {field['id']}")
     current, todo = 0, 0

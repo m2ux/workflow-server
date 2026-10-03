@@ -6,7 +6,7 @@ description: >-
   Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
   scope the solution, plan out, scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
   renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
-  order; to fold review findings into issues; to sync an initiative or epic with completed work;
+  order; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
   to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
   or to revise or update the work-planner skill itself.
 ---
@@ -51,6 +51,11 @@ Read the file for the mode the request calls for:
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
   - Closure of complete task issues, epics and initiatives
   - The theme board brought current with its issues
+- **[Advance](references/advance-mode.md)**
+  - Sync of the board's open initiatives
+  - A parallel work map for initiatives with no priority
+  - Placement of the highest set as In Progress and the next set as Ready
+  - Placement of a partly completed epic as In Progress and the next unstarted epic as Ready
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task
@@ -111,7 +116,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Next number.**
   Find the next initiative number with [List Initiative Titles](references/commands.md#list-initiative-titles).
 - **Labels.**
-  - Besides the type and theme, add `enhancement`, `bug`, `tech-debt` and a `priority: *` as they apply.
+  - Besides the type and theme, add `enhancement`, `bug`, `tech-debt` and `priority:` with a positive integer as they apply. A larger number is higher. There is no maximum.
   - **Example.**  workflow-server adds `workflows`.
   - Only labels that exist, as [List Labels](references/commands.md#list-labels) shows.
 

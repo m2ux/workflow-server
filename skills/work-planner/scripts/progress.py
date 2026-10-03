@@ -38,9 +38,9 @@ epic's repository.
   In progress  epics and task issues In Progress or In Review, each epic with its open pull
                requests that cite none of its task issues In Progress or In Review, ready for
                review (In Review) or draft, or else, with no line under it, its next task.
-  Next         epics and task issues Ready, ranked by priority label (highest, high, medium or
-               none, low, lowest), then by reference; the first five, and a count of the rest. An
-               epic names its next task.
+  Next         epics and task issues Ready, ranked by priority label (a larger number first;
+               no label after every number), then by reference; the first five, and a count of
+               the rest. An epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
 task issue, if it has one, is on the board and not In Progress or In Review. A task is undelivered
 while every pull request its id links is open. A task issue that
@@ -75,9 +75,7 @@ from board import Board, Key, PREFIX, PULL_REF, cites, key_of, label, linked_iss
 from format import LINK, cell, epic_name, id_cell, phrase
 from sync import PR_REF, PULL_URL, Unreadable, pull_requests
 
-PRIORITY = {'priority: highest': 0, 'priority: high': 1, 'priority: medium': 2,
-            'priority: low': 4, 'priority: lowest': 5}
-UNRANKED = 2
+PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
 SHOWN = 5
 DONE, WORKING, REVIEW, DRAFT, READY = '✅', '🔄', '👀', '📝', '▶️'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
@@ -392,8 +390,9 @@ def main() -> int:
 
     def rank(entry: tuple[Key, str]) -> tuple:
         k = entry[0]
-        levels = [PRIORITY[l['name']] for l in issues[k].get('labels', []) if l['name'] in PRIORITY]
-        return min(levels, default=UNRANKED), tagged[k], k[0].lower()
+        levels = [int(matched.group(1)) for l in issues[k].get('labels', [])
+                  if (matched := PRIORITY.fullmatch(l['name']))]
+        return (-max(levels) if levels else 0), tagged[k], k[0].lower()
 
     ready = sorted((e for e in ready if e[0] not in named_next), key=rank)
     upcoming = [f"{READY} *{reference(*tagged[k])} {epic_name(issues[k]['title'])}*" + (f', {task}' if task else '')
