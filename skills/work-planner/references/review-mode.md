@@ -35,15 +35,21 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in Decide. An initiative Depends on cell takes the epics it derives.
 9. **Coverage.**
-   For each epic under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Match Pull Requests](commands.md#match-pull-requests).
+   For each epic under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Epic](commands.md#sync-epic) with `--fix`.
    - **Unmet.**
-     A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
-   For an initiative under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Initiative](commands.md#sync-initiative) with every epic its table links.
+     A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. Put it to the user. Verifying and ticking it is [Sync Mode](sync-mode.md).
+   - **Repair.**
+     When the sync reports a row done, or a tick cleared, [Patch Body](commands.md#patch-body) from the `--fix` file, without asking.
+   - **Absent.**
+     A row that links a pull request the fetch did not return is fetched with [Fetch Pull Request](commands.md#fetch-pull-request), and the sync is run again.
+   - **Unlinked.**
+     A criterion ticked while its row links no pull request and no commit: link the one delivery [Fetch Comments](commands.md#fetch-comments) names, a path taken as the commit that holds it, then run the sync again. Several candidates, or none, go to the user.
+   For an initiative under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Initiative](commands.md#sync-initiative) with `--fix` and every epic its table links.
    - **Ready to verify.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
    - **Ticked early.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
-   Put each to the user. Verifying and ticking it is [Sync Mode](sync-mode.md). The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
+   Put each of those to the user. Verifying and ticking it is [Sync Mode](sync-mode.md). A Done change the fix file writes is applied with [Patch Body](commands.md#patch-body), without asking. The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
 10. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
@@ -87,4 +93,6 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
   Apply the [Any issue](review-criteria.md#any-issue) Title criteria, and the [Epic](review-criteria.md#epic) Title criteria for an epic. The initiative row takes the epic's new name.
 - **Several tasks.**
   Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for an issue several row ids link.
+- **Table.**
+  A Done cell that disagrees with its row's delivery is repaired. A ticked criterion whose row links no delivery is linked when the comments name one delivery, a path taken as the commit that holds it. Several candidates, or none, are decided with the user.
 
