@@ -9,6 +9,8 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
 
 ## Placements
 
+A placement is the choice of where an orphan's work goes. The table states what that work becomes and whether the orphan issue is kept, subsumed, or left open.
+
 | Placement | The orphan's work becomes | The orphan issue |
 | --- | --- | --- |
 | **Existing task** | criteria and design in a task that has its own issue | subsumed |
