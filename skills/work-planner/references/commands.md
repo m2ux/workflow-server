@@ -314,6 +314,19 @@ Sets one board item's Status. The body names the Status field id and the option 
 gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-backlog.json --jq .id
 ```
 
+## Planning records
+
+### Add Planning Record
+
+Adds the folder for one planning record on the long-lived engineering worktree.
+
+- The path is `artifacts/planning/<yyyy-mm-dd>-<slug>/`.
+- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
+
+```bash
+mkdir -p artifacts/planning/<yyyy-mm-dd>-<slug>
+```
+
 ## Scripts
 
 ### Check Dependencies

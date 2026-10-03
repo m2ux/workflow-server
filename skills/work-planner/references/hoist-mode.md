@@ -31,7 +31,7 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
   - That issue's References cite the orphan for the detail it holds, so nothing it recorded is lost.
   - The orphan is then closed with a comment naming the issue that took it.
 - **Keep or subsume.**
-  - An orphan that already references detailed planning, a folder of markdown files such as workflow-server's `artifacts/planning/2026-09-10-activity-representation/`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes.
+  - An orphan that already references a [planning record](commands.md#add-planning-record), such as workflow-server's `2026-09-10-activity-representation`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes.
   - Otherwise keep the orphan when its work needs discussion or evidence of its own, as a task with its own issue does.
   - Subsume it when its detail fits in rows, criteria and a reference.
 - **Left.**
