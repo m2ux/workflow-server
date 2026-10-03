@@ -141,8 +141,6 @@
         "checkpoint:strategic-review:review-findings=fix-findings",
         "checkpoint:strategic-review:review-findings=more-review",
         "checkpoint:strategic-review:review-findings=selective-fixes",
-        "checkpoint:strategic-review:unsigned-commits-prompt=decline-resign",
-        "checkpoint:strategic-review:unsigned-commits-prompt=resign-all",
         "checkpoint:submit-for-review:body-non-conformant=abort",
         "checkpoint:submit-for-review:body-non-conformant=proceed-with-override",
         "checkpoint:submit-for-review:body-non-conformant=provide-input",

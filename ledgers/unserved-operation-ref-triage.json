@@ -1694,12 +1694,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/resign-commits.md:38",
-      "op": "push-branch",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/work-package/techniques/strategic-review/review-scope.md:51",
       "op": "view-pr",
       "verdict": "fix-later",

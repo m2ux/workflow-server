@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.27.0
+version: 1.28.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -259,14 +259,6 @@ steps:
       - action: validate
         target: push_remote_verified != false
         message: "Push remote '{push_remote}' ({push_remote_url}) did not verify as private. Point {push_remote} at the private fork inside {target_path} and re-run."
-  - kind: technique
-    id: verify-push-signatures
-    technique: manage-git::verify-commit-signatures
-    when: stealth_mode == true
-    actions:
-      - action: validate
-        target: commits_signed != false
-        message: "Commits staged for the private push carry no valid signature. Sign them in {target_path} and re-run."
   - kind: checkpoint
     id: private-push-confirmation
     condition:
@@ -274,7 +266,7 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
-    message: "The push target is remote `{push_remote}` ({push_remote_url}), its commits carry valid signatures, and a stealth-mode run reaches a private remote only."
+    message: "The push target is remote `{push_remote}` ({push_remote_url}), and a stealth-mode run reaches a private remote only."
     options:
       - id: confirmed
         label: Yes, push to the private remote

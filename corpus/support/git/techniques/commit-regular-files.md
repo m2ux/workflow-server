@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.2
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,7 +26,7 @@ Git branch name to push to.
 ### 1. Stage and Commit
 
 - `git add {paths}`.
-- `git commit -s -m '{commit_message}'`.
+- `git commit -s --no-gpg-sign -m '{commit_message}'`.
 
 ### 2. Push the Branch
 

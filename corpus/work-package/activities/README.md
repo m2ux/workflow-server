@@ -162,7 +162,7 @@ Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 
 ### 13. Submit for Review
 
-Takes the DCO-signed change set to a ready PR with a finalized description, and sees reviewer feedback through. In review mode it delivers all findings as structured PR review comments and ends the workflow. In stealth mode there is no PR lifecycle: the verified, signed commits reach the consumer's private `push_remote`. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
+Takes the DCO-signed change set to a ready PR with a finalized description, and sees reviewer feedback through. In review mode it delivers all findings as structured PR review comments and ends the workflow. In stealth mode there is no PR lifecycle: the branch's unsigned commits reach the consumer's private `push_remote`. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
 
 Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Advisory DCO-compliant merge guidance for the PR (read-only; no merge performed).
+Advisory merge guidance for the PR. Branch commits are unsigned. The merge commit is signed, and creating it prompts the user to sign. Read-only; no merge is performed.
 
 ## Inputs
 
@@ -17,20 +17,25 @@ Boolean — true when the repo allows squash merges
 
 ### presented_merge_guidance
 
-The DCO-compliant merge guidance for the `{pr_number}` PR, branched on `{squash_merge_supported}`: the local GPG-signed squash-merge flow when squash merge is supported, or the plain-branch-merge note when it is not. The op is read-only: it sets no workflow state and performs no merge, and the guidance text is its whole product.
+The merge guidance for the `{pr_number}` PR, branched on `{squash_merge_supported}`. The op is read-only: it sets no workflow state and performs no merge, and the guidance text is its whole product.
 
 ## Protocol
 
 ### 1. Compose the Guidance for Each Merge Setting
 
-- When `{squash_merge_supported}` is true, instruct the human to merge locally so the merge commit is both GPG-signed and DCO-attested — the GitHub web UI squash merge is not GPG-signed:
+- When `{squash_merge_supported}` is true, instruct the human to squash locally. The squash commit is the merge commit. `git commit -S` prompts the user to sign it. The DCO trailer rides that commit:
    ```
    git checkout main && git pull
    git merge --squash {branch_name}
    git commit -s -S -m 'feat: description (#{pr_number})'
    git push
    ```
-- When `{squash_merge_supported}` is false, instruct the human that branch commits land as-is on a plain branch merge — no local signing flow is required.
+- When `{squash_merge_supported}` is false, instruct the human to merge locally. `git merge -S` prompts the user to sign the merge commit. The branch commits are unsigned:
+   ```
+   git checkout main && git pull
+   git merge --no-ff -S {branch_name}
+   git push
+   ```
 
 ### 2. Hand the Guidance Over
 

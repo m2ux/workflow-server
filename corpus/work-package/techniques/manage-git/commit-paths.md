@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -36,7 +36,7 @@ SHA of the new commit on `{branch_name}`, or empty when there was nothing to com
 
 ### 3. Commit
 
-- Commit with `{commit_message}`, honouring `code-commit-coauthor-trailer`. Whether commits are GPG-signed follows the user's local git config — do not impose `--no-gpg-sign` / `--gpg-sign` overrides here.
+- Commit with `git -C {target_path} commit --no-gpg-sign`, message `{commit_message}`, honouring `code-commit-coauthor-trailer`. The commit is unsigned.
 - Capture `{commit_sha}` (`git rev-parse HEAD`).
 
 ## Rules
