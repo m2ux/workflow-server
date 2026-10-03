@@ -21,7 +21,9 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 4. **Review the drafts.**
+   - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
+   - State each finding as [Report](review-passes.md#report) states.
    - Fold every gap and problem in and run both again. No issue is created while either reports one. An acceptance criterion is created only once it complies with this mode's Criteria at creation rule.
 5. **Create issues.**
    Create them with [Create Issue](commands.md#create-issue), so that every number exists before it is cited:
@@ -31,11 +33,12 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    4. a task issue from the [task template](../templates/task.md) for each task that needs one, citing its epic, its acceptance criteria written to this mode's Criteria at creation rule;
    5. [Check Format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch Body](commands.md#patch-body) from each fixed body.
 6. **Review.**  Run the [Review Passes](review-passes.md):
+   - Fetch the issues as [Fetch](review-passes.md#fetch) states.
    - The goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
    - The consistency pass, after every round of edits;
    - The ordering pass, whenever tasks or dependencies change.
 
-   Fold each finding in and record it in the planning record.
+   State each finding as [Report](review-passes.md#report) states. Fold each finding in and record it in the planning record.
 7. **Keep in step.**
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
@@ -51,7 +54,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - **One condition per criterion.**
      Read each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria). Split one that joins several, adding the new ones at the end of the list, and cite each from the rows that deliver it.
 
-   Run the goal pass, and the ordering pass when tasks or dependencies change.
+   Fetch as [Fetch](review-passes.md#fetch) states. Run the goal pass, and the ordering pass when tasks or dependencies change. State each finding as [Report](review-passes.md#report) states.
 9. **Deliver.**  As work lands, run [Sync Mode](sync-mode.md).
 
 ## Rules

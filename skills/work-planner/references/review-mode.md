@@ -9,7 +9,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - Naming another initiative's issue approves format edits to it.
    - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
 2. **Fetch.**
-   Fetch each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites, with [Fetch Issue](commands.md#fetch-issue).
+   Fetch the issues under review as [Fetch](review-passes.md#fetch) states: each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites.
    - An initiative's fetch includes every epic its table links, closed epics included, and its format check takes each with `--epic`.
    - A closed epic's own body is checked only when the epic is named.
 3. **Check.**
@@ -26,6 +26,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    Run the [Review Passes](review-passes.md) on the issues under review: the goal pass, the consistency pass, and the ordering pass.
    - A proposal, against [Propose Mode](propose-mode.md)'s Problem scope rule.
    - An initiative or epic body, against the [Work Breakdown Guide](work-breakdown.md)'s [Rules](work-breakdown.md#rules) and the skill's [Rules](../SKILL.md#rules) for what a body states.
+   State each finding as [Report](review-passes.md#report) states.
 6. **Decide.**
    Check every issue under review against each rule in this mode's Rules from Missing section through Several tasks, and decide the finding with the user. Draft the content the rule states.
 7. **Check criteria.**

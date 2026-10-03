@@ -4,10 +4,14 @@ The method for the goal pass, the consistency pass, and the ordering pass. The r
 
 ## Fetch
 
-1. **Issues.**  Fetch every issue first, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
+Each pass reads its inputs first.
+
+1. **Issues.**  Fetch each issue the pass reads, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
 2. **Drafts.**  The goal pass that gates creation reads the local drafts.
 
 ## Report
+
+A pass states each finding this way.
 
 1. **Split by area.**  Report findings split by area.
 2. **One pair.**  One problem/solution pair per finding, each with a severity.
