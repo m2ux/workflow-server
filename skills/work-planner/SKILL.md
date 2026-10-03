@@ -6,7 +6,7 @@ description: >-
   Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
   scope the solution, plan out, scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
   renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
-  order; to fold review findings into issues; to sync an initiative or epic with completed work;
+  order; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
   to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
   or to revise or update the work-planner skill itself.
 ---
@@ -51,6 +51,13 @@ Read the file for the mode the request calls for:
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
   - Closure of complete task issues, epics and initiatives
   - The theme board brought current with its issues
+- **[Advance](references/advance-mode.md)**
+  - Sync of the board's open initiatives, so Status matches delivery
+  - A priority for every open initiative that lacks one, confirmed before anything moves
+  - One Ready or In Progress initiative per open slot: one ordinary, and one bug or tech-debt, per repository
+  - The initiative In Progress moving to Ready once a higher priority is waiting and its pull requests are done
+  - The next epics of the initiative In Progress
+  - Partly completed epics of an initiative that steps down stay Ready
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task

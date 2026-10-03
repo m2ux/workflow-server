@@ -448,9 +448,26 @@ Derives each issue's Status and assignees, and prints the call for each issue to
 
 - Give an issue it reports unresolved with `--others`.
 - `--assignee` is the user [Find User](#find-user) prints.
+- An initiative or an epic with no open pull request keeps Ready or Backlog, and keeps In Progress when delivery has started. In Review then becomes In Progress. One not yet on the board is added at Backlog, or at In Progress when delivery has started. [Advance Mode](advance-mode.md#rules) sets the queue.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
+```
+
+### Plan Queue
+
+Decides which initiatives and epics on a theme board move between Backlog, Ready and In Progress, and prints the call for each Status and assignee change.
+
+- The rules are [Advance Mode](advance-mode.md).
+- `--items` is [Fetch Board Items with Status](#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
+- `--assignee` is the user [Find User](#find-user) prints.
+- Give an issue it reports unresolved with `--others`.
+- `blocked: priorities` means an open initiative has no priority label, and nothing moves. Each `hold` line names one.
+- A `wait` line names an open pull request. The In Progress initiative stays until that pull request is no longer open.
+- A `next` line names the epics a Ready initiative would start once it is In Progress.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/advance.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux
 ```
 
 ### Summarise Progress
