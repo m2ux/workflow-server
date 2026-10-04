@@ -28,6 +28,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - Link each task id to its heading in `work.md`, as [Task ids](work-breakdown.md#delivery) defines.
    - Every test of an implementation accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The tests are its unit tests, its integration tests, and its walk.
    - Spec, create, and test reusable routines, techniques, and resources before an activity binds them, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
+   - Activity integration changes that primitive when the wired behaviour and the expected behaviour differ, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. Fit, form, and function are settled in that task.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
