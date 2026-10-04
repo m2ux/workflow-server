@@ -14,7 +14,9 @@ Every test of a task accompanies that task:
 
 ## W01 Place and walk the legacy workflow
 
-The combined workflow moves to `corpus/work-package/workflows/legacy/`. The workflow id is `legacy`. The schema path is `../../../../schemas/workflow.schema.json`.
+One workflow currently holds implement, review, and remediate. A worker sent that workflow is sent every mode's steps. This task places the combined workflow where an operator can still start it, unchanged, as the behaviour reference for the modes that follow.
+
+The workflow moves to `corpus/work-package/workflows/legacy/`. Its id is `legacy`. The schema path is `../../../../schemas/workflow.schema.json`.
 
 Links whose target moved follow the files. Technique references to the combined workflow become `legacy::`. A caller that starts the combined workflow names `legacy`, including `execute-package`.
 
@@ -61,6 +63,8 @@ sequenceDiagram
 ```
 
 ## W02 Add the library and its guard
+
+Once each mode is its own workflow, the routines, techniques, and resources they share need one home, and a mode needs to be stopped from declaring a variable it does not use. This task adds that library and the guard.
 
 `corpus/work-package/` holds the library folders and no `workflow.yaml`:
 
@@ -121,7 +125,7 @@ sequenceDiagram
 
 ## W03 Refactor resource grain
 
-The resources that live with the combined workflow are reviewed for grain and rewritten onto the library. A procedure a technique owns moves out of the resource. Citations are at section grain. A section fetch returns that section. Legacy keeps its own copies.
+Guides that travelled with the combined workflow mix material a worker consults with procedures a technique should carry. Fetching one of them returns the whole file when a section would do. This task rewrites those resources so a citation returns the section, and a procedure stays with the technique. The combined workflow keeps its own copies.
 
 A resource holds:
 
@@ -173,7 +177,9 @@ sequenceDiagram
 
 ## W04 Add workspace, commit, and push
 
-Spec and create the library routines for opening a workspace, committing, and pushing. A parameter selects the workspace kind and whether the push must be private.
+Opening a workspace, committing, and pushing are the same steps for more than one mode. What changes is the workspace, and whether the remote must be private. This task makes those steps a set of routines a mode can parameterise.
+
+A parameter selects the workspace kind and whether the push must be private.
 
 The private-remote check is a phase of the push routine when the host is determinate, and a technique when the URL is ambiguous. The routine binds `git::` and `github::` directly. A local technique exists only where this library adds a reading those namespaces do not contain.
 
@@ -211,7 +217,9 @@ stateDiagram-v2
 
 ## W05 Add the document fill
 
-Spec and create the one write technique. It cites a section of a refactored resource. The parameter names the section. A composition, such as the review summary, is not this technique.
+A plan, a findings list, a close-out, an ADR, and an elicitation record are written the same way: one section of a guide is filled in. A separate write technique for each document would repeat that method. This task makes one write technique whose parameter names the section.
+
+It cites a section of a refactored resource. A composition, such as the review summary, is not this technique.
 
 The sections are:
 
@@ -257,7 +265,9 @@ sequenceDiagram
 
 ## W06 Add the review judgments
 
-Spec and create the review-judgment techniques. They cite the refactored resource sections.
+Deciding what a diff shows, what the code does, what the tests cover, and how a finding is settled are readings a person makes. They are a different job from filling in a document. This task gives each reading its own technique.
+
+The techniques cite the refactored resource sections.
 
 The techniques are:
 
@@ -300,7 +310,9 @@ The review judgments are a sizeable contract of their own.
 
 ## W07 Add the delivery routines
 
-Spec and create three separate library routines. A mode binds only the routine it runs. These routines bind the push routine.
+Publishing a pull request, posting a review, and pushing to a private remote are three different deliveries. A mode that performs one of them should carry only that one. This task makes each delivery its own routine.
+
+A mode binds only the routine it runs. These routines bind the push routine.
 
 The routines are:
 
@@ -340,7 +352,9 @@ sequenceDiagram
 
 ## W08 Add design and discovery
 
-Spec and create the design and discovery components. The research document is a fill into a refactored resource section.
+Before any code is written, the worker has to say what the problem is, how it is classified, what is already known, and which questions are still open. This task makes those readings and the order they run in.
+
+The research document is a fill into a refactored resource section.
 
 The components are:
 
@@ -385,7 +399,9 @@ Design and discovery are one sizeable contract.
 
 ## W09 Add and walk the implement workflow
 
-Wire `workflows/implement/` to the components above. The folder holds `workflow.yaml`, `activities/`, and a README. The id is `implement`.
+An implement run authors a change through to a pull request. It has no occasion to post a review of someone else's pull request, or to push to a private security remote. This task wires that run and walks it.
+
+The folder `workflows/implement/` holds `workflow.yaml`, `activities/`, and a README. The id is `implement`.
 
 The graph is the authoring path:
 
@@ -450,7 +466,9 @@ stateDiagram-v2
 
 ## W10 Add and walk the review workflow
 
-Wire `workflows/review/` to the components above. The id is `review`. Start captures the existing pull request. Submit posts the review. Complete republishes the close-out and skips the ADR.
+A review run starts from a pull request that already exists. It records what it finds and posts the review. It leaves the code as it found it. This task wires that run and walks it.
+
+The id is `review`. Start captures the existing pull request. Submit posts the review. Complete republishes the close-out and skips the ADR.
 
 The path omits elicitation and implement. These activities document and do not apply:
 
@@ -500,7 +518,9 @@ stateDiagram-v2
 
 ## W11 Add and walk the remediate workflow
 
-Wire `workflows/remediate/` to the components above. The id is `remediate`. Start is the private fork and the `security` remote, with no public GitHub. The rest follows implement. Submit is a private push. Isolation rules sit on this workflow.
+A vulnerability fix must leave the public repository untouched. The change is pushed to a private remote, and only after someone has confirmed which remote that is. This task wires that run and walks it.
+
+The id is `remediate`. Start is the private fork and the `security` remote, with no public GitHub. The rest follows implement. Submit is a private push. Isolation rules sit on this workflow.
 
 The walk's push names only a private remote. The walk reaches that push only after a checkpoint whose message names the remote.
 
