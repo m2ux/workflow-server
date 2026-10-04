@@ -93,6 +93,8 @@ The detail behind an epic's task rows. Each task is a heading, and the text unde
   Plain language, a few sentences to a paragraph. One paragraph holds one point.
 - **Lists.**
   A list of items is a bulleted list. The items stay out of the sentence.
+- **The work only.**
+  The text describes that task's work. It names no other task, and it carries no coverage, dependency, or join. Those stay in the epic table.
 
 ## Problem and Proposal
 
