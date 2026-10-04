@@ -14,6 +14,7 @@ The layout, the mode graphs, and the grain sit in this record. The proposal stat
 | --- | --- |
 | [Plan](plan.md) | The library, the mode folders, the graphs, the variables, and the checks |
 | [Grain rubric](grain-rubric.md) | Where a step lives: activity, routine, technique, or resource |
+| [Trace](trace.md) | Proposal clauses, the I10 criteria, and the E06 criteria |
 
 ## Links
 
