@@ -48,7 +48,7 @@ The [grain rubric](grain-rubric.md) is the home for activity, routine, technique
 
 ## Design flow
 
-How a definition is designed is the [design flow](https://github.com/m2ux/workflow-server/blob/skill/plan-joins/skills/workflow-canon/references/design-flow.md) in workflow-canon. This plan is the delivery order of that design.
+How a definition is designed is the [design flow](https://github.com/m2ux/workflow-server/blob/skill/canon-design-flow/skills/workflow-canon/references/design-flow.md) in workflow-canon. This plan is the delivery order of that design.
 
 ## Commands
 
