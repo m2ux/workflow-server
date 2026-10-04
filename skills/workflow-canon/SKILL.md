@@ -43,7 +43,6 @@ Read the file for the mode the request calls for:
   - New definitions, and specified changes: a work item, a finding, or a defect with a location
   - Closing a confirmed finding with the Fix its entry states
   - A walk of each draft before it is written, and a check of what the pass wrote
-  - The [design flow](references/design-flow.md): function, expected behaviour, structure, and the behaviour the structure exposes
   - Fix findings closed within the pass, and a stop when two entries undo each other
 - **[Audit](references/audit-mode.md)**
   - Reviews of existing definitions, entry by entry across the change surface
