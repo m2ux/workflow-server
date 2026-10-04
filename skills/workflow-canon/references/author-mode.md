@@ -10,6 +10,7 @@ Writes definition content: a new definition, or a specified change to existing o
    - For a specified change, the surface is the specification, not the diff. Confirm it still holds against the tree: the construct is where it says, the count is what it says, the absence is an absence.
    - What has moved is reported first. Where nothing remains to change, that is the finding.
 2. **Read what binds.**
+   - Read the [design flow](design-flow.md). Structure is synthesised from expected behaviour. Exposed behaviour is derived from that structure and compared with the expected behaviour. A failed comparison reformulates the structure, the expected behaviour, or the function.
    - Read the units that [List units for a construct](commands.md#list-units-for-a-construct) prints for each construct the draft writes, per the [canon map](canon-map.md#file-kinds), and follow them.
    - When the change answers a finding, follow that entry's Fix and Do not flag.
 3. **Open a live sibling.**  Conformance compares against those files.
