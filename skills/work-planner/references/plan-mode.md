@@ -26,6 +26,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - Under the heading, state what the task produces, the criteria it delivers, what it depends on, and what it joins.
    - The issue table stays the index. The work file is the detail.
    - Link each task id to its heading in `work.md`, as [Task ids](work-breakdown.md#delivery) defines.
+   - A walk that can send the implementation back is that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
