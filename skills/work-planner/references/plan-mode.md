@@ -21,7 +21,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
-   - Write `work.md` in the proposal's planning record when the plan takes a proposal, and in the initiative's record otherwise.
+   - Write `work.md` in the proposal's planning record when the plan takes a proposal. Otherwise create a planning folder with [Add Planning Record](commands.md#add-planning-record) and write `work.md` there.
    - Each task is a heading `## W01 Description`, using that row's Description.
    - Under the heading, state what the task produces, the criteria it delivers, what it depends on, and what it joins.
    - The issue table stays the index. The work file is the detail.
