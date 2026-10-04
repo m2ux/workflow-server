@@ -2,7 +2,9 @@
 
 Each heading is one task. The epic table is the index. This file is the detail.
 
-Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. Every test of a task accompanies that task: its unit tests, its integration tests, and its walk. A failure in any of them keeps the task open. None of those tests is a later row.
+Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. Wiring then derives behaviour from those activities and compares it with the behaviour the mode expected. When they differ, the wiring task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold. The same task changes the expected behaviour or the function when the structure shows that earlier statement was wrong.
+
+Every test of a task accompanies that task: its unit tests, its integration tests, and its walk. A failure in any of them keeps the task open. None of those tests is a later row.
 
 Component tasks do not share a pull request. Each contract is tested on its own, and a shared pull request would hide a failure in one contract behind another. The pairs named below are the ones Check Dependencies prints.
 
@@ -96,7 +98,7 @@ Wire `workflows/implement/` to the components above. The folder holds `workflow.
 
 Activities bind `work-package::` routines and techniques, and only those this graph runs. The workflow declares neither `is_review_mode` nor `stealth_mode`, and no review-delivery name and no security-remote name. The README states this mode and names no other mode's activities.
 
-The tests of this wiring accompany it. A sidecar specimen walks implement. The step manifest includes no step that posts a pull-request review and no step that pushes to a private remote. Any unit or integration test of this wiring is in this task. The claim table names the walk. The task stays open while any of its tests report a failure.
+The tests of this wiring accompany it. A sidecar specimen walks implement. The step manifest includes no step that posts a pull-request review and no step that pushes to a private remote. Any unit or integration test of this wiring is in this task. The claim table names the walk. The task stays open while any of its tests report a failure. A mismatch changes the bound routine, technique, or resource in this task, with the tests that cover that change.
 
 `execute-package` keeps naming `legacy` until this walk shows a package reaching a merged pull request.
 
@@ -110,7 +112,7 @@ Wire `workflows/review/` to the components above. The id is `review`. Start capt
 
 The workflow declares neither `is_review_mode` nor `stealth_mode`. It omits implementation-plan execution names and public-pull-request lifecycle names it never writes. The README states this mode and names no other mode's activities.
 
-The tests of this wiring accompany it. A sidecar specimen walks review. The step manifest includes no step that writes implementation files and no step that creates a public pull request. Any unit or integration test of this wiring is in this task. The claim table names the walk. The task stays open while any of its tests report a failure.
+The tests of this wiring accompany it. A sidecar specimen walks review. The step manifest includes no step that writes implementation files and no step that creates a public pull request. Any unit or integration test of this wiring is in this task. The claim table names the walk. The task stays open while any of its tests report a failure. A mismatch changes the bound routine, technique, or resource in this task, with the tests that cover that change.
 
 Depends on W06, W07, and W08. Joins W09.
 
@@ -122,7 +124,7 @@ Wire `workflows/remediate/` to the components above. The id is `remediate`. Star
 
 It declares neither `is_review_mode` nor `stealth_mode`, and neither `rating_cap`, `prior_feedback_triage`, nor `squash_merge_supported`. It omits public-pull-request names and review-delivery names, and declares the advisory and private-fork names. The README states this mode and names no other mode's activities.
 
-The tests of this wiring accompany it. A sidecar specimen walks remediate. Any unit or integration test of this wiring is in this task. The claim table names the walk. The task stays open while any of its tests report a failure.
+The tests of this wiring accompany it. A sidecar specimen walks remediate. Any unit or integration test of this wiring is in this task. The claim table names the walk. The task stays open while any of its tests report a failure. A mismatch changes the bound routine, technique, or resource in this task, with the tests that cover that change.
 
 `corpus/remediate-vuln` is retired. Its readers are retargeted: prism-audit, the readme-seed specimen, and the meta patterns note.
 

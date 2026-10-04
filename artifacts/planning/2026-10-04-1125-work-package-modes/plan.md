@@ -44,7 +44,22 @@ Each new `workflow.yaml` declares only names that mode reads or writes. Implemen
 
 ## Grain
 
-The [grain rubric](grain-rubric.md) is the home for activity, routine, technique, and resource. Legacy's file layout is the behaviour reference. The new modes are authored from the rubric. Routines, techniques, and resources are specced, created, and tested before an activity binds them. Every test of a task accompanies that task: its unit tests, its integration tests, and its walk. Wiring the activities comes after the components exist.
+The [grain rubric](grain-rubric.md) is the home for activity, routine, technique, and resource. Legacy's file layout is the behaviour reference. The new modes are authored from the rubric. Routines, techniques, and resources are specced, created, and tested before an activity binds them. Every test of a task accompanies that task: its unit tests, its integration tests, and its walk. Wiring the activities comes after the components exist. Wiring derives behaviour from that structure and compares it with the expected behaviour. When they differ, the wiring task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold. The same task changes the expected behaviour or the function when the structure shows that earlier statement was wrong.
+
+## Design flow
+
+Authoring follows eight transformations. A single arrow is a transformation. A double arrow is a comparison.
+
+| Step | From | To | What it is here |
+| --- | --- | --- | --- |
+| 1 | Requirement, then function | Expected behaviour | The mode's purpose, then the behaviour its criteria name |
+| 2 | Expected behaviour | Structure | The library routines, techniques, and resources |
+| 3 | Structure | Derived behaviour | The activity graph, walked |
+| 4 | Expected behaviour | Derived behaviour | The comparison. The walk and the integration tests |
+| 5 | Structure | Design description | The workflow file and the mode README |
+| 6 | Structure | Structure | The wiring task changes the primitive |
+| 7 | Structure | Expected behaviour | The wiring task changes the expected behaviour |
+| 8 | Structure | Function | The wiring task changes the function |
 
 ## Commands
 

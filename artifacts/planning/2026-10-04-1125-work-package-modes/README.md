@@ -12,7 +12,7 @@ The layout, the mode graphs, and the grain sit in this record. Each task is a he
 
 | Artifact | What it holds |
 | --- | --- |
-| [Plan](plan.md) | The library, the mode folders, the graphs, the variables, and the checks |
+| [Plan](plan.md) | The library, the mode folders, the graphs, the design flow, the variables, and the checks |
 | [Grain rubric](grain-rubric.md) | Where a step lives: activity, routine, technique, or resource |
 | [Trace](trace.md) | Proposal clauses, the I10 criteria, and the E06 criteria |
 | [Work](work.md) | Each task, under its own heading |

@@ -32,4 +32,5 @@ The longest chain is eight steps, and it starts at E05 W01:
 | Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy declares both | Plan variables section; epic AC12 |
 | Every test of a task accompanies that task: unit tests, integration tests, and the walk | work.md; epic proposal |
 | Routines, techniques, and resources are specced, created, and tested before an activity binds them | Epic rows W03–W08; work.md |
+| Wiring compares derived behaviour with expected behaviour and changes the primitive, the expected behaviour, or the function until fit, form, and function hold | Plan design flow; work.md W09–W11 |
 | W09 joins W10. Component tasks do not join each other. W11 does not join W10, because W10 joins W09 and W11 depends on W09 | Epic Joins cells; work.md |
