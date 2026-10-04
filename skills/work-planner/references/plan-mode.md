@@ -25,7 +25,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - List each file in the record's README.
    - The issue table stays the index. Each task file is the detail.
    - Link each task id to its file, as [Task ids](work-breakdown.md#delivery) defines.
-   - Every test of an implementation accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The tests are its unit tests, its integration tests, and its walk.
+   - Every test the work calls for accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The content steers whether that includes a specimen.
    - Spec, create, and test reusable routines, techniques, and resources before an activity binds them, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
    - When wired behaviour and expected behaviour differ, that task changes the primitive and the tests that cover the change, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
 4. **Review the drafts.**

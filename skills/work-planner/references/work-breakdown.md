@@ -34,7 +34,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
-  - Every test of an implementation accompanies that task: its unit tests, its integration tests, and its walk. A failure in any of them keeps the task open. None of those tests is a later row.
+  - Every test the work calls for accompanies that task. The content steers which those are. A routine, technique, resource, or guard is covered by the unit and integration tests that check it. A workflow an operator can start is also covered by a specimen. A failure in any test the task carries keeps the task open. None of those tests is a later row.
   - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
   - When the behaviour a wired activity produces differs from the behaviour the work expected, that task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold.
 - **Joins.**
@@ -106,7 +106,7 @@ The file uses the epic template's Overview, Problem, Proposal, and Work Breakdow
 - **Proposal.**
   The design, as a Proposal is written for an epic. The first part of it states the scene. A list of items is a bulleted list.
 - **Work Breakdown.**
-  A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description.
+  A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description. The test row names the checks the content calls for, and a specimen when the work is a workflow an operator can start.
 - **The work only.**
   The file names no other task, and it carries no coverage, dependency, or join. Those stay in the epic table.
 
