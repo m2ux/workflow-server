@@ -15,7 +15,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion it cites is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion it cites is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -93,8 +93,9 @@ def compose_id(task: str, text: str, url: str) -> str:
     return ', '.join(kept)
 
 
-def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report):
+def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report, prs):
     delivered, by_pr = {}, {}
+    given = {p['number']: p for p in prs}
     issues = load_issues(task_paths)
     by_number = {issue['number']: issue for issue in issues}
     by_task = {}
@@ -124,11 +125,13 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
                 number = int(pull[1])
                 pulls.append(number)
                 by_pr.setdefault(number, []).append((task, joins))
-                if number not in named:
+                if number not in given:
+                    report['note'].append(f'{task} links #{number}, which is not among the pull requests given')
+                elif number not in named:
                     report['conflict'].append(f'{task} links #{number}, whose title does not name this epic')
             elif (issue := ISSUE_URL.search(found[2])):
                 issue_numbers.append(int(issue[1]))
-        landed = commits or any(named.get(number, {}).get('merged_at') for number in pulls)
+        landed = commits or any(given.get(number, {}).get('merged_at') for number in pulls)
         if not pulls and not commits and issue_numbers:
             number = issue_numbers[0]
             if number not in by_number:
@@ -158,7 +161,7 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
     return delivered
 
 
-def unmet_coverage(rows, header, named, ticked, report):
+def unmet_coverage(rows, header, by_number, ticked, report):
     """A delivered task whose Coverage criteria are still unticked."""
     at = header.index('Task')
     for r in rows:
@@ -166,7 +169,7 @@ def unmet_coverage(rows, header, named, ticked, report):
         numbers = []
         for found in LINK.finditer(r[at]):
             pull = PULL_URL.search(found[2])
-            if pull and named.get(int(pull[1]), {}).get('merged_at'):
+            if pull and by_number.get(int(pull[1]), {}).get('merged_at'):
                 numbers.append(int(pull[1]))
         if not numbers:
             continue
@@ -259,6 +262,8 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
         changed = True
         if complete:
             report['done'].append(name)
+        else:
+            report['cleared'].append(name)
     return changed
 
 
@@ -312,7 +317,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'ticked early', 'ticked', 'done', 'open questions', 'note', 'unmerged')}
+                              'unmet', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unmerged')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)
@@ -331,7 +336,7 @@ def main() -> int:
             sys.exit('Work Breakdown has no Coverage column; run format.py first')
         header, rows = grid[0], grid[2:]
         if kind == 'epic':
-            delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report)
+            delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report, prs)
             questions = next((l for h, l in sections if h == 'Open Questions'), [])
             open_named = any(p.get('state') == 'open' for p in named.values())
             started = any(delivered.values()) or open_named or report['unmatched']
@@ -374,7 +379,7 @@ def main() -> int:
             report['ticked'].append(f'{tag}{a[1]}')
 
     if kind == 'epic' and rows:
-        unmet_coverage(rows, header, named, ticked, report)
+        unmet_coverage(rows, header, {p['number']: p for p in prs}, ticked, report)
 
     done_changed = False
     if kind != 'task' and rows:
