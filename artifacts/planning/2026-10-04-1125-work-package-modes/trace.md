@@ -30,7 +30,7 @@ The longest chain is eight steps, and it starts at E05 W01:
 | AC15's ledger is the criteria E05 records | This table |
 | The mode-variable guard is work inside W02 | Epic AC11 |
 | Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy declares both | Plan variables section; epic AC12 |
-| Every test of a task accompanies that task: unit tests, integration tests, and the walk | The work item files; epic proposal |
+| Every test the work calls for accompanies that task. A specimen is included when the work is a workflow an operator can start | The work item files; epic proposal |
 | Routines, techniques, and resources are specced, created, and tested before an activity binds them | Epic rows W03–W08; W03–W08 |
 | Wiring compares derived behaviour with expected behaviour and changes the primitive, the expected behaviour, or the function until fit, form, and function hold | W09–W11. How a definition is designed is the workflow-canon design flow |
 | W09 joins W10. Component tasks do not join each other. W11 does not join W10, because W10 joins W09 and W11 depends on W09 | Epic Joins cells |
