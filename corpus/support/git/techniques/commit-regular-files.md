@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Stage, commit, and push files in a regular (non-submodule) directory of the parent repo.
+Stage and commit files in a regular (non-submodule) directory of the parent repo.
 
 ## Inputs
 
@@ -17,17 +17,9 @@ Array of file paths to stage (under `.engineering/artifacts/`, `.engineering/AGE
 
 Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
-### branch
-
-Git branch name to push to.
-
 ## Protocol
 
 ### 1. Stage and Commit
 
 - `git add {paths}`.
 - `git commit --no-gpg-sign -m '{commit_message}'`.
-
-### 2. Push the Branch
-
-- Apply [push-branch](./push-branch.md) with `repo_path` = the parent-repo working tree (`.`), `{branch}`, and `remote_name` `origin`. Push the existing `{branch}` only — do not create a new branch in the parent repo. Do not treat the commit as complete until the push succeeds.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.18.0
+  version: 1.19.0
 ---
 
 ## Capability
@@ -36,7 +36,7 @@ Post-activity Progress mark plus commit/push of source-side changes and engineer
 - Commit ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, with *message*=`docs(<workflow-id>): <activity-id> artifacts`. Apply [identify-path-type](/git/techniques/identify-path-type.md)(*path*=`.engineering`) from `{host_repo_path}` and take the primitive that `{kind}` names. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this technique returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.
   > - `session.json` and `.session-token` are always present in the planning folder by this phase: they go in this same engineering commit, never in a separate `state` commit.
   > - When `{kind}` is `worktree`, apply [commit-worktree](/git/techniques/commit-worktree.md)(*worktree_path*=`{host_repo_path}/.engineering`, *paths*=those artifact files, *commit_message*=that message, *branch*=the branch checked out in the worktree).
-  > - Otherwise apply [commit-regular-files](/git/techniques/commit-regular-files.md)(*paths*=those artifact files, *commit_message*=that message, *branch*=the host branch). The artifacts are ordinary files of the host checkout.
+  > - Otherwise apply [commit-regular-files](/git/techniques/commit-regular-files.md)(*paths*=those artifact files, *commit_message*=that message), then apply [push-branch](/git/techniques/push-branch.md)(*repo_path*=the parent-repo working tree, *branch*=the host branch, *remote_name*=`origin`). The artifacts are ordinary files of the host checkout.
 
 ### 5. Confirm Remote State
 

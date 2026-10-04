@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.30.0
+  version: 1.31.0
 ---
 
 ## Capability
@@ -49,7 +49,7 @@ The opaque trace tokens this dispatch accumulated, one per `next_activity` call 
 
 - Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](/meta/resources/planning-readme.md#status-transition-policy).
   > - When `{planning_folder_path}` is unset, or `{activity_id}` is `__terminal__`, skip this phase.
-  > - Publish the mark before the worker spawns, per `dispatch-mark-reaches-the-remote`: apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone, a message stating which activity is entering progress, and `branch` = current.
+  > - Publish the mark before the worker spawns, per `dispatch-mark-reaches-the-remote`: apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) with `paths` naming the planning folder `README.md` alone and a message stating which activity is entering progress, then apply [git::push-branch](/git/techniques/push-branch.md) with `repo_path` `.`, `branch` = current, and `remote_name` `origin`.
 
 ### 2. Advance Session
 

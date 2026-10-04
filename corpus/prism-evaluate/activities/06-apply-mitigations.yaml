@@ -1,5 +1,5 @@
 id: apply-mitigations
-version: 2.2.0
+version: 2.3.0
 name: Apply Accepted Mitigations
 description: Apply accepted mitigations to the target document.
 variables:
@@ -32,7 +32,14 @@ steps:
       inputs:
         paths: changed_paths
         commit_message: "docs({target_name}): apply evaluation mitigations"
+  - kind: technique
+    id: push-changes
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: target_path
         branch: current
+        remote_name: origin
 outcome:
   - The target document now reflects every accepted mitigation, applied in priority order and committed
   - The user can trust that each change landed correctly, with verification confirming what was modified

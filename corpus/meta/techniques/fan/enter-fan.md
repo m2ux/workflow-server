@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -55,7 +55,7 @@ The opaque trace token the fan-opening `next_activity` call returned in `_meta.t
 
 ### 1. Publish one in-progress mark for every branch
 
-- Apply [sync-progress-status](../workflow-engine/sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress — see `one-commit-before-the-spawn`
+- Apply [sync-progress-status](../workflow-engine/sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress, then apply [git::push-branch](/git/techniques/push-branch.md) ONCE with `repo_path` `.`, `branch` = current, and `remote_name` `origin` — see `one-commit-before-the-spawn`
   > When `{planning_folder_path}` is unset, skip this phase.
 
 ### 2. Open every branch with one call
