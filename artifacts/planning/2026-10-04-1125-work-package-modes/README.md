@@ -6,7 +6,7 @@
 
 One work-package workflow carries implement, review, and remediate. A worker on one mode is sent the others' steps. The proposal is three runs an operator can start, each holding only the steps that mode runs, with the combined workflow still runnable.
 
-The layout, the mode graphs, and the grain sit in this record. The proposal states the goal. The breakdown of the work waits for plan mode.
+The layout, the mode graphs, and the grain sit in this record. Each task is a heading in the work file. The proposal states the goal.
 
 ## Artifacts
 
@@ -15,6 +15,7 @@ The layout, the mode graphs, and the grain sit in this record. The proposal stat
 | [Plan](plan.md) | The library, the mode folders, the graphs, the variables, and the checks |
 | [Grain rubric](grain-rubric.md) | Where a step lives: activity, routine, technique, or resource |
 | [Trace](trace.md) | Proposal clauses, the I10 criteria, and the E06 criteria |
+| [Work](work.md) | Each task, under its own heading |
 
 ## Links
 
