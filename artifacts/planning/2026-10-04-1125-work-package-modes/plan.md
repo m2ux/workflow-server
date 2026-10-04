@@ -44,7 +44,7 @@ Each new `workflow.yaml` declares only names that mode reads or writes. Implemen
 
 ## Grain
 
-The [grain rubric](grain-rubric.md) is the home for activity, routine, technique, and resource. Legacy's file layout is the behaviour reference. The new modes are authored from the rubric. Routines and techniques are specced, created, and tested before an activity binds them. The component tests are unit tests and integration tests. Wiring the activities, and walking them, comes after.
+The [grain rubric](grain-rubric.md) is the home for activity, routine, technique, and resource. Legacy's file layout is the behaviour reference. The new modes are authored from the rubric. Routines, techniques, and resources are specced, created, and tested before an activity binds them. Every test of a task accompanies that task: its unit tests, its integration tests, and its walk. Wiring the activities comes after the components exist.
 
 ## Commands
 

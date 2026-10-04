@@ -18,11 +18,9 @@ The two rows left to the epic are the method of this one epic. An initiative cri
 
 ## Chains
 
-The longest chains are seven steps, and each one starts at E05 W01:
+The longest chain is eight steps, and it starts at E05 W01:
 
-- E05 W01, E06 W01, E06 W02, E06 W04, E06 W05, E06 W08, E06 W10
-- E05 W01, E06 W01, E06 W02, E06 W04, E06 W06, E06 W08, E06 W10
-- E05 W01, E06 W01, E06 W02, E06 W03, E06 W07, E06 W08, E06 W10
+- E05 W01, E06 W01, E06 W02, E06 W03, E06 W05, E06 W08, E06 W09, E06 W11
 
 ## Decisions
 
@@ -32,6 +30,6 @@ The longest chains are seven steps, and each one starts at E05 W01:
 | AC15's ledger is the criteria E05 records | This table |
 | The mode-variable guard is work inside W02 | Epic AC11 |
 | Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy declares both | Plan variables section; epic AC12 |
-| A walk that can send the workflow back is part of the task that writes it | Epic rows W01, W08, W09, W10 |
-| Routines and techniques are specced, created, and tested before an activity binds them. The component tests are unit tests and integration tests | Epic rows W03–W07; work.md |
-| W08 joins W09. Component tasks do not join each other: each contract is tested on its own. W10 does not join W09, because W09 joins W08 and W10 depends on W08 | Epic Joins cells; work.md |
+| Every test of a task accompanies that task: unit tests, integration tests, and the walk | work.md; epic proposal |
+| Routines, techniques, and resources are specced, created, and tested before an activity binds them | Epic rows W03–W08; work.md |
+| W09 joins W10. Component tasks do not join each other. W11 does not join W10, because W10 joins W09 and W11 depends on W09 | Epic Joins cells; work.md |
