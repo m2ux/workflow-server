@@ -87,7 +87,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 
 ## Work item
 
-One file per task, in the planning record. The record's README links each file. The epic table's task id links that file until a pull request is open.
+One file per task, named for the task id, `W01.md`. The record's README links each file. The epic table's task id links that file until a pull request is open.
 
 The file uses the epic template's Overview, Problem, Proposal, and Work Breakdown. It carries no acceptance criteria and no joins.
 
