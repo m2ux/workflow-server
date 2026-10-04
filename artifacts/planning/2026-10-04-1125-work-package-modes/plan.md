@@ -24,6 +24,8 @@ In-repo references to the old id follow the move:
 
 Each new workflow's graph is that mode. Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy is the combined workflow and declares both.
 
+Implement, review, and remediate are re-authored. The grain of the new modes is the reason. Design may use an existing artifact when it meets the need, and may re-interpret and refactor it into a new artifact when it does not. Legacy stays the unchanged combined workflow.
+
 - **implement** — authoring path through a public pull request: start, design, comprehension, optional elicitation and research, analysis, plan, assumptions, implement, lean-coding audit (apply), post-impl review (fix), validate (fix), strategic review (apply), submit (push, mark ready), complete (ADR when complexity requires it).
 - **review** — review an existing pull request and post the review: start captures the PR; elicitation and implement are absent; lean-coding, post-impl, validate, and strategic review document and do not apply; submit posts the review; complete republishes the close-out and skips the ADR.
 - **remediate** — remediate-vuln brought under this tree. Its start (private fork, `security` remote, no public GitHub) replaces implement's start. The rest follows implement, with submit reduced to a private push. Isolation rules sit on this workflow. It declares neither `is_review_mode` nor `stealth_mode`, and neither `rating_cap`, `prior_feedback_triage`, nor `squash_merge_supported`. `corpus/remediate-vuln` is retired and its readers retargeted (prism-audit, the readme-seed specimen, the meta patterns note).
