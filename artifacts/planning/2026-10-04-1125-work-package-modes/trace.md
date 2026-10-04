@@ -32,3 +32,4 @@ The longest chains are six steps, and each one starts at E05 W01:
 | AC15's ledger is the criteria E05 records | This table |
 | The mode-variable guard is work inside W02 | Epic AC12 |
 | Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy declares both | Plan variables section; epic AC13 |
+| W03 joins W04. W06 joins W07. A walk does not join the workflow it walks, because it depends on that workflow | Epic Joins cells |
