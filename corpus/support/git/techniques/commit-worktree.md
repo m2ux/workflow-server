@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -30,7 +30,7 @@ Branch checked out in the worktree, the branch the push sends.
 ### 1. Stage and Commit
 
 - `git -C {worktree_path} add {paths}`.
-- `git -C {worktree_path} commit -s --no-gpg-sign -m '{commit_message}'`.
+- `git -C {worktree_path} commit --no-gpg-sign -m '{commit_message}'`.
 
 ### 2. Push the Branch
 

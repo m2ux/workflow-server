@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.11.0
+  version: 5.12.0
 ---
 
 ## Capability
@@ -42,10 +42,6 @@ BEFORE committing engineering artifacts, ALWAYS read `.engineering/AGENTS.md` fo
 ### conventional-commits
 
 Follow Conventional Commits: `type(optional-scope): description`. Common types: feat, fix, docs, style, refactor, test, chore, build, ci. Reference issue numbers when applicable.
-
-### dco-sign-off
-
-Every commit this technique makes carries a `Signed-off-by` trailer.
 
 ### commits-are-unsigned
 

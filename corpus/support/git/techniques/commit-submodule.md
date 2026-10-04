@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -38,13 +38,13 @@ Branch to push the parent commit to
 ### 2. Commit and Push the Submodule
 
 - `cd {submodule_path}`.
-- `git add {paths} && git commit -s --no-gpg-sign -m '{submodule_message}' && git push origin {submodule_branch}`. This push MUST complete before the parent commit; if it is skipped, the parent will point to a submodule commit that does not exist on the remote (desync). If you discover the parent already references an unpushed submodule commit, `cd` into the submodule and push the missing commit, then verify the parent pointer resolves.
+- `git add {paths} && git commit --no-gpg-sign -m '{submodule_message}' && git push origin {submodule_branch}`. This push MUST complete before the parent commit; if it is skipped, the parent will point to a submodule commit that does not exist on the remote (desync). If you discover the parent already references an unpushed submodule commit, `cd` into the submodule and push the missing commit, then verify the parent pointer resolves.
 
 ### 3. Update the Parent Pointer
 
 - `cd` back to the repo root.
 - `git add {submodule_path}`.
-- `git commit -s --no-gpg-sign -m 'chore: update {submodule_path} submodule'`. This phase updates the parent pointer; skipped, the submodule is committed but the parent still points at the old submodule commit (stale pointer). To fix, `cd` to repo root, `git add` the submodule path, commit, and push.
+- `git commit --no-gpg-sign -m 'chore: update {submodule_path} submodule'`. This phase updates the parent pointer; skipped, the submodule is committed but the parent still points at the old submodule commit (stale pointer). To fix, `cd` to repo root, `git add` the submodule path, commit, and push.
 
 ### 4. Push the Parent
 
