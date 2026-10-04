@@ -40,7 +40,6 @@ Read the file for the mode the request calls for:
   - Dependency checks
   - Renumbering of epics and tasks
   - Folding review findings into issues
-  - The [design flow](references/design-flow.md) for a primitive and the activity that binds it
 - **[Review](references/review-mode.md)**
   - Checks of existing issues against the templates and against the rules that bind them
   - Fixes for each issue that departs from its template or from those rules
