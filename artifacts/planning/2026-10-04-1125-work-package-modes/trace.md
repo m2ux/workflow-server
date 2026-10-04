@@ -33,4 +33,4 @@ The longest chain is eight steps, and it starts at E05 W01:
 | Every test of a task accompanies that task: unit tests, integration tests, and the walk | work.md; epic proposal |
 | Routines, techniques, and resources are specced, created, and tested before an activity binds them | Epic rows W03–W08; work.md |
 | Wiring compares derived behaviour with expected behaviour and changes the primitive, the expected behaviour, or the function until fit, form, and function hold | work.md W09–W11. How a definition is designed is the workflow-canon design flow |
-| W09 joins W10. Component tasks do not join each other. W11 does not join W10, because W10 joins W09 and W11 depends on W09 | Epic Joins cells; work.md |
+| W09 joins W10. Component tasks do not join each other. W11 does not join W10, because W10 joins W09 and W11 depends on W09 | Epic Joins cells |

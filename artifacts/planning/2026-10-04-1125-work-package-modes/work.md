@@ -1,6 +1,6 @@
 # Work — I10 E06
 
-Each heading is one task. The epic table is the index. This file is the detail.
+Each heading describes that task's work. Coverage, dependencies, and joins stay in the epic table.
 
 Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. Wiring then derives behaviour from those activities and compares it with the behaviour the mode expected.
 
@@ -11,10 +11,6 @@ Every test of a task accompanies that task:
 - its unit tests
 - its integration tests
 - its walk
-
-A failure in any of them keeps the task open. None of those tests is a later row.
-
-Component tasks do not share a pull request. Each contract is tested on its own, and a shared pull request would hide a failure in one contract behind another. The pairs named below are the ones Check Dependencies prints.
 
 ## W01 Place and walk the legacy workflow
 
@@ -64,10 +60,6 @@ sequenceDiagram
   Legacy-->>Caller: walk of the steps
 ```
 
-Depends on E05. This task shares no pull request, because every later task reads this move.
-
-Delivers AC1 and AC13. The canon audit (AC9) is shared with every task.
-
 ## W02 Add the library and its guard
 
 `corpus/work-package/` holds the library folders and no `workflow.yaml`:
@@ -83,7 +75,7 @@ The library README names each mode in one line, and does not spec the routines o
 - `workflows/review`
 - `workflows/remediate`
 
-The mode-variable guard lands on `main`. Its unit tests and its integration test accompany it. The library files land on `workflows`. This task is done when both pull requests have merged.
+The mode-variable guard lands on `main`. Its unit tests and its integration test accompany it. The library files land on `workflows`.
 
 The unit tests fail when:
 
@@ -126,10 +118,6 @@ sequenceDiagram
     Guard-->>Workflow: pass
   end
 ```
-
-Depends on W01. This task shares no pull request. The component tasks depend on it.
-
-Delivers AC6, AC7, and AC11.
 
 ## W03 Refactor resource grain
 
@@ -183,10 +171,6 @@ sequenceDiagram
   Resource-->>Technique: that section
 ```
 
-Depends on W02. Does not join W04 or W07. Resource grain, the workspace routines, and delivery are separate contracts.
-
-Delivers AC21 and AC22.
-
 ## W04 Add workspace, commit, and push
 
 Spec and create the library routines for opening a workspace, committing, and pushing. A parameter selects the workspace kind and whether the push must be private.
@@ -225,20 +209,9 @@ stateDiagram-v2
   Pushed --> [*]
 ```
 
-Depends on W02. Does not join:
-
-- W03
-- W05
-- W06
-- W08
-
-Each of those is a separate contract.
-
-Delivers AC16. AC14 and AC15 are shared with the other component tasks.
-
 ## W05 Add the document fill
 
-Spec and create the one write technique. It cites a section of a resource W03 refactored. The parameter names the section. A composition, such as the review summary, is not this technique.
+Spec and create the one write technique. It cites a section of a refactored resource. The parameter names the section. A composition, such as the review summary, is not this technique.
 
 The sections are:
 
@@ -282,13 +255,9 @@ sequenceDiagram
   Resource-->>Write: section body
 ```
 
-Depends on W03. Does not join W04, W06, or W07. The fill, the workspace routines, the review judgments, and delivery do not share a contract.
-
-Delivers AC17. AC14 and AC15 are shared.
-
 ## W06 Add the review judgments
 
-Spec and create the review-judgment techniques. They cite the resource sections W03 refactored.
+Spec and create the review-judgment techniques. They cite the refactored resource sections.
 
 The techniques are:
 
@@ -327,20 +296,11 @@ stateDiagram-v2
   Recheck --> [*]
 ```
 
-Depends on W03. Does not join:
-
-- W04
-- W05
-- W07
-- W08
-
 The review judgments are a sizeable contract of their own.
-
-Delivers AC19. AC14 and AC15 are shared.
 
 ## W07 Add the delivery routines
 
-Spec and create three separate library routines. A mode binds only the routine it runs. These routines bind the push routine from W04.
+Spec and create three separate library routines. A mode binds only the routine it runs. These routines bind the push routine.
 
 The routines are:
 
@@ -378,20 +338,9 @@ sequenceDiagram
   PrivatePush->>PrivatePush: push
 ```
 
-Depends on W04. Does not join:
-
-- W03
-- W05
-- W06
-- W08
-
-Delivery does not share a pull request with the resources or the judgments it is not built from.
-
-Delivers AC20. AC14 and AC15 are shared.
-
 ## W08 Add design and discovery
 
-Spec and create the design and discovery components. The research document is a fill from W05, into a section W03 refactored.
+Spec and create the design and discovery components. The research document is a fill into a refactored resource section.
 
 The components are:
 
@@ -432,9 +381,7 @@ sequenceDiagram
   Discussion->>Person: remaining domains
 ```
 
-Depends on W05. Does not join W04, W06, or W07. Design and discovery are one sizeable contract.
-
-Delivers AC18. AC14 and AC15 are shared.
+Design and discovery are one sizeable contract.
 
 ## W09 Add and walk the implement workflow
 
@@ -473,7 +420,7 @@ The step manifest includes no step that:
 - posts a pull-request review
 - pushes to a private remote
 
-`execute-package` keeps naming `legacy` until this walk shows a package reaching a merged pull request.
+`execute-package` names `legacy`.
 
 **Structure.** The implement workflow is its activities. They bind the library and carry no review-delivery or security-remote names.
 
@@ -500,10 +447,6 @@ stateDiagram-v2
   Submit --> Complete
   Complete --> [*]
 ```
-
-Depends on W06, W07, and W08. Joins W10: wiring the two modes, with their tests, is one pull request.
-
-Delivers AC3. AC8 and AC12 are shared with W10 and W11.
 
 ## W10 Add and walk the review workflow
 
@@ -554,10 +497,6 @@ stateDiagram-v2
   Post --> CloseOut
   CloseOut --> [*]
 ```
-
-Depends on W06, W07, and W08. Joins W09.
-
-Delivers AC4. AC8 and AC12 are shared with W09 and W11.
 
 ## W11 Add and walk the remediate workflow
 
@@ -618,7 +557,3 @@ sequenceDiagram
   Person-->>Push: named remote
   Push->>Push: private remote only
 ```
-
-Depends on W09. Does not join W10: W10 joins W09, and this task depends on W09, so it cannot land in that pull request.
-
-Delivers AC2, AC5, and AC10. AC8 and AC12 are shared with W09 and W10.
