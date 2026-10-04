@@ -39,35 +39,6 @@ It declares the advisory and private-fork names.
   - the readme-seed specimen
   - the meta patterns note
 
-**Structure.** Remediate is the implement path plus a private fork and the security remote.
-
-```mermaid
-classDiagram
-  class Remediate {
-    private fork
-    security remote
-    isolation
-  }
-  class ImplementPath
-  class PrivatePush
-  Remediate --> ImplementPath
-  Remediate --> PrivatePush
-```
-
-**Behaviour.** The push runs after a confirmation that names the remote.
-
-```mermaid
-sequenceDiagram
-  participant Start
-  participant Path
-  participant Person
-  participant Push
-  Start->>Path: private fork
-  Path->>Person: name the remote
-  Person-->>Push: named remote
-  Push->>Push: private remote only
-```
-
 ## Work Breakdown
 
 | Part | Description |

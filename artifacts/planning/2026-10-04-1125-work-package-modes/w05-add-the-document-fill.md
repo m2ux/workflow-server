@@ -24,38 +24,6 @@ The sections are:
 - **The tests accompany the technique.**
   A unit test fails when the technique cites a section the resource does not contain. An integration test loads the technique against a fixture resource and fails when the cited section is not the one the parameter selected.
 
-**Structure.** One write technique reaches the fill sections. A composition stands apart from it.
-
-```mermaid
-classDiagram
-  class Write {
-    section
-  }
-  class Plan
-  class Findings
-  class CloseOut
-  class Adr
-  class Elicitation
-  class Composition
-  Write --> Plan
-  Write --> Findings
-  Write --> CloseOut
-  Write --> Adr
-  Write --> Elicitation
-```
-
-**Behaviour.** The parameter selects the section the technique cites.
-
-```mermaid
-sequenceDiagram
-  participant Routine
-  participant Write
-  participant Resource
-  Routine->>Write: section name
-  Write->>Resource: cite that section
-  Resource-->>Write: section body
-```
-
 ## Work Breakdown
 
 | Part | Description |

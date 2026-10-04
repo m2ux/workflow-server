@@ -31,41 +31,6 @@ The unit tests fail when:
 
 The integration test loads a fixture workflow that declares one of those names and expects the guard to fail.
 
-**Structure.** The library holds the shared folders. The guard stands beside the three mode workflows.
-
-```mermaid
-classDiagram
-  class Library {
-    routines
-    techniques
-    resources
-  }
-  class Guard
-  class Implement
-  class Review
-  class Remediate
-  Guard ..> Implement
-  Guard ..> Review
-  Guard ..> Remediate
-  Library <.. Implement
-  Library <.. Review
-  Library <.. Remediate
-```
-
-**Behaviour.** The guard rejects a mode flag or a variable no activity uses.
-
-```mermaid
-sequenceDiagram
-  participant Guard
-  participant Workflow
-  Guard->>Workflow: read declared names
-  alt mode flag or unread name
-    Guard-->>Workflow: fail
-  else names the activities use
-    Guard-->>Workflow: pass
-  end
-```
-
 ## Work Breakdown
 
 | Part | Description |

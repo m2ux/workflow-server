@@ -23,32 +23,6 @@ This work gives each review reading its own technique.
 - **The tests accompany the techniques.**
   A unit test fails when a second lens is selected for a finding the first lens raised. An integration test loads the diff technique and the fill and fails when the reply is applied by fetching the whole review again.
 
-**Structure.** Each judgment technique cites the resource sections it reads.
-
-```mermaid
-classDiagram
-  class DiffReview
-  class CodeReview
-  class TestSuiteReview
-  class SettleFindings
-  class ResourceSections
-  DiffReview ..> ResourceSections
-  CodeReview ..> ResourceSections
-  TestSuiteReview ..> ResourceSections
-  SettleFindings ..> ResourceSections
-```
-
-**Behaviour.** A finding is rechecked by the lens that raised it, after the fill applies the reply.
-
-```mermaid
-stateDiagram-v2
-  [*] --> DiffOnce
-  DiffOnce --> Finding
-  Finding --> Filled : reply
-  Filled --> Recheck : same lens
-  Recheck --> [*]
-```
-
 ## Work Breakdown
 
 | Part | Description |

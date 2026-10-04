@@ -47,32 +47,6 @@ The step manifest includes no step that:
 
 `execute-package` names `legacy`.
 
-**Structure.** The implement workflow is its activities. They bind the library and carry no review-delivery or security-remote names.
-
-```mermaid
-classDiagram
-  class Implement {
-    workflow
-    activities
-    readme
-  }
-  class Library
-  Implement --> Library : work-package
-```
-
-**Behaviour.** Review can return the work to implementation. Submit follows a review that holds.
-
-```mermaid
-stateDiagram-v2
-  [*] --> Design
-  Design --> Implement
-  Implement --> Review
-  Review --> Implement : fix
-  Review --> Submit : holds
-  Submit --> Complete
-  Complete --> [*]
-```
-
 ## Work Breakdown
 
 | Part | Description |

@@ -11,16 +11,6 @@ Shared routines, techniques, and resources live on the library root: `corpus/wor
 
 `work-package/README.md` orients the library. It names `routines/`, `techniques/`, `resources/`, and each folder under `workflows/`, with one line for what that mode is. That naming is the orientation for `workflows/` itself. Each `workflows/<mode>/README.md` orients that mode: purpose, the activity sequence by name and role, and what it binds from the library. A mode README does not catalogue the library or describe another mode. Neither README transcribes steps, the graph, or the variable list. Construct folders keep their own READMEs.
 
-```mermaid
-flowchart TD
-  parent[work-package library]
-  parent --> workflows[workflows grouping]
-  workflows --> legacy[legacy]
-  workflows --> review[review]
-  workflows --> implement[implement]
-  workflows --> remediate[remediate]
-```
-
 ## Legacy
 
 `workflow.yaml`, `activities/`, `techniques/`, `routines/`, `resources/`, and the README live under `workflows/legacy/`. The definition's id is `legacy`. The schema path is two directories deeper than the combined workflow's was. Links follow the files. The README stays that workflow's own orientation.

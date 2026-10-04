@@ -31,34 +31,6 @@ This work rewrites the guides so a citation returns one section, and a procedure
 - **The tests accompany the rewrite.**
   A unit test fails when a refactored resource still contains a protocol cadence. An integration test fetches one section and fails when the response is the whole file.
 
-**Structure.** A resource is sections of fill and consult. A technique cites a section and keeps the procedure.
-
-```mermaid
-classDiagram
-  class Resource
-  class Section {
-    template
-    vocabulary
-    criteria
-    policy
-  }
-  class Technique {
-    procedure
-  }
-  Resource *-- Section
-  Technique ..> Section : cites
-```
-
-**Behaviour.** A section fetch returns that section.
-
-```mermaid
-sequenceDiagram
-  participant Technique
-  participant Resource
-  Technique->>Resource: fetch one section
-  Resource-->>Technique: that section
-```
-
 ## Work Breakdown
 
 | Part | Description |

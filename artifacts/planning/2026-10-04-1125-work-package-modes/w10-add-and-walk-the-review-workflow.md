@@ -35,29 +35,6 @@ The step manifest includes no step that:
 - writes implementation files
 - creates a public pull request
 
-**Structure.** The review workflow documents. It has no implement activity and no public-pull-request lifecycle.
-
-```mermaid
-classDiagram
-  class Review {
-    capture pull request
-    document
-    post review
-    close-out
-  }
-```
-
-**Behaviour.** The run captures a pull request, documents the lenses, posts the review, and republishes the close-out.
-
-```mermaid
-stateDiagram-v2
-  [*] --> Capture
-  Capture --> Document
-  Document --> Post
-  Post --> CloseOut
-  CloseOut --> [*]
-```
-
 ## Work Breakdown
 
 | Part | Description |

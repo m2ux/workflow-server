@@ -30,35 +30,6 @@ The files that move are:
 - **The walk accompanies the move.**
   A sidecar specimen walks legacy. The claim table in this record names the walk.
 
-**Structure.** The legacy workflow contains the files that moved with it.
-
-```mermaid
-classDiagram
-  class Legacy {
-    id legacy
-  }
-  class Workflow
-  class Activities
-  class Techniques
-  class Routines
-  class Resources
-  Legacy *-- Workflow
-  Legacy *-- Activities
-  Legacy *-- Techniques
-  Legacy *-- Routines
-  Legacy *-- Resources
-```
-
-**Behaviour.** A caller starts `legacy`, and the specimen walk reports the steps.
-
-```mermaid
-sequenceDiagram
-  participant Caller
-  participant Legacy
-  Caller->>Legacy: start
-  Legacy-->>Caller: walk of the steps
-```
-
 ## Work Breakdown
 
 | Part | Description |

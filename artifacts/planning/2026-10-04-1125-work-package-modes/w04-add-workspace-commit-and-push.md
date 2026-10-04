@@ -19,36 +19,6 @@ This work makes opening a workspace, committing, and pushing a set of routines a
 - **The tests accompany the routines.**
   A unit test fails when the empty-diff gate or the determinate-private gate accepts the wrong input. An integration test loads each routine in a fixture workflow and fails when the splice does not bind the shared technique.
 
-**Structure.** The three routines bind the shared git and GitHub techniques. An ambiguous URL is its own reading.
-
-```mermaid
-classDiagram
-  class OpenWorkspace
-  class Commit
-  class Push
-  class Git
-  class GitHub
-  class AmbiguousUrl
-  OpenWorkspace ..> Git
-  Commit ..> Git
-  Push ..> Git
-  Push ..> GitHub
-  Push ..> AmbiguousUrl
-```
-
-**Behaviour.** A push stops on an empty diff, and an ambiguous URL is read before the push.
-
-```mermaid
-stateDiagram-v2
-  [*] --> CheckDiff
-  CheckDiff --> Stopped : empty
-  CheckDiff --> PrivateGate : changes
-  PrivateGate --> Pushed : host is private
-  PrivateGate --> ReadUrl : URL is ambiguous
-  ReadUrl --> Pushed
-  Pushed --> [*]
-```
-
 ## Work Breakdown
 
 | Part | Description |
