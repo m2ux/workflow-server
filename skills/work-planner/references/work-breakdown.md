@@ -85,18 +85,22 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 - **Work another issue takes.**
   It leaves the table. Its criteria go with it, or to another row that delivers them.
 
-## Work file
+## Work item
 
-The detail behind an epic's task rows. Each task is a heading, and the text under it is the work.
+One file per task, in the planning record. The record's README links each file. The epic table's task id links that file until a pull request is open.
 
-- **Opening.**
-  The first paragraph states the problem and the scene. The detail follows.
-- **Paragraphs.**
-  Plain language, a few sentences to a paragraph. One paragraph holds one point.
-- **Lists.**
-  A list of items is a bulleted list. The items stay out of the sentence.
+The file uses the epic template's Overview, Problem, Proposal, and Work Breakdown. It carries no acceptance criteria and no joins.
+
+- **Overview.**
+  One paragraph on what the task delivers and why.
+- **Problem.**
+  The friction, as a Problem is written for an epic.
+- **Proposal.**
+  The design, as a Proposal is written for an epic. The first part of it states the scene. A list of items is a bulleted list.
+- **Work Breakdown.**
+  A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description.
 - **The work only.**
-  The text describes that task's work. It names no other task, and it carries no coverage, dependency, or join. Those stay in the epic table.
+  The file names no other task, and it carries no coverage, dependency, or join. Those stay in the epic table.
 
 ## Problem and Proposal
 
