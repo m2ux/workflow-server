@@ -27,11 +27,11 @@ def synced(record: dict, pulls: list[dict], *args: str) -> str:
 
 class Done(unittest.TestCase):
     def test_an_open_pull_request_replaces_the_planning_record_link(self):
-        plan = 'https://github.com/o/r/blob/engineering/artifacts/planning/x/W01.md'
+        plan = 'https://github.com/o/r/blob/engineering/artifacts/planning/x/w01.md'
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({plan})', 'Work', '')))
         fixed = synced(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
-        self.assertNotIn('W01.md', fixed)
+        self.assertNotIn('w01.md', fixed)
 
     def test_a_merged_pull_request_leaves_done_empty(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))

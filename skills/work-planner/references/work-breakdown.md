@@ -80,7 +80,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
 - **Task ids.**
-  - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/W01.md)`. The file name is the task id.
+  - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - Once a pull request is open, the id links that pull request and the planning-record link is gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
@@ -95,7 +95,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 
 ## Work item
 
-One file per task, named for the task id, `W01.md`. The record's README links each file. The epic table's task id links that file until a pull request is open.
+One file per task, named for the task id in lower case, `w01.md`. The record's README links each file. The epic table's task id links that file until a pull request is open.
 
 The file uses the epic template's Overview, Problem, Proposal, and Work Breakdown. It carries no acceptance criteria and no joins.
 
