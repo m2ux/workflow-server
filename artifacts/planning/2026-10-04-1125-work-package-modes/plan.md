@@ -48,18 +48,7 @@ The [grain rubric](grain-rubric.md) is the home for activity, routine, technique
 
 ## Design flow
 
-Authoring follows eight transformations. A single arrow is a transformation. A double arrow is a comparison.
-
-| Step | From | To | What it is here |
-| --- | --- | --- | --- |
-| 1 | Requirement, then function | Expected behaviour | The mode's purpose, then the behaviour its criteria name |
-| 2 | Expected behaviour | Structure | The library routines, techniques, and resources |
-| 3 | Structure | Derived behaviour | The activity graph, walked |
-| 4 | Expected behaviour | Derived behaviour | The comparison. The walk and the integration tests |
-| 5 | Structure | Design description | The workflow file and the mode README |
-| 6 | Structure | Structure | The wiring task changes the primitive |
-| 7 | Structure | Expected behaviour | The wiring task changes the expected behaviour |
-| 8 | Structure | Function | The wiring task changes the function |
+Authoring follows the [Design Flow](https://github.com/m2ux/workflow-server/blob/skill/plan-joins/skills/work-planner/references/design-flow.md). In this epic, step 2 is W03–W08. Steps 3 to 8 are W09, W10, and W11.
 
 ## Commands
 
