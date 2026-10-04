@@ -31,3 +31,4 @@ The longest chains are six steps, and each one starts at E05 W01:
 | E06 starts after E05, so the mode rewrite follows the tip validation of the streamline epics | Initiative row Depends on E05; W01 depends on E05 |
 | AC15's ledger is the criteria E05 records | This table |
 | The mode-variable guard is work inside W02 | Epic AC12 |
+| Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy declares both | Plan variables section; epic AC13 |
