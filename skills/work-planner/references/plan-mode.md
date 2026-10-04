@@ -21,6 +21,10 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
+   - Write `work.md` in the proposal's planning record when the plan takes a proposal, and in the initiative's record otherwise.
+   - Each task is a heading `## W01 Description`, using that row's Description.
+   - Under the heading, state what the task produces, the criteria it delivers, what it depends on, and what it joins.
+   - The issue table stays the index. The work file is the detail.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
@@ -43,6 +47,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 7. **Keep in step.**
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
+   - The work file's headings stay the tasks. A renamed or added task is a heading. A removed task drops its heading.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
    - **Integration branches exist.**
