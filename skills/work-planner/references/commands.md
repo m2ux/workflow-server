@@ -163,6 +163,14 @@ gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_r
 
 ## Pull Requests
 
+### Fetch Pull Request
+
+Appends one pull request, as one JSON line, to the file [Match Pull Requests](#match-pull-requests) reads. A row that links a number that file does not hold is fetched this way.
+
+```bash
+gh api repos/{owner}/{repo}/pulls/439 --jq . >> prs.json
+```
+
 ### Fetch Initiative Pull Requests
 
 Saves the pull requests that name one initiative, its epic pull requests and the integration pull requests titled `[I07] Name`.
@@ -395,6 +403,8 @@ Reports an epic's delivery state against the pull requests that name it.
 
 - A merged pull request no row links is unmatched, and an open one no row links is in flight.
 - A row that links a merged pull request while a criterion its Coverage names is unticked is unmet.
+- A linked pull request whose title names another epic is a conflict, and it delivers the task once it has merged.
+- A linked pull request absent from the given pull requests is reported and does not deliver the task. [Fetch Pull Request](#fetch-pull-request) appends it, and the command is run again.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json

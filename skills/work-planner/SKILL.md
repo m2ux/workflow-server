@@ -6,7 +6,7 @@ description: >-
   Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
   scope the solution, plan out, scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
   renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
-  order; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
+  order, or a Done column that disagrees with its delivery; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
   to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
   or to revise or update the work-planner skill itself.
 ---
@@ -46,6 +46,7 @@ Read the file for the mode the request calls for:
   - A check of every acceptance criterion against the verifiable rule
   - A scan for a merged pull request whose task still has an unticked coverage criterion
   - A scan for an initiative criterion still unticked, or ticked early, against the epics that cite it
+  - Repair of a work-breakdown cell that disagrees with its delivery
 - **[Sync](references/sync-mode.md)**
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete

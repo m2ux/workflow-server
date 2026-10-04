@@ -21,13 +21,10 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
-   - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines, in the proposal's planning record when the plan takes a proposal. Otherwise create a planning folder with [Add Planning Record](commands.md#add-planning-record) and write the files there.
-   - List each file in the record's README.
-   - The issue table stays the index. Each task file is the detail.
-   - Link each task id to its file, as [Task ids](work-breakdown.md#delivery) defines.
+   - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines.
    - Every test the work calls for accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The content steers which kinds, including the project's system test when the work calls for it.
    - Spec, create, and test reusable routines, techniques, and resources before an activity binds them, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
-   - When wired behaviour and expected behaviour differ, that task changes the primitive and the tests that cover the change, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
+   - When wired behaviour and expected behaviour differ, that task changes the routine, technique, or resource, and the tests that cover the change, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.

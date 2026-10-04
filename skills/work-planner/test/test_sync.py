@@ -158,6 +158,50 @@ class TaskLinks(unittest.TestCase):
         self.assertIn('unmet: W01 (#950): AC2 unticked', done.stdout)
         self.assertNotIn('AC1 unticked', done.stdout)
 
+    def test_a_merged_pull_request_from_another_epic_delivers_the_row(self):
+        body = epic_body((f"[W01]({url('pull', 439)})", 'Work', '')).replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, fixed = self.run_sync(epic, [pr(439, '[I00:E09] Other', merged='2026-08-07T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('conflict: W01 links #439, whose title does not name this epic', done.stdout)
+        self.assertNotIn('ticked early', done.stdout)
+        self.assertIn(f"| [W01]({url('pull', 439)}) | Work | AC1 | | | ✓ |", fixed)
+        self.assertIn('closable: yes', done.stdout)
+
+    def test_a_foreign_merged_pull_request_with_an_unticked_criterion_is_unmet(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 439)})", 'Work', '')))
+        done, fixed = self.run_sync(epic, [pr(439, '[I00:E09] Other', merged='2026-08-07T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unmet: W01 (#439): AC1 unticked', done.stdout)
+        self.assertNotIn('| ✓ |', fixed)
+
+    def test_a_linked_pull_request_absent_from_the_set_does_not_deliver(self):
+        body = epic_body((f"[W01]({url('pull', 439)})", 'Work', '')).replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, fixed = self.run_sync(epic, [])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('note: W01 links #439, which is not among the pull requests given', done.stdout)
+        self.assertIn('ticked early: AC1 (W01 undelivered)', done.stdout)
+        self.assertNotIn('conflict:', done.stdout)
+        self.assertNotIn('| ✓ |', fixed)
+
+    def test_a_linked_commit_delivers_the_row_when_its_criteria_are_ticked(self):
+        commit = 'https://github.com/o/r/commit/b41c0bf3e2201452ba9b9fffe6c681b157a5e946'
+        body = epic_body((f"[W01]({commit})", 'Work', '')).replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, fixed = self.run_sync(epic, [])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn(f"| [W01]({commit}) | Work | AC1 | | | ✓ |", fixed)
+        self.assertIn('closable: yes', done.stdout)
+
+    def test_a_tick_clears_when_the_row_is_not_complete(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| | |', '| | ✓ |', 1)
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('cleared: W01', done.stdout)
+        self.assertNotIn('| ✓ |', fixed)
+
     def test_a_closed_task_issue_stays_delivered_until_its_pull_request_is_linked(self):
         task = issue(3, '[I01:E00:W01] Task: Done', 'closed')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))

@@ -28,7 +28,7 @@ Records work on an initiative, its epics and their task issues: links each task 
 6. **Sync each epic.**
    Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. Linking a pull request replaces the planning-record link on that task, as [Task ids](work-breakdown.md#delivery) defines. It reports:
    - **Conflict.**
-     A row linked to a pull request whose title names another epic, or tasks sharing a pull request that do not name each other in Joins. Put it to the user.
+     Tasks that share a pull request and do not name each other in Joins. Put that to the user. A row linked to a pull request whose title names another epic is reported, and the row is delivered once that pull request has merged.
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
    - **In flight.**  Open pull requests still linked from no row. Match them as in step 4.
    - **Uncited.**

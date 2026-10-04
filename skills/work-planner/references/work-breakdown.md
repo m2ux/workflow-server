@@ -84,6 +84,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - Once a pull request is open, the id links that pull request and the planning-record link is gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
+  - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Tasks with their own issue.**
   - The row links the pull request, not the issue.
   - The pull request's body cites the issue by its URL.
