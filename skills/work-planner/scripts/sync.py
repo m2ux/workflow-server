@@ -81,13 +81,16 @@ def for_epic(prs: list[dict], initiative: str, epic: str) -> dict[int, dict]:
 
 
 def compose_id(task: str, text: str, url: str) -> str:
-    """The task's id linking url, keeping each pull request and commit already linked and dropping an issue link."""
+    """The task's id linking url. A pull request replaces the planning-record link. Pull requests and commits already linked stay. An issue link is dropped."""
     kept, seen = [], set()
     for found in LINK.finditer(text):
-        if ISSUE_URL.search(found[2]) or found[2] in seen:
+        href = found[2]
+        if ISSUE_URL.search(href) or href in seen:
             continue
-        seen.add(found[2])
-        kept.append(f'[{task}]({found[2]})')
+        if '/pull/' not in href and '/commit/' not in href:
+            continue
+        seen.add(href)
+        kept.append(f'[{task}]({href})')
     if url not in seen:
         kept.append(f'[{task}]({url})')
     return ', '.join(kept)

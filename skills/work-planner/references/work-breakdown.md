@@ -16,7 +16,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - A merged pull request that leaves any criterion its Coverage names unmet leaves that task's cell empty. The task takes further pull requests until they hold.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
-  - An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task.
+  - An epic's row id is the task, `W01`. What it links is [Task ids](#delivery). `W00` holds preparatory work that must land before the first real task.
   - A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion or evidence of its own.
 - **Description.**
   A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail.
@@ -77,7 +77,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
 - **Task ids.**
-  - A task's id links each pull request associated with it, open or merged: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`. A task with no pull request is plain.
+  - Until a pull request is open, the id links that task's heading in the planning record's `work.md`: `[W01](…/work.md#w01-place-the-change)`. The heading is `## W01` plus the row's Description, and the anchor is that heading's slug.
+  - Once a pull request is open, the id links that pull request and the planning-record link is gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
 - **Tasks with their own issue.**

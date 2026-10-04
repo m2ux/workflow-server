@@ -26,7 +26,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - Record the pull request on it with [Comment on Issue](commands.md#comment-on-issue): `Delivered by #950.`
    - [Close as Completed](commands.md#close-as-completed) when it reports closable.
 6. **Sync each epic.**
-   Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. It reports:
+   Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. Linking a pull request replaces the planning-record link on that task, as [Task ids](work-breakdown.md#delivery) defines. It reports:
    - **Conflict.**
      A row linked to a pull request whose title names another epic, or tasks sharing a pull request that do not name each other in Joins. Put it to the user.
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
