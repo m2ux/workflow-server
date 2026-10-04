@@ -20,6 +20,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - Each acceptance criterion is written to this mode's Criteria at creation rule. It ends by naming its instrument as the [Verified](review-criteria.md#verified) rule defines. A test it names that does not exist yet is planned as work.
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+   - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.

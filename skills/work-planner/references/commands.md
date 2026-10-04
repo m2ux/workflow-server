@@ -337,6 +337,7 @@ mkdir -p artifacts/planning/<yyyy-mm-dd>[-<ref>]-<slug>
 Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
 
 - It also reports dependencies listed twice or already implied, and Joins pairs.
+- It prints each pair of tasks in an epic where neither depends on the other and the two do not name each other in Joins.
 - It reads bodies from [Fetch Body](#fetch-body), or local drafts.
 
 ```bash

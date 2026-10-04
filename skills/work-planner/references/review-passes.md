@@ -33,17 +33,19 @@ Checks dependencies as a graph, then renumbers. A failure is one the [initiative
 
 1. **Check.**
    Run [Check Dependencies](commands.md#check-dependencies) over the live bodies.
-2. **Read.**
+2. **Joins.**
+   Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. A pair [Check Dependencies](commands.md#check-dependencies) prints is joined, or named in the planning record with why it does not share a pull request.
+3. **Read.**
    Read each task for a dependency the table omits.
-3. **Fix.**
+4. **Fix.**
    Fix a backward reference by moving the task to the epic that owns its inputs. When the task duplicates work the later epic already does, remove it instead.
-4. **Renumber.**
+5. **Renumber.**
    Renumber so that epics run in number order and tasks are numbered in the order they can start, touching only work not yet delivered.
    - Use [Renumber Epics](commands.md#renumber-epics) for epic numbers and [Renumber Tasks](commands.md#renumber-tasks) for one epic's tasks, with other initiatives' bodies after `--outside`.
    - Then re-sort each table, check every range the script prints, and grep the prose for references it cannot see.
-5. **Depends on.**
+6. **Depends on.**
    Update each initiative Depends on cell to the list [Check Dependencies](commands.md#check-dependencies) gives, and re-run it until it reports no problems.
-6. **Chains.**
+7. **Chains.**
    Record the longest chains from its output in the planning record. Issue bodies do not narrate order or its reasons.
 
 ## Fetch

@@ -35,7 +35,12 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
 - **Joins.**
-  The tasks that can land in the same pull request as this one. Each lists the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
+  The tasks that share one pull request. Each names the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
+  - Planning completes Joins before any issue of the epic is created. Compare every pair of tasks in the epic where neither depends on the other, directly or through another task.
+  - A pair that shares a pull request names each other.
+  - A pair that does not is named in the planning record, with why.
+  - An empty cell is a task that shares no pull request, and only once that record names every such pair.
+  - [Check Dependencies](commands.md#check-dependencies) prints each eligible pair that does not name each other.
 
 ## Coverage Reports
 
