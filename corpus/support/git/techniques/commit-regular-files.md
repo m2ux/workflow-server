@@ -27,8 +27,10 @@ Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
 ## Protocol
 
-### 1. Stage and Commit
+### 1. Stage
 
 - `git add {paths}`.
+
+### 2. Commit
 - When `{is_signed}` is true, `git commit -S -m '{commit_message}'`.
 - When `{is_signed}` is not true, `git commit --no-gpg-sign -m '{commit_message}'`.
