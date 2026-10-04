@@ -20,7 +20,11 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - Each acceptance criterion is written to this mode's Criteria at creation rule. It ends by naming its instrument as the [Verified](review-criteria.md#verified) rule defines. A test it names that does not exist yet is planned as work.
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+   - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
    - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines.
+   - Every test the work calls for accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The content steers which kinds, including the project's system test when the work calls for it.
+   - Spec, create, and test reusable routines, techniques, and resources before an activity binds them, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
+   - When wired behaviour and expected behaviour differ, that task changes the routine, technique, or resource, and the tests that cover the change, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
@@ -43,6 +47,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 7. **Keep in step.**
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
+   - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
    - **Integration branches exist.**

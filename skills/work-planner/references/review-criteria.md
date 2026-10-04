@@ -117,6 +117,7 @@ An epic states one slice of the initiative's design and lists the tasks that del
 - A dependency listed twice, or already implied by another in the same cell, is unsound.
 - A cycle is unsound.
 - A Joins pair that is one-way, or where one task depends on the other, directly or through a task outside the pair, is unsound.
+- A pair [Check Dependencies](commands.md#check-dependencies) prints, and that the planning record does not name, is unfinished planning.
 - A task that measures, extends or consumes another task's output depends on it, even when the text never says so.
 - An unknown reference is unsound.
 - Numbering that does not follow start order is advisory.

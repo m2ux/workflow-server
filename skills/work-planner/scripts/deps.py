@@ -23,6 +23,8 @@ an epic depending on a later epic, cycles, a dependency listed twice, and a depe
 in the same cell already implies. A whole-epic dependency (E01) states intent, so its tasks are not
 reported as implied. Joins problems: a task joining one that does not join it back, and two joined
 tasks where one depends on the other, directly or through a task outside the pair.
+Also printed: each pair of tasks in an epic where neither depends on the other and the two do not
+name each other in Joins.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
 epics its tasks depend on, less those another named epic already depends on, and names no task.
 Another initiative's epic (I05:E00) or an issue (#750) may also be named.
@@ -96,6 +98,22 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
             acc.append(a if a.startswith('E') else f'{epic}:{a}')
         tasks[key] = (description, dep_list, acc)
     return tasks, problems, whole
+
+
+def eligible_unjoined(tasks: dict, ancestors) -> list[str]:
+    """Pairs in one epic that neither depends on the other and that do not name each other."""
+    keys = sorted(tasks)
+    lines = []
+    for i, left in enumerate(keys):
+        for right in keys[i + 1:]:
+            if left.split(':')[0] != right.split(':')[0]:
+                continue
+            if right in ancestors(left) or left in ancestors(right):
+                continue
+            if right in tasks[left][2] and left in tasks[right][2]:
+                continue
+            lines.append(f'{left} and {right} can share a pull request and do not name each other')
+    return lines
 
 
 def check_initiative(path: Path, tasks: dict) -> list[str]:
@@ -214,12 +232,15 @@ def main(argv: list[str]) -> int:
                 via = next((x for x in ancestors(key) if x != a and a in ancestors(x)), None)
                 if via:
                     problems.append(f'{key}: joins {a}, but needs {via}, which needs {a}')
+        joins = eligible_unjoined(tasks, ancestors)
         if initiative:
             problems += check_initiative(initiative, tasks)
     print('--- problems')
     print('\n'.join(problems) if problems else 'none')
     if cyclic:
         return 1
+    print('\n--- joins: eligible and not joined')
+    print('\n'.join(joins) if joins else 'none')
 
     level: dict[str, int] = {}
 

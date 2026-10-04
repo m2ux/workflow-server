@@ -16,7 +16,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - A merged pull request that leaves any criterion its Coverage names unmet leaves that task's cell empty. The task takes further pull requests until they hold.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
-  - An epic's row id is the task, `W01`; `W00` holds preparatory work that must land before the first real task.
+  - An epic's row id is the task, `W01`. What it links is [Task ids](#delivery). `W00` holds preparatory work that must land before the first real task.
   - A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion or evidence of its own.
 - **Description.**
   A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail.
@@ -34,8 +34,16 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
+  - Every test the work calls for accompanies that task. The content steers which kinds those are, including the project's system test when the work is something that test can exercise. A failure in any test the task carries keeps the task open. None of those tests is a later row.
+  - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
+  - When the behaviour a wired activity produces differs from the behaviour the work expected, that task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold.
 - **Joins.**
-  The tasks that can land in the same pull request as this one. Each lists the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
+  The tasks that share one pull request. Each names the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
+  - Planning completes Joins before any issue of the epic is created. Compare every pair of tasks in the epic where neither depends on the other, directly or through another task.
+  - A pair that shares a pull request names each other.
+  - A pair that does not is named in the planning record, with why.
+  - An empty cell is a task that shares no pull request, and only once that record names every such pair.
+  - [Check Dependencies](commands.md#check-dependencies) prints each eligible pair that does not name each other.
 
 ## Coverage Reports
 
@@ -72,7 +80,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
 - **Task ids.**
-  - A task's id links each pull request associated with it, open or merged: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`. A task with no pull request is plain.
+  - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
+  - Once a pull request is open, the id links that pull request and the planning-record link is gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
