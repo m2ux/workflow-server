@@ -98,7 +98,7 @@ The file uses the epic template's Overview, Problem, Proposal, and Work Breakdow
 - **Proposal.**
   The design, as a Proposal is written for an epic. The first part of it states the scene. A list of items is a bulleted list.
 - **Work Breakdown.**
-  A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description. The test row names the checks the content calls for, and a specimen when the work is a workflow an operator can start.
+  A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description. The test row names the checks the content calls for, including the project's system test when the work is something that test can exercise.
 - **The work only.**
   The file names no other task, and it carries no coverage, dependency, or join. Those stay in the epic table.
 
