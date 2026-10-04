@@ -89,6 +89,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 
 The detail behind an epic's task rows. Each task is a heading, and the text under it is the work.
 
+- **Opening.**
+  The first paragraph states the problem and the scene. The detail follows.
 - **Paragraphs.**
   Plain language, a few sentences to a paragraph. One paragraph holds one point.
 - **Lists.**
