@@ -34,8 +34,8 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
-  - A test that can send the implementation back is part of that task. The walk is not a later row.
-  - Reusable routines and techniques are specced, created, and tested before an activity binds them. The tests are unit tests and integration tests. A walk of the activity is the later wiring task.
+  - Every test of an implementation accompanies that task: its unit tests, its integration tests, and its walk. A failure in any of them keeps the task open. None of those tests is a later row.
+  - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
 - **Joins.**
   The tasks that share one pull request. Each names the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
   - Planning completes Joins before any issue of the epic is created. Compare every pair of tasks in the epic where neither depends on the other, directly or through another task.
