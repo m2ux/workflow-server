@@ -85,6 +85,15 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 - **Work another issue takes.**
   It leaves the table. Its criteria go with it, or to another row that delivers them.
 
+## Work file
+
+The detail behind an epic's task rows. Each task is a heading, and the text under it is the work.
+
+- **Paragraphs.**
+  Plain language, a few sentences to a paragraph. One paragraph holds one point.
+- **Lists.**
+  A list of items is a bulleted list. The items stay out of the sentence.
+
 ## Problem and Proposal
 
 - **Friction.**
