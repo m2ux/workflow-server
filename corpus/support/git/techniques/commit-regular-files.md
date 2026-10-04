@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
 ### is_signed
 
-*(optional)* True when this commit is signed with the configured signing key. False or unset when the commit is unsigned.
+*(optional)* False by default: the commit is unsigned. True when this commit is signed with the configured signing key.
 
 #### default
 
@@ -31,4 +31,4 @@ Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
 - `git add {paths}`.
 - When `{is_signed}` is true, `git commit -S -m '{commit_message}'`.
-- When `{is_signed}` is false, `git commit --no-gpg-sign -m '{commit_message}'`.
+- When `{is_signed}` is not true, `git commit --no-gpg-sign -m '{commit_message}'`.
