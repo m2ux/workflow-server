@@ -35,6 +35,35 @@ Legacy declares `is_review_mode` and `stealth_mode`. It does not bind the librar
 
 The tests of this move accompany it. A sidecar specimen walks legacy. The claim table in this record names the walk. The task stays open while any of its tests report a failure.
 
+**Structure.** The legacy workflow contains the files that moved with it.
+
+```mermaid
+classDiagram
+  class Legacy {
+    id legacy
+  }
+  class Workflow
+  class Activities
+  class Techniques
+  class Routines
+  class Resources
+  Legacy *-- Workflow
+  Legacy *-- Activities
+  Legacy *-- Techniques
+  Legacy *-- Routines
+  Legacy *-- Resources
+```
+
+**Behaviour.** A caller starts `legacy`, and the specimen walk reports the steps.
+
+```mermaid
+sequenceDiagram
+  participant Caller
+  participant Legacy
+  Caller->>Legacy: start
+  Legacy-->>Caller: walk of the steps
+```
+
 Depends on E05. This task shares no pull request, because every later task reads this move.
 
 Delivers AC1 and AC13. The canon audit (AC9) is shared with every task.
@@ -62,6 +91,41 @@ The unit tests fail when:
 - one of those workflows declares a variable none of its activities reads or writes
 
 The integration test loads a fixture workflow that declares one of those names and expects the guard to fail.
+
+**Structure.** The library holds the shared folders. The guard stands beside the three mode workflows.
+
+```mermaid
+classDiagram
+  class Library {
+    routines
+    techniques
+    resources
+  }
+  class Guard
+  class Implement
+  class Review
+  class Remediate
+  Guard ..> Implement
+  Guard ..> Review
+  Guard ..> Remediate
+  Library <.. Implement
+  Library <.. Review
+  Library <.. Remediate
+```
+
+**Behaviour.** The guard rejects a mode flag or a variable no activity uses.
+
+```mermaid
+sequenceDiagram
+  participant Guard
+  participant Workflow
+  Guard->>Workflow: read declared names
+  alt mode flag or unread name
+    Guard-->>Workflow: fail
+  else names the activities use
+    Guard-->>Workflow: pass
+  end
+```
 
 Depends on W01. This task shares no pull request. The component tasks depend on it.
 
@@ -91,6 +155,34 @@ The set is:
 
 The tests accompany the refactor. A unit test fails when a refactored resource still contains a protocol cadence. An integration test fetches one section and fails when the response is the whole file.
 
+**Structure.** A resource is sections of fill and consult. A technique cites a section and keeps the procedure.
+
+```mermaid
+classDiagram
+  class Resource
+  class Section {
+    template
+    vocabulary
+    criteria
+    policy
+  }
+  class Technique {
+    procedure
+  }
+  Resource *-- Section
+  Technique ..> Section : cites
+```
+
+**Behaviour.** A section fetch returns that section.
+
+```mermaid
+sequenceDiagram
+  participant Technique
+  participant Resource
+  Technique->>Resource: fetch one section
+  Resource-->>Technique: that section
+```
+
 Depends on W02. Does not join W04 or W07. Resource grain, the workspace routines, and delivery are separate contracts.
 
 Delivers AC21 and AC22.
@@ -102,6 +194,36 @@ Spec and create the library routines for opening a workspace, committing, and pu
 The private-remote check is a phase of the push routine when the host is determinate, and a technique when the URL is ambiguous. The routine binds `git::` and `github::` directly. A local technique exists only where this library adds a reading those namespaces do not contain.
 
 The tests accompany the routines. A unit test fails when the empty-diff gate or the determinate-private gate accepts the wrong input. An integration test loads each routine in a fixture workflow and fails when the splice does not bind the shared technique.
+
+**Structure.** The three routines bind the shared git and GitHub techniques. An ambiguous URL is its own reading.
+
+```mermaid
+classDiagram
+  class OpenWorkspace
+  class Commit
+  class Push
+  class Git
+  class GitHub
+  class AmbiguousUrl
+  OpenWorkspace ..> Git
+  Commit ..> Git
+  Push ..> Git
+  Push ..> GitHub
+  Push ..> AmbiguousUrl
+```
+
+**Behaviour.** A push stops on an empty diff, and an ambiguous URL is read before the push.
+
+```mermaid
+stateDiagram-v2
+  [*] --> CheckDiff
+  CheckDiff --> Stopped : empty
+  CheckDiff --> PrivateGate : changes
+  PrivateGate --> Pushed : host is private
+  PrivateGate --> ReadUrl : URL is ambiguous
+  ReadUrl --> Pushed
+  Pushed --> [*]
+```
 
 Depends on W02. Does not join:
 
@@ -128,6 +250,38 @@ The sections are:
 
 The tests accompany the technique. A unit test fails when the technique cites a section the resource does not contain. An integration test loads the technique against a fixture resource and fails when the cited section is not the one the parameter selected.
 
+**Structure.** One write technique reaches the fill sections. A composition stands apart from it.
+
+```mermaid
+classDiagram
+  class Write {
+    section
+  }
+  class Plan
+  class Findings
+  class CloseOut
+  class Adr
+  class Elicitation
+  class Composition
+  Write --> Plan
+  Write --> Findings
+  Write --> CloseOut
+  Write --> Adr
+  Write --> Elicitation
+```
+
+**Behaviour.** The parameter selects the section the technique cites.
+
+```mermaid
+sequenceDiagram
+  participant Routine
+  participant Write
+  participant Resource
+  Routine->>Write: section name
+  Write->>Resource: cite that section
+  Resource-->>Write: section body
+```
+
 Depends on W03. Does not join W04, W06, or W07. The fill, the workspace routines, the review judgments, and delivery do not share a contract.
 
 Delivers AC17. AC14 and AC15 are shared.
@@ -146,6 +300,32 @@ The techniques are:
 The diff review runs once. A fill applies a person's reply. The per-block interview stays a checkpoint. After a fix, only the lens that raised the finding runs again.
 
 The tests accompany the techniques. A unit test fails when a second lens is selected for a finding the first lens raised. An integration test loads the diff technique and the fill and fails when the reply is applied by fetching the whole review again.
+
+**Structure.** Each judgment technique cites the resource sections it reads.
+
+```mermaid
+classDiagram
+  class DiffReview
+  class CodeReview
+  class TestSuiteReview
+  class SettleFindings
+  class ResourceSections
+  DiffReview ..> ResourceSections
+  CodeReview ..> ResourceSections
+  TestSuiteReview ..> ResourceSections
+  SettleFindings ..> ResourceSections
+```
+
+**Behaviour.** A finding is rechecked by the lens that raised it, after the fill applies the reply.
+
+```mermaid
+stateDiagram-v2
+  [*] --> DiffOnce
+  DiffOnce --> Finding
+  Finding --> Filled : reply
+  Filled --> Recheck : same lens
+  Recheck --> [*]
+```
 
 Depends on W03. Does not join:
 
@@ -172,6 +352,32 @@ The private push waits for a confirmation that names the remote when the host is
 
 The tests accompany the routines. A unit test fails when one delivery routine names a technique that belongs to another mode. An integration test loads each routine in a fixture workflow and fails when the unused mode's technique is bound.
 
+**Structure.** Three delivery routines. Each binds the shared push, and a mode binds one of them.
+
+```mermaid
+classDiagram
+  class Publish
+  class PostReview
+  class PrivatePush
+  class Push
+  Publish ..> Push
+  PostReview ..> Push
+  PrivatePush ..> Push
+```
+
+**Behaviour.** A private push waits until the confirmation names the remote.
+
+```mermaid
+sequenceDiagram
+  participant Mode
+  participant PrivatePush
+  participant Person
+  Mode->>PrivatePush: host is private
+  PrivatePush->>Person: confirm the remote
+  Person-->>PrivatePush: named remote
+  PrivatePush->>PrivatePush: push
+```
+
 Depends on W04. Does not join:
 
 - W03
@@ -197,6 +403,34 @@ The components are:
 - The discussion technique names domains already settled.
 
 The tests accompany the components. A unit test fails when a component's declared inputs do not match the contract in the [grain rubric](grain-rubric.md). An integration test loads the routine in a fixture workflow and fails when a settled domain is still posed.
+
+**Structure.** Design and discovery is a set of techniques a routine orders. The research document is a fill.
+
+```mermaid
+classDiagram
+  class Problem
+  class Classify
+  class Comprehension
+  class Research
+  class Elicitation
+  class Discussion
+  class Fill
+  Comprehension --> Problem
+  Comprehension --> Classify
+  Research --> Fill
+  Elicitation --> Discussion
+```
+
+**Behaviour.** The discussion poses only the domains the routine has not already settled.
+
+```mermaid
+sequenceDiagram
+  participant Routine
+  participant Discussion
+  participant Person
+  Routine->>Discussion: settled domains
+  Discussion->>Person: remaining domains
+```
 
 Depends on W05. Does not join W04, W06, or W07. Design and discovery are one sizeable contract.
 
@@ -241,6 +475,32 @@ The step manifest includes no step that:
 
 `execute-package` keeps naming `legacy` until this walk shows a package reaching a merged pull request.
 
+**Structure.** The implement workflow is its activities. They bind the library and carry no review-delivery or security-remote names.
+
+```mermaid
+classDiagram
+  class Implement {
+    workflow
+    activities
+    readme
+  }
+  class Library
+  Implement --> Library : work-package
+```
+
+**Behaviour.** Review can return the work to implementation. Submit follows a review that holds.
+
+```mermaid
+stateDiagram-v2
+  [*] --> Design
+  Design --> Implement
+  Implement --> Review
+  Review --> Implement : fix
+  Review --> Submit : holds
+  Submit --> Complete
+  Complete --> [*]
+```
+
 Depends on W06, W07, and W08. Joins W10: wiring the two modes, with their tests, is one pull request.
 
 Delivers AC3. AC8 and AC12 are shared with W10 and W11.
@@ -271,6 +531,29 @@ The step manifest includes no step that:
 
 - writes implementation files
 - creates a public pull request
+
+**Structure.** The review workflow documents. It has no implement activity and no public-pull-request lifecycle.
+
+```mermaid
+classDiagram
+  class Review {
+    capture pull request
+    document
+    post review
+    close-out
+  }
+```
+
+**Behaviour.** The run captures a pull request, documents the lenses, posts the review, and republishes the close-out.
+
+```mermaid
+stateDiagram-v2
+  [*] --> Capture
+  Capture --> Document
+  Document --> Post
+  Post --> CloseOut
+  CloseOut --> [*]
+```
 
 Depends on W06, W07, and W08. Joins W09.
 
@@ -306,6 +589,35 @@ A mismatch changes the bound routine, technique, or resource in this task, with 
 - prism-audit
 - the readme-seed specimen
 - the meta patterns note
+
+**Structure.** Remediate is the implement path plus a private fork and the security remote.
+
+```mermaid
+classDiagram
+  class Remediate {
+    private fork
+    security remote
+    isolation
+  }
+  class ImplementPath
+  class PrivatePush
+  Remediate --> ImplementPath
+  Remediate --> PrivatePush
+```
+
+**Behaviour.** The push runs after a confirmation that names the remote.
+
+```mermaid
+sequenceDiagram
+  participant Start
+  participant Path
+  participant Person
+  participant Push
+  Start->>Path: private fork
+  Path->>Person: name the remote
+  Person-->>Push: named remote
+  Push->>Push: private remote only
+```
 
 Depends on W09. Does not join W10: W10 joins W09, and this task depends on W09, so it cannot land in that pull request.
 
