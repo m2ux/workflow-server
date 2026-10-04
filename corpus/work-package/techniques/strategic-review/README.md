@@ -13,5 +13,6 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`defer-findings`](defer-findings.md) | Every finding in the strategic review document that does not recommend keeping the change, as an out-of-scope deferral |
 | [`document-findings`](document-findings.md) | Strategic review document with findings typed from the review-scope pass, or a clean-review result |
 | [`recommend-cleanup`](recommend-cleanup.md) | Review-mode cleanup recommendations in the strategic review document — advisory only |
+| [`resign-commits`](resign-commits.md) | Feature-branch commits re-signed so every commit carries a valid GPG signature |
 | [`review-scope`](review-scope.md) | Scope-discipline and artifact-hygiene findings across the feature-branch diff for the strategic review document |
 | [`verify-fragment`](verify-fragment.md) | Whether the work-package change fragment under the target path references the issue |

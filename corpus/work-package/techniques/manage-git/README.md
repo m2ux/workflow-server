@@ -16,5 +16,6 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`restore-paths-from-ref`](restore-paths-from-ref.md) | Restore selected worktree paths to match a base git ref (whole file or interactive hunks), then stage the restores |
 | [`sync-branch`](sync-branch.md) | Feature branch kept current with the default branch |
 | [`update-repo-submodules`](update-repo-submodules.md) | Refresh the monorepo's submodules to their tracked remote HEADs, with locking and skip-if-recent semantics to coordinate concurrent invocations from sibling work packages |
+| [`verify-commit-signatures`](verify-commit-signatures.md) | Feature-branch GPG signature hygiene before push — every commit signed |
 | [`verify-feature-branch`](verify-feature-branch.md) | Confirmation that the target path is on a feature branch rather than main or master |
 | [`verify-remote-private`](verify-remote-private.md) | Configured push remote confirmed private before an upcoming push |
