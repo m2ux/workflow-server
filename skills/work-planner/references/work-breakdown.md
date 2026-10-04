@@ -80,7 +80,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
 - **Task ids.**
-  - Until a pull request is open, the id links that task's heading in the planning record's `work.md`: `[W01](…/work.md#w01-place-the-change)`. The heading is `## W01` plus the row's Description, and the anchor is that heading's slug.
+  - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01-place-the-change.md)`. The file is named from the row's Description.
   - Once a pull request is open, the id links that pull request and the planning-record link is gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
@@ -92,6 +92,23 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.
 - **Work another issue takes.**
   It leaves the table. Its criteria go with it, or to another row that delivers them.
+
+## Work item
+
+One file per task, in the planning record. The record's README links each file. The epic table's task id links that file until a pull request is open.
+
+The file uses the epic template's Overview, Problem, Proposal, and Work Breakdown. It carries no acceptance criteria and no joins.
+
+- **Overview.**
+  One paragraph on what the task delivers and why.
+- **Problem.**
+  The friction, as a Problem is written for an epic.
+- **Proposal.**
+  The design, as a Proposal is written for an epic. The first part of it states the scene. A list of items is a bulleted list.
+- **Work Breakdown.**
+  A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description.
+- **The work only.**
+  The file names no other task, and it carries no coverage, dependency, or join. Those stay in the epic table.
 
 ## Problem and Proposal
 

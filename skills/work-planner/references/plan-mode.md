@@ -21,11 +21,10 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
-   - Write `work.md` in the proposal's planning record when the plan takes a proposal. Otherwise create a planning folder with [Add Planning Record](commands.md#add-planning-record) and write `work.md` there.
-   - Each task is a heading `## W01 Description`, using that row's Description.
-   - Under the heading, describe that task's work. The first paragraph states the problem and the scene. The description names no other task, and it carries no coverage, dependency, or join. Those stay in the epic table.
-   - The issue table stays the index. The work file is the detail.
-   - Link each task id to its heading in `work.md`, as [Task ids](work-breakdown.md#delivery) defines.
+   - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines, in the proposal's planning record when the plan takes a proposal. Otherwise create a planning folder with [Add Planning Record](commands.md#add-planning-record) and write the files there.
+   - List each file in the record's README.
+   - The issue table stays the index. Each task file is the detail.
+   - Link each task id to its file, as [Task ids](work-breakdown.md#delivery) defines.
    - Every test of an implementation accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The tests are its unit tests, its integration tests, and its walk.
    - Spec, create, and test reusable routines, techniques, and resources before an activity binds them, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
    - When wired behaviour and expected behaviour differ, that task changes the primitive and the tests that cover the change, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
@@ -51,7 +50,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 7. **Keep in step.**
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
-   - The work file's headings stay the tasks. A renamed or added task is a heading. A removed task drops its heading.
+   - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
    - **Integration branches exist.**
