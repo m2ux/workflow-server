@@ -15,17 +15,17 @@ The layout, the mode graphs, and the grain sit in this record. Each work item is
 | [Plan](plan.md) | The library, the mode folders, the graphs, the design flow, the variables, and the checks |
 | [Grain rubric](grain-rubric.md) | Where a step lives: activity, routine, technique, or resource |
 | [Trace](trace.md) | Proposal clauses, the I10 criteria, and the E06 criteria |
-| [W01](W01.md) | Place and walk the legacy workflow |
-| [W02](W02.md) | Add the library and its guard |
-| [W03](W03.md) | Refactor resource grain |
-| [W04](W04.md) | Add workspace, commit, and push |
-| [W05](W05.md) | Add the document fill |
-| [W06](W06.md) | Add the review judgments |
-| [W07](W07.md) | Add the delivery routines |
-| [W08](W08.md) | Add design and discovery |
-| [W09](W09.md) | Add and walk the implement workflow |
-| [W10](W10.md) | Add and walk the review workflow |
-| [W11](W11.md) | Add and walk the remediate workflow |
+| [W01](w01.md) | Place and walk the legacy workflow |
+| [W02](w02.md) | Add the library and its guard |
+| [W03](w03.md) | Refactor resource grain |
+| [W04](w04.md) | Add workspace, commit, and push |
+| [W05](w05.md) | Add the document fill |
+| [W06](w06.md) | Add the review judgments |
+| [W07](w07.md) | Add the delivery routines |
+| [W08](w08.md) | Add design and discovery |
+| [W09](w09.md) | Add and walk the implement workflow |
+| [W10](w10.md) | Add and walk the review workflow |
+| [W11](w11.md) | Add and walk the remediate workflow |
 
 ## Links
 
