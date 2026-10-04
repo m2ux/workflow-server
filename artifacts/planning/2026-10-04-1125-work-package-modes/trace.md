@@ -7,10 +7,10 @@ The proposal's clauses are the scope. Initiative criteria AC16–AC22 are the on
 | An operator can start implement, review, and remediate | AC16 | AC2 |
 | A worker on one run is sent no step of another mode | AC17 | AC3, AC4 |
 | A remediate push reaches only a private remote | AC19 | AC5 |
-| That push waits for a confirmation that names the remote | AC20 | AC11 |
-| The combined workflow remains startable | AC18 | AC1, AC10 |
+| That push waits for a confirmation that names the remote | AC20 | AC10 |
+| The combined workflow remains startable | AC18 | AC1, AC13 |
 | Shared routines, techniques, and templates have one home | AC21 | AC6 |
-| Each mode declares only the variables it reads or writes | AC22 | AC12 |
+| Each mode declares only the variables it reads or writes | AC22 | AC11 |
 | A verifiable sequence is a routine | Left to the epic | Proposal: library routines |
 | A phase of one judgment is a technique step | Left to the epic | Proposal: one technique step |
 
@@ -18,11 +18,9 @@ The two rows left to the epic are the method of this one epic. An initiative cri
 
 ## Chains
 
-The longest chains are six steps, and each one starts at E05 W01:
+The longest chain is five steps, and it starts at E05 W01:
 
-- E05 W01, E06 W01, E06 W02, E06 W03, E06 W05, E06 W08
-- E05 W01, E06 W01, E06 W02, E06 W03, E06 W06, E06 W08
-- E05 W01, E06 W01, E06 W02, E06 W04, E06 W07, E06 W08
+- E05 W01, E06 W01, E06 W02, E06 W03, E06 W05
 
 ## Decisions
 
@@ -30,6 +28,7 @@ The longest chains are six steps, and each one starts at E05 W01:
 | --- | --- |
 | E06 starts after E05, so the mode rewrite follows the tip validation of the streamline epics | Initiative row Depends on E05; W01 depends on E05 |
 | AC15's ledger is the criteria E05 records | This table |
-| The mode-variable guard is work inside W02 | Epic AC12 |
-| Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy declares both | Plan variables section; epic AC13 |
-| W03 joins W04. W06 joins W07. A walk does not join the workflow it walks, because it depends on that workflow | Epic Joins cells |
+| The mode-variable guard is work inside W02 | Epic AC11 |
+| Implement, review, and remediate declare neither `is_review_mode` nor `stealth_mode`. Review is the review workflow. Remediate is the remediate workflow. Legacy declares both | Plan variables section; epic AC12 |
+| A walk that can send the workflow back is part of the task that writes it | Epic rows W01, W03, W04, W05 |
+| W03 joins W04. W04 and W05 do not share a pull request: W05 depends on W03, and W03 joins W04 | Epic Joins cells; work.md |
