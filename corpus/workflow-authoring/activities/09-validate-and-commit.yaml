@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.7.0
+version: 1.8.0
 name: Validate and Commit
 description: "A verified findings register with the operator's disposition, and for an authored change its commit, pull request and close-out record."
 variables:
@@ -229,8 +229,6 @@ steps:
     id: stage-and-commit
     technique:
       name: git::commit-regular-files
-      inputs:
-        branch: workflow_branch
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: verify-commit

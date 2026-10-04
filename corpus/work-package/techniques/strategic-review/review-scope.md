@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.4
+  version: 1.7.0
 ---
 
 ## Capability
@@ -43,14 +43,6 @@ Scope-discipline and artifact-hygiene findings across the feature-branch diff fo
 
 The strategic review document holding findings, each carrying its [category](../../resources/strategic-review.md#categories). Same artifact the group root declares.
 
-### unsigned_commits_in_pr
-
-Boolean — `true` when any commit in the `{base_branch}..HEAD` range carries no valid GPG signature (`%G?` reports `N` or `B`).
-
-### unsigned_commit_list_summary
-
-Short human-readable summary of the unsigned commits (hash + subject, one per line); empty when all commits are signed.
-
 ## Protocol
 
 ### 1. Load Guidance
@@ -92,12 +84,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 
 - Answer the five [Minimality Check](../../resources/strategic-review.md#minimality-check) questions; record each question answered "No" as a finding for the `{strategic_review_doc}`, with the action from the "If No" column as the cleanup it warrants
 
-### 7. Scan Commit Signatures
-
-- Scan the branch range for signature status: `git log --format='%h %G? %s' {base_branch}..HEAD`.
-- Set `{unsigned_commits_in_pr}` `true` and build `{unsigned_commit_list_summary}` from the commits reporting `N` or `B`; otherwise set it `false` with an empty summary.
-
-### 8. Record Pr Body Conformance
+### 7. Record Pr Body Conformance
 
 - Where `{body_conforms}` is false, state each `{body_findings}` entry in the `{strategic_review_doc}` as a finding whose Category is PR Body Conformance.
   > - A finding an earlier conformance check already stated is cited by its designator rather than restated; a body edited since that check is re-judged whole.

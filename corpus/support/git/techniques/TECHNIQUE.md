@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.9.0
+  version: 5.13.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ NEVER run destructive or irreversible operations (force push to protected branch
 
 ### no-hook-skipping
 
-NEVER skip hooks (`--no-verify`, `--no-gpg-sign`) unless the user explicitly requests it.
+NEVER skip hooks (`--no-verify`) unless the user explicitly requests it.
 
 ### explicit-commit
 
@@ -43,9 +43,9 @@ BEFORE committing engineering artifacts, ALWAYS read `.engineering/AGENTS.md` fo
 
 Follow Conventional Commits: `type(optional-scope): description`. Common types: feat, fix, docs, style, refactor, test, chore, build, ci. Reference issue numbers when applicable.
 
-### dco-sign-off
+### commits-are-unsigned
 
-All commits made via this technique use `git commit -s`. The `Signed-off-by` trailer is required by DCO and harmless when not. Adding it by default avoids the failure-then-retry pattern when target repos enforce DCO via a pre-commit hook.
+A commit carries no GPG signature when `{is_signed}` is not true.
 
 ### infrastructure-engineering-path
 

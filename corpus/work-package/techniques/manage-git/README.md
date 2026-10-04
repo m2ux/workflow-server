@@ -11,7 +11,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`artifact-commits`](artifact-commits.md) | Commit planning artifacts in the engineering checkout with the canonical message pattern, rebasing onto sibling work-package commits to avoid push rejections |
 | [`commit-paths`](commit-paths.md) | Stage and commit selected paths on the edit-side feature branch (code commits, not planning-folder artifact commits) |
 | [`detect-merge-strategy`](detect-merge-strategy.md) | Query GitHub for the component repository's allowed merge strategies (specifically, whether squash merging is enabled) |
-| [`instruct-merge-strategy`](instruct-merge-strategy.md) | Advisory DCO-compliant merge guidance for the PR (read-only |
+| [`instruct-merge-strategy`](instruct-merge-strategy.md) | Merge guidance the user acts on: the merge commit is signed, and creating it prompts the user to sign |
 | [`remove-worktree`](remove-worktree.md) | Tear down a worktree created earlier in the work package |
 | [`restore-paths-from-ref`](restore-paths-from-ref.md) | Restore selected worktree paths to match a base git ref (whole file or interactive hunks), then stage the restores |
 | [`sync-branch`](sync-branch.md) | Feature branch kept current with the default branch |

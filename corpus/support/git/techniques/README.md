@@ -6,7 +6,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 
 | Technique | Contributes |
 |---|---|
-| [`commit-regular-files`](commit-regular-files.md) | Stage, commit, and push files in a regular (non-submodule) directory of the parent repo |
+| [`commit-regular-files`](commit-regular-files.md) | Stage and commit files in a regular (non-submodule) directory of the parent repo |
 | [`commit-submodule`](commit-submodule.md) | Commit and push inside a submodule and sync the parent's submodule pointer |
 | [`commit-worktree`](commit-worktree.md) | Stage, commit, and push files on the branch checked out in a linked worktree |
 | [`create-worktree`](create-worktree.md) | Working directory materialised as a git worktree of the component, on either a feature branch created fresh or an existing branch checked out |

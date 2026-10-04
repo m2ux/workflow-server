@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.11.0
+version: 1.12.0
 name: Validate and Commit
 description: The validated workflow change committed on the session feature branch with a pull request against the workflows branch, or the compliance report committed in review mode.
 variables:
@@ -76,6 +76,15 @@ steps:
   - kind: technique
     id: commit-report
     technique: git::commit-regular-files
+    when: operation_type == 'review'
+  - kind: technique
+    id: push-report
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        remote_name: origin
     when: operation_type == 'review'
   - kind: technique
     id: run-schema-validation
