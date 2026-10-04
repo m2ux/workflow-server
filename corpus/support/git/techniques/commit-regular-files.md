@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,9 +17,18 @@ Array of file paths to stage (under `.engineering/artifacts/`, `.engineering/AGE
 
 Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
+### is_signed
+
+*(optional)* True when this commit is signed with the configured signing key. False or unset when the commit is unsigned.
+
+#### default
+
+`false`
+
 ## Protocol
 
 ### 1. Stage and Commit
 
 - `git add {paths}`.
-- `git commit --no-gpg-sign -m '{commit_message}'`.
+- When `{is_signed}` is true, `git commit -S -m '{commit_message}'`.
+- When `{is_signed}` is false, `git commit --no-gpg-sign -m '{commit_message}'`.

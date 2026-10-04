@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.12.0
+  version: 5.13.0
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ Follow Conventional Commits: `type(optional-scope): description`. Common types: 
 
 ### commits-are-unsigned
 
-Every commit this technique makes carries no GPG signature.
+A commit carries no GPG signature when `{is_signed}` is not true.
 
 ### infrastructure-engineering-path
 
