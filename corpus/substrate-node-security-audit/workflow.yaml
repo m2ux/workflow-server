@@ -52,7 +52,7 @@ variables:
     description: Space-separated list of crate/module paths to audit (e.g., 'node/ pallets/ primitives/ runtime/ ledger/ util/ res/ metadata/')
   - name: planning_folder_path
     type: string
-    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit"
+    description: Path to the audit's working folder.
   - name: audit_prompt_template
     type: string
     description: Path to the audit prompt template

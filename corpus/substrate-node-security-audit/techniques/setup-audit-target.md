@@ -11,7 +11,15 @@ Initialize a target codebase pinned at its audited commit for analysis, includin
 
 ### audit_prompt_template
 
-Path to the audit prompt template whose accessibility is confirmed during setup.
+Path to the audit prompt template.
+
+### planning_root
+
+*(optional)* The root directory under which audit planning folders live.
+
+#### default
+
+`.engineering/artifacts/planning/`
 
 ### target_submodule
 
@@ -59,7 +67,7 @@ Session overview with audit target, commit, methodology, and artifact index.
 
 ### 1. Create Planning Folder
 
-- Create `{planning_folder_path}` following the naming pattern `YYYY-MM-DD-NN-{target_submodule}-security-audit`, where `NN` continues the numbering of existing audit folders at the same root.
+- Create `{planning_folder_path}` as the folder `YYYY-MM-DD-NN-{target_submodule}-security-audit` under `{planning_root}`, where `NN` continues the numbering of the audit folders already there.
 - Initialize the `{start_here}` overview inside `{planning_folder_path}` from the [start-here overview](../resources/start-here.md#overview), [key artifacts](../resources/start-here.md#key-artifacts-produced), and [options at setup](../resources/start-here.md#options-at-setup), recording audit target, `{target_commit}`, methodology, and artifact index.
 
 ### 2. Scan Dependencies
