@@ -10,7 +10,7 @@ workflow-design holds 49 of the 125 sites. It is deprecated and is not edited, s
 
 ## Proof
 
-The entry fires at `bb38d574` on the cargo library's `build_budget`, where work-package binds `preflight` and `run-suite`, and on `build_scope`, where it binds `preflight`. At `219b4f37` the cargo contract carries defaults and the entry does not fire there. The guard's test reproduces both.
+The entry fires at `bb38d574` on the cargo library's `build_budget`, where work-package binds `preflight` and `run-suite`, and on `build_scope`, where it binds `preflight`. At `eed1a6f9` the cargo contract carries defaults and the entry does not fire there. The guard's test reproduces both.
 
 ## Joins
 

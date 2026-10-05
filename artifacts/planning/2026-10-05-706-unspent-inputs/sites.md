@@ -1,6 +1,6 @@
 # Firing Sites
 
-Each step that binds an operation which never reads a required input its container declares, with no workflow variable, earlier output or call-site deviation holding that input. Measured with the entry's test against the corpus at `219b4f37`.
+Each step that binds an operation which never reads a required input its container declares, with no workflow variable, earlier output or call-site deviation holding that input. Measured with the entry's test against the corpus at `eed1a6f9`.
 
 Total: 125 steps.
 
