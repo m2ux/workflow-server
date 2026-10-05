@@ -21,14 +21,6 @@ Path to the component being audited, whose name also builds the planning-folder 
 
 The exact commit the target component is checked out at, recorded for reproducibility.
 
-### pin_refusal
-
-*(optional)* Why the checkout was not brought to the audited revision. Empty where it was.
-
-#### default
-
-`""`
-
 ## Outputs
 
 ### file_inventory
@@ -61,24 +53,20 @@ Session overview with audit target, commit, methodology, and artifact index.
 
 ## Protocol
 
-### 1. Confirm Checkout
-
-- Where `{pin_refusal}` is non-empty, fail with an error stating it and showing the component's recent commits.
-
-### 2. Scan Dependencies
+### 1. Scan Dependencies
 
 - Attempt to run dependency scanning tools (e.g., `cargo audit`, `cargo deny`, `npm audit`) and record the result as `{dependency_scan_results}` in the `{planning_folder_path}`.  
   > If the scanning tools cannot be executed, extract the dependency manifest (e.g., `Cargo.lock`, `package-lock.json`) instead and mark the result as requiring manual inspection.
 
-### 3. Generate Inventory
+### 2. Generate Inventory
 
 - Produce `{file_inventory}` listing every in-scope source file with its line count, largest first, and save it to the `{planning_folder_path}`.
 
-### 4. Create Planning Folder
+### 3. Create Planning Folder
 
 - Create `{planning_folder_path}` following the naming pattern `YYYY-MM-DD-NN-{target_submodule}-security-audit`, where `NN` continues the numbering of existing audit folders at the same root.
 - Initialize the `{start_here}` overview inside `{planning_folder_path}` from the [start-here overview](../resources/start-here.md#overview), [key artifacts](../resources/start-here.md#key-artifacts-produced), and [options at setup](../resources/start-here.md#options-at-setup), recording audit target, `{target_commit}`, methodology, and artifact index.
 
-### 5. Load Template
+### 4. Load Template
 
 - Confirm the audit prompt template is accessible at `{audit_prompt_template}`. If it is not at its expected path, fail with an error showing the expected path.

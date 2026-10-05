@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Read from the request which component the audit targets, the revision it is audited at, and any reference report, before anything is checked out.
+The component an audit targets, the revision it is audited at, and any reference report, as the request names them.
 
 ## Inputs
 

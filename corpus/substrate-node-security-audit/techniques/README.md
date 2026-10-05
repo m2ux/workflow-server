@@ -63,7 +63,7 @@ The technique library for the substrate-node-security-audit workflow. Each techn
 |-----------|----------|
 | [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's technique to the workflow-scoped variable bag |
 | [`orchestration-patterns::dispatch-workers`](/meta/techniques/orchestration-patterns/dispatch-workers.md) / [`gather-results`](/meta/techniques/orchestration-patterns/gather-results.md) | Bound from reconnaissance / primary-audit after domain brief composition |
-| [`git::pin-revision`](/git/techniques/pin-revision.md) | Bound from scope-setup to check out the target at its audited revision and land `target_commit` |
+| [`git::pin-revision`](/git/techniques/pin-revision.md) | Bound from scope-setup to check out the target at its audited revision |
 | [`harness-compat::spawn-agent`](/meta/techniques/harness-compat/spawn-agent.md) / [`spawn-concurrent`](/meta/techniques/harness-compat/spawn-concurrent.md) | Invoked inside meta `orchestration-patterns::dispatch-workers` |
 
 For the full technique-to-activity picture with capability summaries, see the [workflow README](../README.md#techniques).
