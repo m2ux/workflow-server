@@ -19,7 +19,7 @@ Whether the graph named `{repo_name}` is behind the tree it was built from.
 
 ### metadata_status
 
-The cargo workspace resolution against `{target_repo_path}`, as `{ check_id, passed, diagnostics }`.
+The cargo workspace resolution against `{target_repo_path}`.
 
 ## Outputs
 
