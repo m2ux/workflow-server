@@ -93,5 +93,5 @@ graph:
   report-cases:
     reported: __terminal__
 activities:
-  - work-package/04-research.yaml
-  - work-package/05-implementation-analysis.yaml
+  - legacy/04-research.yaml
+  - legacy/05-implementation-analysis.yaml

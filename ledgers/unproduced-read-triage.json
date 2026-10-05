@@ -302,259 +302,259 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/assumptions-review",
+      "site": "remediate-vuln :: legacy/assumptions-review",
       "name": "issue_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/assumptions-review",
+      "site": "remediate-vuln :: legacy/assumptions-review",
       "name": "issue_platform",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/assumptions-review",
+      "site": "remediate-vuln :: legacy/assumptions-review",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/assumptions-review",
+      "site": "remediate-vuln :: legacy/assumptions-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/code-review",
+      "site": "remediate-vuln :: legacy/code-review",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/code-review",
+      "site": "remediate-vuln :: legacy/code-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/complete",
+      "site": "remediate-vuln :: legacy/complete",
       "name": "issue_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/complete",
+      "site": "remediate-vuln :: legacy/complete",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/complete",
+      "site": "remediate-vuln :: legacy/complete",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/design-philosophy",
+      "site": "remediate-vuln :: legacy/design-philosophy",
       "name": "issue_record",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/design-philosophy",
+      "site": "remediate-vuln :: legacy/design-philosophy",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/design-philosophy",
+      "site": "remediate-vuln :: legacy/design-philosophy",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/implement",
+      "site": "remediate-vuln :: legacy/implement",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/implement",
+      "site": "remediate-vuln :: legacy/implement",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/implementation-analysis",
+      "site": "remediate-vuln :: legacy/implementation-analysis",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/implementation-analysis",
+      "site": "remediate-vuln :: legacy/implementation-analysis",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/plan-prepare",
+      "site": "remediate-vuln :: legacy/plan-prepare",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/plan-prepare",
+      "site": "remediate-vuln :: legacy/plan-prepare",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/prism-decision",
+      "site": "remediate-vuln :: legacy/prism-decision",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/prism-decision",
+      "site": "remediate-vuln :: legacy/prism-decision",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/post-impl-review",
+      "site": "remediate-vuln :: legacy/post-impl-review",
       "name": "block_line_range",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/post-impl-review",
+      "site": "remediate-vuln :: legacy/post-impl-review",
       "name": "block_path",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/post-impl-review",
+      "site": "remediate-vuln :: legacy/post-impl-review",
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/post-impl-review",
+      "site": "remediate-vuln :: legacy/post-impl-review",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/post-impl-review",
+      "site": "remediate-vuln :: legacy/post-impl-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/requirements-elicitation",
+      "site": "remediate-vuln :: legacy/requirements-elicitation",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/requirements-elicitation",
+      "site": "remediate-vuln :: legacy/requirements-elicitation",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/research",
+      "site": "remediate-vuln :: legacy/research",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/research",
+      "site": "remediate-vuln :: legacy/research",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/strategic-review",
+      "site": "remediate-vuln :: legacy/strategic-review",
       "name": "issue_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/strategic-review",
+      "site": "remediate-vuln :: legacy/strategic-review",
       "name": "issue_platform",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/strategic-review",
+      "site": "remediate-vuln :: legacy/strategic-review",
       "name": "issue_url",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/strategic-review",
+      "site": "remediate-vuln :: legacy/strategic-review",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/strategic-review",
+      "site": "remediate-vuln :: legacy/strategic-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/submit-for-review",
+      "site": "remediate-vuln :: legacy/submit-for-review",
       "name": "issue_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/submit-for-review",
+      "site": "remediate-vuln :: legacy/submit-for-review",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/submit-for-review",
+      "site": "remediate-vuln :: legacy/submit-for-review",
       "name": "provenance_log_path",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/submit-for-review",
+      "site": "remediate-vuln :: legacy/submit-for-review",
       "name": "rating_cap",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/submit-for-review",
+      "site": "remediate-vuln :: legacy/submit-for-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/test-suite-review",
+      "site": "remediate-vuln :: legacy/test-suite-review",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/test-suite-review",
+      "site": "remediate-vuln :: legacy/test-suite-review",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/validate",
+      "site": "remediate-vuln :: legacy/validate",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/validate",
+      "site": "remediate-vuln :: legacy/validate",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
@@ -584,25 +584,25 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "work-package :: post-impl-review",
+      "site": "legacy :: post-impl-review",
       "name": "block_line_range",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "work-package :: post-impl-review",
+      "site": "legacy :: post-impl-review",
       "name": "block_path",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "work-package :: post-impl-review",
+      "site": "legacy :: post-impl-review",
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "work-package :: submit-for-review",
+      "site": "legacy :: submit-for-review",
       "name": "provenance_log_path",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
@@ -638,13 +638,13 @@
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "site": "remediate-vuln :: legacy/codebase-comprehension",
       "name": "pr_number",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
+      "site": "remediate-vuln :: legacy/codebase-comprehension",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
@@ -662,13 +662,13 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "work-package :: start-work-package",
+      "site": "legacy :: start-work-package",
       "name": "issue_title",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "work-package :: start-work-package",
+      "site": "legacy :: start-work-package",
       "name": "jira_issue_key",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"

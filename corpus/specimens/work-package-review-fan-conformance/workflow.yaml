@@ -87,6 +87,6 @@ graph:
   report-cases:
     reported: __terminal__
 activities:
-  - work-package/17-code-review.yaml
-  - work-package/18-structural-analysis.yaml
-  - work-package/19-test-suite-review.yaml
+  - legacy/17-code-review.yaml
+  - legacy/18-structural-analysis.yaml
+  - legacy/19-test-suite-review.yaml

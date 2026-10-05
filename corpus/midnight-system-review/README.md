@@ -75,7 +75,7 @@ flowchart LR
 | `meta::variable-binding` | strategy | Step input/output binding against the session variable bag (workflow-level) |
 | `meta::scatter-gather` | strategy | Graph fan over the investigation areas, with the ordered gather and delegated combine at the convergence (declared on `consolidate-evidence`) |
 | `gitnexus` | reuse | Code-graph probes when `gitnexus_available` is true |
-| `work-package::update-pr::post-review-comment` | reuse | Posts `review_summary` to the PR verbatim as a REST pull-request review with the verdict-derived `review_type` |
+| `legacy::update-pr::post-review-comment` | reuse | Posts `review_summary` to the PR verbatim as a REST pull-request review with the verdict-derived `review_type` |
 
 ## Resources
 

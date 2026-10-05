@@ -136,7 +136,7 @@ steps:
       - kind: technique
         id: persist-principle-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: "{target_workflow_id}-principle-findings.md"
             artifact_content: principle_findings
@@ -148,7 +148,7 @@ steps:
       - kind: technique
         id: persist-anti-pattern-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: "{target_workflow_id}-anti-pattern-findings.md"
             artifact_content: anti_pattern_findings
@@ -163,7 +163,7 @@ steps:
       - kind: technique
         id: persist-verified-findings-review
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: "{target_workflow_id}-verified-findings.md"
             artifact_content: verified_findings
@@ -173,7 +173,7 @@ steps:
   - kind: technique
     id: persist-compliance-report
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: compliance-review.md
         artifact_content: compliance_report
@@ -215,7 +215,7 @@ steps:
   - kind: technique
     id: persist-expressiveness-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: expressiveness-findings.md
         artifact_content: expressiveness_findings
@@ -241,7 +241,7 @@ steps:
   - kind: technique
     id: persist-conformance-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: conformance-findings.md
         artifact_content: conformance_findings
@@ -267,7 +267,7 @@ steps:
   - kind: technique
     id: persist-rule-hygiene-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: rule-hygiene-findings.md
         artifact_content: rule_hygiene_findings
@@ -293,7 +293,7 @@ steps:
   - kind: technique
     id: persist-enforcement-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: enforcement-findings.md
         artifact_content: enforcement_findings
@@ -319,7 +319,7 @@ steps:
   - kind: technique
     id: persist-verified-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: verified-findings.md
         artifact_content: verified_findings
@@ -360,7 +360,7 @@ steps:
       - kind: technique
         id: refresh-expressiveness-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: expressiveness-findings.md
             artifact_content: expressiveness_findings
@@ -373,7 +373,7 @@ steps:
       - kind: technique
         id: refresh-conformance-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: conformance-findings.md
             artifact_content: conformance_findings
@@ -386,7 +386,7 @@ steps:
       - kind: technique
         id: refresh-rule-hygiene-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: rule-hygiene-findings.md
             artifact_content: rule_hygiene_findings
@@ -399,7 +399,7 @@ steps:
       - kind: technique
         id: refresh-enforcement-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: enforcement-findings.md
             artifact_content: enforcement_findings

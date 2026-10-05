@@ -12,7 +12,7 @@ steps:
   - kind: technique
     id: collect-held-register
     technique:
-      name: work-package::raise-deferred-items::collect
+      name: legacy::raise-deferred-items::collect
       outputs:
         open_deferred_items: positive_open_items
 exits:

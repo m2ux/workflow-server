@@ -69,7 +69,7 @@ steps:
   - kind: technique
     id: persist-document-profile
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: document-profile.md
         artifact_content: document_profile

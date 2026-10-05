@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The technique library for the work-package workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file (or group `TECHNIQUE.md` + technique files). This file orients readers to the library layout and points to those authoritative sources.
+The technique library for this workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file (or group `TECHNIQUE.md` + technique files). This file orients readers to the library layout and points to those authoritative sources.
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds the shared Inputs and Rules every technique here inherits.
 

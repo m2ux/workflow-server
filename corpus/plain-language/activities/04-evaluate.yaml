@@ -55,7 +55,7 @@ steps:
       - kind: technique
         id: persist-evaluation-report
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: evaluation-report.md
             artifact_content: evaluation_report
@@ -105,7 +105,7 @@ steps:
   - kind: technique
     id: persist-iso-checklist
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: iso-checklist.md
         artifact_content: iso_checklist

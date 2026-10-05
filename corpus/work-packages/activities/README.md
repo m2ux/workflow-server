@@ -10,7 +10,7 @@ Sequential activity chain for planning and coordinating multiple related work pa
 | 04 | **[Package Planning](04-package-planning.yaml)** | Define scope, dependencies, effort, and success criteria per package |
 | 05 | **[Prioritization](05-prioritization.yaml)** | Prioritize packages by dependencies, value, risk, and effort |
 | 06 | **[Finalize Roadmap](06-finalize-roadmap.yaml)** | Complete roadmap documentation with timeline and success criteria |
-| 07 | **[Implementation](07-implementation.yaml)** | Execute each package in priority order via the work-package workflow |
+| 07 | **[Implementation](07-implementation.yaml)** | Execute each package in priority order via the legacy workflow |
 
 ## Flow
 
@@ -18,4 +18,4 @@ Sequential activity chain for planning and coordinating multiple related work pa
 scope-assessment → folder-setup → analysis → package-planning → prioritization → finalize-roadmap → implementation
 ```
 
-The implementation activity triggers the `work-package` workflow for each planned package in priority order.
+The implementation activity triggers the `legacy` workflow for each planned package in priority order.

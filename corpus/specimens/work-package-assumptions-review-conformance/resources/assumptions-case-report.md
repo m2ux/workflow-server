@@ -13,7 +13,7 @@ metadata:
 ```markdown
 # Work Package Assumptions Review Conformance — Case Report
 
-Activity walked: `work-package/assumptions-review`, borrowed, once per case.
+Activity walked: `legacy/assumptions-review`, borrowed, once per case.
 
 | Case | Steps after collecting | Gate raised | Outcomes in the log | Deferred |
 |------|------------------------|-------------|---------------------|----------|

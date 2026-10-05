@@ -16,7 +16,7 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
-        seed_profile: work-package/readme-seed
+        seed_profile: legacy/readme-seed
         include_links: true
 exits:
   - id: seeded

@@ -86,4 +86,4 @@ graph:
   report-cases:
     reported: __terminal__
 activities:
-  - work-package/16-prism-decision.yaml
+  - legacy/16-prism-decision.yaml

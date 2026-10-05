@@ -21,7 +21,7 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | **Analysis** | `pattern-analysis`, `impact-analysis` |
 | **Scope & draft** | `prepare-workflow-branch` (ensure worktree), `scope-definition`, `assemble-file-approach`, `review-drafted-file`, `yaml-authoring`, `review-draft-yaml` (planning-artifact conformance binds meta [`verify-artifact-conforms`](/meta/techniques/verify-artifact-conforms.md)) |
 | **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `apply-audit-fixes`, `scope-audit` |
-| **Reporting** | `compile-report`, `summarize-findings` (compliance / post-update snapshots bind `work-package::manage-artifacts::write-artifact`) |
+| **Reporting** | `compile-report`, `summarize-findings` (compliance / post-update snapshots bind `legacy::manage-artifacts::write-artifact`) |
 | **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `publish-workflow-pr` (title/body); activity binds `git::push-branch`, `github::create-pr`, `github::mark-ready` |
 | **Completion** | `create-completion-doc`, `conduct-retrospective` |
 
@@ -31,10 +31,10 @@ These techniques are referenced by qualified id and resolved directly from the n
 
 | Reference | Used for |
 |-----------|----------|
-| [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` (numbered artifacts) |
+| [`legacy::manage-artifacts`](/work-package/workflows/legacy/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` (numbered artifacts) |
 | [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) | Seed and drift-check planning-folder `README.md` |
-| [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` (via prepare-workflow-branch ensure), `remove-worktree` (optional retrospective teardown) |
-| [`work-package::stakeholder-overview`](/work-package/techniques/stakeholder-overview.md) | Plain-language Problem Overview (intake) and Solution Overview (scope-and-draft) sections of the planning README |
-| [`work-package::review-assumptions`](/work-package/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `record` for the design-assumption lifecycle |
+| [`legacy::manage-git`](/work-package/workflows/legacy/techniques/manage-git/TECHNIQUE.md) | `create-worktree` (via prepare-workflow-branch ensure), `remove-worktree` (optional retrospective teardown) |
+| [`legacy::stakeholder-overview`](/work-package/workflows/legacy/techniques/stakeholder-overview.md) | Plain-language Problem Overview (intake) and Solution Overview (scope-and-draft) sections of the planning README |
+| [`legacy::review-assumptions`](/work-package/workflows/legacy/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `record` for the design-assumption lifecycle |
 | [`git`](/git/techniques/TECHNIQUE.md) | `commit-regular-files`, `push-branch` |
 | [`github`](/github/techniques/TECHNIQUE.md) | `create-pr`, `mark-ready`, `update-pr-description` (bound from validate-and-commit) |

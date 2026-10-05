@@ -12,7 +12,7 @@ Markdown resources for initiative planning, package plans, prioritization, and r
 | 03 | `package-plan-template` | Package Plan Template | Template for individual work package plans |
 | 04 | `prioritization-framework` | Prioritization Framework | Framework for evaluating and ordering packages |
 | 05 | `roadmap-template` | Roadmap Template | Templates for finalized roadmap documentation |
-| 06 | `workflow-triggering-protocol` | Workflow Triggering Protocol | How to trigger and manage work-package workflow instances |
+| 06 | `workflow-triggering-protocol` | Workflow Triggering Protocol | How to trigger and manage legacy workflow instances |
 | 07 | `priority-ranking` | Priority Ranking | Creation guide: `priority-ranking.md` |
 
 ## Planning artifact to guide map

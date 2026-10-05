@@ -12,7 +12,7 @@ steps:
   - kind: technique
     id: collect-absent-register
     technique:
-      name: work-package::raise-deferred-items::collect
+      name: legacy::raise-deferred-items::collect
       outputs:
         open_deferred_items: negative_open_items
 exits:

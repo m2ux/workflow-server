@@ -256,42 +256,42 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/architecture-summary.md",
+      "site": "legacy/resources/architecture-summary.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/codebase-comprehension.md",
+      "site": "legacy/resources/codebase-comprehension.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/implementation-analysis.md",
+      "site": "legacy/resources/implementation-analysis.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/jira-issue-creation.md",
+      "site": "legacy/resources/jira-issue-creation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/research-reconciliation.md",
+      "site": "legacy/resources/research-reconciliation.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/review-mode.md",
+      "site": "legacy/resources/review-mode.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/strategic-review.md",
+      "site": "legacy/resources/strategic-review.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },
     {
-      "site": "work-package/resources/test-suite-review.md",
+      "site": "legacy/resources/test-suite-review.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },

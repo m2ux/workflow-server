@@ -56,7 +56,7 @@ Section titles (a per-category findings heading) must NOT be hyperlinks — the 
 **Activities list:** The `Activities` field lists each review activity that contributed findings, with each name hyperlinked to that activity's section in the activities README. The field names activities rather than people: the summary is posted into a pull request, where a reader takes `Reviewers` to mean the people whose approval the change waits on, and these entries resolve into a workflow-definition repository instead. When one activity runs several review techniques it appears once; never split it into per-technique entries, never link an entry to a technique file, and link to the activity's README section rather than its raw `.yaml`. The activities README lives under `corpus/work-package/` on this tree, so these links use the workflow-repo base URL:
 
 ```
-https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/corpus/work-package/activities/README.md
+https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/corpus/work-package/workflows/legacy/activities/README.md
 ```
 
 Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the remote that holds this tree. Each entry links to its activity's heading anchor; the rendering step supplies the activity-to-anchor mapping for the activities it links.

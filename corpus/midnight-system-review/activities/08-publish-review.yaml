@@ -40,7 +40,7 @@ steps:
         message: Publication is blocked until the publish-decision checkpoint has approved it (publish-authority gate)
   - kind: technique
     id: post-review
-    technique: work-package::update-pr::post-review-comment
+    technique: legacy::update-pr::post-review-comment
   - kind: technique
     id: record-publication
     technique: record-publication

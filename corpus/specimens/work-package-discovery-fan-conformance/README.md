@@ -5,8 +5,8 @@ A specimen of the discovery fan: research and implementation-analysis borrowed a
 | Activity | Borrows | Role |
 |---|---|---|
 | `take-case` | nothing | binds research-needed, then research-skipped |
-| `research` | `work-package/04-research.yaml` | research fan branch (no-ops when skipped) |
-| `implementation-analysis` | `work-package/05-implementation-analysis.yaml` | analysis fan branch |
+| `research` | `legacy/04-research.yaml` | research fan branch (no-ops when skipped) |
+| `implementation-analysis` | `legacy/05-implementation-analysis.yaml` | analysis fan branch |
 | `gather-discovery` | nothing | hoists containers and ingests assumptions once |
 | `record-case` / `report-cases` | nothing | case report |
 

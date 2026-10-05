@@ -734,7 +734,7 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
-        seed_profile: work-package/readme-seed
+        seed_profile: legacy/readme-seed
         is_review_mode: "{is_review_mode}"
   - kind: technique
     id: present-problem-overview

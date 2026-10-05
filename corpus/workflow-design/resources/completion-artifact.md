@@ -7,7 +7,7 @@ metadata:
 
 # Design Session Close-Out Guide
 
-Template and fill rules for `COMPLETE.md`, the close-out document of a workflow-design session. The run's retrospective is a section of it, written per [workflow-retrospective](/work-package/resources/workflow-retrospective.md#output-section-template).
+Template and fill rules for `COMPLETE.md`, the close-out document of a workflow-design session. The run's retrospective is a section of it, written per [workflow-retrospective](/work-package/workflows/legacy/resources/workflow-retrospective.md#output-section-template).
 
 ## Template
 
@@ -53,7 +53,7 @@ manifest or unaddressed items — folding in the scope-discipline audit.]
 
 ## Workflow Retrospective
 
-[Prioritized lessons for the design workflow itself — see the [retrospective section template](../../work-package/resources/workflow-retrospective.md#output-section-template). Omitted for a trivial session.]
+[Prioritized lessons for the design workflow itself — see the [retrospective section template](../../legacy/resources/workflow-retrospective.md#output-section-template). Omitted for a trivial session.]
 ```
 
 ## Rules

@@ -35,4 +35,4 @@ The plan written for the case.
 - Include Goal and Deliverables for that task
 - When `{contract_complete}` is true, write the Contract with Signatures, Behaviours, Error cases and Acceptance, each one concrete line
 - When `{contract_complete}` is false, write the Contract with Signatures, Behaviours and Acceptance only — omit Error cases
-- Follow the Contract field names the [plan guide](/work-package/resources/plan-guide.md#rules) requires
+- Follow the Contract field names the [plan guide](/work-package/workflows/legacy/resources/plan-guide.md#rules) requires

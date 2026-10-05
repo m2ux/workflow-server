@@ -13,7 +13,7 @@ metadata:
 ```markdown
 # Work Package Prism Decision Conformance — Case Report
 
-Activity walked: `work-package/prism-decision`, borrowed, once per case.
+Activity walked: `legacy/prism-decision`, borrowed, once per case.
 
 | Case | Bindings | Gate raised | Recommendation shown | Mode settled |
 |------|----------|-------------|----------------------|--------------|

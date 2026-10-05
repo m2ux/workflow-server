@@ -12,7 +12,7 @@
     "agent-applied-result": "A canon technique an agent applies writes its result to the path it was given. No step in the corpus reads that output; the caller is the agent, not a binding.",
     "fan-barrier-container": "A fan's branch container (`*_outputs`) is written by the graph when the fan retires, not by a step in the meeting activity. The join reads the container (and gates on it) after the fan; the binding guard sees no set-target producer because the producer is the fan barrier. Correct by design.",
     "specimen-surface-stub": "A specimen technique declares an output the borrowed production activity would fill; the specimen ingests assumptions through its own join technique instead of consuming that local output. Dead by design of the stub.",
-    "group-technique-path": "The step names a technique under a group folder (`research/reconcile`); resolution follows the group path on disk. Classify once the loader's slash form is recognised \u2014 held as harmless while the technique file exists at corpus/work-package/techniques/research/reconcile.md."
+    "group-technique-path": "The step names a technique under a group folder (`research/reconcile`); resolution follows the group path on disk. Classify once the loader's slash form is recognised \u2014 held as harmless while the technique file exists at corpus/work-package/workflows/legacy/techniques/research/reconcile.md."
   },
   "entries": [
     {
@@ -325,22 +325,22 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: atlassian::transition-jira-issue",
-      "detail": "own input 'status_transition' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
+      "site": "legacy :: atlassian::transition-jira-issue",
+      "detail": "own input 'status_transition' has no producer in workflow 'legacy' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: github::comment-issue",
-      "detail": "own input 'body' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
+      "site": "legacy :: github::comment-issue",
+      "detail": "own input 'body' has no producer in workflow 'legacy' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::workflow-engine::handle-sub-workflow",
-      "detail": "own input 'parent_session_index' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
+      "site": "legacy :: meta::workflow-engine::handle-sub-workflow",
+      "detail": "own input 'parent_session_index' has no producer in workflow 'legacy' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
@@ -381,14 +381,14 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:109",
+      "site": "legacy/techniques/review-summary.md:109",
       "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:109",
+      "site": "legacy/techniques/review-summary.md:109",
       "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
@@ -402,7 +402,7 @@
     },
     {
       "check": "binding-resolution",
-      "site": "work-package/activities/06-plan-prepare.yaml[reconcile-research-candidates]",
+      "site": "legacy/activities/06-plan-prepare.yaml[reconcile-research-candidates]",
       "detail": "step technique 'research/reconcile' does not resolve",
       "verdict": "harmless",
       "rationale": "group-technique-path"

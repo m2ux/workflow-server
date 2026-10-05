@@ -1,7 +1,7 @@
 {
   "walked": [
     "workflow-design",
-    "work-package",
+    "legacy",
     "prism-evaluate",
     "prism",
     "workflow-authoring",
@@ -20,7 +20,7 @@
   "notWalked": [
     {
       "id": "remediate-vuln",
-      "reason": "Six minutes on its own; 21 of 60 walks die on a branch whose checkpoint or transition does not resolve. 92 of its 99 options belong to work-package activities the work-package walk covers; the 7 that are its own go on the uncovered list."
+      "reason": "Six minutes on its own; 21 of 60 walks die on a branch whose checkpoint or transition does not resolve. 92 of its 99 options belong to legacy activities the legacy walk covers; the 7 that are its own go on the uncovered list."
     },
     {
       "id": "routine-conformance",
@@ -172,11 +172,11 @@
     },
     {
       "id": "work-package-assumptions-review-conformance",
-      "reason": "Its gates are the borrowed work-package assumptions review's, whose options the work-package walk covers. What the specimen evidences is the review under an implementation case and a review case, which its sidecar case walk measures."
+      "reason": "Its gates are the borrowed legacy assumptions review's, whose options the legacy walk covers. What the specimen evidences is the review under an implementation case and a review case, which its sidecar case walk measures."
     },
     {
       "id": "work-package-prism-decision-conformance",
-      "reason": "Its one gate is the borrowed work-package prism decision's, whose options the work-package walk covers. What the specimen evidences is the decision under an implementation case and a review case, which its sidecar case walk measures."
+      "reason": "Its one gate is the borrowed legacy prism decision's, whose options the legacy walk covers. What the specimen evidences is the decision under an implementation case and a review case, which its sidecar case walk measures."
     },
     {
       "id": "work-package-registers-conformance",
@@ -184,11 +184,11 @@
     },
     {
       "id": "work-package-review-fan-conformance",
-      "reason": "Declares no checkpoint of its own; the fan it opens borrows the post-implementation review branches whose options the work-package walk covers. What the specimen evidences is the fan under both pipeline modes, which its sidecar case walk measures."
+      "reason": "Declares no checkpoint of its own; the fan it opens borrows the post-implementation review branches whose options the legacy walk covers. What the specimen evidences is the fan under both pipeline modes, which its sidecar case walk measures."
     },
     {
       "id": "work-package-discovery-fan-conformance",
-      "reason": "Declares no checkpoint of its own; the fan it opens borrows research and implementation analysis whose options the work-package walk covers. What the specimen evidences is the fan under both needs_research values, which its sidecar case walk measures."
+      "reason": "Declares no checkpoint of its own; the fan it opens borrows research and implementation analysis whose options the legacy walk covers. What the specimen evidences is the fan under both needs_research values, which its sidecar case walk measures."
     },
     {
       "id": "work-package-task-contract-conformance",
@@ -196,11 +196,11 @@
     },
     {
       "id": "work-package-contract-tests-fan-conformance",
-      "reason": "Declares no checkpoint of its own; the fan it opens borrows the contract-tests and implement shapes whose options the work-package walk covers. What the specimen evidences is the fan under both fail-on-base outcomes, which its sidecar case walk measures."
+      "reason": "Declares no checkpoint of its own; the fan it opens borrows the contract-tests and implement shapes whose options the legacy walk covers. What the specimen evidences is the fan under both fail-on-base outcomes, which its sidecar case walk measures."
     },
     {
       "id": "work-package-contract-join-conformance",
-      "reason": "Its disposition gates are the borrowed work-package implementation join's, whose options the work-package walk covers. What the specimen evidences is the join under pass, rework and ambiguity cases, which its sidecar case walk measures."
+      "reason": "Its disposition gates are the borrowed legacy implementation join's, whose options the legacy walk covers. What the specimen evidences is the join under pass, rework and ambiguity cases, which its sidecar case walk measures."
     }
   ]
 }

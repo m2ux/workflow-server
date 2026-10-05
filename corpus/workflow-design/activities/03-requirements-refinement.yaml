@@ -102,7 +102,7 @@ steps:
   - kind: technique
     id: persist-design-specification-artifact
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: design-specification.md
         artifact_content: design_specification
@@ -130,7 +130,7 @@ steps:
   - kind: technique
     id: collect-assumptions
     technique:
-      name: work-package::review-assumptions::collect
+      name: legacy::review-assumptions::collect
       inputs:
         assumption_source: the refined workflow requirements and the constructs they name
         assumption_categories: "Activity Boundaries, Checkpoint Necessity, Technique Selection, Rule Scope, Variable State, Schema Construct Choice"
@@ -156,7 +156,7 @@ steps:
         message: "Open design judgements remain after reconcile."
   - kind: technique
     id: update-assumptions-log
-    technique: work-package::review-assumptions::record
+    technique: legacy::review-assumptions::record
 exits:
   - id: update
     when: operation_type == "update"

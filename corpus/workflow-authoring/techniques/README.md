@@ -47,7 +47,7 @@ Resolved directly from the named workflow — no copy is held here.
 | [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) | Seed the planning-folder `README.md` from the universal Template under this workflow's seed profile |
 | [`workflow-engine::list-workflows`](/meta/techniques/workflow-engine/list-workflows.md) | The library catalog, remapped as the reference set a conformance walk compares against |
 | [`workflow-engine::verify-readme-conforms`](/meta/techniques/workflow-engine/verify-readme-conforms.md) | Drift-check the planning-folder `README.md` against the Template and this workflow's seed profile |
-| [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
-| [`work-package::manage-git`](/work-package/techniques/manage-git/TECHNIQUE.md) | `remove-worktree` — tear down the run's edit worktree |
+| [`legacy::manage-artifacts`](/work-package/workflows/legacy/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
+| [`legacy::manage-git`](/work-package/workflows/legacy/techniques/manage-git/TECHNIQUE.md) | `remove-worktree` — tear down the run's edit worktree |
 | [`git`](/git/techniques/TECHNIQUE.md) | `derive-workflows-target-path` and `create-worktree` for the edit surface; `commit-regular-files` and `push-branch` to publish it |
 | [`github`](/github/techniques/TECHNIQUE.md) | `create-pr` — opened non-draft, because the commit gate already approved publication |
