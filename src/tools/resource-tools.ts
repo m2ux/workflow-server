@@ -653,7 +653,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Never set `context_mode: "persistent"` on worker-dispatched children — a worker takes full delivery on the first activity of its run and collapses against its own ledger thereafter.',
       inputSchema: z.object({
         ...sessionIndexParam,
-        workflow_id: z.string().describe('Child workflow id (e.g. "work-package").'),
+        workflow_id: z.string().describe('Child workflow id (e.g. "legacy").'),
         agent_id: z.string().default('worker').describe('Child agent_id (default "worker").'),
         planning_slug: z.string().optional().describe('Optional. Promotion slug when the parent is a transient meta bootstrap. Ignored if the parent is already persistent.'),
         repo: z.string().optional().describe('Bind owner/repo onto the parent session when missing (must match if already set). session.json#repo is the source of truth.'),

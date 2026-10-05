@@ -57,10 +57,10 @@ const FULL = args.includes('--full');
 // 'policy' (3a): deterministic orchestrator. 'agent' (3b): a real orchestrator
 // agent makes checkpoint decisions (present_checkpoint -> judge -> respond_checkpoint).
 const ORCHESTRATOR = getArg('orchestrator', 'policy');
-// Workflow to smoke (default work-package). The orchestrator is workflow-agnostic: it reads the
+// Workflow to smoke (default legacy). The orchestrator is workflow-agnostic: it reads the
 // initial activity from get_workflow and drives transitions with pickNext + a forward-advance
 // fallback, so any workflow can be exercised by a real worker without per-workflow wiring.
-const WORKFLOW = getArg('workflow', 'work-package');
+const WORKFLOW = getArg('workflow', 'legacy');
 // Optional checkpoint steering: --choices=cp1:opt1,cp2:opt2 (mirrors run-3c's policy flexibility),
 // e.g. --choices=intensity-and-scope-confirmed:full-repo to open a gated branch.
 const CHOICES = getArg('choices', '');
@@ -86,7 +86,7 @@ function setupSandbox() {
   execFileSync('mkdir', ['-p', target]);
   // Idempotent throwaway target repo — created on first run, reused thereafter.
   if (!existsSync(join(target, 'README.md'))) {
-    writeFileSync(join(target, 'README.md'), '# Sandbox target\n\nThrowaway repo for work-package smoke runs.\n');
+    writeFileSync(join(target, 'README.md'), '# Sandbox target\n\nThrowaway repo for legacy smoke runs.\n');
   }
   if (!existsSync(join(target, '.git'))) {
     execFileSync('git', ['init', '-q'], { cwd: target });

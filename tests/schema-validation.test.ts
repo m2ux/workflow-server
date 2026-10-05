@@ -383,7 +383,7 @@ describe('schema-validation', () => {
     // validates every activity the loader resolved into it.
     // ponytail: rests on that nesting, assert the activities separately if the field loosens
     it('the composed workflow the loader emits passes WorkflowSchema', async () => {
-      const result = await loadWorkflow(WORKFLOW_DIR, 'work-package');
+      const result = await loadWorkflow(WORKFLOW_DIR, 'legacy');
       expect(result.success).toBe(true);
       if (result.success) {
         const validation = safeValidateWorkflow(result.value);

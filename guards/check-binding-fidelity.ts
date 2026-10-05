@@ -939,7 +939,7 @@ function consumerReaches(consumerRel: string, declaringRel: string): boolean {
   if (isShared(declaringWf)) return true;
   if (crossWorkflowConsumers.get(declaringWf)?.has(consumerWf)) return true;
   if (dispatchedWorkflows.get(declaringWf)?.has(consumerWf)) return true;
-  // The BORROW direction. `midnight-system-review` binds `work-package::post-review-comment`, whose
+  // The BORROW direction. `midnight-system-review` binds `legacy::update-pr::post-review-comment`, whose
   // declared `review_summary` input is what its own `render-review` output feeds — name-match
   // chaining across the borrow. Reach is symmetric on a bind: a borrowed op's file is a real
   // consumer of the borrowing workflow's values, and only the home direction was covered.

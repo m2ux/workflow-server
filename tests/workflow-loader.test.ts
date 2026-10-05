@@ -73,7 +73,7 @@ describe('workflow-loader', () => {
 
       expect(manifests.length).toBeGreaterThanOrEqual(2);
       const ids = manifests.map(m => m.id);
-      expect(ids).toContain('work-package');
+      expect(ids).toContain('legacy');
       expect(ids).not.toContain('meta');
     });
 
@@ -504,7 +504,7 @@ describe('workflow-loader', () => {
     });
 
     it('carries an exit a checkpoint option selects, and its immediate flag', async () => {
-      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'work-package');
+      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'legacy');
       expect(wpResult.success).toBe(true);
       if (!wpResult.success) return;
 
@@ -530,7 +530,7 @@ describe('workflow-loader', () => {
     });
 
     it('reaches an activity only a checkpoint option routes to', async () => {
-      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'work-package');
+      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'legacy');
       expect(wpResult.success).toBe(true);
       if (!wpResult.success) return;
 

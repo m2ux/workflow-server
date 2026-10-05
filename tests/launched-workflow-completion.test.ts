@@ -26,7 +26,7 @@ const COMPLETED_AT = '2026-09-09T10:00:00.000Z';
 function launcherHolding(child: SessionFile, status: EmbeddedSessionRef['status'] = 'running'): SessionFile {
   const launcher = createInitialSessionFile({
     sessionIndex: 'AAAAAA',
-    workflowId: 'work-package',
+    workflowId: 'legacy',
     workflowVersion: '1.0.0',
     agentId: 'orchestrator',
   });

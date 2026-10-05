@@ -50,7 +50,7 @@
  *   npm run bench:batch -- --gate --min-saving-pct=20
  *
  * Flags:
- *   --workflow=<id>        Workflow to walk (default: work-package)
+ *   --workflow=<id>        Workflow to walk (default: legacy)
  *   --activities=<a,b,c>   Run to walk, comma-separated (default: the measured analysis run)
  *   --context-tokens=<n>   Window each pass declares (default: 200000)
  *   --spawn-seconds=<n>    Measured per-dispatch spawn cost for the projection (default: 87)
@@ -216,7 +216,7 @@ export async function measure(
 }
 
 async function main(): Promise<number> {
-  const workflowId = flag('workflow') ?? 'work-package';
+  const workflowId = flag('workflow') ?? 'legacy';
   const activities = (flag('activities') ?? DEFAULT_RUN.join(',')).split(',').map((a) => a.trim()).filter(Boolean);
   const contextTokens = Number(flag('context-tokens') ?? 200_000);
   const spawnSeconds = Number(flag('spawn-seconds') ?? DEFAULT_SPAWN_SECONDS);

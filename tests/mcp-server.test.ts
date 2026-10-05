@@ -121,7 +121,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
   let harness: Harness;
   let client: Client;
   let workspaceDir: string;
-  /** session_index for a fresh work-package session (set per-test in beforeEach). */
+  /** session_index for a fresh legacy session (set per-test in beforeEach). */
   let sessionToken: string;
   /** session_index for a fresh meta session (set per-test in beforeEach). */
   let metaToken: string;
@@ -137,7 +137,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
   beforeEach(async () => {
     const result = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'test-worker' },
+      arguments: { workflow_id: 'legacy', agent_id: 'test-worker' },
     });
     sessionToken = parseToolResponse(result).session_index as string;
 
@@ -177,7 +177,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const workflows = parseToolResponse(result) as unknown as Array<{ id: string }>;
       expect(Array.isArray(workflows)).toBe(true);
       const ids = workflows.map((w: { id: string }) => w.id);
-      expect(ids).toContain('work-package');
+      expect(ids).toContain('legacy');
       expect(ids).not.toContain('meta');
     });
   });
@@ -340,7 +340,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const bundle = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
       const techniques = bundle['techniques'] as Record<string, unknown>;
 
-      // work-package declares `variable-binding` once at workflow.techniques.activity.
+      // legacy declares `variable-binding` once at workflow.techniques.activity.
       // It is neither bound by start-work-package's steps nor a core worker technique,
       // so its presence proves the server injected the workflow's inherited activity techniques.
       expect(Object.keys(techniques)).toContain('variable-binding');
@@ -1149,9 +1149,9 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
 
       const wf = parseWorkflowResponse(result) as WorkflowDefinitionView;
-      expect(wf.id).toBe('work-package');
+      expect(wf.id).toBe('legacy');
       expect(wf.version).toMatch(SEMVER_RE);
-      // work-package declares no orchestrator rules of its own — its conduct comes from the
+      // legacy declares no orchestrator rules of its own — its conduct comes from the
       // conduct home via the bundle — so the key is absent rather than an empty list.
       expect(wf.rules).toBeUndefined();
       expect(wf.variables).toBeDefined();
@@ -1172,7 +1172,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const preamble = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
       const body = parseWorkflowResponse(result);
 
-      // work-package declares `variable-binding` at techniques.activity (worker-inherited). It is NOT
+      // legacy declares `variable-binding` at techniques.activity (worker-inherited). It is NOT
       // an orchestrator technique, so it is absent from the orchestrator's account of its techniques.
       const accounted = Object.keys((preamble['techniques'] ?? {}) as Record<string, unknown>);
       expect(accounted.length).toBeGreaterThan(0);
@@ -1180,7 +1180,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       // The metadata body carries the flattened orchestrator `rules` list (workflow + universal),
       // and no `techniques` field — the worker buckets stay out of the orchestrator response.
-      // work-package declares neither bucket, so both are absent here.
+      // legacy declares neither bucket, so both are absent here.
       expect(body.rules).toBeUndefined();
       expect(body.techniques).toBeUndefined();
     });
@@ -1659,7 +1659,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // as the trace sid for the event).
       expect(getActEvent!.traceId).toBe(sessionToken);
       // wf/act/aid sourced from session.json, not from a decoded token.
-      expect(getActEvent!.wf).toBe('work-package');
+      expect(getActEvent!.wf).toBe('legacy');
       expect(getActEvent!.act).toBe('start-work-package');
       expect(getActEvent!.aid).toBe('test-worker');
       // Status is recorded.
@@ -1709,13 +1709,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('techniques on one session should not affect another', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-1' },
+        arguments: { workflow_id: 'legacy', agent_id: 'test-agent-1' },
       });
       const token1 = parseToolResponse(s1).session_index;
 
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-2' },
+        arguments: { workflow_id: 'legacy', agent_id: 'test-agent-2' },
       });
       const token2 = parseToolResponse(s2).session_index;
 
@@ -1737,13 +1737,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('traces from different sessions should be isolated', async () => {
       const s1 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-1' },
+        arguments: { workflow_id: 'legacy', agent_id: 'test-agent-1' },
       });
       const token1 = parseToolResponse(s1).session_index;
 
       const s2 = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'test-agent-2' },
+        arguments: { workflow_id: 'legacy', agent_id: 'test-agent-2' },
       });
       const token2 = parseToolResponse(s2).session_index;
 
@@ -2185,11 +2185,11 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('accepts workflow_id for non-meta workflow', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result) as WorkflowView;
-      expect(response.workflow.id).toBe('work-package');
+      expect(response.workflow.id).toBe('legacy');
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
     });
 
@@ -2200,7 +2200,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // doesn't record planningFolderPath until dispatch_child promotion).
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: folderPath },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: folderPath },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -2215,7 +2215,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('rejects a bare-slug planning_folder — only absolute paths are accepted', async () => {
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: 'bare-slug-rejection' },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: 'bare-slug-rejection' },
       });
       expect(result.isError).toBeTruthy();
       const text = (result.content as { text: string }[])[0]?.text ?? '';
@@ -2229,7 +2229,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const offWorkspacePath = `/totally/different/workspace/.engineering/artifacts/planning/${slug}`;
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: offWorkspacePath },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: offWorkspacePath },
       });
       expect(result.isError).toBeTruthy();
       const text = (result.content as { text: string }[])[0]?.text ?? '';
@@ -2271,7 +2271,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const slug = 'resume-workflow-stable';
       const first = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const firstIdx = parseToolResponse(first).session_index;
 
@@ -2282,14 +2282,14 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       });
       const secondResponse = parseToolResponse(second) as WorkflowView;
       expect(secondResponse.session_index).toBe(firstIdx);
-      expect(secondResponse.workflow.id).toBe('work-package');
+      expect(secondResponse.workflow.id).toBe('legacy');
     });
 
     it('dispatch_child returns a distinct session_index than the parent', async () => {
       const parent = await client.callTool({
         name: 'start_session',
         arguments: {
-          workflow_id: 'work-package',
+          workflow_id: 'legacy',
           agent_id: 'orchestrator',
           planning_folder: planningFolder('parent-slug-1'),
         },
@@ -2352,13 +2352,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'dispatch_child',
         arguments: {
           session_index: metaIdx,
-          workflow_id: 'work-package',
+          workflow_id: 'legacy',
           agent_id: 'worker-1',
         },
       });
       expect(child.isError).toBeFalsy();
       const childResponse = parseToolResponse(child) as WorkflowView;
-      expect(childResponse.workflow.id).toBe('work-package');
+      expect(childResponse.workflow.id).toBe('legacy');
 
       // The promoted folder lives under the workspace at the slug the meta
       // was bound to (meta-bootstrap), sealed.
@@ -2366,18 +2366,18 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(existsSync(path.join(promotedFolder, 'session.json'))).toBe(true);
       expect(existsSync(path.join(promotedFolder, '.session-token'))).toBe(true);
 
-      // Contract: meta is at the top of the promoted file; work-package is
+      // Contract: meta is at the top of the promoted file; legacy is
       // embedded under triggeredWorkflows[0].state — the persistent-parent
       // embedding shape applies here too.
       const topState = JSON.parse(readFileSync(path.join(promotedFolder, 'session.json'), 'utf8'));
       expect(topState.workflowId).toBe('meta');
       expect(topState.triggeredWorkflows).toHaveLength(1);
       const entry = topState.triggeredWorkflows[0];
-      expect(entry.workflowId).toBe('work-package');
+      expect(entry.workflowId).toBe('legacy');
       expect(entry.sessionIndex).toBe(childResponse.session_index);
       expect(entry.status).toBe('running');
       expect(entry.state).toBeDefined();
-      expect(entry.state.workflowId).toBe('work-package');
+      expect(entry.state.workflowId).toBe('legacy');
       expect(entry.state.sessionIndex).toBe(childResponse.session_index);
 
       // The meta's own tmp folder is gone — the redirect removed it.
@@ -2402,7 +2402,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'dispatch_child',
         arguments: {
           session_index: metaIdx,
-          workflow_id: 'work-package',
+          workflow_id: 'legacy',
           agent_id: 'worker-1',
           planning_slug: derivedSlug,
         },
@@ -2436,7 +2436,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
         name: 'dispatch_child',
         arguments: {
           session_index: metaIdx,
-          workflow_id: 'work-package',
+          workflow_id: 'legacy',
           agent_id: 'worker-1',
           planning_slug: 'redirect-test-meta',
         },
@@ -2473,7 +2473,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const aIdx = parseToolResponse(aResult).session_index;
       const bResult = await client.callTool({
         name: 'dispatch_child',
-        arguments: { session_index: aIdx, workflow_id: 'work-package', agent_id: 'worker-1' },
+        arguments: { session_index: aIdx, workflow_id: 'legacy', agent_id: 'worker-1' },
       });
       const bIdx = parseToolResponse(bResult).session_index;
       const cResult = await client.callTool({
@@ -2489,15 +2489,15 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       // Read the single top-level session.json at slugA (now owned by the
       // meta after promotion) and walk down via triggeredWorkflows[0].state
-      // recursively from meta → work-package → remediate-vuln → prism-update.
+      // recursively from meta → legacy → remediate-vuln → prism-update.
       const { readFileSync } = await import('node:fs');
       const topStatePath = join(workspaceDir, '.engineering/artifacts/planning', slugA, 'session.json');
       const topState = JSON.parse(readFileSync(topStatePath, 'utf8'));
 
       // Top is the meta (A) — the session no record embeds.
       expect(topState.workflowId).toBe('meta');
-      // B (work-package) embedded under A.
-      expect(topState.triggeredWorkflows?.[0]?.state?.workflowId).toBe('work-package');
+      // B (legacy) embedded under A.
+      expect(topState.triggeredWorkflows?.[0]?.state?.workflowId).toBe('legacy');
       // C (remediate-vuln) embedded under B.
       expect(topState.triggeredWorkflows?.[0]?.state?.triggeredWorkflows?.[0]?.state?.workflowId).toBe('remediate-vuln');
       // D (prism-update) embedded under C.
@@ -2511,7 +2511,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const slug = 'fresh-folder';
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       expect(result.isError).toBeFalsy();
       const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
@@ -2527,10 +2527,10 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const sessionFilePath = join(folderPath, 'session.json');
 
       // 1. Fresh session — should seed workflow_started + variables_seeded
-      //    (work-package declares defaults, #166 B7) + status=running.
+      //    (legacy declares defaults, #166 B7) + status=running.
       const startResp = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       expect(startResp.isError).toBeFalsy();
       const startIdx = parseToolResponse(startResp).session_index;
@@ -2578,7 +2578,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // Persistent parent.
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const parentIdx = parseToolResponse(parent).session_index;
 
@@ -2620,7 +2620,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const raw = await readFile(sessionFilePath, 'utf8');
       // Extract top-level key names from the pretty-printed JSON in order.
@@ -2640,10 +2640,10 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const slug = 'dispatch-child-embed';
       const topFolder = join(workspaceDir, '.engineering/artifacts/planning', slug);
 
-      // Create a persistent top-level work-package.
+      // Create a persistent top-level legacy.
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const parentIdx = parseToolResponse(parent).session_index;
 
@@ -2660,7 +2660,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       // Top folder is the parent's; the child does NOT have its own folder.
       const topState = JSON.parse(await readFile(join(topFolder, 'session.json'), 'utf8'));
-      expect(topState.workflowId).toBe('work-package');
+      expect(topState.workflowId).toBe('legacy');
       expect(topState.triggeredWorkflows).toHaveLength(1);
       const childEmbedded = topState.triggeredWorkflows[0];
       expect(childEmbedded.workflowId).toBe('remediate-vuln');
@@ -2693,13 +2693,13 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       // activity id for the mutation (avoids cross-workflow activity lookup).
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
+        arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const parentIdx = parseToolResponse(parent).session_index;
 
       const child = await client.callTool({
         name: 'dispatch_child',
-        arguments: { session_index: parentIdx, workflow_id: 'work-package', agent_id: 'worker' },
+        arguments: { session_index: parentIdx, workflow_id: 'legacy', agent_id: 'worker' },
       });
       const childIdx = parseToolResponse(child).session_index;
 
@@ -2747,7 +2747,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     const buildFixture = () => ({
       schemaVersion: 1 as const,
       sessionIndex: ROOT_INDEX,
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       workflowVersion: '3.28.0',
       agentId: 'orchestrator',
       seq: 7,
@@ -2867,7 +2867,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(Object.keys(summary).sort()).toEqual(
         ['activities', 'checkpoints', 'children', 'history', 'identity', 'variables'],
       );
-      expect(summary.identity.workflowId).toBe('work-package');
+      expect(summary.identity.workflowId).toBe('legacy');
       expect(summary.identity.sessionIndex).toBe(ROOT_INDEX);
       expect(summary.activities.completed).toContain('wp-plan');
       expect(summary.variables.pr_number).toBe('215');
@@ -2880,7 +2880,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('PR215-TC-02: each narrow view returns only its slice', async () => {
       const identity = parseToolResponse(await callInspect({ view: 'identity' }));
       expect(identity).toEqual({
-        workflowId: 'work-package',
+        workflowId: 'legacy',
         workflowVersion: '3.28.0',
         sessionIndex: ROOT_INDEX,
         agentId: 'orchestrator',

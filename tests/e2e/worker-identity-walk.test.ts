@@ -14,7 +14,7 @@ import { liveCorpusRoot } from '../corpus-root.js';
  *
  * The per-call tests prove the server collapses a re-request under a reused identity. What they
  * cannot show is whether the identity survives gate after gate across a real workflow, which is
- * where the corpus lost it: thirteen of work-package's fifteen activities carry a gate, and a
+ * where the corpus lost it: thirteen of legacy's fifteen activities carry a gate, and a
  * third of the crossings in the profiled runs arrived under a fresh identity. This walk dispatches
  * each activity under its own identity, crosses every gate the full-workflow policy reaches, and
  * re-requests the activity after each one — so identity reuse is measured over many crossings
@@ -31,7 +31,7 @@ describe.skipIf(!liveCorpusRoot())('worker identity survives every gate of a ref
   afterAll(async () => { await h.close(); });
 
   it('reuses one identity per activity and never re-delivers a payload', async () => {
-    const result = await walk(h, 'work-package', fullWorkflowPolicy, {
+    const result = await walk(h, 'legacy', fullWorkflowPolicy, {
       mode: 'robot',
       workerIdentity: true,
       planningFolder: workspaceDir,

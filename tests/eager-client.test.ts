@@ -37,7 +37,7 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     harness = undefined;
   });
 
-  it('tryEagerClientDispatch embeds work-package when the id is pinned', async () => {
+  it('tryEagerClientDispatch embeds legacy when the id is pinned', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'eager-'));
     const parent = createInitialSessionFile({
       sessionIndex: 'AAAAAA',
@@ -49,10 +49,10 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
       parent,
       parentFolder: dir,
       workflowDir: liveCorpusRoot()!,
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       bagFacts: { component_path: '.' },
     });
-    expect(result.client.workflow.id).toBe('work-package');
+    expect(result.client.workflow.id).toBe('legacy');
     expect(result.client.workflow.initialActivity).toBe('start-work-package');
     expect(result.parent.variables?.['component_path']).toBe('.');
     expect(existsSync(join(dir, 'session.json'))).toBe(false);
@@ -72,7 +72,7 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     });
     const body = parseToolResponse(result);
     const client = body.client as { session_index?: string; workflow?: { id?: string; initialActivity?: string } } | undefined;
-    expect(client?.workflow?.id).toBe('work-package');
+    expect(client?.workflow?.id).toBe('legacy');
     expect(client?.workflow?.initialActivity).toBe('start-work-package');
     expect(client?.session_index).toMatch(/^[A-Z2-7]{6}$/);
     expect(body.session_index).toMatch(/^[A-Z2-7]{6}$/);
@@ -114,7 +114,7 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     });
     const body = parseToolResponse(result);
     expect(body.decision).toBeUndefined();
-    expect((body.client as { workflow?: { id?: string } } | undefined)?.workflow?.id).toBe('work-package');
+    expect((body.client as { workflow?: { id?: string } } | undefined)?.workflow?.id).toBe('legacy');
   });
 
   it('tryEagerClientDispatch throws when the client workflow cannot be loaded', async () => {
@@ -138,7 +138,7 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     const dir = mkdtempSync(join(tmpdir(), 'eager-not-meta-'));
     const parent = createInitialSessionFile({
       sessionIndex: 'AAAAAA',
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       workflowVersion: '4.1.0',
       agentId: 'orchestrator',
     });
@@ -146,7 +146,7 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
       parent,
       parentFolder: dir,
       workflowDir: liveCorpusRoot()!,
-      workflowId: 'work-package',
+      workflowId: 'legacy',
     })).rejects.toThrow(/not meta/);
   });
 
@@ -156,7 +156,7 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     await harness.client.callTool({
       name: 'start_session',
       arguments: {
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'orchestrator',
         planning_folder: saved,
         user_request: QUERY,
@@ -211,18 +211,18 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     });
     const body = parseToolResponse(result);
     expect(body.client).toBeDefined();
-    expect((body.client as { workflow?: { id?: string } }).workflow?.id).toBe('work-package');
+    expect((body.client as { workflow?: { id?: string } }).workflow?.id).toBe('legacy');
   });
 });
 
 describe.skipIf(!liveCorpusRoot())('resolveOpeningIntent', () => {
-  it('embeds work-package for the baseline request', async () => {
+  it('embeds legacy for the baseline request', async () => {
     const opening = await resolveOpeningIntent({
       userRequest: QUERY,
       workflowDir: liveCorpusRoot()!,
       planningRootDir: mkdtempSync(join(tmpdir(), 'opening-')),
     });
-    expect(opening).toMatchObject({ kind: 'embed', workflowId: 'work-package' });
+    expect(opening).toMatchObject({ kind: 'embed', workflowId: 'legacy' });
   });
 
   it('yields workflow-selection when the pin is unknown', async () => {
@@ -248,16 +248,16 @@ describe('scanSavedClientSessions', () => {
       await writeSessionFile(folder, {
         schemaVersion: 1,
         sessionIndex: 'SCAN01',
-        workflowId: 'work-package',
+        workflowId: 'legacy',
       });
       const hits = await scanSavedClientSessions({
         workspaceDir: workspace,
-        workflowId: 'work-package',
+        workflowId: 'legacy',
       });
       expect(hits).toEqual([
         expect.objectContaining({
           session_index: 'SCAN01',
-          workflow_id: 'work-package',
+          workflow_id: 'legacy',
           planning_slug: '2026-09-14-scan-wp',
         }),
       ]);

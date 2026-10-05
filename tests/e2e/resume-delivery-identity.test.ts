@@ -37,7 +37,7 @@ describe.skipIf(!liveCorpusRoot())('delivery identity survives a gate (#408)', (
 
     const start = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator' },
+      arguments: { workflow_id: 'legacy', agent_id: 'orchestrator' },
     });
     if (isError(start)) throw new Error('start_session failed');
     const startBody = parseToolResponse(start);

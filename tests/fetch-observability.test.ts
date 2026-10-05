@@ -20,7 +20,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
   beforeAll(async () => {
     harness = await createHarness();
     client = harness.client;
-    session = sessionOps(harness, 'work-package');
+    session = sessionOps(harness, 'legacy');
   });
 
   afterAll(async () => { await harness.close(); });

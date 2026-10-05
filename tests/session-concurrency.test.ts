@@ -52,7 +52,7 @@ describe('compare-and-swap on the session file (#655)', () => {
     sessionIndex = await computeSessionIndex(folder);
     await writeSessionFile(folder, createInitialSessionFile({
       sessionIndex,
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       workflowVersion: '1.0.0',
       agentId: 'orchestrator',
     }));

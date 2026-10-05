@@ -23,7 +23,7 @@ import { workflowSubdir } from '../../src/loaders/corpus-index.js';
  * chain: filename → server artifactPrefix → get_workflow exposure → robot application.
  */
 function expectedActivityPrefixes(): Map<string, string> {
-  const dir = workflowSubdir(liveCorpusRoot()!, 'work-package', 'activities')!;
+  const dir = workflowSubdir(liveCorpusRoot()!, 'legacy', 'activities')!;
   const map = new Map<string, string>();
   for (const f of readdirSync(dir)) {
     const m = f.match(/^(\d+)-(.+)\.yaml$/);
@@ -33,10 +33,10 @@ function expectedActivityPrefixes(): Map<string, string> {
 }
 
 /**
- * Baseline snapshots — the committed reference for the work-package walk under
+ * Baseline snapshots — the committed reference for the legacy walk under
  * each policy. On the technique branch this is a regression guard (any change
  * to the path, checkpoint decisions, artifacts, or unresolved set shows as a
- * snapshot diff). Run retroactively against a legacy (main) build, the same
+ * snapshot diff). Run retroactively against a main build, the same
  * snapshots reveal exactly what the skills→techniques migration changed.
  */
 const policies = [
@@ -44,7 +44,7 @@ const policies = [
   researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
 ];
 
-describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () => {
+describe.skipIf(!liveCorpusRoot())('legacy walk snapshots (baseline)', () => {
   let h: Harness;
   /**
    * Every walk, run once before any test reads one.
@@ -56,7 +56,7 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
   const walks = new Map<string, WalkResult>();
   beforeAll(async () => {
     h = await createHarness();
-    for (const policy of policies) walks.set(policy.name, await walk(h, 'work-package', policy));
+    for (const policy of policies) walks.set(policy.name, await walk(h, 'legacy', policy));
   }, 900_000);
   afterAll(async () => { await h.close(); });
 
@@ -221,7 +221,7 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
         executedByActivity.set(step.activityId, seen);
       }
     }
-    const declared = await declaredSteps(['work-package']);
+    const declared = await declaredSteps(['legacy']);
     const rows = stepCoverage(declared, executedByActivity);
     const undeclared = [...executedByActivity].flatMap(([activity, ran]) =>
       [...ran].filter((id) => !(declared.get(activity) ?? []).includes(id)).map((id) => `${activity}/${id}`));

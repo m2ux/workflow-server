@@ -25,7 +25,7 @@ import { DEFAULT_BATCH_HEADROOM_FRACTION, DEFAULT_BATCH_MAX_ACTIVITIES, DEFAULT_
 function session(): SessionFile {
   return createInitialSessionFile({
     sessionIndex: 'AAAAAA',
-    workflowId: 'work-package',
+    workflowId: 'legacy',
     workflowVersion: '1.0.0',
     agentId: 'orchestrator',
   });

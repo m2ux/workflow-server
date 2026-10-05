@@ -100,10 +100,10 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
   beforeAll(async () => {
     harness = await createHarness();
     client = harness.client;
-    mcp = sessionOps(harness, 'work-package');
+    mcp = sessionOps(harness, 'legacy');
     const session = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: mcp.folder('2026-09-17-startup-contract') },
+      arguments: { workflow_id: 'legacy', agent_id: 'orchestrator', planning_folder: mcp.folder('2026-09-17-startup-contract') },
     });
     expect(session.isError).toBeFalsy();
     sessionIndex = (JSON.parse(responseText(session)) as { session_index: string }).session_index;
@@ -174,7 +174,7 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
   });
 
   /**
-   * The limit reports; it decides nothing. `work-package` is the corpus's widest startup response,
+   * The limit reports; it decides nothing. `legacy` is the corpus's widest startup response,
    * so this reads what the largest opening call now comes to — and a result over the limit is a
    * workflow that wants dividing, which the server logs and delivers anyway.
    */
@@ -230,7 +230,7 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery carries the worker contrac
   beforeAll(async () => {
     harness = await createHarness();
     client = harness.client;
-    mcp = sessionOps(harness, 'work-package');
+    mcp = sessionOps(harness, 'legacy');
     sessionIndex = await mcp.start('2026-09-18-worker-contract', 'orchestrator');
     await mcp.enter(sessionIndex, 'start-work-package');
     const result = await client.callTool({
@@ -336,7 +336,7 @@ describe.skipIf(!liveCorpusRoot())('a worker delivery carries the worker contrac
 describe.skipIf(!liveCorpusRoot())('a marker stands for a whole item', () => {
   it('holds across a walk delivered twice to one worker', async () => {
     const harness = await createHarness();
-    const mcp = sessionOps(harness, 'work-package');
+    const mcp = sessionOps(harness, 'legacy');
     let sawEntries = 0;
     let sawMarkers = 0;
     try {
@@ -397,7 +397,7 @@ describe.skipIf(!liveCorpusRoot())('a delivery is the same however the limit is 
     const seen: string[] = [];
     for (const limit of LIMITS) {
       const harness = await createHarness({ maxResponseChars: limit });
-      const mcp = sessionOps(harness, 'work-package');
+      const mcp = sessionOps(harness, 'legacy');
       try {
         const idx = await mcp.start(`2026-09-19-definition-${limit}`, 'orchestrator');
         const result = await harness.client.callTool({
@@ -428,7 +428,7 @@ describe.skipIf(!liveCorpusRoot())('a delivery is the same however the limit is 
     const seen: string[] = [];
     for (const limit of LIMITS) {
       const harness = await createHarness({ maxResponseChars: limit });
-      const mcp = sessionOps(harness, 'work-package');
+      const mcp = sessionOps(harness, 'legacy');
       const walk: string[] = [];
       try {
         const idx = await mcp.start(`2026-09-19-worker-${limit}`, 'orchestrator');
