@@ -2430,13 +2430,13 @@ An output's contract admits a value no Protocol path leaves standing, so the voc
 
 "`### build_budget` on a tool library's container, inherited by an op that compiles nothing, bound from a workflow holding no such variable"
 
-A container contract delivers a required input to a descendant that never reads it, so a step binding that descendant owes a value it has no source for.
+A container contract delivers a required input to a descendant that never reads it, so a step binding that descendant hands its agent a required slot as ambient context that nothing produces.
 
-**Fires on:** `technique.inputs`, `technique.inherited_inputs`, `activity.steps`, `workflow.variables`
+**Fires on:** `technique.inputs`, `technique.inherited_inputs`, `technique.protocol`, `technique.rules`, `activity.steps`, `routine.steps`, `workflow.variables`
 
-**Detect:** For each `### <id>` under a container `TECHNIQUE.md`'s `## Inputs` with no optional marker and no `#### default`, list the descendants whose own Protocol and Rules never reference it. Flag a step binding such a descendant where nothing holds that id: no workflow variable, no output an earlier step lands, and no call-site deviation. Test: the step leaves a required slot unsatisfied for a value its technique never reads.
+**Detect:** For each `### <id>` under a container `TECHNIQUE.md`'s `## Inputs` with no optional marker and no `#### default`, list the descendants whose own Protocol and Rules never reference it, counting an op a descendant applies that declares the id as a reference. Flag a step binding such a descendant where nothing in the step's scope holds that id: no workflow variable, no output an earlier step lands, no routine parameter or loop variable, and no step-binding `inputs` entry. Test: the delivered technique shows a required slot as ambient context with no producer, for a value it never reads.
 
-**Do not flag:** An input marked optional or carrying a `#### default`. An input the binding workflow carries by name, as a variable or an earlier step's output (`hoist-shared-inputs`). A descendant that references the input. A leaf redeclaring it with the optionality it needs (`inherited-input-re-declared`).
+**Do not flag:** A container input no descendant references (`declared-input-never-read`). A leaf redeclaring the input with the optionality it needs.
 
-**Fix:** Give the input a `#### default` the spending descendants accept, or mark it optional where they handle its absence. A value a container rule composes is that default. Where no default fits, move the declaration down to the descendants, or a sub-container, that spend it. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution).
+**Fix:** Give the input a `#### default` the spending descendants accept, or mark it optional where they handle its absence. A value a container rule composes is that default. Where no default fits, move the declaration to the smallest container the spending descendants share; where that container is the root, mark the input optional there (`hoist-shared-inputs`). See [State Contract Contribution](./design-principles.md#27-state-contract-contribution).
 
