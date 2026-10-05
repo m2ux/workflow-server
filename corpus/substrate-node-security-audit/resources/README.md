@@ -29,6 +29,7 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 | Bare filename | Guide |
 |---------------|-------|
 | `START-HERE.md` | [start-here](start-here.md) |
+| `file-inventory.txt` | [start-here](start-here.md) (File Inventory Template) |
 | `01-audit-report.md` | [audit-prompt-template](audit-prompt-template.md) (§4 Reporting Format) |
 | `02-gap-analysis.md` | [gap-analysis-template](gap-analysis-template.md) |
 | `second-pass-findings.md` | [second-pass-findings](second-pass-findings.md) |

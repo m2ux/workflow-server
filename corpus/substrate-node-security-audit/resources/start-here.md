@@ -1,6 +1,6 @@
 ---
 name: start-here
-description: This workflow orchestrates a multi-phase AI security audit of a Substrate-based blockchain node codebase.
+description: Quick start for the multi-phase Substrate node security audit, and the creation guide for bare filenames `START-HERE.md` and `file-inventory.txt`.
 metadata:
   order: 0
   legacy_id: 0
@@ -48,3 +48,43 @@ The workflow will guide you through:
 
 - **Enable ensemble pass** — run the template a second time with a different model configuration and merge results
 - **Provide reference report** — supply a professional audit report for gap analysis comparison (loaded ONLY after Phase 3 — contamination prevention)
+
+## Template
+
+The `START-HERE.md` an audit writes into its planning folder.
+
+```markdown
+# Security Audit — {target submodule} @ {short commit}
+
+| Field | Value |
+|-------|-------|
+| Target | {target submodule} |
+| Commit | {full commit} |
+| Started | {YYYY-MM-DD} |
+
+## Methodology
+
+{The workflow overview, as it applies to this target.}
+
+## Artifacts
+
+{The key artifacts table.}
+
+## Options
+
+{Each option at setup, marked as chosen or not for this run.}
+```
+
+## File Inventory Template
+
+The `file-inventory.txt` an audit writes into its planning folder: one line per in-scope source file, largest first.
+
+```text
+{line count}  {path relative to the target submodule}
+```
+
+## Rules
+
+- **The commit is the pinned one.** `START-HERE.md` records the full commit the target is checked out at, so every later artifact is read against one tree.
+- **The inventory covers the audit scope only.** Each in-scope source file is one line, sorted by line count, largest first.
+

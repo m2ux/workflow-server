@@ -1,5 +1,5 @@
 id: scope-intake
-version: 1.4.0
+version: 1.5.0
 name: Scope Intake
 description: Resolve the authoritative change surface for the review target, establish toolchain availability, and confirm the review scope.
 variables:
@@ -41,8 +41,6 @@ variables:
       description: Name of the indexed graph covering the target checkout; every code-graph probe addresses it, and it is empty when no graph covers the checkout
       defaultValue: ""
 required: true
-techniques:
-  - variable-binding
 steps:
   - kind: action
     id: announce-start
@@ -88,6 +86,22 @@ steps:
   - kind: technique
     id: resolve-change-surface
     technique: resolve-change-surface
+  - kind: technique
+    id: resolve-graph
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: target_repo_path
+  - kind: technique
+    id: verify-index
+    technique: gitnexus::verify-index
+  - kind: technique
+    id: resolve-cargo-workspace
+    technique:
+      name: cargo::metadata
+      inputs:
+        host_repo_path: target_repo_path
+        component_path: "."
   - kind: technique
     id: detect-toolchain
     technique: detect-toolchain

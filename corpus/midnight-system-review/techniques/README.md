@@ -12,7 +12,7 @@ The technique library for the midnight-system-review workflow. Each technique is
 
 | Group | Techniques |
 |-------|------------|
-| [`scope-intake`](scope-intake/TECHNIQUE.md) | [`classify-review-target`](scope-intake/classify-review-target.md) — PR vs local · [`resolve-change-surface`](scope-intake/resolve-change-surface.md) — inventory artifact from transport-supplied surface data · [`detect-toolchain`](scope-intake/detect-toolchain.md) — probe the three toolchain gates |
+| [`scope-intake`](scope-intake/TECHNIQUE.md) | [`classify-review-target`](scope-intake/classify-review-target.md) — PR vs local · [`resolve-change-surface`](scope-intake/resolve-change-surface.md) — inventory artifact from transport-supplied surface data · [`detect-toolchain`](scope-intake/detect-toolchain.md) — settle the three toolchain gates |
 | [`area-derivation`](area-derivation/TECHNIQUE.md) | [`derive-areas`](area-derivation/derive-areas.md) — change surface × subsystem map → bounded areas and plan · [`amend-plan`](area-derivation/amend-plan.md) — apply user amendment direction inside the approval loop |
 | [`evidence-probes`](evidence-probes/TECHNIQUE.md) | [`probe-area`](evidence-probes/probe-area.md) — one area's budgeted probes with graceful degradation · [`consolidate-evidence`](evidence-probes/consolidate-evidence.md) — ordered combine with per-area accounting |
 | [`finding-adjudication`](finding-adjudication/TECHNIQUE.md) | [`grade-findings`](finding-adjudication/grade-findings.md) — full grade tuple per candidate, from the rubric · [`register-findings`](finding-adjudication/register-findings.md) — threshold disposition into the register |
@@ -27,5 +27,7 @@ The technique library for the midnight-system-review workflow. Each technique is
 | `meta::scatter-gather` | The sequential per-area scatter/gather contract on `evidence-probes` |
 | `github` (`view-pr`, `list-pr-files`) | PR head/base metadata and authored file list when `has_pr_surface` |
 | `git::three-dot-name-status` | Local three-dot name-status surface when not a PR |
+| `gitnexus` (`resolve-graph`, `verify-index`) | The graph covering the checkout and its freshness, read into `gitnexus_available` at scope intake |
 | `gitnexus` (`query`, `context`, `impact`, `detect-changes`) | Code-graph probes when `gitnexus_available` is true |
+| `cargo::metadata` | Whether a cargo toolchain resolves the checkout, read into `cargo_available` at scope intake |
 | `work-package::update-pr::post-review-comment` | Posts `review_summary` to PR `pr_number` verbatim with the explicit `review_type` |

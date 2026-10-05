@@ -1,16 +1,16 @@
 id: scope-setup
-version: 2.4.0
+version: 2.5.0
 name: Scope Setup
 description: Set up the audit scope and planning folder.
 variables:
   reads:
     - audit_prompt_template
     - gitnexus_available
+    - in_scope
     - planning_folder_path
     - repo_name
     - target_submodule
     - user_request
-    - workspace_root
   writes:
     - name: repo_name
       type: string
@@ -25,7 +25,8 @@ variables:
       defaultValue: false
     - name: reference_report
       type: string
-      description: Path to professional audit report for gap analysis (optional)
+      description: Path to the reference audit report the request names. Empty where it names none.
+      defaultValue: ""
     - name: target_commit
       type: string
       description: Git commit hash to audit
@@ -36,6 +37,33 @@ steps:
     actions:
       - action: log
         message: Starting security audit scope setup
+  - kind: technique
+    id: resolve-target
+    technique: resolve-audit-target
+  - kind: technique
+    id: read-head
+    when: "!target_revision"
+    technique:
+      name: git::read-head-commit
+      inputs:
+        repo_path: target_submodule
+      outputs:
+        head_sha: target_revision
+  - kind: technique
+    id: pin-target
+    technique:
+      name: git::pin-revision
+      inputs:
+        repo_path: target_submodule
+        revision_name: target_revision
+      outputs:
+        pinned_commit: target_commit
+  - kind: action
+    id: confirm-pin
+    actions:
+      - action: validate
+        target: "!pin_refusal"
+        message: "The audit target was not pinned: {pin_refusal}"
   - kind: technique
     id: setup-target
     technique: setup-audit-target
@@ -52,6 +80,7 @@ steps:
         tree_path: target_submodule
   - kind: action
     id: record-graph-availability
+    when: repo_name
     actions:
       - action: set
         target: gitnexus_available
@@ -61,14 +90,14 @@ steps:
     id: announce-completion
     actions:
       - action: log
-        message: Scope setup complete — target confirmed and planning folder created
+        message: Scope setup complete — target pinned and audit overview initialized
 exits:
   - id: done
     isDefault: true
 outcome:
-  - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit
-  - Any reference report is quarantined out of scope until Phase 5, so the audit stays independent of it
+  - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit, and setup stops before any scan where the revision resolves to nothing or the checkout carries uncommitted changes
+  - Any reference report is quarantined out of scope until gap analysis, so the audit stays independent of it
   - Known-vulnerable dependencies are surfaced (or their absence explicitly noted) before code review begins
   - A reviewed file inventory establishes the in-scope surface every agent must cover
-  - A working artifact home exists where every phase reads and writes shared state
+  - Every phase reads and writes its artifacts in one shared place, so each finds what the phases before it produced
   - The target's GitNexus index status is established, so downstream phases can prefer graph-based structural analysis over manual enumeration and grep tracing wherever the index is available

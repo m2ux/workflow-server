@@ -578,24 +578,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/midnight-system-review/techniques/scope-intake/detect-toolchain.md:32",
-      "op": "gitnexus",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/midnight-system-review/techniques/scope-intake/detect-toolchain.md:32",
-      "op": "resolve-graph",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/midnight-system-review/techniques/scope-intake/detect-toolchain.md:33",
-      "op": "verify-index",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/ponytail/techniques/scope-intake.md:35",
       "op": "context",
       "verdict": "fix-later",
@@ -1102,30 +1084,6 @@
     {
       "site": "corpus/support/cargo/techniques/run-suite.md:32",
       "op": "test",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/support/cargo/techniques/TECHNIQUE.md:48",
-      "op": "test",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/support/cargo/techniques/TECHNIQUE.md:49",
-      "op": "build-release",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/support/cargo/techniques/TECHNIQUE.md:67",
-      "op": "fmt-check",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/support/cargo/techniques/TECHNIQUE.md:67",
-      "op": "fmt-fix",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

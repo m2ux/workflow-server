@@ -16,6 +16,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`merge-branches`](merge-branches.md) | Bring the branches an isolated fan committed back onto one branch, in a stated order, reporting what merged cleanly and what did not |
 | [`pin-revision`](pin-revision.md) | Checkout brought to a named revision — a commit, a tag, or a branch — detached at the commit that name resolves to, answering the commit landed or the refusal that left it as it stood |
 | [`push-branch`](push-branch.md) | Push a local branch to its remote without staging or committing |
+| [`read-head-commit`](read-head-commit.md) | The commit a checkout's `HEAD` stands at, read without writing anything |
 | [`read-working-state`](read-working-state.md) | What a working tree holds that its repository does not record, read without writing anything |
 | [`reset-checkout`](reset-checkout.md) | Working tree returned to what its repository records, answering what the reset discarded |
 | [`resolve-host-repo`](resolve-host-repo.md) | Outermost git host repository for a workspace path, derived from git rather than from prose |

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,4 +17,6 @@ The source files under `{build_scope}` rewritten in place to match the rustfmt c
 
 ### 1. Apply Formatting
 
-- `nice -n 19 cargo fmt {build_scope}`
+- Take `{$fmt_scope}` as `{build_scope}`, with `--workspace` written as `--all`.
+  > `cargo fmt` names the whole workspace `--all` and refuses `--workspace`; `-p <crate>` passes through unchanged.
+- `nice -n 19 cargo fmt {fmt_scope}`

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Routes code-graph probes: true runs the catalog's P2-class probes against the co
 
 ### repo_name
 
-Name of the indexed graph every code-graph probe addresses, as `scope-intake` resolved it. Where more than one graph is indexed an unnamed call fails without answering, per `gitnexus.address-a-named-graph`, so a P2 probe carries this value.
+Name of the indexed graph covering the checkout, which every code-graph probe addresses.
 
 ### cargo_available
 

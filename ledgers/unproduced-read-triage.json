@@ -657,7 +657,7 @@
     },
     {
       "site": "substrate-node-security-audit :: scope-setup",
-      "name": "workspace_root",
+      "name": "in_scope",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },

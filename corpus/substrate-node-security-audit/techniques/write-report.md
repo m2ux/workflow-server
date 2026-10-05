@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -12,6 +12,14 @@ Produce the final audit report artifact from the scored and elevation-verified m
 ### merge_table
 
 The canonical finding flat table with elevation mapping, with every row severity-scored and assigned a report finding number.
+
+### target_submodule
+
+Path to the component being audited.
+
+### target_commit
+
+The exact commit the audited component is checked out at.
 
 ## Outputs
 
@@ -71,17 +79,13 @@ Count of table-derived findings auto-elevated, adversarial refutations integrate
 
 ### 2. Derive the Source Link Base
 
-- Derive `{$source_blob_base}` as `https://github.com/{$org}/{$repo}/blob/{target_commit}`, taking `{org}/{repo}` from the target submodule's GitHub remote (`git remote get-url origin` in `{target_submodule}`, normalised from SSH or HTTPS to `github.com/{org}/{repo}`) and `{target_commit}` from the revision recorded at scope-setup. Every `**Affected Files:**` link resolves against this base.
+- Derive `{$source_blob_base}` as `https://github.com/{$org}/{$repo}/blob/{target_commit}`, taking `{org}/{repo}` from the target submodule's GitHub remote (`git remote get-url origin` in `{target_submodule}`, normalised from SSH or HTTPS to `github.com/{org}/{repo}`). Every `**Affected Files:**` link resolves against this base.
 
-### 3. Order the Findings
-
-- Organize findings by severity (Critical first, then High, Medium, Low).
-
-### 4. Assemble the Report
+### 3. Assemble the Report
 
 - Assemble the `{audit_report}` sections — `{audit_report.header_table}`, `{audit_report.executive_summary}`, `{audit_report.methodology_notes}`, `{audit_report.crate_inventory}`, `{audit_report.findings}`, `{audit_report.severity_distribution}`, `{audit_report.coverage_gate}`, `{audit_report.elevation_summary}`, and `{audit_report.dependency_scan}` — into the `{audit_report}` artifact.
 
-### 5. Verify the Finding Count
+### 4. Verify the Finding Count
 
 - Verify the finding count in `{audit_report.executive_summary}` matches `{audit_report.findings}`.
 

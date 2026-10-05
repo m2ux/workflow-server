@@ -1,12 +1,12 @@
 id: ensemble-pass
-version: 2.7.0
+version: 2.8.0
 name: Ensemble Pass
 description: Optional second-model audit run with merged findings.
 variables:
   reads:
     - gitnexus_available
-    - has_reference_report
     - planning_folder_path
+    - reference_report
     - target_commit
     - target_submodule
   writes:
@@ -35,7 +35,7 @@ steps:
         message: Ensemble pass complete — findings merged with primary report
 exits:
   - id: has-reference-report
-    when: has_reference_report == true
+    when: reference_report
   - id: complete
     isDefault: true
 outcome:

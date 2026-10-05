@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 6.0.0
+version: 7.0.0
 title: Security Audit Workflow
 description: Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases.
 author: m2ux
@@ -52,7 +52,7 @@ variables:
     description: Space-separated list of crate/module paths to audit (e.g., 'node/ pallets/ primitives/ runtime/ ledger/ util/ res/ metadata/')
   - name: planning_folder_path
     type: string
-    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit"
+    description: Path to the audit's working folder.
   - name: audit_prompt_template
     type: string
     description: Path to the audit prompt template
@@ -60,10 +60,6 @@ variables:
   - name: ensemble_enabled
     type: boolean
     description: Whether to run an ensemble pass with a second model
-    defaultValue: false
-  - name: has_reference_report
-    type: boolean
-    description: Whether a professional reference report is available for gap analysis
     defaultValue: false
 initialActivity: scope-setup
 graph:
