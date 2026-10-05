@@ -27,4 +27,5 @@ This epic gives each of those inputs a source in the families that are still edi
 | Resource | Link |
 | --- | --- |
 | Technical Debt initiative | [#706](https://github.com/m2ux/workflow-server/issues/706) |
-| The canon entry and the cargo fix | [#1135](https://github.com/m2ux/workflow-server/pull/1135) |
+| The canon entry | [#1144](https://github.com/m2ux/workflow-server/pull/1144) |
+| The cargo fix the entry was proven on | [#1135](https://github.com/m2ux/workflow-server/pull/1135) |
