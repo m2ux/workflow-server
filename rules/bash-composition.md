@@ -60,8 +60,10 @@ A run that exits non-zero ends with a line naming the roots it could write, so `
 
 ```bash
 git push -u origin HEAD
-gh api --method POST repos/{owner}/{repo}/pulls -f title='...' -f head='branch' -f base='main' -f body='...'
+gh api --method POST repos/{owner}/{repo}/pulls -f title='...' -f head='branch' -f base='workspace' -F body=@/tmp/pr-body.md
 ```
+
+A multi-line body is `-F key=@file`. `-F` reads the file. `-f` and `--raw-field` do not: `-f body=@file` stores the characters `@file` as the body. A short one-line field stays `-f key=value` with the value written out.
 
 Other operations take the same shape: `gh api repos/...`, `gh api --method PATCH|POST|GET ...`.
 

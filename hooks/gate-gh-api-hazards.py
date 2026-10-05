@@ -7,7 +7,9 @@ A broad `Bash(gh api:*)` allow rule auto-approves every `gh api` invocation.
 This hook narrows that grant: it parses each `gh api` segment, classifies the
 request, and forces a permission prompt (permissionDecision "ask") for the
 subset that is hard to undo, grants standing access, or is visible outside the
-repository. Reads and routine writes — opening and editing pull requests and
+repository. A raw field whose value starts with `@` is denied: `-f` and
+`--raw-field` do not read a file, so `-f body=@file` would store the characters
+`@file`. A body is `-F key=@file`. Reads and routine writes — opening and editing pull requests and
 issues, comments, reviews, labels, assignees, milestones — fall through to the
 allow rule and auto-approve.
 
@@ -197,6 +199,35 @@ def endpoint_of(args: list[str]) -> str | None:
     return None
 
 
+def raw_at_file(args: list[str]) -> str | None:
+    """-f and --raw-field do not read @file. The stored value would be the characters @file."""
+    i = 0
+    n = len(args)
+    while i < n:
+        t = args[i]
+        value = None
+        if t in ("-f", "--raw-field") and i + 1 < n:
+            value = args[i + 1]
+            i += 2
+        elif t.startswith("--raw-field="):
+            value = t.split("=", 1)[1]
+            i += 1
+        elif t.startswith("-f") and not t.startswith("-F") and len(t) > 2:
+            value = t[2:]
+            i += 1
+        else:
+            i += 1
+            continue
+        payload = value.split("=", 1)[1] if "=" in value else value
+        if payload.startswith("@"):
+            return (
+                "-f/--raw-field does not read @file; the stored value would be the characters "
+                + payload
+                + ". Use -F key=@file"
+            )
+    return None
+
+
 def classify(args: list[str]) -> str | None:
     """Why this request must prompt, or None when it may fall through."""
     if args and args[0] == "graphql":
@@ -252,6 +283,17 @@ def gh_api_prompt_segments(cmd: str) -> list[tuple[str, str]] | None:
     return flagged
 
 
+def deny(detail: str) -> None:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": detail,
+        }
+    }))
+    sys.exit(0)
+
+
 def ask(detail: str) -> None:
     print(json.dumps({
         "hookSpecificOutput": {
@@ -280,6 +322,29 @@ def run_hook() -> None:
         sys.exit(0)
     if "gh" not in cmd or "api" not in cmd:
         sys.exit(0)
+    try:
+        toks = shlex.split(cmd, posix=True)
+    except ValueError:
+        ask("the command does not parse, so the request cannot be classified")
+        return
+    literal = []
+    i = 0
+    n = len(toks)
+    while i < n:
+        if toks[i] == "gh" and i + 1 < n and toks[i + 1] == "api":
+            j = i + 2
+            args: list[str] = []
+            while j < n and toks[j] not in CONTROL:
+                args.append(toks[j])
+                j += 1
+            reason = raw_at_file(args)
+            if reason:
+                literal.append(reason)
+            i = j
+            continue
+        i += 1
+    if literal:
+        deny(literal[0])
     flagged = gh_api_prompt_segments(cmd)
     if flagged is None:
         ask("the command does not parse, so the request cannot be classified")
@@ -290,6 +355,27 @@ def run_hook() -> None:
 
 def run_test(args: list[str]) -> None:
     cmd = args[0] if args else sys.stdin.read()
+    try:
+        toks = shlex.split(cmd, posix=True)
+    except ValueError:
+        print("ASK — unparseable command")
+        sys.exit(1)
+    i = 0
+    n = len(toks)
+    while i < n:
+        if toks[i] == "gh" and i + 1 < n and toks[i + 1] == "api":
+            j = i + 2
+            args: list[str] = []
+            while j < n and toks[j] not in CONTROL:
+                args.append(toks[j])
+                j += 1
+            reason = raw_at_file(args)
+            if reason:
+                print(f"DENY — {reason}")
+                sys.exit(1)
+            i = j
+            continue
+        i += 1
     flagged = gh_api_prompt_segments(cmd)
     if flagged is None:
         print("ASK — unparseable command")
