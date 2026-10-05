@@ -11,7 +11,8 @@ the board is given with --others.
 The moves are the Advance mode rules. Printed: the gh call for each Status and assignee change,
 an order line for each kind when nothing is In Progress and no initiative has a priority, an ask
 line for an initiative In Progress with no priority, a tie line when labelled initiatives share
-the highest rank, a wait line for an open pull request, and a next line for epics.
+the highest rank, a wait line for an open pull request, a next line for epics, and, once the
+queue is current, a begin line for the epic issue to begin.
 --unplanned names an initiative the user left with no priority. It returns to Backlog once its
 open pull requests have completed, and its epics return with it. Initiatives with the same
 priority number run together. A priority is a positive integer with no maximum.
@@ -181,6 +182,23 @@ class Queue:
     def pulls(self, key: tuple[str, int]) -> list[str]:
         return pending(self.prs, tags(self.issues[key]['title'])[0], self.repos(key))
 
+    def final(self, key: tuple[str, int]) -> str | None:
+        return self.wanted.get(key, self.status.get(key))
+
+    def begins(self) -> list[str]:
+        """The first Ready epic of each initiative that is In Progress."""
+        found = []
+        running = [key for key, issue in self.issues.items()
+                   if is_initiative(issue) and issue['state'] == 'open' and key in self.status
+                   and self.final(key) == 'In Progress']
+        for key in sorted(running):
+            rows_of, _epics = self.load(key)
+            for _row_name, epic_key, _depends in rows_of:
+                if self.final(epic_key) == 'Ready':
+                    found.append(f'  begin {self.line(epic_key)}')
+                    break
+        return found
+
     def ready_names(self, key: tuple[str, int]) -> list[str]:
         rows_of, _epics = self.load(key)
         return [row_name for row_name, epic_key, _depends in rows_of
@@ -339,7 +357,11 @@ def main() -> int:
     for note in dict.fromkeys(queue.board.unresolved):
         print(f'  unresolved: {note}')
     open_question = any(note.strip().startswith(('order', 'ask')) for note in queue.notes)
-    print(f'  current: {current}, to do: {todo}' + ('' if todo or open_question else ' (the queue is current)'))
+    settled = not todo and not open_question
+    print(f'  current: {current}, to do: {todo}' + ('' if not settled else ' (the queue is current)'))
+    if settled:
+        for line in queue.begins():
+            print(line)
     return 0
 
 

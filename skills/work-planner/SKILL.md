@@ -57,6 +57,7 @@ Read the file for the mode the request calls for:
   - A parallel work map for initiatives with no priority
   - Placement of the highest set as In Progress and the next set as Ready
   - Placement of a partly completed epic as In Progress and the next unstarted epic as Ready
+  - Recommendation of the epic issue to begin
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task

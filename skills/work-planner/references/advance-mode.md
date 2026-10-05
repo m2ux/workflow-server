@@ -1,6 +1,6 @@
 # Advance mode
 
-Decides which initiatives and epics on a theme board are Ready or In Progress, after [Sync Mode](sync-mode.md) has recorded delivery. Initiatives with the same priority number run together. A larger number is higher, and there is no maximum.
+Decides which initiatives and epics on a theme board are Ready or In Progress, after [Sync Mode](sync-mode.md) has recorded delivery. Initiatives with the same priority number run together. A larger number is higher, and there is no maximum. Once the queue is current, it names the epic issue to begin on each initiative that is In Progress.
 
 ## Procedure
 
@@ -30,6 +30,8 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
    - Fetch the items again and re-run. Stop when it prints no `order` or `ask` line and nothing to do.
 6. **Report.**
    - Each move, each `order`, `ask` and `wait` line, and each `next` line.
+7. **Recommend.**
+   Once the queue is current, recommend each epic issue a `begin` line names, as this mode's Recommend rule says.
 
 ## Rules
 
@@ -58,5 +60,9 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
   A task is Ready only when its epic is Ready or In Progress. [Plan Board Changes](commands.md#plan-board-changes) follows that. This mode does not move task issues.
 - **Report.**
   For an initiative In Progress, the `next` line names the epics that are Ready.
+- **Recommend.**  Once the queue is current, a `begin` line names the epic issue to begin.
+  - It is the first Ready epic, in Work Breakdown order, of an initiative that is In Progress.
+  - Each such initiative has its own line.
+  - No `begin` line means no epic is Ready to begin.
 - **The queue.**
   [Plan Board Changes](commands.md#plan-board-changes) leaves an initiative or an epic in Ready or Backlog when no pull request is open, and leaves In Progress when delivery has started. This mode is what moves them.

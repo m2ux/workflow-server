@@ -479,6 +479,7 @@ Decides which initiatives and epics on a theme board move between Backlog, Ready
 - An `order` or `ask` line is a question. The queue is not finished while one is printed. After the answer, fetch the items again and run the command again.
 - A `wait` line names an open pull request. That initiative stays In Progress. The highest set still moves to In Progress.
 - A `next` line names epics, as the Report rule in [Advance Mode](advance-mode.md#rules) says.
+- A `begin` line names the epic issue to begin, as the Recommend rule in [Advance Mode](advance-mode.md#rules) says.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/advance.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux

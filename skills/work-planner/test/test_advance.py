@@ -283,6 +283,82 @@ class Queue(unittest.TestCase):
         self.assertNotIn('[I03] Low: Waiting: Ready →', out)
         self.assertIn('[I02] High: Next: Ready → In Progress', out)
 
+    def test_the_first_ready_epic_in_the_table_is_the_one_to_begin(self):
+        current = initiative(1, 'Current: Work',
+                             (f"[E00]({url('issues', 2)})", ''),
+                             (f"[E01]({url('issues', 3)})", f"[E00]({url('issues', 2)})"),
+                             (f"[E02]({url('issues', 4)})", ''))
+        done = issue(2, '[I01:E00] Epic 2: Work', 'closed', body=epic_body(('W01', 'Go', '')))
+        nxt = epic(3, '01:E01', ('W01', 'Go', ''))
+        later = epic(4, '01:E02', ('W01', 'Go', ''))
+        out = queue(staged((current, 'In Progress'), (done, 'Done'), (nxt, 'Ready'), (later, 'Ready')))
+        self.assertIn('the queue is current', out)
+        self.assertLess(out.index('the queue is current'), out.index('begin #3 [I01:E01] Epic 3: Work'))
+        self.assertNotIn('begin #4', out)
+
+    def test_each_in_progress_initiative_names_its_first_ready_epic(self):
+        first = initiative(1, 'First: Tied',
+                           (f"[E00]({url('issues', 3)})", ''),
+                           (f"[E01]({url('issues', 5)})", ''),
+                           priority='priority: 5')
+        second = initiative(2, 'Second: Tied', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
+        out = queue(staged((first, 'In Progress'), (second, 'In Progress'),
+                           (epic(3, '01:E00', ('W01', 'Go', '')), 'Ready'),
+                           (epic(5, '01:E01', ('W01', 'Go', '')), 'Ready'),
+                           (epic(4, '02:E00', ('W01', 'Go', '')), 'Ready')))
+        self.assertIn('begin #3 [I01:E00] Epic 3: Work', out)
+        self.assertIn('begin #4 [I02:E00] Epic 4: Work', out)
+        self.assertNotIn('begin #5', out)
+
+    def test_a_partly_completed_epic_is_not_the_one_to_begin(self):
+        current = initiative(1, 'Current: Work',
+                             (f"[E00]({url('issues', 2)})", ''),
+                             (f"[E01]({url('issues', 3)})", ''))
+        started = epic(2, '01:E00', ('[W01](https://github.com/o/r/pull/9)', 'Go', ''), ('W02', 'Rest', ''))
+        nxt = epic(3, '01:E01', ('W01', 'Go', ''))
+        out = queue(staged((current, 'In Progress'), (started, 'In Progress'), (nxt, 'Ready')),
+                    [pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')])
+        self.assertIn('the queue is current', out)
+        self.assertIn('begin #3 [I01:E01] Epic 3: Work', out)
+        self.assertNotIn('begin #2', out)
+
+    def test_a_waiting_initiative_names_its_ready_epic(self):
+        low = initiative(1, 'Low: Current',
+                         (f"[E00]({url('issues', 4)})", ''),
+                         (f"[E01]({url('issues', 5)})", ''),
+                         priority='priority: 3')
+        high = initiative(2, 'High: Now', (f"[E00]({url('issues', 6)})", ''), priority='priority: 5')
+        out = queue(staged((low, 'In Progress'), (high, 'In Progress'),
+                           (epic(4, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                           (epic(5, '01:E01', ('W01', 'Go', '')), 'Ready'),
+                           (epic(6, '02:E00', ('W01', 'Go', '')), 'Ready')),
+                    [pr(9, '[I01:E00] Open')])
+        self.assertIn('wait #1 [I01] Low: Current:', out)
+        self.assertIn('the queue is current', out)
+        self.assertIn('begin #5 [I01:E01] Epic 5: Work', out)
+        self.assertIn('begin #6 [I02:E00] Epic 6: Work', out)
+
+    def test_nothing_ready_names_no_epic_to_begin(self):
+        current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''))
+        asking = epic(2, '01:E00', ('W01', 'Go', ''), questions='Which shape?')
+        out = queue(staged((current, 'In Progress'), (asking, 'Backlog')))
+        self.assertIn('the queue is current', out)
+        self.assertNotIn('begin ', out)
+
+    def test_a_move_still_to_do_names_no_epic_to_begin(self):
+        current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''))
+        nxt = epic(2, '01:E00', ('W01', 'Go', ''))
+        out = queue(staged((current, 'In Progress'), (nxt, 'Backlog')))
+        self.assertIn('[I01:E00] Epic 2: Work: Backlog → Ready', out)
+        self.assertNotIn('the queue is current', out)
+        self.assertNotIn('begin ', out)
+
+    def test_an_epic_in_another_repository_is_named_to_begin(self):
+        here = initiative(1, 'Here: One', (f"[E00]({url('issues', 4, 'o/s')})", ''))
+        out = queue(staged((here, 'In Progress'),
+                           (epic(4, '01:E00', ('W01', 'Go', ''), repo='o/s'), 'Ready')))
+        self.assertIn('begin o/s#4 [I01:E00] Epic 4: Work', out)
+
 
 if __name__ == '__main__':
     unittest.main()
