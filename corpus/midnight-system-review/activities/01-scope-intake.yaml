@@ -100,7 +100,8 @@ steps:
     technique:
       name: cargo::metadata
       inputs:
-        workspace_path: target_repo_path
+        host_repo_path: target_repo_path
+        component_path: "."
   - kind: technique
     id: detect-toolchain
     technique: detect-toolchain

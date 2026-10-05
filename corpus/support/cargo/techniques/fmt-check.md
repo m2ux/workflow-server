@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -21,7 +21,9 @@ Concise summary of files needing formatting (when not passed).
 
 ### 1. Check Formatting
 
-- `nice -n 19 cargo fmt {build_scope} -- --check`
+- Take `{$fmt_scope}` as `{build_scope}`, with `--workspace` written as `--all`.
+  > `cargo fmt` names the whole workspace `--all` and refuses `--workspace`; `-p <crate>` passes through unchanged.
+- `nice -n 19 cargo fmt {fmt_scope} -- --check`
 
 ### 2. Compose Format Status
 
