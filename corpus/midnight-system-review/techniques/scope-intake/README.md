@@ -9,5 +9,5 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | Technique | Contributes |
 |---|---|
 | [`classify-review-target`](classify-review-target.md) | Classify a review target as a pull-request surface or a local change-set |
-| [`detect-toolchain`](detect-toolchain.md) | Probe the availability of the three optional toolchains — the GitNexus code graph, the cargo build toolchain, and a runnable midnight-node binary — and emit one boolean gate per toolchain… |
+| [`detect-toolchain`](detect-toolchain.md) | Settle the availability of the three optional toolchains (the GitNexus code graph, the cargo build toolchain, and a runnable midnight-node binary) as one boolean gate per toolchain… |
 | [`resolve-change-surface`](resolve-change-surface.md) | Assemble the review's authoritative changed-file inventory artifact from already-resolved surface data |

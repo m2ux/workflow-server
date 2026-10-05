@@ -1,5 +1,5 @@
 id: scope-intake
-version: 1.4.0
+version: 1.5.0
 name: Scope Intake
 description: Resolve the authoritative change surface for the review target, establish toolchain availability, and confirm the review scope.
 variables:
@@ -89,6 +89,21 @@ steps:
     id: resolve-change-surface
     technique: resolve-change-surface
   - kind: technique
+    id: resolve-graph
+    technique:
+      name: gitnexus::resolve-graph
+      inputs:
+        tree_path: target_repo_path
+  - kind: technique
+    id: verify-index
+    technique: gitnexus::verify-index
+  - kind: technique
+    id: resolve-cargo-workspace
+    technique:
+      name: cargo::metadata
+      inputs:
+        workspace_path: target_repo_path
+  - kind: technique
     id: detect-toolchain
     technique: detect-toolchain
   - kind: checkpoint
@@ -129,3 +144,4 @@ outcome:
   - Toolchain availability gates are set structurally, letting every downstream probe degrade gracefully while the run completes
   - A confirmed scope record exists before any investigation effort is spent
   - Transport leaves (view-pr, list-pr-files, three-dot-name-status) run as activity steps; resolve-change-surface only assembles the inventory artifact
+  - Toolchain readings (resolve-graph, verify-index, cargo metadata) run as activity steps; detect-toolchain settles the gitnexus_available, cargo_available and node_binary_available gates downstream probes read, and repo_name lands from resolve-graph

@@ -74,7 +74,8 @@ flowchart LR
 | [`publish-review`](techniques/publish-review/TECHNIQUE.md) | group | Publication recording |
 | `meta::variable-binding` | strategy | Step input/output binding against the session variable bag (workflow-level) |
 | `meta::scatter-gather` | strategy | Graph fan over the investigation areas, with the ordered gather and delegated combine at the convergence (declared on `consolidate-evidence`) |
-| `gitnexus` | reuse | Code-graph probes when `gitnexus_available` is true |
+| `gitnexus` | reuse | The graph covering the checkout and its freshness at scope intake, then code-graph probes when `gitnexus_available` is true |
+| `cargo::metadata` | reuse | Whether a cargo toolchain resolves the checkout, read into `cargo_available` at scope intake |
 | `work-package::update-pr::post-review-comment` | reuse | Posts `review_summary` to the PR verbatim as a REST pull-request review with the verdict-derived `review_type` |
 
 ## Resources
