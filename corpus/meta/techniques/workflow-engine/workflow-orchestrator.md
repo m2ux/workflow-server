@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.6.0
 ---
 
 ## Capability
@@ -19,16 +19,16 @@ Orchestrator agent identity for this session.
 
 ## Protocol
 
-### 1. Load resources
+### 1. Load Resources
 
 - Load resources declared on bundle techniques per `resource-loading-via-tool`
 - Use `force-full-after-summarization` when the context `{agent_id}` names no longer holds prior deliveries
 
-### 2. Resolve the activity to open with
+### 2. Resolve Opening Activity
 
 - Call `get_workflow_status { session_index }`. Where `in_flight` names an activity, the session already stands on it, and that activity is carried without an advance. Otherwise the first advance enters the `initialActivity` that `get_workflow` returns; a session that has entered no activity reports `in_flight` empty
 
-### 3. Walk the workflow to its end
+### 3. Walk to Completion
 
 - Take one activity at a time under the `activity-loop` run, whose steps decide every branch of a turn — which technique enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this technique; no route hands over the file that declares it, and reading one to execute from is outside this role (`orchestrator-conduct.no-domain-work`)
   > - Every entry is a worker dispatch — never execute steps inline (`orchestrator-conduct.no-inline-on-resume`, `orchestrator-conduct.no-domain-work`).

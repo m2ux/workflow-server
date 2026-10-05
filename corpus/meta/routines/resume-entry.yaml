@@ -1,0 +1,97 @@
+id: resume-entry
+version: 1.0.0
+name: Resume Entry
+description: >-
+  Continue the worker that holds a yielded activity, carrying the checkpoint reply, and
+  open a replacement when that continuation does not return an accepted envelope.
+
+inputs:
+  - id: activity_id
+    description: The activity the worker already holds.
+  - id: session_index
+    description: The session the worker authenticates against.
+  - id: workflow_id
+    description: The workflow the worker executes.
+  - id: worker_agent_id
+    description: The delivery identity the worker already holds.
+  - id: harness_agent_id
+    description: The harness identifier of the agent carrying worker_agent_id.
+  - id: checkpoint_reply
+    description: The answer the yielded gate already holds.
+  - id: agent_technique
+    description: The agent technique a replacement follows.
+
+outputs:
+  - id: worker_result
+    description: The envelope this entry closes on.
+  - id: worker_agent_id
+    description: The identity now holding the activity.
+
+steps:
+  - kind: routine
+    id: continue-worker
+    routine: continue-worker
+    with:
+      session_index: session_index
+      workflow_id: workflow_id
+      activity_id: activity_id
+      worker_agent_id: worker_agent_id
+      harness_agent_id: harness_agent_id
+      checkpoint_reply: checkpoint_reply
+    outputs:
+      worker_result: worker_result
+  - kind: routine
+    id: finish-activity
+    when: worker_result.result_type == "steps_complete"
+    routine: finish-activity
+    with:
+      current_activity: "{worker_result.activity_definition}"
+      exit_destinations: "{worker_result.exit_destinations}"
+      selected_exit: "{worker_result.selected_exit}"
+      steps_completed: "{worker_result.steps_completed}"
+      checkpoints_responded: "{worker_result.checkpoints_responded}"
+      artifacts_produced: "{worker_result.artifacts_produced}"
+      batch_may_continue: "{worker_result.batch_may_continue}"
+    outputs:
+      activity_result: worker_result
+  - kind: routine
+    id: open-replacement
+    when: worker_result.result_type != "activity_complete" && worker_result.result_type != "checkpoint_pending" && worker_result.result_type != "steps_complete"
+    routine: open-worker
+    with:
+      agent_technique: agent_technique
+      session_index: session_index
+      workflow_id: workflow_id
+      activity_id: activity_id
+      worker_agent_id: worker_agent_id
+    outputs:
+      worker_result: worker_result
+  - kind: routine
+    id: finish-replacement
+    when: worker_result.result_type == "steps_complete"
+    routine: finish-activity
+    with:
+      current_activity: "{worker_result.activity_definition}"
+      exit_destinations: "{worker_result.exit_destinations}"
+      selected_exit: "{worker_result.selected_exit}"
+      steps_completed: "{worker_result.steps_completed}"
+      checkpoints_responded: "{worker_result.checkpoints_responded}"
+      artifacts_produced: "{worker_result.artifacts_produced}"
+      batch_may_continue: "{worker_result.batch_may_continue}"
+    outputs:
+      activity_result: worker_result
+  - kind: technique
+    id: read-missing-envelope
+    when: worker_result.result_type != "activity_complete" && worker_result.result_type != "checkpoint_pending"
+    technique:
+      name: workflow-engine::resume-worker
+      inputs:
+        worker_result: worker_result
+  - kind: technique
+    id: account
+    technique:
+      name: workflow-engine::account-worker
+      inputs:
+        activity_id: activity_id
+        worker_agent_id: worker_agent_id
+        worker_result: worker_result

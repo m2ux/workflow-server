@@ -50,6 +50,7 @@ steps:
     with:
       session_index: client_session_index
       initial_activity: client_initial_activity
+      workflow_id: target_workflow_id
       completes_session: false
       standing_activity: "{client_in_flight.0}"
     outputs:

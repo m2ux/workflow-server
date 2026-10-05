@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.6.0
 ---
 
 ## Capability
@@ -9,11 +9,11 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
 
 ## Protocol
 
-### 1. Resolve the Contract
+### 1. Resolve Contract
 
 - Resolve the contract. Load the composed `inputs[]`/`outputs[]` of the bound technique (the `::`-path signature merged with ancestor `TECHNIQUE.md` declarations).
 
-### 2. Bind the Inputs
+### 2. Bind Inputs
 
 - Bind each declared input id `I` into the concrete input map, in this precedence:
    1. If `I` appears in `step.technique.inputs`, resolve its source-expression (literal / rename / template, per the deviation forms below) and bind that value.
@@ -23,11 +23,11 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
    5. Else the input is unsatisfied — surface it as a binding gap (the call-site must supply it via a `step.technique.inputs` deviation, or the signature must declare a `default`).
 - Resolve a string deviation by the disambiguation rule: a string that matches the bag-name grammar (`^[a-z_][a-z0-9_]*(\.[a-z0-9_]+)*$`) AND resolves in the variable bag is a rename reference, binding the named variable's value (`inputs: { check_id: failed_check_id }`); otherwise it is a literal (`inputs: { scope: '--workspace' }`); a string containing `{…}` is always a template, interpolating `{path}` against the bag, walking dotted paths into nested objects, then substituting and binding the result (`inputs: { scope: '-p {current_task.crate}' }`).
 
-### 3. Invoke the Technique
+### 3. Invoke Technique
 
 - Invoke the bound technique with the concrete input map.
 
-### 4. Land the Outputs
+### 4. Land Outputs
 
 - Land outputs. For each declared output id `O`, take the produced value and commit it to the variable bag under `O` (or under the remapped bag name when `step.technique.outputs` maps `O` to a different name, as `outputs: { session_index: client_session_index }` does). Nested-object outputs land whole, so a dotted-path read downstream resolves against the landed object.
 - Read downstream by name or path. A later `when` or `condition` reads `{O}` or `{O}.field.subfield` directly; the structured-condition evaluator walks the dotted path, so no flattening step is needed.

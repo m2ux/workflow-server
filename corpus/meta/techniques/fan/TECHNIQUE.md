@@ -31,7 +31,7 @@ The branches are retired in the order the fan reported them. Each retirement is 
 
 ### replace-one-branch-alone
 
-A branch whose result is not an accepted envelope (`dispatch-activity.reject-partial-worker-result`) is replaced on its own: a fresh identity, a prompt with no prior deliveries, and one agent. The replacement names the same frontier entry. The siblings that returned stay as they are.
+A branch whose result is not an accepted envelope (`resume-worker.reject-partial-worker-result`) is replaced on its own: a fresh identity, a prompt with no prior deliveries, and one agent. The replacement names the same frontier entry. The siblings that returned stay as they are.
 
 ### a-second-failure-stays-on-the-frontier
 

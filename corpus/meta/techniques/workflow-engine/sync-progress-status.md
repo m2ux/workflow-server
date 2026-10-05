@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.12.0
 ---
 
 ## Capability
@@ -39,12 +39,12 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 
 ## Protocol
 
-### 1. Resolve the Moment
+### 1. Resolve Moment
 
 - When `{target_status}` is unset, take the moment from [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites): the cancelled / N/A row when `{mark_progress_na}` is true, otherwise `activity_complete`. Record that row's status as `{target_status}`.
   > - When `{mark_progress_na}` was true, set it false after the row is read.
   > - Where `{activity_id}` holds the branches a fan retired, one resolution covers all of them per `fan.persist-the-fan-at-convergence`.
-  > - Apply `dispatch-activity.distrust-then-reconcile` when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
+  > - Apply `account-worker.distrust-then-reconcile` when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
 
 ### 2. Open README
 
@@ -76,6 +76,10 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 - Ensure Progress chrome required by the resource is present per [Icon key](/meta/resources/planning-readme.md#icon-key).
 
 ## Rules
+
+### dispatch-mark-reaches-the-remote
+
+A Progress mark is unreadable to anyone who does not hold the working tree it was written in, and the mark for a running activity exists for a reader watching from the remote. The commit that publishes the in-progress state is made while the activity is still in flight.
 
 ### progress-rows-only
 

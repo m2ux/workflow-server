@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.2.0
+  version: 3.4.0
 ---
 
 ## Capability
@@ -35,11 +35,16 @@ array of H1 headings beyond the single title H1.
 
 array of header-block fields missing or renamed relative to [Template](/meta/resources/planning-readme.md#template).
 
+### readme_absent
+
+True when `{planning_folder_path}/README.md` is not there.
+
 ## Protocol
 
 ### 1. Open Planning README
 
-- Read `{planning_folder_path}/README.md`. If absent, re-apply [create-readme](./create-readme.md) with the bound `{seed_profile}` (required when re-seeding) before continuing; confirm the returned `{created_readme}` path exists.
+- Read `{planning_folder_path}/README.md`.
+  > When the file is absent, `{readme_absent}` is true and this check stops. There is no README to measure.
 
 ### 2. Load Required Sections
 

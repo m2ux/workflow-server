@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.17.0
+  version: 1.23.0
 ---
 
 ## Capability
 
-Worker for a dispatched activity — executes bound steps, yields checkpoints, and walks on to the next activity while its batch has room.
+Worker for a dispatched activity — executes bound steps, yields checkpoints, and returns `steps_complete` when the activity's steps are done.
 
 ## Inputs
 
@@ -19,35 +19,36 @@ Worker agent identity for this dispatch.
 
 ## Protocol
 
-### 1. Verify dispatch
+### 1. Verify Dispatch
 
 - Confirm the activity `id` returned by the `get_activity` call the current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, stop and report the expected id against the returned id. Execute no steps.
 - Follow the techniques bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
 - Read `may_continue` from the `batch:` block closing that response. The block reports `activities_delivered`, the characters delivered, and whether this context may take another. `_meta.batch` carries the same reading. Where `bounded` is true the two limits ride alongside those counts, and the tally is read against them. Where `bounded` is false no limit governs this scope, and none is reported.
 
-### 2. Load resources
+### 2. Load Resources
 
 - Load resources per `resource-loading-via-tool`
 - Use `force-full-after-summarization` when this context no longer holds prior deliveries
 
-### 3. Take the walk position
+### 3. Take Walk Position
 
 - Open the activity at its first step
-  > When `{checkpoint_reply}` is bound, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) in place of opening at the first step. The envelope is owed either way.
+  > When `{checkpoint_reply}` is bound, continue from the paused step.
+  > A walk that reaches a gate already answered takes that answer. The steps before the gate run again.
 
-### 4. Execute steps
+### 4. Execute Steps
 
 - Execute each activity step in document order
 - Read the artifact each bound artifact-path input names before the step that consumes it
 - For `kind: technique` steps, load the bound technique as that step is reached. The whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves a step not already inlined. Where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse of the map, the lazy remainder. An inlined step is read from the bundle and is never re-fetched (`fetch-costs-what-it-delivers`).
-- Apply each bound technique via [variable-binding](../variable-binding.md)
+- Read a technique step from [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag per `gate-evaluation`, and a loop's controls per `loop-control`
-- When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
+- Read a checkpoint step from [yield-checkpoint](./yield-checkpoint.md)
 
-### 5. Finalize the activity
+### 5. Return Steps Complete
 
-- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the steps this activity ran as `steps_completed`, the checkpoints it answered as `checkpoints_responded`, the artifacts it wrote as `artifacts_produced`, the `{selected_exit}` a checkpoint answer held, where one did, and the `may_continue` this context's standing reports as `batch_may_continue`.
-  > On `may_continue: false`, finish this activity and report it. A further `get_activity` is refused with the payload undelivered: report that activity as needing its own dispatch and stop.
+- When the last step completes, or a checkpoint's exit ends the activity, return `result_type: steps_complete` with the values this activity produced: `steps_completed`, `checkpoints_responded`, `artifacts_produced`, `selected_exit` where a checkpoint answer held one, `batch_may_continue` from this context's standing, `activity_definition` as the definition this delivery carried, and `exit_destinations` as that delivery's exit map. The destination of the exit is not read here.
+  > On `may_continue: false`, return this activity and stop. A further `get_activity` is refused with the payload undelivered: report that activity as needing its own dispatch and stop.
 
 ## Rules
 
@@ -61,7 +62,7 @@ On `{session_index}`, this worker leaves `next_activity` and `get_workflow` unca
 
 ### one-activity-at-a-time-in-a-batch
 
-A batch returns each activity's envelope as that activity finishes.
+A batch returns each activity's `steps_complete` result as that activity finishes.
 
 ### agent-id-on-delivery-calls
 
@@ -73,5 +74,5 @@ While a step of this activity holds work still running outside this context — 
 
 ### final-message-is-an-envelope
 
-The last thing this context emits is the envelope this activity owes — the `checkpoint_pending` yield, or the `activity_complete` result. Anything emitted in its place ends the context with the envelope still owed, and is not an accepted result: an interim status report, a progress table, or prose describing an envelope without being one.
+The last thing this context emits is the `checkpoint_pending` yield, or the `steps_complete` result. Anything emitted in its place ends the context with that result still owed, and is not an accepted result: an interim status report, a progress table, or prose describing a result without being one.
 

@@ -57,7 +57,6 @@ steps:
       inputs:
         session_index: client_session_index
         activity_id: __terminal__
-        agent_technique: workflow-engine::activity-worker
         exit_id: "{worker_result.activity_exit}"
         step_manifest: "{worker_result.steps_completed}"
         variables_changed: "{worker_result.variables_changed}"

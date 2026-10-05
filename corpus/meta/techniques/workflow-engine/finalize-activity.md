@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.13.0
+  version: 1.15.0
 ---
 
 ## Capability
@@ -28,6 +28,18 @@ Array of artifact entries (`id`, `name`, `path`).
 ### batch_may_continue
 
 Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity.
+
+### next_activity_id
+
+Where the run goes next, as [evaluate-transition](./evaluate-transition.md) read it. Passed through unread.
+
+### next_activity_fans
+
+Whether that destination opens several branches rather than one activity.
+
+### activity_exit
+
+The exit id this activity took. Unset where it declares none.
 
 ## Outputs
 
@@ -82,13 +94,10 @@ Whether this context may take another activity, folded from the input of the sam
 - Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Carry `{batch_may_continue}` unchanged: every successful envelope carries it.
   > Where a checkpoint effect named an exit, include `{selected_exit}`.
 
-### 2. Read Routing Destination
+### 2. Fold Routing Fields
 
-- Resolve the next activity: with the current activity definition and its `exit_destinations` both in hand from `get_activity`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope, passing `{next_activity_id}` on unread. Every successful envelope carries `{next_activity_id}` and `{next_activity_fans}`, and `{activity_exit}` wherever an exit was taken.
+- Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope, passing `{next_activity_id}` on unread, and return `{activity_result}`. Every successful envelope carries `{next_activity_id}` and `{next_activity_fans}`, and `{activity_exit}` wherever an exit was taken.
 
-### 3. Return Envelope
-
-- Return `{activity_result}`.
 ## Rules
 
 ### no-readme-persist-on-worker

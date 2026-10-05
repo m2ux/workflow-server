@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -25,14 +25,14 @@ Boolean, default `false`. Set `true` only when planning itself detects the world
 
 ## Protocol
 
-### 1. Decompose the Goal
+### 1. Decompose Goal
 
 - Decompose `{work_goal}` into an ordered list of mostly-independent executable steps using `{planning_context}` when present.
 
-### 2. Emit the Plan
+### 2. Emit Plan
 
 - Emit `{execution_plan}` with stable step ids and explicit `depends_on` when a step requires a prior step's product.
 
-### 3. Report Whether Planning Succeeded
+### 3. Report Planning Result
 
 - Leave `{plan_needs_replan}` false unless planning cannot produce a credible plan.

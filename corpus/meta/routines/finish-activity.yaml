@@ -1,0 +1,49 @@
+id: finish-activity
+version: 1.0.0
+name: Finish Activity
+description: >-
+  Read where the activity's exit sends the run, then fold that reading into the activity_complete
+  envelope. next_activity_id is passed through unread.
+
+inputs:
+  - id: current_activity
+    description: The just-completed activity definition, with its exits.
+  - id: exit_destinations
+    description: The destination each exit leads to, keyed by exit id, as the graph names it.
+  - id: selected_exit
+    description: The exit a checkpoint answer named. Unset when no checkpoint named one.
+  - id: steps_completed
+    description: The steps this activity ran.
+  - id: checkpoints_responded
+    description: The checkpoints this activity answered.
+  - id: artifacts_produced
+    description: The artifacts this activity wrote.
+  - id: batch_may_continue
+    description: Whether this worker's context may take another activity.
+
+outputs:
+  - id: activity_result
+    description: The activity_complete envelope, including the exit reading.
+
+steps:
+  - kind: technique
+    id: read-the-exit
+    technique:
+      name: workflow-engine::evaluate-transition
+      inputs:
+        current_activity: current_activity
+        exit_destinations: exit_destinations
+        selected_exit: selected_exit
+  - kind: technique
+    id: fold-the-envelope
+    technique:
+      name: workflow-engine::finalize-activity
+      inputs:
+        steps_completed: steps_completed
+        checkpoints_responded: checkpoints_responded
+        artifacts_produced: artifacts_produced
+        selected_exit: selected_exit
+        batch_may_continue: batch_may_continue
+        next_activity_id: next_activity_id
+        next_activity_fans: next_activity_fans
+        activity_exit: activity_exit

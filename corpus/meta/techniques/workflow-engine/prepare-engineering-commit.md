@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -53,39 +53,39 @@ The branch checked out at `{engineering_repo_path}`.
 
 ## Protocol
 
-### 1. Read the Path Mode
+### 1. Read Path Mode
 
 - `git -C {host_repo_path} ls-tree HEAD .engineering`.
   > - When the path is in the tree, `{engineering_kind}` stays unset.
   > - When the path is absent from the tree, the later phases decide `{engineering_kind}`.
 
-### 2. Read the Worktree Common Dir
+### 2. Read Worktree Commondir
 
 - When `.engineering` is absent from the tree, `git -C {host_repo_path}/.engineering rev-parse --git-common-dir`, resolved to an absolute path.
 
-### 3. Read the Parent Common Dir
+### 3. Read Parent Commondir
 
 - When `.engineering` is absent from the tree, `git -C {host_repo_path} rev-parse --git-common-dir`, resolved to an absolute path.
 
-### 4. Read the Worktree Toplevel
+### 4. Read Worktree Toplevel
 
 - When `.engineering` is absent from the tree, `git -C {host_repo_path}/.engineering rev-parse --show-toplevel`.
   > - `{engineering_kind}` is `worktree` when that toplevel is `{host_repo_path}/.engineering` and the two common directories name one directory.
   > - Otherwise `{engineering_kind}` stays unset.
 
-### 5. Name the Checkout
+### 5. Name Checkout
 
 - `{engineering_repo_path}` is `{host_repo_path}/.engineering` when `{engineering_kind}` is `worktree`, and `{host_repo_path}` otherwise.
 
-### 6. Read the Branch
+### 6. Read Branch
 
 - `git -C {engineering_repo_path} branch --show-current` is `{branch}`.
 
-### 7. Set the Header
+### 7. Set Header
 
 - Set the header-line `**Status:**` in `{planning_folder_path}/README.md` to the current lifecycle milestone for that workflow. The line is text, distinct from Progress Status, per [Progress table](/meta/resources/planning-readme.md#progress-table).
   > Where the README already carries both marks, leave its content equivalent.
 
-### 8. Collect the Files
+### 8. Collect Files
 
 - Set `{paths}` to every change under `.engineering/artifacts/` within `{planning_folder_path}`. `{has_engineering_changes}` is true when `{paths}` names at least one file. Set `{commit_message}` to `docs({workflow_id}): {activity_id} artifacts`.

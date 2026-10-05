@@ -1,0 +1,51 @@
+id: open-worker
+version: 1.0.0
+name: Open Worker
+description: >-
+  Compose a stub for a worker that holds no prior deliveries, and spawn one agent with that stub.
+  A replacement uses the activity the spent context was already on. Announce, the advance, and the
+  cost stay with the caller.
+
+inputs:
+  - id: agent_technique
+    description: Canonical agent technique for the worker. Default workflow-engine::activity-worker.
+  - id: session_index
+    description: The session the worker authenticates against.
+  - id: workflow_id
+    description: The workflow the worker is executing an activity for.
+  - id: activity_id
+    description: The activity the worker carries.
+  - id: worker_agent_id
+    description: The delivery identity minted for this worker.
+
+outputs:
+  - id: worker_result
+    description: The envelope the spawned agent returned.
+  - id: composed_prompt
+    description: The stub the spawn received.
+
+steps:
+  - kind: technique
+    id: compose-stub
+    technique:
+      name: workflow-engine::compose-prompt
+      inputs:
+        agent_technique: agent_technique
+        holds_prior_deliveries: false
+        substitutions:
+          session_index: session_index
+          workflow_id: workflow_id
+          activity_id: activity_id
+          agent_id: worker_agent_id
+  - kind: technique
+    id: spawn-worker
+    technique:
+      name: harness-compat::spawn-agent
+      inputs:
+        composed_prompt: composed_prompt
+  - kind: action
+    id: name-the-envelope
+    actions:
+      - action: set
+        target: worker_result
+        value: "{agent_result}"

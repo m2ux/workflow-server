@@ -1,0 +1,56 @@
+id: open-branches
+version: 1.0.0
+name: Open Branches
+description: >-
+  Compose one stub per branch, each for a worker that holds no prior deliveries, then emit every
+  stub in one turn. The caller has already minted each branch's identity. composed_branch_prompts
+  is one { prompt: composed_prompt } per branch, in the order branches were given. Returns come
+  back in that order.
+
+inputs:
+  - id: branches
+    description: The branches to open, in order. Each entry has activity_id and agent_id.
+  - id: agent_technique
+    description: Canonical agent technique for each branch worker.
+  - id: session_index
+    description: The session each branch authenticates against.
+  - id: workflow_id
+    description: The workflow the branches execute.
+
+outputs:
+  - id: branch_envelopes
+    description: What each branch returned, one per entry of branches and in that order.
+
+steps:
+  - kind: loop
+    id: compose-each-branch
+    name: Compose Each Branch
+    loopType: forEach
+    variable: branch
+    over: branches
+    maxIterations: 50
+    steps:
+      - kind: technique
+        id: compose-branch-stub
+        technique:
+          name: workflow-engine::compose-prompt
+          inputs:
+            agent_technique: agent_technique
+            holds_prior_deliveries: false
+            substitutions:
+              session_index: session_index
+              workflow_id: workflow_id
+              activity_id: "{branch.activity_id}"
+              agent_id: "{branch.agent_id}"
+  - kind: technique
+    id: emit-the-batch
+    technique:
+      name: harness-compat::spawn-concurrent
+      inputs:
+        agents: composed_branch_prompts
+  - kind: action
+    id: name-the-returns
+    actions:
+      - action: set
+        target: branch_envelopes
+        value: "{results}"

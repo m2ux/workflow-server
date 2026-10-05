@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.9.0
 ---
 
 ## Capability
 
-Publish the in-progress mark for every branch a graph destination fans, then open them all with one call and report the branches and the activity they converge on.
+Open every branch a graph destination fans with one call, and report the branches and the activity they converge on.
 
 ## Inputs
 
@@ -33,10 +33,6 @@ The exit that activity took.
 
 *(optional)* The bag writes of the activity this call retires: `variables_changed` from the `activity_complete` envelope that activity returned. Unset where this call retires no activity, or where that activity changed nothing.
 
-### planning_folder_path
-
-*(optional)* Path to the planning folder whose `README.md` Progress surface is updated. Unset until the folder exists.
-
 ## Outputs
 
 ### branch_activities
@@ -53,12 +49,7 @@ The opaque trace token the fan-opening `next_activity` call returned in `_meta.t
 
 ## Protocol
 
-### 1. Publish one in-progress mark for every branch
-
-- Apply [sync-progress-status](../workflow-engine/sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites), for each branch's rows. Then apply [git::commit-regular-files](/git/techniques/commit-regular-files.md) ONCE, with `paths` naming the planning folder `README.md` alone and a message stating which activities are entering progress, then apply [git::push-branch](/git/techniques/push-branch.md) ONCE with `repo_path` `.`, `branch` = current, and `remote_name` `origin` — see `one-commit-before-the-spawn`
-  > When `{planning_folder_path}` is unset, skip this phase.
-
-### 2. Open every branch with one call
+### 1. Open Every Branch
 
 - Call `next_activity { session_index, activity_id: fan_destination, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`. A token not captured is absent from the trace close-out resolves. Read from the response body `{branch_activities}`, the `branches` of every `fan` entry concatenated in the order the entries come, and `{barrier_destination}`, the `barrier`'s `destination`. The call retires the exiting activity and opens every branch
 

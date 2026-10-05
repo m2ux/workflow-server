@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -29,15 +29,15 @@ The resumed agent's next yield or final output
 
 ## Protocol
 
-### 1. Resolve harness technique
+### 1. Resolve Harness Technique
 
 - Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: resume` → `{harness_technique}`, `{harness_operation}`.
 
-### 2. Resume
+### 2. Resume Agent
 
 - Resume by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{agent_id}`, `{session_index}`, and `{composed_prompt}`, under `foreground-always`.
 
-### 3. Await result
+### 3. Await Result
 
 - Wait until the agent yields or completes (blocking-equivalent); capture the output as `{agent_result}`.
 

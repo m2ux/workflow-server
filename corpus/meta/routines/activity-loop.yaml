@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.5.0
+version: 1.6.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -28,6 +28,12 @@ inputs:
     description: Path kind of the engineering checkout. `worktree` selects the worktree commit; any other value selects an ordinary commit of the host checkout. A caller that binds nothing supplies the host's own kind.
   - id: target_status
     description: The Progress status an entry publishes for the activity it marks.
+  - id: workflow_id
+    description: The workflow a dispatched worker executes.
+  - id: seed_profile
+    description: The readme-seed profile for an entering mark. Unset when the walk has none.
+  - id: branch
+    description: The branch checked out where an entering mark is pushed.
   - id: completes_session
     default: true
     description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
@@ -103,9 +109,36 @@ steps:
       value: null
     maxIterations: 200
     steps:
+      - kind: routine
+        id: dispatch-entry
+        when: enter_activity == "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
+        routine: dispatch-entry
+        with:
+          activity_id: current_activity
+          session_index: session_index
+          workflow_id: workflow_id
+          planning_folder_path: planning_folder_path
+          target_status: target_status
+          seed_profile: seed_profile
+          branch: branch
+          from_activity: from_activity
+          exit_id: "{worker_result.activity_exit}"
+          step_manifest: "{worker_result.steps_completed}"
+          variables_changed: "{worker_result.variables_changed}"
+          stands_on_activity: stands_on_activity
+          agent_technique: workflow-engine::activity-worker
+        outputs:
+          worker_result: worker_result
+          worker_agent_id: worker_agent_id
+          advance_trace_tokens: advance_trace_tokens
+        actions:
+          - action: set
+            target: trace_tokens
+            value: "{advance_trace_tokens}"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: technique
         id: enter-activity
-        when: "!worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != 'checkpoint_pending'"
+        when: enter_activity != "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
         technique:
           name: enter_activity
           inputs:
@@ -122,6 +155,20 @@ steps:
             target: trace_tokens
             value: "{advance_trace_tokens}"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+      - kind: routine
+        id: finish-entered-activity
+        when: worker_result.result_type == "steps_complete"
+        routine: finish-activity
+        with:
+          current_activity: "{worker_result.activity_definition}"
+          exit_destinations: "{worker_result.exit_destinations}"
+          selected_exit: "{worker_result.selected_exit}"
+          steps_completed: "{worker_result.steps_completed}"
+          checkpoints_responded: "{worker_result.checkpoints_responded}"
+          artifacts_produced: "{worker_result.artifacts_produced}"
+          batch_may_continue: "{worker_result.batch_may_continue}"
+        outputs:
+          activity_result: worker_result
       - kind: action
         id: spend-entered-activity
         when: stands_on_activity
@@ -138,6 +185,19 @@ steps:
           - action: set
             target: current_activity
             value: null
+      - kind: routine
+        id: publish-fan-mark
+        when: "!worker_agent_id && worker_result.next_activity_fans && planning_folder_path"
+        routine: publish-entering-mark
+        with:
+          activity_id: current_activity
+          planning_folder_path: planning_folder_path
+          target_status: target_status
+          seed_profile: seed_profile
+          commit_message: "{current_activity} entering"
+          branch: branch
+          repo_path: "."
+          paths: "{planning_folder_path}/README.md"
       - kind: technique
         id: enter-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -157,16 +217,25 @@ steps:
             value: "{advance_trace_tokens}"
             description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: technique
-        id: spawn-branches
+        id: mint-branches
         when: "!worker_agent_id && worker_result.next_activity_fans"
         technique:
           name: fan::spawn-branches
           inputs:
             branch_activities: branch_activities
-            agent_technique: workflow-engine::activity-worker
-            variable_bag: variables
           outputs:
-            branch_envelopes: branch_envelopes
+            branches: branches
+      - kind: routine
+        id: open-branches
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        routine: open-branches
+        with:
+          branches: branches
+          agent_technique: workflow-engine::activity-worker
+          session_index: session_index
+          workflow_id: workflow_id
+        outputs:
+          branch_envelopes: branch_envelopes
       - kind: loop
         id: branch-retirement
         name: Branch Retirement
@@ -246,17 +315,21 @@ steps:
           inputs:
             session_index: session_index
             checkpoint_resolution: user_selection
-      - kind: technique
+      - kind: routine
         id: resume-yielded-worker
         when: worker_result.result_type == "checkpoint_pending" && worker_agent_id
-        technique:
-          name: workflow-engine::resume-worker
-          inputs:
-            session_index: session_index
-            activity_id: current_activity
-            worker_agent_id: worker_agent_id
-            checkpoint_reply: checkpoint_reply
-            variable_bag: variables
+        routine: resume-entry
+        with:
+          session_index: session_index
+          workflow_id: workflow_id
+          activity_id: current_activity
+          worker_agent_id: worker_agent_id
+          harness_agent_id: harness_agent_id
+          checkpoint_reply: checkpoint_reply
+          agent_technique: workflow-engine::activity-worker
+        outputs:
+          worker_result: worker_result
+          worker_agent_id: worker_agent_id
       - kind: technique
         id: resume-entered-activity
         when: worker_result.result_type == "checkpoint_pending" && !worker_agent_id
@@ -297,19 +370,25 @@ steps:
           - action: set
             target: current_activity
             value: null
-      - kind: technique
+      - kind: routine
         id: continue-batched-worker
         when: push_landed && worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
-        technique:
-          name: workflow-engine::continue-batch
-          inputs:
-            activity_id: "{worker_result.next_activity_id}"
-            exit_id: "{worker_result.activity_exit}"
-            session_index: session_index
-            worker_agent_id: worker_agent_id
-            step_manifest: "{worker_result.steps_completed}"
-            variables_changed: "{worker_result.variables_changed}"
-            variable_bag: variables
+        routine: continue-entry
+        with:
+          activity_id: "{worker_result.next_activity_id}"
+          session_index: session_index
+          workflow_id: workflow_id
+          from_activity: current_activity
+          exit_id: "{worker_result.activity_exit}"
+          step_manifest: "{worker_result.steps_completed}"
+          variables_changed: "{worker_result.variables_changed}"
+          worker_agent_id: worker_agent_id
+          harness_agent_id: harness_agent_id
+          agent_technique: workflow-engine::activity-worker
+        outputs:
+          worker_result: worker_result
+          worker_agent_id: worker_agent_id
+          advance_trace_tokens: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens

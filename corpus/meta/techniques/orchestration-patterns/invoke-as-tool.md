@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,14 +33,14 @@ Structured or textual return value only.
 
 ## Protocol
 
-### 1. Build the Prompt
+### 1. Build Prompt
 
 - Build a prompt from `{task_brief}`, `{output_contract}`, and `{session_index}` when present — instruct the agent to return only the final result matching the contract.
 
-### 2. Spawn the Agent
+### 2. Spawn Agent
 
 - Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with that prompt (and `{description}` when set).
 
-### 3. Capture the Result
+### 3. Capture Result
 
 - Capture the agent's final output as `{tool_result}`. Discard intermediate transcript from the parent bag.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ The Rules section name within that file matching `{operation_kind}` (`spawn`, `r
 
 ## Protocol
 
-### 1. Map harness kind
+### 1. Map Harness Kind
 
 - Map `{harness_kind}` to `{harness_technique}` (authoritative table — edit only here):
   - `claude-code` → [claude-code](./claude-code.md)
@@ -33,10 +33,6 @@ The Rules section name within that file matching `{operation_kind}` (`spawn`, `r
   - `cline` → [cline](./cline.md)
   - `generic` → [generic](./generic.md)
 
-### 2. Select rule slice
+### 2. Select Rule Slice
 
-- Set `{harness_operation}` from `{operation_kind}` (`spawn` | `resume` | `concurrent`) — each harness technique exposes those three Rules sections (not sequenced Protocol phases).
-
-### 3. Return resolution
-
-- Return `{harness_technique}` and `{harness_operation}` for the caller to apply.
+- Set `{harness_operation}` from `{operation_kind}` (`spawn` | `resume` | `concurrent`) — each harness technique exposes those three Rules sections (not sequenced Protocol phases). Return `{harness_technique}` and `{harness_operation}`.

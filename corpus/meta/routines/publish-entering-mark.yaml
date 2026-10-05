@@ -1,0 +1,56 @@
+id: publish-entering-mark
+version: 1.0.0
+name: Publish Entering Mark
+description: >-
+  Write the in-progress Progress mark for the activities that are entering, commit the planning
+  README once, and push that commit. A fan passes every entering branch as activity_id and still
+  makes one commit. The caller runs this before any spawn, and skips it when the planning folder
+  is unset.
+
+inputs:
+  - id: activity_id
+    description: The activity entering progress. A fan passes the destination that names every entering branch.
+  - id: planning_folder_path
+    description: Path to the planning folder whose README Progress surface is updated.
+  - id: seed_profile
+    description: Resource id of the workflow's readme-seed profile. Unset when the walk has none bound.
+  - id: target_status
+    description: The dispatch-moment status from Progress Status call sites. Unset, sync-progress-status takes the completion row.
+  - id: commit_message
+    description: The commit message. It states which activities are entering progress.
+  - id: branch
+    description: The branch checked out in repo_path.
+  - id: repo_path
+    description: The working tree the commit and the push run in.
+  - id: paths
+    description: The planning README, and nothing else.
+
+outputs:
+  - id: paths
+    description: The files the commit staged.
+
+steps:
+  - kind: technique
+    id: mark-entering
+    technique:
+      name: workflow-engine::sync-progress-status
+      inputs:
+        activity_id: activity_id
+        planning_folder_path: planning_folder_path
+        seed_profile: seed_profile
+        target_status: target_status
+  - kind: technique
+    id: commit-entering-mark
+    technique:
+      name: git::commit-regular-files
+      inputs:
+        paths: paths
+        commit_message: commit_message
+  - kind: technique
+    id: push-entering-mark
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: repo_path
+        branch: branch
+        remote_name: origin

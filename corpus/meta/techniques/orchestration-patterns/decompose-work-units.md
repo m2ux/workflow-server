@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -25,14 +25,14 @@ Ordered array of `{ id, brief, tools_hint? }`. `id` is a stable slug; `brief` is
 
 ## Protocol
 
-### 1. Choose the Subtasks
+### 1. Choose Subtasks
 
 - Read `{work_goal}` and `{planning_context}`; decide the minimum set of independent subtasks that cover the goal without overlap.
 
-### 2. Emit Them in Order
+### 2. Emit Ordered Units
 
 - Emit `{work_units}` in execution preference order. Honour `{effort_cap}` when present.
 
-### 3. Hold Each Brief to Standing Alone
+### 3. Require Solo Briefs
 
 - Each `brief` must be executable without sibling briefs or the parent's chain of thought.

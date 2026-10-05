@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -25,15 +25,15 @@ The sub-agent's final output (text, including any `<checkpoint_yield>` block) â€
 
 ## Protocol
 
-### 1. Resolve harness technique
+### 1. Resolve Harness Technique
 
 - Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: spawn` â†’ `{harness_technique}`, `{harness_operation}`.
 
-### 2. Dispatch
+### 2. Dispatch Agent
 
 - Dispatch by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{composed_prompt}` and `{description}`, under `foreground-always`.
 
-### 3. Await result
+### 3. Await Result
 
 - Wait until the agent yields a checkpoint or returns (blocking-equivalent); capture its final output as `{agent_result}`.
 
