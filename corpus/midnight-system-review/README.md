@@ -96,7 +96,7 @@ midnight-system-review/
 ├── README.md
 ├── activities/
 │   ├── README.md
-│   └── 01…06 activity YAML (one per activity above)
+│   └── activity YAML (one per activity above)
 ├── techniques/
 │   ├── README.md
 │   ├── TECHNIQUE.md            # base contract: planning_folder_path, target_repo_path
