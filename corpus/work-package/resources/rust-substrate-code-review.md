@@ -1,0 +1,199 @@
+---
+name: rust-substrate-code-review
+description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and report generation.
+metadata:
+  version: 2.0.2
+  order: 16
+  legacy_id: 16
+---
+
+# Rust/Substrate Code Review Guide
+
+Produces a **Code Review Report** capturing findings and recommendations.
+
+## Review Scope
+
+| Scope Type | Description | When to Use |
+|------------|-------------|-------------|
+| **Implementation Changes** | All files modified during implementation | After completing all implementation tasks |
+| **PR Changes** | All files in a pull request | PR review before merge |
+| **Module** | Single module or crate | Focused module audit |
+| **Directory** | All files in a directory tree | Broader architectural review |
+
+For implementation reviews: review all files modified during implementation, focus on new/changed code, use git diff to identify changed lines. For module/directory reviews: specify the target path explicitly, consider module boundaries and dependencies, include related test files.
+
+## Field List
+
+Designators use the prefix declared for this report's category at [Code Review](./review-mode.md#code-review). Every finding carries the fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
+
+| Declaration | Value |
+|---|---|
+| `Category` vocabulary | Rust Idioms / Substrate Framework / Architecture / Documentation / Testing |
+| Extension field | `Code Example` — current versus suggested, where the fix reads more clearly shown than described |
+
+`Code Example` is optional and comes last; the declared fields appear on every finding.
+
+## Report Template
+
+```markdown
+# Code Review Report
+
+> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed
+
+**Result:** [Acceptable / Needs Improvement / Significant Issues] · X/5 — Critical: X · High: X · Medium: X · Low: X
+
+[Omit unless the review judged against a run. **Method:** the command, or the continuous-integration run, that reproduces that baseline.]
+
+## Findings
+
+[One heading per finding, ascending by designator, no grouping heading between them. With no findings, state that in one line.]
+
+### CR-1 — [one line naming the finding]
+
+**Category:** [category]
+
+**Severity:** [render-scale value]
+
+**Reachability:** [a value from [Reachability](./findings-report.md#reachability)]
+
+**Description:** [explanation, opening with an inline link to the named thing]
+
+**Impact:** [consequence]
+
+**Recommendation:** [fix]
+```
+
+## Review Stance (consult)
+
+Tone / attribution: [agent-conduct](/meta/techniques/agent-conduct.md). Prefer tooling (`rustfmt`, `clippy`) for style/formatting. Implementation comments explain why — never the review process.
+
+## Review Criteria
+
+### 1. Rust Language Idioms & Best Practices
+
+**Ownership & Borrowing:**
+- [ ] Appropriate use of owned vs borrowed types (`String` vs `&str`, `Vec<T>` vs `&[T]`)
+- [ ] Minimal cloning and unnecessary allocations; scrutinize `clone()` usage
+- [ ] Proper lifetime annotations where required
+- [ ] Smart pointer usage (`Rc`, `Arc`, `Box`) only when appropriate
+
+**Error Handling:**
+- [ ] Consistent use of `Result<T, E>` for fallible techniques
+- [ ] Appropriate error types (custom errors vs standard library)
+- [ ] Proper error propagation using `?` operator
+- [ ] Meaningful error messages and contextual information
+
+**Type System & Generics:**
+- [ ] Appropriate use of traits vs concrete types
+- [ ] Generic constraints and bounds correctly applied
+- [ ] Use of associated types vs generic type parameters where appropriate
+- [ ] Phantom types where applicable for zero-cost abstractions
+
+**Pattern Matching & Control Flow:**
+- [ ] Exhaustive pattern matching
+- [ ] Use of `if let` vs `match` appropriately for clarity
+- [ ] Iterator patterns favored over imperative loops
+- [ ] Early returns and guard clauses applied for readability
+
+**Memory Safety & Performance:**
+- [ ] Zero-cost abstractions used effectively
+- [ ] Appropriate collection types and optimal sizing
+- [ ] Lazy evaluation where beneficial for performance
+- [ ] CPU cache-friendly data structures considered
+
+**Unsafe Code:**
+- [ ] All `unsafe` blocks include a **documented safety contract**
+- [ ] Justify necessity of `unsafe`; prefer safe Rust alternatives
+- [ ] Verify testing and audit coverage of unsafe code paths
+
+### 2. Substrate Framework Compliance
+
+**Pallet Structure:**
+- [ ] Correct pallet configuration traits
+- [ ] Storage item definitions and types well defined
+- [ ] Dispatchable functions with appropriate origin validation
+- [ ] Clear event and error definitions
+- [ ] Genesis configuration implemented if needed
+
+**Runtime Integration:**
+- [ ] Proper trait implementations as per Substrate conventions
+- [ ] Benchmarking setup present and accurate
+- [ ] Migration patterns for storage upgrades correctly handled
+- [ ] Integration with other pallets correctly modularized
+
+**Substrate Types & Traits:**
+- [ ] Use of substrate-specific types consistent
+- [ ] Proper codec implementations (`Encode`, `Decode`) present
+- [ ] Scale info included for runtime metadata generation
+- [ ] Runtime API implementations where applicable
+
+**Security Considerations:**
+- [ ] Strict origin validation in all dispatchable functions
+- [ ] Accurate and reviewed weight calculations
+- [ ] Protection against overflow/underflow vulnerabilities
+- [ ] Checks for denial-of-service vectors
+
+### 3. Architecture & Module Structure
+
+**File & Folder Organization:**
+- [ ] Logical hierarchical structure of modules
+- [ ] Files kept to reasonable size (preferably < 500 lines)
+- [ ] Clear separation of concerns among files and modules
+- [ ] Public vs private API boundaries clearly defined
+
+**Module Design:**
+- [ ] Adherence to single responsibility principle
+- [ ] Appropriate abstractions and clear interfaces
+- [ ] Use of dependency injection or modular patterns for testability
+- [ ] Consider testability in structure and design
+
+**Code Organization:**
+- [ ] Related functionality grouped together logically
+- [ ] Centralized constants and configuration
+- [ ] Helper functions and utilities appropriately encapsulated
+- [ ] Clear separation of integration vs unit tests
+
+### 4. Documentation Quality & Style
+
+**Documentation Coverage:**
+- [ ] All public APIs documented with `///` comments
+- [ ] Module-level documentation using `//!` comments
+- [ ] Clear explanations for complex algorithms and logic
+- [ ] Usage examples included where appropriate
+
+**Documentation Style:**
+- [ ] Concise but complete descriptions
+- [ ] Proper grammar and professional tone
+- [ ] Consistent terminology throughout
+- [ ] Links to relevant external documentation/resources
+
+**Code Comments:**
+- [ ] Inline comments explain *why* something is done, not *what*
+- [ ] Complex logic sections are well documented
+- [ ] TODO/FIXME comments contain context and clear instructions
+- [ ] Comment density is balanced
+
+### 5. Testing & Quality Assurance
+
+**Test Coverage:**
+- [ ] Unit tests for all public functions and critical paths
+- [ ] Integration tests covering interactions across modules/pallets
+- [ ] Edge case and error condition testing included
+- [ ] Performance and benchmarking tests where applicable
+
+**Test Quality:**
+- [ ] Tests have clear, descriptive names and are well organized
+- [ ] Proper use of test data and fixtures
+- [ ] Mocks and dependency isolation used appropriately
+- [ ] Tests are readable and maintainable with minimal duplication
+
+## Reference Materials
+
+- [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/)
+- [Substrate Documentation](https://docs.substrate.io/)
+- [Polkadot SDK Documentation](https://paritytech.github.io/polkadot-sdk/)
+- [Rust Performance Book](https://nnethercote.github.io/perf-book/)
+
+## Rules
+
+- **Line budget:** ~30 lines per finding. A finding needing more is carrying evidence its locus link already shows.
