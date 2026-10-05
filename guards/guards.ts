@@ -81,6 +81,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'authored',
   },
   {
+    id: 'mode-variables',
+    script: 'guards/check-mode-variables.ts',
+    npmScript: 'check:mode-variables',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'implement, review, and remediate declare only names their activities read or write, and neither mode flag of the combined workflow',
+    form: 'authored',
+  },
+  {
     id: 'artifact-status-once',
     script: 'guards/check-artifact-status-once.ts',
     npmScript: 'check:status-once',
