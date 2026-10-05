@@ -224,7 +224,8 @@ Techniques define tool orchestration, protocols, and composable capabilities. Th
 | [`decompose-safety-claims`](./techniques/decompose-safety-claims.md) | Decompose PASS verdicts into independently verifiable properties |
 | [`map-codebase`](./techniques/map-codebase.md) | Build structured architectural map from component inventory |
 | [`analyze-architecture`](./techniques/analyze-architecture.md) | Security-oriented architectural decomposition: interaction model, privilege map, candidate points, emergent domains |
-| [`setup-audit-target`](./techniques/setup-audit-target.md) | Validate target codebase, run dependency scanning, file inventory |
+| [`resolve-audit-target`](./techniques/resolve-audit-target.md) | Read target component, audited revision, and reference report from the request |
+| [`setup-audit-target`](./techniques/setup-audit-target.md) | Confirm pinned checkout, run dependency scanning, file inventory |
 | [`search-pattern-catalog`](./techniques/search-pattern-catalog.md) | Execute catalog patterns against codebase scope, triage results |
 
 ### Sub-Agent Techniques

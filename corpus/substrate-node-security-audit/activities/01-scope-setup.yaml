@@ -1,5 +1,5 @@
 id: scope-setup
-version: 2.4.0
+version: 2.5.0
 name: Scope Setup
 description: Set up the audit scope and planning folder.
 variables:
@@ -10,7 +10,6 @@ variables:
     - repo_name
     - target_submodule
     - user_request
-    - workspace_root
   writes:
     - name: repo_name
       type: string
@@ -36,6 +35,18 @@ steps:
     actions:
       - action: log
         message: Starting security audit scope setup
+  - kind: technique
+    id: resolve-target
+    technique: resolve-audit-target
+  - kind: technique
+    id: pin-target
+    technique:
+      name: git::pin-revision
+      inputs:
+        repo_path: target_submodule
+        revision_name: target_revision
+      outputs:
+        pinned_commit: target_commit
   - kind: technique
     id: setup-target
     technique: setup-audit-target
@@ -67,6 +78,7 @@ exits:
     isDefault: true
 outcome:
   - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit
+  - The pin lands target_commit as the commit HEAD stands at; a revision that resolves to nothing, or a checkout carrying uncommitted changes, stops setup with the refusal before any scan runs
   - Any reference report is quarantined out of scope until Phase 5, so the audit stays independent of it
   - Known-vulnerable dependencies are surfaced (or their absence explicitly noted) before code review begins
   - A reviewed file inventory establishes the in-scope surface every agent must cover

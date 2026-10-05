@@ -43,7 +43,8 @@ The technique library for the substrate-node-security-audit workflow. Each techn
 | [`decompose-safety-claims`](decompose-safety-claims.md) | Decompose PASS verdicts into independently verifiable properties |
 | [`map-codebase`](map-codebase.md) | Build a structured architectural map from the component inventory |
 | [`analyze-architecture`](analyze-architecture.md) | Security-oriented architectural decomposition: interaction model, privilege map, candidate points, emergent domains |
-| [`setup-audit-target`](setup-audit-target.md) | Validate the target codebase, run dependency scanning, build the file inventory |
+| [`resolve-audit-target`](resolve-audit-target.md) | Read the target component, its audited revision, and any reference report from the request |
+| [`setup-audit-target`](setup-audit-target.md) | Confirm the pinned checkout, run dependency scanning, build the file inventory |
 | [`search-pattern-catalog`](search-pattern-catalog.md) | Execute catalog patterns against a codebase scope, triage results |
 
 ---
@@ -62,6 +63,7 @@ The technique library for the substrate-node-security-audit workflow. Each techn
 |-----------|----------|
 | [`variable-binding`](/meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's technique to the workflow-scoped variable bag |
 | [`orchestration-patterns::dispatch-workers`](/meta/techniques/orchestration-patterns/dispatch-workers.md) / [`gather-results`](/meta/techniques/orchestration-patterns/gather-results.md) | Bound from reconnaissance / primary-audit after domain brief composition |
+| [`git::pin-revision`](/git/techniques/pin-revision.md) | Bound from scope-setup to check out the target at its audited revision and land `target_commit` |
 | [`harness-compat::spawn-agent`](/meta/techniques/harness-compat/spawn-agent.md) / [`spawn-concurrent`](/meta/techniques/harness-compat/spawn-concurrent.md) | Invoked inside meta `orchestration-patterns::dispatch-workers` |
 
 For the full technique-to-activity picture with capability summaries, see the [workflow README](../README.md#techniques).
