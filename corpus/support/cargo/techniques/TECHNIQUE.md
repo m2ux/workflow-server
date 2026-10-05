@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -11,7 +11,11 @@ Resource-constrained techniques for cargo subcommands.
 
 ### build_scope
 
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate (preferred during inner loops)
+*(optional)* `--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
+
+#### default
+
+`--workspace`
 
 ### features
 
@@ -23,7 +27,11 @@ Resource-constrained techniques for cargo subcommands.
 
 ### build_budget
 
-The command prefix a compiling cargo invocation carries, composed per resource-budget.
+*(optional)* The command prefix a compiling cargo invocation carries: the environment caps followed by the nice level.
+
+#### default
+
+`CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19`
 
 ### generated_product_skip
 
@@ -43,7 +51,7 @@ Every cargo invocation MUST use one of these techniques. Do NOT call bare `cargo
 
 Every compiling invocation carries `{build_budget}`, whose caps hold a compile inside a 32 GiB host. That figure is the floor these techniques are tuned against: raise the caps through the environment on a host above it, and narrow `{build_scope}` to one crate on a host below it.
 
-`{build_budget}` is the environment caps followed by the nice level — `CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19` — and two techniques extend it for what they compile:
+Two techniques extend `{build_budget}` for what they compile:
 
 - [test](./test.md) adds `RUST_TEST_THREADS=${RUST_TEST_THREADS:-4}`, bounding test parallelism alongside build parallelism.
 - Every compiling technique except [build-release](./build-release.md) prefixes `{generated_product_skip}`, per generated-product-built-once.
