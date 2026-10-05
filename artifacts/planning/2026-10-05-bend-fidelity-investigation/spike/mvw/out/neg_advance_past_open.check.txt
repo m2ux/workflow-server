@@ -1,0 +1,15 @@
+SOME PROOFS FAIL
+Error:
+- expected : M.Standing<M.Dispatch{}>
+- observed : M.Paused<M.Dispatch{}>
+Context:
+- s0 : M.Standing<M.Dispatch{}>
+- s1 : M.Paused<M.Dispatch{}>
+Location: walk
+ 9 |   s1 = M.yield_checkpoint(M.Dispatch{}, s0, "Proceed with the dispatch?")
+10>|   M.next_activity(M.Dispatch{}, s1, M.Dispatched{}, (True{}, Unit{}))
+   |                                 ^^
+11 | 
+--
+exit 1
+wall 0.10 s

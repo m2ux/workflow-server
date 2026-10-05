@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : a declared constructor (Activity declares Dispatch)
+- observed : Review{}
+Location: graph
+24 |         case Dispatched{}:
+25>|           Enter{Review{}}
+   |                 ^^^^^^^^
+26 | 
+--
+exit 1
+wall 0.11 s

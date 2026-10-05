@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : cases for Skipped
+- observed : \{}
+Location: graph
+24 |     case Dispatch{}:
+25>|       match e:
+   |       ^^^^^^^^
+26 |         case Dispatched{}:
+--
+exit 1
+wall 0.10 s

@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : s0
+- observed : s0 (consumed more than once)
+Location: walk
+ 8 | def walk() -> M.Ended & M.Ended:
+ 9>|   s0 = M.start()
+   |   ^^
+10 |   a = M.next_activity(M.Dispatch{}, s0, M.Dispatched{}, (True{}, Unit{}))
+--
+exit 1
+wall 0.10 s
