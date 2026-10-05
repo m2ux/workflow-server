@@ -15,7 +15,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -242,15 +242,19 @@ def cited(text: str) -> list[int]:
     return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
 
 
-def sync_done(rows, header, delivered: dict[str, bool], report) -> bool:
-    """Set a tick on each delivered row, and clear it on each row that is not. Returns whether any changed."""
+def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool], kind: str, report) -> bool:
+    """Set a tick on each complete row, and clear it on each row that is not. Returns whether any changed."""
     if 'Done' not in header:
         return False
     at = header.index('Done')
     changed = False
     for r in rows:
         name = row_id(id_cell(header, r))
-        complete = bool(delivered.get(name))
+        if kind == 'epic':
+            acs = cited(cell(header, r, 'Coverage'))
+            complete = bool(delivered.get(name)) and all(ticked.get(n) for n in acs)
+        else:
+            complete = bool(delivered.get(name))
         mark = TICK if complete else ''
         current = r[at] if at < len(r) else ''
         if current == mark:
@@ -382,7 +386,7 @@ def main() -> int:
 
     done_changed = False
     if kind != 'task' and rows:
-        done_changed = sync_done(rows, header, delivered, report)
+        done_changed = sync_done(rows, header, delivered, ticked, kind, report)
 
     open_rows = [t for t, d in delivered.items() if not d] if kind != 'initiative' else []
     open_criteria = [f'{tag}{n}' for n, t in ticked.items() if not t]

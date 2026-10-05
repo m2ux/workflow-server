@@ -11,7 +11,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
 
 - **Done.**
   The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
-  - A task row is complete when it is delivered, as [Task ids](#delivery) defines. A criterion its Coverage names that is still unticked is unmet, and the cell carries the tick.
+  - A task row is complete when it is delivered, as [Task ids](#delivery) defines, and every criterion its Coverage names is ticked.
   - An epic row is complete when its issue is closed as completed, which is when every one of its criteria is ticked and every one of its tasks is delivered.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
@@ -30,7 +30,8 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
   - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check Dependencies](commands.md#check-dependencies) derives it from the epic tables.
 - **Task grain.**
-  - A task is one pull request's worth of work, and takes a further pull request when a merged one leaves a criterion its Coverage names unmet.
+  - A task is one pull request's worth of work.
+  - A criterion a merged pull request left unticked belongs to a further task. The further task depends on the delivered task, and its Coverage is that criterion. Criteria one pull request can deliver share one further task. The delivered task's Coverage omits each criterion a further task adopts.
   - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
   - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
   - Every test the work calls for accompanies that task. The content steers which kinds those are, including the project's system test when the work is something that test can exercise. A failure in any test the task carries keeps the task open. None of those tests is a later row.
@@ -67,7 +68,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 ## Delivery
 
 - **Pull request scope.**
-  A pull request delivers one task, or a set of tasks that name each other in Joins. A further pull request on a task with an unmet criterion delivers that same task, or tasks that name it in Joins.
+  A pull request delivers one task, or a set of tasks that name each other in Joins.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
