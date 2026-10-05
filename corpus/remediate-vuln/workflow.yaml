@@ -19,7 +19,7 @@ techniques:
   activity:
     - variable-binding
 variables:
-  # This workflow opens on its own `start` rather than work-package's `start-work-package`, so the
+  # This workflow opens on its own `start` rather than legacy's `start-work-package`, so the
   # review-mode values that opener produces have no producer here. It never reviews an existing PR,
   # so they are constants, owned by the file that runs the borrowed activity reading them.
   - name: prior_feedback_triage
@@ -257,21 +257,21 @@ graph:
       - research
       - implementation-analysis
 activities:
-  - work-package/02-design-philosophy.yaml
-  - work-package/03-requirements-elicitation.yaml
-  - work-package/04-research.yaml
-  - work-package/05-implementation-analysis.yaml
-  - work-package/06-plan-prepare.yaml
-  - work-package/07-assumptions-review.yaml
-  - work-package/08-implement.yaml
-  - work-package/09-lean-coding-audit.yaml
-  - work-package/16-prism-decision.yaml
-  - work-package/17-code-review.yaml
-  - work-package/18-structural-analysis.yaml
-  - work-package/19-test-suite-review.yaml
-  - work-package/10-post-impl-review.yaml
-  - work-package/11-validate.yaml
-  - work-package/12-strategic-review.yaml
-  - work-package/13-submit-for-review.yaml
-  - work-package/14-complete.yaml
-  - work-package/15-codebase-comprehension.yaml
+  - legacy/02-design-philosophy.yaml
+  - legacy/03-requirements-elicitation.yaml
+  - legacy/04-research.yaml
+  - legacy/05-implementation-analysis.yaml
+  - legacy/06-plan-prepare.yaml
+  - legacy/07-assumptions-review.yaml
+  - legacy/08-implement.yaml
+  - legacy/09-lean-coding-audit.yaml
+  - legacy/16-prism-decision.yaml
+  - legacy/17-code-review.yaml
+  - legacy/18-structural-analysis.yaml
+  - legacy/19-test-suite-review.yaml
+  - legacy/10-post-impl-review.yaml
+  - legacy/11-validate.yaml
+  - legacy/12-strategic-review.yaml
+  - legacy/13-submit-for-review.yaml
+  - legacy/14-complete.yaml
+  - legacy/15-codebase-comprehension.yaml

@@ -7,7 +7,7 @@ The activity is the work-package assumptions review. It collects the assumptions
 | Activity | Borrows | Role |
 |---|---|---|
 | `take-case` | nothing | binds the next case: an implementation run, then a review run |
-| `assumptions-review` | `work-package/07-assumptions-review.yaml` | the review under test |
+| `assumptions-review` | `legacy/07-assumptions-review.yaml` | the review under test |
 | `record-case` | nothing | appends what the review settled, and loops while a case remains |
 | `report-cases` | nothing | reports each case per the [assumptions case report](resources/assumptions-case-report.md) guide |
 

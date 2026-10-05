@@ -32,8 +32,8 @@ These techniques are standalone, so other workflows bind them with the slash for
 | `codebase-wiki/query` | Read the wiki to answer a question with cited claims. |
 | `codebase-wiki/lint` | Check wiki integrity. |
 
-Internally, the techniques delegate raw file IO to work-package's `manage-artifacts` group with the triple-`::` form:
+Internally, the techniques delegate raw file IO to legacy's `manage-artifacts` group with the triple-`::` form:
 
 | Reference | Used for |
 |-----------|----------|
-| [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — page, index, log, and overview writes, with `target_dir` bound to `{wiki_path}`. |
+| [`legacy::manage-artifacts`](/work-package/workflows/legacy/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — page, index, log, and overview writes, with `target_dir` bound to `{wiki_path}`. |

@@ -290,7 +290,7 @@ sequenceDiagram
     Orch->>User: REPORT.md, DEFINITIVE-FINDINGS.md, RUN-MANIFEST.json + all artifact paths
 ```
 
-Unlike the work-package workflow (which resumes a persistent worker), the prism workflow creates a **new worker for each pass**. This is the isolation guarantee — the adversarial worker has never seen the structural analysis being generated.
+Unlike the legacy workflow (which resumes a persistent worker), the prism workflow creates a **new worker for each pass**. This is the isolation guarantee — the adversarial worker has never seen the structural analysis being generated.
 
 ---
 

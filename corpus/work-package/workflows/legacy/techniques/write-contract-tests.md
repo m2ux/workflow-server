@@ -27,7 +27,7 @@ Repository-relative paths this task's contract tests wrote.
 
 ### 1. Read the Contract Only
 
-- Read the Contract on `{current_task}` per the [plan guide](/work-package/resources/plan-guide.md#rules)
+- Read the Contract on `{current_task}` per the [plan guide](/work-package/workflows/legacy/resources/plan-guide.md#rules)
 - Goal, deliverables, and any plan section outside that Contract are out of scope
 - Implementation source is out of scope
 

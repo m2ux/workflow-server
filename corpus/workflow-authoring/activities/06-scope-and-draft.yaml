@@ -89,7 +89,7 @@ steps:
   - kind: technique
     id: persist-scope-manifest
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: scope-manifest.md
         artifact_content: scope_manifest_report
@@ -175,7 +175,7 @@ steps:
       - kind: technique
         id: inventory-flagged-removal
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: impact-analysis.md
             artifact_content: impact_analysis

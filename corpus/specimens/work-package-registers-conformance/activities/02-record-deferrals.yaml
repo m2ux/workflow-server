@@ -16,11 +16,11 @@ steps:
   - kind: technique
     id: append-deferrals
     technique:
-      name: work-package::manage-registers::append-deferred-item
+      name: legacy::manage-registers::append-deferred-item
   - kind: technique
     id: raise-first
     technique:
-      name: work-package::raise-deferred-items::record
+      name: legacy::raise-deferred-items::record
       inputs:
         current_deferred_item: raised_item
         deferred_item_issue_number: raised_issue_number

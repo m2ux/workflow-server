@@ -23,7 +23,7 @@ steps:
   - kind: technique
     id: persist-plain-document
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: plain-document.md
         artifact_content: document_draft

@@ -1,6 +1,6 @@
 ---
 name: workflow-triggering-protocol
-description: "Before triggering the work-package workflow, gather context from the roadmap:"
+description: "Before triggering the legacy workflow, gather context from the roadmap:"
 metadata:
   version: 1.0.0
   order: 6
@@ -9,7 +9,7 @@ metadata:
 
 # Workflow Triggering Protocol
 
-**Purpose:** How to trigger and manage the work-package workflow for each planned package during the implementation loop.
+**Purpose:** How to trigger and manage the legacy workflow for each planned package during the implementation loop.
 
 ---
 
@@ -17,7 +17,7 @@ metadata:
 
 ### 1. Prepare Context
 
-Before triggering the work-package workflow, gather context from the roadmap:
+Before triggering the legacy workflow, gather context from the roadmap:
 
 | Variable | Source | Description |
 |----------|--------|-------------|
@@ -27,7 +27,7 @@ Before triggering the work-package workflow, gather context from the roadmap:
 
 ### 2. Start the Workflow
 
-Enter the work-package workflow, which begins with its own intake and planning activities.
+Enter the legacy workflow, which begins with its own intake and planning activities.
 
 **Context to pass:**
 - Package name and description from the roadmap
@@ -37,7 +37,7 @@ Enter the work-package workflow, which begins with its own intake and planning a
 
 ### 3. Monitor Completion
 
-The work-package workflow handles its own checkpoints and user interactions. When it completes:
+The legacy workflow handles its own checkpoints and user interactions. When it completes:
 - A PR has been created and merged
 - Package-specific artifacts exist in the planning folder
 
@@ -45,7 +45,7 @@ The work-package workflow handles its own checkpoints and user interactions. Whe
 
 ## Updating Roadmap Status
 
-After each work-package workflow completes:
+After each legacy workflow completes:
 
 ### Update START-HERE.md
 
@@ -55,13 +55,13 @@ After each work-package workflow completes:
 
 ### Update README.md
 
-Add links to any new artifacts produced by the work-package workflow.
+Add links to any new artifacts produced by the legacy workflow.
 
 ---
 
 ## Handling Failures
 
-If a work-package workflow fails or is cancelled:
+If a legacy workflow fails or is cancelled:
 
 | Scenario | Action |
 |----------|--------|

@@ -129,7 +129,7 @@ steps:
   - kind: technique
     id: persist-scope-manifest
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: scope-manifest.md
         artifact_content: scope_manifest_report
@@ -155,7 +155,7 @@ steps:
   - kind: technique
     id: present-solution-overview
     technique:
-      name: work-package::stakeholder-overview
+      name: legacy::stakeholder-overview
       inputs:
         readme_section_heading: "## Solution Overview"
         source_material: the confirmed scope manifest and the structural design for the target workflow
@@ -181,7 +181,7 @@ steps:
       - kind: technique
         id: persist-drafting-plan
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: drafting-plan.md
             artifact_content: drafting_plan
@@ -217,7 +217,7 @@ steps:
       - kind: technique
         id: persist-revised-drafting-plan
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: drafting-plan.md
             artifact_content: drafting_plan
@@ -236,7 +236,7 @@ steps:
       - kind: technique
         id: persist-file-review-note
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: file-review-note.md
             artifact_content: file_review_note
@@ -327,7 +327,7 @@ steps:
   - kind: technique
     id: persist-draft-attestation
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: draft-attestation.md
         artifact_content: reviewed_blocks
@@ -347,7 +347,7 @@ steps:
   - kind: technique
     id: persist-principle-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: principle-findings.md
         artifact_content: principle_findings
@@ -361,7 +361,7 @@ steps:
   - kind: technique
     id: persist-anti-pattern-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: anti-pattern-findings.md
         artifact_content: anti_pattern_findings
@@ -394,7 +394,7 @@ steps:
       - kind: technique
         id: refresh-principle-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: principle-findings.md
             artifact_content: principle_findings
@@ -406,7 +406,7 @@ steps:
       - kind: technique
         id: refresh-anti-pattern-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: anti-pattern-findings.md
             artifact_content: anti_pattern_findings

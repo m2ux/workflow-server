@@ -9,4 +9,4 @@
 | Bare filename | Guide |
 |---------------|-------|
 | `work-package-discovery-fan-cases.md` | [discovery-fan-case-report](discovery-fan-case-report.md) |
-| `assumptions-log.md` | work-package [assumptions-review](/work-package/resources/assumptions-review.md) |
+| `assumptions-log.md` | work-package [assumptions-review](/work-package/workflows/legacy/resources/assumptions-review.md) |

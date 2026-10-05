@@ -49,7 +49,7 @@ The audit criteria this workflow applies — the anti-pattern catalog, the desig
 
 ## Outputs
 
-In create and update modes the workflow seeds a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](/meta/resources/planning-readme.md) Template under this workflow's [readme-seed](./resources/readme-seed.md) profile, plus the planning artifacts each activity persists as numbered files via [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md).
+In create and update modes the workflow seeds a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](/meta/resources/planning-readme.md) Template under this workflow's [readme-seed](./resources/readme-seed.md) profile, plus the planning artifacts each activity persists as numbered files via [`legacy::manage-artifacts::write-artifact`](/work-package/workflows/legacy/techniques/manage-artifacts/write-artifact.md).
 
 **Create mode:** a change brief, a confirmed scope manifest, the enumerated definition files authored under `{target_path}`, a findings register, and — once the commit gate approves — a commit on the run's branch, a non-draft pull request against `workflows`, and a `COMPLETE.md` close-out.
 

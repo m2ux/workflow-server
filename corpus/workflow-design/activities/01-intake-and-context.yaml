@@ -129,7 +129,7 @@ steps:
   - kind: technique
     id: persist-structural-inventory
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: structural-inventory.json
         artifact_content: structural_inventory
@@ -182,7 +182,7 @@ steps:
   - kind: technique
     id: persist-format-conventions
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: format-conventions.md
         artifact_content: format_conventions
@@ -190,7 +190,7 @@ steps:
   - kind: technique
     id: persist-applicable-constructs
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: applicable-constructs.md
         artifact_content: applicable_constructs
@@ -198,7 +198,7 @@ steps:
   - kind: technique
     id: present-problem-overview
     technique:
-      name: work-package::stakeholder-overview
+      name: legacy::stakeholder-overview
       inputs:
         readme_section_heading: "## Problem Overview"
         source_material: the requested change, the target workflow's current shape, and any context gathered during this activity

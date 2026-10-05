@@ -89,7 +89,7 @@ steps:
   - kind: technique
     id: inventory-remediation-removals
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis

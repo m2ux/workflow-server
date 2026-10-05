@@ -27,7 +27,7 @@
     },
     {
       "site": "corpus/codebase-wiki/techniques/maintain-index-log.md:58",
-      "op": "`work-package::manage-artifacts::write-artifact`",
+      "op": "`legacy::manage-artifacts::write-artifact`",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -1292,475 +1292,475 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/analyse-challenge/challenge.md:27",
+      "site": "corpus/work-package/workflows/legacy/techniques/analyse-challenge/challenge.md:27",
       "op": "depth-1-only",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/analyse-challenge/challenge.md:27",
+      "site": "corpus/work-package/workflows/legacy/techniques/analyse-challenge/challenge.md:27",
       "op": "scatter-gather",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/apply-review-fixes.md:32",
+      "site": "corpus/work-package/workflows/legacy/techniques/apply-review-fixes.md:32",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/apply-review-fixes.md:32",
+      "site": "corpus/work-package/workflows/legacy/techniques/apply-review-fixes.md:32",
       "op": "impact",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/apply-review-fixes.md:40",
+      "site": "corpus/work-package/workflows/legacy/techniques/apply-review-fixes.md:40",
       "op": "commit-paths",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/apply-review-fixes.md:40",
+      "site": "corpus/work-package/workflows/legacy/techniques/apply-review-fixes.md:40",
       "op": "manage-git",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/codebase-comprehension/deep-dive.md:67",
+      "site": "corpus/work-package/workflows/legacy/techniques/codebase-comprehension/deep-dive.md:67",
       "op": "context",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/codebase-comprehension/deep-dive.md:67",
+      "site": "corpus/work-package/workflows/legacy/techniques/codebase-comprehension/deep-dive.md:67",
       "op": "cypher",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/codebase-comprehension/deep-dive.md:67",
+      "site": "corpus/work-package/workflows/legacy/techniques/codebase-comprehension/deep-dive.md:67",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/codebase-comprehension/survey.md:57",
+      "site": "corpus/work-package/workflows/legacy/techniques/codebase-comprehension/survey.md:57",
       "op": "context",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/codebase-comprehension/survey.md:57",
+      "site": "corpus/work-package/workflows/legacy/techniques/codebase-comprehension/survey.md:57",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/codebase-comprehension/survey.md:57",
+      "site": "corpus/work-package/workflows/legacy/techniques/codebase-comprehension/survey.md:57",
       "op": "query",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/create-issue/create-github.md:28",
+      "site": "corpus/work-package/workflows/legacy/techniques/create-issue/create-github.md:28",
       "op": "create-issue",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/create-issue/create-jira.md:35",
+      "site": "corpus/work-package/workflows/legacy/techniques/create-issue/create-jira.md:35",
       "op": "list-jira-projects",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/create-issue/create-jira.md:39",
+      "site": "corpus/work-package/workflows/legacy/techniques/create-issue/create-jira.md:39",
       "op": "atlassian",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/create-issue/create-jira.md:39",
+      "site": "corpus/work-package/workflows/legacy/techniques/create-issue/create-jira.md:39",
       "op": "create-jira-issue",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/create-issue/create-jira.md:39",
+      "site": "corpus/work-package/workflows/legacy/techniques/create-issue/create-jira.md:39",
       "op": "list-jira-issue-types",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/design-philosophy/classify.md:35",
+      "site": "corpus/work-package/workflows/legacy/techniques/design-philosophy/classify.md:35",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/design-philosophy/classify.md:35",
+      "site": "corpus/work-package/workflows/legacy/techniques/design-philosophy/classify.md:35",
       "op": "impact",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/finalize-documentation/ensure-docs.md:43",
+      "site": "corpus/work-package/workflows/legacy/techniques/finalize-documentation/ensure-docs.md:43",
       "op": "cargo",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/finalize-documentation/ensure-docs.md:43",
+      "site": "corpus/work-package/workflows/legacy/techniques/finalize-documentation/ensure-docs.md:43",
       "op": "doc",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:38",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:38",
       "op": "context",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:38",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:38",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:38",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:38",
       "op": "query",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:39",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:39",
       "op": "read-clusters",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:39",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:39",
       "op": "read-processes",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:40",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:40",
       "op": "group-freshness",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:41",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:41",
       "op": "group-search",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/implementation-analysis/analyze.md:47",
+      "site": "corpus/work-package/workflows/legacy/techniques/implementation-analysis/analyze.md:47",
       "op": "impact",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/manage-artifacts/TECHNIQUE.md:55",
+      "site": "corpus/work-package/workflows/legacy/techniques/manage-artifacts/TECHNIQUE.md:55",
       "op": "verify-artifact-links",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/manage-artifacts/TECHNIQUE.md:90",
+      "site": "corpus/work-package/workflows/legacy/techniques/manage-artifacts/TECHNIQUE.md:90",
       "op": "artifact-commits",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/manage-artifacts/TECHNIQUE.md:90",
+      "site": "corpus/work-package/workflows/legacy/techniques/manage-artifacts/TECHNIQUE.md:90",
       "op": "manage-git",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/manage-git/commit-paths.md:46",
+      "site": "corpus/work-package/workflows/legacy/techniques/manage-git/commit-paths.md:46",
       "op": "artifact-commits",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/manage-git/commit-paths.md:50",
+      "site": "corpus/work-package/workflows/legacy/techniques/manage-git/commit-paths.md:50",
       "op": "push-commits",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/manage-git/detect-merge-strategy.md:18",
+      "site": "corpus/work-package/workflows/legacy/techniques/manage-git/detect-merge-strategy.md:18",
       "op": "view-repo",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/research/reconcile.md:43",
+      "site": "corpus/work-package/workflows/legacy/techniques/research/reconcile.md:43",
       "op": "concept-rag",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/research/reconcile.md:43",
+      "site": "corpus/work-package/workflows/legacy/techniques/research/reconcile.md:43",
       "op": "load-domain-index",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/research/research.md:29",
+      "site": "corpus/work-package/workflows/legacy/techniques/research/research.md:29",
       "op": "concept-rag",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/research/research.md:29",
+      "site": "corpus/work-package/workflows/legacy/techniques/research/research.md:29",
       "op": "load-domain-index",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:37",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:37",
       "op": "list-pr-review-comments",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:39",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:39",
       "op": "list-pr-reviews",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:56",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:56",
       "op": "commit-paths",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:56",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:56",
       "op": "manage-git",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:63",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:63",
       "op": "comment-issue",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:68",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:68",
       "op": "push-branch",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:73",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:73",
       "op": "detect-changes",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:73",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:73",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/respond-to-pr-review.md:89",
+      "site": "corpus/work-package/workflows/legacy/techniques/respond-to-pr-review.md:89",
       "op": "agent-conduct",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-assumptions/TECHNIQUE.md:40",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-assumptions/TECHNIQUE.md:40",
       "op": "context",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-assumptions/TECHNIQUE.md:40",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-assumptions/TECHNIQUE.md:40",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-baseline-state.md:28",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-baseline-state.md:28",
       "op": "view-pr",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-baseline-state.md:40",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-baseline-state.md:40",
       "op": "list-pr-files",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-code.md:54",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-code.md:54",
       "op": "resource-loading-via-tool",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-code.md:60",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-code.md:60",
       "op": "detect-changes",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-code.md:60",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-code.md:60",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-code.md:61",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-code.md:61",
       "op": "impact",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-code.md:68",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-code.md:68",
       "op": "prism",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-code.md:68",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-code.md:68",
       "op": "structural-analysis",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-diff.md:58",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-diff.md:58",
       "op": "view-pr",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-diff.md:77",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-diff.md:77",
       "op": "context",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-diff.md:77",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-diff.md:77",
       "op": "gitnexus",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-summary.md:75",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-summary.md:75",
       "op": "view-pr",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/review-summary.md:99",
+      "site": "corpus/work-package/workflows/legacy/techniques/review-summary.md:99",
       "op": "viewer-login",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/apply-cleanup.md:26",
+      "site": "corpus/work-package/workflows/legacy/techniques/strategic-review/apply-cleanup.md:26",
       "op": "manage-git",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/apply-cleanup.md:26",
+      "site": "corpus/work-package/workflows/legacy/techniques/strategic-review/apply-cleanup.md:26",
       "op": "restore-paths-from-ref",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/apply-cleanup.md:26",
+      "site": "corpus/work-package/workflows/legacy/techniques/strategic-review/apply-cleanup.md:26",
       "op": "review-scope",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/apply-cleanup.md:30",
+      "site": "corpus/work-package/workflows/legacy/techniques/strategic-review/apply-cleanup.md:30",
       "op": "commit-paths",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/resign-commits.md:38",
+      "site": "corpus/work-package/workflows/legacy/techniques/strategic-review/resign-commits.md:38",
       "op": "push-branch",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/strategic-review/review-scope.md:51",
+      "site": "corpus/work-package/workflows/legacy/techniques/strategic-review/review-scope.md:51",
       "op": "view-pr",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/update-pr/create-pr.md:39",
+      "site": "corpus/work-package/workflows/legacy/techniques/update-pr/create-pr.md:39",
       "op": "create-pr",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/update-pr/create-pr.md:43",
+      "site": "corpus/work-package/workflows/legacy/techniques/update-pr/create-pr.md:43",
       "op": "assign-issue",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/update-pr/mark-ready.md:29",
+      "site": "corpus/work-package/workflows/legacy/techniques/update-pr/mark-ready.md:29",
       "op": "mark-ready",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/update-pr/render.md:28",
+      "site": "corpus/work-package/workflows/legacy/techniques/update-pr/render.md:28",
       "op": "update-pr-description",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/validate-build/analyze-failure.md:43",
+      "site": "corpus/work-package/workflows/legacy/techniques/validate-build/analyze-failure.md:43",
       "op": "cargo",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/validate-build/analyze-failure.md:43",
+      "site": "corpus/work-package/workflows/legacy/techniques/validate-build/analyze-failure.md:43",
       "op": "fmt-fix",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/validate-build/apply-fix.md:28",
+      "site": "corpus/work-package/workflows/legacy/techniques/validate-build/apply-fix.md:28",
       "op": "cargo",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/validate-build/apply-fix.md:28",
+      "site": "corpus/work-package/workflows/legacy/techniques/validate-build/apply-fix.md:28",
       "op": "fmt-fix",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/validate-build/TECHNIQUE.md:14",
+      "site": "corpus/work-package/workflows/legacy/techniques/validate-build/TECHNIQUE.md:14",
       "op": "cargo",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/work-package/techniques/validate-build/TECHNIQUE.md:18",
+      "site": "corpus/work-package/workflows/legacy/techniques/validate-build/TECHNIQUE.md:18",
       "op": "analyze-failure",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"

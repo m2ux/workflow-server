@@ -11,7 +11,7 @@ Shared Inputs, Outputs, and Rules for every codebase-wiki technique.
 
 ### wiki_path
 
-Root of the wiki tree — the directory holding `index.md`, `log.md`, `overview.md`, and the typed-page subfolders (`concepts/`, `entities/`, `sources/`, `comparisons/`). Bound as `target_dir` whenever a technique delegates a page write to `work-package::manage-artifacts::write-artifact`.
+Root of the wiki tree — the directory holding `index.md`, `log.md`, `overview.md`, and the typed-page subfolders (`concepts/`, `entities/`, `sources/`, `comparisons/`). Bound as `target_dir` whenever a technique delegates a page write to `legacy::manage-artifacts::write-artifact`.
 
 ### raw_baseline_commit
 

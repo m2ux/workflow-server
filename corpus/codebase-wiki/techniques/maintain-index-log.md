@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Keep the wiki's catalog and ledger current with every mutation: update `index.md` to list and route to each page, and append `log.md` with an entry for each create/update technique. This is how the index-and-log-on-every-mutation invariant is enforced — every ingest and every publish refresh runs this technique so navigation and provenance never fall behind the pages. File IO is delegated to `work-package::manage-artifacts::write-artifact`.
+Keep the wiki's catalog and ledger current with every mutation: update `index.md` to list and route to each page, and append `log.md` with an entry for each create/update technique. This is how the index-and-log-on-every-mutation invariant is enforced — every ingest and every publish refresh runs this technique so navigation and provenance never fall behind the pages. File IO is delegated to `legacy::manage-artifacts::write-artifact`.
 
 ## Inputs
 
@@ -55,7 +55,7 @@ The appended ledger: one entry per create/update technique, in technique order.
 
 ### 3. Write Both Files
 
-- Write `{wiki_index}` and `{mutation_log}` by delegating to [`work-package::manage-artifacts::write-artifact`](/work-package/techniques/manage-artifacts/write-artifact.md), binding *bare_filename* to each artifact's declared name, *artifact_content* to the composed content, and *target_dir* to `{wiki_path}`.
+- Write `{wiki_index}` and `{mutation_log}` by delegating to [`legacy::manage-artifacts::write-artifact`](/work-package/workflows/legacy/techniques/manage-artifacts/write-artifact.md), binding *bare_filename* to each artifact's declared name, *artifact_content* to the composed content, and *target_dir* to `{wiki_path}`.
 
 ## Rules
 
@@ -69,4 +69,4 @@ This technique runs on every mutation — paired with each ingest in the build l
 
 ### delegate-file-writes
 
-Both files are written through `work-package::manage-artifacts::write-artifact`; this technique composes their content, it does not re-implement file writing.
+Both files are written through `legacy::manage-artifacts::write-artifact`; this technique composes their content, it does not re-implement file writing.

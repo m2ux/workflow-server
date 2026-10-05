@@ -7,7 +7,7 @@ metadata:
 
 # Follow-Ups Register Guide
 
-The register is the one canonical home for **in-task** follow-ups — work still owed inside the current design session before close-out. Out-of-scope deferrals live in [deferred-items-guide](/work-package/resources/deferred-items-guide.md) (or a session-local deferred register). Every other artifact links here for in-task items.
+The register is the one canonical home for **in-task** follow-ups — work still owed inside the current design session before close-out. Out-of-scope deferrals live in [deferred-items-guide](/work-package/workflows/legacy/resources/deferred-items-guide.md) (or a session-local deferred register). Every other artifact links here for in-task items.
 
 ## Template
 

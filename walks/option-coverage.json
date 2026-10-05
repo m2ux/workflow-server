@@ -196,7 +196,7 @@
       ]
     },
     {
-      "reason": "Declared only by remediate-vuln, which this matrix does not walk: it costs six minutes on its own and 21 of its 60 walks die on a branch that does not resolve, leaving the branches past each failure unmeasured. Its other 92 options are work-package activities it borrows, and the work-package walk covers those.",
+      "reason": "Declared only by remediate-vuln, which this matrix does not walk: it costs six minutes on its own and 21 of its 60 walks die on a branch that does not resolve, leaving the branches past each failure unmeasured. Its other 92 options are legacy activities it borrows, and the legacy walk covers those.",
       "options": [
         "checkpoint:start:confirm-security-remote=confirmed",
         "checkpoint:start:confirm-security-remote=wrong-remote",

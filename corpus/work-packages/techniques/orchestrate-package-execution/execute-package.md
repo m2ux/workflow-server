@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Select the highest-priority unstarted package, trigger its work-package workflow, update the roadmap status on completion, and advance the remaining/completed sets.
+Select the highest-priority unstarted package, trigger its legacy workflow, update the roadmap status on completion, and advance the remaining/completed sets.
 
 ## Inputs
 
@@ -49,8 +49,8 @@ Map of package name to the child work-package's planning-folder path, rendered a
 ### 2. Launch the Work Package
 
 - Apply the [workflow-triggering-protocol](../../resources/workflow-triggering-protocol.md#triggering-a-work-package) triggering procedure to compose the launch context: package name, scope from plan document, dependencies, and `{planning_folder_path}`
-- Apply [workflow-engine](/meta/techniques/workflow-engine/TECHNIQUE.md)::[handle-sub-workflow](/meta/techniques/workflow-engine/handle-sub-workflow.md) with `workflow_id: work-package`; capture `{child_planning_folder_path}`. That technique walks the package to its end, so this step returns with the package delivered.
-  > If the `work-package` workflow cannot be loaded or started, refresh the catalog via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md), then retry.
+- Apply [workflow-engine](/meta/techniques/workflow-engine/TECHNIQUE.md)::[handle-sub-workflow](/meta/techniques/workflow-engine/handle-sub-workflow.md) with `workflow_id: legacy`; capture `{child_planning_folder_path}`. That technique walks the package to its end, so this step returns with the package delivered.
+  > If the `legacy` workflow cannot be loaded or started, refresh the catalog via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md), then retry.
 
 ### 3. Update Status
 
@@ -66,7 +66,7 @@ Map of package name to the child work-package's planning-folder path, rendered a
 
 ### one-at-a-time
 
-Execute one work-package workflow at a time — do not parallelize
+Execute one legacy workflow at a time — do not parallelize
 
 ### handle-failures
 

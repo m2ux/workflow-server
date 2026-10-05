@@ -43,7 +43,7 @@
       "rationale": "conform-then-log-in-the-audit-family"
     },
     {
-      "site": "prism-audit/activities/02-execute-analysis.yaml + prism-evaluate/activities/02-execute-analysis.yaml + work-package/activities/10-post-impl-review.yaml",
+      "site": "legacy/activities/10-post-impl-review.yaml + prism-audit/activities/02-execute-analysis.yaml + prism-evaluate/activities/02-execute-analysis.yaml",
       "run": [
         "T:workflow-engine::handle-sub-workflow(workflow_id)",
         "R:activity-loop(enter_activity,initial_activity,session_index)"
@@ -73,7 +73,7 @@
       "rationale": "roster-fan-out-run"
     },
     {
-      "site": "work-package/activities/01-start-work-package.yaml + work-package/activities/12-strategic-review.yaml",
+      "site": "legacy/activities/01-start-work-package.yaml + legacy/activities/12-strategic-review.yaml",
       "run": [
         "T:github::view-pr(repo_path)",
         "T:update-pr::verify-body(rendered_pr_body)"
@@ -82,7 +82,7 @@
       "rationale": "read-the-pull-request-body-back"
     },
     {
-      "site": "work-package/activities/01-start-work-package.yaml + workflow-design/activities/01-intake-and-context.yaml + workflow-design/activities/08-quality-review.yaml",
+      "site": "legacy/activities/01-start-work-package.yaml + workflow-design/activities/01-intake-and-context.yaml + workflow-design/activities/08-quality-review.yaml",
       "run": [
         "A:message=",
         "A:message="
@@ -114,7 +114,7 @@
     {
       "site": "codebase-wiki/activities/04-publish.yaml + plain-language/activities/03-draft.yaml + plain-language/activities/05-deliver.yaml",
       "run": [
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename,target_dir)",
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename,target_dir)",
         "A:message="
       ],
       "verdict": "unassigned",
@@ -123,8 +123,8 @@
     {
       "site": "workflow-authoring/activities/01-intake-and-context.yaml + workflow-design/activities/01-intake-and-context.yaml + workflow-design/activities/11-retrospective.yaml",
       "run": [
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)",
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)"
       ],
       "verdict": "unassigned",
       "rationale": "deprecated-twin-shape"
@@ -132,8 +132,8 @@
     {
       "site": "workflow-authoring/activities/09-validate-and-commit.yaml + workflow-design/activities/11-retrospective.yaml",
       "run": [
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",
-        "T:work-package::manage-git::remove-worktree()"
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)",
+        "T:legacy::manage-git::remove-worktree()"
       ],
       "verdict": "unassigned",
       "rationale": "deprecated-twin-shape"
@@ -142,7 +142,7 @@
       "site": "workflow-authoring/activities/01-intake-and-context.yaml + workflow-design/activities/05-impact-analysis.yaml",
       "run": [
         "T:impact-analysis()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)"
       ],
       "verdict": "unassigned",
       "rationale": "deprecated-twin-shape"
@@ -151,7 +151,7 @@
       "site": "workflow-authoring/activities/06-scope-and-draft.yaml + workflow-design/activities/06-scope-and-draft.yaml",
       "run": [
         "T:scope-definition()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)"
       ],
       "verdict": "unassigned",
       "rationale": "deprecated-twin-shape"
@@ -179,7 +179,7 @@
       "site": "workflow-authoring/activities/09-validate-and-commit.yaml + workflow-design/activities/11-retrospective.yaml",
       "run": [
         "T:create-completion-doc()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)"
       ],
       "verdict": "unassigned",
       "rationale": "deprecated-twin-shape"
@@ -187,7 +187,7 @@
     {
       "site": "workflow-design/activities/01-intake-and-context.yaml + workflow-design/activities/05-impact-analysis.yaml + workflow-design/activities/08-quality-review.yaml",
       "run": [
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)",
         "A:message="
       ],
       "verdict": "unassigned",
@@ -197,9 +197,9 @@
       "site": "workflow-design/activities/06-scope-and-draft.yaml + workflow-design/activities/08-quality-review.yaml + workflow-design/activities/10-post-update-review.yaml",
       "run": [
         "T:audit-principles()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)",
         "T:audit-anti-patterns()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)"
       ],
       "verdict": "unassigned",
       "rationale": "audit-pass-pair"
@@ -208,9 +208,9 @@
       "site": "workflow-design/activities/08-quality-review.yaml + workflow-design/activities/10-post-update-review.yaml",
       "run": [
         "T:audit-principles()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)",
         "T:audit-anti-patterns()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)",
         "T:audit-schema-validation()"
       ],
       "verdict": "unassigned",
@@ -223,15 +223,15 @@
         "T:audit-schema-validation()",
         "T:apply-audit-fixes()",
         "T:audit-expressiveness()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)",
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)",
         "T:audit-conformance()",
-        "T:work-package::manage-artifacts::write-artifact(artifact_content,bare_filename)"
+        "T:legacy::manage-artifacts::write-artifact(artifact_content,bare_filename)"
       ],
       "verdict": "unassigned",
       "rationale": "audit-and-fix-cycle"
     },
     {
-      "site": "work-package/activities/04-research.yaml + work-package/activities/05-implementation-analysis.yaml",
+      "site": "legacy/activities/04-research.yaml + legacy/activities/05-implementation-analysis.yaml",
       "run": [
         "T:surface-assumptions(assumption_categories)",
         "T:document()"
@@ -240,7 +240,7 @@
       "rationale": "surface-then-document"
     },
     {
-      "site": "work-package/activities/10-post-impl-review.yaml + work-package/activities/11-validate.yaml + work-package/activities/19-test-suite-review.yaml",
+      "site": "legacy/activities/10-post-impl-review.yaml + legacy/activities/11-validate.yaml + legacy/activities/19-test-suite-review.yaml",
       "run": [
         "R:gitnexus::diff-coverage-map()",
         "T:review-test-suite()"
@@ -249,7 +249,7 @@
       "rationale": "coverage-map-then-test-review"
     },
     {
-      "site": "work-package-review-fan-conformance/activities/02-gather-reviews.yaml + work-package/activities/10-post-impl-review.yaml",
+      "site": "legacy/activities/10-post-impl-review.yaml + work-package-review-fan-conformance/activities/02-gather-reviews.yaml",
       "run": [
         "A:set=code_review_report,set=test_suite_review_report",
         "A:set=structural_findings"
@@ -258,7 +258,7 @@
       "rationale": "fan-join-hoist"
     },
     {
-      "site": "work-package-contract-join-conformance/activities/03-implementation-join.yaml + work-package/activities/21-implementation-join.yaml",
+      "site": "legacy/activities/21-implementation-join.yaml + work-package-contract-join-conformance/activities/03-implementation-join.yaml",
       "run": [
         "C:[dispute-test,rework-implementation]",
         "C:[accept-implementation,revise-implementation,revise-tests]"

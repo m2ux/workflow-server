@@ -5,4 +5,4 @@ metadata:
 
 ## Capability
 
-Trigger and manage work-package workflow instances for each planned package in priority order, spanning iteration initialization and per-package execution.
+Trigger and manage legacy workflow instances for each planned package in priority order, spanning iteration initialization and per-package execution.

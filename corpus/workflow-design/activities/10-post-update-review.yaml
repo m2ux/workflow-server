@@ -116,7 +116,7 @@ steps:
   - kind: technique
     id: persist-expressiveness-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: expressiveness-findings.md
         artifact_content: expressiveness_findings
@@ -129,7 +129,7 @@ steps:
   - kind: technique
     id: persist-conformance-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: conformance-findings.md
         artifact_content: conformance_findings
@@ -142,7 +142,7 @@ steps:
   - kind: technique
     id: persist-principle-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: principle-findings.md
         artifact_content: principle_findings
@@ -154,7 +154,7 @@ steps:
   - kind: technique
     id: persist-anti-pattern-findings
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: anti-pattern-findings.md
         artifact_content: anti_pattern_findings
@@ -172,7 +172,7 @@ steps:
   - kind: technique
     id: save-review-snapshot
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: post-update-review.md
         artifact_content: findings_summary
@@ -222,7 +222,7 @@ steps:
       - kind: technique
         id: remedia-refresh-expressiveness-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: expressiveness-findings.md
             artifact_content: expressiveness_findings
@@ -235,7 +235,7 @@ steps:
       - kind: technique
         id: remedia-refresh-conformance-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: conformance-findings.md
             artifact_content: conformance_findings
@@ -248,7 +248,7 @@ steps:
       - kind: technique
         id: remedia-refresh-principle-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: principle-findings.md
             artifact_content: principle_findings
@@ -260,7 +260,7 @@ steps:
       - kind: technique
         id: remedia-refresh-anti-pattern-findings
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: anti-pattern-findings.md
             artifact_content: anti_pattern_findings
@@ -275,7 +275,7 @@ steps:
       - kind: technique
         id: remedia-refresh-review-snapshot
         technique:
-          name: work-package::manage-artifacts::write-artifact
+          name: legacy::manage-artifacts::write-artifact
           inputs:
             bare_filename: post-update-review.md
             artifact_content: findings_summary

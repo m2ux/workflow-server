@@ -44,7 +44,7 @@ steps:
   - kind: technique
     id: ingest
     technique:
-      name: work-package::ingest-assumption-surfaces
+      name: legacy::ingest-assumption-surfaces
       inputs:
         research_assumptions: research_assumptions
         analysis_assumptions: analysis_assumptions

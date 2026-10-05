@@ -6,7 +6,7 @@ The techniques are the work-package deferred-items register's: appending deferra
 
 | Activity | Refers to | Binding |
 |---|---|---|
-| `negative-case` | `work-package::raise-deferred-items::collect` | no register |
-| `record-deferrals` | `work-package::manage-registers::append-deferred-item`, `work-package::raise-deferred-items::record` | two deferrals, the first raised |
-| `positive-case` | `work-package::raise-deferred-items::collect` | a register holding one raised and one unraised entry |
+| `negative-case` | `legacy::raise-deferred-items::collect` | no register |
+| `record-deferrals` | `legacy::manage-registers::append-deferred-item`, `legacy::raise-deferred-items::record` | two deferrals, the first raised |
+| `positive-case` | `legacy::raise-deferred-items::collect` | a register holding one raised and one unraised entry |
 | `report-cases` | nothing — reports what each collection landed against the shared [case report](/conformance/resources/case-report.md) guide | |

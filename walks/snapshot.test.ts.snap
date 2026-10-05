@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`work-package walk snapshots (baseline) > [default] matches committed baseline 1`] = `
+exports[`legacy walk snapshots (baseline) > [default] matches committed baseline 1`] = `
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
@@ -876,11 +876,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "unresolved": [],
     },
   ],
-  "workflowId": "work-package",
+  "workflowId": "legacy",
 }
 `;
 
-exports[`work-package walk snapshots (baseline) > [elicitation-only] matches committed baseline 1`] = `
+exports[`legacy walk snapshots (baseline) > [elicitation-only] matches committed baseline 1`] = `
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
@@ -1714,11 +1714,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "unresolved": [],
     },
   ],
-  "workflowId": "work-package",
+  "workflowId": "legacy",
 }
 `;
 
-exports[`work-package walk snapshots (baseline) > [full-workflow] matches committed baseline 1`] = `
+exports[`legacy walk snapshots (baseline) > [full-workflow] matches committed baseline 1`] = `
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
@@ -2594,11 +2594,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "unresolved": [],
     },
   ],
-  "workflowId": "work-package",
+  "workflowId": "legacy",
 }
 `;
 
-exports[`work-package walk snapshots (baseline) > [research-only] matches committed baseline 1`] = `
+exports[`legacy walk snapshots (baseline) > [research-only] matches committed baseline 1`] = `
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
@@ -3381,11 +3381,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "unresolved": [],
     },
   ],
-  "workflowId": "work-package",
+  "workflowId": "legacy",
 }
 `;
 
-exports[`work-package walk snapshots (baseline) > [review-mode] matches committed baseline 1`] = `
+exports[`legacy walk snapshots (baseline) > [review-mode] matches committed baseline 1`] = `
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
@@ -3978,11 +3978,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "unresolved": [],
     },
   ],
-  "workflowId": "work-package",
+  "workflowId": "legacy",
 }
 `;
 
-exports[`work-package walk snapshots (baseline) > [skip-optional] matches committed baseline 1`] = `
+exports[`legacy walk snapshots (baseline) > [skip-optional] matches committed baseline 1`] = `
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
@@ -4711,11 +4711,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "unresolved": [],
     },
   ],
-  "workflowId": "work-package",
+  "workflowId": "legacy",
 }
 `;
 
-exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
+exports[`legacy walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 21,
   "declaredTotal": 373,

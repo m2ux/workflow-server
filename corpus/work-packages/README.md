@@ -1,10 +1,10 @@
 # Work Packages Workflow
 
-> Plan and coordinate multiple related work packages, then execute each in turn by triggering the work-package workflow. Use when you have multiple related features, a roadmap spanning several weeks/months, or features with shared context.
+> Plan and coordinate multiple related work packages, then execute each in turn by triggering the legacy workflow. Use when you have multiple related features, a roadmap spanning several weeks/months, or features with shared context.
 
 ## Overview
 
-The Work Packages workflow handles **planning and prioritization** of multiple related work items. Once planned, it triggers the `work-package` workflow for each package in priority order.
+The Work Packages workflow handles **planning and prioritization** of multiple related work items. Once planned, it triggers the `legacy` workflow for each package in priority order.
 
 **Use this workflow when:**
 - You have multiple features to implement
@@ -15,7 +15,7 @@ The Work Packages workflow handles **planning and prioritization** of multiple r
 - Sequential flow with clear progression
 - Creates planning folder with documentation
 - Loops through packages for planning and implementation
-- Triggers `work-package` workflow for each package
+- Triggers `legacy` workflow for each package
 
 ## Workflow Flow
 
@@ -30,7 +30,7 @@ graph TD
     FR --> IM[implementation]
     
     PP -.->|forEach package| PP
-    IM -.->|forEach package| WP([work-package workflow])
+    IM -.->|forEach package| WP([legacy workflow])
     WP -.-> IM
     
     IM --> Done([All Packages Complete])
@@ -74,7 +74,7 @@ Completes the roadmap documentation — timeline, navigation, and success criter
 
 ### 7. [Implementation](activities/07-implementation.yaml)
 
-Executes each planned package in priority order, triggering the `work-package` workflow for each one in turn and tracking progress until the whole initiative is delivered as merged, reviewed work.
+Executes each planned package in priority order, triggering the `legacy` workflow for each one in turn and tracking progress until the whole initiative is delivered as merged, reviewed work.
 
 ## Artifacts
 
@@ -96,9 +96,9 @@ Workflow-specific techniques live under `techniques/`. Some are **technique grou
 | `plan-work-package-scope::plan-package` | Group op | Plan and document one package (scope, deps, effort, success) | Package Planning (loop) |
 | `prioritize-packages` | Standalone | Evaluate and order packages | Prioritization |
 | `document-roadmap` | Standalone | Produce finalized roadmap documentation | Finalize Roadmap |
-| `orchestrate-package-execution` | Group | Trigger and manage work-package workflow instances | Implementation |
+| `orchestrate-package-execution` | Group | Trigger and manage legacy workflow instances | Implementation |
 | `orchestrate-package-execution::initialize-iteration` | Group op | Build the remaining-packages list and progress indicator | Implementation |
-| `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow, update status | Implementation (loop) |
+| `orchestrate-package-execution::execute-package` | Group op | Execute one package via the legacy workflow, update status | Implementation (loop) |
 | `workflow-engine::derive-planning-slug` | Meta | Derive the canonical planning-folder slug | Folder Setup |
 | `variable-binding` | Meta | Bind step techniques to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
 | `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
@@ -113,7 +113,7 @@ Workflow-specific techniques live under `techniques/`. Some are **technique grou
 | 03 | Package Plan Template | Template for individual work package plans |
 | 04 | Prioritization Framework | Framework for evaluating and ordering packages |
 | 05 | Roadmap Template | Templates for finalized roadmap documentation |
-| 06 | Workflow Triggering Protocol | How to trigger and manage work-package workflow instances |
+| 06 | Workflow Triggering Protocol | How to trigger and manage legacy workflow instances |
 
 ---
 

@@ -96,4 +96,4 @@ graph:
   report-cases:
     reported: __terminal__
 activities:
-  - work-package/07-assumptions-review.yaml
+  - legacy/07-assumptions-review.yaml

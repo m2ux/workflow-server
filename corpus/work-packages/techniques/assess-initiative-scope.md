@@ -32,7 +32,7 @@ Total number of identified packages
 ### 1. Confirm Multi Package
 
 - Read `{user_request}` and assess whether it involves multiple distinct deliverables or a single work package  
-  > If it is a single package, recommend the `work-package` workflow instead and stop.
+  > If it is a single package, recommend the `legacy` workflow instead and stop.
 - If multiple packages, proceed with decomposition
 
 ### 2. Identify Packages

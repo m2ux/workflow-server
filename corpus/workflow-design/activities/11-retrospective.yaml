@@ -29,7 +29,7 @@ steps:
   - kind: technique
     id: persist-completion-doc
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: COMPLETE.md
         artifact_content: completion_document
@@ -37,14 +37,14 @@ steps:
   - kind: technique
     id: persist-retrospective
     technique:
-      name: work-package::manage-artifacts::write-artifact
+      name: legacy::manage-artifacts::write-artifact
       inputs:
         bare_filename: COMPLETE.md
         artifact_content: retrospective_document
     when: operation_type == 'review'
   - kind: technique
     id: remove-session-worktree
-    technique: work-package::manage-git::remove-worktree
+    technique: legacy::manage-git::remove-worktree
     when: worktree_created == true
 outcome:
   - A later reader learns what the session delivered and what it left open without replaying it
