@@ -23,7 +23,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - In an initiative: the phrase is the epic's title name, the part before the colon (`[I07:E01] Formal Specification: …` gives `Formal Specification`), so the table and the epic name the work alike.
 - **Coverage.**
   The acceptance criteria the row delivers, `AC2, AC5`, and nothing else. Every criterion is delivered by at least one row.
-  - In an epic: the epic's criteria the task must meet.
+  - In an epic: the epic's criteria the task must meet. A complete task's cell is empty.
   - In an initiative: the initiative's criteria the epic serves, so each traces to its epics.
 - **Depends on.**
   References only, with no prose, and only what no other entry in the cell already implies.

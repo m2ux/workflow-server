@@ -96,6 +96,29 @@ class PlanIds(unittest.TestCase):
         r.run()
         self.assertFalse(any(item.startswith('Problem:') or item.startswith('Proposal:') for item in r.decide))
 
+    def test_a_complete_row_may_omit_coverage(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | | | | ✓ |\n'
+                '| W02 | Read the ledger | AC1 | W01 | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('Coverage does not name' in item for item in r.decide))
+
+    def test_an_open_row_names_its_coverage(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertTrue(any(item.startswith('W01: Coverage does not name') for item in r.decide))
+
 
 def proposal_body() -> str:
     return ('## Overview\n\nThe problem.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
