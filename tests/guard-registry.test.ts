@@ -150,6 +150,9 @@ describe('guard registry', () => {
         + 'technique publishing members — one value described two incompatible ways. They are a '
         + 'corpus fix rather than a question, and enrolling before they land would take a green '
         + 'hard-zero sweep red; enrolling is the last step, in the commit that makes it pass',
+      'guards/check-inherited-input-never-spent.ts':
+        'reads the corpus and holds at the steps each family\'s contracts still hand a required input '
+        + 'nothing produces. Each family clears its own sites, and enrolling is the commit that makes it pass',
     };
 
     const onDisk = readdirSync(join(REPO, 'guards'))
