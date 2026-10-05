@@ -43,6 +43,15 @@ steps:
     id: resolve-target
     technique: resolve-audit-target
   - kind: technique
+    id: read-head
+    when: "!target_revision"
+    technique:
+      name: git::read-head-commit
+      inputs:
+        repo_path: target_submodule
+      outputs:
+        head_sha: target_revision
+  - kind: technique
     id: pin-target
     technique:
       name: git::pin-revision

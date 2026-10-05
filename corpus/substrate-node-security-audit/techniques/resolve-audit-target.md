@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-The revision an audit is pinned to, and any reference report, as the request names them.
+The revision and any reference report an audit request names.
 
 ## Inputs
 
@@ -13,15 +13,11 @@ The revision an audit is pinned to, and any reference report, as the request nam
 
 Target specification (component, revision, scope).
 
-### target_submodule
-
-Path to the component being audited.
-
 ## Outputs
 
 ### target_revision
 
-The revision the audit is pinned to: a commit, a tag, or a branch.
+The revision the request names: a commit, a tag, or a branch. Empty where it names none.
 
 ### reference_report
 
@@ -31,8 +27,8 @@ Path to the reference audit report the request names. Empty where it names none.
 
 ### 1. Extract Revision
 
-- Extract the git commit hash, tag, or branch from the `{user_request}` as `{target_revision}`.
-  > Where the request names none, `{target_revision}` is the commit `git rev-parse HEAD` prints in `{target_submodule}`: the component's current `HEAD`, named by its commit because the name `HEAD` also matches `refs/remotes/origin/HEAD`, a remote's default branch.
+- Extract the git commit hash, tag, or branch the `{user_request}` names as `{target_revision}`.
+  > Where the request means the component as it stands, `{target_revision}` is empty. The word `HEAD` is not a revision here: as a name it also matches `refs/remotes/origin/HEAD`, a remote's default branch.
 
 ### 2. Extract Reference
 
