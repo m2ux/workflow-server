@@ -58,7 +58,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
      - Put each to the user with its recommendation, record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.
      - Then delete the question; the section goes with the last one.
    - **One condition per criterion.**
-     Read each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) and [Requirement characteristics](requirement-characteristics.md). Split one that joins several, adding the new ones at the end of the list, and cite each from the rows that deliver it.
+     Read each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria), [Requirement characteristics](requirement-characteristics.md) and [One row](review-criteria.md#one-row). Split one that joins several, adding the new ones at the end of the list, and cite each from the row that delivers it.
 
    Fetch as [Fetch](review-passes.md#fetch) states. Run the goal pass, and the ordering pass when tasks or dependencies change. State each finding as [Report](review-passes.md#report) states.
 9. **Deliver.**  As work lands, run [Sync Mode](sync-mode.md).

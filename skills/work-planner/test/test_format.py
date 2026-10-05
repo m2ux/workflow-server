@@ -120,6 +120,46 @@ class PlanIds(unittest.TestCase):
         self.assertTrue(any(item.startswith('W01: Coverage does not name') for item in r.decide))
 
 
+class OneRow(unittest.TestCase):
+    def test_a_criterion_cited_by_two_tasks_is_imprecise(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | AC1 | | | |\n'
+                '| W02 | Read the ledger | AC1 | W01 | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertTrue(any(item.startswith('AC1 is cited by W01, W02') and
+                            'at least one acceptance criterion' in item for item in r.decide))
+
+    def test_one_task_citing_a_criterion_is_left(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | AC1 | | | |\n'
+                '| W02 | Read the ledger | AC2 | W01 | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n'
+                '- [ ] **AC2.** A reader sees that source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('cited by' in item for item in r.decide))
+
+    def test_a_task_covering_two_criteria_is_left(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | AC1, AC2 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n'
+                '- [ ] **AC2.** A reader sees that source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('cited by' in item or item.startswith('W01: delivers') for item in r.decide))
+
+
 def proposal_body() -> str:
     return ('## Overview\n\nThe problem.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
             '## Goal\n\n- The bad key is rejected.\n\n'

@@ -72,7 +72,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 - **Change narrative.**
   Wording that narrates how the plan changed fails the [Any issue](review-criteria.md#any-issue) Body criteria. Restate it as the plan is.
 - **Task grain.**
-  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for a task that delivers more than three criteria no other task delivers.
+  Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for a task that delivers more than three criteria.
 - **Local criterion.**
   Apply the initiative [Acceptance Criteria](review-criteria.md#acceptance-criteria) Local rule.
 - **Counted criterion.**
@@ -83,6 +83,8 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
   Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for Description.
 - **Coverage.**
   Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for Coverage.
+- **One row.**
+  Apply the epic [One row](review-criteria.md#one-row) criteria.
 - **One invariant.**
   Apply the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) One invariant rule.
 - **Work Breakdown prose.**

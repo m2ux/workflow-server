@@ -32,8 +32,8 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
 - **Task grain.**
   - A task is one pull request's worth of work.
   - A criterion a merged pull request left unticked belongs to a further task. The further task depends on the delivered task, and its Coverage is that criterion. Criteria one pull request can deliver share one further task. The delivered task's Coverage omits each criterion a further task adopts.
-  - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
-  - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
+  - A task delivering more than three criteria is split into tasks one pull request each can deliver.
+  - A task covers at least one acceptance criterion, as [One row](review-criteria.md#one-row) defines.
   - Every test the work calls for accompanies that task. The content steers which kinds those are, including the project's system test when the work is something that test can exercise. A failure in any test the task carries keeps the task open. None of those tests is a later row.
   - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
   - When the behaviour a wired activity produces differs from the behaviour the work expected, that task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold.
