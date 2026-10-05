@@ -1,0 +1,2240 @@
+# Walk A
+
+Slice: corpus/work-package/activities/ plus corpus/work-package/workflow.yaml.
+Tree: .worktrees/workflow/i10-integrate. Base: pr-1097-base, else b57da76ae3b8b9947799860944c1a6055c062cfe.
+
+## Files read
+
+21
+
+- corpus/work-package/activities/01-start-work-package.yaml (937 lines)
+- corpus/work-package/activities/02-design-philosophy.yaml (212 lines)
+- corpus/work-package/activities/03-requirements-elicitation.yaml (192 lines)
+- corpus/work-package/activities/04-research.yaml (110 lines)
+- corpus/work-package/activities/05-implementation-analysis.yaml (54 lines)
+- corpus/work-package/activities/06-plan-prepare.yaml (304 lines)
+- corpus/work-package/activities/07-assumptions-review.yaml (114 lines)
+- corpus/work-package/activities/08-implement.yaml (132 lines)
+- corpus/work-package/activities/09-lean-coding-audit.yaml (129 lines)
+- corpus/work-package/activities/10-post-impl-review.yaml (377 lines)
+- corpus/work-package/activities/11-validate.yaml (141 lines)
+- corpus/work-package/activities/13-submit-for-review.yaml (529 lines)
+- corpus/work-package/activities/14-complete.yaml (225 lines)
+- corpus/work-package/activities/15-codebase-comprehension.yaml (176 lines)
+- corpus/work-package/activities/17-code-review.yaml (29 lines)
+- corpus/work-package/activities/18-structural-analysis.yaml (25 lines)
+- corpus/work-package/activities/19-test-suite-review.yaml (43 lines)
+- corpus/work-package/activities/20-contract-tests.yaml (140 lines)
+- corpus/work-package/activities/21-implementation-join.yaml (223 lines)
+- corpus/work-package/activities/README.md (177 lines)
+- corpus/work-package/workflow.yaml (255 lines)
+
+## Unread
+
+0
+
+## Not applicable
+
+- 13. Separate Contract from Procedure | **Fires on:** `technique.inputs`, `technique.outputs`, `technique.protocol`, `technique.rules`
+- 15. Phase by Sequenced Outcome | **Fires on:** `technique.protocol`
+- 16. Distinguish Designators from Parameters | **Fires on:** `technique.protocol`
+- 27. State Contract Contribution | **Fires on:** `technique.capability`, `technique.protocol`, `technique.inputs`, `technique.outputs`, `technique.rules`
+- 28. Creation Guide for Generated Documents | **Fires on:** `resource`, `technique.protocol`
+- 29. Cite Resource Policy; Do Not Restate It | **Fires on:** `resource`, `technique.protocol`
+- 31. Isolate Conditional Branches as Notes | **Fires on:** `technique.protocol`
+- 33. Pre-Session Prose Stands Alone | **Fires on:** `resource`
+- 36. A Technique Names Only What Its Reader Holds | **Fires on:** `technique`
+- 37. An I/O Contract Names the Value | **Fires on:** `technique.inputs`, `technique.outputs`
+- 39. A Phase Heading Names the Outcome | **Fires on:** `technique.protocol`
+- 41. A Phase States Answers the Tool Has Returned | **Fires on:** `technique.protocol`
+- 44. A Resource Splits for Section Delivery | **Fires on:** `resource`
+- 45. A Rule States One Invariant | **Fires on:** `technique.rules`
+- 47. A Calibrated Surface Extends by Wrapping | **Fires on:** `technique`, `resource`
+- AP-16. technique-inputs-declared | **Fires on:** `technique.capability`, `technique.inputs`, `technique.protocol`
+- AP-25. no-one-step-rules | **Fires on:** `technique.rules`, `technique.protocol`
+- AP-42. io-agnostic-contract | **Fires on:** `technique.inputs`, `technique.outputs`
+- AP-43. canonical-artifact-ids | **Fires on:** `technique.protocol`, `technique.inputs`, `technique.outputs`
+- AP-44. artifact-name-in-io | **Fires on:** `technique.protocol`, `technique.inputs`, `technique.outputs`
+- AP-45. no-opaque-artifact-path-array | **Fires on:** `technique.inputs`, `technique.protocol`
+- AP-46. no-resource-caller-backlink | **Fires on:** `resource`
+- AP-48. brace-output-references | **Fires on:** `technique.protocol`
+- AP-49. no-delivery-mechanism-narration | **Fires on:** `technique.protocol`
+- AP-50. no-tool-usage-prescription | **Fires on:** `technique.capability`, `technique.protocol`, `technique.rules`, `resource`
+- AP-51. canonical-technique-reference | **Fires on:** `technique.protocol`
+- AP-52. brace-declared-ids | **Fires on:** `technique.protocol`, `technique.capability`
+- AP-53. dotted-rule-address | **Fires on:** `technique.protocol`
+- AP-54. anchored-protocol-references | **Fires on:** `technique.protocol`
+- AP-55. hoist-shared-inputs | **Fires on:** `technique.inputs`, `technique.inherited_inputs`
+- AP-56. paren-invocation-args | **Fires on:** `technique.protocol`
+- AP-58. snake-case-symbols | **Fires on:** `technique.inputs`, `technique.outputs`, `technique.protocol`, `technique.rules`, `resource`
+- AP-59. constraint-as-blockquote | **Fires on:** `technique.protocol`
+- AP-60. local-rule-as-note | **Fires on:** `technique.rules`, `technique.protocol`
+- AP-61. factor-repeated-paths | **Fires on:** `technique`
+- AP-62. bind-protocol-locals | **Fires on:** `technique.protocol`, `technique.inputs`, `technique.outputs`
+- AP-66. io-id-shape | **Fires on:** `technique.inputs`, `technique.outputs`
+- AP-67. rule-slug-shape | **Fires on:** `technique.rules`
+- AP-68. technique-stage-agnostic | **Fires on:** `technique.capability`, `technique.protocol`, `technique.rules`
+- AP-72. complete-bootstrap-path | **Fires on:** `technique`, `resource`
+- AP-74. no-duplicated-guidance | **Fires on:** `technique`, `resource`
+- AP-75. describe-tool-value | **Fires on:** `technique`, `resource`
+- AP-76. no-redundant-tools | **Fires on:** `technique`, `resource`
+- AP-85. link-dont-copy-sections | **Fires on:** `resource`
+- AP-86. exception-only-verdict-tables | **Fires on:** `resource`
+- AP-90. no-guide-wrapper-ceremony | **Fires on:** `resource`
+- AP-91. lifecycle-row-update | **Fires on:** `resource`
+- AP-92. resource-fills-not-does | **Fires on:** `resource`
+- AP-93. canonical-fact-home | **Fires on:** `resource`
+- AP-94. link-only-input-slots | **Fires on:** `resource`
+- AP-96. artifact-audience-declared | **Fires on:** `technique.outputs`
+- AP-102. no-technique-resource-dual-home | **Fires on:** `technique`, `resource`
+- AP-104. operative-criteria-need-a-home | **Fires on:** `technique.protocol`, `resource`
+- AP-105. no-shadow-audit-pass | **Fires on:** `technique.protocol`
+- AP-108. numbered-protocol-phases | **Fires on:** `technique.protocol`
+- AP-109. technique-outputs-declared | **Fires on:** `technique.capability`, `technique.protocol`, `technique.outputs`
+- AP-110. duplicate-shared-capability | **Fires on:** `technique.protocol`
+- AP-111. contract-not-procedure | **Fires on:** `technique.protocol`, `technique.outputs`
+- AP-113. session-interaction-in-technique | **Fires on:** `technique.capability`, `technique.protocol`, `technique.rules`
+- AP-114. pass-orchestration-in-technique | **Fires on:** `technique.capability`, `technique.protocol`
+- AP-116. no-template-creation-guide | **Fires on:** `technique.protocol`, `resource`
+- AP-119. procedure-in-io-contract | **Fires on:** `technique.inputs`, `technique.outputs`
+- AP-120. procedure-in-capability | **Fires on:** `technique.capability`
+- AP-121. rule-as-protocol-step | **Fires on:** `technique.protocol`, `resource`
+- AP-122. prompt-restates-owned-mechanics | **Fires on:** `resource`, `technique`
+- AP-123. capability-as-op-inventory | **Fires on:** `technique.capability`
+- AP-124. alternate-ops-as-protocol-sequence | **Fires on:** `technique.protocol`
+- AP-125. technique-ref-in-io-contract | **Fires on:** `technique.inputs`, `technique.outputs`
+- AP-134. artifact-name-is-filename | **Fires on:** `technique.outputs`
+- AP-135. resource-id-names-its-content | **Fires on:** `resource`
+- AP-136. deployment-path-in-capability | **Fires on:** `technique.capability`
+- AP-138. whole-resource-for-one-section | **Fires on:** `technique`, `resource`
+- AP-139. tool-contract-restated-in-protocol | **Fires on:** `technique.protocol`, `technique.rules`
+- AP-141. unowned-harness-capability | **Fires on:** `technique`
+- AP-143. framing-outside-any-section | **Fires on:** `resource`
+- AP-144. declared-input-never-read | **Fires on:** `technique.inputs`, `technique.protocol`, `technique.rules`
+- AP-145. apply-omits-declared-input | **Fires on:** `technique.protocol`, `technique.inputs`
+- AP-148. reference-without-provenance | **Fires on:** `technique`
+- AP-149. pre-session-prose-defers-to-the-framework | **Fires on:** `resource`
+- AP-151. rule-binds-beyond-its-operation | **Fires on:** `technique.rules`
+- AP-152. inherited-input-re-declared | **Fires on:** `technique.inputs`, `technique.inherited_inputs`
+- AP-153. schema-semantics-restated | **Fires on:** `technique.rules`, `technique.capability`, `resource`
+- AP-154. engine-internals-narrated | **Fires on:** `technique`
+- AP-156. one-invariant-per-rule | **Fires on:** `technique.rules`
+- AP-157. call-omits-conditionally-required-argument | **Fires on:** `technique.protocol`, `technique.rules`
+- AP-158. call-omits-required-argument | **Fires on:** `technique.protocol`, `technique.rules`
+- AP-159. call-names-an-undeclared-argument | **Fires on:** `technique.protocol`, `technique.rules`
+- AP-160. protocol-phase-as-list-item | **Fires on:** `technique.protocol`
+- AP-161. unreachable-operation-reference | **Fires on:** `technique.capability`, `technique.protocol`, `technique.rules`
+- AP-162. produce-path-without-a-reading | **Fires on:** `technique.protocol`
+- AP-165. unproducible-declared-value | **Fires on:** `technique.outputs`, `technique.protocol`
+
+## Evidence
+
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- 1. Workflows Ossify Patterns | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- 1. Workflows Ossify Patterns | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 2. Internalize Before Producing | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 2. Internalize Before Producing | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 2. Internalize Before Producing | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 2. Internalize Before Producing | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 2. Internalize Before Producing | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 2. Internalize Before Producing | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 2. Internalize Before Producing | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 2. Internalize Before Producing | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 2. Internalize Before Producing | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 2. Internalize Before Producing | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 2. Internalize Before Producing | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 2. Internalize Before Producing | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 2. Internalize Before Producing | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 2. Internalize Before Producing | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 2. Internalize Before Producing | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 2. Internalize Before Producing | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 2. Internalize Before Producing | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 2. Internalize Before Producing | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 2. Internalize Before Producing | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 2. Internalize Before Producing | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 2. Internalize Before Producing | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 3. Define Complete Scope Before Execution | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 3. Define Complete Scope Before Execution | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 4. Clarify Before Assuming | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 4. Clarify Before Assuming | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 4. Clarify Before Assuming | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 4. Clarify Before Assuming | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 4. Clarify Before Assuming | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 4. Clarify Before Assuming | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 4. Clarify Before Assuming | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 4. Clarify Before Assuming | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 4. Clarify Before Assuming | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 4. Clarify Before Assuming | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 4. Clarify Before Assuming | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 4. Clarify Before Assuming | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 4. Clarify Before Assuming | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 4. Clarify Before Assuming | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 4. Clarify Before Assuming | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 4. Clarify Before Assuming | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 4. Clarify Before Assuming | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 4. Clarify Before Assuming | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 4. Clarify Before Assuming | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 4. Clarify Before Assuming | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 4. Clarify Before Assuming | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- 5. Maximize Schema Expressiveness | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- 5. Maximize Schema Expressiveness | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 6. One Authoritative Home | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 6. One Authoritative Home | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 6. One Authoritative Home | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 6. One Authoritative Home | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 6. One Authoritative Home | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 6. One Authoritative Home | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 6. One Authoritative Home | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 6. One Authoritative Home | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 6. One Authoritative Home | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 6. One Authoritative Home | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 6. One Authoritative Home | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 6. One Authoritative Home | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 6. One Authoritative Home | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 6. One Authoritative Home | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 6. One Authoritative Home | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 6. One Authoritative Home | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 6. One Authoritative Home | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 6. One Authoritative Home | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 6. One Authoritative Home | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 6. One Authoritative Home | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 6. One Authoritative Home | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 7. Convention Over Invention | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 7. Convention Over Invention | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 7. Convention Over Invention | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 7. Convention Over Invention | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 7. Convention Over Invention | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 7. Convention Over Invention | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 7. Convention Over Invention | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 7. Convention Over Invention | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 7. Convention Over Invention | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 7. Convention Over Invention | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 7. Convention Over Invention | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 7. Convention Over Invention | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 7. Convention Over Invention | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 7. Convention Over Invention | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 7. Convention Over Invention | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 7. Convention Over Invention | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 7. Convention Over Invention | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 7. Convention Over Invention | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 7. Convention Over Invention | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 7. Convention Over Invention | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 7. Convention Over Invention | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 8. Confirm Before Irreversible Changes | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 8. Confirm Before Irreversible Changes | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 9. Encode Constraints as Structure | corpus/work-package/activities/01-start-work-package.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 9. Encode Constraints as Structure | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/04-research.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 9. Encode Constraints as Structure | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 9. Encode Constraints as Structure | corpus/work-package/activities/08-implement.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: loop
+- 9. Encode Constraints as Structure | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/11-validate.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/14-complete.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 9. Encode Constraints as Structure | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/activities/17-code-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 9. Encode Constraints as Structure | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 9. Encode Constraints as Structure | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: routine
+- 9. Encode Constraints as Structure | corpus/work-package/activities/20-contract-tests.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 9. Encode Constraints as Structure | corpus/work-package/activities/21-implementation-join.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 9. Encode Constraints as Structure | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- 10. Non-Destructive Updates | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 10. Non-Destructive Updates | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 10. Non-Destructive Updates | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 10. Non-Destructive Updates | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 10. Non-Destructive Updates | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 10. Non-Destructive Updates | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 10. Non-Destructive Updates | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 10. Non-Destructive Updates | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 10. Non-Destructive Updates | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 10. Non-Destructive Updates | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 10. Non-Destructive Updates | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 10. Non-Destructive Updates | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 10. Non-Destructive Updates | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 10. Non-Destructive Updates | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 10. Non-Destructive Updates | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 10. Non-Destructive Updates | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 10. Non-Destructive Updates | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 10. Non-Destructive Updates | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 10. Non-Destructive Updates | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 10. Non-Destructive Updates | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 10. Non-Destructive Updates | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 11. Complete Documentation Structure | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- 12. Output Economy | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- 12. Output Economy | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 12. Output Economy | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- 12. Output Economy | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- 12. Output Economy | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- 12. Output Economy | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- 12. Output Economy | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- 12. Output Economy | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 12. Output Economy | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- 12. Output Economy | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- 12. Output Economy | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- 14. Single Source of Truth | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 14. Single Source of Truth | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- 14. Single Source of Truth | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- 14. Single Source of Truth | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- 14. Single Source of Truth | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- 14. Single Source of Truth | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 14. Single Source of Truth | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- 14. Single Source of Truth | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- 14. Single Source of Truth | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- 14. Single Source of Truth | corpus/work-package/workflow.yaml | workflow.variables | clean | variables: - name: is_review_mode
+- 17. Document in Positive Present | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Issue exists or is created in appropriate platform
+- 17. Document in Positive Present | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Problem clearly defined and classified
+- 17. Document in Positive Present | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Requirements explicitly captured through structured conversation
+- 17. Document in Positive Present | corpus/work-package/activities/04-research.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Best practices identified from multiple sources when research was needed
+- 17. Document in Positive Present | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Current state documented with baseline metrics
+- 17. Document in Positive Present | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - A sequenced approach the implement activity can execute against task by task, put to the user for a decision before implementation begins
+- 17. Document in Positive Present | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Open assumptions converged through analyse-challenge before any residual ask
+- 17. Document in Positive Present | corpus/work-package/activities/08-implement.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - All tasks implemented
+- 17. Document in Positive Present | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - The change is tagged and scored against the over-engineering taxonomy
+- 17. Document in Positive Present | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional
+- 17. Document in Positive Present | corpus/work-package/activities/11-validate.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - The suite's verdict on the change is established, or recorded as unavailable in this environment
+- 17. Document in Positive Present | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - The change stands on the remote as a pull request open for review
+- 17. Document in Positive Present | corpus/work-package/activities/14-complete.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - The key design decision is durably recorded for future reference when complexity is moderate or complex
+- 17. Document in Positive Present | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Mental model of codebase architecture established
+- 17. Document in Positive Present | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Code-level defects and risks are stated in one report for triage at the review fan's join
+- 17. Document in Positive Present | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Structural findings from the inline pass are ready for triage at the review fan's join, or the join runs the full prism pipeline
+- 17. Document in Positive Present | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Coverage gaps and test-suite findings are stated for triage at the review fan's join
+- 17. Document in Positive Present | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Each task's Contract has a failing test suite in the contract-tests worktree
+- 17. Document in Positive Present | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.outcome, activity.steps[].options | clean | outcome: - Contract tests and the implementation are both in hand
+- 17. Document in Positive Present | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- 17. Document in Positive Present | corpus/work-package/workflow.yaml | workflow.description | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 18. Prefer Shared Capability | corpus/work-package/activities/01-start-work-package.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps, activity.techniques | clean | techniques: - scatter-gather
+- 18. Prefer Shared Capability | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/04-research.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps, activity.techniques | clean | steps: - kind: technique
+- 18. Prefer Shared Capability | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps, activity.techniques | clean | techniques: - scatter-gather
+- 18. Prefer Shared Capability | corpus/work-package/activities/08-implement.yaml | activity.steps, activity.techniques | clean | techniques: - scatter-gather
+- 18. Prefer Shared Capability | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/11-validate.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/activities/14-complete.yaml | activity.steps, activity.techniques | clean | steps: - kind: technique
+- 18. Prefer Shared Capability | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps, activity.techniques | clean | techniques: - scatter-gather
+- 18. Prefer Shared Capability | corpus/work-package/activities/17-code-review.yaml | activity.steps, activity.techniques | clean | steps: - kind: technique
+- 18. Prefer Shared Capability | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps, activity.techniques | clean | steps: - kind: technique
+- 18. Prefer Shared Capability | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps, activity.techniques | clean | steps: - kind: routine
+- 18. Prefer Shared Capability | corpus/work-package/activities/20-contract-tests.yaml | activity.steps, activity.techniques | clean | steps: - kind: technique
+- 18. Prefer Shared Capability | corpus/work-package/activities/21-implementation-join.yaml | activity.steps, activity.techniques | clean | steps: - kind: action
+- 18. Prefer Shared Capability | corpus/work-package/workflow.yaml | workflow.techniques | clean | techniques:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/01-start-work-package.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/02-design-philosophy.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/04-research.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/05-implementation-analysis.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/06-plan-prepare.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/07-assumptions-review.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/08-implement.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/10-post-impl-review.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/11-validate.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/13-submit-for-review.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/14-complete.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/17-code-review.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/18-structural-analysis.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/19-test-suite-review.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/20-contract-tests.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/activities/21-implementation-join.yaml | activity.variables | clean | variables:
+- 19. Name Symbols Affirmatively | corpus/work-package/workflow.yaml | workflow.variables | clean | variables: - name: is_review_mode
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/01-start-work-package.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps, activity.exits | clean | steps: - kind: technique
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/04-research.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps, activity.exits | clean | steps: - kind: technique
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps, activity.exits | clean | steps: - kind: technique
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/08-implement.yaml | activity.steps, activity.exits | clean | steps: - kind: loop
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/11-validate.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/14-complete.yaml | activity.steps, activity.exits | clean | steps: - kind: technique
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/17-code-review.yaml | activity.steps, activity.exits | clean | steps: - kind: technique
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps, activity.exits | clean | steps: - kind: technique
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps, activity.exits | clean | steps: - kind: routine
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/20-contract-tests.yaml | activity.steps, activity.exits | clean | steps: - kind: technique
+- 20. Keep Orchestration in Structure | corpus/work-package/activities/21-implementation-join.yaml | activity.steps, activity.exits | clean | steps: - kind: action
+- 20. Keep Orchestration in Structure | corpus/work-package/workflow.yaml | workflow.graph | clean | graph:
+- 21. Match the Harness Surface | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- 22. Modular Over Inline | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- 22. Modular Over Inline | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- 22. Modular Over Inline | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- 22. Modular Over Inline | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- 22. Modular Over Inline | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- 22. Modular Over Inline | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- 22. Modular Over Inline | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- 22. Modular Over Inline | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- 22. Modular Over Inline | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- 22. Modular Over Inline | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- 22. Modular Over Inline | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 23. Close the Loop | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 23. Close the Loop | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 23. Close the Loop | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 23. Close the Loop | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 23. Close the Loop | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 23. Close the Loop | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 23. Close the Loop | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 23. Close the Loop | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 23. Close the Loop | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 23. Close the Loop | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 23. Close the Loop | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 23. Close the Loop | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 23. Close the Loop | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 23. Close the Loop | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 23. Close the Loop | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 23. Close the Loop | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 23. Close the Loop | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 23. Close the Loop | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 23. Close the Loop | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 23. Close the Loop | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 23. Close the Loop | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- 24. Keep Session Interaction in Activities | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- 25. Bind Sibling Techniques as Steps | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- 26. A Technique Is a Reading | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 26. A Technique Is a Reading | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- 26. A Technique Is a Reading | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- 26. A Technique Is a Reading | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- 26. A Technique Is a Reading | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- 26. A Technique Is a Reading | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- 26. A Technique Is a Reading | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 26. A Technique Is a Reading | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- 26. A Technique Is a Reading | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- 26. A Technique Is a Reading | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- 30. Resources Stay Abstract | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- 30. Resources Stay Abstract | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- 30. Resources Stay Abstract | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- 30. Resources Stay Abstract | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- 30. Resources Stay Abstract | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- 30. Resources Stay Abstract | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- 30. Resources Stay Abstract | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- 30. Resources Stay Abstract | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- 30. Resources Stay Abstract | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- 30. Resources Stay Abstract | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- 32. Cite Resources at Section Grain | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- 34. Edit the Owner | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 34. Edit the Owner | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 34. Edit the Owner | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 34. Edit the Owner | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 34. Edit the Owner | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 34. Edit the Owner | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 34. Edit the Owner | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 34. Edit the Owner | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 34. Edit the Owner | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 34. Edit the Owner | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 34. Edit the Owner | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 34. Edit the Owner | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 34. Edit the Owner | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 34. Edit the Owner | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 34. Edit the Owner | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 34. Edit the Owner | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 34. Edit the Owner | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 34. Edit the Owner | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 34. Edit the Owner | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 34. Edit the Owner | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 34. Edit the Owner | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- 35. Prefer Removing the Thing That Needs a Prohibition | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/01-start-work-package.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/04-research.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/08-implement.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: loop
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/11-validate.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/14-complete.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/17-code-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: routine
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/20-contract-tests.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/activities/21-implementation-join.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- 38. A Relocation Records the Outcome It Keeps | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- 40. Fan-Out Lives at the Layer That Runs the Work | corpus/work-package/workflow.yaml | workflow.graph | clean | graph:
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- 42. A Routine Holds the Codified Path | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- 43. A Workflow Borrows Activities | corpus/work-package/workflow.yaml | workflow.activities | clean | $schema: ../../schemas/workflow.schema.json
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- 46. A Consumer Binds the Contract | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- 46. A Consumer Binds the Contract | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-01. no-inline-content | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- AP-01. no-inline-content | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-01. no-inline-content | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- AP-01. no-inline-content | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- AP-01. no-inline-content | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- AP-01. no-inline-content | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- AP-01. no-inline-content | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- AP-01. no-inline-content | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-01. no-inline-content | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- AP-01. no-inline-content | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- AP-01. no-inline-content | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- AP-02. schema-is-constraint | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-02. schema-is-constraint | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- AP-02. schema-is-constraint | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- AP-02. schema-is-constraint | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- AP-02. schema-is-constraint | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- AP-02. schema-is-constraint | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-02. schema-is-constraint | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- AP-02. schema-is-constraint | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- AP-02. schema-is-constraint | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- AP-02. schema-is-constraint | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-03. no-partial-implementation | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-03. no-partial-implementation | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-03. no-partial-implementation | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-03. no-partial-implementation | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-03. no-partial-implementation | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-03. no-partial-implementation | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-03. no-partial-implementation | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-03. no-partial-implementation | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-03. no-partial-implementation | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-03. no-partial-implementation | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-03. no-partial-implementation | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-03. no-partial-implementation | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-03. no-partial-implementation | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-03. no-partial-implementation | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-03. no-partial-implementation | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-03. no-partial-implementation | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-03. no-partial-implementation | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-03. no-partial-implementation | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-03. no-partial-implementation | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-03. no-partial-implementation | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-03. no-partial-implementation | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-04. no-invented-naming | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-04. no-invented-naming | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-04. no-invented-naming | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-04. no-invented-naming | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-04. no-invented-naming | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-04. no-invented-naming | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-04. no-invented-naming | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-04. no-invented-naming | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-04. no-invented-naming | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-04. no-invented-naming | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-04. no-invented-naming | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-04. no-invented-naming | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-04. no-invented-naming | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-04. no-invented-naming | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-04. no-invented-naming | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-04. no-invented-naming | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-04. no-invented-naming | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-04. no-invented-naming | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-04. no-invented-naming | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-04. no-invented-naming | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-04. no-invented-naming | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-05. atomic-checkpoints | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-05. atomic-checkpoints | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-05. atomic-checkpoints | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-05. atomic-checkpoints | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-05. atomic-checkpoints | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-05. atomic-checkpoints | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-05. atomic-checkpoints | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-05. atomic-checkpoints | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-05. atomic-checkpoints | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-05. atomic-checkpoints | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-05. atomic-checkpoints | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-06. no-assumption-execution | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-06. no-assumption-execution | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-06. no-assumption-execution | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-06. no-assumption-execution | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-06. no-assumption-execution | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-06. no-assumption-execution | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-06. no-assumption-execution | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-06. no-assumption-execution | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-06. no-assumption-execution | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-06. no-assumption-execution | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-06. no-assumption-execution | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-06. no-assumption-execution | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-06. no-assumption-execution | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-06. no-assumption-execution | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-06. no-assumption-execution | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-06. no-assumption-execution | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-06. no-assumption-execution | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-06. no-assumption-execution | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-06. no-assumption-execution | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-06. no-assumption-execution | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-06. no-assumption-execution | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-07. scope-reverify-completion | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-07. scope-reverify-completion | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-07. scope-reverify-completion | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-07. scope-reverify-completion | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-07. scope-reverify-completion | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-08. one-question-per-message | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-08. one-question-per-message | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-08. one-question-per-message | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-08. one-question-per-message | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-08. one-question-per-message | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-08. one-question-per-message | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-08. one-question-per-message | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-08. one-question-per-message | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-08. one-question-per-message | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-08. one-question-per-message | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-08. one-question-per-message | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-08. one-question-per-message | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-08. one-question-per-message | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-08. one-question-per-message | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-08. one-question-per-message | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-08. one-question-per-message | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-08. one-question-per-message | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-08. one-question-per-message | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-08. one-question-per-message | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-08. one-question-per-message | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-08. one-question-per-message | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.steps | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.steps | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.steps | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/04-research.yaml | activity.description, activity.steps | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.steps | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.steps | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.steps | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/08-implement.yaml | activity.description, activity.steps | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.steps | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.steps | clean | description: Review the implementation after the automated reviews.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/11-validate.yaml | activity.description, activity.steps | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.steps | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/14-complete.yaml | activity.description, activity.steps | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.steps | clean | description: Build or augment a mental model of the codebase.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.steps | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.steps | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.steps | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.steps | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-09. checkpoint-not-prose | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.steps | clean | description: Join the contract-test results with the implementation.
+- AP-10. loop-not-prose | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.steps | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-10. loop-not-prose | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.steps | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-10. loop-not-prose | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.steps | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-10. loop-not-prose | corpus/work-package/activities/04-research.yaml | activity.description, activity.steps | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-10. loop-not-prose | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.steps | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-10. loop-not-prose | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.steps | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-10. loop-not-prose | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.steps | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-10. loop-not-prose | corpus/work-package/activities/08-implement.yaml | activity.description, activity.steps | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-10. loop-not-prose | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.steps | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-10. loop-not-prose | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.steps | clean | description: Review the implementation after the automated reviews.
+- AP-10. loop-not-prose | corpus/work-package/activities/11-validate.yaml | activity.description, activity.steps | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-10. loop-not-prose | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.steps | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-10. loop-not-prose | corpus/work-package/activities/14-complete.yaml | activity.description, activity.steps | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-10. loop-not-prose | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.steps | clean | description: Build or augment a mental model of the codebase.
+- AP-10. loop-not-prose | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.steps | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-10. loop-not-prose | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.steps | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-10. loop-not-prose | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.steps | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-10. loop-not-prose | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.steps | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-10. loop-not-prose | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.steps | clean | description: Join the contract-test results with the implementation.
+- AP-11. decision-not-prose | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.exits | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-11. decision-not-prose | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.exits | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-11. decision-not-prose | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.exits | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-11. decision-not-prose | corpus/work-package/activities/04-research.yaml | activity.description, activity.exits | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-11. decision-not-prose | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.exits | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-11. decision-not-prose | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.exits | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-11. decision-not-prose | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.exits | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-11. decision-not-prose | corpus/work-package/activities/08-implement.yaml | activity.description, activity.exits | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-11. decision-not-prose | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.exits | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-11. decision-not-prose | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.exits | clean | description: Review the implementation after the automated reviews.
+- AP-11. decision-not-prose | corpus/work-package/activities/11-validate.yaml | activity.description, activity.exits | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-11. decision-not-prose | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.exits | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-11. decision-not-prose | corpus/work-package/activities/14-complete.yaml | activity.description, activity.exits | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-11. decision-not-prose | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.exits | clean | description: Build or augment a mental model of the codebase.
+- AP-11. decision-not-prose | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.exits | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-11. decision-not-prose | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.exits | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-11. decision-not-prose | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.exits | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-11. decision-not-prose | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.exits | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-11. decision-not-prose | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.exits | clean | description: Join the contract-test results with the implementation.
+- AP-11. decision-not-prose | corpus/work-package/workflow.yaml | workflow.graph | clean | graph:
+- AP-12. artifact-not-buried | corpus/work-package/activities/01-start-work-package.yaml | activity.description | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-12. artifact-not-buried | corpus/work-package/activities/02-design-philosophy.yaml | activity.description | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-12. artifact-not-buried | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-12. artifact-not-buried | corpus/work-package/activities/04-research.yaml | activity.description | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-12. artifact-not-buried | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-12. artifact-not-buried | corpus/work-package/activities/06-plan-prepare.yaml | activity.description | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-12. artifact-not-buried | corpus/work-package/activities/07-assumptions-review.yaml | activity.description | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-12. artifact-not-buried | corpus/work-package/activities/08-implement.yaml | activity.description | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-12. artifact-not-buried | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-12. artifact-not-buried | corpus/work-package/activities/10-post-impl-review.yaml | activity.description | clean | description: Review the implementation after the automated reviews.
+- AP-12. artifact-not-buried | corpus/work-package/activities/11-validate.yaml | activity.description | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-12. artifact-not-buried | corpus/work-package/activities/13-submit-for-review.yaml | activity.description | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-12. artifact-not-buried | corpus/work-package/activities/14-complete.yaml | activity.description | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-12. artifact-not-buried | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description | clean | description: Build or augment a mental model of the codebase.
+- AP-12. artifact-not-buried | corpus/work-package/activities/17-code-review.yaml | activity.description | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-12. artifact-not-buried | corpus/work-package/activities/18-structural-analysis.yaml | activity.description | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-12. artifact-not-buried | corpus/work-package/activities/19-test-suite-review.yaml | activity.description | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-12. artifact-not-buried | corpus/work-package/activities/20-contract-tests.yaml | activity.description | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-12. artifact-not-buried | corpus/work-package/activities/21-implementation-join.yaml | activity.description | clean | description: Join the contract-test results with the implementation.
+- AP-13. variable-for-approval | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/04-research.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/08-implement.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/11-validate.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/14-complete.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.steps, activity.variables | clean | variables:
+- AP-13. variable-for-approval | corpus/work-package/workflow.yaml | workflow.variables | clean | variables: - name: is_review_mode
+- AP-14. mode-as-state | corpus/work-package/activities/01-start-work-package.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/04-research.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/08-implement.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/11-validate.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/14-complete.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/17-code-review.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/20-contract-tests.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/activities/21-implementation-join.yaml | activity.rules, activity.variables, activity.steps, activity.exits | clean | variables:
+- AP-14. mode-as-state | corpus/work-package/workflow.yaml | workflow.rules, workflow.variables | clean | variables: - name: is_review_mode
+- AP-15. procedure-in-protocol | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-15. procedure-in-protocol | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-15. procedure-in-protocol | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-15. procedure-in-protocol | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-15. procedure-in-protocol | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-15. procedure-in-protocol | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-15. procedure-in-protocol | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-15. procedure-in-protocol | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-15. procedure-in-protocol | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-15. procedure-in-protocol | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-15. procedure-in-protocol | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-17. bound-step-no-description | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-17. bound-step-no-description | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-17. bound-step-no-description | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-17. bound-step-no-description | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-17. bound-step-no-description | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-17. bound-step-no-description | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-17. bound-step-no-description | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-17. bound-step-no-description | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-17. bound-step-no-description | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-17. bound-step-no-description | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-18. no-monolith-masking-steps | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-19. no-rule-protocol-restatement | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-19. no-rule-protocol-restatement | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-20. rule-group-disambiguation | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-20. rule-group-disambiguation | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-21. grouped-rule-keys | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-21. grouped-rule-keys | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-21. grouped-rule-keys | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-21. grouped-rule-keys | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-21. grouped-rule-keys | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-21. grouped-rule-keys | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-21. grouped-rule-keys | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-21. grouped-rule-keys | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-21. grouped-rule-keys | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-22. single-rule-authority | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-22. single-rule-authority | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-22. single-rule-authority | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-22. single-rule-authority | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-22. single-rule-authority | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-22. single-rule-authority | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-22. single-rule-authority | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-22. single-rule-authority | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-22. single-rule-authority | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-22. single-rule-authority | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-22. single-rule-authority | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-22. single-rule-authority | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-22. single-rule-authority | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-22. single-rule-authority | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-22. single-rule-authority | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-22. single-rule-authority | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-22. single-rule-authority | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-22. single-rule-authority | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-22. single-rule-authority | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-22. single-rule-authority | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-23. worker-rule-reach | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-23. worker-rule-reach | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-23. worker-rule-reach | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-23. worker-rule-reach | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-23. worker-rule-reach | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-23. worker-rule-reach | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-23. worker-rule-reach | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-23. worker-rule-reach | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-23. worker-rule-reach | corpus/work-package/workflow.yaml | workflow.rules.workflow | clean | $schema: ../../schemas/workflow.schema.json
+- AP-24. no-contradictory-rules | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-24. no-contradictory-rules | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-24. no-contradictory-rules | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-24. no-contradictory-rules | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-24. no-contradictory-rules | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-24. no-contradictory-rules | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-24. no-contradictory-rules | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-24. no-contradictory-rules | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-24. no-contradictory-rules | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-26. no-rationale-in-description | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].options[].description | finding (pre-existing) | Proceed without (not recommended for non-trivial work)
+- AP-26. no-rationale-in-description | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions[].description | finding (pre-existing) | Mark PR as existing once successfully created.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions[].message | finding (pre-existing) | Continuing with existing PR #{existing_pr_number} (already bound for this branch).
+- AP-26. no-rationale-in-description | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].actions[].message | finding (pre-existing) | recorded — the record of truth for the classification and path rationale.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/04-research.yaml | activity.description | finding (pre-existing) | Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/08-implement.yaml | activity.description | finding (diff) | A branch of the implementation fan; symbol provenance and residual assumptions settle at implementation-join.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].actions[].message | finding (diff) | Task implementation record is present for provenance.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Review the implementation after the automated reviews.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/11-validate.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/14-complete.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].actions[].message | finding (pre-existing) | recorded for the next work package on this area.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/18-structural-analysis.yaml | activity.description | finding (diff) | the full prism pipeline runs at the review fan's join.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-26. no-rationale-in-description | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-26. no-rationale-in-description | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.steps[].message, activity.steps[].options[].description, activity.steps[].actions[].description, activity.rules | clean | description: Join the contract-test results with the implementation.
+- AP-26. no-rationale-in-description | corpus/work-package/workflow.yaml | workflow.description | finding (pre-existing) | For multiple related work packages, use the work-packages workflow to create a roadmap first.
+- AP-27. validate-message-economy | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-27. validate-message-economy | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/04-research.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-27. validate-message-economy | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-27. validate-message-economy | corpus/work-package/activities/08-implement.yaml | activity.steps[].actions[].message | clean | steps: - kind: loop
+- AP-27. validate-message-economy | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/11-validate.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/14-complete.yaml | activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-27. validate-message-economy | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-27. validate-message-economy | corpus/work-package/activities/17-code-review.yaml | activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-27. validate-message-economy | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-27. validate-message-economy | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].actions[].message | clean | steps: - kind: routine
+- AP-27. validate-message-economy | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-27. validate-message-economy | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-28. no-sequence-in-description | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.steps | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.steps | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.steps | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/04-research.yaml | activity.description, activity.steps | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.steps | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.steps | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.steps | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/08-implement.yaml | activity.description, activity.steps | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-28. no-sequence-in-description | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.steps | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.steps | clean | description: Review the implementation after the automated reviews.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/11-validate.yaml | activity.description, activity.steps | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.steps | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/14-complete.yaml | activity.description, activity.steps | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.steps | clean | description: Build or augment a mental model of the codebase.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.steps | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.steps | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.steps | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-28. no-sequence-in-description | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.steps | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-28. no-sequence-in-description | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.steps | clean | description: Join the contract-test results with the implementation.
+- AP-28. no-sequence-in-description | corpus/work-package/workflow.yaml | workflow.description, workflow.activities, workflow.graph | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-29. no-user-env-mutation | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/04-research.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/08-implement.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-29. no-user-env-mutation | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Review the implementation after the automated reviews.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/11-validate.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/14-complete.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Build or augment a mental model of the codebase.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-29. no-user-env-mutation | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-29. no-user-env-mutation | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.steps[].actions[].message, activity.steps[].options | clean | description: Join the contract-test results with the implementation.
+- AP-29. no-user-env-mutation | corpus/work-package/workflow.yaml | workflow.description | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-30. role-rules-not-description | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/04-research.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/08-implement.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/11-validate.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/14-complete.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.variables, activity.rules | clean | variables:
+- AP-30. role-rules-not-description | corpus/work-package/workflow.yaml | workflow.description, workflow.variables, workflow.rules | clean | variables: - name: is_review_mode
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- AP-31. no-hand-authored-artifacts | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- AP-32. outcome-names-value | corpus/work-package/activities/01-start-work-package.yaml | activity.outcome | finding (pre-existing) | PR reference recorded on the issue via the platform's native PR linkage
+- AP-32. outcome-names-value | corpus/work-package/activities/02-design-philosophy.yaml | activity.outcome | clean | outcome: - Problem clearly defined and classified
+- AP-32. outcome-names-value | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.outcome | clean | outcome: - Requirements explicitly captured through structured conversation
+- AP-32. outcome-names-value | corpus/work-package/activities/04-research.yaml | activity.outcome | clean | outcome: - Best practices identified from multiple sources when research was needed
+- AP-32. outcome-names-value | corpus/work-package/activities/05-implementation-analysis.yaml | activity.outcome | clean | outcome: - Current state documented with baseline metrics
+- AP-32. outcome-names-value | corpus/work-package/activities/06-plan-prepare.yaml | activity.outcome | finding (diff) | Discovery-branch assumptions reach the log through one writer, and research's gates are raised here
+- AP-32. outcome-names-value | corpus/work-package/activities/07-assumptions-review.yaml | activity.outcome | clean | outcome: - Open assumptions converged through analyse-challenge before any residual ask
+- AP-32. outcome-names-value | corpus/work-package/activities/08-implement.yaml | activity.outcome | clean | outcome: - All tasks implemented
+- AP-32. outcome-names-value | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.outcome | clean | outcome: - The change is tagged and scored against the over-engineering taxonomy
+- AP-32. outcome-names-value | corpus/work-package/activities/10-post-impl-review.yaml | activity.outcome | clean | outcome: - Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional
+- AP-32. outcome-names-value | corpus/work-package/activities/11-validate.yaml | activity.outcome | clean | outcome: - The suite's verdict on the change is established, or recorded as unavailable in this environment
+- AP-32. outcome-names-value | corpus/work-package/activities/13-submit-for-review.yaml | activity.outcome | clean | outcome: - The change stands on the remote as a pull request open for review
+- AP-32. outcome-names-value | corpus/work-package/activities/14-complete.yaml | activity.outcome | clean | outcome: - The key design decision is durably recorded for future reference when complexity is moderate or complex
+- AP-32. outcome-names-value | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.outcome | finding (pre-existing) | A reusable comprehension reference lands in the cumulative corpus, which the next work package on the same area reads
+- AP-32. outcome-names-value | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.outcome | finding (pre-existing) | The questions, investigations and unexplored areas behind that reference stay in the session's planning folder as a comprehension log
+- AP-32. outcome-names-value | corpus/work-package/activities/17-code-review.yaml | activity.outcome | clean | outcome: - Code-level defects and risks are stated in one report for triage at the review fan's join
+- AP-32. outcome-names-value | corpus/work-package/activities/18-structural-analysis.yaml | activity.outcome | clean | outcome: - Structural findings from the inline pass are ready for triage at the review fan's join, or the join runs the full prism pipeline
+- AP-32. outcome-names-value | corpus/work-package/activities/19-test-suite-review.yaml | activity.outcome | clean | outcome: - Coverage gaps and test-suite findings are stated for triage at the review fan's join
+- AP-32. outcome-names-value | corpus/work-package/activities/20-contract-tests.yaml | activity.outcome | clean | outcome: - Each task's Contract has a failing test suite in the contract-tests worktree
+- AP-32. outcome-names-value | corpus/work-package/activities/21-implementation-join.yaml | activity.outcome | clean | outcome: - Contract tests and the implementation are both in hand
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: technique
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/04-research.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: technique
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: technique
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/08-implement.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: loop
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/11-validate.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/14-complete.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: technique
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/17-code-review.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: technique
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: technique
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: routine
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: technique
+- AP-33. no-set-of-technique-output | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].technique, activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].actions | clean | steps: - kind: technique
+- AP-34. no-valueless-control-set | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/04-research.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].actions | clean | steps: - kind: technique
+- AP-34. no-valueless-control-set | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].actions | clean | steps: - kind: technique
+- AP-34. no-valueless-control-set | corpus/work-package/activities/08-implement.yaml | activity.steps[].actions | clean | steps: - kind: loop
+- AP-34. no-valueless-control-set | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/11-validate.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/14-complete.yaml | activity.steps[].actions | clean | steps: - kind: technique
+- AP-34. no-valueless-control-set | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-34. no-valueless-control-set | corpus/work-package/activities/17-code-review.yaml | activity.steps[].actions | clean | steps: - kind: technique
+- AP-34. no-valueless-control-set | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].actions | clean | steps: - kind: technique
+- AP-34. no-valueless-control-set | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].actions | clean | steps: - kind: routine
+- AP-34. no-valueless-control-set | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].actions | clean | steps: - kind: technique
+- AP-34. no-valueless-control-set | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: technique
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/04-research.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: technique
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: technique
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/08-implement.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: loop
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/11-validate.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/14-complete.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: technique
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/17-code-review.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: technique
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: technique
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: routine
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: technique
+- AP-35. no-intra-step-input-set | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].technique.inputs, activity.steps[].actions | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/01-start-work-package.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/02-design-philosophy.yaml | activity.techniques, activity.steps[].technique | clean | techniques: - scatter-gather
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/04-research.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/05-implementation-analysis.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: technique
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/06-plan-prepare.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/07-assumptions-review.yaml | activity.techniques, activity.steps[].technique | clean | techniques: - scatter-gather
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/08-implement.yaml | activity.techniques, activity.steps[].technique | clean | techniques: - scatter-gather
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/10-post-impl-review.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/11-validate.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/13-submit-for-review.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/14-complete.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: technique
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.techniques, activity.steps[].technique | clean | techniques: - scatter-gather
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/17-code-review.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: technique
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/18-structural-analysis.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: technique
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/19-test-suite-review.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: routine
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/20-contract-tests.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: technique
+- AP-36. techniques-list-disjoint | corpus/work-package/activities/21-implementation-join.yaml | activity.techniques, activity.steps[].technique | clean | steps: - kind: action
+- AP-37. rule-audience-bucket | corpus/work-package/workflow.yaml | workflow.rules.workflow, workflow.rules.activity, workflow.rules.universal | clean | $schema: ../../schemas/workflow.schema.json
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].technique | clean | steps: - kind: technique
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/04-research.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].technique | clean | steps: - kind: technique
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].technique | clean | steps: - kind: technique
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/08-implement.yaml | activity.steps[].technique | clean | steps: - kind: loop
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/11-validate.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/14-complete.yaml | activity.steps[].technique | clean | steps: - kind: technique
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/17-code-review.yaml | activity.steps[].technique | clean | steps: - kind: technique
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].technique | clean | steps: - kind: technique
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].technique | clean | steps: - kind: routine
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].technique | clean | steps: - kind: technique
+- AP-38. no-duplicate-technique-steps | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].technique | clean | steps: - kind: action
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/01-start-work-package.yaml | activity.techniques | clean | id: start-work-package version: 3.29.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/02-design-philosophy.yaml | activity.techniques | clean | techniques: - scatter-gather
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.techniques | clean | id: requirements-elicitation version: 2.14.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/04-research.yaml | activity.techniques | clean | id: research version: 2.23.1
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/05-implementation-analysis.yaml | activity.techniques | clean | id: implementation-analysis version: 2.18.1
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/06-plan-prepare.yaml | activity.techniques | clean | id: plan-prepare version: 1.14.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/07-assumptions-review.yaml | activity.techniques | clean | techniques: - scatter-gather
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/08-implement.yaml | activity.techniques | clean | techniques: - scatter-gather
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.techniques | clean | id: lean-coding-audit version: 1.8.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/10-post-impl-review.yaml | activity.techniques | clean | id: post-impl-review version: 2.6.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/11-validate.yaml | activity.techniques | clean | id: validate version: 3.11.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/13-submit-for-review.yaml | activity.techniques | clean | id: submit-for-review version: 1.26.3
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/14-complete.yaml | activity.techniques | clean | id: complete version: 1.15.2
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.techniques | clean | techniques: - scatter-gather
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/17-code-review.yaml | activity.techniques | clean | id: code-review version: 1.0.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/18-structural-analysis.yaml | activity.techniques | clean | id: structural-analysis version: 1.0.1
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/19-test-suite-review.yaml | activity.techniques | clean | id: test-suite-review version: 1.0.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/20-contract-tests.yaml | activity.techniques | clean | id: contract-tests version: 1.2.0
+- AP-39. hoist-universal-techniques | corpus/work-package/activities/21-implementation-join.yaml | activity.techniques | clean | id: implementation-join version: 1.1.1
+- AP-39. hoist-universal-techniques | corpus/work-package/workflow.yaml | workflow.techniques.activity | clean | techniques:
+- AP-40. readme-orients-not-transcribes | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Issue exists or is created in appropriate platform
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Problem clearly defined and classified
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Requirements explicitly captured through structured conversation
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/04-research.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Best practices identified from multiple sources when research was needed
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Current state documented with baseline metrics
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - A sequenced approach the implement activity can execute against task by task, put to the user for a decision before implementation begins
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Open assumptions converged through analyse-challenge before any residual ask
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/08-implement.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - All tasks implemented
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - The change is tagged and scored against the over-engineering taxonomy
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/11-validate.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - The suite's verdict on the change is established, or recorded as unavailable in this environment
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - The change stands on the remote as a pull request open for review
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/14-complete.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - The key design decision is durably recorded for future reference when complexity is moderate or complex
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Mental model of codebase architecture established
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Code-level defects and risks are stated in one report for triage at the review fan's join
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Structural findings from the inline pass are ready for triage at the review fan's join, or the join runs the full prism pipeline
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Coverage gaps and test-suite findings are stated for triage at the review fan's join
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Each task's Contract has a failing test suite in the contract-tests worktree
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.outcome, activity.steps[].options[].description, activity.steps[].actions[].description | clean | outcome: - Contract tests and the implementation are both in hand
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-41. avoidance-voice-in-definitions | corpus/work-package/workflow.yaml | workflow.description | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-47. no-redundant-link-label | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-47. no-redundant-link-label | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-47. no-redundant-link-label | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-47. no-redundant-link-label | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-47. no-redundant-link-label | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-57. escape-literal-dollar | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-57. escape-literal-dollar | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-57. escape-literal-dollar | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-57. escape-literal-dollar | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-57. escape-literal-dollar | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message | finding (pre-existing) | Review PR derived as #{pr_number}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions[].message | finding (pre-existing) | Project type: {project_type}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message | finding (pre-existing) | No GitHub issue mirrors Jira ticket {jira_issue_key}, so the pull request has nothing to trace to in the target repo.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions[].message | finding (pre-existing) | The worktree at {target_path} is on a default branch, not a feature branch, so subsequent commits would land there. Check out {branch_name} in {target_path} and re-run.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions[].message | finding (pre-existing) | Continuing with existing PR #{existing_pr_number} (already bound for this branch).
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message | finding (pre-existing) | PR #{existing_pr_number} is already open for this branch.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message | finding (pre-existing) | Feature branch {branch_name} and its worktree exist. No draft PR is open for the branch yet.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].actions[].message | finding (pre-existing) | {stakeholder_overview}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].message | finding (pre-existing) | Classification: {problem_type}. Rationale: {classification_rationale}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].actions[].message | finding (pre-existing) | Review mode: classification recorded ({problem_type}, {problem_complexity} complexity). Rationale: {classification_rationale}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].message | finding (pre-existing) | {current_domain} — {current_question}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].actions[].message | finding (diff) | Further research direction: {research_direction}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].message | finding (pre-existing) | Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].actions[].message | finding (pre-existing) | {stakeholder_overview}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].message | finding (pre-existing) | Assumptions were deferred and need attention from stakeholders on {issue_platform}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-63. backtick-code-tokens | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].message | finding (pre-existing) | Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {lean_audit_findings}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].message | finding (pre-existing) | Block {current_block_index}: {block_path}:{block_line_range}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/11-validate.yaml | activity.steps[].actions[].message | finding (pre-existing) | Toolchain prerequisites are unmet, so the validation suite cannot run: {missing_prerequisites}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].actions[].message | finding (pre-existing) | Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].actions[].message | finding (pre-existing) | Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].message | finding (pre-existing) | Consolidated review summary, ready to post as a pull-request review: {review_summary}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].actions[].message | finding (pre-existing) | Push remote '{push_remote}' ({push_remote_url}) did not verify as private. Point {push_remote} at the private fork inside {target_path} and re-run.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].actions[].message | finding (pre-existing) | Commits staged for the private push carry no valid signature. Sign them in {target_path} and re-run.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].message | finding (pre-existing) | The push target is remote `{push_remote}` ({push_remote_url}), its commits carry valid signatures, and a stealth-mode run reaches a private remote only.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].actions[].message | finding (pre-existing) | Pull request marked ready for review — {updated_pr.pr_status}: {updated_pr.pr_url}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].message | finding (pre-existing) | Recommended outcome: {recommended_outcome}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/14-complete.yaml | activity.steps[].message | finding (pre-existing) | Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.reason}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/14-complete.yaml | activity.steps[].actions[].message | finding (pre-existing) | Planning artifacts carry links that do not resolve: {broken_artifact_links}.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/14-complete.yaml | activity.steps[].actions[].message | finding (pre-existing) | {next_work_package_context}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-63. backtick-code-tokens | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-63. backtick-code-tokens | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].message | finding (diff) | {contract_test_failures}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].message | finding (pre-existing) | {uncertain_symbols}
+- AP-63. backtick-code-tokens | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-63. backtick-code-tokens | corpus/work-package/workflow.yaml | workflow.variables | finding (pre-existing) | Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}.
+- AP-64. boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml | activity.variables | finding (pre-existing) | name: issue_skipped
+- AP-64. boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml | activity.variables | finding (pre-existing) | name: pr_skipped
+- AP-64. boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml | activity.variables | finding (pre-existing) | name: review_pr_missing
+- AP-64. boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml | activity.variables | finding (pre-existing) | name: issue_type_ambiguous
+- AP-64. boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml | activity.variables | finding (pre-existing) | name: review_mode_ambiguous
+- AP-64. boolean-id-shape | corpus/work-package/activities/02-design-philosophy.yaml | activity.variables | finding (pre-existing) | name: skip_optional_activities
+- AP-64. boolean-id-shape | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/04-research.yaml | activity.variables | finding (pre-existing) | name: context_scope_uncertain
+- AP-64. boolean-id-shape | corpus/work-package/activities/05-implementation-analysis.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/06-plan-prepare.yaml | activity.variables | finding (pre-existing) | name: context_scope_uncertain
+- AP-64. boolean-id-shape | corpus/work-package/activities/07-assumptions-review.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/08-implement.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/10-post-impl-review.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/11-validate.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/13-submit-for-review.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/14-complete.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/17-code-review.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/18-structural-analysis.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/19-test-suite-review.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/20-contract-tests.yaml | activity.variables | clean | variables:
+- AP-64. boolean-id-shape | corpus/work-package/activities/21-implementation-join.yaml | activity.variables | finding (pre-existing) | name: has_uncertain_symbols
+- AP-64. boolean-id-shape | corpus/work-package/workflow.yaml | workflow.variables | finding (pre-existing) | name: skip_optional_activities
+- AP-65. collection-id-shape | corpus/work-package/activities/01-start-work-package.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/02-design-philosophy.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/04-research.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/05-implementation-analysis.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/06-plan-prepare.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/07-assumptions-review.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/08-implement.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/10-post-impl-review.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/11-validate.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/13-submit-for-review.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/14-complete.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/17-code-review.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/18-structural-analysis.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/19-test-suite-review.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/20-contract-tests.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/activities/21-implementation-join.yaml | activity.variables | clean | variables:
+- AP-65. collection-id-shape | corpus/work-package/workflow.yaml | workflow.variables | clean | variables: - name: is_review_mode
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-69. no-activity-prose-rules | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-70. capability-group-placement | corpus/work-package/workflow.yaml | workflow.techniques | clean | techniques:
+- AP-71. no-false-resource-delivery | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-73. consistent-tool-names | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-77. impl-before-confirmed-approach | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-77. impl-before-confirmed-approach | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-78. follow-through-on-recommend | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-78. follow-through-on-recommend | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-79. structure-backed-constraints | corpus/work-package/activities/01-start-work-package.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: technique
+- AP-79. structure-backed-constraints | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/04-research.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: technique
+- AP-79. structure-backed-constraints | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: technique
+- AP-79. structure-backed-constraints | corpus/work-package/activities/08-implement.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: loop
+- AP-79. structure-backed-constraints | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/11-validate.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/14-complete.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: technique
+- AP-79. structure-backed-constraints | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/activities/17-code-review.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: technique
+- AP-79. structure-backed-constraints | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: technique
+- AP-79. structure-backed-constraints | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: routine
+- AP-79. structure-backed-constraints | corpus/work-package/activities/20-contract-tests.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: technique
+- AP-79. structure-backed-constraints | corpus/work-package/activities/21-implementation-join.yaml | activity.rules, activity.steps, activity.exits | clean | steps: - kind: action
+- AP-79. structure-backed-constraints | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-80. preserve-readme-content | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-81. verify-format-literacy | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-82. work-through-activities | corpus/work-package/workflow.yaml | workflow.activities, workflow.graph | clean | graph:
+- AP-83. accept-correction | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-83. accept-correction | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-83. accept-correction | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-83. accept-correction | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-83. accept-correction | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-83. accept-correction | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-83. accept-correction | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-83. accept-correction | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-83. accept-correction | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-83. accept-correction | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-83. accept-correction | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-83. accept-correction | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-83. accept-correction | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-83. accept-correction | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-83. accept-correction | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-83. accept-correction | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-83. accept-correction | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-83. accept-correction | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-83. accept-correction | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-83. accept-correction | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-83. accept-correction | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-84. single-closeout-artifact | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-87. omit-null-sections | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-87. omit-null-sections | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-87. omit-null-sections | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-87. omit-null-sections | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-87. omit-null-sections | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-87. omit-null-sections | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-87. omit-null-sections | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-87. omit-null-sections | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-87. omit-null-sections | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-87. omit-null-sections | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-87. omit-null-sections | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-88. one-decision-one-checkpoint | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-89. checkpoint-requires-decision | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-95. enforce-output-discipline | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-97. link-named-artifacts | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-97. link-named-artifacts | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/04-research.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-97. link-named-artifacts | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-97. link-named-artifacts | corpus/work-package/activities/08-implement.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: loop
+- AP-97. link-named-artifacts | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/11-validate.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/14-complete.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-97. link-named-artifacts | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-97. link-named-artifacts | corpus/work-package/activities/17-code-review.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-97. link-named-artifacts | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-97. link-named-artifacts | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: routine
+- AP-97. link-named-artifacts | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: technique
+- AP-97. link-named-artifacts | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].message, activity.steps[].actions[].message | clean | steps: - kind: action
+- AP-98. no-next-step-narration | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-98. no-next-step-narration | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-98. no-next-step-narration | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-98. no-next-step-narration | corpus/work-package/activities/04-research.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-98. no-next-step-narration | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-98. no-next-step-narration | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-98. no-next-step-narration | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-98. no-next-step-narration | corpus/work-package/activities/08-implement.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-98. no-next-step-narration | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-98. no-next-step-narration | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Review the implementation after the automated reviews.
+- AP-98. no-next-step-narration | corpus/work-package/activities/11-validate.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-98. no-next-step-narration | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-98. no-next-step-narration | corpus/work-package/activities/14-complete.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-98. no-next-step-narration | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Build or augment a mental model of the codebase.
+- AP-98. no-next-step-narration | corpus/work-package/activities/17-code-review.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-98. no-next-step-narration | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-98. no-next-step-narration | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-98. no-next-step-narration | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-98. no-next-step-narration | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].message, activity.steps[].actions[].message, activity.steps[].options[].description | clean | description: Join the contract-test results with the implementation.
+- AP-99. statement-not-question | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-99. statement-not-question | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/04-research.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-99. statement-not-question | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-99. statement-not-question | corpus/work-package/activities/08-implement.yaml | activity.steps[].message | clean | steps: - kind: loop
+- AP-99. statement-not-question | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/11-validate.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/14-complete.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-99. statement-not-question | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-99. statement-not-question | corpus/work-package/activities/17-code-review.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-99. statement-not-question | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-99. statement-not-question | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].message | clean | steps: - kind: routine
+- AP-99. statement-not-question | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-99. statement-not-question | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-100. runtime-rules-only | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-100. runtime-rules-only | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-100. runtime-rules-only | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-100. runtime-rules-only | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-100. runtime-rules-only | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-100. runtime-rules-only | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-100. runtime-rules-only | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-100. runtime-rules-only | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-100. runtime-rules-only | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-101. no-caption-only-message | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-101. no-caption-only-message | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/04-research.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-101. no-caption-only-message | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-101. no-caption-only-message | corpus/work-package/activities/08-implement.yaml | activity.steps[].message | clean | steps: - kind: loop
+- AP-101. no-caption-only-message | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/11-validate.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/14-complete.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-101. no-caption-only-message | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-101. no-caption-only-message | corpus/work-package/activities/17-code-review.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-101. no-caption-only-message | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-101. no-caption-only-message | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].message | clean | steps: - kind: routine
+- AP-101. no-caption-only-message | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].message | clean | steps: - kind: technique
+- AP-101. no-caption-only-message | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].message | clean | steps: - kind: action
+- AP-103. cited-home-owns-claim | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-106. canon-layer-cites-not-restates | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-107. bind-site-is-orchestration-truth | corpus/work-package/workflow.yaml | workflow.description, workflow.graph, workflow.initialActivity | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-112. no-derived-state-shadow | corpus/work-package/workflow.yaml | workflow.variables | clean | variables: - name: is_review_mode
+- AP-115. platform-semantics-in-capability | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-117. no-engine-mechanics-as-rules | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/01-start-work-package.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/04-research.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/08-implement.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Review the implementation after the automated reviews.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/11-validate.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/14-complete.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Build or augment a mental model of the codebase.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/17-code-review.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/20-contract-tests.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/21-implementation-join.yaml | activity.rules, activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Join the contract-test results with the implementation.
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-118. no-bind-mechanics-as-prose | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-126. cut-comment-jsdoc-verbosity | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-127. no-dense-prose-after-config-examples | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/01-start-work-package.yaml | * | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/02-design-philosophy.yaml | * | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/03-requirements-elicitation.yaml | * | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/04-research.yaml | * | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/05-implementation-analysis.yaml | * | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/06-plan-prepare.yaml | * | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/07-assumptions-review.yaml | * | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/08-implement.yaml | * | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/09-lean-coding-audit.yaml | * | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/10-post-impl-review.yaml | * | clean | description: Review the implementation after the automated reviews.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/11-validate.yaml | * | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/13-submit-for-review.yaml | * | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/14-complete.yaml | * | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/15-codebase-comprehension.yaml | * | clean | description: Build or augment a mental model of the codebase.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/17-code-review.yaml | * | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/18-structural-analysis.yaml | * | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/19-test-suite-review.yaml | * | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/20-contract-tests.yaml | * | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/21-implementation-join.yaml | * | clean | description: Join the contract-test results with the implementation.
+- AP-128. worktree-root-placeholders | corpus/work-package/activities/README.md | * | clean | # Work Package Activities
+- AP-128. worktree-root-placeholders | corpus/work-package/workflow.yaml | * | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-129. no-parallel-runbook-when-setup-covers-it | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-130. variable-description-one-line | corpus/work-package/workflow.yaml | workflow.variables | finding (pre-existing) | The issue key, URL, or surrounding text the user supplied when opening the work package, or typed in reply to the issue-verification gate.
+- AP-130. variable-description-one-line | corpus/work-package/workflow.yaml | workflow.variables | finding (pre-existing) | The repository's default branch, which feature branches sync from and merge into.
+- AP-131. bag-value-as-literal | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- AP-131. bag-value-as-literal | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-131. bag-value-as-literal | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- AP-131. bag-value-as-literal | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- AP-131. bag-value-as-literal | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- AP-131. bag-value-as-literal | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- AP-131. bag-value-as-literal | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-131. bag-value-as-literal | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- AP-131. bag-value-as-literal | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- AP-131. bag-value-as-literal | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- AP-131. bag-value-as-literal | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+- AP-132. unproduced-value-read | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-132. unproduced-value-read | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-132. unproduced-value-read | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-132. unproduced-value-read | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-132. unproduced-value-read | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-132. unproduced-value-read | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-132. unproduced-value-read | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-132. unproduced-value-read | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-132. unproduced-value-read | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-132. unproduced-value-read | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-132. unproduced-value-read | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/01-start-work-package.yaml | activity.description, activity.outcome | clean | outcome: - Issue exists or is created in appropriate platform
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/02-design-philosophy.yaml | activity.description, activity.outcome | clean | outcome: - Problem clearly defined and classified
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.description, activity.outcome | clean | outcome: - Requirements explicitly captured through structured conversation
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/04-research.yaml | activity.description, activity.outcome | clean | outcome: - Best practices identified from multiple sources when research was needed
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/05-implementation-analysis.yaml | activity.description, activity.outcome | clean | outcome: - Current state documented with baseline metrics
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/06-plan-prepare.yaml | activity.description, activity.outcome | clean | outcome: - A sequenced approach the implement activity can execute against task by task, put to the user for a decision before implementation begins
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/07-assumptions-review.yaml | activity.description, activity.outcome | clean | outcome: - Open assumptions converged through analyse-challenge before any residual ask
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/08-implement.yaml | activity.description, activity.outcome | clean | outcome: - All tasks implemented
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.description, activity.outcome | clean | outcome: - The change is tagged and scored against the over-engineering taxonomy
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/10-post-impl-review.yaml | activity.description, activity.outcome | clean | outcome: - Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/11-validate.yaml | activity.description, activity.outcome | clean | outcome: - The suite's verdict on the change is established, or recorded as unavailable in this environment
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/13-submit-for-review.yaml | activity.description, activity.outcome | clean | outcome: - The change stands on the remote as a pull request open for review
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/14-complete.yaml | activity.description, activity.outcome | clean | outcome: - The key design decision is durably recorded for future reference when complexity is moderate or complex
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.description, activity.outcome | clean | outcome: - Mental model of codebase architecture established
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/17-code-review.yaml | activity.description, activity.outcome | clean | outcome: - Code-level defects and risks are stated in one report for triage at the review fan's join
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/18-structural-analysis.yaml | activity.description, activity.outcome | clean | outcome: - Structural findings from the inline pass are ready for triage at the review fan's join, or the join runs the full prism pipeline
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/19-test-suite-review.yaml | activity.description, activity.outcome | clean | outcome: - Coverage gaps and test-suite findings are stated for triage at the review fan's join
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/20-contract-tests.yaml | activity.description, activity.outcome | clean | outcome: - Each task's Contract has a failing test suite in the contract-tests worktree
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/21-implementation-join.yaml | activity.description, activity.outcome | clean | outcome: - Contract tests and the implementation are both in hand
+- AP-133. stale-restatement-after-change | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-137. overlapping-rule-scopes | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-137. overlapping-rule-scopes | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-140. phase-cited-by-ordinal | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-142. output-without-destination | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-142. output-without-destination | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-142. output-without-destination | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-142. output-without-destination | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-142. output-without-destination | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-142. output-without-destination | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-142. output-without-destination | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-142. output-without-destination | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-142. output-without-destination | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-142. output-without-destination | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-142. output-without-destination | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/01-start-work-package.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps | clean | steps: - kind: technique
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/04-research.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/08-implement.yaml | activity.steps | clean | steps: - kind: loop
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/11-validate.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/14-complete.yaml | activity.steps | clean | steps: - kind: technique
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps | clean | steps: - kind: action
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/17-code-review.yaml | activity.steps | clean | steps: - kind: technique
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps | clean | steps: - kind: technique
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps | clean | steps: - kind: routine
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/20-contract-tests.yaml | activity.steps | clean | steps: - kind: technique
+- AP-146. branch-on-undeclared-threshold | corpus/work-package/activities/21-implementation-join.yaml | activity.steps | clean | steps: - kind: action
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/01-start-work-package.yaml | activity.rules | clean | id: start-work-package version: 3.29.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/02-design-philosophy.yaml | activity.rules | clean | id: design-philosophy version: 1.18.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.rules | clean | id: requirements-elicitation version: 2.14.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/04-research.yaml | activity.rules | clean | id: research version: 2.23.1
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/05-implementation-analysis.yaml | activity.rules | clean | id: implementation-analysis version: 2.18.1
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/06-plan-prepare.yaml | activity.rules | clean | id: plan-prepare version: 1.14.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/07-assumptions-review.yaml | activity.rules | clean | id: assumptions-review version: 2.17.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/08-implement.yaml | activity.rules | clean | id: implement version: 2.23.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.rules | clean | id: lean-coding-audit version: 1.8.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/10-post-impl-review.yaml | activity.rules | clean | id: post-impl-review version: 2.6.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/11-validate.yaml | activity.rules | clean | id: validate version: 3.11.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/13-submit-for-review.yaml | activity.rules | clean | id: submit-for-review version: 1.26.3
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/14-complete.yaml | activity.rules | clean | id: complete version: 1.15.2
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.rules | clean | id: codebase-comprehension version: 1.14.4
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/17-code-review.yaml | activity.rules | clean | id: code-review version: 1.0.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/18-structural-analysis.yaml | activity.rules | clean | id: structural-analysis version: 1.0.1
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/19-test-suite-review.yaml | activity.rules | clean | id: test-suite-review version: 1.0.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/20-contract-tests.yaml | activity.rules | clean | id: contract-tests version: 1.2.0
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/activities/21-implementation-join.yaml | activity.rules | clean | id: implementation-join version: 1.1.1
+- AP-147. inherited-rules-re-enumerated | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/01-start-work-package.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Apply the design framework to classify the problem and decide the workflow path.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/04-research.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Analyze the current implementation to understand effectiveness, establish baselines, and identify the gaps the change closes.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Design the approach and prepare the plan and the test plan.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/08-implement.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: >- Execute the implementation plan task by task in the feature worktree. A branch
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Apply the ponytail lean-coding lens to the just-implemented change.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Review the implementation after the automated reviews.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/11-validate.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/14-complete.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Build or augment a mental model of the codebase.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/17-code-review.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Review the change's code for architecture, error handling, safety and project-specific patterns.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Run the single inline structural pass when the change takes that mode; the full prism pipeline runs at the review fan's join.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/20-contract-tests.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: >- Write each task's contract tests from the Contract alone into their own files in a
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/21-implementation-join.yaml | activity.steps[].options[].description, activity.steps[].actions[].description | clean | description: Join the contract-test results with the implementation.
+- AP-150. instruction-narrates-an-actor | corpus/work-package/activities/README.md | readme | clean | # Work Package Activities
+- AP-150. instruction-narrates-an-actor | corpus/work-package/workflow.yaml | workflow.rules.universal | clean | $schema: ../../schemas/workflow.schema.json
+- AP-155. value-set-in-prose | corpus/work-package/workflow.yaml | workflow.variables | clean | variables: - name: is_review_mode
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- AP-163. construct-folder-without-a-readme | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/01-start-work-package.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/02-design-philosophy.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/03-requirements-elicitation.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/04-research.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/05-implementation-analysis.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/06-plan-prepare.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/07-assumptions-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/08-implement.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: loop
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/09-lean-coding-audit.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/10-post-impl-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/11-validate.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/13-submit-for-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/14-complete.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/15-codebase-comprehension.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/17-code-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/18-structural-analysis.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/19-test-suite-review.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: routine
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/20-contract-tests.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: technique
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/activities/21-implementation-join.yaml | activity.steps, activity.exits, activity.rules | clean | steps: - kind: action
+- AP-164. relocation-without-a-preserved-outcome | corpus/work-package/workflow.yaml | workflow.rules | clean | $schema: ../../schemas/workflow.schema.json
+- Reference Conventions | corpus/work-package/activities/01-start-work-package.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/02-design-philosophy.yaml | activity | clean | steps: - kind: technique
+- Reference Conventions | corpus/work-package/activities/03-requirements-elicitation.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/04-research.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/05-implementation-analysis.yaml | activity | clean | steps: - kind: technique
+- Reference Conventions | corpus/work-package/activities/06-plan-prepare.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/07-assumptions-review.yaml | activity | clean | steps: - kind: technique
+- Reference Conventions | corpus/work-package/activities/08-implement.yaml | activity | clean | steps: - kind: loop
+- Reference Conventions | corpus/work-package/activities/09-lean-coding-audit.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/10-post-impl-review.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/11-validate.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/13-submit-for-review.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/14-complete.yaml | activity | clean | steps: - kind: technique
+- Reference Conventions | corpus/work-package/activities/15-codebase-comprehension.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/activities/17-code-review.yaml | activity | clean | steps: - kind: technique
+- Reference Conventions | corpus/work-package/activities/18-structural-analysis.yaml | activity | clean | steps: - kind: technique
+- Reference Conventions | corpus/work-package/activities/19-test-suite-review.yaml | activity | clean | steps: - kind: routine
+- Reference Conventions | corpus/work-package/activities/20-contract-tests.yaml | activity | clean | steps: - kind: technique
+- Reference Conventions | corpus/work-package/activities/21-implementation-join.yaml | activity | clean | steps: - kind: action
+- Reference Conventions | corpus/work-package/workflow.yaml | workflow | clean | description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work packag
+
+## Findings
+
+58
+
+| Band | Severity | Entry | Location | Evidence | Origin | Fix |
+| --- | --- | --- | --- | --- | --- | --- |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml activity.variables | name: issue_skipped | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml activity.variables | name: pr_skipped | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml activity.variables | name: review_pr_missing | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml activity.variables | name: issue_type_ambiguous | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/01-start-work-package.yaml activity.variables | name: review_mode_ambiguous | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/02-design-philosophy.yaml activity.variables | name: skip_optional_activities | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/04-research.yaml activity.variables | name: context_scope_uncertain | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/06-plan-prepare.yaml activity.variables | name: context_scope_uncertain | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/activities/21-implementation-join.yaml activity.variables | name: has_uncertain_symbols | pre-existing | Rename to an affirmative predicate; has_ does not rescue a non-affirmative stem. |
+| Hygiene | Medium | boolean-id-shape | corpus/work-package/workflow.yaml workflow.variables | name: skip_optional_activities | pre-existing | Rename to an affirmative predicate. |
+| Hygiene | Low | variable-description-one-line | corpus/work-package/workflow.yaml workflow.variables | The issue key, URL, or surrounding text the user supplied when opening the work package, or typed in reply to the issue-verification gate. | pre-existing | Drop the checkpoint-wiring tail; keep one line naming the value. |
+| Hygiene | Low | variable-description-one-line | corpus/work-package/workflow.yaml workflow.variables | The repository's default branch, which feature branches sync from and merge into. | pre-existing | Drop the consumer tail; keep one line naming the branch. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].options[].description | Proceed without (not recommended for non-trivial work) | pre-existing | Delete the recommendation parenthetical. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].actions[].description | Mark PR as existing once successfully created. | pre-existing | Delete the description; the set value already records the mark. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].actions[].message | Continuing with existing PR #{existing_pr_number} (already bound for this branch). | pre-existing | Delete the parenthetical that restates the when. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/02-design-philosophy.yaml activity.steps[].actions[].message | recorded — the record of truth for the classification and path rationale. | pre-existing | Delete the em-dash clause that explains why the record exists. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/04-research.yaml activity.description | Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity. | pre-existing | Delete the consumer tail that names plan-prepare. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/08-implement.yaml activity.description | A branch of the implementation fan; symbol provenance and residual assumptions settle at implementation-join. | diff | Delete the sentence that restates the fan join. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/09-lean-coding-audit.yaml activity.steps[].actions[].message | Task implementation record is present for provenance. | diff | Delete the message; the when already states presence. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/15-codebase-comprehension.yaml activity.steps[].actions[].message | recorded for the next work package on this area. | pre-existing | Delete the clause that names the next work package as consumer. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/activities/18-structural-analysis.yaml activity.description | the full prism pipeline runs at the review fan's join. | diff | Delete the clause that restates where the other mode runs. |
+| Hygiene | Low | no-rationale-in-description | corpus/work-package/workflow.yaml workflow.description | For multiple related work packages, use the work-packages workflow to create a roadmap first. | pre-existing | Delete the clause that assigns multiple packages to another workflow. |
+| Hygiene | Low | outcome-names-value | corpus/work-package/activities/01-start-work-package.yaml activity.outcome | PR reference recorded on the issue via the platform's native PR linkage | pre-existing | Rewrite the outcome as the value delivered. |
+| Hygiene | Low | outcome-names-value | corpus/work-package/activities/06-plan-prepare.yaml activity.outcome | Discovery-branch assumptions reach the log through one writer, and research's gates are raised here | diff | Rewrite the outcome as the settled assumptions, not the write into the log. |
+| Hygiene | Low | outcome-names-value | corpus/work-package/activities/15-codebase-comprehension.yaml activity.outcome | A reusable comprehension reference lands in the cumulative corpus, which the next work package on the same area reads | pre-existing | Rewrite the outcome as the comprehension value, not the landing of the file. |
+| Hygiene | Low | outcome-names-value | corpus/work-package/activities/15-codebase-comprehension.yaml activity.outcome | The questions, investigations and unexplored areas behind that reference stay in the session's planning folder as a comprehension log | pre-existing | Rewrite the outcome as the questions retained, not the folder that holds them. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].message | Review PR derived as #{pr_number}. | pre-existing | Wrap {pr_number} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].actions[].message | Project type: {project_type}. | pre-existing | Wrap {project_type} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].message | No GitHub issue mirrors Jira ticket {jira_issue_key}, so the pull request has nothing to trace to in the target repo. | pre-existing | Wrap {jira_issue_key} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].actions[].message | The worktree at {target_path} is on a default branch, not a feature branch, so subsequent commits would land there. Check out {branch_name} in {target_path} and re-run. | pre-existing | Wrap each {target_path} and {branch_name} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].actions[].message | Continuing with existing PR #{existing_pr_number} (already bound for this branch). | pre-existing | Wrap {existing_pr_number} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].message | PR #{existing_pr_number} is already open for this branch. | pre-existing | Wrap {existing_pr_number} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].message | Feature branch {branch_name} and its worktree exist. No draft PR is open for the branch yet. | pre-existing | Wrap {branch_name} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/01-start-work-package.yaml activity.steps[].actions[].message | {stakeholder_overview} | pre-existing | Wrap {stakeholder_overview} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/02-design-philosophy.yaml activity.steps[].message | Classification: {problem_type}. Rationale: {classification_rationale}. | pre-existing | Wrap each designator in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/02-design-philosophy.yaml activity.steps[].actions[].message | Review mode: classification recorded ({problem_type}, {problem_complexity} complexity). Rationale: {classification_rationale}. | pre-existing | Wrap each designator in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/03-requirements-elicitation.yaml activity.steps[].message | {current_domain} — {current_question} | pre-existing | Wrap each designator in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/06-plan-prepare.yaml activity.steps[].actions[].message | Further research direction: {research_direction}. | diff | Wrap {research_direction} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/06-plan-prepare.yaml activity.steps[].message | Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}. | pre-existing | Wrap {research_candidates}; the link target stays a link. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/06-plan-prepare.yaml activity.steps[].actions[].message | {stakeholder_overview} | pre-existing | Wrap {stakeholder_overview} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/07-assumptions-review.yaml activity.steps[].message | Assumptions were deferred and need attention from stakeholders on {issue_platform}. | pre-existing | Wrap {issue_platform} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/09-lean-coding-audit.yaml activity.steps[].message | Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {lean_audit_findings} | pre-existing | Wrap {lean_audit_findings} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/10-post-impl-review.yaml activity.steps[].message | Block {current_block_index}: {block_path}:{block_line_range} | pre-existing | Wrap each designator in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/11-validate.yaml activity.steps[].actions[].message | Toolchain prerequisites are unmet, so the validation suite cannot run: {missing_prerequisites} | pre-existing | Wrap {missing_prerequisites} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].actions[].message | Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}. | pre-existing | Wrap {summary_budget_overruns} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].actions[].message | Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}. | pre-existing | Wrap {summary_completeness_findings} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].message | Consolidated review summary, ready to post as a pull-request review: {review_summary} | pre-existing | Wrap {review_summary} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].actions[].message | Push remote '{push_remote}' ({push_remote_url}) did not verify as private. Point {push_remote} at the private fork inside {target_path} and re-run. | pre-existing | Wrap each designator in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].actions[].message | Commits staged for the private push carry no valid signature. Sign them in {target_path} and re-run. | pre-existing | Wrap {target_path} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].message | The push target is remote `{push_remote}` ({push_remote_url}), its commits carry valid signatures, and a stealth-mode run reaches a private remote only. | pre-existing | Wrap {push_remote_url}; `{push_remote}` is already a code span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].actions[].message | Pull request marked ready for review — {updated_pr.pr_status}: {updated_pr.pr_url} | pre-existing | Wrap each designator in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/13-submit-for-review.yaml activity.steps[].message | Recommended outcome: {recommended_outcome}. | pre-existing | Wrap {recommended_outcome} and {review_comments_summary} in backtick spans. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/14-complete.yaml activity.steps[].message | Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.reason} | pre-existing | Wrap each designator in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/14-complete.yaml activity.steps[].actions[].message | Planning artifacts carry links that do not resolve: {broken_artifact_links}. | pre-existing | Wrap {broken_artifact_links} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/14-complete.yaml activity.steps[].actions[].message | {next_work_package_context} | pre-existing | Wrap {next_work_package_context} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/21-implementation-join.yaml activity.steps[].message | {contract_test_failures} | diff | Wrap {contract_test_failures} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/activities/21-implementation-join.yaml activity.steps[].message | {uncertain_symbols} | pre-existing | Wrap {uncertain_symbols} in one backtick span. |
+| Hygiene | Low | backtick-code-tokens | corpus/work-package/workflow.yaml workflow.variables | Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}. | pre-existing | Wrap the path and the designator in one backtick span. |

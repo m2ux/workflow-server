@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "mvw",
+  "workflowVersion": "1.0.0",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "LFTGST",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-10-02-mvw",
+  "frontier": [
+    "dispatch"
+  ],
+  "currentTechnique": "",
+  "exit": "",
+  "seq": 2,
+  "ts": 1790922015,
+  "startedAt": "2026-10-02T06:19:54.323Z",
+  "completedActivities": [],
+  "variables": {
+    "component_path": ".",
+    "host_repo_path": "/home/mike1/.local/share/workflow-server/exp-projects/workflow-server",
+    "is_monorepo": false,
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-02-mvw",
+    "target_repo": "m2ux/workflow-server",
+    "user_request": "Walk the minimum viable workflow from the isolated clone and record where planning is written."
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-10-02T06:19:54.323Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "component_path": ".",
+          "host_repo_path": "/home/mike1/.local/share/workflow-server/exp-projects/workflow-server",
+          "is_monorepo": false,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-02-mvw",
+          "target_repo": "m2ux/workflow-server",
+          "user_request": "Walk the minimum viable workflow from the isolated clone and record where planning is written."
+        }
+      },
+      "timestamp": "2026-10-02T06:19:54.323Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "dispatch",
+      "timestamp": "2026-10-02T06:20:15.368Z",
+      "type": "activity_entered"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "repo": "m2ux/workflow-server"
+}

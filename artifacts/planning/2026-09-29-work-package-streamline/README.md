@@ -50,6 +50,8 @@ E01 AC4, AC5 and AC8 trace to clause 3's routine work and to the user's directio
   Load-time L14 refuses `workflow-engine::handle-sub-workflow` on a fanned activity: a child session records one activity id while a fan holds several in flight. The full prism walk therefore runs at post-implementation review (the join); the structural-analysis fan branch runs the inline pass only.
 - **Tip validation as E05 (I10).**
   Lives on the same initiative. Re-executes every AC1–AC14 instrument on `i10/main` and `i10/workflows` (no new automated checks beyond those instruments). One task writes [e05-validation-ledger.md](e05-validation-ledger.md). Integration PRs merge only after every ledger row passes.
+- **Roster and fan follow-ups stay off the tables.**
+  #1049 and #1050 are the roster listing and the bare-register walk. No E00 task description is that work. #1093 and #1094 are the fan-branch engine change and the fan snapshot. E03 W01 and W02 do not join, and neither description is that follow-up.
 
 ## Delivery order
 
