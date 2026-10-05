@@ -656,6 +656,12 @@
       "rationale": "input-without-a-producer"
     },
     {
+      "site": "substrate-node-security-audit :: scope-setup",
+      "name": "in_scope",
+      "verdict": "fix-later",
+      "rationale": "input-without-a-producer"
+    },
+    {
       "site": "work-package :: start-work-package",
       "name": "issue_title",
       "verdict": "fix-later",

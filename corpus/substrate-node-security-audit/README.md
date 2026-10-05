@@ -6,7 +6,7 @@
 
 This workflow guides the complete lifecycle of a security audit:
 
-1. **Scope Setup** — Confirm target, checkout at commit, run dependency scanning, create planning folder
+1. **Scope Setup** — Pin the target at its commit, write the audit overview, run dependency scanning, build the file inventory
 2. **Reconnaissance** — Map architecture, identify crates, trust boundaries, consensus paths, build function registry, assign agent groups
 3. **Primary Audit** — Gather the agent groups reconnaissance opens as concurrent branches, verification sub-agent validates output completeness, finding consolidation
 4. **Adversarial Verification** — Decompose and independently verify every PASS item from agent scratchpads
@@ -225,7 +225,7 @@ Techniques define tool orchestration, protocols, and composable capabilities. Th
 | [`map-codebase`](./techniques/map-codebase.md) | Build structured architectural map from component inventory |
 | [`analyze-architecture`](./techniques/analyze-architecture.md) | Security-oriented architectural decomposition: interaction model, privilege map, candidate points, emergent domains |
 | [`resolve-audit-target`](./techniques/resolve-audit-target.md) | Read audited revision and reference report from the request |
-| [`setup-audit-target`](./techniques/setup-audit-target.md) | Confirm pinned checkout, run dependency scanning, file inventory |
+| [`setup-audit-target`](./techniques/setup-audit-target.md) | Write audit overview, run dependency scanning, file inventory |
 | [`search-pattern-catalog`](./techniques/search-pattern-catalog.md) | Execute catalog patterns against codebase scope, triage results |
 
 ### Sub-Agent Techniques

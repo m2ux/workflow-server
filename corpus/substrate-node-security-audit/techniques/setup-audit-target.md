@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Initialize a target codebase pinned at its audited commit for analysis, including dependency scanning and file inventory generation.
+The audit overview, dependency scan and file inventory of a target codebase pinned at its audited commit.
 
 ## Inputs
 
@@ -13,31 +13,31 @@ Initialize a target codebase pinned at its audited commit for analysis, includin
 
 Path to the audit prompt template.
 
-### planning_root
-
-*(optional)* The root directory under which audit planning folders live.
-
-#### default
-
-`.engineering/artifacts/planning/`
-
 ### target_submodule
 
-Path to the component being audited, whose name also builds the planning-folder name.
+Path to the component being audited.
 
 ### target_commit
 
 The exact commit the target component is checked out at.
 
+### in_scope
+
+Crate and module paths to audit, space-separated, relative to `{target_submodule}`.
+
 ## Outputs
-
-### planning_folder_path
-
-The audit's working folder.
 
 ### file_inventory
 
 Every in-scope source file with its line count, sorted largest first.
+
+#### artifact
+
+`file-inventory.txt`
+
+#### audience
+
+`human`
 
 ### dependency_scan_results
 
@@ -65,19 +65,18 @@ Session overview with audit target, commit, methodology, and artifact index.
 
 ## Protocol
 
-### 1. Create Planning Folder
+### 1. Initialize Overview
 
-- Create `{planning_folder_path}` as the folder `YYYY-MM-DD-NN-{target_submodule}-security-audit` under `{planning_root}`, where `NN` continues the numbering of the audit folders already there.
-- Initialize the `{start_here}` overview inside `{planning_folder_path}` from the [start-here overview](../resources/start-here.md#overview), [key artifacts](../resources/start-here.md#key-artifacts-produced), and [options at setup](../resources/start-here.md#options-at-setup), recording audit target, `{target_commit}`, methodology, and artifact index.
+- Write `{start_here}` in `{planning_folder_path}` from the [start-here template](../resources/start-here.md#template), recording `{target_submodule}` and `{target_commit}`, and filling its sections from the [overview](../resources/start-here.md#overview), [key artifacts](../resources/start-here.md#key-artifacts-produced) and [options at setup](../resources/start-here.md#options-at-setup).
 
 ### 2. Scan Dependencies
 
-- Attempt to run dependency scanning tools (e.g., `cargo audit`, `cargo deny`, `npm audit`) and record the result as `{dependency_scan_results}` in the `{planning_folder_path}`.  
+- Attempt to run dependency scanning tools (e.g., `cargo audit`, `cargo deny`, `npm audit`) in `{target_submodule}`, and record the result as `{dependency_scan_results}` in `{planning_folder_path}`.
   > If the scanning tools cannot be executed, extract the dependency manifest (e.g., `Cargo.lock`, `package-lock.json`) instead and mark the result as requiring manual inspection.
 
 ### 3. Generate Inventory
 
-- Produce `{file_inventory}` listing every in-scope source file with its line count, largest first, and save it to the `{planning_folder_path}`.
+- Produce `{file_inventory}` in `{planning_folder_path}`, listing every source file under the `{in_scope}` paths of `{target_submodule}` with its line count, largest first.
 
 ### 4. Load Template
 

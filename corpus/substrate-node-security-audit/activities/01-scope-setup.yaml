@@ -6,6 +6,7 @@ variables:
   reads:
     - audit_prompt_template
     - gitnexus_available
+    - in_scope
     - planning_folder_path
     - repo_name
     - target_submodule
@@ -22,9 +23,6 @@ variables:
       type: boolean
       description: Whether the target codebase is GitNexus-indexed; gates graph-based structural analysis (enumeration, call graph, reachability, blast radius), with grep and full-file reads as the fallback when false
       defaultValue: false
-    - name: planning_folder_path
-      type: string
-      description: The audit's working folder.
     - name: reference_report
       type: string
       description: Path to the reference audit report the request names. Empty where it names none.
@@ -64,11 +62,7 @@ steps:
     id: confirm-pin
     actions:
       - action: validate
-        target: pin_refusal
-        condition:
-          type: simple
-          variable: pin_refusal
-          operator: notExists
+        target: "!pin_refusal"
         message: "The audit target was not pinned: {pin_refusal}"
   - kind: technique
     id: setup-target
@@ -86,6 +80,7 @@ steps:
         tree_path: target_submodule
   - kind: action
     id: record-graph-availability
+    when: repo_name
     actions:
       - action: set
         target: gitnexus_available
@@ -95,7 +90,7 @@ steps:
     id: announce-completion
     actions:
       - action: log
-        message: Scope setup complete — target confirmed and planning folder created
+        message: Scope setup complete — target pinned and audit overview initialized
 exits:
   - id: done
     isDefault: true

@@ -44,7 +44,7 @@ The technique library for the substrate-node-security-audit workflow. Each techn
 | [`map-codebase`](map-codebase.md) | Build a structured architectural map from the component inventory |
 | [`analyze-architecture`](analyze-architecture.md) | Security-oriented architectural decomposition: interaction model, privilege map, candidate points, emergent domains |
 | [`resolve-audit-target`](resolve-audit-target.md) | Read the audited revision and any reference report from the request |
-| [`setup-audit-target`](setup-audit-target.md) | Confirm the pinned checkout, run dependency scanning, build the file inventory |
+| [`setup-audit-target`](setup-audit-target.md) | Write the audit overview, run dependency scanning, build the file inventory |
 | [`search-pattern-catalog`](search-pattern-catalog.md) | Execute catalog patterns against a codebase scope, triage results |
 
 ---
