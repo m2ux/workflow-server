@@ -6,9 +6,9 @@ Evidence-driven system-level review of a midnight-node change-set, rendering a 1
 
 Given a PR reference or local diff, the workflow derives investigation areas from the changed surface and a subsystem map, runs bounded evidence probes per area, adjudicates rubric-graded findings, and computes the verdict from accepted findings only. The methodology follows evidence-driven system-review runs against midnight-node: plan-approved autonomous investigation, a six-dimension grade tuple per finding, an accepted-issue confidence threshold, reconciled per-area accounting, and failure-class proof obligations (three-way discharge with join-key tables and caller-path anchors).
 
-Four user decision points bound the run — scope confirmation (non-blocking, 30s auto-advance), investigation-plan approval (blocking, with an amendment loop), verdict sign-off (blocking, with a rework path back to area derivation), and publish authorization (blocking, only when a PR surface exists). Probing and adjudication run checkpoint-free between the plan and verdict gates.
+A person decides at four points: the scope, the investigation plan, the verdict, and whether to publish to a pull request. Probing and adjudication run between the plan and the verdict without stopping.
 
-Declared variables are run configuration and boolean gates only (`review_target`, `target_repo_path`, `base_ref`, `planning_folder_path`, `insight_repo_path`, `probe_budget_per_area`, plus the `has_pr_surface`, toolchain, `plan_approved`, and `publish_requested` gates); rich data flows through step outputs and the planning-folder artifacts (`change-surface.md`, `investigation-plan.md`, `evidence-log.json`, `findings-register.md`, `review-report.md`, `publication-record.md`).
+Rich data flows through the planning-folder artifacts (`change-surface.md`, `investigation-plan.md`, `evidence-log.json`, `findings-register.md`, `review-report.md`, `publication-record.md`).
 
 ## Getting Started
 

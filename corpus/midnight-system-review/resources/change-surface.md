@@ -1,6 +1,6 @@
 ---
 name: change-surface
-description: Creation guide for bare filename `change-surface.md` — the authoritative changed-file inventory a review is measured against, with its target identity, refs, per-file change kinds, and the preliminary path-to-crate mapping that seeds area derivation.
+description: Creation guide for bare filename `change-surface.md` — the authoritative changed-file inventory a review is measured against, with its target identity, refs, per-file change kinds, the preliminary path-to-crate mapping that seeds area derivation, and the toolchain availability probes route on.
 metadata:
   order: 8
 ---
@@ -26,6 +26,14 @@ Creation guide for bare filename `change-surface.md`. The review's answer to "wh
 | File | Change | +/- | Crate or pallet |
 |------|--------|-----|-----------------|
 | `path` | added \| modified \| deleted | +12 / -3 | crate name |
+
+## Toolchain Availability
+
+| Toolchain | Gate | Settled from | A false gate degrades |
+|-----------|------|--------------|-----------------------|
+| GitNexus code graph | true \| false | graph name and index freshness | code-graph probes to grep and file reads |
+| cargo | true \| false | workspace resolution | build and metadata probes to blocked validations |
+| midnight-node binary | true \| false | version query | runtime and SCALE-metadata probes to blocked validations |
 ```
 
 ## Rules
@@ -35,4 +43,5 @@ Creation guide for bare filename `change-surface.md`. The review's answer to "wh
 - **Line counts appear when the producing leaf emitted them.** Absent counts leave the cell empty rather than guessing or recomputing.
 - **The crate mapping is preliminary.** It seeds area derivation and is not a finding about ownership; area derivation refines it.
 - **An empty surface is recorded, not inferred.** An explicit empty authored surface with a head SHA is a valid inventory; a missing surface is a stop, because a review against a guessed surface is worse than no review.
-- **Line budget:** one row per changed file, and no prose outside the two tables.
+- **Every toolchain is a row.** A false gate is recorded with what it degrades, so a blocked validation later traces to the reading that blocked it.
+- **Line budget:** one row per changed file and per toolchain, and no prose outside the three tables.
