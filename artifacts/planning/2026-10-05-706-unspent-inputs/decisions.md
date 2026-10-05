@@ -10,7 +10,19 @@ workflow-design holds 49 of the 125 sites. It is deprecated and is not edited, s
 
 ## Proof
 
-The entry fires at `bb38d574` on the cargo library's `build_budget`, where work-package binds `preflight` and `run-suite`, and on `build_scope`, where it binds `preflight`. At `eed1a6f9` the cargo contract carries defaults and the entry does not fire there. The guard's test reproduces both.
+The entry fires at `bb38d574` on the cargo library's `build_scope` and `build_budget`, where work-package binds `preflight`. `run-suite` applies `check`, `clippy` and `test`, which read `build_budget`, so under the Detect #1145 corrected it spends the input and does not fire. At `eed1a6f9` the cargo contract carries defaults and the entry does not fire there. The guard's test reproduces both.
+
+## Delivery
+
+I04 had no integration branches; its earlier pull requests landed on `main`. This epic opened `i04/main` and `i04/workflows`, and its pull requests target them.
+
+## Measurement
+
+The guard resolves each step's inputs with the server's own provenance and counts the names the server seeds as held. On `workflows` at `860e107b` it reports 253 sites outside workflow-design, where the planning sweep counted 125:
+
+- **Borrowed ops.** The sweep measured a workflow's own containers and the support libraries. The guard also measures a workflow binding another family's ops, such as plain-language binding work-package's.
+- **Non-library containers.** meta's workflow-engine and orchestration-patterns groups, ponytail's root, and prism-evaluate's resolve-findings group fire.
+- **Seeded names.** `target_repo`, `host_repo_path`, `component_path` and `planning_folder_path` are seeded into every session, so github's and git's sites drop out.
 
 ## Joins
 
