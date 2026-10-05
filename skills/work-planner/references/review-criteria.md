@@ -193,8 +193,8 @@ An initiative criterion, an epic criterion, and a task criterion each meet these
 
 #### Verifiable
 
-An acceptance criterion is kept only when a test can fail it. The source is the verifiable characteristic in ISO/IEC/IEEE 29148: a requirement is verifiable when its realisation can be proved, and subjective wording is barred.
+An acceptance criterion is kept only when it meets [Requirement characteristics](requirement-characteristics.md).
   - Subjective wording is rewritten to an observable pass or fail, or the criterion is removed.
-  - A fact a test can check is kept, such as every option having a description.
+  - A fact that inspection, analysis, demonstration, or test can check is kept, such as every option having a description.
   - A judgment about meaning, such as a claim that a description states what choosing means, is that subjective wording.
-  - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
+  - An item none of those methods can observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
