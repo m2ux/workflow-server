@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -37,4 +37,4 @@ Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness ag
 
 ### one-worker-at-a-time
 
-Briefs are dispatched one after another, in the calling worker's own turn. Running work units together is the graph's business: bind the exit that reaches the per-unit activity to a destination naming that activity and the collection to run it over, and the run opens one worker per element. That route gives each unit its own frontier entry, its own slot in the branch container and its own identity, none of which a worker dispatching from inside its own turn can offer.
+Briefs are dispatched one after another, in the calling worker's own turn. Running the units together is a graph destination, not a dispatch from this turn.

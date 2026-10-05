@@ -1,0 +1,103 @@
+id: persist-activity
+version: 1.1.0
+name: Persist Activity
+description: >-
+  Mark a completed activity's Progress and lifecycle status, commit its source changes and its
+  engineering artifacts, push that engineering commit, and emit the run status once the push is
+  on the remote. The completion status lands on the cell the in-progress mark used, so the commit
+  carries the outcome. Where the activity holds the branches a fan retired, the run persists once
+  for all of them.
+
+inputs:
+  - id: activity_id
+    description: The activity whose completion this run records. A fan's convergence passes the list of branches it retired.
+  - id: mark_progress_na
+    description: True when the completing activity is marked path-skip / cancel / N/A rather than complete.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: workflow_id
+    description: The workflow the activity belongs to.
+
+outputs:
+  - id: push_landed
+    type: boolean
+    description: Whether the engineering push is on the remote tracking branch, with every named path in that commit.
+
+steps:
+  - kind: technique
+    id: sync-progress-status
+    technique:
+      name: workflow-engine::sync-progress-status
+      inputs:
+        activity_id: activity_id
+        planning_folder_path: planning_folder_path
+        mark_progress_na: mark_progress_na
+  - kind: technique
+    id: commit-source
+    technique:
+      name: git::commit-submodule
+      inputs:
+        submodule_path: "{component_path}"
+        activity_id: activity_id
+        workflow_id: workflow_id
+  - kind: technique
+    id: prepare-engineering-commit
+    technique:
+      name: workflow-engine::prepare-engineering-commit
+      inputs:
+        host_repo_path: host_repo_path
+        planning_folder_path: planning_folder_path
+        activity_id: activity_id
+        workflow_id: workflow_id
+  - kind: technique
+    id: persist-worktree
+    when: engineering_kind == "worktree" && has_engineering_changes
+    technique:
+      name: project::persist-worktree
+      inputs:
+        worktree_path: "{host_repo_path}/.engineering"
+        paths: paths
+        commit_message: commit_message
+        branch: branch
+  - kind: technique
+    id: commit-engineering-files
+    when: engineering_kind != "worktree" && has_engineering_changes
+    technique:
+      name: git::commit-regular-files
+      inputs:
+        paths: paths
+        commit_message: commit_message
+  - kind: technique
+    id: push-engineering-branch
+    when: engineering_kind != "worktree" && has_engineering_changes
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: "{host_repo_path}"
+        branch: branch
+        remote_name: origin
+  - kind: action
+    id: skip-clean-engineering-commit
+    when: "!has_engineering_changes"
+    actions:
+      - action: set
+        target: push_landed
+        value: true
+  - kind: technique
+    id: confirm-push
+    when: has_engineering_changes
+    technique:
+      name: git::confirm-persisted
+      inputs:
+        repo_path: engineering_repo_path
+        branch: branch
+        paths: paths
+        remote_name: origin
+  - kind: technique
+    id: publish-run-status
+    when: push_landed
+    technique: workflow-engine::publish-run-status

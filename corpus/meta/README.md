@@ -13,7 +13,7 @@ The meta workflow is the structural home for the session's orchestration logic. 
 - Excluded from `list_workflows` — not a user-facing workflow.
 - Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the techniques bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
-- The server writes session state and restores it on attach. [commit-and-persist](./techniques/workflow-engine/commit-and-persist.md) commits the session record with the planning folder after each activity and at close-out; on-disk shape: [`docs/state.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state.md).
+- The server writes session state and restores it on attach. [persist-activity](./routines/persist-activity.yaml) commits the session record with the planning folder after each activity and at close-out; on-disk shape: [`docs/state.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state.md).
 
 | # | Activity | Role |
 |---|----------|------|

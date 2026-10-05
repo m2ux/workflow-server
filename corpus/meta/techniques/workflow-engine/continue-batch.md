@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -39,8 +39,7 @@ The opaque trace token the advancing `next_activity` call returned in `_meta.tra
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed, agent_id: worker_agent_id }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`.
-  > This call is the transition a commit has to precede (`commit-and-persist.commit-after-activity`). Where the finished activity has not landed, commit it first.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed, agent_id: worker_agent_id }`; capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`. A token not captured is absent from the trace close-out resolves.
 
 ### 2. Compose the continuation stub
 
@@ -53,20 +52,19 @@ The opaque trace token the advancing `next_activity` call returned in `_meta.tra
 ### 4. Await the envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
-  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results (`dispatch-activity.reject-partial-worker-result`), which is also how a server refusal of the advanced activity surfaces — ends the batch here. Replace the context below.
+  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results (`dispatch-activity.reject-partial-worker-result`), which is also how a server refusal of the advanced activity surfaces — ends the batch here. Replace the context below. The standing is reported when the worker takes the activity, before that activity's fetches draw the same budget down, so a batch reported as having room can still be refused at this boundary.
 
 ### 5. Replace a spent context
 
-- Mint a new `{worker_agent_id}` per `dispatch-activity.delivery-keys-on-agent-context`, apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, and `{variable_bag}` as substitutions with `activity_id` bound to the advanced activity and `agent_id` to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return `{worker_agent_id}` and the replacement's envelope as `{worker_result}`. Holding no prior deliveries, the replacement takes the advanced activity in full
+- Mint a new `{worker_agent_id}` per `dispatch-activity.delivery-keys-on-agent-context`, apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: false`, and `{variable_bag}` as substitutions with `activity_id` bound to the advanced activity and `agent_id` to the identity just minted, then [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return `{worker_agent_id}` and the replacement's envelope as `{worker_result}`. Holding no prior deliveries, the replacement takes the advanced activity in full.
+  > When the batch cannot continue, it ends in this phase.
 
 ### 6. Account for the activity
 
-- Account for `{activity_id}` — this activity of the batch — per `dispatch-activity.account-every-activity`.
+- Record one usage entry for this activity of the batch: `record_usage { session_index, activity: activity_id, usage, basis, agent_id: worker_agent_id }`. `usage` and `basis` are read from the harness, and the entry says what the figure counts. When the harness reports no figure, omit the entry.
 
 ## Rules
 
 ### one-advance-per-activity
 
-This technique advances the session pointer, so it owns getting a worker onto the activity it advanced to — the held one, or a replacement it spawns itself. It does not hand that job back to [dispatch-activity](./dispatch-activity.md), which advances the pointer of its own accord: a second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it.
-
-So a batch that cannot continue ends inside this technique.
+This technique advances the session pointer once and gets a worker onto the activity it advanced to — the held one, or a replacement it spawns itself. A second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it.

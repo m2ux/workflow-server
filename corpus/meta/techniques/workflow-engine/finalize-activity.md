@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.13.0
 ---
 
 ## Capability
@@ -27,7 +27,7 @@ Array of artifact entries (`id`, `name`, `path`).
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity (`activity-worker.batch-ends-where-the-server-says`).
+Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity.
 
 ## Outputs
 
@@ -93,4 +93,4 @@ Whether this context may take another activity, folded from the input of the sam
 
 ### no-readme-persist-on-worker
 
-Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties, and are done elsewhere once the envelope is returned — do not do them here, and do not wait for them. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status is written per owning activity, not per envelope artifact entry.
+This technique does not sync the planning-folder README, does not commit or push engineering artifacts, and does not wait for that work.

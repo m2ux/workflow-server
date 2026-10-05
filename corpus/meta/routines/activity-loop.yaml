@@ -1,10 +1,13 @@
 id: activity-loop
-version: 1.3.0
+version: 1.5.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
   checkpoint it yields, commit what it produced, and advance onto what its exit routes to — until
-  the walk reaches `__terminal__`.
+  the walk reaches `__terminal__`. A worker carries a bounded run of activities and is continued
+  across each boundary. Where an exit names several branches, one call opens every branch, they
+  run in one turn under their own identities, each branch is one activity and is not continued, and the run resumes from the
+  activity they converge on. The fan's width is the destination's.
 
 inputs:
   - id: session_index
@@ -101,24 +104,6 @@ steps:
     maxIterations: 200
     steps:
       - kind: technique
-        id: continue-batched-worker
-        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
-        technique:
-          name: workflow-engine::continue-batch
-          inputs:
-            activity_id: "{worker_result.next_activity_id}"
-            exit_id: "{worker_result.activity_exit}"
-            session_index: session_index
-            worker_agent_id: worker_agent_id
-            step_manifest: "{worker_result.steps_completed}"
-            variables_changed: "{worker_result.variables_changed}"
-            variable_bag: variables
-        actions:
-          - action: set
-            target: trace_tokens
-            value: "{advance_trace_tokens}"
-            description: The tokens this entry returned, appended to the tokens the walk holds.
-      - kind: technique
         id: enter-activity
         when: "!worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != 'checkpoint_pending'"
         technique:
@@ -205,17 +190,26 @@ steps:
                 target: trace_tokens
                 value: "{advance_trace_tokens}"
                 description: The token this retirement returned, appended to the tokens the walk holds.
-      - kind: technique
+      - kind: routine
         id: persist-the-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
-        technique:
-          name: workflow-engine::commit-and-persist
-          inputs:
-            activity_id: "{branch_activities}"
-            session_index: session_index
+        routine: persist-activity
+        with:
+          activity_id: "{branch_activities}"
+        outputs:
+          push_landed: push_landed
+      - kind: action
+        id: surface-unlanded-fan-push
+        when: "!worker_agent_id && worker_result.next_activity_fans && !push_landed"
+        actions:
+          - action: message
+            message: "The push did not land. The error is surfaced and the walk does not advance."
+          - action: set
+            target: current_activity
+            value: null
       - kind: action
         id: advance-past-fan
-        when: fan_convergence_activity
+        when: fan_convergence_activity && push_landed
         actions:
           - action: set
             target: current_activity
@@ -226,7 +220,7 @@ steps:
             value: true
       - kind: action
         id: retire-fan-envelope
-        when: fan_convergence_activity
+        when: fan_convergence_activity && push_landed
         actions:
           # After the fan is opened the walk holds the convergence as current_activity.
           # The envelope and the convergence name stay unset so later steps in this
@@ -286,17 +280,44 @@ steps:
           - action: set
             target: checkpoint_reply
             value: null
-      - kind: technique
+      - kind: routine
         id: commit-activity-artifacts
         when: worker_result.result_type == "activity_complete"
+        routine: persist-activity
+        with:
+          activity_id: current_activity
+        outputs:
+          push_landed: push_landed
+      - kind: action
+        id: surface-unlanded-push
+        when: worker_result.result_type == "activity_complete" && !push_landed
+        actions:
+          - action: message
+            message: "The push did not land. The error is surfaced and the walk does not advance."
+          - action: set
+            target: current_activity
+            value: null
+      - kind: technique
+        id: continue-batched-worker
+        when: push_landed && worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
         technique:
-          name: workflow-engine::commit-and-persist
+          name: workflow-engine::continue-batch
           inputs:
-            activity_id: current_activity
+            activity_id: "{worker_result.next_activity_id}"
+            exit_id: "{worker_result.activity_exit}"
             session_index: session_index
+            worker_agent_id: worker_agent_id
+            step_manifest: "{worker_result.steps_completed}"
+            variables_changed: "{worker_result.variables_changed}"
+            variable_bag: variables
+        actions:
+          - action: set
+            target: trace_tokens
+            value: "{advance_trace_tokens}"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: action
         id: note-exiting-activity
-        when: worker_result.result_type == "activity_complete"
+        when: worker_result.result_type == "activity_complete" && push_landed
         actions:
           # Kept before the pointer moves: every advance names the activity it retires, and the
           # next step makes current_activity the destination. Each operation's `from_activity`
@@ -306,7 +327,7 @@ steps:
             value: "{current_activity}"
       - kind: action
         id: advance-activity
-        when: worker_result.result_type == "activity_complete"
+        when: worker_result.result_type == "activity_complete" && push_landed
         actions:
           - action: set
             target: current_activity

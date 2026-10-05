@@ -33,7 +33,7 @@ NEVER skip hooks (`--no-verify`) unless the user explicitly requests it.
 
 ### explicit-commit
 
-NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits only — distinct from `commit-and-persist.commit-after-activity`, which mandates commit+push after each completed activity, and from any bound technique whose own rules mandate a commit as the value it produces.
+NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits only — distinct from the `persist-activity` run, which commits and pushes after each completed activity, and from any bound technique whose own rules mandate a commit as the value it produces.
 
 ### read-agents-md
 

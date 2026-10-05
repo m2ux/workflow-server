@@ -116,12 +116,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/harness-compat/spawn-agent.md:46",
-      "op": "scatter-gather",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/harness-compat/spawn-concurrent.md:26",
       "op": "resolve-harness-operation",
       "verdict": "fix-later",
@@ -218,14 +212,8 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/orchestration-patterns/TECHNIQUE.md:50",
-      "op": "handle-sub-workflow",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/orchestration-patterns/TECHNIQUE.md:58",
-      "op": "spawn-agent",
+      "op": "handle-sub-workflow",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -237,19 +225,7 @@
     },
     {
       "site": "corpus/meta/techniques/orchestrator-conduct.md:22",
-      "op": "resume-worker",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/orchestrator-conduct.md:26",
-      "op": "commit-and-persist",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/orchestrator-conduct.md:30",
-      "op": "finalize-activity",
+      "op": "dispatch-activity",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -278,74 +254,38 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:48",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:36",
       "op": "resume-from-checkpoint",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:55",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:43",
       "op": "variable-binding",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:57",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:45",
       "op": "yield-checkpoint",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:61",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:49",
       "op": "finalize-activity",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:67",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:56",
       "op": "agent-conduct",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:67",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:56",
       "op": "workflow-engine",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:24",
-      "op": "sync-progress-status",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:34",
-      "op": "commit-submodule",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:34",
-      "op": "git",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:40",
-      "op": "commit-regular-files",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:38",
-      "op": "identify-path-type",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/commit-and-persist.md:39",
-      "op": "commit-worktree",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -386,98 +326,62 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/continue-batch.md:82",
-      "op": "dispatch-activity",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/create-session.md:42",
       "op": "handle-sub-workflow",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:107",
-      "op": "retire-branch",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:123",
-      "op": "fan",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:135",
-      "op": "resume-worker",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:135",
-      "op": "workflow-orchestrator",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:139",
-      "op": "`batch_may_continue`",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:58",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:50",
       "op": "sync-progress-status",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:60",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:52",
       "op": "git::commit-regular-files",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:66",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:58",
       "op": "continue-batch",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:70",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:64",
       "op": "compose-prompt",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:74",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:75",
       "op": "harness-compat",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:74",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:75",
       "op": "spawn-agent",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:76",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:77",
       "op": "continue-agent",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:88",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:91",
       "op": "finalize-activity",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:95",
-      "op": "commit-and-persist",
+      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:82",
+      "op": "continue-batch",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
@@ -500,7 +404,7 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/handle-sub-workflow.md:44",
+      "site": "corpus/meta/techniques/workflow-engine/handle-sub-workflow.md:43",
       "op": "take-activity",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
@@ -1107,12 +1011,6 @@
     },
     {
       "site": "corpus/support/git/techniques/commit-regular-files.md:28",
-      "op": "push-branch",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/support/git/techniques/commit-worktree.md:37",
       "op": "push-branch",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"

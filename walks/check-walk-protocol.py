@@ -270,7 +270,7 @@ def check() -> list[str]:
     persist = close.find("id: persist-client-completion")
     if terminal < 0 or "activity_id: __terminal__" not in close[terminal:persist if persist > terminal else None]:
         fail("terminal-commit", "close-out does not advance the client session onto __terminal__")
-    if persist < terminal or "workflow-engine::commit-and-persist" not in close[persist:]:
+    if persist < terminal or "persist-activity" not in close[persist:]:
         fail("terminal-commit", "the terminal advance does not commit the session's completed state")
 
     return problems

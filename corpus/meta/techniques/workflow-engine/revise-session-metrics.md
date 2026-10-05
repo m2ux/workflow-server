@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -31,14 +31,14 @@ Updated lean mechanical trace under the planning folder (`*session-trace.md`).
 
 ### 1. Read the full client ledger
 
-- Read rolled-up `activity_usage` from the **client** session after its terminal activity has exited and the orchestrator has had its chance to `record_usage` for that dispatch (`dispatch-activity.account-every-activity`).
+- Read rolled-up `activity_usage` from the **client** session after its terminal activity has exited and usage for that dispatch has been recorded (`dispatch-activity.account-every-activity`).
 - Include every activity that ran, including the terminal activity and any failed or partial dispatches that left a ledger row.
 - When the ledger is empty, leave existing artifacts untouched and stop — do not fabricate figures.
 
 ### 2. Resolve the client trace
 
-- Resolve `{trace_tokens}` once per `dispatch-activity.resolve-trace-at-close-out`, naming `{client_session_index}` as the session.
-  > - When `{trace_tokens}` is empty or unset, skip this phase.
+- Call `get_trace { session_index: client_session_index, trace_tokens }` once. Tokens stay opaque until this call, and they hold the run across a server restart. The resolve reads the whole run: each token carries its own events, and a token absent from `{trace_tokens}` is absent from the resolved trace. `inspect_session` on `{client_session_index}` supplies fetch and fidelity context for the same resolve.
+  > - When `{trace_tokens}` is empty or unset, the resolved trace is empty.
 
 ### 3. Re-render token usage
 

@@ -70,15 +70,23 @@ steps:
     id: revise-session-metrics
     technique: workflow-engine::revise-session-metrics
     when: client_workflow_completed == true && planning_folder_path != ''
-  - kind: technique
+  - kind: routine
     id: persist-client-completion
     when: client_workflow_completed == true && planning_folder_path != ''
-    technique:
-      name: workflow-engine::commit-and-persist
-      inputs:
-        activity_id: from_activity
+    routine: persist-activity
+    with:
+      activity_id: from_activity
+    outputs:
+      push_landed: push_landed
+  - kind: action
+    id: surface-unlanded-push
+    when: client_workflow_completed == true && planning_folder_path != '' && !push_landed
+    actions:
+      - action: message
+        message: "The push did not land. The error is surfaced and the walk does not advance."
   - kind: action
     id: announce-completion
+    when: push_landed
     actions:
       - action: log
         message: Workflow session closed

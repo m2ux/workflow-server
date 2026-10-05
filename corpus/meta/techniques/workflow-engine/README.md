@@ -9,19 +9,19 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | Technique | Contributes |
 |---|---|
 | [`activity-worker`](activity-worker.md) | Worker for a dispatched activity — executes bound steps, yields checkpoints, and walks on to the next activity while its batch has room |
-| [`commit-and-persist`](commit-and-persist.md) | Post-activity Progress mark plus commit/push of source-side changes and engineering artifacts |
 | [`compose-prompt`](compose-prompt.md) | Compose a minimal stub that binds agent identity and directs the agent to Apply a bundled workflow-engine agent technique |
 | [`continue-batch`](continue-batch.md) | Advance the session to the next activity and continue the worker already carrying the batch, under the delivery identity its dispatch bound |
 | [`create-readme`](create-readme.md) | Planning-folder `README.md` from the universal planning Template under the bound readme-seed profile |
 | [`create-session`](create-session.md) | Fresh client workflow session embedded under the current meta session |
-| [`derive-planning-slug`](derive-planning-slug.md) | The canonical planning slug for a work package — today's date plus its kebab-case initiative name — composed and returned without touching the filesystem |
 | [`dispatch-activity`](dispatch-activity.md) | Transition the session to a target activity and spawn a worker to carry it, and the bounded run of activities behind it |
 | [`evaluate-transition`](evaluate-transition.md) | Name the outcome the just-completed activity reached, and read where the workflow sends it |
 | [`finalize-activity`](finalize-activity.md) | Compile the activity's `activity_complete` result |
 | [`generate-summary`](generate-summary.md) | Compose the markdown session summary presented at workflow close |
 | [`handle-sub-workflow`](handle-sub-workflow.md) | Launch a workflow as a child of the current session, and report where it opens and where it writes |
 | [`list-workflows`](list-workflows.md) | Retrieve the catalog of available workflows |
+| [`prepare-engineering-commit`](prepare-engineering-commit.md) | The engineering files a completed activity commits, the checkout and branch that commit is pushed from, and whether `.engineering` is a linked worktree of the host |
 | [`present-checkpoint-to-user`](present-checkpoint-to-user.md) | Load the active checkpoint's details and present them to the user |
+| [`publish-run-status`](publish-run-status.md) | The run status emitted once the engineering push is on the remote |
 | [`read-session`](read-session.md) | The live session record — its variable bag, the activities it stands on, and its execution trace — for a consumer that reasons over where the session stands and what it has done |
 | [`respond-checkpoint`](respond-checkpoint.md) | Send the user's selection back to the server, clearing the active checkpoint |
 | [`resume-from-checkpoint`](resume-from-checkpoint.md) | Continue execution after the orchestrator resolves a checkpoint |

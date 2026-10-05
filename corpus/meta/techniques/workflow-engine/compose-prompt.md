@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.11.0
+  version: 2.12.0
 ---
 
 ## Capability
@@ -53,4 +53,4 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### context-travels-as-state
 
-Prior-activity context reaches a worker as state, not as prose in the stub. Artifact paths, decisions, and measurements already live in the session bag and in the artifacts those bag variables point at; the worker binds them through its activity's step inputs. Do not restate artifact content, decisions, or scope lists in `{composed_prompt}`. A fact the worker needs and no variable carries is a missing declaration, not a licence to inline.
+`{composed_prompt}` does not restate artifact content, decisions, or scope lists. A fact the worker needs and no variable carries is a missing declaration.

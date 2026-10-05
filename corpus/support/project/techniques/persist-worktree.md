@@ -23,18 +23,21 @@ Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
 ### branch
 
-Branch checked out in the worktree, the branch the push sends.
+The branch checked out in the worktree, the branch the push sends.
 
 ## Protocol
 
-### 1. Stage and Commit
+### 1. Stage Paths
 
 - `git -C {worktree_path} add {paths}`.
+
+### 2. Commit Files
+
 - `git -C {worktree_path} commit --no-gpg-sign -m '{commit_message}'`.
 
-### 2. Push the Branch
+### 3. Push Branch
 
-- Apply [push-branch](./push-branch.md) with `repo_path` = `{worktree_path}`, `{branch}`, and `remote_name` `origin`. Push the existing `{branch}` only. The commit is complete when the push succeeds.
+- `git -C {worktree_path} push origin {branch}`, on the host shell per `git.host-shell-for-remote-git`. The commit is complete when the push succeeds.
 
 ## Rules
 

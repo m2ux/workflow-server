@@ -46,4 +46,4 @@ The identity now holding the activity: the one the worker was continued under wh
 
 ### 5. Account for the continuation
 
-- Account for this continuation of `{activity_id}` per `dispatch-activity.account-every-activity`.
+- Record one usage entry for this continuation of `{activity_id}`: `record_usage { session_index, activity: activity_id, usage, basis, agent_id: worker_agent_id }`. `usage` and `basis` are read from the harness, and the entry says what the figure counts. When the harness reports no figure, omit the entry.

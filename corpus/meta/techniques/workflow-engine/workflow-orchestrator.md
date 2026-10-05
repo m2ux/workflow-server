@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.5.0
 ---
 
 ## Capability
@@ -43,11 +43,3 @@ Follow the rules in the techniques bundle throughout — [agent-conduct](../agen
 ### no-state-reconstruction-on-attach
 
 The server restores session state on attach. Read it rather than rebuilding it from history, artifacts, or a prior context.
-
-### orchestrator-worker-boundaries
-
-Honor `dispatch-activity.no-get-activity-from-orchestrator`, `dispatch-activity.no-pre-load-techniques`, `dispatch-activity.delivery-keys-on-agent-context`, `dispatch-activity.batch-is-bounded-by-the-server`, `continue-agent.resume-preserves-delivery-scope`, `dispatch-activity.reject-partial-worker-result`, and `dispatch-activity.distrust-then-reconcile`.
-
-### resolve-trace-at-close-out
-
-At close-out, honor `dispatch-activity.resolve-trace-at-close-out`.

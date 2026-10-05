@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 ## Capability
@@ -38,21 +38,17 @@ Maps a step's bound technique onto the workflow variable bag by the technique's 
 
 A step's consumed and produced data is exactly the bound technique's composed `inputs[]`/`outputs[]`. A value read or emitted outside that signature is a binding gap, not an implicit convention.
 
-### an-argument-position-sets-its-own-default
+### a-bare-name-from-a-routine-is-a-reference
 
-Three positions in the language take an argument, and a bare word means something different in each. This rule scopes itself to the first.
-
-- **A step input deviation** — `step.technique.inputs` — is what the disambiguation rule for a string deviation governs: a bare word that matches the bag-name grammar and resolves in the bag is a reference, and anything else is a literal.
-- **A routine argument** — a reference step's `.with` — reads the opposite way: a braced word is a reference to a host variable and a bare word is always a literal, because a routine is expanded before any bag exists to resolve a name against.
-- **A harness invocation** — an adapter's call template — reads a braced word as a reference and an angle-bracketed word as a value the invoking agent supplies from what it can see of its own host.
-
-Expansion resolves a routine argument and emits the resolved reference as a bare name, so a braced reference in a routine file reaches a step as the bare form this rule reads as a reference.
+A routine expansion emits a braced host reference as a bare name, and this binding reads that bare name as a reference.
 
 ### a-branch-lands-under-its-own-derived-key
 
 Where the graph runs this activity as a branch of a fan, its whole reported map lands in a slot of its own under a key derived from the activity id — the id in snake case with `_outputs` appended, so `research-pass` lands under `research_pass_outputs`. The server derives the key, and no caller supplies it. Report outputs at their bare names, unchanged: nothing about position in the graph reaches the envelope. Inside the branch names stay bare too — a later step reads an earlier step's output directly, never through the key.
 
-Downstream, a member is read at `{<key>.<instance>.result.<member>}`; the index is always present, including slot zero, so a read form does not depend on the fan's shape and an activity borrowed into two workflows reads its inputs the same way in each. A meeting point that needs the members combined gathers the container whole rather than addressing a slot — see `scatter-gather.a-join-gathers-the-container-not-an-index`.
+### a-member-is-read-at-its-slot
+
+A member is read at `{<key>.<instance>.result.<member>}`. The index is always present, including slot zero.
 
 ### activity-group-shorthand
 

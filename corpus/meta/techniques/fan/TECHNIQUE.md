@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,13 +15,11 @@ Each branch runs under its own identity, distinct from its siblings' and from th
 
 ### one-commit-before-the-spawn
 
-One commit publishes every branch's in-progress mark, made before the first branch spawns. Every branch spawns in the same turn, so one commit closes the window `dispatch-activity.dispatch-mark-reaches-the-remote` names for all of them at once; a per-branch commit would attribute one branch's in-flight edits to another, the commit deriving its paths from a working tree that cannot tell two branches' changes apart.
+One commit publishes every branch's in-progress mark, made before the first branch spawns. A per-branch commit would attribute one branch's in-flight edits to another, the commit deriving its paths from a working tree that cannot tell two branches' changes apart.
 
 ### repeat-a-refused-call
 
 A refused call is repeated with the same arguments. Taking an activity records its delivery, so several branch workers taking theirs close together can meet `STALE_WRITE`: the record moved under the call, nothing was written, and the message says so. That is an ordinary outcome of concurrency rather than a fault, and a fan's acceptance does not require that no refusal appears in its log. What acceptance requires is that every branch was served, every branch's outputs landed in its own slot, and the barrier released once. Nothing retries on a caller's behalf, and nothing is half-applied, because the refused call wrote nothing.
-
-No other group states this, because no other puts several workers on one session record at once.
 
 ### the-barrier-is-a-reading
 
@@ -33,13 +31,15 @@ The branches are retired in the order the fan reported them. Each retirement is 
 
 ### replace-one-branch-alone
 
-A branch whose result is not an accepted envelope (`dispatch-activity.reject-partial-worker-result`) is replaced on its own: mint a fresh identity, compose a prompt with no prior deliveries, and spawn ONE agent — not the concurrent spawn. The replacement names the same entry, which the frontier still holds, so it needs no re-binding call. The siblings that returned are untouched: their work is committed and their outputs landed on their own returns. A second failure advances nothing — the blocked moment is synced onto that branch's rows and the entry stays on the frontier, because entering the convergence activity on fewer branches than the fan opened would hand its gather a value no branch produced.
+A branch whose result is not an accepted envelope (`dispatch-activity.reject-partial-worker-result`) is replaced on its own: a fresh identity, a prompt with no prior deliveries, and one agent. The replacement names the same frontier entry. The siblings that returned stay as they are.
+
+### a-second-failure-stays-on-the-frontier
+
+A second failure of that replacement advances nothing. The blocked moment is synced onto that branch's rows and the entry stays on the frontier. Entering the convergence activity on fewer branches than the fan opened would hand its gather a value no branch produced.
 
 ### persist-the-fan-at-convergence
 
-One persist at convergence, naming every branch. What every fan's instances share is the session record and the planning folder, so a per-branch persist would commit a folder its siblings are still writing — and where one activity runs over a collection there is no way to attribute the change either, the instances sharing one activity id.
-
-Where the branches also share the working tree, which is every fan whose activity does not take a checkout of its own, the same holds of their code changes: the writes land in one tree inside the concurrent turn, so they are not serialised even though the retirements are, and a commit deriving its paths from that tree's status cannot tell two branches' changes apart. An activity that materialises its own checkout splits those trees and nothing else — each instance commits into its own during its own run, and this persist still happens once, at convergence, for the record and the folder.
+One persist at convergence, naming every branch. The instances share the session record and the planning folder, so a per-branch persist would commit a folder its siblings are still writing. Where they also share one working tree, a commit taken from that tree's status cannot tell two branches' changes apart. An activity that commits into a checkout of its own still meets this one persist, at convergence, for the record and the folder.
 
 ### a-branch-reaches-no-gate
 

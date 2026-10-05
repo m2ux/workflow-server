@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ The reply the server returns on clearing the active checkpoint: `resolved_option
 
 ### auto-advance-spends-the-declared-interval
 
-The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded. A resolution that must not wait takes the headless path of `present-checkpoint-to-user.present-before-any-resolution`, which makes no call.
+The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded.
 
 ### dismiss-only-a-gate-whose-condition-is-false
 
