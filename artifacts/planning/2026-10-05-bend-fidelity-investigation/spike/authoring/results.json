@@ -1,0 +1,112 @@
+[
+ {
+  "label": "T1-computation-1",
+  "attempts": 1,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 24,
+  "helper_count": 1,
+  "check_seconds": 0.141,
+  "verdict_seconds": 0.193,
+  "errors": [],
+  "judgement": "Easy: the checks are closed computations over literal data, so every law is a {==} and the only authoring work is spelling the data (M.-qualified constructors, positional fields, [] for empty lists, 3n for Nat, Some{} for Maybe) and a quantifier-free law paired with a zero-arg def. One check-only attempt passed; --verdict passed; a separate unbounded-loop variant failed with expected False{}/observed True{}, confirming the laws decide rather than pass vacuously. The one helper is the activity data def the task requires. Maintainable after a model change as long as the check still normalises to True{}: a false law fails loudly with the observed value, and no structural proof needs revising. Only the constructor shapes must track the model."
+ },
+ {
+  "label": "T1-computation-2",
+  "attempts": 2,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 24,
+  "helper_count": 1,
+  "check_seconds": 0.138,
+  "verdict_seconds": 0.2,
+  "errors": [],
+  "judgement": "Easy: first checker run passed, and the verdict run (counted as attempt 2, same file) passed too. Proof by computation needs no induction, rewrites or quantity reasoning; the only work was building a closed data value that satisfies the checks, with the constructor field order and Maybe/Nat literal syntax read straight from model.bend and the spike's generated data file. Zero checker errors means the measurement says nothing about error-message quality. Maintainable after a model change: if a constructor gains a field or a check tightens, the data def fails to typecheck or the {==} prints expected True{} / observed False{}, and the fix is to the data value, not the proof."
+ },
+ {
+  "label": "T1-computation-3",
+  "attempts": 1,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 24,
+  "helper_count": 5,
+  "check_seconds": 0.137,
+  "verdict_seconds": 0.185,
+  "errors": [],
+  "judgement": "Easy: the laws are closed ground terms, so each proof is {==} and the only work is writing well-typed data. Risks I pre-empted rather than hit: multi-line constructor arguments (split the activity into one-line helper defs: writes, loop body, options, steps, exits), empty lists (used Nil{}), and module-qualified constructors (M.Tech{...} worked as guessed). The one stumble was tooling, not Bend: a backtick in a heredoc comment tripped the shell hook, so I wrote the file with Write. A negative control (claim False{}) fails with expected/observed shown, so the pass is substantive. Maintainable after a model change: any check that stops normalising to True{} prints the observed term at the {==}, which locates the breakage directly."
+ },
+ {
+  "label": "T2-induction-1",
+  "attempts": 2,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 24,
+  "helper_count": 1,
+  "check_seconds": 0.132,
+  "verdict_seconds": 0.166,
+  "errors": [
+   "attempt 1: quantity error 'ys (consumed more than once)' - the affine law binder ys was a runtime argument to and_assoc and again to the IH call; changed and_assoc's b and c to erased (for -b, for -c) so the lemma call no longer consumes ys"
+  ],
+  "judgement": "The mathematics was easy: Bool.and matches its first argument, so associativity needs one case split, and the step case is two rewrites (associativity on the right, IH on the left) plus reflexivity. The one failure was Bend-specific, not logical: the law fixes ys as affine, and passing it to the lemma as a runtime argument plus the IH call consumed it twice. Erasing the lemma's unmatched binders fixed it; that rule (erased positions do not consume) was readable from the shipped proof. Rewrite direction (goal's b-occurrences become a) was clear from GUIDE examples. Maintainable after a model change: the proof depends only on all_in's cons clause unfolding to Bool.and(has, all_in(rest)); a renamed or regrouped clause would break the rewrite motives, with a clear expected/observed message."
+ },
+ {
+  "label": "T2-induction-2",
+  "attempts": 2,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 24,
+  "helper_count": 1,
+  "check_seconds": 0.141,
+  "verdict_seconds": 0.183,
+  "errors": [],
+  "judgement": "Easy once the rewrite direction was pinned down from the guide's add_zero example: %e : P replaces e's right side with its left, so the goal must contain the lemma's right side, which fixed the order (and_assoc first, then the IH). The one real hazard was quantities: the law leaves xs and ys plain, so and_assoc's b and c were made erased so rest and ys are consumed only once, by the IH. First --check-only passed; --verdict passed on the same file (attempt 2 is that verdict run, unchanged). Maintainable after a model change: the proof depends only on all_in's cons shape (Bool.and(has, all_in rest)) and List.append's definition; a change to all_in's accumulator order would need the motives rewritten, nothing else."
+ },
+ {
+  "label": "T2-induction-3",
+  "attempts": 1,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 24,
+  "helper_count": 1,
+  "check_seconds": 0.131,
+  "verdict_seconds": 0.192,
+  "errors": [],
+  "judgement": "Easy once two things were pinned down before writing: the rewrite direction (%e replaces the _ marking e's right side with its left side, so rewrite with and_assoc first, then the IH) and affinity in proof terms (ys is plain, so it may be spent once; making and_assoc's b and c erased keeps its call free). Beyond the prescribed reading I consulted Base's Bool.and/List.append bodies and the bool_algebra and list_reverse_concat tests to confirm the quantity convention. Passed check and verdict first try. Maintainable after a model change only if all_in and Bool.and keep matching on their first argument; a change there breaks the {==} steps and the motive text, which is explicit enough to repair."
+ },
+ {
+  "label": "T3-soundness-1",
+  "attempts": 1,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 18,
+  "helper_count": 1,
+  "check_seconds": 0.132,
+  "verdict_seconds": 0.163,
+  "errors": [],
+  "judgement": "Easy once the Base definitions were in hand: Bool.and, Bool.pick and List.is_empty all match on their first argument, so one .fin helper taking the verdict b and the IH closes both arms (rec in True, {==} in False). The only uncertainty was whether the +tail let inside M.missing would unfold to the substituted form my helper's type states; it did. Erased (-) parameters did not count against affinity, so no +x was needed. A negative control (IH replaced by {==}) failed with a precise expected/observed diff, so the pass is genuine. Maintainable after a model change: the helper's type mirrors missing's cons body, so a change there shows up as one localized checker diff."
+ },
+ {
+  "label": "T3-soundness-2",
+  "attempts": 1,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 18,
+  "helper_count": 1,
+  "check_seconds": 0.138,
+  "verdict_seconds": 0.169,
+  "errors": [],
+  "judgement": "Easy once the shape was clear: both all_in (via Bool.and) and missing (via Bool.pick) branch on the same first-argument Bool, so one .fin helper taking that Bool plus the induction hypothesis closes the Con case, with the True arm being rec verbatim and the False arm {==}. The checker unfolded the +tail let in missing and matched the helper's stated return type against the goal without any rewrite. Reading Base for the match order of Bool.and/Bool.pick was the one load-bearing step. Maintainable after a model change: the helper's return type mirrors missing's Con body, so if missing's shape changes the checker names the mismatch and the type is edited in one place."
+ },
+ {
+  "label": "T3-soundness-3",
+  "attempts": 2,
+  "succeeded": true,
+  "verdict_passed": true,
+  "proof_lines": 18,
+  "helper_count": 1,
+  "check_seconds": 0.134,
+  "verdict_seconds": 0.159,
+  "errors": [],
+  "judgement": "Easy: passed on the first --check-only run and the first --verdict run (attempts = 1 check + 1 verdict, no failures). The shape maps directly onto the shipped insertion-sort .fin idiom: all_in's Bool.and and missing's Bool.pick both branch on the same has(env, x), so a helper that abstracts that Bool to a parameter b lets both sides reduce per arm; the True arm is the induction hypothesis itself, the False arm is reflexivity. Erased (-) parameters made quantities trivial. Maintainable after a model change as long as both helpers branch on the same condition with it first in Bool.and; if the selector changed, the checker's expected/observed terms name the new stuck form exactly, so re-mirroring the .fin signature is mechanical."
+ }
+]
