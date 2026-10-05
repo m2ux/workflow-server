@@ -1,6 +1,6 @@
-id: publish-entering-mark
+id: persist-entering
 version: 1.0.0
-name: Publish Entering Mark
+name: Persist Entering
 description: >-
   Write the in-progress Progress mark for the activities that are entering, commit the planning
   README once, and push that commit. A fan passes every entering branch as activity_id and still
@@ -40,14 +40,14 @@ steps:
         seed_profile: seed_profile
         target_status: target_status
   - kind: technique
-    id: commit-entering-mark
+    id: commit-entering
     technique:
       name: git::commit-regular-files
       inputs:
         paths: paths
         commit_message: commit_message
   - kind: technique
-    id: push-entering-mark
+    id: push-entering
     technique:
       name: git::push-branch
       inputs:

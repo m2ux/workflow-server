@@ -2,7 +2,7 @@ id: dispatch-entry
 version: 1.0.0
 name: Dispatch Entry
 description: >-
-  Publish the entering mark, advance the session, announce the dispatch, and open one
+  Persist entering, advance the session, announce the dispatch, and open one
   worker. A terminal advance completes the session and opens no worker.
 
 inputs:
@@ -43,9 +43,9 @@ outputs:
 
 steps:
   - kind: routine
-    id: publish-entering-mark
+    id: persist-entering
     when: planning_folder_path && activity_id != "__terminal__"
-    routine: publish-entering-mark
+    routine: persist-entering
     with:
       activity_id: activity_id
       planning_folder_path: planning_folder_path

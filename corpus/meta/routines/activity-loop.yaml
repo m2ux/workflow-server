@@ -186,9 +186,9 @@ steps:
             target: current_activity
             value: null
       - kind: routine
-        id: publish-fan-mark
+        id: persist-entering
         when: "!worker_agent_id && worker_result.next_activity_fans && planning_folder_path"
-        routine: publish-entering-mark
+        routine: persist-entering
         with:
           activity_id: current_activity
           planning_folder_path: planning_folder_path
