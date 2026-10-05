@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-A container `TECHNIQUE.md` can declare a required input that some operations beneath it never read. Where a workflow binds one of those operations and holds nothing under that name, the step owes a value it has no source for, and variable-binding reports a binding gap. The inherited-input-never-spent canon entry names the defect, and a sweep with its test finds 125 such steps across the corpus.
+A container `TECHNIQUE.md` can declare a required input that some operations beneath it never read. Where a workflow binds one of those operations and holds nothing under that name, the step owes a value it has no source for, and the agent receives that required slot as ambient context with nothing producing it. The inherited-input-never-spent canon entry names the defect, and a sweep with its test finds 125 such steps across the corpus.
 
 This epic gives each of those inputs a source in the families that are still edited, and adds a guard that applies the entry so a new site fails at the change that introduces it. workflow-design is deprecated, so the guard exempts it.
 
@@ -28,4 +28,5 @@ This epic gives each of those inputs a source in the families that are still edi
 | --- | --- |
 | Technical Debt initiative | [#706](https://github.com/m2ux/workflow-server/issues/706) |
 | The canon entry | [#1144](https://github.com/m2ux/workflow-server/pull/1144) |
+| The entry's corrected Detect | [#1145](https://github.com/m2ux/workflow-server/pull/1145) |
 | The cargo fix the entry was proven on | [#1135](https://github.com/m2ux/workflow-server/pull/1135) |
