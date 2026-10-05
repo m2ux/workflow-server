@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -23,4 +23,8 @@ The branches in `{branch_activities}` order. Each entry is `{ activity_id, agent
 
 ### 1. Mint Branch Identity
 
-- For each entry of `{branch_activities}`, mint an identity per `one-identity-per-branch`. `{branches}` is those entries in the same order.
+- For each entry of `{branch_activities}`, mint an identity per `one-identity-per-branch`.
+
+### 2. Assemble Branch List
+
+- `{branches}` is those entries in `{branch_activities}` order. Each entry is `{ activity_id, agent_id }`.
