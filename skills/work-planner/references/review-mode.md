@@ -30,7 +30,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 6. **Decide.**
    Check every issue under review against each rule in this mode's Rules from Missing section through Several tasks, and decide the finding with the user. Draft the content the rule states.
 7. **Check criteria.**
-   Check every acceptance criterion of the issues under review against the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the review is clear.
+   Check every acceptance criterion of the issues under review against [Requirement characteristics](requirement-characteristics.md), through the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the review is clear.
 8. **Check Dependencies.**
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in Decide. An initiative Depends on cell takes the epics it derives.
@@ -59,7 +59,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 - **The rules.**
   The review checks each issue against the rules that bind its kind, and against its template.
 - **Criteria check.**
-  - The review is not clear while a criterion that fails [Verifiable](review-criteria.md#verifiable) remains.
+  - The review is not clear while a criterion that fails [Requirement characteristics](requirement-characteristics.md) remains.
   - A finding from that check is not one the user keeps.
 - **Missing section.**
   Draft a missing section from the issue and its epics.
