@@ -110,7 +110,7 @@ An epic states one slice of the initiative's design and lists the tasks that del
 #### Work Breakdown
 
 - A task row's Description follows the [Work Breakdown Guide](work-breakdown.md#tables). A detail it carries beyond that phrase is a criterion of one invariant, cited by the row.
-- Coverage names the epic criteria the task must meet. Each row's criteria are the ones its work makes true: a row does not claim a criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet it. One task delivers each, as [One row](#one-row) defines.
+- Coverage names the epic criteria the task must meet. Each row's criteria are the ones its work makes true: a row does not claim a criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet it. A task covers at least one, as [One row](#one-row) defines.
 - An epic criterion no task row delivers is a gap.
 - A task delivering more than three criteria is split into tasks one pull request each can deliver.
 - Depends on is references only. A task depending on a later task in its epic is a backward reference.
@@ -127,7 +127,7 @@ An epic states one slice of the initiative's design and lists the tasks that del
 
 #### One row
 
-One task delivers each criterion. A criterion more than one row cites is imprecise: split it into the invariant each task makes true, and cite each from the one row that delivers it.
+A task covers at least one acceptance criterion. A criterion more than one row cites is imprecise: split it into the invariant each task makes true, and cite each from the row that delivers it.
 
 #### Acceptance Criteria
 
@@ -197,8 +197,8 @@ An initiative criterion, an epic criterion, and a task criterion each meet these
 
 #### Verifiable
 
-An acceptance criterion is kept only when a test can fail it. The source is the verifiable characteristic in ISO/IEC/IEEE 29148: a requirement is verifiable when its realisation can be proved, and subjective wording is barred.
+An acceptance criterion is kept only when it meets [Requirement characteristics](requirement-characteristics.md).
   - Subjective wording is rewritten to an observable pass or fail, or the criterion is removed.
-  - A fact a test can check is kept, such as every option having a description.
+  - A fact that inspection, analysis, demonstration, or test can check is kept, such as every option having a description.
   - A judgment about meaning, such as a claim that a description states what choosing means, is that subjective wording.
-  - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
+  - An item none of those methods can observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.

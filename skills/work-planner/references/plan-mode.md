@@ -17,7 +17,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - A Problem and a Proposal follow the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal). The initiative's Problem and Non-Goals are the proposal's, when a proposal was taken.
    - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them. Each criterion comes from a confirmed clause.
    - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [review criteria](review-criteria.md) for an initiative define.
-   - Each acceptance criterion is written to this mode's Criteria at creation rule. It ends by naming its instrument as the [Verified](review-criteria.md#verified) rule defines. A test it names that does not exist yet is planned as work.
+   - Each acceptance criterion meets [Requirement characteristics](requirement-characteristics.md), and is written to this mode's Criteria at creation rule. It ends by naming its instrument as the [Verified](review-criteria.md#verified) rule defines. A test it names that does not exist yet is planned as work.
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
@@ -58,7 +58,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
      - Put each to the user with its recommendation, record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.
      - Then delete the question; the section goes with the last one.
    - **One condition per criterion.**
-     Read each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) and [One row](review-criteria.md#one-row). Split one that joins several, adding the new ones at the end of the list, and cite each from the one row that delivers it.
+     Read each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria), [Requirement characteristics](requirement-characteristics.md) and [One row](review-criteria.md#one-row). Split one that joins several, adding the new ones at the end of the list, and cite each from the row that delivers it.
 
    Fetch as [Fetch](review-passes.md#fetch) states. Run the goal pass, and the ordering pass when tasks or dependencies change. State each finding as [Report](review-passes.md#report) states.
 9. **Deliver.**  As work lands, run [Sync Mode](sync-mode.md).
@@ -66,7 +66,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 ## Rules
 
 - **Criteria at creation.**
-  - An acceptance criterion complies with the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) and, for an initiative, its [Acceptance Criteria](review-criteria.md#acceptance-criteria) when it is written.
+  - An acceptance criterion complies with [Requirement characteristics](requirement-characteristics.md), the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria), and, for an initiative, its [Acceptance Criteria](review-criteria.md#acceptance-criteria), when it is written.
   - The issue that carries it is created only after the criterion complies.
 - **The discussion PR.**
   Merging it is the user's call.

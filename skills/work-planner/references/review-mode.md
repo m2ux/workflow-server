@@ -30,14 +30,14 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 6. **Decide.**
    Check every issue under review against each rule in this mode's Rules from Missing section through Several tasks, and decide the finding with the user. Draft the content the rule states.
 7. **Check criteria.**
-   Check every acceptance criterion of the issues under review against the [Verifiable](review-criteria.md#verifiable) rule, and report each a test cannot fail. This mode's Criteria check rule says when the review is clear.
+   Check every acceptance criterion of the issues under review against [Requirement characteristics](requirement-characteristics.md), through the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the review is clear.
 8. **Check Dependencies.**
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in Decide. An initiative Depends on cell takes the epics it derives.
 9. **Coverage.**
    For each epic under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Epic](commands.md#sync-epic) with `--fix`.
    - **Unmet.**
-     A task whose id links a merged pull request while a criterion its Coverage names is unticked, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. Put it to the user. Verifying and ticking it is [Sync Mode](sync-mode.md).
+     Each task [Sync Epic](commands.md#sync-epic) reports unmet is a gap, as this mode's Gap rule states.
    - **Repair.**
      When the sync reports a row done, or a tick cleared, [Patch Body](commands.md#patch-body) from the `--fix` file, without asking.
    - **Absent.**
@@ -59,7 +59,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 - **The rules.**
   The review checks each issue against the rules that bind its kind, and against its template.
 - **Criteria check.**
-  - The review is not clear while a criterion a test cannot fail remains.
+  - The review is not clear while a criterion that fails [Requirement characteristics](requirement-characteristics.md) remains.
   - A finding from that check is not one the user keeps.
 - **Missing section.**
   Draft a missing section from the issue and its epics.
@@ -95,6 +95,11 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
   Apply the [Any issue](review-criteria.md#any-issue) Title criteria, and the [Epic](review-criteria.md#epic) Title criteria for an epic. The initiative row takes the epic's new name.
 - **Several tasks.**
   Apply the [Epic](review-criteria.md#epic) Work Breakdown criteria for an issue several row ids link.
+- **Gap.**
+  Draft a further task for the unticked criteria, as the [Work Breakdown Guide](work-breakdown.md#tables) defines under Task grain. Put the draft to the user.
+  - On acceptance, add the row and take those criteria off the delivered task's Coverage.
+  - Run [Sync Epic](commands.md#sync-epic) again. It ticks Done on the delivered task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
+  - A criterion the user confirms already holds is ticked in [Sync Mode](sync-mode.md), and it stays on the delivered task.
 - **Table.**
-  A Done cell that disagrees with its row's delivery is repaired. A ticked criterion whose row links no delivery is linked when the comments name one delivery, a path taken as the commit that holds it. Several candidates, or none, are decided with the user.
+  A Done cell that disagrees with whether its row is complete, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, is repaired. A ticked criterion whose row links no delivery is linked when the comments name one delivery, a path taken as the commit that holds it. Several candidates, or none, are decided with the user.
 

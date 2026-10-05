@@ -96,6 +96,29 @@ class PlanIds(unittest.TestCase):
         r.run()
         self.assertFalse(any(item.startswith('Problem:') or item.startswith('Proposal:') for item in r.decide))
 
+    def test_a_complete_row_may_omit_coverage(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | | | | ✓ |\n'
+                '| W02 | Read the ledger | AC1 | W01 | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('Coverage does not name' in item for item in r.decide))
+
+    def test_an_open_row_names_its_coverage(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertTrue(any(item.startswith('W01: Coverage does not name') for item in r.decide))
+
 
 class OneRow(unittest.TestCase):
     def test_a_criterion_cited_by_two_tasks_is_imprecise(self):
@@ -108,7 +131,8 @@ class OneRow(unittest.TestCase):
         r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
                          labels=('type:epic', 'theme:mechanical')))
         r.run()
-        self.assertTrue(any(item.startswith('AC1 is cited by W01, W02') for item in r.decide))
+        self.assertTrue(any(item.startswith('AC1 is cited by W01, W02') and
+                            'at least one acceptance criterion' in item for item in r.decide))
 
     def test_one_task_citing_a_criterion_is_left(self):
         text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
@@ -122,6 +146,18 @@ class OneRow(unittest.TestCase):
                          labels=('type:epic', 'theme:mechanical')))
         r.run()
         self.assertFalse(any('cited by' in item for item in r.decide))
+
+    def test_a_task_covering_two_criteria_is_left(self):
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Record the ledger | AC1, AC2 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n'
+                '- [ ] **AC2.** A reader sees that source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('cited by' in item or item.startswith('W01: delivers') for item in r.decide))
 
 
 def proposal_body() -> str:

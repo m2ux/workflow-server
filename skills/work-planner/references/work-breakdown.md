@@ -11,9 +11,8 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
 
 - **Done.**
   The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
-  - A task row is complete when it is delivered and every criterion its Coverage names is ticked.
+  - A task row is complete when it is delivered, as [Task ids](#delivery) defines, and every criterion its Coverage names is ticked.
   - An epic row is complete when its issue is closed as completed, which is when every one of its criteria is ticked and every one of its tasks is delivered.
-  - A merged pull request that leaves any criterion its Coverage names unmet leaves that task's cell empty. The task takes further pull requests until they hold.
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
   - An epic's row id is the task, `W01`. What it links is [Task ids](#delivery). `W00` holds preparatory work that must land before the first real task.
@@ -24,16 +23,17 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - In an initiative: the phrase is the epic's title name, the part before the colon (`[I07:E01] Formal Specification: …` gives `Formal Specification`), so the table and the epic name the work alike.
 - **Coverage.**
   The acceptance criteria the row delivers, `AC2, AC5`, and nothing else. Every criterion is delivered by at least one row.
-  - In an epic: the epic's criteria the task must meet.
+  - In an epic: the epic's criteria the task must meet. A complete task's cell is empty.
   - In an initiative: the initiative's criteria the epic serves, so each traces to its epics.
 - **Depends on.**
   References only, with no prose, and only what no other entry in the cell already implies.
   - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
   - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check Dependencies](commands.md#check-dependencies) derives it from the epic tables.
 - **Task grain.**
-  - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
+  - A task is one pull request's worth of work.
+  - A criterion a merged pull request left unticked belongs to a further task. The further task depends on the delivered task, and its Coverage is that criterion. Criteria one pull request can deliver share one further task. The delivered task's Coverage omits each criterion a further task adopts.
   - A task delivering more than three criteria is split into tasks one pull request each can deliver.
-  - One task delivers each criterion, as [One row](review-criteria.md#one-row) defines.
+  - A task covers at least one acceptance criterion, as [One row](review-criteria.md#one-row) defines.
   - Every test the work calls for accompanies that task. The content steers which kinds those are, including the project's system test when the work is something that test can exercise. A failure in any test the task carries keeps the task open. None of those tests is a later row.
   - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
   - When the behaviour a wired activity produces differs from the behaviour the work expected, that task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold.
@@ -68,7 +68,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 ## Delivery
 
 - **Pull request scope.**
-  A pull request delivers one task, or a set of tasks that name each other in Joins. A further pull request on a task that is not yet Done delivers that same task, or tasks that name it in Joins.
+  A pull request delivers one task, or a set of tasks that name each other in Joins.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.

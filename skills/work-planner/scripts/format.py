@@ -38,7 +38,8 @@ Left to decide, since each needs new content or a judgement:
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
   - an epic's task delivering more than three criteria, a candidate for splitting, and a criterion
-    more than one task cites, which is imprecise and is split into the invariant each task makes true
+    more than one task cites, which is imprecise and is split so each task covers at least one
+    acceptance criterion
   - wording that narrates how the plan changed (moved to, was W06, renumbered, formerly,
     previously, no longer, discharged, superseded, subsumed, used to)
   - a Problem or Proposal that names an epic, task, or acceptance criterion of its own initiative
@@ -53,7 +54,7 @@ Left to decide, since each needs new content or a judgement:
   - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
   - an Coverage cell that does not name the criteria the row delivers (AC2, AC5), or
-    cites one that does not exist, and a criterion no row delivers
+    cites one that does not exist, and a criterion no row delivers. A complete row's cell may be empty
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, a title without "Name: Subtitle" (after the prefix,
@@ -441,7 +442,11 @@ class Review:
                     self.decide.append(f'{name}: Description runs to {len(phrase.split())} words; shorten it to a '
                                        f'phrase of at most {MAX_DESCRIPTION}, and state its detail as criteria of '
                                        'one invariant each')
-            listed = r[covered] if covered < len(r) else ''
+            listed = (r[covered] if covered < len(r) else '').strip()
+            done_at = header.index('Done') if 'Done' in header else None
+            done = r[done_at].strip() if done_at is not None and done_at < len(r) else ''
+            if listed == '' and done == TICK:
+                continue
             if not COVERAGE.fullmatch(listed):
                 self.decide.append(f'{name}: Coverage does not name the criteria it delivers')
                 continue
@@ -454,8 +459,8 @@ class Review:
             rows_citing = {n: [name for name, c in cited if n in c] for n in delivered}
             for n in sorted(rows_citing):
                 if len(rows_citing[n]) > 1:
-                    self.decide.append(f'AC{n} is cited by {", ".join(rows_citing[n])}; one task delivers a '
-                                       'criterion, so split it into the invariant each task makes true')
+                    self.decide.append(f'AC{n} is cited by {", ".join(rows_citing[n])}; split it into the '
+                                       'invariant each task makes true, so each task covers at least one acceptance criterion')
             for name, numbers in cited:
                 if len(numbers) > MAX_CRITERIA:
                     self.decide.append(f'{name}: delivers {len(numbers)} criteria; split it into '
