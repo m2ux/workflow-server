@@ -1,0 +1,384 @@
+{
+ "summary": "guards/guards.ts registers 58 guards (not 60): 52 corpus-scope, 6 repo-scope; 6 gatesServing; forms 18 authored / 6 materialised / 34 none; 44 speak --json. Two further check-*.ts scripts exist on disk but are deliberately outside the registry (check-operation-contract.ts: 12 open findings; check-session-contract.ts: needs a session), recorded in tests/guard-registry.test.ts:142-152. No guard is imported by src/; the server's load-time refusal is the Zod loader, and check-routines.ts:74-76 states findings are 'guard findings rather than load failures'. Grouped by invariant, the 58 fall into 10 families. Only two families (schema/grammar validity: 4 guards; step-binding/variable dataflow on the YAML side: 9 guards) are substantially what a static type system over structured definitions would prove, and even those read technique signatures out of markdown headings and `{token}` reads out of prose. The rest read markdown structure, link targets, regex-matched phrasing, README tables, file layout, package-lock, site HTML, or human-authored ledgers. The ledger model (harmless/fix-later/live-bug) is documented in guards/README.md:49-67 and corpus ledgers/README.md; code implements it in check-binding-fidelity.ts:1277-1341 and variants in six other guards with differing verdict vocabularies. All 58 run in corpus CI as a merge gate (CORPUS .github/workflows/verify-corpus.yml:101-102); only the 6 gatesServing guards 'refuse' anything, and that is the experiment-sidecar reload preflight (tests/scripts/reload-exp-sidecar.sh:488; docs/http.md:68), not server start.",
+ "families": [
+  {
+   "family": "A1 Reference resolution over structured definitions",
+   "invariant": "Every name a YAML/markdown definition uses to reach another artifact (technique ref, workflow id, directory name, launch target, map row, adapter kind, lens slug) resolves to exactly one thing the corpus holds.",
+   "guards": [
+    "refs",
+    "workflow-identity",
+    "namespace-collision",
+    "launched-workflows",
+    "canonical-home-map",
+    "harness-adapter-set",
+    "prism-lens-reachability"
+   ],
+   "form": "mixed",
+   "gates_serving": "2 (refs, workflow-identity)",
+   "nature": "structural-binding",
+   "type_checkable": "partly \u2014 refs/workflow-identity/namespace-collision/launched-workflows are nominal lookups over parsed YAML and directory names (a module/namespace system could prove them); canonical-home-map reads a markdown table's home column (check-canonical-home-map.ts:17-18,60), harness-adapter-set parses numbered Protocol prose steps (check-harness-adapter-set.ts:16-21), prism-lens-reachability reads goal tables and frontmatter (check-prism-lens-reachability.ts:12-21).",
+   "where": "guards/guards.ts:484-492 (refs), proves at 490; check-all-refs.ts:27-66"
+  },
+  {
+   "family": "A2 Markdown link and citation resolution",
+   "invariant": "Every link or rule citation written in markdown lands on a file/heading/rule the reader will actually hold, in the form (bare vs anchored, name vs link) delivery semantics require.",
+   "guards": [
+    "corpus-links",
+    "resource-anchors",
+    "rule-citation-form",
+    "citation-grain",
+    "unserved-operation-refs",
+    "section-framing",
+    "bootstrap-self-contained"
+   ],
+   "form": "none",
+   "gates_serving": "0",
+   "nature": "prose-convention",
+   "type_checkable": "no \u2014 all read markdown link syntax, GitHub heading slugs, fence state, `## Rules` headings and pre-section prose (check-resource-anchors.ts:4-13, check-citation-grain.ts:5-11, check-section-framing.ts:15-23, check-bootstrap-self-contained.ts:11-20); section-framing and unserved-operation-refs also consult human ledgers.",
+   "where": "guards/guards.ts:133-142 (corpus-links), proves at 140; check-corpus-links.ts:1-39"
+  },
+  {
+   "family": "B1 Definition validity against schema and expression grammar",
+   "invariant": "Every activity file and workflow.yaml validates against its Zod schema, every `when:` parses under the reference dialect, and a loop declares exactly the fields its loopType uses.",
+   "guards": [
+    "activities",
+    "workflow-yaml",
+    "when-expression",
+    "loop-shape"
+   ],
+   "form": "mixed",
+   "gates_serving": "4 (all)",
+   "nature": "schema-agreement",
+   "type_checkable": "yes \u2014 these are schema validation and parsing over structured YAML (validate-activities.ts:34-60 calls safeValidateActivity; check-when-expression.ts:35-40 calls assertWhenAuthoring; check-loop-shape.ts:52-99 is a field-presence partition); a dependent type over the step kind would subsume loop-shape outright.",
+   "where": "guards/guards.ts:494-502 (activities), proves at 500; validate-activities.ts:1-17"
+  },
+  {
+   "family": "B2 Prose-stated contracts held against generated schemas and tool registrations",
+   "invariant": "A construct named in canon prose, an inventory row, a described tool call, or a generated schema file agrees with the Zod source / tool registration that defines it.",
+   "guards": [
+    "tool-call-shape",
+    "inventory-schema-agreement",
+    "fires-on-ids",
+    "generated-schemas"
+   ],
+   "form": "none",
+   "gates_serving": "0",
+   "nature": "schema-agreement",
+   "type_checkable": "partly \u2014 the target side is a JSON schema or registration a type system holds; the source side is inline code spans `tool_name { ... }` (check-tool-call-shape.ts:12-16), `**Fires on:**` lines (check-fires-on-ids.ts:5-16), backticked field paths in table rows (check-inventory-schema-agreement.ts:17-24), none of which a checker sees without a markdown parser. generated-schemas is a byte-equality check of rendered output (check-generated-schemas.ts:38).",
+   "where": "guards/guards.ts:304-312 (tool-call-shape), proves at 310; check-tool-call-shape.ts:1-48"
+  },
+  {
+   "family": "C Step-to-technique binding and variable-bag dataflow",
+   "invariant": "Every step binding resolves and conforms to the bound technique's signature; every read of the variable bag has a producer on every path; every produced value has a consumer; declared contracts (activity variables, routine signatures, workflow variable types/defaults/value sets) match what steps do; no step binds or composes a value from itself.",
+   "guards": [
+    "binding-fidelity",
+    "activity-variables",
+    "routines",
+    "identity-binds",
+    "inherited-inputs",
+    "set-action-values",
+    "self-provisioned-input",
+    "self-composed-set",
+    "variable-model"
+   ],
+   "form": "mixed",
+   "gates_serving": "0",
+   "nature": "variable-dataflow",
+   "type_checkable": "partly \u2014 the YAML half (step inputs/outputs maps, set targets, routine inputs/outputs/internals, workflow variables with type/defaultValue/values, loop variables) is a typed environment and a linear/affine effect system could prove read-after-write and consumed-once; but technique signatures are `###`/`####`/`#####` markdown headings plus a '(optional)' prose marker (check-binding-fidelity.ts:140-207), reads are regex `{token}` hits across markdown prose with fences blanked (609-637), dead-output treats a prose mention as a consumer (1048-1073), and activity-variables and binding-fidelity each carry a ledger of accepted exceptions.",
+   "where": "guards/guards.ts:63-72 (binding-fidelity), proves at 70; check-binding-fidelity.ts:1-60"
+  },
+  {
+   "family": "D Checkpoint ordering, reachability and leakage",
+   "invariant": "A gate is placed where its answer can still steer the run and shows only values already bound; a review-mode or stealth-mode run cannot auto-advance into or reach a mutating/disclosing step.",
+   "guards": [
+    "message-binding",
+    "decision-order",
+    "checkpoint-entry",
+    "review-mode-gating",
+    "stealth-isolation"
+   ],
+   "form": "mixed",
+   "gates_serving": "0",
+   "nature": "graph",
+   "type_checkable": "partly \u2014 ordinal-before-read (check-message-binding.ts:126-137), first-step kind (check-checkpoint-entry.ts:45-46) and exit reachability under a fixed bag (check-review-mode-gating.ts:15-17) are flow analyses over materialised steps a dependent/effect type could encode; but review-mode's ACCEPTED_HEADLESS_AUTO_ADVANCE is human judgement (52-62), stealth's layer (3) greps composed technique prose for `gh pr create` etc. (check-stealth-isolation.ts:16-19) and its layer (4) needs network.",
+   "where": "guards/guards.ts:274-282 (message-binding), proves at 280; check-message-binding.ts:1-29"
+  },
+  {
+   "family": "E1 Technique file anatomy and I/O declaration form",
+   "invariant": "A technique file follows the five-section template; every I/O id is a qualified snake_case noun; every declared value set is recorded by a protocol phase; every artifact output declares an audience, is JSON when agent-read, has a creation guide, and states status once.",
+   "guards": [
+    "technique-template",
+    "protocol-shape",
+    "identifier-qualification",
+    "declared-values",
+    "audience",
+    "artifact-guides",
+    "artifact-status-once"
+   ],
+   "form": "none",
+   "gates_serving": "0",
+   "nature": "prose-convention",
+   "type_checkable": "partly \u2014 once the loader has parsed headings into a Technique record, template order/casing, audience enum and `.json` suffix are schema predicates (check-audience.ts:21-23 notes enum validity already lives in Zod); but protocol-shape counts `###` vs bare numbered lines (check-protocol-shape.ts:45-60), declared-values reads backticked tokens in Protocol prose (check-declared-values.ts:32-52), artifact-guides reads README tables and `## Template` headings (check-artifact-guides.ts:13-18), artifact-status-once reads fenced template blockquotes (check-artifact-status-once.ts:11-12).",
+   "where": "guards/guards.ts:424-432 (technique-template), proves at 430; check-technique-template.ts:1-29"
+  },
+  {
+   "family": "E2 Single home / no duplicated declaration",
+   "invariant": "A fact, rule text, checkpoint body, run of steps, nested output component, technique listing, or guard roster is authored in one place and referenced from others.",
+   "guards": [
+    "duplicate-bodies",
+    "repeated-runs",
+    "checkpoint-presentation",
+    "nested-output-home",
+    "activity-technique-overlap",
+    "guard-roster"
+   ],
+   "form": "mixed",
+   "gates_serving": "0",
+   "nature": "other",
+   "type_checkable": "partly \u2014 duplicate-checkpoint, repeated-runs and activity-technique-overlap are structural equality over parsed YAML (check-repeated-runs.ts:14-25 signature reduction; check-activity-technique-overlap.ts:40-55) and decidable, though repeated-runs defers the verdict to a ledger; duplicate-rule, checkpoint-presentation and guard-roster regex-match prose (check-checkpoint-presentation.ts:16-26; check-guard-roster.ts:12-19); nested-output-home compares `####` headings across files with a triage.",
+   "where": "guards/guards.ts:444-452 (duplicate-bodies), proves at 450; check-duplicate-bodies.ts:1-18"
+  },
+  {
+   "family": "E3 Prose phrasing conventions",
+   "invariant": "Descriptions state WHAT not HOW; a conditional branch is a `>` note not an indented bullet; a routine signature describes the value not the reference site.",
+   "guards": [
+    "description-hygiene",
+    "branch-as-step",
+    "routine-signature-prose"
+   ],
+   "form": "mixed",
+   "gates_serving": "0",
+   "nature": "prose-convention",
+   "type_checkable": "no \u2014 all three are regex phrase/shape sets over natural language (check-description-hygiene.ts:25-30 PROCEDURE_MARKERS; check-branch-as-step.ts:46-53 QUALIFIER; check-routine-signature-prose.ts:30-38 SITE_PROSE), self-described as 'a fail-closed *net*, not a full Detect walk' (check-description-hygiene.ts:9-11).",
+   "where": "guards/guards.ts:384-392 (branch-as-step), proves at 390; check-branch-as-step.ts:1-35"
+  },
+  {
+   "family": "F Engine-repository hygiene",
+   "invariant": "This repository's own sources, site, lockfile and instruction files are sound: links resolve, SVG text fits, no control bytes, no denylisted package versions, pinned corpus paths still exist, no duplicated agent instructions.",
+   "guards": [
+    "site-links",
+    "svg-layout",
+    "source-encoding",
+    "lockfile-denylist",
+    "pinned-corpus-paths",
+    "agent-instruction-homes"
+   ],
+   "form": "none",
+   "gates_serving": "0",
+   "nature": "repo-hygiene",
+   "type_checkable": "no \u2014 read HTML attributes, SVG geometry estimates (check-svg-layout.ts:3-14), raw bytes (check-source-encoding.ts:43-60), package-lock.json against scripts/known-bad-versions.json (check-lockfile-denylist.ts:23-25), string literals in TypeScript against corpus disk (check-pinned-corpus-paths.ts:41), and regex signatures in AGENTS.md/CLAUDE.md. pinned-corpus-paths is registered scope corpus but reads this repo's TS.",
+   "where": "guards/guards.ts:514-522 (site-links), proves at 520; check-site-links.ts:1-9"
+  }
+ ],
+ "binding_fidelity": "guards/check-binding-fidelity.ts (1375 lines; registry entry guards.ts:63-72, form authored, json true, gatesServing false).\n\nREADS. (a) Technique markdown signatures via fileSigDetailed (140-207): `## Inputs`/`## Outputs` \u2192 `### id` entries \u2192 `#### default` (input exempt from orphan), `#### artifact|audience|entry` reserved (118,124), any other `####` as a component, `#####` as entry fields; an input is optional when the first prose line matches OPTIONAL_INPUT_RE (201-204, shared with server via src/utils/binding-provenance.js at 69). (b) Registry per namespace via buildRegistry (219-263): root TECHNIQUE.md, group TECHNIQUE.md, ops; composed = own \u222a group \u222a root (241,246,256). (c) Step YAML via walkSteps (522-595) over parsed activities (801-813) and routines (678-704): technique bindings {name,inputs,outputs} (532-538), `kind: routine` with/outputs (545-552), set targets (553), validate targets and `when` as expression reads (557-562), setVariable/effect.setVariable/recordReply/variable (563-567), loop `over` plus item fields harvested by regex over JSON.stringify of the loop (572-592). (d) `{token}` reads via collectReads (621-637) over every technique .md, activity, routine and workflow.yaml with fenced blocks blanked but inline code kept (609-619); `variable:` lines in activities (628,632-635). (e) workflow.yaml variables/context and graph fan parameters/containers (356-386). (f) Resolution uses the server's parseTechniqueRef (274-303) with activity-group precedence (285-291). expressionReads (509-520) takes only the LEFT operand of each clause and skips ENV_PROBES gh/gpg/git/signing/workflows (497).\n\nEMITS (Violation.check union at 956-958): binding-resolution (987) \u2014 step technique ref resolves to nothing, detail from TechniqueRefError (306-314); arg-conformance (1000,1003) \u2014 inputs/outputs key not in composed signature; orphan-input (1020-1023) \u2014 bound op's OWN non-default non-optional input with no producer in binding workflow, keyed per (workflow, op, input) seam, cleared if any site supplies it (975,1011,1026); read-resolution (1043) \u2014 `{token}` head not in scopeOf(wf) (875-893: declared ids, shared-namespace ids, producers, cross-workflow composed sigs) after PLACEHOLDER (320), file `{$local}`, container-member and fan-parameter exemptions; read-resolution for gate expressions (1057-1060); dead-output (1070-1073) \u2014 declared output with no consumer outside its file satisfying consumerReaches (934-947: same wf, shared lib, cross-workflow binder, dispatched child, borrow direction), exempt if `#### artifact`, interpolated in own artifact template (646-664), or lands in a read fan container (414-422); output-path-undeclared (1140-1144) \u2014 `{head.member}` where producer declares components but not that member; entry-field-undeclared (1204-1209) \u2014 `{item.field}` under a loop whose collection's component/own `entry` declares fields but not that one. Triage layer adds stale-triage (1316-1322) and misplaced-triage (1334-1338).\n\nTRIAGE LEDGER. TRIAGE = ledgerPath(ROOT,'binding-fidelity-triage.json') (88; join(root,'ledgers',file) at workflows-root.ts:214-216). Types 1231-1243: verdict harmless|fix-later|live-bug, rationale key into file's rationales map, corpusSha. applyTriage (1277-1341): key = findingKey = check NUL site-minus-trailing-line NUL detail (guard-protocol.ts:53-58; 1245); no entry \u2192 reported with '[untriaged \u2014 classify it ...]' (1295-1298); live-bug \u2192 reported with rationale text (1302-1305); harmless/fix-later \u2192 suppressed, counted; entry matching nothing \u2192 stale-triage, naming a satisfier in another workflow if dead-output (1307-1322); entry whose cited line is not where the finding sits \u2192 misplaced-triage (1327-1338). triageStampNote (1256-1269) shells `git rev-parse`/`rev-list --count` to print distance from corpusSha, report-only. CLI (1343-1375): --emit-untriaged / --emit-all print JSON and exit 0, 'classification stays a human act' (1350); summary line (1363-1366); report() exits 1 on any remaining finding. CORPUS ledgers/binding-fidelity-triage.json at HEAD holds 58 harmless, 0 fix-later, 0 live-bug entries, corpusSha 7062aa0a (line 3), 11 rationales (4-16).\n\nCLAIM vs DOES. Header (47-53) says 'no longer holds a stored baseline' and defers to check:delta, yet the file does load a ledger of accepted findings (1247-1250) \u2014 the distinction the code draws is that entries carry verdicts and cannot be regenerated. Header lists five checks (4-41) but the code emits seven kinds plus two triage kinds.",
+ "ledger_model": "DOCUMENTED: guards/README.md:49-59 \u2014 `harmless` 'correct by design \u2014 suppressed'; `fix-later` 'real debt \u2014 suppressed, but counted in the summary line'; `live-bug` 'reported, so the guard stays red until it is fixed'; 'A finding absent from the file is *untriaged* and reported; an entry matching nothing is *stale* and reported. There is no `--update-baseline`'. README:61-63 'A ledger is the exception ... not the shape a new guard starts from'; README:65-67 verdicts are judgements 'as they stood at `corpusSha`', printed distance does not fail. Corpus side: CORPUS ledgers/README.md:5-15 restates the three-verdict table and 'Each file is named for the check that reads it'.\n\nIMPLEMENTED: binding-fidelity consults its ledger in applyTriage (check-binding-fidelity.ts:1277-1341) exactly as documented. Other guards follow the shape with DIFFERENT vocabularies: activity-variables reads ledgers/unproduced-read-triage.json for one family only, verdicts 'fix-later' | 'live-bug' (check-activity-variables.ts:106), suppresses only fix-later (149), emits duplicate-triage and stale-triage (136-158); repeated-runs reads ledgers/repeated-run-baseline.json with verdicts converging/unassigned/provisional (header 63-68; code 394-449, malformed verdict \u2192 repeated-run-baseline-verdict); unserved-operation-refs reads ledgers/unserved-operation-ref-triage.json, verdicts accepted/fix-later, BOTH suppress (header 43-49; code 164-193); section-framing, canonical-home-map, nested-output-home, artifact-guides read their own triage/baseline JSON (check-section-framing.ts:45-47; check-canonical-home-map.ts:49-53; check-nested-output-home.ts:54-58; check-artifact-guides.ts:234) with verdict typed as string; review-mode-gating keeps an in-code acceptance map ACCEPTED_HEADLESS_AUTO_ADVANCE and reports stale-acceptance (check-review-mode-gating.ts:52-62, 231-245). Every ledger-bearing guard reports a stale entry. CORPUS ledgers/ at HEAD holds 7 JSON files (binding-fidelity-triage, canonical-home-map-triage, nested-output-home-triage, repeated-run-baseline, section-framing-triage, unproduced-read-triage, unserved-operation-ref-triage); artifact-guide-baseline.json is absent, which check-artifact-guides.ts:26-27 says is the clean state.",
+ "refuse_vs_warn": "No guard runs at server load. grep of src/ for imports from guards/ returns nothing; check-routines.ts:74-76 records the decision: 'Findings are guard findings rather than load failures ... a routine contradicting its signature fails a guard run and a workflow carrying it still loads.' Load-time refusal is the Zod loader (check-audience.ts:21-23; check-technique-template.ts:19-22 says an unfilenameable artifact 'drops the technique with a logged warning').\n\nWARN BEFORE MERGE (corpus CI): CORPUS .github/workflows/verify-corpus.yml:101-102 runs `npm run check:all` (package.json:78 \u2192 guards/check-all.ts) on every corpus pull request with WORKFLOWS_DIR=workflows (36); no --corpus-only, so all 58 registry guards including the 6 repo-scope ones run. Exit 2 (unmeasured) fails the job (99-100; check-all.ts:150). guards/README.md:25 'Corpus CI (`verify-corpus.yml`) runs the sweep; engine CI does not.' Engine CI (SERVER .github/workflows/verify.yml) runs only check:schemas (87) and check-tool-call-shape --root workflows (99), plus Vitest wrappers of guards that have tests (README.md:90-96).\n\nREFUSE TO SERVE (sidecar preflight only): the 6 gatesServing guards \u2014 activities, loop-shape, refs, when-expression, workflow-identity, workflow-yaml \u2014 pinned by tests/guard-registry.test.ts:91-100. check-all.ts:11-15,100 exposes them as `--serving-only`; tests/scripts/reload-exp-sidecar.sh:488 runs `npx tsx guards/check-all.ts --root $CORPUS --serving-only` and refuses the container swap on failure (docs/http.md:68: 'A corpus that fails the guards refuses and leaves the container as it found it'; `--no-preflight` skips). Nothing in package.json start scripts (20-21) or the Dockerfile grep invokes a guard, so production `npm start` serves whatever the loader accepts.\n\nPer-guard: check:binding etc. (package.json:11-19, 28-77) run singly, exit 0/1/2 via guard-protocol.ts:27-30. check:delta (check-delta.ts) compares findingKey sets for json guards (286-289) and exit code + new output lines otherwise (308-313).",
+ "facts": [
+  {
+   "claim": "The registry holds 58 entries, not 60; six are gatesServing; six are scope repo.",
+   "file": "/tmp/bend-fidelity/server/guards/guards.ts",
+   "lines": "62-643",
+   "quote": "export const GUARDS: GuardSpec[] = ["
+  },
+  {
+   "claim": "GuardForm distinguishes authored (files as written, plus routines/), materialised (loader output), none.",
+   "file": "/tmp/bend-fidelity/server/guards/guards.ts",
+   "lines": "14-29",
+   "quote": "A routine reference is spliced away when definitions load, so the two forms answer different questions"
+  },
+  {
+   "claim": "gatesServing means 'the server cannot load, resolve or execute the definitions', as against a convention.",
+   "file": "/tmp/bend-fidelity/server/guards/guards.ts",
+   "lines": "39-50",
+   "quote": "A serving guard asks only what the loader asks"
+  },
+  {
+   "claim": "Two guard scripts on disk are outside the registry with recorded reasons.",
+   "file": "/tmp/bend-fidelity/server/tests/guard-registry.test.ts",
+   "lines": "142-152",
+   "quote": "reads the corpus and holds at 12 findings"
+  },
+  {
+   "claim": "check-operation-contract would measure declared-type-mismatch and underived-operation-write across the activity/technique seam.",
+   "file": "/tmp/bend-fidelity/server/guards/check-operation-contract.ts",
+   "lines": "8-16, 27-41",
+   "quote": "NOT IN THE GUARD REGISTRY"
+  },
+  {
+   "claim": "The gatesServing set is pinned to six ids by test.",
+   "file": "/tmp/bend-fidelity/server/tests/guard-registry.test.ts",
+   "lines": "91-100",
+   "quote": "'activities', 'loop-shape', 'refs', 'when-expression', 'workflow-identity', 'workflow-yaml'"
+  },
+  {
+   "claim": "Finding protocol: exit 0 clean, 1 findings, 2 unmeasured; key drops trailing :line.",
+   "file": "/tmp/bend-fidelity/server/guards/guard-protocol.ts",
+   "lines": "27-30, 53-58",
+   "quote": "EXIT_UNMEASURED = 2"
+  },
+  {
+   "claim": "check-all spawns each guard as a tsx child, reads exit codes, verdict is the last stdout line.",
+   "file": "/tmp/bend-fidelity/server/guards/check-all.ts",
+   "lines": "67-94, 123-124",
+   "quote": "an unmeasured guard is never folded into \"pass\""
+  },
+  {
+   "claim": "Corpus CI runs the full sweep on every corpus PR.",
+   "file": "/tmp/bend-fidelity/corpus/.github/workflows/verify-corpus.yml",
+   "lines": "99-102",
+   "quote": "run: npm run check:all"
+  },
+  {
+   "claim": "Engine CI runs two guards: check:schemas and check-tool-call-shape.",
+   "file": "/tmp/bend-fidelity/server/.github/workflows/verify.yml",
+   "lines": "86-99",
+   "quote": "npx tsx guards/check-tool-call-shape.ts --root workflows"
+  },
+  {
+   "claim": "Sidecar reload preflight runs --serving-only and refuses the swap on failure.",
+   "file": "/tmp/bend-fidelity/server/tests/scripts/reload-exp-sidecar.sh",
+   "lines": "474-516",
+   "quote": "npx tsx guards/check-all.ts --root \"$CORPUS\" --serving-only"
+  },
+  {
+   "claim": "Docs claim the serving guards are the ones that 'decide whether a server can serve it'.",
+   "file": "/tmp/bend-fidelity/server/docs/http.md",
+   "lines": "68-70",
+   "quote": "A corpus that fails the guards refuses and leaves the container as it found it"
+  },
+  {
+   "claim": "Routine findings are guard findings, not load failures.",
+   "file": "/tmp/bend-fidelity/server/guards/check-routines.ts",
+   "lines": "74-76",
+   "quote": "a workflow carrying it still loads"
+  },
+  {
+   "claim": "Technique signatures are parsed from markdown heading levels ##/###/####/#####.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "140-207",
+   "quote": "Canonical headers only (the loader rejects singular variants)"
+  },
+  {
+   "claim": "Reads are regex {token} hits over markdown with fences blanked and inline code kept.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "609-637",
+   "quote": "INLINE code spans are deliberately left alone"
+  },
+  {
+   "claim": "Loop item fields are harvested by regex over JSON.stringify of the loop node.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "582-592",
+   "quote": "JSON.stringify(o).matchAll("
+  },
+  {
+   "claim": "Gate expression reads take only the left operand of each clause.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "500-520",
+   "quote": "Only the left side. A right operand is a value"
+  },
+  {
+   "claim": "Seven violation kinds plus stale-triage and misplaced-triage.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "956-958, 1316, 1334",
+   "quote": "'arg-conformance' | 'read-resolution' | 'binding-resolution' | 'dead-output' | 'orphan-input' | 'output-path-undeclared' | 'entry-field-undeclared'"
+  },
+  {
+   "claim": "Triage verdict semantics in code.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "1218-1243, 1277-1341",
+   "quote": "live-bug   \u2014 affects a run; REPORTED"
+  },
+  {
+   "claim": "README documents the three-verdict ledger and absence of a regenerate flag.",
+   "file": "/tmp/bend-fidelity/server/guards/README.md",
+   "lines": "49-67",
+   "quote": "There is no `--update-baseline`: a verdict is a human judgement"
+  },
+  {
+   "claim": "README says a ledger is the exception, names activity-variables and review-mode as the other carriers.",
+   "file": "/tmp/bend-fidelity/server/guards/README.md",
+   "lines": "61-63",
+   "quote": "It is not the shape a new guard starts from."
+  },
+  {
+   "claim": "Corpus ledger README restates verdict table.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/README.md",
+   "lines": "5-15",
+   "quote": "Each file is named for the check that reads it."
+  },
+  {
+   "claim": "The binding-fidelity ledger at corpus HEAD has 58 harmless, 0 fix-later, 0 live-bug entries and corpusSha 7062aa0a.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/binding-fidelity-triage.json",
+   "lines": "1-40",
+   "quote": "\"corpusSha\": \"7062aa0a1c4206620ca6b30551103cd043bb29ea\""
+  },
+  {
+   "claim": "activity-variables ledger covers one family, verdicts fix-later|live-bug, only fix-later suppresses.",
+   "file": "/tmp/bend-fidelity/server/guards/check-activity-variables.ts",
+   "lines": "28-33, 106, 129-160",
+   "quote": "if (triaged.get(key)?.verdict !== 'fix-later') kept.push(finding);"
+  },
+  {
+   "claim": "unserved-operation-refs verdicts accepted|fix-later both suppress.",
+   "file": "/tmp/bend-fidelity/server/guards/check-unserved-operation-refs.ts",
+   "lines": "43-49, 164-193",
+   "quote": "Both suppress the finding"
+  },
+  {
+   "claim": "repeated-runs verdicts converging|unassigned|provisional; provisional is named in every run.",
+   "file": "/tmp/bend-fidelity/server/guards/check-repeated-runs.ts",
+   "lines": "55-69, 394-449",
+   "quote": "provisional  a run whose existence turns on an open finding; NAMED IN EVERY RUN"
+  },
+  {
+   "claim": "review-mode-gating acceptance list lives in code with reasons, stale entries reported.",
+   "file": "/tmp/bend-fidelity/server/guards/check-review-mode-gating.ts",
+   "lines": "46-62, 231-245",
+   "quote": "ACCEPTED_HEADLESS_AUTO_ADVANCE"
+  },
+  {
+   "claim": "check-delta compares findingKey sets for json guards, exit code and new output lines otherwise.",
+   "file": "/tmp/bend-fidelity/server/guards/check-delta.ts",
+   "lines": "19-21, 286-289, 308-313",
+   "quote": "compared by exit code and by new output lines"
+  },
+  {
+   "claim": "ledgerPath resolves to <root>/ledgers/<file> of the pointed corpus tree.",
+   "file": "/tmp/bend-fidelity/server/guards/workflows-root.ts",
+   "lines": "214-216",
+   "quote": "return join(root, 'ledgers', file);"
+  },
+  {
+   "claim": "description-hygiene describes itself as a net, not a full Detect walk.",
+   "file": "/tmp/bend-fidelity/server/guards/check-description-hygiene.ts",
+   "lines": "9-11",
+   "quote": "a clean guard does not mean the Description Hygiene unit was walked"
+  },
+  {
+   "claim": "stealth-isolation layer (4) needs git/gh network and is opt-in; registry runs static layers only.",
+   "file": "/tmp/bend-fidelity/server/guards/check-stealth-isolation.ts",
+   "lines": "7-26",
+   "quote": "RUNTIME (opt-in via --target <checkout-path>; requires git, optionally gh)"
+  },
+  {
+   "claim": "Enum validity of audience is already enforced by Zod at load; the guard checks the on-disk format convention.",
+   "file": "/tmp/bend-fidelity/server/guards/check-audience.ts",
+   "lines": "21-23",
+   "quote": "this guard checks the on-disk *format* convention the schema cannot express"
+  },
+  {
+   "claim": "message-binding uses the server's buildProducerIndex and emits renders-placeholder / renders-declared-default / unmeasured.",
+   "file": "/tmp/bend-fidelity/server/guards/check-message-binding.ts",
+   "lines": "93-159",
+   "quote": "check: rendersDefault ? 'renders-declared-default' : 'renders-placeholder'"
+  }
+ ],
+ "open_questions": [
+  "The task says 60 guards; guards.ts registers 58. The other two scripts on disk (check-operation-contract.ts, check-session-contract.ts) are deliberately unregistered (tests/guard-registry.test.ts:142-152). Should the lead count them? check-operation-contract is the one guard that crosses the activity-contract/technique-signature seam a type system would unify, and it is held out because it is red.",
+  "Does any production start path (npm start, Dockerfile, docker-publish.yml) run the serving preflight? grep of package.json:20-21, scripts/, Dockerfile* found no guard invocation; only tests/scripts/reload-exp-sidecar.sh:488 does. Not verified by reading the Dockerfile in full.",
+  "Three guards police overlapping read/producer invariants over the variable bag with different scoping rules: binding-fidelity read-resolution (per-workflow scope incl. shared libraries), activity-variables (per activity graph incl. included activities), routines (per routine signature). A single typed environment would replace all three; whether their exemption lists (PLACEHOLDER, AMBIENT_CONTEXT_IDS, ENV_PROBES, fan containers, ledgers) are expressible as types is the lead's question.",
+  "The binding-fidelity ledger's corpusSha (7062aa0a) differs from the corpus HEAD under test (15860ff); triageStampNote prints the distance only when run. I did not run the guards.",
+  "guards/README.md:92-96 says the set of guards that are also Vitest tests should be read from tests/ by grep; I did not enumerate them.",
+  "Whether a Bend proof could consume technique signatures at all depends on the markdown\u2192Technique parse the loader performs (src/loaders/markdown-technique-loader.js); several guards (audience, declared-values, artifact-guides) route through tryLoadMarkdownTechnique while binding-fidelity re-parses headings itself (140-207) \u2014 two parsers of one format."
+ ]
+}

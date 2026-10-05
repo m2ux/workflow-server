@@ -1,0 +1,316 @@
+{
+ "summary": "The corpus (15860ff3) is 62 workflow.yaml, 278 activity YAMLs, 40 routine YAMLs, 781 technique markdown files, 286 resource markdown files. The definition language is YAML (workflow, activity, routine) validated by Zod schemas in SERVER src/schema/*.ts (JSON Schemas under schemas/ are generated from them), plus markdown techniques/resources parsed by position (headings), not by schema. Three enforcement tiers exist: (1) the loader refuses or excludes at load (schema shape, id/filename identity, duplicate step ids, exit/graph agreement, fan rules, variable-declaration contradictions, routine site/signature agreement, routine cycles); (2) ~60 guard scripts under guards/ check authoring-time properties the loader does not (gate dialect parse, loop field partition, variable model, activity read/write contracts incl. definite-assignment reachability, binding fidelity, technique template, routine signature-vs-body); (3) nothing checks runtime semantics of gates/loops/exit selection: the worker evaluates every `when`, `condition`, `continueWhile`, `maxIterations`; the server evaluates gates only to decide inlining, never to decide execution. Exits are declared on the activity, bound in workflow.yaml `graph`; an unbound exit fails the load; at runtime an undeclared reported exit only warns and the server enters whatever activity the caller names. Loop iteration counts are bounded nowhere server-side: `maxIterations` is optional, Agent-owned, advisory; 7 of 62 corpus loops declare none.",
+ "constructs": [
+  {
+   "name": "workflow (workflow.yaml)",
+   "purpose": "Top-level guide: identity, audience-partitioned rules/techniques, variable roster, initialActivity, graph, borrowed activities.",
+   "schema": "schemas/workflow.schema.json; src/schema/workflow.schema.ts L104-118 (WorkflowSchema), L136-138 (WorkflowFileSchema as authored), L127-130 (ActivityReferenceSchema regex)",
+   "key_fields": "id, version (semver regex common.ts L3), title, rules{workflow,activity,universal} (L15-19, advisory), techniques{workflow,activity} (L9-12), variables[], initialActivity (L115), graph (L116), activities[] = borrowed refs `<workflow>/[activities/]NN-id.yaml`.",
+   "binding_rules": "Directory name is the id; a declared id that disagrees is an identity mismatch and neither name resolves (corpus-index.ts L146-154, L397-433; docs/resolution.md L134). Own activities = files in activities/; borrowed resolve unqualified refs in their source workflow (workflow-loader.ts L258-305). techniques.activity injected ahead of each activity's own (docs/workflow.md L96).",
+   "invariants": "LOAD: file passes WorkflowFileSchema strict (workflow-loader.ts L248-252); initialActivity names a known activity (L614-618, L389-393); borrowed ref names a file, id appears once incl. failed own files (L272-300); all variable declarations agree on type/default/values (L369-377); graph/exit agreement (see exit). GUARD: validate-workflow-yaml, check-workflow-identity, check-namespace-collision. NONE: version/title/description/tags/author/rules are advisory strings."
+  },
+  {
+   "name": "activity (activities/NN-id.yaml)",
+   "purpose": "One phase: ordered steps, variable contract, exits, triggers.",
+   "schema": "schemas/activity.schema.json; src/schema/activity.schema.ts L287-312 (strict)",
+   "key_fields": "id, version, name, variables{reads,writes}, techniques[], bundleTechniques.maxChars, steps[], exits[], triggers[], outcome[], required (default true), rules[], artifactPrefix (loader-set from filename, L145).",
+   "binding_rules": "Filename `NN-id.yaml` carries id; NN becomes artifactPrefix (filename-utils.ts L6-10; workflow-loader.ts L45-49, L137-145). Steps resolve technique refs in the activity's source workflow (technique-ref.ts L1-33).",
+   "invariants": "LOAD: Zod strict shape else excluded with error (L130-135); id==filename else excluded (L137-142); two files one id fails whole load (L113-118); step ids unique per scope, non-technique steps need explicit id (populateStepIds L181-210); checkpoint defaults consistent (L221-247). GUARD: validate-activities, check-checkpoint-entry (first step not a checkpoint), check-activity-variables, check-activity-technique-overlap. NONE: outcome, rules, required, name/description read by no server check (activity.required read nowhere outside schema)."
+  },
+  {
+   "name": "step (common fields)",
+   "purpose": "Unit of worker work; five kinds by `kind` discriminator.",
+   "schema": "activity.schema.ts L58-65 (when, required, condition), L125-131 (StepSchema), L133-134 STEP_KINDS",
+   "key_fields": "kind, id, when (WhenExpression, Agent/advisory L59), required: literal false only (L60), condition (structured; not on loop/routine, L63-65, L159-161).",
+   "binding_rules": "when/condition read dotted bag paths; a name an earlier step of the same activity produces is an internal read (activity-variables.ts L560-571, L598-607).",
+   "invariants": "LOAD: id uniqueness per list (top-level, each loop body) L181-210. GUARD: check-when-expression (parse + mixed &&/|| without parens); check-binding-fidelity read-resolution. NONE: server never evaluates a gate to decide execution (step-control.md L14; validation.ts L139-146); gate evaluation only steers inlining (gate-liveness.ts L167-199; workflow-tools.ts L2010-2035). `required: false` is not read by the manifest validator (validation.ts L142-146); only routine splice propagates it (routine-resolver.ts L748)."
+  },
+  {
+   "name": "technique step + technique binding",
+   "purpose": "Binds a technique to a step, with input/output remaps.",
+   "schema": "activity.schema.ts L67-75 (TechniqueStepSchema), L51-56 (TechniqueBindingSchema), common.ts L6-15 (TechniqueReferenceSchema)",
+   "key_fields": "technique: string | {name, inputs{id: var|literal|{template}}, outputs{id: varName}}, actions[], id optional (defaults to last `::` segment, L69, L167-170).",
+   "binding_rules": "Inputs resolve by name-match: step binding > closest prior unconditional producer > declared variable > later producer (passed on a cycle) > ambient ids > default/optional (binding-provenance.ts L389-411, L421-464). Outputs land under declared id unless remapped (L468-471; docs/technique.md L391-393). Bare one-segment ref tries `<activity-id>::<name>` first (common.ts L11).",
+   "invariants": "LOAD: none beyond shape \u2014 an unresolvable ref is a bundle `unresolved` entry, not a load failure (technique-loader.ts L309-313, L413; L773-803). GUARD: check-all-refs (unresolved), check-binding-fidelity (arg-conformance: binding keys \u2286 composed signature; orphan-input; dead-output; entry-field-undeclared). RUNTIME warn-only: manifest output keys vs declared outputs (validation.ts L188-203); unfetched technique (L223-276)."
+  },
+  {
+   "name": "action / action step",
+   "purpose": "Control instruction (log, validate, set, emit, message); `set` writes a variable when reported.",
+   "schema": "activity.schema.ts L16-23 (ActionSchema), L77-84 (ActionStepSchema)",
+   "key_fields": "action enum, target, message, value, condition.",
+   "binding_rules": "`set` target is a write; `validate` target is read as a when expression; message/value `{tokens}` are reads (activity-variables.ts L714-722).",
+   "invariants": "LOAD: shape only. GUARD: check-set-action-values, check-variable-model. NONE: value type vs declaration checked only at runtime warn-only when reported via variables_changed (variable-seed.ts L83-107)."
+  },
+  {
+   "name": "checkpoint step + option",
+   "purpose": "Human decision at a step position; options set variables, record a reply, select an exit.",
+   "schema": "activity.schema.ts L86-97 (CheckpointStepSchema), L33-45 (CheckpointOptionSchema), L48-51 optionWrites",
+   "key_fields": "message, options[] min 1, defaultOption+autoAdvanceMs (soft gate pair), condition (dismissible gate), option.effect{setVariable, exit, recordReply}.",
+   "binding_rules": "option.exit names an exit of the owning activity (L39); consequence resolved from graph at present time (workflow-tools.ts L2762-2779); message `{name}` rendered from bag, unresolved tokens left standing and warned (message-template.ts L49-70). Replay key = activityId + checkpoint id (L88).",
+   "invariants": "LOAD: defaultOption xor autoAdvanceMs refused; default must be an option and record no reply (L221-247); option exit must be declared by the activity (workflow-loader.ts L653-660). GUARD: check-variable-model (setVariable type/value-set/undeclared, recordReply string), check-message-binding (names bound at gate time), check-checkpoint-entry, check-checkpoint-presentation, check-decision-order. RUNTIME warn-only: setVariable type/value-set (variable-seed.ts L95-107, stored as written)."
+  },
+  {
+   "name": "loop step (continueWhile)",
+   "purpose": "Repeat a body: forEach over a collection, while (pre-test), doWhile (post-test).",
+   "schema": "activity.schema.ts L99-113; corpus rule meta/techniques/workflow-engine/step-control.md L36-45",
+   "key_fields": "loopType (L103), continueWhile: structured Condition (L104), variable/over (forEach, L105-106), breakCondition (L107), maxIterations int>0 optional (L108), steps[] (Engine/enforced L109), when. All loop control fields are owner Agent, strictness advisory.",
+   "binding_rules": "`over` is a plain bag reference read as a name; `variable` is a write readable in body and after (step-control.md L43; activity-variables.ts L613-627). doWhile continuation reads are taken after the last body step (L598-607). Loop body ids are prefixed/scoped; a body checkpoint yields `<id>#<n>` per iteration (validation.ts L89-92).",
+   "invariants": "LOAD: shape only; body step-id uniqueness per body (L181-210). GUARD check-loop-shape: forEach needs over+variable and no continueWhile; while/doWhile need continueWhile and no over/variable/breakCondition; header L24-27 states explicitly no ceiling rule is needed. SERVER TREATMENT: never runs or counts iterations \u2014 body ids are never required in the manifest and may repeat (validation.ts L147-153); a loop with continueWhile is treated as gated so even its own id is not required (L141-144); server reads maxIterations nowhere (grep: only schema). CORPUS: 62 loops (38 forEach, 12 while, 12 doWhile); 55 declare maxIterations; 7 do not (6 forEach e.g. work-package/activities/08-implement.yaml[task-cycle]; 1 doWhile work-package/activities/13-submit-for-review.yaml[await-review-loop]); 0 use breakCondition. Iteration count is bounded only by the agent (step-control.md L45 'the executing agent enforces it')."
+  },
+  {
+   "name": "routine step (site)",
+   "purpose": "Reference to a routine, with arguments and output bindings; spliced at load.",
+   "schema": "activity.schema.ts L115-123 (RoutineStepSchema); docs/routine.md L147-205",
+   "key_fields": "routine `[namespace::]name`, with{input: `{host}`|literal}, outputs{output: hostVar}, when, required. Gate is `when` alone (L114, docs L205).",
+   "binding_rules": "Braced arg = host variable (member path allowed); bare = literal (routine-resolver.ts L1-19, L610-616). Unbound input: default else host value under same id (L617-619). Output unbound: optional \u2192 local internal name; input+output id \u2192 argument names one whole variable (L622-664). Step id prefixes every spliced id; site `when` conjoined with body gates (L740-750).",
+   "invariants": "LOAD (excludes referring activity, workflow-loader.ts L336-352): unknown arg/output names (L591-606); technique param unbound or non-literal (L683-703); mandatory output unbound (L666-669); input+output id misuse (L627-656); unresolved name or failed file (L123-148); cycle (L718-722); duplicate materialised ids (L835-857). GUARD: check-routines (signature vs body), check-routine-prose, check-routine-signature-prose."
+  },
+  {
+   "name": "routine file (routines/name.yaml)",
+   "purpose": "Named run of steps with declared inputs/outputs/internals.",
+   "schema": "schemas/routine.schema.json; src/schema/routine.schema.ts L47-91 (strict), L14-17 id regex, L19-26 input, L32-39 output, L41-45 internal",
+   "key_fields": "id kebab no `::`, version, name, inputs[{id,description,kind:technique?,default?}], outputs[{id,type,description,values?,optional:true?}], internals[{id,description}], steps min 1 (L57).",
+   "binding_rules": "Filename = id; bare ref resolves declaring workflow then meta; qualified ref resolves in that namespace only, a failed same-name file shadows the next scope (routine-resolver.ts L99-148; docs/routine.md L39, L147).",
+   "invariants": "LOAD (file-level, recorded per routine, routine-loader.ts L58-103): schema; id==filename; step ids unique; checkpoint defaults; input+output id declares no default (routine.schema.ts L61-69); a step binding a technique parameter declares its own id (L73-90). GUARD check-routines: output unwritten, input unread, internal unwritten/unread, undeclared read, scope-unbound, writes-input, operation-unbound, reads-argument-output, signature-unheld. NONE: output `type` is never checked against what the body writes (types live only on declarations)."
+  },
+  {
+   "name": "exit",
+   "purpose": "Named outcome of an activity; graph binds it to a destination.",
+   "schema": "activity.schema.ts L278-285 (ExitSchema strict), L302 (exits on activity); docs/workflow.md L100-141",
+   "key_fields": "id, label, when (dialect, L281), isDefault: literal true (L282), immediate: literal true (L283).",
+   "binding_rules": "Declared on activity; bound in workflow.yaml graph[activityId][exitId] (workflow-loader.ts L531-540 getExitBindings filters to bound ones). Selected by the worker/orchestrator; option.exit selects it at a checkpoint; `when` on exits is routing read (activity-variables.ts L727-738) feeding the re-entry analysis (L1010-1025). Corpus: 259 isDefault, 27 immediate.",
+   "invariants": "LOAD (workflow fails, L630-687): no duplicate exit id; every declared exit bound; exactly one isDefault when \u22652 exits; option exits declared; graph binds only declared exits of known activities; destinations known or `__terminal__`. GUARD: check-when-expression on exit when. RUNTIME: server evaluates no exit `when`/isDefault (step-control.md L14); reported exit undeclared \u2192 warning only (validation.ts L288-309, workflow-tools.ts L1381-1385); destination = graph binding if exit resolves else the activity_id the caller named (L1284-1286), refused only if not an existing activity (L1290-1293) or fan-shaped without a binding (L1296-1330); an activity with no bound exits lets the caller enter any activity with no warning (validation.ts L50-51). NONE: mutual exclusivity/exhaustiveness of sibling exit `when`s; `immediate` only informs the worker (`ends_activity`, L773-780, L796-797) and relaxes manifest expectations (validation.ts L94-113)."
+  },
+  {
+   "name": "graph / destination / transition",
+   "purpose": "Maps activity.exit \u2192 next: activity id, `__terminal__`, list of \u22652 members, or instance fan.",
+   "schema": "workflow.schema.ts L36-55 (DestinationSchema, GraphSchema), L116 (field doc), L990 TERMINAL_SENTINEL (workflow-loader.ts)",
+   "key_fields": "graph: Record<activityId, Record<exitId, Destination>>.",
+   "binding_rules": "Keyed by base activity id; fan instances `id#n` share bindings (workflow-loader.ts L534-537, L465-486). `__terminal__` accepted from any activity at runtime (validation.ts L46-48).",
+   "invariants": "LOAD: see exit (L630-687) and fan. GUARD: none specific beyond load. RUNTIME: validateActivityTransition warns when the named activity is not among the retiring activity's destinations (validation.ts L37-58, called L1636) \u2014 but returns null when there are no bound exits."
+  },
+  {
+   "name": "fan-out / join (list fan, instance fan)",
+   "purpose": "Run \u22652 branches (or one activity per collection element) in parallel; all converge on one join.",
+   "schema": "workflow.schema.ts L22-34 (InstanceFanSchema: activity, over, variable, maxInstances\u22652), L33 FanMember, L86 branchKey; workflow-loader.ts L561-606 fanGroups, L760-978 fanErrors/instanceFanErrors; config.ts L241 DEFAULT_FAN_MAX_BRANCHES=4",
+   "key_fields": "members, over (collection var/dotted path), variable (per-instance element), maxInstances.",
+   "binding_rules": "Each branch's outputs land in `<id_with_underscores>_outputs` array slot per branch (L86; variable-seed.ts L129-138; activity-variables.ts L153-165 contributes container, no default). Join = the single activity all branch exits name (L583-606).",
+   "invariants": "LOAD (L760-978): L2 no activity twice; L3 no `__terminal__` member; L4 branch binds \u22651 exit; L5 branch exits do not fan; L6 no self-exit; L7 all branch exits name one join; L8 join \u2260 terminal; L15 join \u2260 source; L9 no checkpoint in a branch; L14 branch binds no commit-and-persist/handle-sub-workflow, no `git::` without create-worktree; L10 branch key legal name; L11 instance variable \u2208 activity reads; L12 collection head declared; L16 variable \u2260 collection head and not written by the activity; L13 no read of a slot \u2265 ceiling. RUNTIME: collection present/non-empty/unique ids checked at fan entry (schema doc L24; workflow-tools.ts L1116). NONE: collection length vs maxInstances is runtime-only."
+  },
+  {
+   "name": "variable (declared / written / seeded)",
+   "purpose": "Session bag entry with type, optional value set and default; flat namespace per workflow.",
+   "schema": "src/schema/variable.schema.ts L5-8 (name: \u22652-word snake_case or exemption, identifiers.ts L16, L30-46), L10-41 (VariableDefinitionSchema), L49-52 (ActivityVariablesSchema reads/writes)",
+   "key_fields": "name, type \u2208 {string,number,boolean,array,object}, description, values[] (string type only), defaultValue, required (no check reads it, L16). Activity: reads[] (advisory), writes[] (full declarations, enforced).",
+   "binding_rules": "Workflow variable set = workflow.yaml variables \u222a every graph activity's writes \u222a fan containers (activity-variables.ts L115-171); silence on default/values is filled from another site (L85-93). Seeded from defaults at session open; no default \u2192 absent (variable-seed.ts L12-18; docs/workflow.md L145). Writes applied from checkpoint setVariable, variables_changed, yields, fan enter (L50).",
+   "invariants": "LOAD: values only on string, no repeats, default \u2208 values (L17-41); two declarations disagreeing on type/default/values fail (L65-78, workflow-loader.ts L369-377); fan parameter rules (L11,L12,L16). GUARD: check-variable-model (exists on defaulted, default type mismatch, setVariable type/set/undeclared); check-activity-variables (undeclared-use, unused-declaration, unwritten-read, unproduced-read, unread-write, unreachable-read via definite-assignment fixpoint L874-1032 and SCC re-entry L1038). RUNTIME: type/value-set mismatch stored as written with warning (variable-seed.ts L95-107). NONE: dotted member paths are untyped; `type` is a 5-valued tag, object/array shape unconstrained except via technique output components checked by check-binding-fidelity."
+  },
+  {
+   "name": "when expression (gate dialect)",
+   "purpose": "Inline boolean over bag paths for step gates and exit selection.",
+   "schema": "src/schema/when-expression.ts L4-19 grammar, L25-40 WhenExpressionSchema, L270 parseWhen, L354 evaluateWhenExpression, L365-390 assertWhenAuthoring; corpus step-control.md L12-23",
+   "key_fields": "IDENT dotted paths; literals true/false/null/quoted/int/bare word (string); ops == != > < >= <= ! && || ().",
+   "binding_rules": "Reads are left-hand paths only (L282-306); absent variable is undefined: falsy, == matches nothing, != matches everything (L35); unparseable \u2192 false (fail-closed, L19, L354-358).",
+   "invariants": "LOAD: none (it is a string). GUARD: check-when-expression (parse + mixed &&/|| at one depth). NONE: type agreement between path and literal; exhaustiveness; evaluator identity between server (gate-liveness) and worker is by shared doc only."
+  },
+  {
+   "name": "structured condition",
+   "purpose": "JSON condition for checkpoint `condition`, loop `continueWhile`/`breakCondition`, action `condition`.",
+   "schema": "schemas/condition.schema.json; src/schema/condition.schema.ts L4-6 operators, L16-26 simple, L30-44 and/or(min 2)/not, L46-78 evaluate",
+   "key_fields": "type simple|and|or|not; variable (dotted), operator incl exists/notExists, value string|number|boolean|null.",
+   "binding_rules": "Path through missing/non-object reads absent (L55-64); numeric compare via comparableNumber (common.ts L23-30).",
+   "invariants": "LOAD: shape; and/or need \u22652 members. GUARD: check-variable-model exists-on-defaulted; check-loop-shape partition. NONE: value type vs variable type."
+  },
+  {
+   "name": "technique (markdown file) and contract/inheritance",
+   "purpose": "Reusable capability: Capability, Inputs, Outputs, Protocol, Rules; a folder's TECHNIQUE.md is a container contributing shared I/O and rules.",
+   "schema": "schemas/technique.schema.json; src/schema/technique.schema.ts L17-23 input, L58-61 artifact (regex L52), L64-82 output (entry xor components), L97-108 TechniqueSchema strict (protocol optional L105); parser markdown-technique-loader.ts L227-265, L311-470; composition technique-loader.ts L529-612",
+   "key_fields": "frontmatter metadata.version; `## Capability` paragraph; `### id` entries with `#### default|artifact|audience|values|entry` and `##### fields`; `## Protocol` blocks (`###` title + bullets); `## Rules` `### kebab-name`. Protocol variables `{$name}` bind, `{name}` read (docs/technique.md L186-192).",
+   "binding_rules": "Identity = path (slug, group folder, nested file). Ancestors = workflow root techniques/TECHNIQUE.md + each containing group's TECHNIQUE.md, merged outermost-first, local wins by id/key; inherited entries delivered as `inherited_*`/`contracts` (L569-590; docs/technique.md L329-336). Protocol never inherits (docs L332). Resource links rewritten to `[wf/]id[#section]` (L195-212).",
+   "invariants": "LOAD (technique unloadable, warned, L516-537; parse errors thrown L548-553): version present (L234); `## Capability` present non-empty (L238-241); singular `## Input/Output` heading refused (L246-254); Zod strict incl artifact filename regex, audience enum, entry xor components; a composed value failing validation is delivered uncomposed (L604-610). GUARD: check-technique-template (frontmatter only version, no H1, five sections in order, id cases, `{$name}` snake), check-protocol-shape, check-audience, check-declared-values, check-identifier-qualification, check-inherited-inputs, check-binding-fidelity. NONE: `## Protocol` is not required by the loader despite docs/technique.md L409 ('a technique that does work declares a protocol') and loader header L24-27/L568 claiming it is; protocol-variable binding-precedes-read (docs L188-190) is checked by no loader (guards police sigil case only)."
+  },
+  {
+   "name": "technique reference / rule symbol",
+   "purpose": "Address a technique, a nested technique, or a rule on one; dotted symbol names a rule without invoking.",
+   "schema": "common.ts L6-15 (TechniqueReferenceSchema doc); technique-ref.ts L1-33 rule, L111-134 parseTechniqueRef, L137-143 splitSegments; resolution docs/technique.md L246-254, L284",
+   "key_fields": "`[namespace::]technique[::nested\u2026]`; slash form `ns/technique` once; trailing segment may be a rule name or group prefix `{group}` \u2192 `{group}-*` rules.",
+   "binding_rules": "Namespace prefix = longest leading run naming a namespace with \u22651 segment left (corpus-index.ts L492-503); prefix resolves there only; otherwise current workflow then meta (technique-loader.ts L320-371); on a step a bare name tries `<activity-id>::<name>` first (common.ts L11).",
+   "invariants": "LOAD (refused as malformed/ambiguous, parse-time): empty segment, >1 slash, slash after `::` (L111-143); namespace shadowed by a library dir refused naming both (L95-102, corpus-index.ts L374-391). Unresolved refs surface in bundle `unresolved`, never a load failure (technique-loader.ts L413, L773-803; docs/resolution.md L462). GUARD: check-all-refs, check-rule-citation-form, check-unserved-operation-refs."
+  },
+  {
+   "name": "resource",
+   "purpose": "Markdown guide a technique links; fetched whole or by `#section`.",
+   "schema": "no schema; resource-loader.ts L15-28 frontmatter scalar, L44-67 locate (flat `<id>.md`, then frontmatter `name`), L105-123 structured parse, L129-139; resource-ref.ts L4-45 prefix split; docs/resource.md L39-41, L100",
+   "key_fields": "frontmatter name (alias id), version (top-level or metadata.version); body headings = sections.",
+   "binding_rules": "Bare slug in session workflow; `ns/.../id` longest-prefix namespace (resource-ref.ts L14-18, L34-45); a both-ways reading takes no namespace (docs/resolution.md L142).",
+   "invariants": "LOAD: none (read on demand; not found \u2192 ResourceNotFoundError). GUARD: check-resource-anchors, check-corpus-links, check-artifact-guides. NONE: body shape. Note stale comment resource-loader.ts L72-73 ('resources/<id>/SKILL.md') contradicts code L48-49."
+  },
+  {
+   "name": "bundle / manifests (delivery)",
+   "purpose": "What a role is sent (techniques, contracts, rules, unresolved) and what a worker reports back (step manifest).",
+   "schema": "technique-loader.ts L773-803 formatTechniqueBundle; core-ops.ts L54-118 core sets, L167-169 LOOP_ONLY_RULES; validation.ts L67-74 StepManifestEntry, L115-206 validateStepManifest, L288-309 validateReportedExit, L317-342 activity manifest; docs/technique.md L378-393; docs/delivery.md L192, L231, L243, L522-540, L663-691",
+   "key_fields": "bundle{techniques by path, contracts by scope, rules [name,line][], unresolved[]}; step_manifest[{step_id, output{outputId: value}}]; activity_manifest[{activity_id, outcome, exit?}].",
+   "binding_rules": "Expected documents built from step techniques' artifact outputs (docs/delivery.md L192). Inlining: a step whose gate the server can answer true from the bag at open, no step of the activity writing a read path (gate-liveness.ts L167-199). Ledger keys per whole item, hashed (delivery.md L663-691).",
+   "invariants": "LOAD: none. RUNTIME warn-only (never blocking): missing ungated top-level steps, unexpected ids, order as subsequence, empty output, undeclared output keys (validation.ts L139-203); technique steps without a recorded fetch/bundle (L223-276); reported exit undeclared or destination disagreement (L288-309). NONE: no check that a declared output was produced (L191-194); loop iteration count never checked (L147-153)."
+  },
+  {
+   "name": "child dispatch (triggers)",
+   "purpose": "Name child workflows an activity may start, with context variables to pass.",
+   "schema": "activity.schema.ts L26-30 (WorkflowTriggerSchema; passContext Agent/advisory)",
+   "key_fields": "workflow id, description, passContext[].",
+   "binding_rules": "passContext names are activity reads (activity-variables.ts L742); child session seeded from its own defaults (variable.schema.ts L15 'every session and child session').",
+   "invariants": "LOAD: shape only; the trigger's `workflow` id is not checked to exist at load. GUARD: check-launched-workflows. RUNTIME: handle-sub-workflow refused in a fan branch at load (workflow-loader.ts L703-710)."
+  },
+  {
+   "name": "library / shared binding (namespace, meta)",
+   "purpose": "A directory holding techniques/, resources/ or routines/ or a workflow.yaml is a namespace; `meta` is the fallback every bare reference falls to.",
+   "schema": "corpus-index.ts L6-57 (rule), L60 reserved dirs, L66 LIBRARY_DIR_NAMES, L72 META_WORKFLOW_ID, L293-359 indexCorpus, L445-451 namespaceLocation; docs/resolution.md L96-142, L165",
+   "key_fields": "name (dir), path (slash-joined), trailing-path match; workflows = namespaces with a definition.",
+   "binding_rules": "Current workflow shadows meta for same-named technique/routine (technique-loader.ts L344-350; routine-resolver.ts L113-120). Walk stops at a workflow (no nesting); skips reserved dirs; `corpus/` grouping is the root when present (L240-245).",
+   "invariants": "LOAD: two dirs claiming one name \u2192 neither resolves by name, only by path (L331-339); declared id \u2260 dir \u2192 neither resolves (L397-433). GUARD: check-namespace-collision, check-workflow-identity. NONE: no declaration of what a library exports; any file is addressable."
+  },
+  {
+   "name": "enforcement annotation (owner/strictness)",
+   "purpose": "Per-field metadata: who acts on the field (Engine/Agent) and whether a failed check blocks (enforced/advisory); rendered to schemas/enforcement.json.",
+   "schema": "src/schema/enforcement.ts L4-13 types, L17-20 enforcement(), L88-100 enforcementMap, L102 render; scripts/generate-schemas.ts L14; guards/check-generated-schemas.ts",
+   "key_fields": "owner, strictness per dotted field path.",
+   "binding_rules": "WeakMap side-table; does not change validation (L15-16 doc). Every loop control field, step `when`/`condition`/`required`, option setVariable, binding inputs/outputs, triggers.passContext are Agent or advisory; exits, writes, graph identity fields are Engine/enforced.",
+   "invariants": "GUARD: check-generated-schemas keeps schemas/*.json and enforcement.json in sync with Zod. NONE: the annotation is documentation of intent; 'enforced' on a field means the Zod shape is checked, not that semantics are."
+  }
+ ],
+ "resolution": "docs/resolution.md: a reference is `[namespace::]technique[::nested\u2026]` (L96); a namespace is a directory holding techniques/, resources/, routines/ or workflow.yaml (L102), answering to its dir name, its corpus path, or any trailing part reaching it alone (L140); discovery walks `corpus/` and stops at a workflow; dir id \u2260 declared id is an identity mismatch and neither resolves (L134); a name claimed twice or a namespace shadowed by `a/techniques/b/` is reported and a technique ref is refused naming both (L142). Order for techniques (L454-462): 1 locate \u2014 prefix \u2192 that namespace's techniques/ only; else current workflow then `meta` (shadowing, L165, L458); 2 whole technique \u2192 body + auto-included rules; 3 nested `{group}/{sub}.md` current-first then meta (L460); 4 rule: trailing segment matches a rule name, or group prefix expands to `{group}-*`; 5 unresolved surfaces explicitly, never dropped (L462). Routine: `[namespace::]name`, last segment is the routine, no group grammar, qualified resolves only there, bare = source workflow then meta; cycle excludes the referring activity (L289-293). Resource: bare slug in session workflow; prefixed = longest leading run naming a namespace (L649). CODE: parseTechniqueRef technique-ref.ts L111-134 \u2192 splitNamespaceRef corpus-index.ts L492-503 (longest prefix, \u22651 segment left, shadowed \u2192 refused) \u2192 namespaceLocation L445-451 (name map, else path, else unique trailing-path match); resolveTechniques technique-loader.ts L298-466 implements steps 2-5 and appends root-contract and touched-technique rules (L417-440); composeLoaded L529-612 merges ancestors. Routines: parseRoutineRef/candidateWorkflows/resolveRoutine routine-resolver.ts L99-148, a failed same-name file shadows the next scope (L138-142). Resources: resource-ref.ts L34-45, resource-loader.ts L44-67 (flat `<id>.md` then frontmatter `name`).",
+ "formats": "(1) workflow.yaml \u2014 YAML parsed by parseDefinition then WorkflowFileSchema.strict (workflow-loader.ts L246-252); activities folded in and whole re-validated against WorkflowSchema (L307-315); routine steps materialised in place (L326-358); variables merged (L369-377); exits/graph validated (L383-393). (2) activities/NN-id.yaml \u2014 YAML \u2192 ActivitySchema.strict, id/filename identity, populateStepIds, assertCheckpointDefaults, artifactPrefix from NN (workflow-loader.ts L100-157). (3) routines/name.yaml \u2014 YAML \u2192 RoutineSchema.strict + superRefine, id==filename, step-id/checkpoint checks, recorded invalid per name (routine-loader.ts L58-103); lookup closed over nested refs (L110-149). (4) techniques/*.md and <group>/TECHNIQUE.md \u2014 markdown with YAML frontmatter holding only metadata.version; sections split by heading level (markdown-technique-loader.ts L93-133): `## Capability` paragraph required (L238-241); `## Inputs`/`## Outputs` `###` entries with `####` reserved keys default/artifact/audience/values/entry and `#####` fields (L311-370, L372-388, L430-460); `## Protocol` `###` blocks or flat list (L402-424); `## Rules` `###` name \u2192 paragraph (L462-471); resource links rewritten (L195-212); object validated by TechniqueSchema.strict, failure \u2192 null + warn (L516-537); nested file built identically (L570-576). (5) resources/*.md \u2014 frontmatter name/version extracted by regex, body returned raw, section narrowing elsewhere (resource-loader.ts L15-28, L105-139). (6) schemas/*.json and enforcement.json are generated from the Zod sources (scripts/generate-schemas.ts L1-40) and checked by guards/check-generated-schemas.ts; schema-loader.ts L26 serves workflow/activity/condition/technique/session-file (routine.schema.json exists but is not in SCHEMA_IDS).",
+ "facts": [
+  {
+   "claim": "Every exit of every activity is bound; unbound exit, unknown exit, unknown destination each fail the load \u2014 matches code.",
+   "file": "docs/workflow.md",
+   "lines": "132",
+   "quote": "An unbound exit, an unknown exit, and an unknown destination each fail the load."
+  },
+  {
+   "claim": "Loader implements the exit/graph agreement, exactly-one isDefault, option exit declared, as load failures.",
+   "file": "src/loaders/workflow-loader.ts",
+   "lines": "630-687"
+  },
+  {
+   "claim": "At runtime the destination is the graph binding for the named exit, else the activity_id the caller named; only a non-existent activity or an unbound fan is refused.",
+   "file": "src/tools/workflow-tools.ts",
+   "lines": "1284-1330",
+   "quote": "const destination = (boundDestination ?? activity_id) as Destination;"
+  },
+  {
+   "claim": "An undeclared reported exit or a destination disagreement is a warning only.",
+   "file": "src/utils/validation.ts",
+   "lines": "288-309"
+  },
+  {
+   "claim": "No transition warning when the retiring activity has no bound exits (terminal-by-omission is not enforced).",
+   "file": "src/utils/validation.ts",
+   "lines": "50-51",
+   "quote": "if (valid.length === 0) return null;"
+  },
+  {
+   "claim": "maxIterations is Agent-owned, advisory, optional; continueWhile/loopType/over/variable/breakCondition likewise.",
+   "file": "src/schema/activity.schema.ts",
+   "lines": "103-108"
+  },
+  {
+   "claim": "The corpus rule states the agent, not the server, enforces the loop ceiling and evaluates every gate.",
+   "file": "corpus/meta/techniques/workflow-engine/step-control.md",
+   "lines": "14,45",
+   "quote": "`maxIterations` is the ceiling on passes, and the executing agent enforces it."
+  },
+  {
+   "claim": "Server holds no iteration count; loop-body ids are never required and may repeat; a loop with continueWhile is itself not required.",
+   "file": "src/utils/validation.ts",
+   "lines": "139-153",
+   "quote": "the server does not run the loop, so it holds no count to check a report against"
+  },
+  {
+   "claim": "check-loop-shape enforces the forEach/while/doWhile field partition and states no ceiling rule is needed.",
+   "file": "guards/check-loop-shape.ts",
+   "lines": "24-27,50-105"
+  },
+  {
+   "claim": "Census at corpus 15860ff3: 62 loops (38 forEach, 12 while, 12 doWhile); 55 declare maxIterations; 7 do not; 0 breakCondition.",
+   "file": "corpus/work-package/activities/13-submit-for-review.yaml",
+   "lines": "await-review-loop (doWhile, no maxIterations); also work-package/activities/08-implement.yaml task-cycle"
+  },
+  {
+   "claim": "Server gate evaluation exists only to decide inlining; a gate reading a variable the activity writes, or an absent compared value, is 'unanswered' and left lazy.",
+   "file": "src/utils/gate-liveness.ts",
+   "lines": "167-199"
+  },
+  {
+   "claim": "Variable writes of the wrong type or outside the value set are stored as written with a warning.",
+   "file": "src/utils/variable-seed.ts",
+   "lines": "95-112"
+  },
+  {
+   "claim": "Two declarations of one variable disagreeing on type/default/values fail the workflow load; silence is filled from the other site.",
+   "file": "src/utils/activity-variables.ts",
+   "lines": "65-93,115-171"
+  },
+  {
+   "claim": "Definite-assignment reachability (entry) and SCC re-entry analysis over the activity graph are guard-side, not load-side.",
+   "file": "src/utils/activity-variables.ts",
+   "lines": "874-1032,1038-1075"
+  },
+  {
+   "claim": "Unresolvable technique references are reported in the bundle's `unresolved` bucket, not refused at load.",
+   "file": "src/loaders/technique-loader.ts",
+   "lines": "309-313,413,773-803"
+  },
+  {
+   "claim": "Routine site/signature mismatches and cycles exclude the referring activity from the load.",
+   "file": "src/loaders/routine-resolver.ts",
+   "lines": "577-673,711-722,835-857"
+  },
+  {
+   "claim": "Docs claim a technique that does work declares a protocol; loader requires only version and Capability; TechniqueSchema.protocol is optional.",
+   "file": "docs/technique.md",
+   "lines": "409",
+   "quote": "A technique that does work declares a protocol."
+  },
+  {
+   "claim": "Loader header says op children require Protocol; parseTechniqueIndex never checks it.",
+   "file": "src/loaders/markdown-technique-loader.ts",
+   "lines": "24-27,227-265"
+  },
+  {
+   "claim": "Technique composition: ancestors merged outermost-first, local wins; a composed value failing validation is returned uncomposed.",
+   "file": "src/loaders/technique-loader.ts",
+   "lines": "569-577,604-610"
+  },
+  {
+   "claim": "Step input provenance: closest prior unconditional producer > declared variable > later producer (passed on cycle) > ambient > default/optional; statically computed.",
+   "file": "src/utils/binding-provenance.ts",
+   "lines": "389-464"
+  },
+  {
+   "claim": "Routine site gate is `when` alone; body gates are conjoined with the site gate at splice.",
+   "file": "src/loaders/routine-resolver.ts",
+   "lines": "740-750"
+  },
+  {
+   "claim": "Variable names must be \u22652-word snake_case or a listed exemption.",
+   "file": "src/schema/variable.schema.ts",
+   "lines": "5-8"
+  },
+  {
+   "claim": "`required` on a variable is read by no check.",
+   "file": "src/schema/variable.schema.ts",
+   "lines": "16",
+   "quote": "Marks the variable as expected to be set; no check reads it."
+  }
+ ],
+ "open_questions": [
+  "Exit selection is unverified anywhere: sibling exit `when`s are never checked for mutual exclusivity or exhaustiveness (isDefault covers the fall-through only), and the server never evaluates them \u2014 a type checker could prove exclusivity over `values` sets of string variables, but 'when' literals are untyped and dotted member paths have no declared shape.",
+  "Loop termination: for while/doWhile the only bound is `continueWhile` plus an optional agent-enforced `maxIterations`; forEach is bounded by collection length only at runtime. Is a mandatory ceiling (schema or guard) acceptable to the corpus owners? 7 loops would need one.",
+  "Variable typing is a 5-valued tag; array/object member shapes exist only on technique output `components`/`entry` and routine outputs carry only the tag \u2014 what granularity would a Bend-side type need, and is the dotted-path read grammar (when-expression.ts L113, condition.schema.ts L18) the surface to type?",
+  "Terminal-by-omission (activity with no exits) is enforced neither at load nor at runtime (validation.ts L50-51; workflow-tools.ts L1284-1293): is this intended freedom for ad hoc routing or a gap?",
+  "Two docs/code drifts found: docs/technique.md L409 and markdown-technique-loader.ts L24-27/L568 claim Protocol is required (it is not); resource-loader.ts L72-73 describes a `resources/<id>/SKILL.md` layout the code does not use.",
+  "schema-loader.ts SCHEMA_IDS (L26) omits 'routine' although schemas/routine.schema.json is generated \u2014 is the served schema set meant to include it?",
+  "Not read by this reader: src/schema/session.schema.ts, state.schema.ts, the eager/batch budget code, docs/fidelity.md; Bend was not run (outside this reader's brief)."
+ ]
+}

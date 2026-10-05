@@ -1,0 +1,210 @@
+{
+ "summary": "CORPUS ledgers/ holds 7 JSON ledgers (600 entries total) read by 7 server guards. By verdict: 143 harmless (binding-fidelity 58, section-framing 85), 432 fix-later (unserved-operation-ref 315, unproduced-read 111, canonical-home-map 4, nested-output-home 2), 25 unassigned (repeated-run-baseline), 0 live-bug, 0 provisional/converging/accepted. The README's harmless/fix-later/live-bug vocabulary is honoured in code by only two guards (binding-fidelity, activity-variables); unserved uses accepted/fix-later, repeated-runs uses converging/unassigned/provisional, and section-framing never reads the verdict at all. Only binding-fidelity-triage.json pins a corpusSha (7062aa0a, 456 corpus commits behind CORPUS HEAD; drift is report-only). Every guard reports untriaged and stale entries; no regenerate flag exists. The largest debt body is 315 prose links to unserved operations across 128 technique files, 125 distinct targets, some of which are headings or variables rather than operations. walks/ records a roster (16 walked / 46 not walked with reasons), 6 policy snapshots of the work-package walk (path, checkpoint options, artifacts written, manifest status, unresolved refs, per-activity step coverage 215/373), and a 190-option unreachable ratchet, 156 of them gated on values only the agent or environment produces. Walk records carry no corpus sha by design.",
+ "facts": [
+  {
+   "claim": "README defines three verdicts: harmless 'correct by design' suppressed; fix-later 'real debt' suppressed and counted; live-bug 'a defect still open' reported and 'the check stays red until it is fixed'.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/README.md",
+   "lines": "7-11"
+  },
+  {
+   "claim": "README: untriaged findings and stale entries are both reported; 'There is no regenerate flag \u2014 an entry is a human judgement.' Not every check has a ledger.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/README.md",
+   "lines": "13-15"
+  },
+  {
+   "claim": "Entry counts per ledger (grep -c site): binding-fidelity 58, canonical-home-map 4, nested-output-home 2, repeated-run-baseline 25, section-framing 85, unproduced-read 111, unserved-operation-ref 315; total 600.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/",
+   "lines": "all files"
+  },
+  {
+   "claim": "binding-fidelity-triage.json is the only ledger with a corpusSha: 7062aa0a1c4206620ca6b30551103cd043bb29ea (merge of #822, 2026-09-18). CORPUS HEAD 15860ff3 (merge of #1144, 2026-10-05) is 456 commits after it per git rev-list --count.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/binding-fidelity-triage.json",
+   "lines": "3",
+   "quote": "\"corpusSha\": \"7062aa0a1c4206620ca6b30551103cd043bb29ea\""
+  },
+  {
+   "claim": "binding-fidelity ledger: 58 entries, all harmless. Checks: dead-output 37, orphan-input 15, read-resolution 5, binding-resolution 1. Rationales: shared-op-return-contract 35, shared-op-caller-argument 8, sub-agent-brief-seed 5, artifact-template-placeholder 3, pattern-library-seed 2, one each agent-applied-result, container-contract-shape, documentation-notation, fan-barrier-container, group-technique-path (11 declared, all cited).",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/binding-fidelity-triage.json",
+   "lines": "4-16, 17-424"
+  },
+  {
+   "claim": "binding ledger note claims the triage 'found and FIXED three live defects', that 'the matcher keys on check, site without its trailing line number, and detail', and that four reason classes 'have closed since the triage' and are recorded as history rather than keys.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/binding-fidelity-triage.json",
+   "lines": "2"
+  },
+  {
+   "claim": "Example binding entry: dead-output at atlassian/techniques/create-jira-issue.md, 'output 'issueKey' is declared but nothing outside its own file consumes it', harmless, shared-op-return-contract.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/binding-fidelity-triage.json",
+   "lines": "18-24"
+  },
+  {
+   "claim": "Example binding entry: orphan-input at 'meta :: orchestration-patterns::classify-request', 'own input 'lane_roster' has no producer in workflow 'meta'', harmless, pattern-library-seed.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/binding-fidelity-triage.json",
+   "lines": "263-269"
+  },
+  {
+   "claim": "Example binding entry: binding-resolution at work-package/activities/06-plan-prepare.yaml[reconcile-research-candidates], 'step technique 'research/reconcile' does not resolve', verdict harmless under group-technique-path whose text says 'Classify once the loader's slash form is recognised \u2014 held as harmless while the technique file exists'. A resolution failure is classified harmless pending a loader change.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/binding-fidelity-triage.json",
+   "lines": "15, 404-410"
+  },
+  {
+   "claim": "Code DOES (binding guard): TriageVerdict = 'harmless' | 'fix-later' | 'live-bug'; untriaged violations are reported; live-bug entries are reported with rationale; stale entries reported as 'stale-triage' naming a satisfier when a dead-output is now consumed elsewhere; a cited line that does not match the emitted line is reported as 'misplaced-triage'.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "1232-1246, 1278-1346"
+  },
+  {
+   "claim": "Code DOES: findingKey drops a trailing ':<line>' from site and joins check, site, detail \u2014 confirms the ledger note's matcher claim.",
+   "file": "/tmp/bend-fidelity/server/guards/guard-protocol.ts",
+   "lines": "53-58",
+   "quote": "return `${f.check}\\u0000${f.site.replace(/:\\d+$/, '')}\\u0000${f.detail}`"
+  },
+  {
+   "claim": "Code DOES: corpusSha drift is 'Report-only' \u2014 triageStampNote prints how many corpus commits since the pinned sha and nothing fails on it.",
+   "file": "/tmp/bend-fidelity/server/guards/check-binding-fidelity.ts",
+   "lines": "1248-1268"
+  },
+  {
+   "claim": "Tests on the binding ledger alone: every declared rationale cited, every cited rationale declared, every verdict in the three-set, corpusSha is 40 hex. Comment: the guard 'never reads [the rationale vocabulary] while no verdict is live-bug'.",
+   "file": "/tmp/bend-fidelity/server/tests/binding-triage.test.ts",
+   "lines": "7-45"
+  },
+  {
+   "claim": "Server guards README: 'A ledger is the exception. It is not the shape a new guard starts from.' Verdicts are 'judgements about definitions as they stood at corpusSha'; the guard 'prints how far the corpus has moved since, without failing on it'.",
+   "file": "/tmp/bend-fidelity/server/guards/README.md",
+   "lines": "49-67"
+  },
+  {
+   "claim": "canonical-home-map-triage.json: guard check-canonical-home-map.ts; no corpusSha; 4 entries all fix-later, rationale register-artifact-undeclared; all sites 'workflow-design/techniques#canonical-home-map [...]' naming assumptions-log.md, compliance-report.md, follow-ups.md, deferred-items.json. Finding kind in code: 'canonical-home-names-an-artifact'; stale kind 'canonical-home-map-triage-stale'.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/canonical-home-map-triage.json",
+   "lines": "2-30"
+  },
+  {
+   "claim": "Canonical-home guard suppresses on key `${site} ${artifact}` membership in the accepted map; no verdict test appears in the matching loop read.",
+   "file": "/tmp/bend-fidelity/server/guards/check-canonical-home-map.ts",
+   "lines": "50-53, 198-226"
+  },
+  {
+   "claim": "nested-output-home-triage.json: guard check-nested-output-home.ts; no corpusSha, no rationales map, rationale is free prose; 2 entries fix-later at cicd-pipeline-security-audit/techniques/dispatch-scanners/collect-results.md for components scanners_dispatched and scanners_returned \u2014 'The two statements disagree about what the component counts'. Finding kind 'nested-output-declared-once'; stale kind 'nested-output-home-triage-stale'. Code comment: 'Those entries are triaged until that workflow is walked.'",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/nested-output-home-triage.json",
+   "lines": "1-16"
+  },
+  {
+   "claim": "repeated-run-baseline.json: guard check-repeated-runs.ts; no corpusSha field, note says baseline was '24 runs over 132 activity definitions ... against workflows 2a9d07ee'; now 25 entries, all verdict 'unassigned'. Verdict vocabulary is converging/unassigned/provisional, not the README's three. Entry shape: site = '+'-joined activity files, run = step signatures e.g. 'T:orchestration-patterns::gather-results(dispatched_results,expected_ids)'.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/repeated-run-baseline.json",
+   "lines": "2, 26-41"
+  },
+  {
+   "claim": "repeated-run rationales: 21 declared, 17 cited (deprecated-twin-shape 7, audit-pass-pair 2, persist-then-announce 2, 14 others 1 each). Declared but uncited: assumption-run, assumption-run-per-item-half, prepare-then-address, contract-tests-fan-hoist.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/repeated-run-baseline.json",
+   "lines": "3-24"
+  },
+  {
+   "claim": "Example repeated-run entry: coverage-map-then-test-review across work-package 10-post-impl-review + 11-validate + 19-test-suite-review, run ['R:gitnexus::diff-coverage-map()','T:review-test-suite()'], unassigned; rationale says 'three readings of a changing diff rather than one run written three times'.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/repeated-run-baseline.json",
+   "lines": "12, 243-250"
+  },
+  {
+   "claim": "Code DOES (repeated-runs): VERDICTS validated, a verdict outside the three is reported as 'repeated-run-baseline-verdict'; provisional runs are named in every run not suppressed; stale entries reported 'repeated-run-baseline-stale'. Comment: 'the baseline can only fall'.",
+   "file": "/tmp/bend-fidelity/server/guards/check-repeated-runs.ts",
+   "lines": "57-73, 341-342, 404-448"
+  },
+  {
+   "claim": "section-framing-triage.json: guard check-section-framing.ts; no corpusSha; 85 entries all harmless, all orientation-only. Second declared rationale operative-owed-a-section ('real debt ... counted') is cited by zero entries. Example: cicd-pipeline-security-audit/resources/cicd-audit-report-template.md, harmless, orientation-only.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/section-framing-triage.json",
+   "lines": "2-6, 13-17"
+  },
+  {
+   "claim": "Code DOES (section-framing): TriageEntry verdict typed `string`; matcher is `classified.get(rel)` on site only \u2014 any entry suppresses regardless of verdict; no count is printed. The ledger note's 'suppressed here and counted' for operative-owed-a-section is not implemented in the lines read.",
+   "file": "/tmp/bend-fidelity/server/guards/check-section-framing.ts",
+   "lines": "56-61, 110-150"
+  },
+  {
+   "claim": "unproduced-read-triage.json: guard check-activity-variables.ts; no corpusSha; 111 entries all fix-later. Rationales (4 declared, all cited): input-without-a-producer 54, placeholder-default-without-a-producer 47, relayed-by-a-parent-trigger 9, derived-value-never-gathered 1. Note: 'every run reads it unset or empty'.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/unproduced-read-triage.json",
+   "lines": "2-8"
+  },
+  {
+   "claim": "unproduced-read entries by workflow: remediate-vuln 47, prism 10, midnight-system-review 8, work-package 6, substrate-node-security-audit 6, gitnexus-radius-conformance 6, gitnexus-guarded-rename-conformance 6, prism-update 5, ponytail 5, work-packages 4, plain-language 2, gitnexus-scope-discipline-check-conformance 2, cicd-pipeline-security-audit 2, workflow-design 1, meta 1.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/unproduced-read-triage.json",
+   "lines": "9-676"
+  },
+  {
+   "claim": "Example unproduced-read entries: 'cicd-pipeline-security-audit :: reconnaissance' target_submodules (input-without-a-producer); 'remediate-vuln :: work-package/complete' issue_number (placeholder-default-without-a-producer); 'work-package :: start-work-package' issue_title and jira_issue_key.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/unproduced-read-triage.json",
+   "lines": "14-19, 338-343, 664-676"
+  },
+  {
+   "claim": "Code DOES (activity-variables): verdict type 'fix-later' | 'live-bug'; only fix-later suppresses (`if (triaged.get(key)?.verdict !== 'fix-later') kept.push(finding)`); key is `${site} ${name}`; duplicate keys reported 'duplicate-triage'; stale reported unless the workflow failed to load.",
+   "file": "/tmp/bend-fidelity/server/guards/check-activity-variables.ts",
+   "lines": "102-160"
+  },
+  {
+   "claim": "unserved-operation-ref-triage.json: guard check-unserved-operation-refs.ts; no corpusSha, no rationales map (grep -c rationales = 0); 315 entries all fix-later across 128 distinct files. Rationales cited: operation-reference-predating-the-guard 311, library-leaf-applies-the-namespace-coordinate-op 4 (all resolve-repo-coordinates under corpus/support/github/techniques).",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/unserved-operation-ref-triage.json",
+   "lines": "2, 1168-1191"
+  },
+  {
+   "claim": "unserved ledger op targets: 125 distinct; top gitnexus 28, resolve-repo-coordinates 22, context 17, impact 11, spawn-agent 10, cypher 9, query 8. Some 'op' values are link labels, not operation ids: 'Enumerate the Criteria Units' (verify-high-findings.md:55), 'a-conflict-is-reported-not-absorbed' (report-conformance.md:82), 'depth-1-only' (challenge.md:27), backticked 'batch_may_continue' (dispatch-activity.md:139).",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/unserved-operation-ref-triage.json",
+   "lines": "426, 846, 1296, 1848"
+  },
+  {
+   "claim": "Example unserved entries: compose-merge-brief.md:22 op dispatch-workers; codebase-wiki/techniques/maintain-index-log.md:58 op backticked work-package::manage-artifacts::write-artifact; workflow-design/techniques/reload-workflow.md:14 op no-domain-work.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers/unserved-operation-ref-triage.json",
+   "lines": "4-9, 24-29, 1882-1893"
+  },
+  {
+   "claim": "Code DOES (unserved): TriageEntry verdict 'accepted' | 'fix-later'; header says 'Both suppress the finding'; key drops line number; any entry present suppresses with no verdict test; stale reported 'stale-triage'; census prints accepted/fix-later split. Currently 0 accepted.",
+   "file": "/tmp/bend-fidelity/server/guards/check-unserved-operation-refs.ts",
+   "lines": "36-48, 76-81, 160-206"
+  },
+  {
+   "claim": "Shared helpers: ledgerPath joins root/ledgers/file; walkArtifactPath joins root/walks/file.",
+   "file": "/tmp/bend-fidelity/server/guards/workflows-root.ts",
+   "lines": "213-221"
+  },
+  {
+   "claim": "walks/README: a walk 'drives these definitions through the real server and records what it saw'. Three record kinds: roster (walked / notWalked with reason), snapshots ('paths, checkpoint decisions, artifacts written, manifest status'), ratchet ('checkpoint options no walk reaches ... the list can only shrink'). 'The tree carries no note of which corpus commit a record was made against'.",
+   "file": "/tmp/bend-fidelity/corpus/walks/README.md",
+   "lines": "3-11"
+  },
+  {
+   "claim": "roster.json: 16 walked workflows; 46 notWalked entries each with a reason, most 'Declares no checkpoint, so a coverage walk covers nothing'; remediate-vuln excluded: 'Six minutes on its own; 21 of 60 walks die on a branch whose checkpoint or transition does not resolve'. check-roster.sh enforces every workflow.yaml named once.",
+   "file": "/tmp/bend-fidelity/corpus/walks/roster.json",
+   "lines": "2-19, 20-24"
+  },
+  {
+   "claim": "option-coverage.json ratchet: 190 unreachable options in 3 groups \u2014 156 'Gated on a value only the agent or the environment produces ... no amount of forking reaches these'; 27 'Gated on a run mode the enumerator does not set'; 7 declared only by remediate-vuln.",
+   "file": "/tmp/bend-fidelity/corpus/walks/option-coverage.json",
+   "lines": "4, 165, 197"
+  },
+  {
+   "claim": "snapshot.test.ts.snap: 6 policy baselines for the work-package walk (default, elicitation-only, full-workflow, research-only, review-mode, skip-optional) plus a step-coverage record: activitiesEntered 21, declaredTotal 373, executedTotal 215. Per-activity step records carry activity, artifacts, artifactsWritten, checkpoints (id/option/setVariable), gatesReadUnbound, lazyGates, manifestStatus, next, orphanCheckpoints, stepsExecuted, unresolved.",
+   "file": "/tmp/bend-fidelity/corpus/walks/snapshot.test.ts.snap",
+   "lines": "3, 40-106, 883, 1721, 2601, 3388, 3985, 4718-4722"
+  },
+  {
+   "claim": "check-walk-protocol.py asserts hand-written string invariants on meta/routines/activity-loop.yaml, take-activity.md, enter-fan.md and four call-site activities (e.g. opening a walk nulls from_activity and worker_result).",
+   "file": "/tmp/bend-fidelity/corpus/walks/check-walk-protocol.py",
+   "lines": "150-200"
+  },
+  {
+   "claim": "Server docs: walk snapshots 'are only meaningful against the corpus that produced them'; option-coverage.json 'is read against the definitions beside it'; re-baseline is `npm run test:ci -- -u`. e2e README: snapshot baseline holds 'path, checkpoint decisions, artifacts written, manifest status, unresolved refs' and step coverage per activity.",
+   "file": "/tmp/bend-fidelity/server/docs/development.md",
+   "lines": "94-104"
+  },
+  {
+   "claim": "e2e README on the ratchet: 'A newly unreached option is not on the list and fails; an option that becomes reachable is on the list with nothing to explain it and also fails, so the list can only shrink.' Denominator comes from the loader not the YAML.",
+   "file": "/tmp/bend-fidelity/server/tests/e2e/README.md",
+   "lines": "56-70, 95-115"
+  }
+ ],
+ "open_questions": [
+  "Whether the canonical-home-map and nested-output-home guards read the verdict field at all: the matching loops suppress on key membership, and I did not read how the `accepted` map is built (lines before 195 / 140).",
+  "Whether anything validates the repeated-run-baseline rationale vocabulary; four declared rationales (assumption-run, assumption-run-per-item-half, prepare-then-address, contract-tests-fan-hoist) are cited by no entry, and the only vocabulary test found (binding-triage.test.ts) covers the binding ledger alone.",
+  "Whether the section-framing ledger note's 'counted' claim for operative-owed-a-section is implemented anywhere outside the lines read; the guard's TriageEntry types verdict as string and never branches on it.",
+  "Why the unserved ledger's 'op' field captures link labels ('Enumerate the Criteria Units', 'depth-1-only') \u2014 whether these are false positives of the link scanner or real dead references; a stronger checker would need the link-label semantics to decide.",
+  "How many of the 432 fix-later entries describe conditions a type/proof checker could express (unproduced reads: 111 unset-at-every-run values; unserved refs: 315 unresolvable prose links) versus conditions that are judgements (nested-output meaning disagreement, register-artifact declarations).",
+  "The binding ledger's single binding-resolution entry ('research/reconcile' does not resolve) is classified harmless pending loader recognition of the slash form; whether the loader at SERVER main now resolves it (which would make the entry stale) was not checked."
+ ]
+}

@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : Bool
+- observed : Maybe
+Location: bad
+25 | def bad() -> Manifest(steps()):
+26>|   (None{}, (None{}, Unit{}))
+   |    ^^^^^^
+27 | 
+--
+exit 1
+wall 0.13 s

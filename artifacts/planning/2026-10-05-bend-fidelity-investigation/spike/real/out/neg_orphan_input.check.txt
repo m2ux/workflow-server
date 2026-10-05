@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : False{}
+- observed : True{}
+Location: no_orphan_input
+11 | def no_orphan_input():
+12>|   {==}
+   |   ^^^^
+13 | 
+--
+exit 1
+wall 0.70 s

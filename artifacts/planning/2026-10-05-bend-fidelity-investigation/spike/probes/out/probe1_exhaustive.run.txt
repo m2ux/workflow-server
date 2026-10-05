@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : cases for ExAbort
+- observed : \{}
+Location: target
+ 8 | def target(e: Exit) -> U32:
+ 9>|   match e:
+   |   ^^^^^^^^
+10 |     case ExDone{}:
+--
+exit 1
+wall 0.12 s

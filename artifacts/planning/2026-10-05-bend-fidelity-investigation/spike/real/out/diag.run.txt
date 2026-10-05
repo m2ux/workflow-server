@@ -1,0 +1,4 @@
+([], [], [], ["run_status"], [True{}, True{}, True{}, True{}, True{}, True{}])
+--
+exit 0
+wall 4.27 s

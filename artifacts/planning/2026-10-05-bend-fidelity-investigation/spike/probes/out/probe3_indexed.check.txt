@@ -1,0 +1,14 @@
+SOME PROOFS FAIL
+Error:
+- expected : ClearSession
+- observed : OpenSession
+Context:
+- s : OpenSession
+Location: main
+26 |   s : Session(Open{}) = OpenS{0}
+27>|   advance(s)
+   |           ^
+28 | 
+--
+exit 1
+wall 0.12 s

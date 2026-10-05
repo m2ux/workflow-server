@@ -1,0 +1,378 @@
+id: post-impl-review
+version: 2.6.0
+name: Post-Implementation Review
+description: Review the implementation after the automated reviews.
+variables:
+  reads:
+  - base_branch
+  - block_line_range
+  - block_path
+  - branch_name
+  - changed_files
+  - code_review_outputs
+  - commit_sha
+  - component_git_dir
+  - component_name
+  - component_path
+  - host_repo_path
+  - is_review_mode
+  - issue_title
+  - pipeline_mode
+  - planning_folder_path
+  - pr_number
+  - problem_statement
+  - push_remote
+  - requirements
+  - structural_analysis_outputs
+  - target_path
+  - target_repo
+  - test_suite_review_outputs
+  writes:
+  - name: coverage_gaps
+    type: array
+    description: Changed symbols no test file calls.
+    defaultValue: []
+  - name: update_candidates
+    type: array
+    description: Changed symbols a test file calls against a signature or behaviour the change moved.
+    defaultValue: []
+  - name: change_block_index
+    type: string
+    description: Absolute path to the index mapping change-block IDs to their per-block artifacts.
+    defaultValue: ''
+  - name: classified_findings
+    type: array
+    description: The input findings, each carrying its assigned severity, its `action_tier`, and its `impact_axis` where one applies.
+  - name: code_review_report
+    type: object
+    description: Code review report from the review fan, or from a fix-cycle re-review.
+  - name: code_findings_actionable
+    type: boolean
+    description: Whether any code-review finding is at or above the severity that warrants action.
+    defaultValue: false
+  - name: current_activity
+    type: string
+    description: The prism activity the walk holds.
+  - name: current_block_index
+    type: number
+    description: Current block index during manual diff review loop (from flagged_block_indices).
+    defaultValue: 0
+  - name: flagged_block_indices
+    type: array
+    description: Change-block indices the reviewer flagged as carrying an issue.
+    defaultValue: []
+  - name: flagged_block_numbers
+    type: string
+    description: Text the reviewer typed naming the change blocks that carry an issue, comma-separated.
+  - name: follow_ups
+    type: array
+    description: In-task follow-ups to append to the register, each with what remains and where it surfaced.
+    defaultValue: []
+  - name: follow_ups_register
+    type: string
+    description: Bare filename of the in-task follow-ups register this activity's entries were written to.
+    defaultValue: ''
+  - name: from_activity
+    type: string
+    description: The prism activity an advance retires.
+  - name: has_critical_blocker
+    type: boolean
+    description: Whether any flagged block is a critical blocker.
+    defaultValue: false
+  - name: has_flagged_blocks
+    type: boolean
+    description: Whether any change block carries an issue.
+    defaultValue: false
+  - name: rationale_attested
+    type: boolean
+    description: True once every change block's rationale paragraph is confirmed to describe the change it sits under.
+    defaultValue: false
+  - name: rationale_corrections
+    type: string
+    description: Text the reviewer typed correcting the block rationale paragraphs, each correction naming the block it applies to.
+  - name: reviewed_code_base_url
+    type: string
+    description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+    defaultValue: ''
+  - name: run_local_validation
+    type: boolean
+    description: True when the user permits running the project validation suite locally.
+    defaultValue: false
+  - name: structural_findings
+    type: array
+    description: The structural-analysis findings for this change, from whichever pipeline produced them.
+  - name: run_status
+    type: string
+    description: The launched prism run's verdict on its own completeness. Absent where no run was launched.
+    values:
+    - complete
+    - partial
+    - error
+  - name: target
+    type: string
+    description: The worktree the prism run analyses.
+    defaultValue: ''
+  - name: target_description
+    type: string
+    description: The component and issue the prism run's change serves.
+    defaultValue: ''
+  - name: analysis_focus
+    type: string
+    description: The files the change touches.
+    defaultValue: ''
+  - name: test_findings_actionable
+    type: boolean
+    description: Whether any test-suite finding is at or above the severity that warrants action.
+    defaultValue: false
+  - name: test_suite_review_report
+    type: object
+    description: Test suite review report from the review fan, or from a fix-cycle re-review.
+required: true
+triggers:
+- workflow: prism
+  description: The full analytical pipeline over the change surface.
+  passContext:
+  - target
+  - target_description
+  - analysis_focus
+  - pipeline_mode
+steps:
+- kind: action
+  id: announce-start
+  actions:
+  - action: log
+    message: Starting post-implementation review
+- kind: technique
+  id: manual-diff-review
+  technique: review-diff
+- kind: checkpoint
+  id: file-index-table
+  message: '[Change-block index]({change_block_index}), each block title naming its change and linking to it.'
+  options:
+  - id: no-flagged-blocks
+    label: No blocks carry an issue
+    description: Every change block reads as intended
+  - id: flagged-blocks
+    label: Some blocks carry an issue
+    description: The reply names the block numbers, comma-separated
+    effect:
+      recordReply: flagged_block_numbers
+      setVariable:
+        has_flagged_blocks: true
+- kind: technique
+  id: collect-flagged-blocks
+  technique: review-diff
+  when: has_flagged_blocks == true
+- kind: technique
+  id: register-review-follow-ups
+  technique: manage-registers::append-follow-up
+  when: review_budget_remaining == true
+- kind: checkpoint
+  id: rationale-attestation
+  message: Block rationale in the [change-block index]({change_block_index}), which your confirmation attests the provenance of.
+  options:
+  - id: rationale-accurate
+    label: Rationale accurate as written
+    description: Every rationale paragraph describes the change it sits under
+    effect:
+      setVariable:
+        rationale_attested: true
+  - id: rationale-corrected
+    label: Rationale needs correction
+    description: The reply carries the corrections, each naming the block whose rationale it corrects
+    effect:
+      recordReply: rationale_corrections
+      setVariable:
+        rationale_attested: false
+- kind: technique
+  id: re-render-block-rationale
+  technique: review-diff
+  when: rationale_attested == false
+- kind: loop
+  id: block-interview-loop
+  name: Block Interview Loop
+  loopType: forEach
+  variable: current_block_index
+  over: flagged_block_indices
+  maxIterations: 50
+  when: has_flagged_blocks == true
+  steps:
+  - kind: checkpoint
+    id: block-interview#{current_block_index}
+    message: 'Block {current_block_index}: {block_path}:{block_line_range}'
+    defaultOption: issue-recorded
+    autoAdvanceMs: 30000
+    options:
+    - id: issue-recorded
+      label: Issue recorded - continue
+      description: The issue with this change is recorded and it does not block
+    - id: critical-blocker
+      label: This is a critical blocker
+      description: Mark as blocking issue that must be fixed
+      effect:
+        setVariable:
+          has_critical_blocker: true
+    - id: skip-block
+      label: Skip this block
+      description: The block carries no issue after all
+- kind: action
+  id: take-fan-reports
+  when: code_review_outputs && test_suite_review_outputs
+  actions:
+  - action: set
+    target: code_review_report
+    value: '{code_review_outputs.0.result.code_review_report}'
+  - action: set
+    target: test_suite_review_report
+    value: '{test_suite_review_outputs.0.result.test_suite_review_report}'
+- kind: action
+  id: take-inline-structural
+  when: pipeline_mode != 'full-prism' && structural_analysis_outputs
+  actions:
+  - action: set
+    target: structural_findings
+    value: '{structural_analysis_outputs.0.result.structural_findings}'
+- kind: action
+  id: name-prism-target
+  when: pipeline_mode == 'full-prism'
+  actions:
+  - action: set
+    target: target
+    value: '{target_path}'
+  - action: set
+    target: target_description
+    value: '{component_name}: {issue_title}'
+  - action: set
+    target: analysis_focus
+    value: The change to {changed_files}
+- kind: technique
+  id: dispatch-prism
+  when: pipeline_mode == 'full-prism'
+  technique:
+    name: workflow-engine::handle-sub-workflow
+    inputs:
+      workflow_id: prism
+- kind: routine
+  id: walk-prism-child
+  when: pipeline_mode == 'full-prism'
+  routine: activity-loop
+  with:
+    session_index: child_session_index
+    initial_activity: child_initial_activity
+    enter_activity: workflow-engine::take-activity
+  outputs:
+    current_activity: current_activity
+    from_activity: from_activity
+    trace_tokens: child_trace_tokens
+- kind: technique
+  id: read-prism-manifest
+  when: pipeline_mode == 'full-prism'
+  technique:
+    name: prism/read-run-manifest
+    inputs:
+      output_path: child_planning_folder_path
+  actions:
+  - action: validate
+    target: run_status != 'error'
+    message: "The prism run reported `{run_status}` \u2014 its report or definitive findings is missing or empty. Re-run the prism launch for this change."
+- kind: technique
+  id: read-prism-findings
+  when: pipeline_mode == 'full-prism'
+  technique:
+    name: prism/read-definitive-findings
+    outputs:
+      definitive_findings: structural_findings
+- kind: technique
+  id: classify-and-route-findings
+  technique:
+    name: findings-classification
+    inputs:
+      findings_to_classify: manual_diff_review_report
+      code_review_findings: code_review_report
+      test_review_findings: test_suite_review_report
+      structural_findings: structural_findings
+- kind: loop
+  id: review-fix-cycle
+  name: Review-Fix Cycle
+  loopType: while
+  when: is_review_mode != true
+  continueWhile:
+    type: or
+    conditions:
+    - type: simple
+      variable: code_findings_actionable
+      operator: ==
+      value: true
+    - type: simple
+      variable: test_findings_actionable
+      operator: ==
+      value: true
+  maxIterations: 3
+  steps:
+  - kind: technique
+    id: apply-fixes
+    technique: apply-review-fixes
+  - kind: action
+    id: reset-fix-flags
+    actions:
+    - action: set
+      target: code_findings_actionable
+      value: false
+    - action: set
+      target: test_findings_actionable
+      value: false
+  - kind: technique
+    id: re-manual-diff-review
+    technique: review-diff
+  - kind: technique
+    id: re-code-review
+    technique: review-code
+  - kind: routine
+    id: remap-diff-coverage
+    routine: gitnexus::diff-coverage-map
+    outputs:
+      coverage_gaps: coverage_gaps
+      update_candidates: update_candidates
+  - kind: technique
+    id: re-test-suite-review
+    technique: review-test-suite
+  - kind: technique
+    id: reclassify-findings
+    technique:
+      name: findings-classification
+      inputs:
+        findings_to_classify: manual_diff_review_report
+        code_review_findings: code_review_report
+        test_review_findings: test_suite_review_report
+        structural_findings: structural_findings
+- kind: checkpoint
+  id: local-validation-permission
+  message: The project's validation suite has not been exercised against the checked-out head.
+  condition:
+    type: simple
+    variable: has_critical_blocker
+    operator: '!='
+    value: true
+  options:
+  - id: run-suite
+    label: Run the suite against the checked-out head
+    description: This environment can run the project suite
+    effect:
+      setVariable:
+        run_local_validation: true
+  - id: suite-not-run
+    label: Record validation as not run
+    description: This environment cannot run the project suite
+    effect:
+      setVariable:
+        run_local_validation: false
+exits:
+- id: has-blocker
+  when: has_critical_blocker == true
+- id: done
+  isDefault: true
+outcome:
+- Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional
+- Code-level defects and risks are surfaced and triaged before validation
+- Structural risks across the change set are identified for triage
+- Test coverage gaps are surfaced so they can be closed before validation

@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : False{}
+- observed : True{}
+Location: loops_bounded
+11 | def loops_bounded():
+12>|   {==}
+   |   ^^^^
+13 | 
+--
+exit 1
+wall 0.11 s

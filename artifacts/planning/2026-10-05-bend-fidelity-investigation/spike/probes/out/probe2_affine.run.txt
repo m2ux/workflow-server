@@ -1,0 +1,12 @@
+SOME PROOFS FAIL
+Error:
+- expected : s
+- observed : s (consumed more than once)
+Location: main
+11 | def main() -> U32:
+12>|   s = {Session{0} : Session}
+   |   ^
+13 |   a = advance(s)
+--
+exit 1
+wall 0.12 s

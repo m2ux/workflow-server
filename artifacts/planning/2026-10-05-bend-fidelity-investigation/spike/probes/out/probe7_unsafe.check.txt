@@ -1,0 +1,7 @@
+SOME PROOFS FAIL
+Error: 2 defs rely on unsafe or foreign code:
+- spin
+- seven
+--
+exit 1
+wall 0.12 s

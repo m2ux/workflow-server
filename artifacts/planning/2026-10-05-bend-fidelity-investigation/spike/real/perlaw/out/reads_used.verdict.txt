@@ -1,0 +1,4 @@
+ALL PROOFS CHECK
+--
+exit 0
+wall 1.04 s

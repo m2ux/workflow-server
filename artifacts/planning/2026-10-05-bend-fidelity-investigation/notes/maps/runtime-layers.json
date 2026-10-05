@@ -1,0 +1,589 @@
+{
+ "summary": "The server's runtime fidelity is a stack of hard refusals around a few advisory comparisons. Hard (refuse): seal/HMAC on every authenticated read; session-file schema and pre-frontier refusal; stale-write compare-and-swap; the checkpoint gate (activeCheckpoint presence) on next_activity/yield/resume and the five content tools; checkpoint timers (3 s for option_id, ceil(autoAdvanceMs/1000) for auto_advance, none for condition_not_met); option/reply/mode validation; frontier membership for from_activity and delivery activity_id; fan shape refusals; batch bound; contract admissibility; repo/folder containment. Advisory (warn in _meta.validation, call proceeds): activity transition vs graph, version drift, reported exit, step manifest (presence/order/output/declared keys/identity), technique-fetch coverage, activity manifest, variable type/value-set, artifact reconciliation. Record-only: trace events and HMAC trace tokens, activity_outcome, step_completed, progress_published, activity_usage, dispatch/delivery events. Every advisory comparison sets an agent-supplied claim (activity_id, exit, step_manifest, activity_manifest, variables_changed, agent_id) beside a server-held fact (graph, sealed state, history events the server wrote). The server-held facts are themselves partly agent-sourced: history event agentId is whatever agent_id the call passed, step_completed and activity_outcome are written straight from manifests, and an adhoc checkpoint's option list is the worker's own. Docs/fidelity.md describes the seven named layers accurately in substance; it omits several refusals the code performs (frontier resolution, fan refusals, batch bound, STALE_WRITE, schema parse, contract admissibility) and does not note that start_session resume rewrites workflowVersion, that adhoc option lists are worker-supplied, or that trace capture can silently skip when the audit resolver misses.",
+ "layers": [
+  {
+   "name": "L1 Seal verification",
+   "today": "refuses",
+   "where": "src/utils/session/store.ts:500-528 (verifySeal); src/utils/session/resolver.ts:236-256 (loadSessionForTool, every authenticated tool); resource-tools.ts:407,432,756 (start_session peek/resume, dispatch_child occupancy)",
+   "checks": "HMAC-SHA256(serverKey, exact bytes of session.json as read) hex vs trimmed contents of .session-token, length check + timingSafeEqual; missing seal file also SEAL_MISMATCH; non-JSON bytes SESSION_INVALID first",
+   "trusts": "Agent supplies only session_index (lookup key). Bytes, seal and key are server-held. Index-matching scan reads each folder's session.json unsealed to compare the sessionIndex field before the addressed file is verified (store.ts:622,645)",
+   "doc_vs_code": "fidelity.md:7,77 and state.md:607 match. Docs do not mention the unsealed index scan (benign: only matching)"
+  },
+  {
+   "name": "Session-file schema + pre-frontier refusal",
+   "today": "refuses",
+   "where": "src/utils/session/resolver.ts:243-253 (zod SessionFileSchema), 266-279 (assertNotPreFrontier)",
+   "checks": "Parsed top file must satisfy SessionFileSchema; a record with scalar currentActivity and no frontier is SESSION_OUTDATED",
+   "trusts": "Server-held file only",
+   "doc_vs_code": "Not in fidelity.md"
+  },
+  {
+   "name": "Session index resolution",
+   "today": "refuses",
+   "where": "src/utils/session/store.ts:663-720; derivation.ts:71-76,122-131",
+   "checks": "Regex ^[A-Z2-7]{6}$; walk planning roots matching stored sessionIndex at root and under triggeredWorkflows[i].state; 0 matches NOT_FOUND, >1 COLLISION. Index = HMAC-SHA256(key, realpath(folder) [+':'+jsonPath]) truncated to 30 bits base32",
+   "trusts": "Agent's session_index; stored index field is inside the sealed file",
+   "doc_vs_code": "fidelity.md:45,82 match ('finds the file, proves nothing')"
+  },
+  {
+   "name": "Stale-write compare-and-swap",
+   "today": "refuses",
+   "where": "src/utils/session/store.ts:373-415 (385-402); resolver.ts:324-334",
+   "checks": "Synchronous: on-disk session.json bytes === bytes the call read (loaded.bytes); otherwise STALE_WRITE and both staged files discarded; state swapped before seal",
+   "trusts": "Server-observed only",
+   "doc_vs_code": "state.md:609-649 match; absent from fidelity.md layer list"
+  },
+  {
+   "name": "L2 Checkpoint gate (presence)",
+   "today": "refuses",
+   "where": "workflow-tools.ts:1260-1266 (next_activity), 2465-2467 (yield), 2680-2682 (resume); params.ts:68-76 assertNoActiveCheckpoint at get_workflow 849, get_activity 1753, get_trace 3013; resource-tools.ts:889 (get_technique), 1144 (get_resource)",
+   "checks": "state.activeCheckpoint !== undefined. Ungated: present_checkpoint, respond_checkpoint, record_usage, dispatch_child, inspect_session, get_workflow_status",
+   "trusts": "activeCheckpoint is server-written at yield (2577-2582) and deleted at respond (2910)",
+   "doc_vs_code": "fidelity.md:120-139 and params.ts:56-67 match exactly"
+  },
+  {
+   "name": "L2 Checkpoint timers",
+   "today": "refuses",
+   "where": "workflow-tools.ts:2796, 2840-2853 (option_id), 2876-2888 (auto_advance), 2893-2900 (condition_not_met)",
+   "checks": "elapsed = floor(now_s) - floor(Date.parse(activeCheckpoint.yieldedAt)/1000). option_id: elapsed < MIN_RESPONSE_SECONDS (config.minCheckpointResponseSeconds ?? 3) refused. auto_advance: requires defaultOption && autoAdvanceMs, elapsed < ceil(autoAdvanceMs/1000) refused. condition_not_met: no timer, requires checkpoint.condition",
+   "trusts": "yieldedAt server-stamped (2568). Nothing on the timer is agent-supplied",
+   "doc_vs_code": "checkpoint.md:295-302 and fidelity.md:144-146 match. config.ts:160-161 says 'Set to 0 for testing' but loadConfig (config.ts:680-705) never reads an env var for it, so 3 s is fixed outside config literals; docs do not state configurability either way"
+  },
+  {
+   "name": "L2 option_id / reply / mode validation",
+   "today": "refuses",
+   "where": "workflow-tools.ts:2821-2827 (exactly one mode; reply only with option_id), 2854-2875 (option exists; recordReply <-> reply)",
+   "checks": "option_id \u2208 checkpoint.options; reply required iff option.effect.recordReply",
+   "trusts": "For a declared gate, options come from the definition. For an adhoc gate the options are those the worker passed to yield_checkpoint (2494, 2577-2582; session.schema.ts:43-50), so the 'definition' is agent-authored; adhoc has no defaultOption/condition so auto_advance and dismissal refuse (2835-2836)",
+   "doc_vs_code": "fidelity.md:143 'validated against the checkpoint definition' is unqualified; checkpoint.md:108 mentions adhoc gates but fidelity.md does not"
+  },
+  {
+   "name": "yield_checkpoint declaration/ambiguity checks + replay",
+   "today": "refuses",
+   "where": "workflow-tools.ts:2475-2482 (frontier>1 refused), 2495-2499 (declared id with message/options refused), 2500-2505 (unknown id without adhoc refused), 2526-2566 (replay path records checkpoint_replayed, no gate)",
+   "checks": "checkpoint_id vs getCheckpoint(workflow, frontier[0], id); prior checkpointResponses[activity-id] replays",
+   "trusts": "checkpoint_id, message, options, variables_changed agent-supplied",
+   "doc_vs_code": "checkpoint.md:100,108,112 match"
+  },
+  {
+   "name": "Retiring-activity (frontier) resolution",
+   "today": "refuses",
+   "where": "workflow-tools.ts:1006-1050 (resolveRetiringActivity), 1272; resolver.ts:139-142 (heldActivity)",
+   "checks": "from_activity must be an exact frontier entry; omitted with non-empty frontier refused; omitted with empty frontier = first call",
+   "trusts": "Agent names from_activity; server checks membership",
+   "doc_vs_code": "fidelity.md:182 says next_activity is compared 'with the activity the server recorded last'; code compares the agent-named from_activity against the frontier and refuses mismatch. Docs do not say from_activity is mandatory after the first call (tool description 1229-1231 does)"
+  },
+  {
+   "name": "Destination derivation, existence and fan refusals",
+   "today": "refuses",
+   "where": "workflow-tools.ts:1284-1294 (destination = graph binding of (retiring, exit) else activity_id; 'Activity not found'), 1297-1304 (exit required off fanning activity), 1310-1331 (fan without binding), 1336-1345 (branch return must name join), 1083-1171 openFanBranches (collection absent/non-array/empty/no id/duplicate id/over ceiling), config.ts:241 DEFAULT_FAN_MAX_BRANCHES=4",
+   "checks": "Each target getActivity() exists or TERMINAL; fan shape read off graph+bag",
+   "trusts": "activity_id, exit, variables_changed (bagAtEnter 1397-1399) agent-supplied; graph server-held",
+   "doc_vs_code": "dispatch.md:153 mentions empty-list refusal; none of these appear in fidelity.md"
+  },
+  {
+   "name": "L3 Activity transition",
+   "today": "warns",
+   "where": "src/utils/validation.ts:37-58; called workflow-tools.ts:1636",
+   "checks": "destinationTargets(agent activity_id) \u2286 exitDestinations(workflow, retiring). First call must equal initialActivity. TERMINAL_SENTINEL from anywhere passes (48). An activity with zero bound exits passes anything (51). Same-activity passes (45)",
+   "trusts": "Claim is the agent's activity_id; graph is server's. When exit is named and bound the run enters the graph destination regardless of activity_id (1287), so this warning is about the claim only; when exit is omitted the agent's activity_id IS the destination and only warns",
+   "doc_vs_code": "fidelity.md:150-187 match in substance; docs do not state that the destination follows the exit binding (state.md:381 and tool description do)"
+  },
+  {
+   "name": "L3 Version drift",
+   "today": "warns",
+   "where": "src/utils/validation.ts:60-65; at workflow-tools.ts:857,1637,2260,2514,2783,2971; resource-tools.ts:1011,1165",
+   "checks": "state.workflowVersion !== loaded workflow.version",
+   "trusts": "Server-only",
+   "doc_vs_code": "fidelity.md:182 tool list matches exactly. Gap: start_session resume overwrites workflowVersion and late-seeds missing defaults (resource-tools.ts:469-477,495; state.md:214), so drift since the run opened stops warning after any resume; fidelity.md:186 does not say so"
+  },
+  {
+   "name": "L4 Reported exit",
+   "today": "warns",
+   "where": "src/utils/validation.ts:288-309; workflow-tools.ts:1381-1386, stored 1512 (draft.exit = exit ?? '')",
+   "checks": "exit \u2208 getExitBindings(retiring); destinationTargets(binding.to) set-equals agent's activity_id targets",
+   "trusts": "exit agent-supplied; stored unverified",
+   "doc_vs_code": "fidelity.md:189-225 match"
+  },
+  {
+   "name": "L5 Step manifest",
+   "today": "warns",
+   "where": "src/utils/validation.ts:94-113 (immediateExitCut), 115-206; workflow-tools.ts:1349-1379 (declaredOutputs via producer scan, skipped with log on failure 1366-1370; missing manifest warns 1378)",
+   "checks": "Required = ungated top-level steps up to the checkpoint whose server-recorded answer chose an immediate exit; unknown ids; subsequence order over top-level ids; empty output; keys not declared by bound technique",
+   "trusts": "Manifest wholly agent-supplied; step_completed history events are then written from it for non-empty outputs (1481-1494)",
+   "doc_vs_code": "fidelity.md:272-296 match. Docs do not say the manifest is also recorded as step_completed facts"
+  },
+  {
+   "name": "L5 Technique-fetch fidelity",
+   "today": "warns",
+   "where": "src/utils/validation.ts:223-276; called workflow-tools.ts:1376; events written resource-tools.ts:1024-1043 (technique_fetched), workflow-tools.ts:2332-2342 (technique_bundled, also for 'unchanged')",
+   "checks": "Manifested technique steps vs technique_fetched/technique_bundled events after the last activity_entered for that activity; covered by stepId match or techniqueId match (ref or activity::ref); agent_id filter when next_activity names one",
+   "trusts": "Events server-written, but event agentId = the agent_id the fetching call supplied (delivery.ts:70-72); next_activity's agent_id is agent-supplied",
+   "doc_vs_code": "fidelity.md:298-311 match"
+  },
+  {
+   "name": "L6 Activity manifest",
+   "today": "warns",
+   "where": "src/utils/validation.ts:317-342; workflow-tools.ts:1404-1412; recorded 1436-1453",
+   "checks": "baseId(activity_id) \u2208 workflow.activities; outcome non-empty; exit declared by that activity",
+   "trusts": "Wholly agent-supplied; recorded as activity_outcome whether or not it warned, once per activity_id",
+   "doc_vs_code": "fidelity.md:313-327 match; state.schema.ts:57-64 documents the recording, fidelity.md does not"
+  },
+  {
+   "name": "Variable type / value-set",
+   "today": "warns",
+   "where": "src/utils/variable-seed.ts:83-140; callers workflow-tools.ts:1473 (variables_changed), 1527 (fan_enter), 2571 (yield), 2949/2956 (setVariable/reply)",
+   "checks": "jsonTypeOf(value) vs declared type; isOutsideValueSet; template '{x}' exempt; stored as written; variable_set event flags typeMismatch/valueOutsideSet",
+   "trusts": "Values agent-supplied except setVariable (definition) and fan_enter (server)",
+   "doc_vs_code": "state.md:182 match"
+  },
+  {
+   "name": "Artifact reconciliation",
+   "today": "warns",
+   "where": "workflow-tools.ts:1496-1509 (accumulate), 1591-1633 (readdir vs declared)",
+   "checks": "Server readdir of planning folder vs agent declaredArtifacts ids/names; outside-folder paths flagged unknown",
+   "trusts": "Declarations agent-supplied; folder listing server-observed",
+   "doc_vs_code": "Not in fidelity.md"
+  },
+  {
+   "name": "L7 Execution trace + trace token",
+   "today": "records",
+   "where": "src/logging.ts:73-119,121-143 (withAuditLog); src/trace.ts:36-59,62-105,108-166; workflow-tools.ts:1679-1698 (token on next_activity), 3017-3035 (decode on get_trace); excluded 3050,3127,3166; resource-tools.ts:589-596 (start_session event)",
+   "checks": "Event per session_index call: name, ts, ms, s, wf, act (params.from_activity ?? activity_id else frontier), aid (params.agent_id else state.agentId), err, vw. Token = base64url(JSON{sid,act,from,to,n,t0,t1,ts,events}) + '.' + HMAC-SHA256 hex under the seal key; verified by hmacVerify at decode",
+   "trusts": "act and aid come from call params when present. In-memory store, evicts oldest past 1000 sessions (trace.ts:33,73-79). appendTraceEvent resolves with loadSessionForTool(auditWorkspaceDir, sid) and no searchRoots/planningRelativeDir (logging.ts:93) and on failure logs 'Trace capture skipped' (116-118). get_trace decodes any valid token without checking token.sid equals the session (3020-3029)",
+   "doc_vs_code": "fidelity.md:363-389 match on fields and signing; eviction and the skip-on-resolve-failure are undocumented"
+  },
+  {
+   "name": "Batch bound",
+   "today": "refuses",
+   "where": "workflow-tools.ts:1772-1787; src/utils/batch.ts:175-232 (bound, state, refusal), 255-278 (batch_refused event); config.ts:207-208",
+   "checks": "activities_delivered (distinct activity_dispatched with measured chars for scope) >= maxActivities(3) or deliveredChars > floor(context_tokens*0.35*4). Exempt: scope === state.agentId; scope with no activity yet; activity already held",
+   "trusts": "agent_id and context_tokens agent-supplied; delivery.md:407 'bounds a cooperating chain rather than an adversarial one'",
+   "doc_vs_code": "delivery.md:405-446 match; not in fidelity.md"
+  },
+  {
+   "name": "Delivery frontier / fan identity refusal",
+   "today": "refuses",
+   "where": "src/utils/session/resolver.ts:150-172 (servedActivity, frontierRefusal) at workflow-tools.ts:1756-1761 and resource-tools.ts:894-896; src/utils/dispatch.ts:54-73 (fanIdentityRefusal) at 1762-1763",
+   "checks": "activity_id must be a frontier entry; required when >1 in flight; under a fan agent_id must be present, not the session agent, and not already holding a sibling",
+   "trusts": "activity_id, agent_id agent-supplied; frontier/history server-held",
+   "doc_vs_code": "Not in fidelity.md"
+  },
+  {
+   "name": "Contract admissibility (get_technique)",
+   "today": "refuses",
+   "where": "resource-tools.ts:880-882 (technique_id xor step_id), 915-925 (technique_id \u2208 contractOperations), 928-930, 954-961 (step exists / has technique)",
+   "checks": "technique_id must be a technique the session's roles name; step_id must be a step of the served activity",
+   "trusts": "Ids agent-supplied; sets server-derived",
+   "doc_vs_code": "delivery.md:231 match; not in fidelity.md"
+  },
+  {
+   "name": "Dispatch / delivery accounting",
+   "today": "records",
+   "where": "src/utils/dispatch.ts:30-41,79-93,103-127; workflow-tools.ts:2314-2364 (activity_dispatched, activity_redelivered, activity_delivered, technique_bundled, resource_fetched, step_started); resource-tools.ts:1045-1051,1181-1186 (first arrival on fetch)",
+   "checks": "fresh/resume derived from whether scope has an activity_dispatched event; redelivery when another scope last took the activity",
+   "trusts": "scope = agent_id or session agentId; chars server-measured",
+   "doc_vs_code": "delivery.md:735-747 match"
+  },
+  {
+   "name": "Response-size bound",
+   "today": "records",
+   "where": "workflow-tools.ts:933-943 (get_workflow), 2432-2440 (get_activity); config.ts:231 DEFAULT_MAX_RESPONSE_CHARS=60000",
+   "checks": "text + metadata chars > bound -> logWarn to stderr only; response still sent whole",
+   "trusts": "Server-measured",
+   "doc_vs_code": "delivery.md:483 match ('goes out whole, and the server logs')"
+  },
+  {
+   "name": "Repo binding, folder containment, occupancy",
+   "today": "refuses",
+   "where": "session.schema.ts:243-260 (bindSessionRepo) at resource-tools.ts:514,704; resource-tools.ts:236-241,254-256,270-286 (working_directory absolute, derivation refuse/decision, binding-mismatch), 292-299,319-325 (planning_folder absolute and under planning root); store.ts:829-843 + worktree-validator.ts:46-64 (assertPathInsideRoot, realpath); store.ts:440-452, resource-tools.ts:441-447,755-770 (FOLDER_OCCUPIED)",
+   "checks": "Rebind to a different repo refused; caller repo must equal derived origin; folder must be directly under planning root and inside engineering root; existing session.json blocks creation/promotion",
+   "trusts": "Paths agent-supplied; realpath and origin server-observed",
+   "doc_vs_code": "state.md:516-518 match"
+  },
+  {
+   "name": "Zod parameter schemas at MCP boundary",
+   "today": "refuses",
+   "where": "params.ts:9-13 (session_index regex), 28-31 (context_tokens required positive int); workflow-tools.ts:84-93 (manifest shapes), 2453-2457 (options min 2), 2805 (reply min 1), 2624 (basis enum); resource-tools.ts:204-216,654-661 (.strict())",
+   "checks": "Shape/type of every parameter before the handler runs",
+   "trusts": "Agent input",
+   "doc_vs_code": "Not described as a layer"
+  },
+  {
+   "name": "record_usage / progress_published",
+   "today": "records",
+   "where": "workflow-tools.ts:2638-2669 (activity_usage), 1536-1541,1554-1561 (progress_published)",
+   "checks": "None beyond schema; activity name not checked against workflow",
+   "trusts": "Wholly agent-supplied",
+   "doc_vs_code": "state.schema.ts:29-36,65-72 describe; fidelity.md silent"
+  }
+ ],
+ "state_machine": {
+  "state_fields": "src/schema/session.schema.ts:59-111 (schema) and 125-150 (type): schemaVersion:1; sessionIndex (^[A-Z2-7]{6}$); workflowId; workflowVersion (major.minor.patch); agentId; seq (int, +1 per state-changing call); ts (unix s); startedAt; frontier: string[] ('<activity>' or '<activity>#<index>', empty before first next_activity and after __terminal__, 77); currentTechnique; exit ('' when none, 80); activeCheckpoint? {checkpointId, activityId, yieldedAt, adhoc?{message, options[>=2]}} (38-52); variables: Record; completedActivities: string[]; checkpointResponses: Record<'activityId-checkpointId', {optionId, respondedAt, effects?{variablesSet?, exit?}}> (88; state.schema.ts:92-101); history: HistoryEntry[] (state.schema.ts:3-90, 24 event types); status: running|completed|aborted; triggeredWorkflows: EmbeddedSessionRef[] {workflowId, sessionIndex, triggeredAt, triggeredFrom{activityId, stepIndex?}, status, completedAt?, state?: SessionFile} (17-31, 164-175); planningFolderPath?; repo?; contextMode? persistent|fresh; executionPath? agent|runner; deliveredContent?: Record<scope, Record<key, hash>> (104); declaredArtifacts?[]. docs/state.md:604-607 defers to the schema; canonical key order store.ts:116-137.",
+  "transitions": [
+   "start_session (resource-tools.ts:188-642): no gate. Preconditions: working_directory/planning_folder absolute (236-241, 292-299); derivation refuse/decision (254-259); repo equals derived origin else binding-mismatch decision (261-287); pinned folder directly under planning root (319-325); derived durable folder already holding a session -> FOLDER_OCCUPIED (441-447); existing file must pass seal + schema (432-440). Writes on resume via replaceSessionFile CAS (523): agentId, planningFolderPath, contextMode, executionPath, deliveredContent (drops scope on fresh), workflowVersion + late-seeded defaults, variables.user_request/planning_folder_path, child restamp, repo. Writes on create (528-568): new file from createInitialSessionFile with seeded defaults + user_request + opening facts, optional eager client embedded under triggeredWorkflows[0] (557-567), createSessionFile (occupancy refused). Trace event appended directly (589-596).",
+   "dispatch_child (resource-tools.ts:644-859): no checkpoint gate; no parent-status check. Preconditions: child workflow loads (670-671); repo bind-if-missing, mismatch refused (702-710); transient parent needs session.repo to promote (739-749); promotion target not occupied (755-770). Writes parent: triggeredWorkflows.push({workflowId, sessionIndex=HMAC(folder:jsonPath), triggeredAt, triggeredFrom{activityId: frontier[0] ?? ''}, status:'running', state: childInitial}); history workflow_triggered {workflowId, sessionIndex}; transient path also variables.planning_folder_path and createSessionFile on promoted folder then redirect index (784-807); persistent path saveSessionForTool CAS (853). Child state seeded with defaults + inherited user_request/facts + planning_folder_path (689-694).",
+   "get_workflow (workflow-tools.ts:841-998): gate assertNoActiveCheckpoint (849). Writes: seq/ts; deliveredContent[state.agentId]['workflow_bundle:<hash>'] under persistent mode (951-966). Warns: version drift.",
+   "next_activity (workflow-tools.ts:1223-1729): refuses on activeCheckpoint (1260-1266), from_activity not in frontier / omitted with non-empty frontier (1006-1050), target not found (1291-1294), exit missing off fanning activity (1297-1304), fan without binding (1310-1331), branch return not naming join (1336-1345), fan collection faults/ceiling (1083-1171). Destination = graph binding of (retiring, exit) when both, else activity_id (1284-1287). Writes (1420-1573): history activity_exited; completedActivities.push; activity_outcome per activity_manifest entry (unvalidated recording); variables + variable_set per variables_changed (bare or branch container slot, 1464-1478); step_completed per non-empty manifest entry (1481-1494); declaredArtifacts merge; frontier minus retiring; exit = exit ?? ''; delete activeCheckpoint (no-op after the refusal); if frontier empty: fan containers via variable_set source fan_enter + per-branch forgetEarlierVisitAnswers/frontier.push/activity_entered/progress_published (1521-1544) or single target forgetEarlierVisitAnswers/frontier.push/activity_entered/progress_published (1546-1561); target 'complete' or __terminal__ -> workflow_completed + status 'completed' (1569-1572); parent record closed via closeLaunchedRecord mutateTop (1578-1584; resolver.ts:106-126 writes record.status 'completed', completedAt, holder history workflow_returned). Warns: transition, version, exit, step manifest, technique fetch, activity manifest, variable types, artifacts (1635-1643). _meta: validation, batch (with agent_id+context_tokens, 1649-1661), trace_token (1679-1698).",
+   "get_activity (workflow-tools.ts:1731-2446): gate (1753); frontierRefusal (1756-1761); fanIdentityRefusal (1762-1763); batchRefusal refuses and writes batch_refused (1778-1787). Writes after a fresh reload (2288-2366): deliveredContent[scope] += newDeliveries; activity_dispatched {agentId, dispatch fresh|resume, chars}; activity_redelivered when another scope held it; technique_bundled + step_started per bundled step; resource_fetched {bundled:true} per bundled resource; activity_delivered summary. Warns: version drift, bundling/provenance.",
+   "get_technique (resource-tools.ts:863-1126): gate (889); frontierRefusal (894-896); technique_id admissibility (915-925); step exists (954-961). Writes: currentTechnique; deliveredContent[scope] (full path); activity_dispatched fresh on first unseen scope (1048-1051); technique_fetched {techniqueId, stepId?, agentId, chars, delivery}; step_started. Warns: version drift, provenance.",
+   "get_resource (resource-tools.ts:1128-1245): gate (1144). Writes: deliveredContent[scope]['resource:<id>'] (full path); activity_dispatched fresh on first unseen scope; resource_fetched {resourceId, agentId, chars, delivery}. Warns: version drift.",
+   "yield_checkpoint (workflow-tools.ts:2448-2613): refuses on activeCheckpoint (2465), frontier>1 (2475-2482), declared id with message/options (2495-2499), unknown id without adhoc (2500-2505). Replay branch: writes checkpoint_replayed and returns stored option/effect/exit (2526-2566). Fresh branch writes: variables + variable_set (source yield_checkpoint); activeCheckpoint {checkpointId, activityId: frontier[0], yieldedAt, adhoc?}; history checkpoint_reached (2569-2590). Warns: version drift, variable types.",
+   "respond_checkpoint (workflow-tools.ts:2798-2999): refuses no active (2814-2818), mode count != 1, reply without option_id (2821-2827), timers/option/reply/default/condition (2840-2900). Writes (2909-2963): delete activeCheckpoint; checkpointResponses['activity-checkpoint'] = {optionId | '__condition_not_met__', respondedAt, effects?}; history checkpoint_response {optionId}; variables + variable_set for setVariable (source setVariable) and recordReply (source checkpoint_reply). Warns: version drift, variable types.",
+   "resume_checkpoint (workflow-tools.ts:2671-2722): refuses on activeCheckpoint (2680-2682). Writes: seq/ts only (2685-2686). Returns last checkpoint_response's option, variablesSet and exit report (2693-2703).",
+   "present_checkpoint (workflow-tools.ts:2724-2794): refuses when no activeCheckpoint (2734-2738). No write. Warns: version drift, unrendered template names.",
+   "record_usage (workflow-tools.ts:2615-2669): no gate, no validation beyond schema. Writes history activity_usage {usage, basis, agentId?}.",
+   "get_trace (workflow-tools.ts:3001-3050): gate (3013). Writes seq/ts only (3014-3015). Excluded from trace.",
+   "get_workflow_status, inspect_session (3068-3127, 3129-3166): read-only, no write, not gated, excluded from trace."
+  ],
+  "seal": "Computed in store.ts:206-209 computeSeal: createHmac('sha256', key).update(canonicalJson,'utf8').digest('hex') over canonicaliseJson(state) (148-200: top-level keys in TOP_LEVEL_KEY_PRIORITY order then lexicographic, nested keys sorted, 2-space pretty print, undefined dropped, non-finite numbers refused). Key: getOrCreateServerKey (crypto.ts:43-130) reads '<keyDir>/secret', exactly 32 bytes, else mints randomBytes(32) with O_EXCL mode 0600; keyDir from WORKFLOW_SERVER_KEY_DIR, then WORKFLOW_SERVER_STATE_DIR, then ~/.workflow-server (23-29; configuration.md:52-54). Written: state staged+fsync, seal staged, optional CAS, state swapped, then seal swapped (373-415). Verified: verifySeal (500-528) on every loadSessionForTool (resolver.ts:242), i.e. every tool taking session_index, plus start_session's peek/resume (resource-tools.ts:407,432) and dispatch_child occupancy (756); recomputes HMAC over the exact bytes read, compares to trimmed .session-token with timingSafeEqual; missing file or mismatch -> SEAL_MISMATCH. The same key signs trace tokens (trace.ts:111-113) and derives session indexes (derivation.ts:73-74).",
+  "checkpoint_timers": "workflow-tools.ts:2796 MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3 (config.ts:160-161 'Default 3. Set to 0 for testing'; loadConfig 680-705 wires no env var for it). 2840-2843 elapsed = floor(Date.now()/1000) - floor(Date.parse(active.yieldedAt)/1000), yieldedAt server-stamped at yield (2568,2580). Mode option_id (2847-2853): elapsed < 3 refused 'Checkpoint response too fast'. Mode auto_advance (2876-2888): refused unless defaultOption && autoAdvanceMs; elapsed < ceil(autoAdvanceMs/1000) refused; resolves to defaultOption's effect. Mode condition_not_met (2893-2900): no timer; refused unless checkpoint.condition; recorded under optionId '__condition_not_met__' (763, 2916). Adhoc gates have no defaultOption/condition (2835-2836) so only option_id applies. Exactly one mode (2821-2824). Docs checkpoint.md:295-302 state the same three rows.",
+  "child_sessions": "dispatch_child resource-tools.ts:644-859. Child index = computeEmbeddedSessionIndex(topFolder, [...parentJsonPath,'triggeredWorkflows', N, 'state']) = HMAC(key, realpath(folder)+':'+'triggeredWorkflows.N.state') (derivation.ts:122-131; calls 771-774, 826-827). Slot N = triggeredWorkflows.length as read; the save is a CAS so two dispatches cannot mint one slot (820-827, 853). Parent record: {workflowId, sessionIndex, triggeredAt, triggeredFrom{activityId: parent frontier[0] ?? ''}, status 'running', state: childInitial} + history workflow_triggered {workflowId, sessionIndex} (789-802, 838-851). Transient parent is first promoted onto a durable folder (734-807) and its index redirected (store.ts:912-928). Child state seeded from child workflow defaults + parent's user_request + INHERITED_OPENING_FACTS + planning_folder_path (682-694); repo and contextMode copied. An eager client at start_session embeds the same way with triggeredFrom.activityId 'start_session' (eager-client.ts:98,132,138). Correlation back: resolver.ts:106-126 closeLaunchedRecord on the child's terminal next_activity sets record.status 'completed', completedAt and pushes workflow_returned on the holder, in the same write (workflow-tools.ts:1578-1584). Trace: child's events carry traceId = child sessionIndex (logging.ts:110-115) and tokens carry sid (1685). Resolution of a child index walks embedded states (store.ts:590-606). Each session has its own activeCheckpoint slot (session.schema.ts:82) so parent and child gate independently (checkpoint.md:148). dispatch_child is not gated by the parent's checkpoint and does not check parent status."
+ },
+ "facts": [
+  {
+   "claim": "Docs: a layer either refuses or warns and moves on",
+   "file": "/tmp/bend-fidelity/server/docs/fidelity.md",
+   "lines": "3",
+   "quote": "A layer either refuses the call or records a **warning** and moves on."
+  },
+  {
+   "claim": "Docs: seal checked on every read",
+   "file": "/tmp/bend-fidelity/server/docs/fidelity.md",
+   "lines": "7",
+   "quote": "The seal is checked on every read, so a file changed outside the server fails the next one."
+  },
+  {
+   "claim": "Code: seal verified on every authenticated load",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/resolver.ts",
+   "lines": "241-242",
+   "quote": "const { state: rawTopState, bytes } = await verifySeal(folder);"
+  },
+  {
+   "claim": "Seal algorithm HMAC-SHA256 hex over canonical bytes",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/store.ts",
+   "lines": "206-209",
+   "quote": "createHmac('sha256', key).update(canonicalJson, 'utf8').digest('hex')"
+  },
+  {
+   "claim": "Seal compared with timingSafeEqual over exact bytes read",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/store.ts",
+   "lines": "517-526"
+  },
+  {
+   "claim": "Key is 32 random bytes at <keyDir>/secret, 0600",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/crypto.ts",
+   "lines": "7-8, 89-100"
+  },
+  {
+   "claim": "Session index = HMAC(key, realpath folder[:jsonPath]) truncated to 6 base32 chars (30 bits)",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/derivation.ts",
+   "lines": "71-76, 122-131"
+  },
+  {
+   "claim": "Stale write refused when on-disk bytes differ from bytes read",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/store.ts",
+   "lines": "385-402",
+   "quote": "stale write refused for ... session.json changed since it was read"
+  },
+  {
+   "claim": "Gate: next_activity refuses while a checkpoint is active, before reading anything else",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1258-1266"
+  },
+  {
+   "claim": "Gate helper lists the gated and ungated tools",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/params.ts",
+   "lines": "56-76"
+  },
+  {
+   "claim": "Minimum response seconds default 3, config-only",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2796",
+   "quote": "const MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3;"
+  },
+  {
+   "claim": "loadConfig wires no env var for minCheckpointResponseSeconds",
+   "file": "/tmp/bend-fidelity/server/src/config.ts",
+   "lines": "160-161, 680-705"
+  },
+  {
+   "claim": "Elapsed computed from server-stamped yieldedAt in whole seconds",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2840-2843"
+  },
+  {
+   "claim": "option_id timer refusal",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2847-2853",
+   "quote": "Checkpoint response too fast (${elapsed}s < ${MIN_RESPONSE_SECONDS}s minimum)"
+  },
+  {
+   "claim": "auto_advance waits ceil(autoAdvanceMs/1000) and requires defaultOption+autoAdvanceMs",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2876-2892"
+  },
+  {
+   "claim": "condition_not_met has no timer; requires condition field",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2893-2900"
+  },
+  {
+   "claim": "Docs timing table: option_id >= 3 s, auto_advance declared wait, condition_not_met none",
+   "file": "/tmp/bend-fidelity/server/docs/checkpoint.md",
+   "lines": "295-302"
+  },
+  {
+   "claim": "option_id validated against checkpoint.options",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2854-2858"
+  },
+  {
+   "claim": "Adhoc gate options are worker-supplied at yield and become the definition respond validates against",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2494, 2577-2582, 2835-2836"
+  },
+  {
+   "claim": "yieldedAt is server-stamped",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2568-2582"
+  },
+  {
+   "claim": "from_activity must be a frontier entry; no sole-entry fallback",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1006-1050, 1268-1272"
+  },
+  {
+   "claim": "Destination derived from graph binding of (retiring, exit) when both named, else agent's activity_id",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1284-1287",
+   "quote": "const destination = (boundDestination ?? activity_id) as Destination;"
+  },
+  {
+   "claim": "Activity transition check warns only; terminal from anywhere and zero-bound-exit activities pass",
+   "file": "/tmp/bend-fidelity/server/src/utils/validation.ts",
+   "lines": "37-58"
+  },
+  {
+   "claim": "Version drift compares session.workflowVersion to loaded version",
+   "file": "/tmp/bend-fidelity/server/src/utils/validation.ts",
+   "lines": "60-65"
+  },
+  {
+   "claim": "start_session resume overwrites workflowVersion and late-seeds defaults",
+   "file": "/tmp/bend-fidelity/server/src/tools/resource-tools.ts",
+   "lines": "469-477, 495"
+  },
+  {
+   "claim": "Reported exit check: declared by activity and bound to the named target",
+   "file": "/tmp/bend-fidelity/server/src/utils/validation.ts",
+   "lines": "288-309"
+  },
+  {
+   "claim": "draft.exit stores the agent's exit unverified",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1512"
+  },
+  {
+   "claim": "Step manifest checks: presence, identity, order, empty output, undeclared keys",
+   "file": "/tmp/bend-fidelity/server/src/utils/validation.ts",
+   "lines": "115-206"
+  },
+  {
+   "claim": "Immediate exit cut read from server-recorded checkpointResponses",
+   "file": "/tmp/bend-fidelity/server/src/utils/validation.ts",
+   "lines": "94-113"
+  },
+  {
+   "claim": "Missing step_manifest warns",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1377-1379"
+  },
+  {
+   "claim": "step_completed events written from agent manifest",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1480-1494"
+  },
+  {
+   "claim": "Technique-fetch check scoped to current visit, step or technique id, optional agent_id",
+   "file": "/tmp/bend-fidelity/server/src/utils/validation.ts",
+   "lines": "223-276"
+  },
+  {
+   "claim": "technique_fetched recorded on both delivery paths with agentId = scope",
+   "file": "/tmp/bend-fidelity/server/src/tools/resource-tools.ts",
+   "lines": "1024-1043, 1062-1068, 1106-1112"
+  },
+  {
+   "claim": "technique_bundled recorded per bundled step incl. 'unchanged'",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2331-2342"
+  },
+  {
+   "claim": "Delivery scope is the agent-supplied agent_id or the session agent",
+   "file": "/tmp/bend-fidelity/server/src/utils/delivery.ts",
+   "lines": "70-72"
+  },
+  {
+   "claim": "activity_outcome recorded from activity_manifest regardless of validation warnings",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1404-1412, 1436-1453"
+  },
+  {
+   "claim": "Activity manifest checks warn only",
+   "file": "/tmp/bend-fidelity/server/src/utils/validation.ts",
+   "lines": "317-342"
+  },
+  {
+   "claim": "Variable writes stored as written, type/value-set warn",
+   "file": "/tmp/bend-fidelity/server/src/utils/variable-seed.ts",
+   "lines": "83-140"
+  },
+  {
+   "claim": "Trace event fields and source of act/aid",
+   "file": "/tmp/bend-fidelity/server/src/logging.ts",
+   "lines": "92-115"
+  },
+  {
+   "claim": "Trace capture resolves with workspace dir only and skips on failure",
+   "file": "/tmp/bend-fidelity/server/src/logging.ts",
+   "lines": "93, 116-118",
+   "quote": "logWarn('Trace capture skipped: session_index resolution failed'"
+  },
+  {
+   "claim": "Audit workspace dir set to engineeringDir",
+   "file": "/tmp/bend-fidelity/server/src/server.ts",
+   "lines": "26",
+   "quote": "setAuditWorkspaceDir(engineeringDir);"
+  },
+  {
+   "claim": "Trace token = base64url(JSON) + '.' + HMAC-SHA256 under server key",
+   "file": "/tmp/bend-fidelity/server/src/trace.ts",
+   "lines": "108-114"
+  },
+  {
+   "claim": "Trace token verified on decode; payload fields type-checked",
+   "file": "/tmp/bend-fidelity/server/src/trace.ts",
+   "lines": "116-166"
+  },
+  {
+   "claim": "Token minted on next_activity from cursor segment",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1679-1698"
+  },
+  {
+   "claim": "get_trace decodes tokens without checking sid against the session",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "3017-3035"
+  },
+  {
+   "claim": "TraceStore in-memory, evicts oldest past 1000 sessions",
+   "file": "/tmp/bend-fidelity/server/src/trace.ts",
+   "lines": "33, 71-84"
+  },
+  {
+   "claim": "Diagnostics excluded from trace",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "3050, 3127, 3166"
+  },
+  {
+   "claim": "Docs: trace captured apart from get_trace, get_workflow_status, inspect_session",
+   "file": "/tmp/bend-fidelity/server/docs/fidelity.md",
+   "lines": "365"
+  },
+  {
+   "claim": "Batch refusal and recording on get_activity",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1772-1787"
+  },
+  {
+   "claim": "Batch limits: 3 activities, 0.35 headroom, 4 chars/token",
+   "file": "/tmp/bend-fidelity/server/src/config.ts",
+   "lines": "198-199, 207-208"
+  },
+  {
+   "claim": "Batch exemptions: session agent, first activity, held activity",
+   "file": "/tmp/bend-fidelity/server/src/utils/batch.ts",
+   "lines": "195-232"
+  },
+  {
+   "claim": "Docs: batch bounds a cooperating chain, identity not authenticated",
+   "file": "/tmp/bend-fidelity/server/docs/delivery.md",
+   "lines": "407",
+   "quote": "The scope is the caller's identity, which is not authenticated, so this bounds a cooperating chain rather than an adversarial one."
+  },
+  {
+   "claim": "Fan refusals: missing/non-array/empty collection, no id, duplicate id, ceiling",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1083-1171"
+  },
+  {
+   "claim": "Fan ceiling default 4",
+   "file": "/tmp/bend-fidelity/server/src/config.ts",
+   "lines": "241"
+  },
+  {
+   "claim": "Response-size bound logs only, default 60000",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "2432-2440"
+  },
+  {
+   "claim": "next_activity enter/terminal writes incl. hardcoded 'complete'",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "1546-1573"
+  },
+  {
+   "claim": "Parent record closed on child's terminal transition in the same write",
+   "file": "/tmp/bend-fidelity/server/src/utils/session/resolver.ts",
+   "lines": "106-126"
+  },
+  {
+   "claim": "Child index minted from folder + jsonPath; slot from list length; CAS save",
+   "file": "/tmp/bend-fidelity/server/src/tools/resource-tools.ts",
+   "lines": "820-853"
+  },
+  {
+   "claim": "dispatch_child performs no checkpoint gate and no parent status check",
+   "file": "/tmp/bend-fidelity/server/src/tools/resource-tools.ts",
+   "lines": "663-712"
+  },
+  {
+   "claim": "Docs: one pause per session, each session its own slot",
+   "file": "/tmp/bend-fidelity/server/docs/checkpoint.md",
+   "lines": "112, 148"
+  },
+  {
+   "claim": "Docs: limits of detectability",
+   "file": "/tmp/bend-fidelity/server/docs/fidelity.md",
+   "lines": "423-434"
+  },
+  {
+   "claim": "Session file shape",
+   "file": "/tmp/bend-fidelity/server/src/schema/session.schema.ts",
+   "lines": "59-111, 125-150"
+  },
+  {
+   "claim": "History event types",
+   "file": "/tmp/bend-fidelity/server/src/schema/state.schema.ts",
+   "lines": "3-80"
+  },
+  {
+   "claim": "Entering an activity clears earlier visit answers",
+   "file": "/tmp/bend-fidelity/server/src/tools/workflow-tools.ts",
+   "lines": "788-793, 1533, 1548"
+  }
+ ],
+ "open_questions": [
+  "logging.ts:93 resolves the audit session with loadSessionForTool(auditWorkspaceDir, sid) and no planningRelativeDir/searchRoots while every tool passes sessionLoadOpts(); in multi-root or non-default planningRelativeDir deployments does trace capture silently skip (logging.ts:116-118), leaving Layer 7 empty for those sessions?",
+  "minCheckpointResponseSeconds has no env wiring in loadConfig (config.ts:680-705); is the 3 s floor intentionally fixed in production, and does any deployment set it to 0 via a config literal?",
+  "get_trace accepts any HMAC-valid token regardless of token.sid vs the session_index queried (workflow-tools.ts:3017-3035); is cross-session token mixing an accepted limitation?",
+  "For an adhoc checkpoint the option list respond_checkpoint validates against is the worker's own (2494, 2577-2582); should fidelity.md:143 qualify 'validated against the checkpoint definition'?",
+  "start_session resume rewrites workflowVersion (resource-tools.ts:469-477, 495), so the Layer 3 drift warning stops after a resume; is that the intended semantics of 'changed on disk since the session started' (fidelity.md:186)?",
+  "Layer 3 passes a transition to __terminal__ from any activity and any transition off an activity with zero bound exits (validation.ts:48, 51); is that breadth intended?",
+  "dispatch_child runs with no parent status check, so a completed or aborted parent can still open children (resource-tools.ts:663-712); intended?",
+  "step_completed and activity_outcome are written to history straight from agent manifests (workflow-tools.ts:1436-1453, 1481-1494); downstream readers (inspect_session projectActivities 454-481) treat them as facts. Should the state distinguish server-observed from agent-reported events?",
+  "next_activity line 1608 excludes 'session.json.seal' from the artifact listing though the seal file is '.session-token' (store.ts:50); dead name or stale remnant?",
+  "The trace store evicts the oldest session past 1000 (trace.ts:33, 73-79) and loses everything on restart (fidelity.md:433); only tokens carried by the agent survive. Is a durable server-side trace in scope for the Bend investigation?",
+  "Docs api.md grep for 'gate'/'refus' returned nothing; does api.md carry a per-tool gate table that should agree with params.ts:56-67?"
+ ]
+}

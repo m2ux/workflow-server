@@ -1,0 +1,65 @@
+{
+ "verified": [
+  "CONFIRMED guards.ts registers 58 guards, not 60: /tmp/bend-fidelity/server/guards/guards.ts ids at lines 64-634 (58 `id:` lines). On disk 62 files match check-*.ts|validate-*.ts; minus check-all.ts and check-delta.ts (infrastructure) = 60 scripts = 58 registered + check-operation-contract.ts + check-session-contract.ts. The guards map's 10 families name all 58 registered ids exactly once (7+7+4+4+9+5+7+6+3+6).",
+  "CONFIRMED runtime map claim 'an activity with zero bound exits passes anything': src/utils/validation.ts:50-51 `const valid = exitDestinations(workflow, view.act); if (valid.length === 0) return null;`; terminal-from-anywhere at :46-48; same-activity at :45.",
+  "CONFIRMED definition map claim that loop bodies are never required and a continueWhile loop is itself gated: src/utils/validation.ts:139-153 (`s.kind === 'loop' ? s.continueWhile === undefined : ...`; 'the server does not run the loop, so it holds no count'). CONFIRMED maxIterations is read nowhere in src/ outside schema (grep empty).",
+  "CONFIRMED destination derivation: src/tools/workflow-tools.ts:1284-1294 `const destination = (boundDestination ?? activity_id) as Destination;` with 'Activity not found' refusal at :1293. CONFIRMED from_activity is mandatory with a non-empty frontier and refused when not held: :1006-1050.",
+  "CONFIRMED get_trace decodes every supplied token without comparing token sid to the session: src/tools/workflow-tools.ts:3017-3035 (events pushed from any decodeTraceToken result; traceId set from state.sessionIndex).",
+  "CONFIRMED no src/ file imports from guards/ (grep empty); --serving-only exists at guards/check-all.ts:9-11,33 and is run only by tests/scripts/reload-exp-sidecar.sh:488.",
+  "CONFIRMED 18 MCP tools: workflow-tools.ts discover 815, list_workflows 833, get_workflow 841, next_activity 1223, get_activity 1731, yield_checkpoint 2448, record_usage 2615, resume_checkpoint 2671, present_checkpoint 2724, respond_checkpoint 2798, get_trace 3001, health_check 3052, get_workflow_status 3068, inspect_session 3129; resource-tools.ts start_session 188, dispatch_child 644, get_technique 863, get_resource 1128.",
+  "CONFIRMED Limits of Detectability is eight bullets at docs/fidelity.md:427-434 (heading :423): step execution (427), condition truth (428), checkpoint user presence (429), conditional dismissal (430), repeated call (431), warnings advisory (432), in-memory trace restart (433), semantic trace (434). 'semantic trace' is defined at :13 and :389 as the agent's planning-folder account written 'per the workflow's own technique instructions'.",
+  "BEND, probed myself (scratch /tmp/bend-fidelity/scratch/completeness-critic/*.bend): an open law (law with no def) and a `?TODO` hole both fail --check-only AND --verdict with 'SOME PROOFS FAIL / Error: 1 TODO found' (exit 1); the count is book.hols in bend2/main.ts:813-817, thrown inside book_read before cli_verdict. An @unsafe def fails with '2 defs rely on unsafe or foreign code: helper, main' (taint flows transitively via main; the proven law itself is not named) \u2014 cli_verdict bend2/main.ts:715-726, book_promises :729-760 (`t.u === true || (t.i !== undefined && t.b !== true)`). A proven law: --check-only prints 'ALL PROOFS CHECK / Use --verdict for mathematical validity.' (exit 0); --verdict without BENDTT and without lean on PATH fails 'the kernel did not build' (bend2/safe.ts:1495, exit 1); --verdict with BENDTT prints 'ALL PROOFS CHECK' exit 0. --check-only and --verdict share cli_verdict (main.ts:300-301); a file with no main falls back to the verdict too (main.ts:847-851).",
+  "BEND law open vs filled, from source and guide: guide/GUIDE.md:281 'A law states a fact that must hold. It must be proven inside a paired def'; :319-325 LAWS.bend/PROOF.bend convention, 'SOME PROOFS FAIL while any law is open or false'; :339-341 '`?TODO` leaves it open, and a law with no def is an open claim'; :524-526 'A law left open in one file may be filled in another as `def M.name(..)`'; :580-582. bend2/bend.ts:2436-2459 (a def with no `->` fills the law in scope); :3302-3303, 3322 'an unfilled law is a dead claim: live code cannot use it'.",
+  "BEND JS interop, from guide: guide/GUIDE.md:406-415 \u2014 an effect is a def whose body is `import \"./x.js\"` plus a `.c` twin, host function named after the def lowercased with dots as underscores; 'Only the event loop runs them, so proofs, termination and the GPU never touch host code'; a JS file may `import Game from \"./game.bend\"` or the `-o game.mjs` output and call every non-IO def, constructors cross as `{$: \"Name\", field: value}`, Nat as BigInt, Arrays by reference. :550-551 `-o file.js`, `-o f.mjs`; :589-592 syntax. bend2/docs/BendRT/main.typ:505-524 foreign fill and JavaScript backend. Any def that names a foreign fill fails --verdict (main.ts:715-719; GUIDE.md:329-331)."
+ ],
+ "contradictions": [
+  "docs/fidelity.md:431 CLAIMS 'A repeated call is not distinguished from a fresh one ... it cannot tell that an agent is re-issuing a call it already made.' Code DOES distinguish two of them: a repeated next_activity is refused because the retired activity is no longer a frontier entry (src/tools/workflow-tools.ts:1006-1020 'Cannot exit ... the session is not on it'); a repeated yield_checkpoint is replayed from checkpointResponses and records checkpoint_replayed (:2526-2545; docs/checkpoint.md:7, 112). The bullet holds for get_activity/get_technique/get_resource (re-deliveries recorded, not refused) and for record_usage. The lead must split this Limits item before classifying it.",
+  "Task text says 60 guard ids; guards map says 58; both are right about different sets. 58 are registered (guards.ts:64-634); 60 guard scripts exist on disk once check-all.ts and check-delta.ts are excluded. tests/guard-registry.test.ts:142-152 (per guards map) records the two held out.",
+  "guide/GUIDE.md:324 CLAIMS `bend PROOF.bend` (no flag) prints the verdict; main.ts:847-851 only reaches cli_verdict from book_run when the book has no runnable main \u2014 a PROOF.bend with a main runs instead. Minor, but the spike's gate command must be --check-only or --verdict, not bare `bend file`.",
+  "bend2/safe.ts:40-42 says 'A def with no body (a law, a native, a foreign fill) goes out opaque at a model: the kernel checks the model, then never unfolds the def', which reads as if an open law reaches the kernel; the probe shows an open law never reaches cli_verdict at all (book.hols check, main.ts:813-817). Not a code defect, but a Bend reader paraphrasing safe.ts alone would overstate what --verdict tolerates.",
+  "Runtime map says fidelity.md:143 'validated against the checkpoint definition' is unqualified while adhoc option lists are worker-authored (workflow-tools.ts:2494, 2577-2582). Confirmed as a doc-vs-code gap the Limits classification must carry: 'option validity' for an adhoc gate is a self-referential check.",
+  "Guards map 'binding_fidelity' entry: header (check-binding-fidelity.ts:47-53) claims the guard 'no longer holds a stored baseline' while the code loads ledgers/binding-fidelity-triage.json (:1247-1250, 1277-1341). Reported by the guards reader; I did not re-read these lines."
+ ],
+ "gaps": [
+  {
+   "gap": "The Bend readers' maps were not delivered to me: the MAPS payload was truncated inside the canon map (at AP-64), so I saw 5 of 10 maps (runtime-layers, definition-model, guards, corpus-spike-candidates, canon partial). I cannot audit the Bend readers' coverage of law-open-vs-filled, --verdict refusals, or JS interop; the `verified` list above holds my own probe results with citations so the lead can diff them against the Bend maps.",
+   "read": "The Bend readers' maps themselves; then diff against bend2/main.ts:300-301, 711-760, 800-820; bend2/safe.ts:1-45, 1495; guide/GUIDE.md:279-345, 406-415, 501-526, 580-592.",
+   "question": "Do the Bend maps state (a) that an open law and a ?TODO fail --check-only as well as --verdict, (b) that --verdict without BENDTT/lean errors rather than passing, (c) that @unsafe/foreign taint is transitive through main, and (d) that any law consuming session JSON through a JS foreign fill cannot be --verdict-checked, so spike data must enter as Bend terms?"
+  },
+  {
+   "gap": "check-session-contract.ts (unregistered) is the one existing check that holds a RUN against the definitions \u2014 'undeclared-write' and 'no-progress' read from the session's own history plus the workflow it names \u2014 and no map places it in any family, runtime layer, or mechanism row. It is the closest existing analogue to the Bend proposition.",
+   "read": "/tmp/bend-fidelity/server/guards/check-session-contract.ts:1-120 and guards/check-operation-contract.ts:1-60.",
+   "question": "What do these two scripts take as input (session.json? history events?) and refuse/warn on, and are their two finding kinds the first rows of the mechanism table's 'runtime law over a trace' section?"
+  },
+  {
+   "gap": "Runtime map covers 15 of 18 tools; discover (workflow-tools.ts:815-832), list_workflows (:833-839) and health_check (:3052) are absent. discover delivers the corpus resource meta/bootstrap-protocol as the first content of every session; list_workflows is the only runtime surface of loader refusals (`load_errors`, :837).",
+   "read": "/tmp/bend-fidelity/corpus/corpus/meta/resources/bootstrap-protocol.md (whole) and workflow-tools.ts:815-840.",
+   "question": "Does the bootstrap text impose fidelity obligations on the agent (manifests, trace tokens, agent_id) that the Bend re-expression must carry as hypotheses, and does the mechanism table want a 'load refusal surfaced at runtime' row for load_errors?"
+  },
+  {
+   "gap": "No reader enumerated the eight Limits of Detectability bullets (fidelity.md:427-434) individually; the runtime map cites the range only. Bullet 8 ('semantic trace') depends on a technique no reader located: grep finds it prescribed in meta/techniques/workflow-engine/finalize-activity.md.",
+   "read": "/tmp/bend-fidelity/corpus/corpus/meta/techniques/workflow-engine/finalize-activity.md (whole); docs/fidelity.md:389, 434.",
+   "question": "What exactly does finalize-activity oblige the agent to write into the planning folder, and is any of it server-readable (next_activity artifact reconciliation reads the folder listing, workflow-tools.ts:1591-1633) so that a Bend law could range over it, or is bullet 8 inherent because the content is files the server never parses?"
+  },
+  {
+   "gap": "No oracle exists for the mvw walk: grep of SERVER tests/ and src/ for 'specimens/mvw' or 'mvw' returns nothing, so the spike has a definition (spike map quotes all 70 lines) but no recorded expected call sequence or session.json to re-express against.",
+   "read": "/tmp/bend-fidelity/server/tests/ for the smallest e2e walk fixture (grep -rl 'next_activity' tests/e2e or tests/*.test.ts) and src/schema/session.schema.ts:59-111 for the state shape.",
+   "question": "Which existing test fixture records a full session.json after a one-activity walk, so the spike can state the Bend law over a concrete session term rather than over the schema alone?"
+  },
+  {
+   "gap": "Definition map covers six of seven schemas/; session-file.schema.json is covered only indirectly by the runtime map's reading of src/schema/session.schema.ts. Nobody states whether session-file.schema.json is in the generated/checked set, while schema-loader.ts:16 serves 'session-file' and omits 'routine'.",
+   "read": "/tmp/bend-fidelity/server/scripts/generate-schemas.ts:1-40 and guards/check-generated-schemas.ts:1-50.",
+   "question": "Is session-file.schema.json generated from SessionFileSchema and byte-checked by check-generated-schemas, i.e. is the session shape a definition construct the mechanism table can treat as typed?"
+  },
+  {
+   "gap": "The spike map recommends dropping child dispatch but every dispatch site binds meta/routines/activity-loop.yaml (328 lines); only lines 92-101 were read. If the lead keeps dispatch (prism-evaluate), the loop's 20+ gates over `worker_result.*` dotted paths are the typing problem the definition map flagged (dotted member paths untyped).",
+   "read": "/tmp/bend-fidelity/corpus/corpus/meta/routines/activity-loop.yaml:1-328.",
+   "question": "Which variables does activity-loop read via dotted paths, where are their shapes declared (technique `components`/`entry` only?), and can a Bend record type be written for `worker_result` from those declarations?"
+  },
+  {
+   "gap": "Canon map (truncated for me) cites guard sources whose AP ordinals drifted; and the runtime open question about api.md was answerable: docs/api.md:44-100 is a parameters/returns table with no gate column, so params.ts:56-67 is the only gate roster.",
+   "read": "/tmp/bend-fidelity/server/docs/api.md:97-110 (Trace and accounting section) to close the tool table.",
+   "question": "Does any doc besides src/utils/session/params.ts:56-76 enumerate which tools the checkpoint gate blocks, or is params.ts the sole source for the mechanism table's L2 row?"
+  }
+ ]
+}

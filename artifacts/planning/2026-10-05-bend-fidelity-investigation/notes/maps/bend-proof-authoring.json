@@ -1,0 +1,255 @@
+{
+ "summary": "Bend proofs are plain dependently-typed defs: no tactics, one rewrite form (%e : goal-with-_), {==} for conversion, recursion as IH. Shipped evidence at 565d7fd: 15 demos / 43 laws / 1839 lines (LAWS 399, PROOF 1440); 12 of 43 laws close by {==} alone, the rest need 1-6 helper lemmas each, every rewrite spelling its whole motive. Recurring costs: computed verdicts cannot be matched in place so each case split becomes a \".fin\" helper def; Base ships no Nat.add lemmas so add_zero/add_succ/add_comm are re-proven in 4 demos and 2 evals; programs are restructured for provability (evidence-returning comparisons, verdict parameters); law parameters carry +/- quantity marks the human must choose from how the proof will spend them. Checking is cheap (0.10-0.20 s; 3.8 s for a 2800-line game). 4 of 15 demo PROOF.bend files print SOME PROOFS FAIL at this commit because an @unsafe def exists in the imported program, contradicting the GUIDE's \"ALL PROOFS CHECK once every law holds\"; a 13-line test confirms one unrelated @unsafe def alone flips the gate. CHANGELOG: 36 releases in 17 days, 4 closed-Empty soundness holes fixed, verdict text changed twice, --safe renamed --verdict. My own proofs: wrong one yields \"expected : 1n / observed : 0n\"; correct length_append took 1 attempt (idiom copied from two shipped proofs), 16 lines, 0.127 s check, 0.132 s --verdict.",
+ "facts": [
+  {
+   "claim": "Bend has no tactics; a proof is a def whose type is the claim; the only proof forms are {==}, %e : P rewrite with _ marking the rewritten term, match, recursive call as IH, exs witness as a pair, ?TODO hole.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "334-341",
+   "quote": "Bend has no tactics: a proposition is a type, and a proof is a def of that type."
+  },
+  {
+   "claim": "GUIDE CLAIMS the gate prints ALL PROOFS CHECK once every law holds.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "323-325",
+   "quote": "it prints SOME PROOFS FAIL while any law is open or false, and ALL PROOFS CHECK once every law holds"
+  },
+  {
+   "claim": "CODE DOES: 4 of 15 shipped demo PROOF.bend files print SOME PROOFS FAIL with every law filled, because defs in the imported program rely on @unsafe: pure_hvm5_mini (35 defs), app_slash_boss_3d (4), io_http_server (2), io_tcp_echos (4). Listed defs are all main.* program defs, none a Laws.* fill. Other 11 demos print ALL PROOFS CHECK.",
+   "file": "/tmp/bend-fidelity/bend/demos/io_http_server/main.bend",
+   "lines": "4, 41",
+   "quote": "the accept loop is @unsafe: it runs until killed"
+  },
+  {
+   "claim": "Confirmed in isolation: a law closed by {==} beside one unrelated @unsafe def the law never mentions prints SOME PROOFS FAIL / Error: 1 def relies on unsafe or foreign code: / - spin (exit 1). Scratch file unsafe_beside_law.bend, 13 lines.",
+   "file": "/tmp/bend-fidelity/scratch/bend-proof-authoring/unsafe_beside_law.bend",
+   "lines": "1-13"
+  },
+  {
+   "claim": "CHANGELOG 2.0.32 states the rule the code follows (narrower than the GUIDE sentence): a proof holds only with no @unsafe and no user foreign code, imports included.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "94-99",
+   "quote": "A proof holds when bend checks it and it uses no `@unsafe` def and no user foreign code, imports included. `--verdict` (was `--safe`)"
+  },
+  {
+   "claim": "GUIDE CLAIMS models are guaranteed bug-free code because Bend demands a proof; the CHANGELOG below records four accepted closed proofs of Empty fixed within 17 days.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "311-312",
+   "quote": "Models are then guaranteed to respond with bug-free code, since Bend will demand"
+  },
+  {
+   "claim": "Release cadence: 36 releases, 2.0.0 (2026-09-17) through 2.0.35 (2026-10-03), 17 days; 17 releases on 2026-09-17..19 alone.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "6-605"
+  },
+  {
+   "claim": "Soundness fix (previously accepted proof now rejected), 2.0.17 #852.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "477-478",
+   "quote": "A nat literal in a pattern is checked against its constructor's arity: it was a closed proof of `Empty` (#852)."
+  },
+  {
+   "claim": "Soundness fix 2.0.21 #902: template self-instantiation refused.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "404-409",
+   "quote": "is refused as a self-call that does not decrease ... and inhabited `Empty` (#902)."
+  },
+  {
+   "claim": "Soundness fix 2.0.23 #905.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "353-356",
+   "quote": "the two became one opaque constant in the generic check and let a closed `Empty` through (#905)."
+  },
+  {
+   "claim": "Soundness fixes 2.0.25 #941 and #954.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "296-300",
+   "quote": "so `type Nat: Succ{e: Empty}` no longer admits `1n` and a closed `Empty` (#941). An array count past the nat cap is refused instead of making a fractional literal that defeats termination (#954)."
+  },
+  {
+   "claim": "Gate-integrity fix 2.0.28 #1001: an @unsafe fill in a helper file previously passed as clean.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "205-208",
+   "quote": "a law filled by `@unsafe` code in a helper file no longer passes as a clean `All terms check.`"
+  },
+  {
+   "claim": "Gate-integrity fix 2.0.27: a checked project could preload code and print a forged verdict.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "232-242",
+   "quote": "(and print a forged `All terms check.`)"
+  },
+  {
+   "claim": "Acceptance widened (previously rejected now accepted): 2.0.17 #848 reverses 2.0.16, which had counted every template instance as unsafe.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "469, 497-498",
+   "quote": "an instance no longer counts as unsafe (#848)"
+  },
+  {
+   "claim": "Acceptance regression and repair: a - local lost its erased mark in 2.0.16, restored 2.0.19.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "437-440",
+   "quote": "A `-` local is erased again ... Since 2.0.16 the mark"
+  },
+  {
+   "claim": "Acceptance widened: 2.0.32 'Two defs with the same body are equal (#1028)'; 2.0.33 conversion compares before unfolding; 2.0.35 kernel accepts a dead fallback past the last constructor (#1204).",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "122, 63-70, 49"
+  },
+  {
+   "claim": "bend2 and the kernel disagree on acceptance in 2.0.34: a shared-graph {==} proof checks in bend2 but the kernel runs out of fuel.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "54-61",
+   "quote": "`--verdict`'s kernel does not share yet and runs out of fuel on such a proof."
+  },
+  {
+   "claim": "Verdict output text changed twice in 17 days: 'All terms check.' -> 2.0.7 'All terms check, with N unsafe annotations.' -> 2.0.32 'ALL PROOFS CHECK' / 'SOME PROOFS FAIL'. Flag --safe (2.0.30) renamed --verdict (2.0.32). Base laws removed in 2.0.27 and 2.0.30.",
+   "file": "/tmp/bend-fidelity/bend/CHANGELOG.md",
+   "lines": "568, 94, 139-151, 261",
+   "quote": "five laws are gone"
+  },
+  {
+   "claim": "Base ships no Nat.add/Nat.mul lemma laws; the only Nat laws are Nat.ge_refl, Nat.max_ge_l, Nat.max_ge_r. (U32.add_comm exists at 1348.) Equal.cong/sym/trans are the only generic equality lemmas.",
+   "file": "/tmp/bend-fidelity/bend/bend2/base.bend",
+   "lines": "412-447, 654-693, 1348"
+  },
+  {
+   "claim": "Consequence: add_zero is re-proven locally in proof_numerics (12-18), pure_par_sum (7-13), pure_par_sort (7-13), pure_hvm5_mini (142-152), evals/firm.pomodoro_tally (111-117), evals/hard.resource_certificate (~48-53); add_succ/add_comm/add_swap likewise in numerics 20-26, 28-36, 50-57 and par_sort 15-39.",
+   "file": "/tmp/bend-fidelity/bend/demos/pure_par_sort/PROOF.bend",
+   "lines": "7-39"
+  },
+  {
+   "claim": "Law table, proof_insertion_sort: sort_sorted law 3 lines (LAWS 8-10) -> 21 lines proof (Laws.sort_sorted 34-39 + sorted_ins.fin 16-24 + sorted_ins 26-31); idioms: list induction, helper eliminator taking the computed verdict c as a parameter. sort_perm law 4 lines (LAWS 14-17) -> 33 lines (76-83 + bump_swap 46-55 + count_ins.fin 58-66 + count_ins 67-72); idioms: rewrite chain, 4-way Bool split each {==}, .fin eliminator.",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_insertion_sort/PROOF.bend",
+   "lines": "1-4",
+   "quote": "Each insert lemma has a .fin half that takes the verdict le_case(x, h) as a parameter c and matches it, since a computed value cannot be matched in place"
+  },
+  {
+   "claim": "The program itself is shaped for proof: the comparison returns evidence Or(LE(x,h), LE(h,x)) and insert's step dec takes the verdict as a parameter.",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_insertion_sort/main.bend",
+   "lines": "26-33, 40-45",
+   "quote": "The comparison le_case returns evidence, a proof of x <= h or of h <= x, so a proof about insert can branch on the fact the program did."
+  },
+  {
+   "claim": "Law table, proof_numerics: add_comm law 4 -> 23 lines (28-36 + add_zero 12-18 + add_succ 20-26), rewrite chain; add_assoc law 5 -> 7 (38-44); mul_comm law 4 -> 31 (75-83 + add_swap 50-57 + mul_zero 59-64 + mul_succ 66-73); mul_dist law 5 -> 8 (85-92); divmod_ok law 6 (LAWS 35-40) -> 47 (150-155 + BD 98-103 + le_eq 106-121 + Ok 124-125 + wrap_eq 128-132 + wrap_ok 135-141 + step_ok 144-148); idioms: computed certificate Ok as nested dependent pair, Bool-indexed type BD to refute True==False, exs witness tuple, Equal.cong, verdict Bool b with equation e: {b == (r < m : Nat)}.",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_numerics/PROOF.bend",
+   "lines": "97-155",
+   "quote": "a type picked by a Bool: a rewrite through it refutes True{} == False{}"
+  },
+  {
+   "claim": "Law table, proof_typed_eval: opt_complete law 4 -> 28 lines (23-44 + lit_pick 16-21), idioms: named rewrite %E@eq of GADT Ford equations, three IH rewrites with ~200-char motives (33-34, 41-43); opt_sound law 4 -> 9 (57-59 + eval_lit 50-55).",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_typed_eval/PROOF.bend",
+   "lines": "23-59"
+  },
+  {
+   "claim": "Law table, pure_par_sum: tree_is_seq law 4 -> 32 lines (33-41 + add_zero + add_assoc + seq_add 23-31); pure_par_sort: mix_leaves law 6 -> 69 lines (62-81 + 6 helpers 7-60), idiom: eight +lets naming subterms before four rewrites (67-80); sort_leaves law 5 -> 19 (93-102 + sum_flow 83-91).",
+   "file": "/tmp/bend-fidelity/bend/demos/pure_par_sort/PROOF.bend",
+   "lines": "62-102"
+  },
+  {
+   "claim": "Law table, pure_hvm5_mini (8 laws): word_joins law 4 -> 21; skip_is_drop law 5 -> 21 (exs witness built by induction, skip_step 46-56); pak_braces law 5 -> 91 lines (154-171 + six helper law/def pairs 72-152), idiom: 5-step rewrite chain each motive spelled in full (155-170); drop_drop law 5 -> 10; at_drop law 6 -> 10; run_push_pop law 5 -> 6 (Bool split); name_round_trip law 3 -> 2 and book_depth_fits law 5 -> 2, both {==} by computation.",
+   "file": "/tmp/bend-fidelity/bend/demos/pure_hvm5_mini/PROOF.bend",
+   "lines": "154-171"
+  },
+  {
+   "claim": "Law table, app_win_is_bug_2d: two laws of 4 lines each (LAWS 8-11, 15-18) -> 484-line PROOF: proof kit 30-133 (T Boolean reflection, sym, and_split, and_intro, not_elim, imp_elim, bool_case, pick_split, or_case, eq_sound, le_split); computed certificates chk_all/fchk_all evaluated to True and passed as Unit{} (187-192, 414, 469); index lemmas chk_row_at/chk_all_at 194-232 duplicated as fchk_* 298-336; run_safe 407-448 with four near-identical arms; CPS openers use4/use_safe 390-402, 451-461; law fills 467-484.",
+   "file": "/tmp/bend-fidelity/bend/demos/app_win_is_bug_2d/PROOF.bend",
+   "lines": "22-34",
+   "quote": "Boolean reflection: T(b) is the truth of b as a type (Unit when True, Empty when False), so a computed check becomes a proof by conversion. The rest are the eliminators the affine core asks to be spelled out"
+  },
+  {
+   "claim": "Law table, app_slash_boss_3d (7 laws): pause_freezes law 14 -> 26 (41-50 + pause_tick 24-39); pause_twice law 3 -> 23 (77-80 + toggle_twice 57-75, Bool reflection via hypotheses hp/hf); esc_quits law 6 -> 32 (100-117 + esc_arm 85-98); back_to_title, pause_toggles, dec_floor, arrows_are_wasd: 2-line {==} fills. Check time 3.76 s (main.bend ~2800 lines).",
+   "file": "/tmp/bend-fidelity/bend/demos/app_slash_boss_3d/PROOF.bend",
+   "lines": "24-132"
+  },
+  {
+   "claim": "Law table, small demos: pong esc_quits law 4 -> 2 ({==}); last_press law 7 -> 48 (16-way Bool split press4 10-51). ray esc_quits -> 2; press_reads law 5 -> 10. triangle esc_quits -> 2; click_inside law 8 -> 4 (rewrite hypothesis then {==}); click_outside law 7 -> 3. hello prints_hello law 2 -> 2. http_fetch body_after_blank law 3 -> 6; body_suffix law 4 -> 19 (exs witness, Equal.cong, suffix_go 24-34). http_server page_after_blank law 4 -> 2 (witness is 63-char literal); response_inj law 5 -> 12 (Equal.cong with drop(63n)). tcp echoes_data -> 2; closes_on_end -> 2.",
+   "file": "/tmp/bend-fidelity/bend/demos/app_pong_game_2d/PROOF.bend",
+   "lines": "10-57"
+  },
+  {
+   "claim": "Totals: 15 demos, 43 laws, LAWS 399 lines, PROOF 1440 lines; 12 of 43 laws close by {==} alone; the remaining 31 average ~44 PROOF lines per law including helpers.",
+   "file": "/tmp/bend-fidelity/bend/demos",
+   "lines": "wc -l demos/*/LAWS.bend demos/*/PROOF.bend = 1839 total"
+  },
+  {
+   "claim": "Law parameters carry quantity marks (+ reusable, - erased) that the human spec author must pick according to how the AI's proof will spend each variable; a mismatch is a checker error.",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_numerics/LAWS.bend",
+   "lines": "1-2",
+   "quote": "A parameter is + when a proof spends it twice."
+  },
+  {
+   "claim": "evals/: 20 files, 5 tiers x 4 (cake, easy, firm, hard, hell), no README. Each file is a prompt-style comment, types, program, law(s), then a '# solution' marker and the answer. gates/repo.ts calls it the models' arena.",
+   "file": "/tmp/bend-fidelity/bend/gates/repo.ts",
+   "lines": "11",
+   "quote": "evals/ is not counted: it is the models' arena, not the repo's shape."
+  },
+  {
+   "claim": "Tier = solution length (lines after '# solution'): cake 8/16/25/13; easy 56/47/56/56; firm 74/105/64/80; hard 178/230/287/159; hell 386/270/540/747. Check times 0.11-0.20 s at every tier.",
+   "file": "/tmp/bend-fidelity/bend/evals",
+   "lines": "grep -n '# solution' evals/*.bend vs wc -l"
+  },
+  {
+   "claim": "Some evals are implement-and-prove: law emit has a bare type as its claim and the solution supplies def emit; the complete law needs a Trace type family and a trace lemma over the machine (93-118).",
+   "file": "/tmp/bend-fidelity/bend/evals/easy.postfix_bijection.bend",
+   "lines": "34-37, 64-69, 93-118"
+  },
+  {
+   "claim": "hard tier example: certificate_unique (law 24-28) needs 14 helper defs incl. local le, triangle_mono, compare_elim, interval_inj, cancel_right, diagonal_inj (33-188).",
+   "file": "/tmp/bend-fidelity/bend/evals/hard.resource_certificate.bend",
+   "lines": "24-188"
+  },
+  {
+   "claim": "hell tier example: confluence over SK (law 56-62) is solved with a new Parallel datatype, psource/ptarget, Certificate casts and 4-stage decomposition, 270 lines.",
+   "file": "/tmp/bend-fidelity/bend/evals/hell.combinator_confluence.bend",
+   "lines": "56-140"
+  },
+  {
+   "claim": "tests/proof: 92 files; every test ends in the '#|' lines its run must print; 33 pin a SOME PROOFS FAIL page (31 are goal_ladder_state_000..030, pinned error pages at successive proof states); 75 say 'ported from bend3'; line counts min 10, median 67, max 259.",
+   "file": "/tmp/bend-fidelity/bend/AGENTS.md",
+   "lines": "8-9",
+   "quote": "Every test is a Bend file that ends in the `#|` lines its run must print"
+  },
+  {
+   "claim": "Test runner compares exactly the '#|' lines; failure is detected by the regex /^(SOME PROOFS FAIL|Error:)/, so tests pin error text verbatim and any change to checker wording or goal rendering breaks pinned tests.",
+   "file": "/tmp/bend-fidelity/bend/gates/test.ts",
+   "lines": "44-53"
+  },
+  {
+   "claim": "Read tests: length_append.bend (len_app 50-61, one IH rewrite); add_comm.bend (two lemmas, 92-130); template_law.bend (~ hypothesis used twice without spending, 7-18); no_funext_000.bend (lambda against function equality rejected: 'observed : non-inferrable term', 38-52); goal_ladder_state_000.bend (placeholder Type reveals goal '{Z{} == mul(b, Z{}) : N}', 101-112).",
+   "file": "/tmp/bend-fidelity/bend/tests/proof/no_funext_000.bend",
+   "lines": "38-52",
+   "quote": "- expected : {(x => add(x, Z{})) == (x => x) : @_:N -> N}\n- observed : non-inferrable term"
+  },
+  {
+   "claim": "Wrong proof (claim Nat.add(x,1n) == x, 15 lines) checker output, exit 1, 0.110 s: SOME PROOFS FAIL / Error: / - expected : 1n / - observed : 0n / Location: add_one_is_id / 11 |     case 0n: / 12>|       {==} /    |       ^^^^ / 13 |     case 1n+p:  -- the message names the mismatched normal forms, not the law.",
+   "file": "/tmp/bend-fidelity/scratch/bend-proof-authoring/wrong_add_one.bend",
+   "lines": "10-12"
+  },
+  {
+   "claim": "An unfilled law and a ?TODO hole print the identical text: SOME PROOFS FAIL / Error: 1 TODO found. / The code is incomplete, and not a valid proof yet. (exit 1). The output does not name the law.",
+   "file": "/tmp/bend-fidelity/scratch/bend-proof-authoring/open_law.bend",
+   "lines": "1-6"
+  },
+  {
+   "claim": "Correct proof: length of append over Base List<&2, Nat>, 16 lines total, def 7 lines, 1 attempt, --check-only ALL PROOFS CHECK in 0.127 s, --verdict ALL PROOFS CHECK in 0.132 s. Generic variant over -a: Quant, -A: Kind(a): 19 lines, 1 attempt, 0.104 s. Caveat: the single attempt is informed, the IH-rewrite motive was copied from tests/proof/length_append.bend 55-61 and evals/firm.pomodoro_tally.bend 151-157 read beforehand.",
+   "file": "/tmp/bend-fidelity/scratch/bend-proof-authoring/length_append.bend",
+   "lines": "10-16"
+  },
+  {
+   "claim": "Check times for shipped proofs: numerics 0.44 s, win_is_bug 0.71 s, insertion_sort 0.15 s, hvm5 0.28 s, slash_boss 3.76 s, all other demos 0.10-0.15 s; numerics --verdict 0.17 s. Checking cost is negligible; authoring is the cost.",
+   "file": "/tmp/bend-fidelity/bend/demos/app_slash_boss_3d/PROOF.bend",
+   "lines": "1-132"
+  },
+  {
+   "claim": "Theory has one universe and no positivity check; consistency rests on a live/dead wall; dead code may inhabit Empty.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "653-660",
+   "quote": "Dead code may loop forever or inhabit `Empty`, but nothing dead ever counts as live evidence"
+  }
+ ],
+ "open_questions": [
+  "Does the gate's unsafe walk start from laws (CHANGELOG 2.0.28 says 'the verdict walks from every law') or from the whole book? The isolation test (spin is unreachable from the law yet fails the gate) indicates whole-book, contradicting the 2.0.28 wording; bend2/bend.ts or safe.ts would settle it.",
+  "Whether a PROOF.bend for any program with a server loop can ever print ALL PROOFS CHECK without splitting the pure part into a separate file the proofs import (the demos did not do this; 4/15 ship failing).",
+  "Scaling of rewrite motives: the longest shipped motive lines (~200 chars) occur at 2-3 IH rewrites; no shipped evidence shows a proof past hell-tier 747 lines or a law over a state record wider than Slash.Game's 11 fields.",
+  "Which of the 33 pinned-failure tests pin error wording that a fidelity gate would need to parse; the goal-ladder pages suggest the rendered goal text is treated as a stable interface but the CHANGELOG shows it changed in 2.0.29 ('Errors underline their span')."
+ ]
+}

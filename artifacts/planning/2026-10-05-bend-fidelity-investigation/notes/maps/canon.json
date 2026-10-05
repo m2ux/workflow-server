@@ -1,0 +1,2114 @@
+{
+ "summary": "Canon reader report. CORPUS has no top-level canon/; the canon lives at corpus/canon/ (README.md, resources/{design-principles,anti-patterns,schema-construct-inventory,convention-conformance}.md, techniques/reformat-doc.md, scripts/rotate-class-notes.py). Abbreviations in `where`: AP = corpus/canon/resources/anti-patterns.md, DP = corpus/canon/resources/design-principles.md, CC = corpus/canon/resources/convention-conformance.md, SI = corpus/canon/resources/schema-construct-inventory.md, RD = corpus/canon/techniques/reformat-doc.md. The canon states 166 anti-patterns (12 families), 47 design principles, 7 convention rows, 9 creation rules for the catalogue itself, one universal obligation in the inventory, and 13 document-format phases in reformat-doc. Every unit carries a `Fires on` line whose ids are schema field paths (AP:35-42), so the canon already quantifies over typed definition structure; the server's `fires-on-ids` guard proves those ids exist in the generated schemas. Judgement: roughly 40 anti-patterns and 8 principles are clean graph/binding/dataflow laws over the parsed definition (step-technique binds, input/output ids, {id} tokens, container inheritance, exits-to-graph, tool-signature vs tool schema, file-tree presence). Roughly 55 more are `partly`: a lexical or structural half a checker reaches (link targets, id case/suffix, section order, path regexes, bare tool names) joined to an intent half it does not (`rationale`, `restates`, `critical`, `same invariant in other words`). The remainder, including the whole Interaction and Execution families, Description Hygiene voice rules, Canon Hygiene, and most Technique Protocol entries, judge prose, intent or taste. Two entries (AP-133, AP-164) are change-surface rules needing a base ref. The canon itself concedes static limits at AP:831 (roles not readable from the tree) and AP:2311 (schema check settles nothing for state-dependent required args). `polices` values prefixed `~` are my inference from the guard's `proves` line in guards.ts; unprefixed values are named in the guard source or the canon text. Guard sources cite AP ordinals that have drifted from the catalogue (details in facts). Completeness of the rules list was prioritised over the 3000-word budget because the output schema requires every rule.",
+ "rules": [
+  {
+   "id": "AP-01 no-inline-content",
+   "kind": "anti-pattern",
+   "statement": "Content is embedded in a parent file instead of its own file.",
+   "where": "AP:75-87",
+   "polices": "none",
+   "law_candidate": "partly: body-in-parent is a file-tree property; `authored inline` intent is not"
+  },
+  {
+   "id": "AP-02 schema-is-constraint",
+   "kind": "anti-pattern",
+   "statement": "The schema is bent to fit content.",
+   "where": "AP:89-101",
+   "polices": "none",
+   "law_candidate": "no: a change-proposal smell"
+  },
+  {
+   "id": "AP-03 no-partial-implementation",
+   "kind": "anti-pattern",
+   "statement": "Scope is left partially implemented before commit.",
+   "where": "AP:103-115",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-04 no-invented-naming",
+   "kind": "anti-pattern",
+   "statement": "A new naming convention is invented without search and approval.",
+   "where": "AP:117-129",
+   "polices": "none",
+   "law_candidate": "no: approval/intent"
+  },
+  {
+   "id": "AP-05 atomic-checkpoints",
+   "kind": "anti-pattern",
+   "statement": "Multiple independent decisions collapsed into one checkpoint.",
+   "where": "AP:135-147",
+   "polices": "none",
+   "law_candidate": "no: decision independence is semantic"
+  },
+  {
+   "id": "AP-06 no-assumption-execution",
+   "kind": "anti-pattern",
+   "statement": "Execution proceeds on assumed intent.",
+   "where": "AP:149-161",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-07 scope-reverify-completion",
+   "kind": "anti-pattern",
+   "statement": "Completion claimed without re-checking the scope manifest.",
+   "where": "AP:163-175",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-08 one-question-per-message",
+   "kind": "anti-pattern",
+   "statement": "More than one question in a user-facing message.",
+   "where": "AP:177-189",
+   "polices": "none",
+   "law_candidate": "no: runtime message, not a definition"
+  },
+  {
+   "id": "AP-09 checkpoint-not-prose",
+   "kind": "anti-pattern",
+   "statement": "A user decision written as prose instead of kind: checkpoint.",
+   "where": "AP:195-207",
+   "polices": "none",
+   "law_candidate": "partly: ask/confirm verbs at a steps[] position lacking a checkpoint is lexical+structural"
+  },
+  {
+   "id": "AP-10 loop-not-prose",
+   "kind": "anti-pattern",
+   "statement": "Iteration written as prose instead of kind: loop.",
+   "where": "AP:209-221",
+   "polices": "~loop-shape (declared form only)",
+   "law_candidate": "partly: loop field shape is a law; prose iteration is not"
+  },
+  {
+   "id": "AP-11 decision-not-prose",
+   "kind": "anti-pattern",
+   "statement": "Cross-activity routing as prose instead of graph-bound exits.",
+   "where": "AP:223-235",
+   "polices": "none",
+   "law_candidate": "partly: every exit bound in graph is a graph law; prose branch is not"
+  },
+  {
+   "id": "AP-12 artifact-not-buried",
+   "kind": "anti-pattern",
+   "statement": "Artifact production buried in description, not on Outputs.",
+   "where": "AP:237-249",
+   "polices": "none",
+   "law_candidate": "partly: file-producing claim is prose; #### artifact presence structural"
+  },
+  {
+   "id": "AP-13 variable-for-approval",
+   "kind": "anti-pattern",
+   "statement": "Approval state tracked in prose instead of a typed variable.",
+   "where": "AP:251-263",
+   "polices": "none",
+   "law_candidate": "partly: checkpoint effects write a variable a gate reads (dataflow); prose tracking not"
+  },
+  {
+   "id": "AP-14 mode-as-state",
+   "kind": "anti-pattern",
+   "statement": "Mode behaviour written as rule text instead of state.",
+   "where": "AP:265-277",
+   "polices": "none",
+   "law_candidate": "partly: mode variable plus when gates structural; mode-ness of prose not"
+  },
+  {
+   "id": "AP-15 procedure-in-protocol",
+   "kind": "anti-pattern",
+   "statement": "HOW lives in step description instead of technique protocol.",
+   "where": "AP:279-291",
+   "polices": "description-hygiene",
+   "law_candidate": "partly: numbered/sequenced text heuristic; procedure-ness is semantic"
+  },
+  {
+   "id": "AP-16 technique-inputs-declared",
+   "kind": "anti-pattern",
+   "statement": "Required inputs named in prose instead of inputs[].",
+   "where": "AP:293-305",
+   "polices": "none",
+   "law_candidate": "partly: {id} tokens absent from Inputs is a binding law; prose-named needs not"
+  },
+  {
+   "id": "AP-17 bound-step-no-description",
+   "kind": "anti-pattern",
+   "statement": "A bound step still carries description/name prose.",
+   "where": "AP:307-319",
+   "polices": "description-hygiene",
+   "law_candidate": "yes: allowed-field set over bound steps"
+  },
+  {
+   "id": "AP-18 no-monolith-masking-steps",
+   "kind": "anti-pattern",
+   "statement": "Steps bind the same op, differing only by description.",
+   "where": "AP:321-333",
+   "polices": "none",
+   "law_candidate": "yes: field equality over steps sharing a technique"
+  },
+  {
+   "id": "AP-19 no-rule-protocol-restatement",
+   "kind": "anti-pattern",
+   "statement": "A rule carries procedure.",
+   "where": "AP:339-351",
+   "polices": "none",
+   "law_candidate": "no: restatement vs invariant is semantic"
+  },
+  {
+   "id": "AP-20 rule-group-disambiguation",
+   "kind": "anti-pattern",
+   "statement": "Apparently contradictory rules lack a group key.",
+   "where": "AP:353-365",
+   "polices": "none",
+   "law_candidate": "no: `read as conflicting`"
+  },
+  {
+   "id": "AP-21 grouped-rule-keys",
+   "kind": "anti-pattern",
+   "statement": "Shared-prefix rules sprawl as flat keys.",
+   "where": "AP:367-379",
+   "polices": "none",
+   "law_candidate": "partly: shared key prefix lexical; `obvious family` not"
+  },
+  {
+   "id": "AP-22 single-rule-authority",
+   "kind": "anti-pattern",
+   "statement": "The same rule has more than one home.",
+   "where": "AP:381-393",
+   "polices": "~duplicate-bodies",
+   "law_candidate": "partly: identical text at two sites; same invariant reworded not"
+  },
+  {
+   "id": "AP-23 worker-rule-reach",
+   "kind": "anti-pattern",
+   "statement": "A worker-directed rule sits where workers never receive it.",
+   "where": "AP:395-407",
+   "polices": "none",
+   "law_candidate": "no: worker-directedness is semantic; bucket is structural"
+  },
+  {
+   "id": "AP-24 no-contradictory-rules",
+   "kind": "anti-pattern",
+   "statement": "Sibling rules contradict each other.",
+   "where": "AP:409-421",
+   "polices": "none",
+   "law_candidate": "no: prose mutual exclusion"
+  },
+  {
+   "id": "AP-25 no-one-step-rules",
+   "kind": "anti-pattern",
+   "statement": "A technique rule applies to only one protocol step.",
+   "where": "AP:423-435",
+   "polices": "none",
+   "law_candidate": "no: rule scope over steps is semantic"
+  },
+  {
+   "id": "AP-26 no-rationale-in-description",
+   "kind": "anti-pattern",
+   "statement": "Description fields carry rationale or restatement.",
+   "where": "AP:441-453",
+   "polices": "none",
+   "law_candidate": "no: rationale is intent"
+  },
+  {
+   "id": "AP-27 validate-message-economy",
+   "kind": "anti-pattern",
+   "statement": "A validate message justifies consequences.",
+   "where": "AP:455-467",
+   "polices": "none",
+   "law_candidate": "partly: message matches `<cause>. Run '<cmd>'.` shape"
+  },
+  {
+   "id": "AP-28 no-sequence-in-description",
+   "kind": "anti-pattern",
+   "statement": "Activity/step sequence restated in description prose.",
+   "where": "AP:469-481",
+   "polices": "description-hygiene",
+   "law_candidate": "partly: description naming step/activity ids in graph order; else prose"
+  },
+  {
+   "id": "AP-29 no-user-env-mutation",
+   "kind": "anti-pattern",
+   "statement": "Prose directs mutation of user-owned environment.",
+   "where": "AP:483-495",
+   "polices": "none",
+   "law_candidate": "partly: command denylist lexical; scope judgement not"
+  },
+  {
+   "id": "AP-30 role-rules-not-description",
+   "kind": "anti-pattern",
+   "statement": "Role constraints sit in description instead of rules.",
+   "where": "AP:497-509",
+   "polices": "none",
+   "law_candidate": "no: prescriptive voice"
+  },
+  {
+   "id": "AP-31 no-hand-authored-artifacts",
+   "kind": "anti-pattern",
+   "statement": "Activity artifacts[] is hand-authored.",
+   "where": "AP:511-523",
+   "polices": "none",
+   "law_candidate": "yes: activity has artifacts[] key"
+  },
+  {
+   "id": "AP-32 outcome-names-value",
+   "kind": "anti-pattern",
+   "statement": "An outcome names the vessel instead of delivered value.",
+   "where": "AP:525-537",
+   "polices": "none",
+   "law_candidate": "no: rename-invariance of prose"
+  },
+  {
+   "id": "AP-33 no-set-of-technique-output",
+   "kind": "anti-pattern",
+   "statement": "An activity set duplicates a bound technique's output.",
+   "where": "AP:539-551",
+   "polices": "none",
+   "law_candidate": "yes: set.target in bound technique Outputs ids"
+  },
+  {
+   "id": "AP-34 no-valueless-control-set",
+   "kind": "anti-pattern",
+   "statement": "Control sets carry no derived value.",
+   "where": "AP:553-565",
+   "polices": "none",
+   "law_candidate": "partly: set without value on unbound step structural; `derivation HOW` not"
+  },
+  {
+   "id": "AP-35 no-intra-step-input-set",
+   "kind": "anti-pattern",
+   "statement": "A step set feeds that same step's inputs.",
+   "where": "AP:567-579",
+   "polices": "~self-provisioned-input (source cites stale AP-68)",
+   "law_candidate": "yes: inputs interpolate a variable the same step sets"
+  },
+  {
+   "id": "AP-36 techniques-list-disjoint",
+   "kind": "anti-pattern",
+   "statement": "Activity techniques[] overlaps step binds.",
+   "where": "AP:581-593",
+   "polices": "~activity-technique-overlap (source cites stale AP-69)",
+   "law_candidate": "yes: activity techniques[] and step binds disjoint"
+  },
+  {
+   "id": "AP-37 rule-audience-bucket",
+   "kind": "anti-pattern",
+   "statement": "A rule sits in the wrong rules.* audience bucket.",
+   "where": "AP:595-607",
+   "polices": "none",
+   "law_candidate": "no: actor classification of prose"
+  },
+  {
+   "id": "AP-38 no-duplicate-technique-steps",
+   "kind": "anti-pattern",
+   "statement": "N steps bind one technique without structural reason.",
+   "where": "AP:609-621",
+   "polices": "none",
+   "law_candidate": "partly: two steps binding one technique structural; a/b/c classification not"
+  },
+  {
+   "id": "AP-39 hoist-universal-techniques",
+   "kind": "anti-pattern",
+   "statement": "A universal technique not hoisted to workflow.techniques.activity.",
+   "where": "AP:623-635",
+   "polices": "none",
+   "law_candidate": "yes: technique on (nearly) every activity's techniques[]"
+  },
+  {
+   "id": "AP-40 readme-orients-not-transcribes",
+   "kind": "anti-pattern",
+   "statement": "README transcribes YAML structure instead of orienting.",
+   "where": "AP:637-649",
+   "polices": "none",
+   "law_candidate": "partly: README naming step/exit ids and counts lexical; orientation not"
+  },
+  {
+   "id": "AP-41 avoidance-voice-in-definitions",
+   "kind": "anti-pattern",
+   "statement": "Definition prose uses avoidance or comparative voice.",
+   "where": "AP:651-663",
+   "polices": "none",
+   "law_candidate": "no: voice"
+  },
+  {
+   "id": "AP-42 io-agnostic-contract",
+   "kind": "anti-pattern",
+   "statement": "An I/O entry names a specific caller.",
+   "where": "AP:669-681",
+   "polices": "none",
+   "law_candidate": "partly: link to technique/activity file in I/O; prose `from X` not"
+  },
+  {
+   "id": "AP-43 canonical-artifact-ids",
+   "kind": "anti-pattern",
+   "statement": "Protocol cites a filename instead of a canonical id.",
+   "where": "AP:683-695",
+   "polices": "none",
+   "law_candidate": "partly: path-suffixed ids and filename literals lexical"
+  },
+  {
+   "id": "AP-44 artifact-name-in-io",
+   "kind": "anti-pattern",
+   "statement": "A filename lives in Protocol instead of the I/O declaration.",
+   "where": "AP:697-709",
+   "polices": "none",
+   "law_candidate": "partly: filename literal in Protocol lexical"
+  },
+  {
+   "id": "AP-45 no-opaque-artifact-path-array",
+   "kind": "anti-pattern",
+   "statement": "An opaque path array stands in for named inputs.",
+   "where": "AP:711-723",
+   "polices": "none",
+   "law_candidate": "partly: `*-paths` id suffix lexical"
+  },
+  {
+   "id": "AP-46 no-resource-caller-backlink",
+   "kind": "anti-pattern",
+   "statement": "A resource backlinks its callers or narrates orchestration.",
+   "where": "AP:725-737",
+   "polices": "none",
+   "law_candidate": "partly: resource linking a technique/activity path structural; narration not"
+  },
+  {
+   "id": "AP-47 no-redundant-link-label",
+   "kind": "anti-pattern",
+   "statement": "A hyperlink repeats the word before it.",
+   "where": "AP:739-751",
+   "polices": "none",
+   "law_candidate": "yes: lexical pattern over links"
+  },
+  {
+   "id": "AP-48 brace-output-references",
+   "kind": "anti-pattern",
+   "statement": "Protocol says `the output` without an output id.",
+   "where": "AP:753-765",
+   "polices": "none",
+   "law_candidate": "partly: vague-noun list lexical"
+  },
+  {
+   "id": "AP-49 no-delivery-mechanism-narration",
+   "kind": "anti-pattern",
+   "statement": "Prose narrates delivery mechanism.",
+   "where": "AP:767-779",
+   "polices": "none",
+   "law_candidate": "partly: phrase/tool-name list lexical"
+  },
+  {
+   "id": "AP-50 no-tool-usage-prescription",
+   "kind": "anti-pattern",
+   "statement": "Prose prescribes a harness tool-call recipe.",
+   "where": "AP:781-793",
+   "polices": "none",
+   "law_candidate": "partly: session tool names in non-engine prose lexical"
+  },
+  {
+   "id": "AP-51 canonical-technique-reference",
+   "kind": "anti-pattern",
+   "statement": "A raw tool name used where a wrapping op exists.",
+   "where": "AP:795-807",
+   "polices": "none",
+   "law_candidate": "partly: yes given a tool-to-wrapper map"
+  },
+  {
+   "id": "AP-52 brace-declared-ids",
+   "kind": "anti-pattern",
+   "statement": "A declared id used unbraced where a designator is required.",
+   "where": "AP:809-821",
+   "polices": "binding-fidelity (comment cites AP-52)",
+   "law_candidate": "partly: tokens vs declared id set is binding; English coincidence not"
+  },
+  {
+   "id": "AP-53 dotted-rule-address",
+   "kind": "anti-pattern",
+   "statement": "A rule cited in prose instead of its dotted address.",
+   "where": "AP:823-835",
+   "polices": "rule-citation-form, bootstrap-self-contained",
+   "law_candidate": "yes: address length vs container ancestry; canon notes roles not static (AP:831)"
+  },
+  {
+   "id": "AP-54 anchored-protocol-references",
+   "kind": "anti-pattern",
+   "statement": "A protocol reference has no resolvable target.",
+   "where": "AP:837-849",
+   "polices": "~resource-anchors, ~corpus-links",
+   "law_candidate": "partly: link targets resolve; unformed reference to declared value not"
+  },
+  {
+   "id": "AP-55 hoist-shared-inputs",
+   "kind": "anti-pattern",
+   "statement": "The same shared input redeclared instead of hoisted.",
+   "where": "AP:851-863",
+   "polices": "inherited-inputs (names slug)",
+   "law_candidate": "yes: same input id on N leaves under one container"
+  },
+  {
+   "id": "AP-56 paren-invocation-args",
+   "kind": "anti-pattern",
+   "statement": "Invocation args use the wrong typographic namespace.",
+   "where": "AP:865-877",
+   "polices": "none",
+   "law_candidate": "partly: braces after `::op` lexical; italic arg names not"
+  },
+  {
+   "id": "AP-57 escape-literal-dollar",
+   "kind": "anti-pattern",
+   "statement": "A literal $ unescaped in rendered prose.",
+   "where": "AP:879-891",
+   "polices": "none",
+   "law_candidate": "yes: lexical outside code spans"
+  },
+  {
+   "id": "AP-58 snake-case-symbols",
+   "kind": "anti-pattern",
+   "statement": "Symbol ids use the wrong case convention.",
+   "where": "AP:893-905",
+   "polices": "~technique-template ($locals; cites stale AP-55)",
+   "law_candidate": "yes: case class per symbol kind"
+  },
+  {
+   "id": "AP-59 constraint-as-blockquote",
+   "kind": "anti-pattern",
+   "statement": "A caveat sits outside the blockquote note.",
+   "where": "AP:907-919",
+   "polices": "branch-as-step",
+   "law_candidate": "partly: sub-bullet structure yes; caveat vs sub-action modality not"
+  },
+  {
+   "id": "AP-60 local-rule-as-note",
+   "kind": "anti-pattern",
+   "statement": "A local caveat filed as a global rule.",
+   "where": "AP:921-933",
+   "polices": "none",
+   "law_candidate": "no: rule scope semantic"
+  },
+  {
+   "id": "AP-61 factor-repeated-paths",
+   "kind": "anti-pattern",
+   "statement": "A repeated path literal not factored into a designator.",
+   "where": "AP:935-947",
+   "polices": "none",
+   "law_candidate": "yes: path literal occurrence count"
+  },
+  {
+   "id": "AP-62 bind-protocol-locals",
+   "kind": "anti-pattern",
+   "statement": "A {$local} is dead or unbound at the consumer.",
+   "where": "AP:949-961",
+   "polices": "none",
+   "law_candidate": "yes: bind-before-read dataflow over Protocol tokens"
+  },
+  {
+   "id": "AP-63 backtick-code-tokens",
+   "kind": "anti-pattern",
+   "statement": "A code token appears bare without backticks.",
+   "where": "AP:963-975",
+   "polices": "none",
+   "law_candidate": "partly: designators/commands outside spans lexical"
+  },
+  {
+   "id": "AP-64 boolean-id-shape",
+   "kind": "anti-pattern",
+   "statement": "A boolean id is not an affirmative predicate.",
+   "where": "AP:977-989",
+   "polices": "none",
+   "law_candidate": "partly: suffix/stem denylist; `ambiguous noun` not"
+  },
+  {
+   "id": "AP-65 collection-id-shape",
+   "kind": "anti-pattern",
+   "statement": "A collection id has the wrong noun shape.",
+   "where": "AP:991-1003",
+   "polices": "none",
+   "law_candidate": "partly: suffix denylist; plurality heuristic"
+  },
+  {
+   "id": "AP-66 io-id-shape",
+   "kind": "anti-pattern",
+   "statement": "An I/O id encodes representation or direction.",
+   "where": "AP:1005-1017",
+   "polices": "~identifier-qualification (cites stale AP-60)",
+   "law_candidate": "partly: single-word ids, name collisions yes; synonym drift not"
+  },
+  {
+   "id": "AP-67 rule-slug-shape",
+   "kind": "anti-pattern",
+   "statement": "A rule slug is negation or narration.",
+   "where": "AP:1019-1031",
+   "polices": "none",
+   "law_candidate": "no: `at least as clear` is taste"
+  },
+  {
+   "id": "AP-68 technique-stage-agnostic",
+   "kind": "anti-pattern",
+   "statement": "A technique encodes stage, graph position or a gate.",
+   "where": "AP:1033-1045",
+   "polices": "none",
+   "law_candidate": "partly: stage/checkpoint vocabulary lexical"
+  },
+  {
+   "id": "AP-69 no-activity-prose-rules",
+   "kind": "anti-pattern",
+   "statement": "An activity carries prose rules.",
+   "where": "AP:1047-1059",
+   "polices": "none",
+   "law_candidate": "yes: activity.rules non-empty"
+  },
+  {
+   "id": "AP-70 capability-group-placement",
+   "kind": "anti-pattern",
+   "statement": "Technique folder/name disagrees with shape-origin.",
+   "where": "AP:1061-1073",
+   "polices": "none",
+   "law_candidate": "no: shape-origin judgement"
+  },
+  {
+   "id": "AP-71 no-false-resource-delivery",
+   "kind": "anti-pattern",
+   "statement": "A surface claims an inaccurate tool return shape.",
+   "where": "AP:1079-1091",
+   "polices": "none",
+   "law_candidate": "no: prose vs harness behaviour"
+  },
+  {
+   "id": "AP-72 complete-bootstrap-path",
+   "kind": "anti-pattern",
+   "statement": "The bootstrap path has a discoverability gap.",
+   "where": "AP:1093-1105",
+   "polices": "none",
+   "law_candidate": "partly: reachability if tool returns are modelled"
+  },
+  {
+   "id": "AP-73 consistent-tool-names",
+   "kind": "anti-pattern",
+   "statement": "A harness action named inconsistently or stale.",
+   "where": "AP:1107-1119",
+   "polices": "none",
+   "law_candidate": "partly: cited name in registered tool set"
+  },
+  {
+   "id": "AP-74 no-duplicated-guidance",
+   "kind": "anti-pattern",
+   "statement": "The same guidance multi-homed across techniques and docs.",
+   "where": "AP:1121-1133",
+   "polices": "~agent-instruction-homes",
+   "law_candidate": "partly: identical text; near-identical not"
+  },
+  {
+   "id": "AP-75 describe-tool-value",
+   "kind": "anti-pattern",
+   "statement": "A tool description undersells the real return.",
+   "where": "AP:1135-1147",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-76 no-redundant-tools",
+   "kind": "anti-pattern",
+   "statement": "A tool's output is a strict subset of another's.",
+   "where": "AP:1149-1161",
+   "polices": "none",
+   "law_candidate": "no: needs return-shape semantics"
+  },
+  {
+   "id": "AP-77 impl-before-confirmed-approach",
+   "kind": "anti-pattern",
+   "statement": "Implementation starts before approach confirmed.",
+   "where": "AP:1167-1179",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-78 follow-through-on-recommend",
+   "kind": "anti-pattern",
+   "statement": "A recommendation without follow-through.",
+   "where": "AP:1181-1193",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-79 structure-backed-constraints",
+   "kind": "anti-pattern",
+   "statement": "A critical constraint is text-only.",
+   "where": "AP:1195-1207",
+   "polices": "none",
+   "law_candidate": "partly: rule with no gate/checkpoint/validate structural; `critical` judgement"
+  },
+  {
+   "id": "AP-80 preserve-readme-content",
+   "kind": "anti-pattern",
+   "statement": "A README update reduces content without audit.",
+   "where": "AP:1209-1221",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-81 verify-format-literacy",
+   "kind": "anti-pattern",
+   "statement": "Drafting without format literacy; commit skips validation.",
+   "where": "AP:1223-1235",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-82 work-through-activities",
+   "kind": "anti-pattern",
+   "statement": "Work bypasses defined activities.",
+   "where": "AP:1237-1249",
+   "polices": "none",
+   "law_candidate": "no: runtime conduct"
+  },
+  {
+   "id": "AP-83 accept-correction",
+   "kind": "anti-pattern",
+   "statement": "A user correction pushed back without evidence.",
+   "where": "AP:1251-1263",
+   "polices": "none",
+   "law_candidate": "no: session conduct"
+  },
+  {
+   "id": "AP-84 single-closeout-artifact",
+   "kind": "anti-pattern",
+   "statement": "Multiple close-out documents re-narrate one session.",
+   "where": "AP:1269-1281",
+   "polices": "none",
+   "law_candidate": "partly: count of terminal artifacts; `re-narrates` not"
+  },
+  {
+   "id": "AP-85 link-dont-copy-sections",
+   "kind": "anti-pattern",
+   "statement": "A template section forces copying another artifact's content.",
+   "where": "AP:1283-1295",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-86 exception-only-verdict-tables",
+   "kind": "anti-pattern",
+   "statement": "A verdict table lists all-green rows.",
+   "where": "AP:1297-1309",
+   "polices": "none",
+   "law_candidate": "partly: table-header pattern lexical"
+  },
+  {
+   "id": "AP-87 omit-null-sections",
+   "kind": "anti-pattern",
+   "statement": "Null results get headed sections or confirmation ceremony.",
+   "where": "AP:1311-1323",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-88 one-decision-one-checkpoint",
+   "kind": "anti-pattern",
+   "statement": "One decision split across checkpoints.",
+   "where": "AP:1325-1337",
+   "polices": "none",
+   "law_candidate": "partly: consecutive checkpoints structural; answer-space subsumption not"
+  },
+  {
+   "id": "AP-89 checkpoint-requires-decision",
+   "kind": "anti-pattern",
+   "statement": "A checkpoint has no real decision in its options.",
+   "where": "AP:1339-1351",
+   "polices": "none",
+   "law_candidate": "yes: all options same exit/effects, none sets a variable"
+  },
+  {
+   "id": "AP-90 no-guide-wrapper-ceremony",
+   "kind": "anti-pattern",
+   "statement": "A guide is wrapper ceremony around a template.",
+   "where": "AP:1353-1365",
+   "polices": "none",
+   "law_candidate": "partly: heading denylist lexical"
+  },
+  {
+   "id": "AP-91 lifecycle-row-update",
+   "kind": "anti-pattern",
+   "statement": "Lifecycle rows append-only instead of updated in place.",
+   "where": "AP:1367-1379",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-92 resource-fills-not-does",
+   "kind": "anti-pattern",
+   "statement": "A resource owns DOES procedure.",
+   "where": "AP:1381-1393",
+   "polices": "none",
+   "law_candidate": "no: cadence prose"
+  },
+  {
+   "id": "AP-93 canonical-fact-home",
+   "kind": "anti-pattern",
+   "statement": "A fact is multi-homed across templates.",
+   "where": "AP:1395-1407",
+   "polices": "~canonical-home-map",
+   "law_candidate": "partly: same heading across templates; `same fact` not"
+  },
+  {
+   "id": "AP-94 link-only-input-slots",
+   "kind": "anti-pattern",
+   "statement": "An input slot restates another artifact.",
+   "where": "AP:1409-1421",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-95 enforce-output-discipline",
+   "kind": "anti-pattern",
+   "statement": "Output-discipline rules exist without a verify gate.",
+   "where": "AP:1423-1435",
+   "polices": "none",
+   "law_candidate": "partly: ruleset paired with a bound verify step is graph; identifying ruleset not"
+  },
+  {
+   "id": "AP-96 artifact-audience-declared",
+   "kind": "anti-pattern",
+   "statement": "An artifact's audience is undeclared.",
+   "where": "AP:1437-1449",
+   "polices": "audience (canon names check-audience at AP:1449)",
+   "law_candidate": "yes: #### artifact implies #### audience"
+  },
+  {
+   "id": "AP-97 link-named-artifacts",
+   "kind": "anti-pattern",
+   "statement": "A durable artifact named in a message but not linked.",
+   "where": "AP:1451-1463",
+   "polices": "none",
+   "law_candidate": "partly: message interpolates a path variable; `names an artifact` not"
+  },
+  {
+   "id": "AP-98 no-next-step-narration",
+   "kind": "anti-pattern",
+   "statement": "A message narrates next step or auto-advance.",
+   "where": "AP:1465-1477",
+   "polices": "none",
+   "law_candidate": "partly: timing phrases lexical"
+  },
+  {
+   "id": "AP-99 statement-not-question",
+   "kind": "anti-pattern",
+   "statement": "A checkpoint message is phrased as a question.",
+   "where": "AP:1479-1491",
+   "polices": "none",
+   "law_candidate": "yes: trailing ? and opener list lexical"
+  },
+  {
+   "id": "AP-100 runtime-rules-only",
+   "kind": "anti-pattern",
+   "statement": "A design-time standard filed as a runtime rule.",
+   "where": "AP:1493-1505",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-101 no-caption-only-message",
+   "kind": "anti-pattern",
+   "statement": "A checkpoint message only captions the prior step.",
+   "where": "AP:1507-1519",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-102 no-technique-resource-dual-home",
+   "kind": "anti-pattern",
+   "statement": "Operative criteria dual-homed in technique and resource.",
+   "where": "AP:1521-1533",
+   "polices": "none",
+   "law_candidate": "no: same criteria in two wordings"
+  },
+  {
+   "id": "AP-103 cited-home-owns-claim",
+   "kind": "anti-pattern",
+   "statement": "A citation attributes a fact to a home that lacks it.",
+   "where": "AP:1539-1551",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-104 operative-criteria-need-a-home",
+   "kind": "anti-pattern",
+   "statement": "Reusable criteria live only in a technique.",
+   "where": "AP:1553-1565",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-105 no-shadow-audit-pass",
+   "kind": "anti-pattern",
+   "statement": "An audit pass shadows another walker's Detect.",
+   "where": "AP:1567-1579",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-106 canon-layer-cites-not-restates",
+   "kind": "anti-pattern",
+   "statement": "An upper canon layer restates Detect/Fix owned below.",
+   "where": "AP:1581-1593",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-107 bind-site-is-orchestration-truth",
+   "kind": "anti-pattern",
+   "statement": "A pass inventory disagrees with YAML bind sites.",
+   "where": "AP:1595-1607",
+   "polices": "~guard-roster (roster part)",
+   "law_candidate": "partly: prose id list vs binds comparable; else not"
+  },
+  {
+   "id": "AP-108 numbered-protocol-phases",
+   "kind": "anti-pattern",
+   "statement": "Distinct phases collapsed into one numbered step.",
+   "where": "AP:1613-1625",
+   "polices": "none",
+   "law_candidate": "no: `distinct sequential phases` semantic"
+  },
+  {
+   "id": "AP-109 technique-outputs-declared",
+   "kind": "anti-pattern",
+   "statement": "Protocol produces a value not declared on Outputs.",
+   "where": "AP:1627-1639",
+   "polices": "none",
+   "law_candidate": "partly: {id} assigned but undeclared is binding; prose products not"
+  },
+  {
+   "id": "AP-110 duplicate-shared-capability",
+   "kind": "anti-pattern",
+   "statement": "A local technique re-implements a shared capability.",
+   "where": "AP:1641-1653",
+   "polices": "none",
+   "law_candidate": "partly: given a capability map"
+  },
+  {
+   "id": "AP-111 contract-not-procedure",
+   "kind": "anti-pattern",
+   "statement": "Protocol carries identity criteria or a trailing Set phase.",
+   "where": "AP:1655-1667",
+   "polices": "none",
+   "law_candidate": "partly: boolean iff enum projection is dataflow; (a) not"
+  },
+  {
+   "id": "AP-112 no-derived-state-shadow",
+   "kind": "anti-pattern",
+   "statement": "A derived shadow variable duplicates an authoritative one.",
+   "where": "AP:1669-1681",
+   "polices": "~variable-model (weak)",
+   "law_candidate": "partly: shadow written only as projection, via effects/sets dataflow"
+  },
+  {
+   "id": "AP-113 session-interaction-in-technique",
+   "kind": "anti-pattern",
+   "statement": "A technique prescribes human/session interaction.",
+   "where": "AP:1683-1695",
+   "polices": "none",
+   "law_candidate": "partly: present/surface verbs lexical"
+  },
+  {
+   "id": "AP-114 pass-orchestration-in-technique",
+   "kind": "anti-pattern",
+   "statement": "A technique's Protocol invokes other techniques to do work.",
+   "where": "AP:1697-1709",
+   "polices": "none",
+   "law_candidate": "yes: Apply or :: invocation inside Protocol"
+  },
+  {
+   "id": "AP-115 platform-semantics-in-capability",
+   "kind": "anti-pattern",
+   "statement": "Capability teaches loader composition.",
+   "where": "AP:1711-1723",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-116 no-template-creation-guide",
+   "kind": "anti-pattern",
+   "statement": "A planning artifact persisted without a creation-guide Template.",
+   "where": "AP:1725-1737",
+   "polices": "artifact-guides",
+   "law_candidate": "yes: artifact filename maps to a resource with ## Template"
+  },
+  {
+   "id": "AP-117 no-engine-mechanics-as-rules",
+   "kind": "anti-pattern",
+   "statement": "A leaf Rule re-encodes engine mechanics.",
+   "where": "AP:1739-1751",
+   "polices": "checkpoint-presentation (one contract only)",
+   "law_candidate": "no in general: restatement semantic"
+  },
+  {
+   "id": "AP-118 no-bind-mechanics-as-prose",
+   "kind": "anti-pattern",
+   "statement": "Prose substitutes for a bind decision.",
+   "where": "AP:1753-1765",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-119 procedure-in-io-contract",
+   "kind": "anti-pattern",
+   "statement": "An I/O description holds how the value is produced.",
+   "where": "AP:1767-1779",
+   "polices": "none",
+   "law_candidate": "partly: imperative/sequencing phrases lexical"
+  },
+  {
+   "id": "AP-120 procedure-in-capability",
+   "kind": "anti-pattern",
+   "statement": "Capability holds how, a hyperlink, or a {id}.",
+   "where": "AP:1781-1793",
+   "polices": "none",
+   "law_candidate": "partly: link or {id} in Capability yes; imperative not"
+  },
+  {
+   "id": "AP-121 rule-as-protocol-step",
+   "kind": "anti-pattern",
+   "statement": "A cross-cutting rule encoded as a Protocol step.",
+   "where": "AP:1795-1807",
+   "polices": "none",
+   "law_candidate": "no: `no produce outcome` semantic"
+  },
+  {
+   "id": "AP-122 prompt-restates-owned-mechanics",
+   "kind": "anti-pattern",
+   "statement": "A spawn stub restates engine HOW owned elsewhere.",
+   "where": "AP:1809-1821",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-123 capability-as-op-inventory",
+   "kind": "anti-pattern",
+   "statement": "Capability enumerates nested ops.",
+   "where": "AP:1823-1835",
+   "polices": "none",
+   "law_candidate": "partly: Capability links to k child techniques"
+  },
+  {
+   "id": "AP-124 alternate-ops-as-protocol-sequence",
+   "kind": "anti-pattern",
+   "statement": "Mutually exclusive variants encoded as Protocol phases.",
+   "where": "AP:1837-1849",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-125 technique-ref-in-io-contract",
+   "kind": "anti-pattern",
+   "statement": "An I/O description hyperlinks a technique.",
+   "where": "AP:1851-1863",
+   "polices": "none",
+   "law_candidate": "yes: I/O description links a technique file or :: address"
+  },
+  {
+   "id": "AP-126 cut-comment-jsdoc-verbosity",
+   "kind": "anti-pattern",
+   "statement": "A comment narrates what the next line says.",
+   "where": "AP:1869-1881",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-127 no-dense-prose-after-config-examples",
+   "kind": "anti-pattern",
+   "statement": "Prose restates fields an example shows.",
+   "where": "AP:1883-1895",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-128 worktree-root-placeholders",
+   "kind": "anti-pattern",
+   "statement": "A literal checkout root where a placeholder belongs.",
+   "where": "AP:1897-1909",
+   "polices": "none",
+   "law_candidate": "yes: absolute/home path regex"
+  },
+  {
+   "id": "AP-129 no-parallel-runbook-when-setup-covers-it",
+   "kind": "anti-pattern",
+   "statement": "A second how-to restates setup steps.",
+   "where": "AP:1911-1923",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-130 variable-description-one-line",
+   "kind": "anti-pattern",
+   "statement": "A variables[].description carries more than the value.",
+   "where": "AP:1925-1937",
+   "polices": "none",
+   "law_candidate": "partly: sentence count and tail phrases lexical"
+  },
+  {
+   "id": "AP-131 bag-value-as-literal",
+   "kind": "anti-pattern",
+   "statement": "A concrete value written where a declared slot holds it.",
+   "where": "AP:1939-1951",
+   "polices": "none",
+   "law_candidate": "partly: literal equals a declared defaultValue; `denotes` not"
+  },
+  {
+   "id": "AP-132 unproduced-value-read",
+   "kind": "anti-pattern",
+   "statement": "A reader can reach a variable on a path skipping its producer.",
+   "where": "AP:1953-1965",
+   "polices": "~activity-variables (ledger unproduced-read-triage), ~binding-fidelity",
+   "law_candidate": "yes: dataflow over gated producers/readers in step graph"
+  },
+  {
+   "id": "AP-133 stale-restatement-after-change",
+   "kind": "anti-pattern",
+   "statement": "A change leaves a restatement asserting old behaviour.",
+   "where": "AP:1967-1979",
+   "polices": "none",
+   "law_candidate": "no: change-surface plus prose"
+  },
+  {
+   "id": "AP-134 artifact-name-is-filename",
+   "kind": "anti-pattern",
+   "statement": "An #### artifact body is not one filename.",
+   "where": "AP:1981-1993",
+   "polices": "none",
+   "law_candidate": "yes: body is one path segment"
+  },
+  {
+   "id": "AP-135 resource-id-names-its-content",
+   "kind": "anti-pattern",
+   "statement": "A consult resource's id is a verb phrase.",
+   "where": "AP:1995-2007",
+   "polices": "none",
+   "law_candidate": "partly: verb-head lexical; kind-word vs siblings structural"
+  },
+  {
+   "id": "AP-136 deployment-path-in-capability",
+   "kind": "anti-pattern",
+   "statement": "Capability names one deployment's directory.",
+   "where": "AP:2009-2021",
+   "polices": "none",
+   "law_candidate": "yes: path regex in Capability"
+  },
+  {
+   "id": "AP-137 overlapping-rule-scopes",
+   "kind": "anti-pattern",
+   "statement": "Two rules' triggers intersect with differing handling.",
+   "where": "AP:2023-2035",
+   "polices": "none",
+   "law_candidate": "no: trigger intersection semantic"
+  },
+  {
+   "id": "AP-138 whole-resource-for-one-section",
+   "kind": "anti-pattern",
+   "statement": "A citation delivers a whole resource where prose reads one section.",
+   "where": "AP:2037-2049",
+   "polices": "citation-grain",
+   "law_candidate": "partly: bare+anchored same resource yes; link text equals heading yes; consumer scope not"
+  },
+  {
+   "id": "AP-139 tool-contract-restated-in-protocol",
+   "kind": "anti-pattern",
+   "statement": "Protocol restates a tool argument's shape.",
+   "where": "AP:2051-2063",
+   "polices": "none",
+   "law_candidate": "partly: tool schema field names in Protocol"
+  },
+  {
+   "id": "AP-140 phase-cited-by-ordinal",
+   "kind": "anti-pattern",
+   "statement": "A reference names a Protocol phase by ordinal.",
+   "where": "AP:2065-2077",
+   "polices": "none",
+   "law_candidate": "yes: `step N` lexical outside owning Protocol"
+  },
+  {
+   "id": "AP-141 unowned-harness-capability",
+   "kind": "anti-pattern",
+   "statement": "No technique owns a harness capability several call.",
+   "where": "AP:2079-2091",
+   "polices": "none",
+   "law_candidate": "partly: tool named in two bodies and no Output declares product; graph over tool refs"
+  },
+  {
+   "id": "AP-142 output-without-destination",
+   "kind": "anti-pattern",
+   "statement": "A declared output has no reader.",
+   "where": "AP:2093-2105",
+   "polices": "~binding-fidelity",
+   "law_candidate": "yes: output id has artifact/binding/gate/message reader"
+  },
+  {
+   "id": "AP-143 framing-outside-any-section",
+   "kind": "anti-pattern",
+   "statement": "Operative prose in a span no ## anchor reaches.",
+   "where": "AP:2107-2119",
+   "polices": "section-framing (ledger)",
+   "law_candidate": "yes: prose before first ## with anchored citers; `operative` triage human"
+  },
+  {
+   "id": "AP-144 declared-input-never-read",
+   "kind": "anti-pattern",
+   "statement": "A technique declares an input its Protocol never reaches.",
+   "where": "AP:2121-2133",
+   "polices": "none",
+   "law_candidate": "yes: input id occurs in Protocol/Rules"
+  },
+  {
+   "id": "AP-145 apply-omits-declared-input",
+   "kind": "anti-pattern",
+   "statement": "An Apply omits the applied technique's required inputs.",
+   "where": "AP:2135-2147",
+   "polices": "none",
+   "law_candidate": "yes: Apply args cover target required inputs minus defaults/ambient"
+  },
+  {
+   "id": "AP-146 branch-on-undeclared-threshold",
+   "kind": "anti-pattern",
+   "statement": "A branch conditions on a magnitude nothing declares.",
+   "where": "AP:2149-2161",
+   "polices": "none",
+   "law_candidate": "partly: magnitude words lexical; declared-somewhere binding"
+  },
+  {
+   "id": "AP-147 inherited-rules-re-enumerated",
+   "kind": "anti-pattern",
+   "statement": "A rules entry cites rules the reader already receives.",
+   "where": "AP:2163-2175",
+   "polices": "none",
+   "law_candidate": "partly: citation list vs home roster set-compare; `narrows` not"
+  },
+  {
+   "id": "AP-148 reference-without-provenance",
+   "kind": "anti-pattern",
+   "statement": "A reference does not resolve to one source.",
+   "where": "AP:2177-2189",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-149 pre-session-prose-defers-to-the-framework",
+   "kind": "anti-pattern",
+   "statement": "Bootstrap prose sends the reader somewhere unreachable.",
+   "where": "AP:2191-2203",
+   "polices": "~bootstrap-self-contained",
+   "law_candidate": "yes: links/dotted addresses/Apply on the bootstrap surface"
+  },
+  {
+   "id": "AP-150 instruction-narrates-an-actor",
+   "kind": "anti-pattern",
+   "statement": "A surface describes an actor instead of instructing its reader.",
+   "where": "AP:2205-2217",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-151 rule-binds-beyond-its-operation",
+   "kind": "anti-pattern",
+   "statement": "A technique rule states policy over a subject it does not own.",
+   "where": "AP:2219-2231",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-152 inherited-input-re-declared",
+   "kind": "anti-pattern",
+   "statement": "A leaf redeclares an input a container merges into it.",
+   "where": "AP:2233-2245",
+   "polices": "inherited-inputs",
+   "law_candidate": "yes: leaf input id in ancestor container Inputs (merge tree)"
+  },
+  {
+   "id": "AP-153 schema-semantics-restated",
+   "kind": "anti-pattern",
+   "statement": "Prose restates what a schema field means.",
+   "where": "AP:2247-2259",
+   "polices": "none",
+   "law_candidate": "no (operator roster lexical at best)"
+  },
+  {
+   "id": "AP-154 engine-internals-narrated",
+   "kind": "anti-pattern",
+   "statement": "An engine technique narrates server internals.",
+   "where": "AP:2261-2273",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "AP-155 value-set-in-prose",
+   "kind": "anti-pattern",
+   "statement": "Admitted values enumerated in prose, declaration open.",
+   "where": "AP:2275-2287",
+   "polices": "declared-values names it (role unverified)",
+   "law_candidate": "partly: no `values` plus roster pattern lexical"
+  },
+  {
+   "id": "AP-156 one-invariant-per-rule",
+   "kind": "anti-pattern",
+   "statement": "One Rules entry states several constraints.",
+   "where": "AP:2289-2301",
+   "polices": "none",
+   "law_candidate": "no (length/bold-lede signals partly)"
+  },
+  {
+   "id": "AP-157 call-omits-conditionally-required-argument",
+   "kind": "anti-pattern",
+   "statement": "A signature omits an argument the server demands in that state.",
+   "where": "AP:2303-2315",
+   "polices": "none",
+   "law_candidate": "partly: needs server-state model; canon says schema settles nothing (AP:2311)"
+  },
+  {
+   "id": "AP-158 call-omits-required-argument",
+   "kind": "anti-pattern",
+   "statement": "A whole signature omits a schema-required argument.",
+   "where": "AP:2317-2329",
+   "polices": "~tool-call-shape",
+   "law_candidate": "yes: signature args cover tool required params"
+  },
+  {
+   "id": "AP-159 call-names-an-undeclared-argument",
+   "kind": "anti-pattern",
+   "statement": "A signature names an argument the tool does not declare.",
+   "where": "AP:2331-2343",
+   "polices": "~tool-call-shape",
+   "law_candidate": "yes: signature args subset of tool params"
+  },
+  {
+   "id": "AP-160 protocol-phase-as-list-item",
+   "kind": "anti-pattern",
+   "statement": "A Protocol phase is a flat numbered list entry.",
+   "where": "AP:2345-2357",
+   "polices": "~protocol-shape",
+   "law_candidate": "yes: phases are ### N. headings"
+  },
+  {
+   "id": "AP-161 unreachable-operation-reference",
+   "kind": "anti-pattern",
+   "statement": "A technique names another technique without invoking it.",
+   "where": "AP:2359-2371",
+   "polices": "~unserved-operation-refs (ledger)",
+   "law_candidate": "yes: link/:: with no invoke, outside delivery set"
+  },
+  {
+   "id": "AP-162 produce-path-without-a-reading",
+   "kind": "anti-pattern",
+   "statement": "A Protocol is the tool's own call and nothing else.",
+   "where": "AP:2373-2385",
+   "polices": "none",
+   "law_candidate": "no: `interprets` semantic"
+  },
+  {
+   "id": "AP-163 construct-folder-without-a-readme",
+   "kind": "anti-pattern",
+   "statement": "A construct subfolder carries definitions and no README.",
+   "where": "AP:2387-2399",
+   "polices": "none",
+   "law_candidate": "yes: file-tree presence"
+  },
+  {
+   "id": "AP-164 relocation-without-a-preserved-outcome",
+   "kind": "anti-pattern",
+   "statement": "A duty moves and neither home names the kept outcome.",
+   "where": "AP:2401-2413",
+   "polices": "none",
+   "law_candidate": "partly: gate/exit/bind diff between refs structural; `names outcome` prose"
+  },
+  {
+   "id": "AP-165 unproducible-declared-value",
+   "kind": "anti-pattern",
+   "statement": "An output admits a value no Protocol path leaves standing.",
+   "where": "AP:2415-2427",
+   "polices": "~declared-values",
+   "law_candidate": "partly: phase order over assigned values, needs assignment parse"
+  },
+  {
+   "id": "AP-166 inherited-input-never-spent",
+   "kind": "anti-pattern",
+   "statement": "A container delivers a required input a descendant never reads.",
+   "where": "AP:2429-2441",
+   "polices": "none",
+   "law_candidate": "yes: container required input, descendant no reference, step no source"
+  },
+  {
+   "id": "DP-1 Workflows Ossify Patterns",
+   "kind": "principle",
+   "statement": "A repeated procedure is a durable graph of activities.",
+   "where": "DP:19-23",
+   "polices": "none",
+   "law_candidate": "no: repeated success"
+  },
+  {
+   "id": "DP-2 Internalize Before Producing",
+   "kind": "principle",
+   "statement": "Read the construct model before writing content.",
+   "where": "DP:25-29",
+   "polices": "none",
+   "law_candidate": "no: process"
+  },
+  {
+   "id": "DP-3 Define Complete Scope Before Execution",
+   "kind": "principle",
+   "statement": "List every file before starting; check again before done.",
+   "where": "DP:31-35",
+   "polices": "none",
+   "law_candidate": "no: process"
+  },
+  {
+   "id": "DP-4 Clarify Before Assuming",
+   "kind": "principle",
+   "statement": "Ask one question when interpretations differ.",
+   "where": "DP:37-41",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-5 Maximize Schema Expressiveness",
+   "kind": "principle",
+   "statement": "Use the most specific construct the schema provides.",
+   "where": "DP:43-47",
+   "polices": "none",
+   "law_candidate": "partly: via inventory; prose restating structure not"
+  },
+  {
+   "id": "DP-6 One Authoritative Home",
+   "kind": "principle",
+   "statement": "Each operative fact has one statement.",
+   "where": "DP:49-53",
+   "polices": "~duplicate-bodies, ~agent-instruction-homes",
+   "law_candidate": "partly: identical text at two sites; reworded fact not"
+  },
+  {
+   "id": "DP-7 Convention Over Invention",
+   "kind": "principle",
+   "statement": "Search existing naming before introducing a pattern.",
+   "where": "DP:55-59",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-8 Confirm Before Irreversible Changes",
+   "kind": "principle",
+   "statement": "An irreversible change waits for explicit confirmation.",
+   "where": "DP:61-65",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-9 Encode Constraints as Structure",
+   "kind": "principle",
+   "statement": "A critical constraint is a checkpoint, condition, validate or exit when.",
+   "where": "DP:67-71",
+   "polices": "none",
+   "law_candidate": "partly: structural backing checkable; `critical` judgement"
+  },
+  {
+   "id": "DP-10 Non-Destructive Updates",
+   "kind": "principle",
+   "statement": "A change that removes material names the removal and waits.",
+   "where": "DP:73-77",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-11 Complete Documentation Structure",
+   "kind": "principle",
+   "statement": "A workflow root and each construct folder has a README.",
+   "where": "DP:79-83",
+   "polices": "none",
+   "law_candidate": "yes: README presence; orientation content not"
+  },
+  {
+   "id": "DP-12 Output Economy",
+   "kind": "principle",
+   "statement": "An artifact or checkpoint states one fact for one audience.",
+   "where": "DP:85-89",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-13 Separate Contract from Procedure",
+   "kind": "principle",
+   "statement": "Inputs/Outputs state what; Protocol states when and how.",
+   "where": "DP:91-95",
+   "polices": "none",
+   "law_candidate": "partly: links/{id}/imperatives in I/O lexical"
+  },
+  {
+   "id": "DP-14 Single Source of Truth",
+   "kind": "principle",
+   "statement": "Each fact of session state has one variable.",
+   "where": "DP:97-101",
+   "polices": "~variable-model",
+   "law_candidate": "partly: shadow projection dataflow"
+  },
+  {
+   "id": "DP-15 Phase by Sequenced Outcome",
+   "kind": "principle",
+   "statement": "A phase is one outcome, a ### N. Title section.",
+   "where": "DP:103-107",
+   "polices": "~protocol-shape",
+   "law_candidate": "partly: heading structure yes; one-outcome not"
+  },
+  {
+   "id": "DP-16 Distinguish Designators from Parameters",
+   "kind": "principle",
+   "statement": "{id} for values, italic for arg names, parentheses for arg lists.",
+   "where": "DP:109-113",
+   "polices": "none",
+   "law_candidate": "partly: typographic namespace lexical"
+  },
+  {
+   "id": "DP-17 Document in Positive Present",
+   "kind": "principle",
+   "statement": "Definition prose states what the system is, present tense.",
+   "where": "DP:115-119",
+   "polices": "none",
+   "law_candidate": "no: voice"
+  },
+  {
+   "id": "DP-18 Prefer Shared Capability",
+   "kind": "principle",
+   "statement": "Bind the shared technique that owns a capability.",
+   "where": "DP:121-125",
+   "polices": "none",
+   "law_candidate": "partly: given a capability map"
+  },
+  {
+   "id": "DP-19 Name Symbols Affirmatively",
+   "kind": "principle",
+   "statement": "A symbol id is affirmative, head noun last, snake_case.",
+   "where": "DP:127-131",
+   "polices": "~identifier-qualification",
+   "law_candidate": "partly: case/suffix rules yes; affirmative not"
+  },
+  {
+   "id": "DP-20 Keep Orchestration in Structure",
+   "kind": "principle",
+   "statement": "Activity owns stage, checkpoints, exits; graph binds exits.",
+   "where": "DP:133-137",
+   "polices": "none",
+   "law_candidate": "partly: exits bound in graph yes; technique naming flow lexical"
+  },
+  {
+   "id": "DP-21 Match the Harness Surface",
+   "kind": "principle",
+   "statement": "Tool names, return shapes, bootstrap paths match the harness.",
+   "where": "DP:139-143",
+   "polices": "~tool-call-shape",
+   "law_candidate": "partly: names and params vs registry yes; return-shape prose not"
+  },
+  {
+   "id": "DP-22 Modular Over Inline",
+   "kind": "principle",
+   "statement": "A construct lives in its own file; a parent references it.",
+   "where": "DP:145-149",
+   "polices": "none",
+   "law_candidate": "yes: file-tree and reference form"
+  },
+  {
+   "id": "DP-23 Close the Loop",
+   "kind": "principle",
+   "statement": "A recommendation is followed by action or explicit stop.",
+   "where": "DP:151-155",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-24 Keep Session Interaction in Activities",
+   "kind": "principle",
+   "statement": "An activity owns when products reach a person.",
+   "where": "DP:157-161",
+   "polices": "none",
+   "law_candidate": "partly: present/surface verbs in technique lexical"
+  },
+  {
+   "id": "DP-25 Bind Sibling Techniques as Steps",
+   "kind": "principle",
+   "statement": "Multi-technique work lives in activity steps[].",
+   "where": "DP:163-167",
+   "polices": "none",
+   "law_candidate": "yes: no Apply in Protocol; siblings as steps"
+  },
+  {
+   "id": "DP-26 A Technique Is a Reading",
+   "kind": "principle",
+   "statement": "A technique is judgement a loop, branch or gate cannot hold.",
+   "where": "DP:169-173",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-27 State Contract Contribution",
+   "kind": "principle",
+   "statement": "Container Capability names the shared contract it contributes.",
+   "where": "DP:175-179",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-28 Creation Guide for Generated Documents",
+   "kind": "principle",
+   "statement": "Every persisted artifact has a creation-guide resource with ## Template.",
+   "where": "DP:181-185",
+   "polices": "~artifact-guides",
+   "law_candidate": "yes: filename maps to guide with Template"
+  },
+  {
+   "id": "DP-29 Cite Resource Policy; Do Not Restate It",
+   "kind": "principle",
+   "statement": "Protocol cites the section: title as link text, # anchor in URL.",
+   "where": "DP:187-191",
+   "polices": "~resource-anchors",
+   "law_candidate": "partly: link form yes; restating not"
+  },
+  {
+   "id": "DP-30 Resources Stay Abstract",
+   "kind": "principle",
+   "statement": "Concrete filenames and bindings belong to technique and activity.",
+   "where": "DP:193-197",
+   "polices": "none",
+   "law_candidate": "partly: filenames/bindings in resources lexical"
+  },
+  {
+   "id": "DP-31 Isolate Conditional Branches as Notes",
+   "kind": "principle",
+   "statement": "Each when/if/otherwise branch is a > note under the bullet.",
+   "where": "DP:199-203",
+   "polices": "~branch-as-step",
+   "law_candidate": "partly: structure yes; caveat vs sub-action not"
+  },
+  {
+   "id": "DP-32 Cite Resources at Section Grain",
+   "kind": "principle",
+   "statement": "A citation names the narrowest section it needs.",
+   "where": "DP:205-209",
+   "polices": "~citation-grain",
+   "law_candidate": "yes: citation set per resource (bare vs anchored)"
+  },
+  {
+   "id": "DP-33 Pre-Session Prose Stands Alone",
+   "kind": "principle",
+   "statement": "Prose delivered before references resolve is executable from its text.",
+   "where": "DP:211-215",
+   "polices": "~bootstrap-self-contained",
+   "law_candidate": "yes: references on bootstrap surface"
+  },
+  {
+   "id": "DP-34 Edit the Owner",
+   "kind": "principle",
+   "statement": "Name every file a contract extension would force an edit to.",
+   "where": "DP:217-221",
+   "polices": "none",
+   "law_candidate": "partly: restated counts/lists; coupling judgement not"
+  },
+  {
+   "id": "DP-35 Prefer Removing the Thing That Needs a Prohibition",
+   "kind": "principle",
+   "statement": "A warning against a second path means two constructs do one job.",
+   "where": "DP:223-227",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-36 A Technique Names Only What Its Reader Holds",
+   "kind": "principle",
+   "statement": "A name in technique text is one the delivery carries.",
+   "where": "DP:229-233",
+   "polices": "~unserved-operation-refs",
+   "law_candidate": "yes: names resolve within delivery set; roles need contract"
+  },
+  {
+   "id": "DP-37 An I/O Contract Names the Value",
+   "kind": "principle",
+   "statement": "An Input or Output does not name its caller.",
+   "where": "DP:235-239",
+   "polices": "none",
+   "law_candidate": "partly: caller/activity links yes; prose not"
+  },
+  {
+   "id": "DP-38 A Relocation Records the Outcome It Keeps",
+   "kind": "principle",
+   "statement": "A restructuring names the outcome that still holds and its check.",
+   "where": "DP:241-245",
+   "polices": "none",
+   "law_candidate": "partly: change-surface diff; recorded outcome prose"
+  },
+  {
+   "id": "DP-39 A Phase Heading Names the Outcome",
+   "kind": "principle",
+   "statement": "A phase heading is two or three Title Case words.",
+   "where": "DP:247-251",
+   "polices": "none",
+   "law_candidate": "partly: word count/case yes; names outcome not"
+  },
+  {
+   "id": "DP-40 Fan-Out Lives at the Layer That Runs the Work",
+   "kind": "principle",
+   "statement": "Workers are a graph destination; units inside one worker a forEach.",
+   "where": "DP:253-257",
+   "polices": "none",
+   "law_candidate": "partly: graph fan vs loop structural; layer judgement not"
+  },
+  {
+   "id": "DP-41 A Phase States Answers the Tool Has Returned",
+   "kind": "principle",
+   "statement": "Protocol states answers the tool has returned on a real subject.",
+   "where": "DP:259-263",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-42 A Routine Holds the Codified Path",
+   "kind": "principle",
+   "statement": "An accepted, consistent path is a routine.",
+   "where": "DP:265-269",
+   "polices": "~repeated-runs",
+   "law_candidate": "partly: repeated step runs detectable; accepted not"
+  },
+  {
+   "id": "DP-43 A Workflow Borrows Activities",
+   "kind": "principle",
+   "statement": "A workflow borrows another workflow's activity file in the stated form.",
+   "where": "DP:271-275",
+   "polices": "~refs",
+   "law_candidate": "yes: reference form resolves"
+  },
+  {
+   "id": "DP-44 A Resource Splits for Section Delivery",
+   "kind": "principle",
+   "statement": "A multi-part resource splits into per-category ## sections.",
+   "where": "DP:277-281",
+   "polices": "~section-framing",
+   "law_candidate": "partly: sections exist; category split not"
+  },
+  {
+   "id": "DP-45 A Rule States One Invariant",
+   "kind": "principle",
+   "statement": "A ## Rules entry states one constraint.",
+   "where": "DP:283-287",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-46 A Consumer Binds the Contract",
+   "kind": "principle",
+   "statement": "A definition declaring a shared contract is usable wherever expected.",
+   "where": "DP:289-293",
+   "polices": "none",
+   "law_candidate": "partly: conformance if contract is typed"
+  },
+  {
+   "id": "DP-47 A Calibrated Surface Extends by Wrapping",
+   "kind": "principle",
+   "statement": "A calibrated surface gains a need through its wrapper.",
+   "where": "DP:295-299",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "DP-ordinals",
+   "kind": "convention",
+   "statement": "Ordinals are stable. A new invariant is appended.",
+   "where": "DP:15",
+   "polices": "none",
+   "law_candidate": "yes: ordinal sequence monotone across revisions"
+  },
+  {
+   "id": "CC File naming",
+   "kind": "convention",
+   "statement": "Activities NN-name.yaml; techniques/resources kebab-case .md.",
+   "where": "CC:18",
+   "polices": "none",
+   "law_candidate": "yes: filename regex"
+  },
+  {
+   "id": "CC Field ordering",
+   "kind": "convention",
+   "statement": "id, version, name/capability, description first.",
+   "where": "CC:19",
+   "polices": "none",
+   "law_candidate": "yes: key order"
+  },
+  {
+   "id": "CC Version format",
+   "kind": "convention",
+   "statement": "Semantic X.Y.Z.",
+   "where": "CC:20",
+   "polices": "none",
+   "law_candidate": "yes: regex"
+  },
+  {
+   "id": "CC Routing patterns",
+   "kind": "convention",
+   "statement": "exits[] with id/when/isDefault/immediate, bound in graph.",
+   "where": "CC:21",
+   "polices": "~when-expression, ~refs",
+   "law_candidate": "yes: exit fields and graph binding"
+  },
+  {
+   "id": "CC Checkpoint structure",
+   "kind": "convention",
+   "statement": "Inline kind: checkpoint with message, options, effects.",
+   "where": "CC:22",
+   "polices": "~activities (schema)",
+   "law_candidate": "yes: field shape"
+  },
+  {
+   "id": "CC Technique structure",
+   "kind": "convention",
+   "statement": "Capability/Inputs/Outputs/Protocol/Rules sections; binding via step.technique.",
+   "where": "CC:23",
+   "polices": "~technique-template",
+   "law_candidate": "yes: section set and order"
+  },
+  {
+   "id": "CC Routine structure",
+   "kind": "convention",
+   "statement": "routines/<name>.yaml; filename is identity; steps[] kind-tagged.",
+   "where": "CC:24",
+   "polices": "~routines",
+   "law_candidate": "yes: path and step shape"
+  },
+  {
+   "id": "CC Divergence",
+   "kind": "convention",
+   "statement": "Each divergence is justified or brought into conformance.",
+   "where": "CC:26",
+   "polices": "none",
+   "law_candidate": "no: justification"
+  },
+  {
+   "id": "CR Smell not stance",
+   "kind": "convention",
+   "statement": "An entry detects one observable defect; stance stays in principles.",
+   "where": "AP:19-21",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "CR Entry identity",
+   "kind": "convention",
+   "statement": "Title ### AP-XX. name; cite the kebab name, not the number.",
+   "where": "AP:23-25",
+   "polices": "none",
+   "law_candidate": "yes: heading regex; number citations lexical"
+  },
+  {
+   "id": "CR Audit technique boundary",
+   "kind": "convention",
+   "statement": "An audit technique loads the subsection; does not restate Detect or Fix.",
+   "where": "AP:27-29",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "CR Fires-on line",
+   "kind": "convention",
+   "statement": "Each unit names the constructs it fires on, ids once, in line form.",
+   "where": "AP:31-42",
+   "polices": "fires-on-ids",
+   "law_candidate": "yes: ids are schema field paths, each once"
+  },
+  {
+   "id": "CR Entry intro",
+   "kind": "convention",
+   "statement": "Quoted exemplar, one failure sentence, Fires-on, then Detect.",
+   "where": "AP:44-46",
+   "polices": "none",
+   "law_candidate": "yes: block order"
+  },
+  {
+   "id": "CR Detect triad",
+   "kind": "convention",
+   "statement": "Detect, Do not flag, Fix, each its own block.",
+   "where": "AP:48-50",
+   "polices": "none",
+   "law_candidate": "yes: three labelled blocks"
+  },
+  {
+   "id": "CR Keep audit signals",
+   "kind": "convention",
+   "statement": "A cut keeps every Detect signal, carve-out and Fix branch.",
+   "where": "AP:52-54",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "CR Resist over-fit",
+   "kind": "convention",
+   "statement": "The test fires on a foreign workflow on the same schema.",
+   "where": "AP:56-62",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "CR Succinctness",
+   "kind": "convention",
+   "statement": "Say each part once.",
+   "where": "AP:64-66",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "SI Universal obligation",
+   "kind": "principle",
+   "statement": "Every piece of prose is checked against the entries; where a construct exists, use it.",
+   "where": "SI:11-13",
+   "polices": "inventory-schema-agreement (heading form and field paths only)",
+   "law_candidate": "partly: mapping is data; prose check not"
+  },
+  {
+   "id": "RD-1 Keep the Introduction",
+   "kind": "other",
+   "statement": "Account of cases stays; call shape and field facts leave.",
+   "where": "RD:24-27",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "RD-2 Title and Opening",
+   "kind": "other",
+   "statement": "Title case; no leading The; no counts; paragraph at most six lines.",
+   "where": "RD:29-32",
+   "polices": "none",
+   "law_candidate": "partly: case, The, count, line count lexical; term introduction not"
+  },
+  {
+   "id": "RD-3 Items Listed",
+   "kind": "other",
+   "statement": "Parallel items become a bullet list.",
+   "where": "RD:34-36",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "RD-4 Sections Split",
+   "kind": "other",
+   "statement": "A section past eight sentences is split.",
+   "where": "RD:38-40",
+   "polices": "none",
+   "law_candidate": "yes: sentence count"
+  },
+  {
+   "id": "RD-5 Blocks Sectioned",
+   "kind": "other",
+   "statement": "Each code block has its own subsection.",
+   "where": "RD:42-44",
+   "polices": "none",
+   "law_candidate": "yes: structure"
+  },
+  {
+   "id": "RD-6 Diagrams Paired",
+   "kind": "other",
+   "statement": "Each section explaining how something proceeds carries two diagrams.",
+   "where": "RD:46-48",
+   "polices": "none",
+   "law_candidate": "partly: count yes; which sections not"
+  },
+  {
+   "id": "RD-7 Concepts Sectioned",
+   "kind": "other",
+   "statement": "A further concept under diagrams becomes its own section.",
+   "where": "RD:50-52",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "RD-8 Figures Captioned",
+   "kind": "other",
+   "statement": "Italic title-case caption; sentence does not open with figure number.",
+   "where": "RD:54-56",
+   "polices": "none",
+   "law_candidate": "partly: caption form lexical"
+  },
+  {
+   "id": "RD-9 Pieces Annotated",
+   "kind": "other",
+   "statement": "Each box a note, each arrow a label, six words or less.",
+   "where": "RD:58-60",
+   "polices": "none",
+   "law_candidate": "yes: word count over diagram source"
+  },
+  {
+   "id": "RD-10 Prose Bound",
+   "kind": "other",
+   "statement": "A paragraph under a figure stays on what it shows.",
+   "where": "RD:62-64",
+   "polices": "none",
+   "law_candidate": "no"
+  },
+  {
+   "id": "RD-11 Figures Ordered",
+   "kind": "other",
+   "statement": "Figures appear in the order they are numbered.",
+   "where": "RD:66-68",
+   "polices": "none",
+   "law_candidate": "yes: monotone numbering"
+  },
+  {
+   "id": "RD-12 Notes Rotated",
+   "kind": "other",
+   "statement": "Run rotate-class-notes once; a second run rotates again.",
+   "where": "RD:70-72",
+   "polices": "none",
+   "law_candidate": "other: non-idempotent script step"
+  },
+  {
+   "id": "RD-13 Commands and Links",
+   "kind": "other",
+   "statement": "Raw commands in an appendix; link text continues the sentence.",
+   "where": "RD:74-79",
+   "polices": "none",
+   "law_candidate": "partly: command lines outside appendix lexical"
+  }
+ ],
+ "facts": [
+  {
+   "claim": "CORPUS has no top-level canon/ directory; the canon lives under corpus/canon/ with README, resources/, scripts/, techniques/.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/README.md",
+   "lines": "1-12",
+   "quote": "The canon belongs to no single workflow and to every workflow that reaches it, which is what puts it at the corpus root rather than inside a product."
+  },
+  {
+   "claim": "The catalogue frames every entry as an after-the-fact test an auditor applies, not a build-time check.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/anti-patterns.md",
+   "lines": "9-13",
+   "quote": "stated as a Detect / Do not flag / Fix test an auditor applies after the fact"
+  },
+  {
+   "claim": "Fires-on ids form a path grammar over schema fields (kind, dotted path, [] into array elements, map-valued terminal), plus resource, readme, *; this is the canon's existing typed quantification domain.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/anti-patterns.md",
+   "lines": "35-42",
+   "quote": "A path ends at a map-valued field, whose keys the author chooses"
+  },
+  {
+   "claim": "The canon quantifies over loader-synthesised structure, not only authored text: three entries fire on technique.inherited_inputs.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/anti-patterns.md",
+   "lines": "857,2239,2435",
+   "quote": "**Fires on:** `technique.inputs`, `technique.inherited_inputs`"
+  },
+  {
+   "claim": "The canon concedes static walks cannot see role-delivered rules.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/anti-patterns.md",
+   "lines": "831",
+   "quote": "Roles are not readable from the tree, so a static walk proves the library: inside one library a rule may arrive by a route the walk cannot see"
+  },
+  {
+   "claim": "The canon states schema validation cannot settle state-dependent required arguments.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/anti-patterns.md",
+   "lines": "2311",
+   "quote": "A schema check settles nothing: both the executable call and the refused one satisfy it."
+  },
+  {
+   "claim": "Two entries are change-surface rules that need a base ref, not a single tree.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/anti-patterns.md",
+   "lines": "1975,2409",
+   "quote": "On a change surface, a gate, an exit, a bound technique, or a rule that the base ref carried at a site is absent there"
+  },
+  {
+   "claim": "Design principles are 47 headings, one invariant each, with stable appended ordinals.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/design-principles.md",
+   "lines": "3,11,15",
+   "quote": "Each heading is one invariant: a *prefer / before / only after* stance."
+  },
+  {
+   "claim": "The canon names a guard only four times; check-audience is the only guard named as enforcement, split from the catalogue slug.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/anti-patterns.md",
+   "lines": "973,1393,1449,2161",
+   "quote": "`check-audience` enforces the format; `audience-declared` enforces the presence"
+  },
+  {
+   "claim": "Convention-conformance is seven rows (file naming, field order, semver, exits/graph, inline checkpoint, technique sections, routine path) and excludes YAML literacy.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/convention-conformance.md",
+   "lines": "16-28",
+   "quote": "YAML syntax literacy (block sequences, quoting, scalars) is out of scope here"
+  },
+  {
+   "claim": "The inventory CLAIMS schemas are served at workflow-server://schemas and the routine schema is read at its repository path; the server code DOES register that URI and schemas/routine.schema.json exists, while the loader validates routines from a Zod module.",
+   "file": "/tmp/bend-fidelity/server/src/resources/schema-resources.ts",
+   "lines": "15-16,47",
+   "quote": "Exposes each schema individually at workflow-server://schemas/{id}"
+  },
+  {
+   "claim": "SI claim site for the schemas URI and routine schema path.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/resources/schema-construct-inventory.md",
+   "lines": "13-21",
+   "quote": "the routine schema is read at its repository path"
+  },
+  {
+   "claim": "Routine loader imports the Zod routine schema rather than the JSON file.",
+   "file": "/tmp/bend-fidelity/server/src/loaders/routine-loader.ts",
+   "lines": "16",
+   "quote": "import { type Routine, safeValidateRoutine } from '../schema/routine.schema.js'"
+  },
+  {
+   "claim": "Guards README defines a check as a program proving one stated invariant over a tree, with exit 2 for could-not-measure.",
+   "file": "/tmp/bend-fidelity/server/guards/README.md",
+   "lines": "3,29-35",
+   "quote": "A check program reads a tree and reports whether a stated invariant holds."
+  },
+  {
+   "claim": "Ledger verdicts (harmless, fix-later, live-bug) are human judgements a guard reads; no regenerate flag exists.",
+   "file": "/tmp/bend-fidelity/server/guards/README.md",
+   "lines": "51-59",
+   "quote": "a verdict is a human judgement, which is exactly what a regenerate flag would let someone skip"
+  },
+  {
+   "claim": "The registry records which activity form a guard reads: authored, materialised, or none; routine references are spliced away on load so the two forms answer different questions.",
+   "file": "/tmp/bend-fidelity/server/guards/guards.ts",
+   "lines": "14-29",
+   "quote": "a reference in first position evades a rule about first steps entirely against unexpanded text"
+  },
+  {
+   "claim": "Guard sources name only 14 catalogue slugs: no-template-creation-guide, artifact-audience-declared, dotted-rule-address (x2), constraint-as-blockquote, no-engine-mechanics-as-rules, whole-resource-for-one-section, value-set-in-prose, bound-step-no-description, no-sequence-in-description, procedure-in-protocol, hoist-shared-inputs, inherited-input-re-declared, framing-outside-any-section.",
+   "file": "/tmp/bend-fidelity/server/guards",
+   "lines": "grep over *.ts",
+   "quote": "check-description-hygiene.ts:bound-step-no-description"
+  },
+  {
+   "claim": "Guard sources cite AP ordinals that no longer match the catalogue: AP-69 for techniques-list-disjoint (now AP-36; AP-69 is no-activity-prose-rules), AP-68 for no-intra-step-input-set (now AP-35), AP-60 for io-id-shape (now AP-66), AP-55 for snake_case $locals (now AP-58). The canon's Entry identity rule forbids citing the number.",
+   "file": "/tmp/bend-fidelity/server/guards/check-activity-technique-overlap.ts",
+   "lines": "2",
+   "quote": "deterministic guard for anti-pattern AP-69"
+  },
+  {
+   "claim": "Stale ordinal at the self-provisioned-input guard.",
+   "file": "/tmp/bend-fidelity/server/guards/check-self-provisioned-input.ts",
+   "lines": "2,14-15",
+   "quote": "deterministic guard for anti-pattern AP-68"
+  },
+  {
+   "claim": "The fires-on-ids guard reads the three canon homes and proves each fires-on id is canon-defined, an authored kind, or a schema field path.",
+   "file": "/tmp/bend-fidelity/server/guards/check-fires-on-ids.ts",
+   "lines": "77-81,483",
+   "quote": "every id a canon unit fires on is canon-defined, an authored kind, or a field path into one"
+  },
+  {
+   "claim": "Meta resources the principles link to exist in CORPUS; workflow-canonical.md holds On-disk layout, Sections, Base-contract inheritance, Roles, Tools, Cross-reference format.",
+   "file": "/tmp/bend-fidelity/corpus/corpus/meta/resources/workflow-canonical.md",
+   "lines": "17-107",
+   "quote": "## Base-contract inheritance"
+  },
+  {
+   "claim": "reformat-doc is the only canon technique; version 1.6.0; 13 phases, several count-based (six lines, eight sentences, two diagrams, six words).",
+   "file": "/tmp/bend-fidelity/corpus/corpus/canon/techniques/reformat-doc.md",
+   "lines": "1-79",
+   "quote": "A section other than the introduction is split when it runs past eight sentences."
+  },
+  {
+   "claim": "Corpus ledgers exist for binding-fidelity, canonical-home-map, nested-output-home, repeated-run, section-framing, unproduced-read, unserved-operation-ref.",
+   "file": "/tmp/bend-fidelity/corpus/ledgers",
+   "lines": "directory listing",
+   "quote": "unserved-operation-ref-triage.json"
+  }
+ ],
+ "open_questions": [
+  "Which representation would a Bend law quantify over: authored YAML/markdown, or the loader's materialised form (guards.ts GuardForm, lines 14-29)? AP-53, AP-145, AP-152, AP-166 and DP-36 need the merged container contract and delivery set, which only the loader computes.",
+  "Technique markdown is semi-structured ({id} tokens, ### N. phases, #### artifact, ## Rules entries). A law over techniques presupposes a parser yielding a typed AST; does the technique-template guard's normative template suffice as that grammar, or would a Bend encoding need its own?",
+  "Does the lead intend Bend laws to replace only the guards (roughly 40 clean law candidates plus 55 partial) or also the agent-audit walkers, which carry the roughly 70 prose/intent entries no checker reaches?",
+  "How would a proof checker absorb ledger verdicts (harmless, fix-later, live-bug) that the guards README states are human judgements (README.md:51-59)? A law has no triage channel unless the verdicts become typed exceptions in the definition.",
+  "Are change-surface rules (AP-133, AP-164, DP-38) in scope? They need two trees and a diff, not one structured definition.",
+  "Should the stale AP ordinals in guard sources (AP-69, AP-68, AP-60, AP-55 comments) be reported as a defect, given the canon's own Entry identity rule says not to cite the number?",
+  "AP-157 and AP-53 state limits of static checking in the canon's own words; does the investigation treat those as fixed boundaries or as gaps a richer model (server state machine, role contracts) could close?"
+ ]
+}

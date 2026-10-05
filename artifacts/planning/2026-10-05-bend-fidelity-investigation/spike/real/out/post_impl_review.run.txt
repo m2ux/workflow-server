@@ -1,0 +1,4 @@
+FixState{False{}, False{}}
+--
+exit 0
+wall 1.72 s

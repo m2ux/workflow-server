@@ -1,0 +1,324 @@
+{
+ "summary": "Bend 2.0.35 checker (bend2/bend.ts, \"99% human-designed\") is a one-pass bidirectional checker over a dependent affine calculus with Type : Type, no universe levels and no positivity check. Consistency rests on a \"wall\": (1) every live self-call must descend on a strict structural subterm, columns read left to right, EQ until one is LT, erased columns skipped; (2) a live variable is consumed at most once unless bound by a + binder whose type's kind is Data (no function type is Data); (3) dead positions (types, - args, equality endpoints, motives, shadowed/fallback arms) are checked for type only or not visited and may diverge. @unsafe disables descent and the Data wall on + and permits forward/unfilled references; --check-only still prints ALL PROOFS CHECK for a book using one, while --verdict prints SOME PROOFS FAIL naming every def that transitively relies on it. An unfilled law is a dead claim: live use is refused; left open, it counts as a TODO and the CLI refuses the file. bend.ts states its metatheory as \"trusted claims\"; README says the checker has no proof; the Lean kernel (bendtt.lean, 0 sorry) proves Claim.consistent for BendTT text produced by an unproven elaborator (safe.ts). PROOF.bend beside LAWS.bend must import it (main.ts 809-812; verified by run). Base is exempt from the hole count and the unfilled-law refusal.",
+ "facts": [
+  {
+   "claim": "The Bend checker header describes the design as two checking modes plus a descent judgment, and names the wall as the sole guard that permits Type : Type, impredicativity and negative recursive types with no universe hierarchy and no positivity check.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "163-171",
+   "quote": "this wall permits Type : Type, impredicativity and negative recursive types with no universe hierarchy and no positivity check: omega, Curry and Hurkens each contract a live function-valued binding, and no function type is Data. the gate is the wall."
+  },
+  {
+   "claim": "Exact descent rule as stated in the header: every live self-call descends on a strict subterm in its own case tree, live columns compared EQ left to right, erased columns skipped.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "228-230",
+   "quote": "every live self-call descends on a strict subterm in its own case tree, live columns compared EQ left to right, erased columns skipped"
+  },
+  {
+   "claim": "The header labels its metatheory as trusted claims, not proofs: subject reduction (by-value only), progress, weak normalization of closed live terms, no closed live inhabitant of Empty.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "230-232",
+   "quote": "trusted claims: subject reduction (for by-value reduction), progress, weak normalization of closed live terms, no closed live inhabitant of Empty."
+  },
+  {
+   "claim": "Subject reduction for usage is explicitly narrowed: term substitution does not preserve the measure; the claim covers only weak by-value reduction of closed terms, and three invariants outside the checker (no pass duplicates a term; ownership types are Type not Data; a compiler never adds a copy) carry it.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "187-198",
+   "quote": "term-substitution reduction does not preserve the measure ... subject reduction for usage is claimed for weak by-value reduction of closed terms"
+  },
+  {
+   "claim": "@unsafe disables three things: self-calls skip descent, binder domains form + at any kind, and it may call an unfilled law or a def below it; the header says the claims do not cover a book that uses one.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "233-235",
+   "quote": "an @unsafe def opts out of the wall: its self-calls skip descent, its binder domains form + at any kind, and it calls an unfilled law or a def below it, so the claims above do not cover a book that uses one."
+  },
+  {
+   "claim": "Affine means operationally: a live variable is consumed at most once; a + binder licenses many uses and forms only when its type is Data; quantities None|Lone|Many add sequentially (two live uses saturate to Many) and join pointwise-max across branches; demand is only None or Lone.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "164-176",
+   "quote": "a live variable is consumed at most once; a + binder licenses many uses and forms only when its type is Data."
+  },
+  {
+   "claim": "What Data relaxes vs QTT: a Lone Data value may enter a + binder and the callee copies it (certify-once); a function type is Type (a closure captures), an equation is Data (evidence erased); book_valid forbids a function field in Data.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "177-213",
+   "quote": "a function type is Type (a closure captures), an equation is Data (evidence is erased) ... a function field never sits in Data"
+  },
+  {
+   "claim": "Dead positions and what the checker does with them: a type position, erased (-) argument, equality endpoint or motive checks dead: it may diverge and inhabit Empty; no rule coerces dead to live.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "213-216",
+   "quote": "a type position, an erased (-) argument, an equality endpoint or a motive checks dead: it may diverge and inhabit Empty; no rule coerces dead to live."
+  },
+  {
+   "claim": "Holes: ?name fails every check and is shown against the goal; ?TODO alone checks at any goal and marks the book incomplete.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "236-238",
+   "quote": "?TODO alone checks at any goal and marks the book incomplete"
+  },
+  {
+   "claim": "term_descend implementation: an erased column (q None) returns EQ (skipped); a Var column is EQ only if the same variable else GT; a Ctr column compares same-constructor fields recursively or searches each field for the argument as a strict subterm (LT); anything else (applications, calls, literals not stepping to a ctor) is GT.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3235-3271",
+   "quote": "if (q.$ === \"None\") { return \"EQ\"; }"
+  },
+  {
+   "claim": "infer-ref enforces the descent at the self-call: columns read left to right while EQ; if the result is not LT the error 'a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)' is thrown; the check is skipped when lhs.u (unsafe) is true.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3327-3338",
+   "quote": "if (k === lhs.def && lhs.u !== true) { ... if (ord !== \"LT\") { throw Err(..., \"a decreasing self-call ..."
+  },
+  {
+   "claim": "infer-ref refuses a live reference to any bodiless def (unfilled law, def below, foreign-less) unless the def is from Base (tld.b) or the referrer is @unsafe (lhs.u); the error text is 'a filled definition (an unfilled law is a dead claim: live code cannot use it)'. Dead (qt None) references are not checked.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3318-3323",
+   "quote": "if (tld.$ === \"Def\" && tld.v === null && !tld.i && (tld.b !== true && lhs.u !== true || gen !== null) && k !== lhs.def) { throw Err(... \"a filled definition (an unfilled law is a dead claim: live code cannot use it)\""
+  },
+  {
+   "claim": "The checker comment on infer-ref: a bare or non-shrinking self-reference is an error so a self-reference never escapes as a value; mutual recursion cannot bypass the wall because a forward reference is a live reference to a bodiless def.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3295-3303, 3788-3790",
+   "quote": "a forward reference is a live reference to a bodiless def, which errs (infer-ref) unless the def is @unsafe, so mutual recursion cannot bypass the wall"
+  },
+  {
+   "claim": "Check header: demand qt is None (dead) or Lone (live); a dead check measures only None; a binder validates measured <= declared on close and a Lone binder measured Many fails as '(consumed more than once)'; ordinary typing never consults the usage measure.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3210-3217, 3479-3489",
+   "quote": "a Lone binder measured Many (consumed more than once) fails there ... ordinary typing never consults the usage measure"
+  },
+  {
+   "claim": "infer-app checks an argument at demand quant_dem(q, qt): dead if the binder is -, else the ambient demand; its usage adds once, unscaled.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3380-3396, 615-620",
+   "quote": "const x_chk = term_check(book, lhs, tm.x, quant_dem(f_wnf.q, qt), f_wnf.A, ctx, d);"
+  },
+  {
+   "claim": "infer-eql: the type A and both endpoints a, b are checked dead; the equation's kind is Data (Typ(Qua(Many))).",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3416-3425",
+   "quote": "where A, a and b are dead; evidence is erased, so Data"
+  },
+  {
+   "claim": "check-mat: a fallback past the datatype's last constructor is replaced by an unvisited Efq (not checked); a live match on a - scrutinee is refused; residue is dead when a live binder in context has an emptied ADT (ctx_dead).",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3596-3609, 3618, 3652, 842-853",
+   "quote": "const m_chk = rem.length === 1 && tm.m.$ !== \"Mat\" ? Check(Efq(tm.s), m_gol, uses_nil()) : term_check(...)"
+  },
+  {
+   "claim": "check-rwt is the J axiom; the motive P checks dead; check-rfl requires the two endpoints to compare EQ after wnf (intensional equality).",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3660-3705",
+   "quote": "where P is dead; this is the J axiom"
+  },
+  {
+   "claim": "term_check_kind: a + binder's type must fit Kind(Many)=Data; on miss the note printed is 'Note: +x can be used many times, so its type must be Data.'",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3467-3477",
+   "quote": "\"Note: +\" + k + \" can be used many times, so its type must be Data.\""
+  },
+  {
+   "claim": "book_valid: a final bodiless def that is not Base and not foreign increments book.hols (counted as a TODO); defs declare bodiless up front and define at their event; an ADT's constructor fields are checked against Kind(G) for live fields; there is no positivity check anywhere in book_valid.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3778-3882",
+   "quote": "if (fin && tld.v === null && tld.b !== true && !tld.i) { book.hols += 1; }"
+  },
+  {
+   "claim": "Base exemption: book_load marks every def parsed from base.bend with b = true; such defs may be referenced bodiless live (axioms) and are not counted as holes.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "1014-1018",
+   "quote": "if (real === BASE_BEND) { for (const k of book.order.slice(n0)) { book.tlds[k].b = true; } }"
+  },
+  {
+   "claim": "Imports: 'import Base' or 'import <path>.bend as Name'; an alias is per-file; a def of an aliased name fills the imported law; cross-file filling is the documented mechanism ('def M.name(..)').",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "54, 76-88, 952-1012",
+   "quote": "\"as Name\" binds a per-file alias: Name.x resolves to the file's canonical name, so two aliases of one file agree, and a def of an aliased name fills it."
+  },
+  {
+   "claim": "Parser: ?TODO increments book.hols at parse time; @unsafe is 'the one decorator' and marks only the def below it; def f?(..) is the sugar.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "1961-1968, 2496-2505, 93",
+   "quote": "parse_fail(p, \"'unsafe' (the one decorator)\")"
+  },
+  {
+   "claim": "The PROOF.bend/LAWS.bend refusal lives in book_read: when the entry file's basename is PROOF.bend and a LAWS.bend exists in the same directory but was not loaded, it throws 'Error: PROOF.bend must import ./LAWS.bend'; after book_valid, hols > 0 throws 'N TODO(s) found. The code is incomplete, and not a valid proof yet.'",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "803-822",
+   "quote": "throw \"Error: PROOF.bend must import ./LAWS.bend\";"
+  },
+  {
+   "claim": "Verified by run: a scratch PROOF.bend beside LAWS.bend without importing it prints 'SOME PROOFS FAIL / Error: PROOF.bend must import ./LAWS.bend', exit 1; the same proof importing LAWS.bend as Laws and defining Laws.add_zero prints 'ALL PROOFS CHECK / Use --verdict for mathematical validity.', exit 0; a file importing LAWS.bend without filling it, and LAWS.bend alone, each print 'Error: 1 TODO found.', exit 1.",
+   "file": "/tmp/bend-fidelity/scratch/bend-checker-scope/beside/PROOF.bend, /tmp/bend-fidelity/scratch/bend-checker-scope/imports/PROOF.bend",
+   "lines": "1-9",
+   "quote": "Error: PROOF.bend must import ./LAWS.bend"
+  },
+  {
+   "claim": "cli_verdict: PASS text is 'ALL PROOFS CHECK', FAIL 'SOME PROOFS FAIL'; book_promises runs first and fails with 'N defs rely on unsafe or foreign code:' listing them; only then, with the kernel, Safe.safe_check runs and a rejection prints the MISMATCH text ('mismatch between the TypeScript implementation, and the formalized BendTT kernel. Your proofs may or may not be correct'). Without the kernel the hint 'Use --verdict for mathematical validity.' is appended.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "75-87, 697-712",
+   "quote": "Error: \" + String(bad.length) + \" def\" + ... \" on unsafe or foreign code:"
+  },
+  {
+   "claim": "book_promises: a def is a promise if it is @unsafe (t.u) or foreign (t.i) outside Base; the taint floods transitively to every def whose type, body or constructor fields name a promise.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "731-766",
+   "quote": "a foreign def is a promise like @unsafe is, as the checker reads its type, never its code"
+  },
+  {
+   "claim": "book_run: when a file has no main, running it is the same as --check-only (cli_verdict without kernel); with a pure main the strong normal form of main is printed.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "848-862",
+   "quote": "if (main === null) { return cli_verdict(book, false); }"
+  },
+  {
+   "claim": "Run output, unsafe: tests/check/unsafe_relies.bend with --check-only and with --verdict (kernel set) both print 'SOME PROOFS FAIL / Error: 3 defs rely on unsafe or foreign code: - boom - innocent - by_type', exit 1 (by_type is tainted only through its type).",
+   "file": "/tmp/bend-fidelity/bend/tests/check/unsafe_relies.bend",
+   "lines": "1-25",
+   "quote": "#|Error: 3 defs rely on unsafe or foreign code:"
+  },
+  {
+   "claim": "CLAIM vs DOES: unsafe_loop.bend pins that a bare @unsafe self-call 'loops(n)' passes and the run prints 7; unsafe_many.bend pins that @unsafe lifts the Data wall so a function may sit under a + binder and the run prints 7. Neither run output mentions unsafe; only --check-only/--verdict name it.",
+   "file": "/tmp/bend-fidelity/bend/tests/check/unsafe_loop.bend, /tmp/bend-fidelity/bend/tests/check/unsafe_many.bend",
+   "lines": "1-19, 1-20",
+   "quote": "@unsafe also lifts the Data wall on + binders"
+  },
+  {
+   "claim": "unsafe_forward_safe.bend: an @unsafe def may call a def declared after it; a safe def calling a later def is refused with the 'a filled definition' error.",
+   "file": "/tmp/bend-fidelity/bend/tests/check/unsafe_forward_safe.bend",
+   "lines": "1-29",
+   "quote": "to live code, a def below is a bodiless claim, as an unfilled law"
+  },
+  {
+   "claim": "Open law behaviour: axiom_warn.bend (law ghost with no def) prints 'SOME PROOFS FAIL / Error: 1 TODO found. / The code is incomplete, and not a valid proof yet.' exit 1 under both --check-only and --verdict (run confirmed); hole_todo.bend behaves identically for ?TODO.",
+   "file": "/tmp/bend-fidelity/bend/tests/check/axiom_warn.bend, /tmp/bend-fidelity/bend/tests/check/hole_todo.bend",
+   "lines": "1-22, 1-20",
+   "quote": "#|Error: 1 TODO found."
+  },
+  {
+   "claim": "Live use of an unfilled law is refused at the use site, including as rewrite evidence (axiom_use.bend), through a template instance (axiom_runtime_capture.bend, Location tpl~0), under a Base-looking name (axiom_whitelist.bend), and regardless of file of origin (axiom_import_warn.bend); the user has no whitelist, only base.bend is exempt.",
+   "file": "/tmp/bend-fidelity/bend/tests/check/axiom_use.bend, /tmp/bend-fidelity/bend/tests/check/axiom_runtime_capture.bend, /tmp/bend-fidelity/bend/tests/check/axiom_whitelist.bend, /tmp/bend-fidelity/bend/tests/check/axiom_import_warn.bend",
+   "lines": "1-37, 1-37, 1-31, 1-32",
+   "quote": "the only exemption IS base.bend"
+  },
+  {
+   "claim": "Negative case (kind wall): cop_forged_lock_000.bend shows a + binder over a Type-kinded datatype refused with 'expected : Data / observed : Type' plus the Data note; data_self_ref.bend shows Type never fits Data in a constructor field.",
+   "file": "/tmp/bend-fidelity/bend/tests/check/cop_forged_lock_000.bend, /tmp/bend-fidelity/bend/tests/check/data_self_ref.bend",
+   "lines": "19-42, 8-30",
+   "quote": "#|Note: +x can be used many times, so its type must be Data."
+  },
+  {
+   "claim": "Negative case (affinity as the consistency guard): hurkens_paradox.bend encodes Hurkens with Type : Type and is refused at the first reused binder 'f (consumed more than once)' (run confirmed, exit 1); negative_data_reuse.bend refuses omega the same way; type_in_type.bend passes and a def may yield Type (run prints {==}).",
+   "file": "/tmp/bend-fidelity/bend/tests/check/hurkens_paradox.bend, /tmp/bend-fidelity/bend/tests/check/negative_data_reuse.bend, /tmp/bend-fidelity/bend/tests/check/type_in_type.bend",
+   "lines": "1-7, 112-123; 1-35; 1-16",
+   "quote": "Type:Type consistency rests on exactly this rejection."
+  },
+  {
+   "claim": "The 'Cop' vocabulary in tests means a + binder over Data (a copiable); the identifier Cop does not occur in bend.ts (grep on \\bCop\\b: no match).",
+   "file": "/tmp/bend-fidelity/bend/tests/halt/ackermann_descent.bend",
+   "lines": "1-7",
+   "quote": "the +Nat (Cop) binder licenses that copy"
+  },
+  {
+   "claim": "Halt corpus (36 files): descent rejects any argument that is not a strict structural subterm of its column: HOAS application bod(a2), a def call f(grow(N{})), Nat.sub(d,1n), ndiv(n,2n), a larger literal 7n at a 5n column, a fresh lambda binder, a pure argument swap, a growing accumulator placed before the shrinking column, a nested-match on an earlier binder (parse error), Ann-wrapped self head; accepted: lexicographic (col0 LT, or col0 EQ then col1 LT), literal rebuild S{p} off S{S{p}}, joint multi-column match, accumulator after the shrinking column, Nat-fuel-driven HOAS evaluation.",
+   "file": "/tmp/bend-fidelity/bend/tests/halt/non_structural_descent.bend, /tmp/bend-fidelity/bend/tests/halt/ackermann_descent.bend, /tmp/bend-fidelity/bend/tests/halt/threaded_state_before.bend, /tmp/bend-fidelity/bend/tests/halt/linear_descent_hoas.bend",
+   "lines": "1-50; 1-37; 1-37; 1-117",
+   "quote": "bend has no opt-out, so the runnable half of the bend3 test has no place in this file"
+  },
+  {
+   "claim": "Halt tests pin that the structural wall is the substitute for a positivity check: non_structural_field.bend (Ord with Sup{g: Nat -> Ord}) refuses rec(g(0n)) and says 'bend has no positivity check; this wall is the guard'; strict_descent.bend refuses mk(x) under a minted Sup (run confirmed, exit 1); unguarded_decrement.bend refuses f(Nat.sub(d, 1n)) (run confirmed).",
+   "file": "/tmp/bend-fidelity/bend/tests/halt/non_structural_field.bend, /tmp/bend-fidelity/bend/tests/halt/strict_descent.bend, /tmp/bend-fidelity/bend/tests/halt/unguarded_decrement.bend",
+   "lines": "1-36; 1-37; 1-30",
+   "quote": "bend has no positivity check; this wall is the guard"
+  },
+  {
+   "claim": "Halt tests: a bare self-reference as a value (def a(): a at Type; def bad(): bad at {Nat == D : Type}; def loop(): a => loop(a)) is refused as non-decreasing, so recursive equality proofs cannot justify casts and type-level self recursion is rejected before conversion can loop.",
+   "file": "/tmp/bend-fidelity/bend/tests/halt/type_level_recursion.bend, /tmp/bend-fidelity/bend/tests/halt/recursive_equality_proof.bend, /tmp/bend-fidelity/bend/tests/halt/polymorphic_self_recursion.bend",
+   "lines": "1-25; 1-28; 1-27",
+   "quote": "recursive equality proofs cannot justify casts"
+  },
+  {
+   "claim": "Stuck corpus (26 files) pins the evaluator: a call applied to a constructor prefix over a free variable unfolds through the prefix and stays stuck as a call (never an exposed match); the checker accepts all. Runs confirmed: ack.bend --check-only prints ALL PROOFS CHECK and run prints 'x => 1n+ack(1n, x)'; sum.bend run prints 'x => 3n+add(x, 2n+add(x, 1n+add(x, sum(x))))'; ack.bend --verdict with kernel prints 'ALL PROOFS CHECK' exit 0.",
+   "file": "/tmp/bend-fidelity/bend/tests/stuck/ack.bend, /tmp/bend-fidelity/bend/tests/stuck/sum.bend, /tmp/bend-fidelity/bend/tests/stuck/lte.bend",
+   "lines": "1-29; 1-36; 1-29",
+   "quote": "An evaluator that unrolled the stuck call's arms would never stop here"
+  },
+  {
+   "claim": "README Limitations state: recursion must terminate and @unsafe or def f?(..) turns the check off; values are affine (closures and arrays cannot be shared); F32 is axiomatic; the checker has no proof and may have bugs while --verdict uses a proven kernel; the compiler (not kernel) is 99% AI-written.",
+   "file": "/tmp/bend-fidelity/bend/README.md",
+   "lines": "227, 226, 231, 245-246",
+   "quote": "The checker has no proof and may have bugs; `--verdict` uses a proven kernel."
+  },
+  {
+   "claim": "README CLAIMS a stronger guarantee than the code gives: 'it is mathematically impossible to break laws in LAWS.bend. The compiler enforces it' and 'Bend's compiler then guarantees that these laws always hold'. The code conditions this on: the proof being complete (no TODO), no @unsafe/foreign taint (only reported by --check-only/--verdict, not by a run with main), and the elaborator translating the law faithfully.",
+   "file": "/tmp/bend-fidelity/bend/README.md",
+   "lines": "47-49, 60-64",
+   "quote": "it is **mathematically impossible** to break laws in `LAWS.bend`"
+  },
+  {
+   "claim": "WONTFIX: the checker skips dead code (an unused let/beta argument, a shadowed arm, a fallback past the last constructor) and a written redex reduces as read so (x => x(x))(x => x(x)) never ends; the termination check reads arguments left to right; the checker is not optimal (exponential cases, machine-stack recursion); an unbalanced Array tree and a Nat past 2^48-1 fail-stop at runtime though the theory admits them.",
+   "file": "/tmp/bend-fidelity/bend/WONTFIX.txt",
+   "lines": "11-17, 30-32, 37-46, 118-127",
+   "quote": "The checker visits neither. This makes the check faster and costs no correctness: the term it checks is the term it runs."
+  },
+  {
+   "claim": "WONTFIX carve-outs touching soundness: a base-file helper may call a law filled below it ('User files do not get it'); handle types (File, Socket, Window) are laws only Base may leave unfilled, and 'Opening this to user files touches consistency'. WONTFIX says 'the Lean formalization states it', but bendtt.lean contains no occurrence of 'base' or 'carve' (grep -i); laws go out to the kernel as 'opaque' defs checked against a model.",
+   "file": "/tmp/bend-fidelity/bend/WONTFIX.txt",
+   "lines": "70-78",
+   "quote": "A base-file helper may call a law filled below it (#793) `base.bend` carries this carve-out and the Lean formalization states it."
+  },
+  {
+   "claim": "AGENTS.md: bend.ts is human-written and not to be edited; bendtt.lean is the kernel with claims 'no checked def has type Empty, live code halts' and their proofs; --verdict builds its CLI once with Lean v4.34.0; every test ends in the #| lines its run must print.",
+   "file": "/tmp/bend-fidelity/bend/AGENTS.md",
+   "lines": "3-18",
+   "quote": "its claims (no checked def has type Empty, live code halts) and their proofs"
+  },
+  {
+   "claim": "bendtt.lean states the kernel's Claims formally: Claim.consistent (no def of a checked book has a type convertible to <>), sound, confluent, sr, progress, halts, empty; the file has zero 'sorry'. The proof route: dead parts are never run or measured so 'A dead region may hold Girard's paradox'; 'Type : Type is harmless, since nothing here asks a type to normalize'.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "1-30, 1526-1600",
+   "quote": "def Claim.consistent : Prop := \u2200 bk k d, Book.check bk = .ok () \u2192 Book.get bk k = some d \u2192 \u00ac Conv bk d.T (Enu [])"
+  },
+  {
+   "claim": "bendtt.lean live rule as stated: the live part of a def must be affine, may call only earlier defs, and may call its own def only on parameters it rebuilt, then a piece of one; a q=2 binder needs a Data domain and Data holds no \u03bb and no call.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "20-27",
+   "quote": "may call its own def only on parameters it rebuilt, then a piece of one. A q=2 binder needs a Data domain, and Data holds no \u03bb and no call."
+  },
+  {
+   "claim": "safe.ts (the elaborator from the checked bend2 book to BendTT text) is outside the proven kernel; a def with no body goes out opaque at a model; what the kernel cannot express is out of scope and --verdict fails; GUIDE says 'the translation has no proof, so read it to confirm a law'.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts, /tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "1-46; 328-332",
+   "quote": "the translation has no proof, so read it to confirm a law"
+  },
+  {
+   "claim": "GUIDE documents the LAWS.bend/PROOF.bend convention: LAWS.bend imports the code and states the laws (human-written); PROOF.bend imports LAWS.bend and proves each law with a def of the same name (law sorted is proven by def Laws.sorted); bend PROOF.bend prints SOME PROOFS FAIL while any law is open or false; bend refuses a PROOF.bend beside a LAWS.bend that does not import it; a law left open in one file may be filled in another as def M.name(..).",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "319-326, 525-526",
+   "quote": "bend refuses a `PROOF.bend` that sits beside a `LAWS.bend` without importing it."
+  },
+  {
+   "claim": "GUIDE on @unsafe and ordering: termination is mandatory and mutual recursion is not allowed; an @unsafe def recurses freely and may call a def below it but 'a check prints SOME PROOFS FAIL and names every def that relies on it'; types are not code so datatypes may name each other in any order.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "113-121",
+   "quote": "`bend` runs it, but a check prints SOME PROOFS FAIL and names every def that relies on it"
+  },
+  {
+   "claim": "Demo convention in practice: demos/proof_insertion_sort/LAWS.bend imports ./main.bend as Sort and states laws with +xs binders; PROOF.bend imports ./main.bend as Sort and ./LAWS.bend as Laws; running it with --check-only prints ALL PROOFS CHECK (run confirmed).",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_insertion_sort/PROOF.bend, /tmp/bend-fidelity/bend/demos/proof_insertion_sort/LAWS.bend",
+   "lines": "1-9; 1-17",
+   "quote": "import ./LAWS.bend as Laws"
+  },
+  {
+   "claim": "Templates (~ binders) are the only higher-order escape from affinity: a ~ argument must be closed and checks dead in the empty context; the instance k~n is minted and checked at first live call; an instance is not in book.order so it is 'no claim'; instance nesting is capped at 64 levels and a ~ argument key at 32768 chars.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3225-3233, 3740-3775, 3800-3803",
+   "quote": "a template that stops instantiating itself (64 levels at most)"
+  }
+ ],
+ "open_questions": [
+  "WONTFIX 70-72 says the base carve-out (a base helper calling a law filled below) 'is stated in the Lean formalization', but bendtt.lean at this commit has no mention of base; which mechanism (opaque model defs? elaboration order in safe.ts) actually covers Base's bodiless natives under --verdict was not traced.",
+  "Whether a plain `bend PROOF.bend` run (with a main present) ever reports @unsafe/foreign reliance: book_run only calls cli_verdict when there is no main, so a project whose PROOF.bend has a main would print main's output and not the taint list; not tested.",
+  "The elaborator safe.ts (how many defs fall 'out of scope' and fail --verdict in real demos) was not measured; only tests/stuck/ack.bend was run under the kernel.",
+  "Whether the F32 axioms in base.bend (README 231 'nothing about floating point can be proven') or other Base bodiless laws can be reached live by user code and so widen the trusted base beyond the kernel; not traced.",
+  "The `where` and `exs` law clauses (witness pairs) were not exercised; their interaction with the hole count was not checked."
+ ]
+}

@@ -1,0 +1,261 @@
+{
+ "summary": "Bend reaches the outside world only through IO: a CPS type over IO.OP{Emit|Halt}, where every effect is a def whose body is two imports (.c and .js) registered with io_eff. The JS lane is Bun-centric (Bun.spawnSync, bun:ffi libc). Surface: print/env/args/process/random/sleep/now/chan/file/tcp/udp/window/audio. No HTTP, DNS or JSON; the demos hand-build HTTP over TCP strings. Three embedding routes: Bun.plugin, node mod.register hook, and ahead-of-time `-o x.mjs`. All three go through book_read, so the full checker runs on import or emit (verified: a type error and an affine error both refused). Node 20 cannot load the .ts loader (ERR_UNKNOWN_FILE_EXTENSION); `-o x.mjs` then works under node 20. Data shape across the boundary: constructors `{$:\"Name\", field}`, Nat BigInt at the edge but JS Number inside (capped at 2^48-1), String/Bool/U32 native, Maybe/Result/Tuple as tagged objects, curried exports. Docs CLAIM only non-IO defs export; code DOES export IO defs with \u22651 parameter (filter inspects the whole function type) and exports filled proofs, which compile to `return null`. Exported IO defs cannot run from the .mjs: the event loop and io_out live in RUNTIME_MAIN, which js_lib omits. --verdict passed on the experiment.",
+ "facts": [
+  {
+   "claim": "IO is a continuation type over IO.OP: `def IO(-A: Type) -> Type: @-R: Type -> @k: (A -> IO.OP<R>) -> IO.OP<R>`; IO.OP has two constructors Emit{value: R} and Halt{code: U32, message: String}; IO.pure and IO.bind are plain defs over it.",
+   "file": "/tmp/bend-fidelity/bend/bend2/base.bend",
+   "lines": "116-118, 151-158",
+   "quote": "Emit{value: R}\n  Halt{code: U32, message: String}"
+  },
+  {
+   "claim": "Every Base effect is a def whose body is two imports, one .c and one .js (e.g. IO.print, Process.run, File.open, Chan.new). Fallible effects answer `Result<&1, &1, U32 & String, A>`; handle effects return the handle beside the result, e.g. File.read -> `IO(File & Result<...>)`.",
+   "file": "/tmp/bend-fidelity/bend/bend2/base.bend",
+   "lines": "160-162, 172-173, 182-186, 221-223, 264-270, 323-324",
+   "quote": "import \"./effs/print.c\"\n  import \"./effs/print.js\""
+  },
+  {
+   "claim": "Handles (File, Socket, Listener, Window, Audio) are laws of kind Type with no constructor; the comment states no program forges, copies or reuses one. Chan is a law of kind Data (copyable).",
+   "file": "/tmp/bend-fidelity/bend/bend2/base.bend",
+   "lines": "93-114",
+   "quote": "A handle is opaque, a law with no constructor and no field, so no\n# program forges one, and linear (Type), so none copies or reuses one."
+  },
+  {
+   "claim": "The effect surface is the effs/ directory: args, audio_*, chan, file_{open,read,size,write,close}, get_env, listener_close, now, print, print_err, process_run, random_u32, sleep, socket_close, spawn, tcp_{accept,connect,listen,poll,recv,send}, thread_count, udp_{bind,poll,recv_from,send_to}, window_*, write. No HTTP, DNS, JSON or TLS effect exists.",
+   "file": "/tmp/bend-fidelity/bend/bend2/effs",
+   "lines": "directory listing (ls)",
+   "quote": "process_run.js ... tcp_recv.js ... udp_send_to.js"
+  },
+  {
+   "claim": "HTTP is done by hand over TCP strings: the server concatenates the status line and headers into a String and the client connects by IPv4 literal because 'the TCP kit has no DNS'.",
+   "file": "/tmp/bend-fidelity/bend/demos/io_http_fetch/main.bend",
+   "lines": "1-2, 50-53",
+   "quote": "the TCP kit has no\n# DNS"
+  },
+  {
+   "claim": "The HTTP server demo's accept loop is @unsafe and uses TCP.listen/accept/recv/send plus IO.spawn per connection; the response is a literal HTTP/1.1 string.",
+   "file": "/tmp/bend-fidelity/bend/demos/io_http_server/main.bend",
+   "lines": "12-13, 41-46, 48-52",
+   "quote": "\"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\nConnection: close\\r\\n\\r\\n\" ++ page"
+  },
+  {
+   "claim": "Process.run's JS implementation uses Bun.spawnSync (Bun-only), walks the List<String> args via `xs.$ === CID(Con)`, and answers io_done(io_tup(code, stdout, stderr)) or io_fail(errno).",
+   "file": "/tmp/bend-fidelity/bend/bend2/effs/process_run.js",
+   "lines": "4-35",
+   "quote": "got = Bun.spawnSync({ cmd: argv, stdin: Buffer.from(input),"
+  },
+  {
+   "claim": "GUIDE states Process.run runs the child 'with literal arguments rather than a shell', 'the JavaScript lane blocks while the child runs', and 'It does not sandbox the child'.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "374-385",
+   "quote": "It does not sandbox the child: callers must\nwhether a command is trusted before executing it."
+  },
+  {
+   "claim": "EFFECTS.md documents the JS effect calling convention: 'a U32 is a number, a Nat a BigInt, a String a string, a constructor {$: CID(Name), field: value}, a handle its host value'; answers via io_done(v), io_fail(code), io_tup(handle, result), {$: CID(Unit)}. Blocking effects take a k and park with io_park_on; io_sys() is libc through bun:ffi.",
+   "file": "/tmp/bend-fidelity/bend/guide/EFFECTS.md",
+   "lines": "75-90",
+   "quote": "`io_sys()` is `libc` through `bun:ffi`"
+  },
+  {
+   "claim": "EFFECTS.md says the effect ABI tracks the exact compiler version: 'There is no ABI promise. Rebuild your effects with every update.' (document is self-described as AI-written from source).",
+   "file": "/tmp/bend-fidelity/bend/guide/EFFECTS.md",
+   "lines": "1-5, 135-139",
+   "quote": "There is no ABI promise."
+  },
+  {
+   "claim": "Runtime JS helpers define the cross-boundary shapes: io_fail -> `{ $: \"Fail\", error: io_tup(code >>> 0, io_strerror(code)) }`, io_done -> `{ $: \"Done\", value }`, io_tup -> nested `{ $: \"Tuple\", fst, snd }`.",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "6197-6208",
+   "quote": "return xs.reduceRight((snd, fst) => ({ $: \"Tuple\", fst, snd }));"
+  },
+  {
+   "claim": "In emitted JS, CID(Name) expands to the name string: the module registers `io_eff(\"IO.print\", io_print)` and guards `for (const k of [\"IO.print\"]) { if (!(k in $0eff)) throw ... }`.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/x.mjs",
+   "lines": "155-168",
+   "quote": "io_eff(\"IO.print\", io_print);"
+  },
+  {
+   "claim": "GUIDE: custom effects are allowed the same way; 'Only the event loop runs them, so proofs, termination and the GPU never touch host code.' JS may import a .bend (loader preloaded) or the -o .mjs 'and call every non-IO def, with constructors as {$: \"Name\", field: value} and Nat as BigInt'; 'A value crosses without a copy: an Array argument is the caller's own array, updated in place'.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "395-403",
+   "quote": "call every\nnon-IO def"
+  },
+  {
+   "claim": "WONTFIX: a user-defined handle type is not allowed; a custom effect must reuse a Base handle law (File, Socket, Window...).",
+   "file": "/tmp/bend-fidelity/bend/WONTFIX.txt",
+   "lines": "74-78",
+   "quote": "a\n  custom effect reuses a Base handle type"
+  },
+  {
+   "claim": "main.ts header CLAIMS: 'A .bend module exports every filled, non-base, non-IO def, wrapped so a JS caller passes the live arguments, in one call or curried ... a constructor is {$: \"Name\", field: value, ...}, a closure is a function, Nat is BigInt, Bool, String and U32 are native.' Three routes: Bun plugin, node --import hook, Bun.build.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "2-10",
+   "quote": "exports every filled, non-base, non-IO\n// def"
+  },
+  {
+   "claim": "Loader wiring: PLUGIN.onLoad for /\\.bend$/ returns load_js(path); node hook `load` short-circuits .bend to load_js; at module bottom, under Bun `Bun.plugin(PLUGIN)`, else `mod.register(import.meta.url)`.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "112-118, 877-891, 896-907",
+   "quote": "mod.register(import.meta.url);"
+  },
+  {
+   "claim": "The checker runs on every import/emit: load_js calls book_read, which runs Bend.book_load, Bend.book_valid and refuses hols>0 ('The code is incomplete, and not a valid proof yet.'); failures are wrapped in Check_Fail and printed under FAIL. The -o path also calls book_read before cli_emit.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "801-828, 877-883, 298-316",
+   "quote": "const book = await book_read(file, undefined, seen);"
+  },
+  {
+   "claim": "book_valid type-checks every TLD (term_check on types, def_check on filled defs) and counts an unfilled, non-base, non-foreign def as a hole; a foreign def must return base IO(...) directly.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3804-3882",
+   "quote": "if (fin && tld.v === null && tld.b !== true && !tld.i) {\n        book.hols += 1;"
+  },
+  {
+   "claim": "CAPTURED: bun with bunfig preload of main.ts imported y.bend (`good keys: [ \"area2\", \"greet\" ]`, area2 Rect 2x3 -> 6n) and refused bad.bend at import time: 'bad import failed: Error: SOME PROOFS FAIL | Error: | - expected : String | - observed : Nat ... Location: oops'.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/loader/imp.js",
+   "lines": "1-10 (run output)",
+   "quote": "bad import failed: Error: SOME PROOFS FAIL"
+  },
+  {
+   "claim": "CAPTURED: `-o x.mjs` on a draft with an affine violation failed with 'observed : r (consumed more than once)' and wrote no file; the fixed file emitted a 424-line x.mjs. --check-only prints 'ALL PROOFS CHECK / Use --verdict for mathematical validity.'; --verdict with BENDTT set printed 'ALL PROOFS CHECK', exit 0.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/x.bend",
+   "lines": "1-40 (run output)",
+   "quote": "- observed : r (consumed more than once)"
+  },
+  {
+   "claim": "CAPTURED: node v20.19.4 `--import /tmp/bend-fidelity/bend/bend2/main.ts` fails: 'TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".ts\"'. The demo README CLAIMS the loader works 'under node (node --import)'. Untested on node >=22.6 (type stripping).",
+   "file": "/tmp/bend-fidelity/bend/demos/app_win_is_bug_2d/README.md",
+   "lines": "50-53",
+   "quote": "under node\n(`node --import`)"
+  },
+  {
+   "claim": "Export filter in js_lib: `done_live(t) && !def_foreign(t) && t.b !== true && t.x === 0 && io_base(book, t.T) === null`. `b` is the base flag; `x` counts `~` template binders (parser sets `x: tk.length`).",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "3189-3194, 1219-1226",
+   "quote": "&& io_base(book, t.T) === null;"
+  },
+  {
+   "claim": "io_base wnf's the WHOLE type and tests whether its head is Ref IO; a function type (All) has no such head, so an IO def with one or more parameters passes the non-IO filter. CODE DOES export such defs; the header and GUIDE CLAIM non-IO only.",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "1273-1283",
+   "quote": "return h.$ === \"Ref\" && h.k === \"IO\" ? xs : null;"
+  },
+  {
+   "claim": "CAPTURED: z.mjs exported `[ 'greet', 'twice' ]` and excluded zero-arg `hello() -> IO(Unit)`; x.mjs exported `[ 'area2', 'label', 'pick', 'area2_circle', 'greet' ]` including the IO def greet(name) and the proof area2_circle.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/z.mjs",
+   "lines": "export default block (run output)",
+   "quote": "z keys: [ 'greet', 'twice' ]"
+  },
+  {
+   "claim": "CAPTURED: calling an exported IO def from node returns a function; applying a continuation yields `{ '$': '$FFI', run: [Function: io_print], need: undefined, args: [ 'hi bob' ], kont: [Function] }`; invoking run throws 'ReferenceError: io_out is not defined'. So an IO def is callable but not runnable from the .mjs.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/test2.mjs",
+   "lines": "1-18 (run output)",
+   "quote": "drive err: ReferenceError: io_out is not defined"
+  },
+  {
+   "claim": "js_lib emits RUNTIME + effect sources + program + export block; js_book appends RUNTIME_MAIN plus cli/io_exit. io_out (6136), io_sys (6159), io_push (6248), io_park_on (6292) and the event loop io_run (6298) are all inside RUNTIME_MAIN (starts 6050), so the .mjs has no event loop (grep count of io_run/io_push in x.mjs and z.mjs: 0).",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "3189-3226, 5985, 6050, 6136, 6159, 6248, 6292, 6298-6360",
+   "quote": "const RUNTIME_MAIN: string = String.raw`"
+  },
+  {
+   "claim": "The in-process runner is Comp.io_run(book, args): it builds `new Function(\"require\", js_lib(book) + RUNTIME_MAIN + ...)` and runs main; this is how `bend file.bend` executes IO under Bun.",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "1294-1298",
+   "quote": "return new Function(\"require\", src)(import.meta.require);"
+  },
+  {
+   "claim": "The event loop drives `$FFI` ops: `op.run(...op.args, op.kont)`, then `op = op.kont(x)`; Emit ends a computation, Halt exits with code; need.time/need.read parks via io_park_on.",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "6323-6345",
+   "quote": "const x = op.run(...op.args, op.kont);"
+  },
+  {
+   "claim": "Export wrapper (js_host): each live argument is in-marshalled, the def is run through run_loop, the result out-marshalled, then the in-marshal is reversed on the arguments (`back`) \u2014 the generated form: `\"area2\": run_lib((a0) => { const r = BigInt(run_loop($area2$($0m0(a0)))); $0m1(a0); return r; }, 1)`; args without Nat fields pass through untouched: `\"pick\": run_lib((a0, a1, a2) => { const r = (run_loop($pick$((a0), (a1), (a2)))); ... }, 3)`.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/x.mjs",
+   "lines": "418-424",
+   "quote": "BigInt(run_loop($area2$($0m0(a0))))"
+  },
+  {
+   "claim": "Nat is BigInt only at the boundary: nat_host accepts a bigint OR an integer Number <= 2^53 and converts to Number; nat_chk throws 'a Nat past the largest immediate 2^48-1' above 281474976710655. CAPTURED: a JS number 4 for a Nat field was accepted (area2 -> 12n); results come back as BigInt (12n, 15n, 42n).",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/x.mjs",
+   "lines": "28-41",
+   "quote": "throw \"bend: a Nat past the largest immediate 2^48-1\";"
+  },
+  {
+   "claim": "Bool compiles to JS truthiness (`if (_b_0)`); CAPTURED: passing `{$: \"True\"}` instead of true was accepted as true. String is a native JS string (`\"circle \" + _x_0`); U32 a number. RUNTIME_ADTS lists Sigma, String, Word.Con, IO.OP, Result, Maybe, Bool, Unit as runtime-native.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/x.mjs",
+   "lines": "173-212",
+   "quote": "if (_b_0) {"
+  },
+  {
+   "claim": "Constructor tags are validated only where a marshal function exists (types containing Nat): `throw \"bend: Shape has no tag \" + v?.$ + \" (its tags: Circle, Rect)...(#1105)\"`. CAPTURED for `{$:\"Square\"}`. A List<String> argument is not marshalled, so a wrong tag falls to the else branch silently. TODO(#1105): tags are the loading file's key for the constructor.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/x.mjs",
+   "lines": "393-417",
+   "quote": "a tag names its constructor as the loading file sees it, which a later version will make the same everywhere (#1105)"
+  },
+  {
+   "claim": "Exports are curried via run_lib; CAPTURED `pick(false)(xs)(42)` -> `{ '$': 'Some', value: '42' }`; Maybe crosses as `{ '$': 'Some', value }` / `{ '$': 'None' }`.",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "6032-6035",
+   "quote": "return (...a) => a.length < n ? run_lib((...b) => f(...a, ...b), n - a.length)"
+  },
+  {
+   "claim": "Laws and proofs in the .mjs: the law statement (a type) appears nowhere; the filled proof compiles to `function $area2_circle$(_r_0) { return null; }` and is exported; CAPTURED `area2_circle(2n) = null`. GUIDE: 'types, erased arguments and equations are checked dead'. A live call into an unfilled law is a compile error.",
+   "file": "/tmp/bend-fidelity/scratch/bend-io-interop/x.mjs",
+   "lines": "213-215",
+   "quote": "function $area2_circle$(_r_0) {\n  return null;\n}"
+  },
+  {
+   "claim": "Compiler refuses a live call into a law: `die(\"a live call into the law \" + Bend.name_key(k))`.",
+   "file": "/tmp/bend-fidelity/bend/bend2/comp.ts",
+   "lines": "2908-2912",
+   "quote": "die(\"a live call into the law \" + Bend.name_key(k));"
+  },
+  {
+   "claim": "--check-only and --verdict both run book_promises: any non-base foreign def or @unsafe def (and anything naming one) fails with 'defs rely on unsafe or foreign code'; --verdict additionally runs Safe.safe_check (the Lean-proven kernel). 'a foreign def is a promise like @unsafe is, as the checker reads its type, never its code.'",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "715-742",
+   "quote": "a foreign def is a promise like @unsafe is, as the checker reads its type, never its code"
+  },
+  {
+   "claim": "GUIDE on --verdict: prints ALL PROOFS CHECK 'only when every def outside Base is a valid proof, which bend2 and the kernel both accept, and which relies on no @unsafe or foreign code'; `-o PROOF.bendtt` writes the kernel's translation, 'the translation has no proof, so read it to confirm a law'.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "316-321",
+   "quote": "relies\non no `@unsafe` or foreign code"
+  },
+  {
+   "claim": "The demo's JS bridge convention: `const one = (act) => ({ $: \"Con\", head: { $: act }, tail: { $: \"Nil\" } }); Game.replay(g, one(act))`; state read as `Number(st.x)` (BigInt) and `st.won` (boolean); map via `Game.grid(Game.map_h() - 1n)`.",
+   "file": "/tmp/bend-fidelity/bend/demos/app_win_is_bug_2d/web/main.js",
+   "lines": "7, 12, 25-35, 111-112, 153",
+   "quote": "const one  = (act) => ({ $: \"Con\", head: { $: act }, tail: { $: \"Nil\" } });"
+  },
+  {
+   "claim": "The demo bunfig preloads the loader and lists it as a serve.static plugin: `preload = [\"../../../bend2/main.ts\"]`.",
+   "file": "/tmp/bend-fidelity/bend/demos/app_win_is_bug_2d/web/bunfig.toml",
+   "lines": "1-4",
+   "quote": "preload = [\"../../../bend2/main.ts\"]"
+  },
+  {
+   "claim": "A grep for `--import`, `mod.register` and `.mjs` under tests/, tools/, gates/ and evals/ returned no matches: the repo's tests do not exercise the .mjs export or the node loader at this commit.",
+   "file": "/tmp/bend-fidelity/bend/tests",
+   "lines": "grep over tests tools gates evals",
+   "quote": "(no output)"
+  },
+  {
+   "claim": "Concurrency model (GUIDE): one event loop interleaving computations 'as in Node.js'; IO.fork/IO.join over Chan; IO.within races against a deadline, 'the loser is not cancelled'; the program 'reports a deadlock when the remaining ones all wait'. io_run returns 1 on 'deadlock: every computation waits on a channel'.",
+   "file": "/tmp/bend-fidelity/bend/guide/GUIDE.md",
+   "lines": "386-393",
+   "quote": "the loser is not\ncancelled"
+  }
+ ],
+ "open_questions": [
+  "Does node >= 22.6 (built-in TypeScript type stripping) accept `node --import bend2/main.ts` as the README claims? Only node 20 was available; the hook itself (main.ts 885-891, mod.register 905-906) is plain, so it may work there.",
+  "Is exporting IO defs with parameters (greet) from -o .mjs intended, or a defect in io_base's whole-type check (comp.ts 1273-1283)? The header, GUIDE and the zero-arg exclusion all say non-IO only.",
+  "How would a TypeScript host run an exported IO def? The .mjs lacks RUNTIME_MAIN (event loop, io_out, io_sys via bun:ffi, Bun.spawnSync in process_run.js). Options untested: `-o x.js` full program under node; calling Comp.io_run from a Bun process; writing a host driver for the $FFI op protocol.",
+  "Does the Bun/node loader cache compiled .bend output between imports or processes? load_js (main.ts 877-883) shows no cache; cost of a full check per import is unmeasured.",
+  "Constructor tags depend on the loading file's view of a name (TODO #1105, comp.ts 3165-3167): can a server and a Bend module disagree on tags when modules are nested or aliased?",
+  "The JS lane caps Nat at 2^48-1 (x.mjs 28-33) and accepts a JS Number where the docs say BigInt; is any fidelity counter or hash likely to exceed that?",
+  "Bool arguments are not validated (truthiness, x.mjs 201); untagged List/String arguments bypass tag checks; is the boundary's lack of input validation acceptable for a fidelity use, or must the TS side validate shapes first?",
+  "The HTTP demos are hand-rolled over TCP with no DNS/TLS; is any network reach from Bend needed, or would all IO stay on the TS side with Bend as a pure library?"
+ ]
+}

@@ -1,0 +1,238 @@
+{
+ "summary": "--verdict is a three-stage pipeline: (1) bend2 (TypeScript) parses and type-checks the book and refuses holes/TODOs and any def that relies on @unsafe or a user foreign def; (2) the AI-written elaborator bend2/safe.ts translates bend2's already-checked terms into BendTT text, marking anything it cannot express \"out of scope\"; (3) the Lean-built kernel re-checks that text and prints ALL PROOFS CHECK. The Lean file proves (no sorry/axiom) Claim.consistent: for any Book the kernel accepts, no def's type converts to the empty enum. That claim is about the *translated* book after the kernel's own (unverified, partial-def) parser; it says nothing about whether safe.ts preserved bend2's meaning, and defs with no body (Base natives such as every F32 operation, Base foreign IO defs, handle types, template constants) go out `opaque` at a synthetic model the kernel checks instead of real code. So an IO hello-world and F32 arithmetic PASS --verdict with the kernel seeing a stand-in. Pure data/proof programs (Nat, U32 bit-words, strings, arrays, templates, rewrites) are fully kernel-checked; demos run in ~0.12-0.24s wall, kernel alone 5-22ms. Any kernel failure, out-of-scope def, or missing kernel binary prints the same generic MISMATCH text; reasons only appear via -o.",
+ "facts": [
+  {
+   "claim": "Elaborator design as CLAIMED by its header: bend2 checks, then safe_book elaborates the checked book to BendTT 'the minimal kernel with a proof' and the kernel CLI checks the text; elaborator reads bend2's typed terms so 'it needs no inference of its own; the kernel trusts none of it'; 'A book bend2 rejects never reaches the kernel'.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "1-15",
+   "quote": "the kernel trusts none of it"
+  },
+  {
+   "claim": "Header CLAIMS defs with no body go out opaque at a model and that the kernel then never unfolds them; what the kernel cannot express is out of scope and --verdict fails.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "35-42",
+   "quote": "A def with no body (a law, a native, a foreign fill) goes out opaque at a model: the kernel checks the model, then never unfolds the def. What the kernel cannot express is out of scope"
+  },
+  {
+   "claim": "oos(why) throws Scope_Error; safe_book emits 'every def and datatype not in base' and a def out of scope goes 'as does every def that names it'; the flood is computed over o_refs with reason 'names X, out of scope: <why>'.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "165-229",
+   "quote": "names \" + B.name_key(r) + \", out of scope: \""
+  },
+  {
+   "claim": "Out-of-scope reason strings (elaborator): 'a specialized parameter whose type names a parameter' (255); 'an unknown name' (342, 1011); 'uses base's/the @unsafe def' (348); 'no model for [base's/the foreign def] X' (358); 'a datatype kind' (369); 'a kind that depends on a run-time value' (448); 'a Quant that is not a literal' (599); 'a Quant parameter bound inside a match' (700); 'a match arm with no known type' (709); 'a \u03bb that uses a variable twice, of a type whose fields are not Data (a ~ argument)' (728); 'an unknown constructor' (783, 1268); 'a default arm with no known type' (793); 'a specialized argument that is not a constructor' (841).",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "255-841"
+  },
+  {
+   "claim": "More out-of-scope reasons: 'a free variable' (925); 'an unknown datatype' (936); 'a type over Quant' (945); 'a hole' (989); 'a <X> term' for any HTerm tag not handled in term() \u2014 by the switch these are Sub and Ann (992); 'an application with no known head type' (1006); 'a template X short of its ~ arguments' (1013); 'an application past its head's known type' (1027); 'a Quant argument to a variable' (1030); 'a recursion through X at other specialized arguments' (1084); 'a mutual recursion through ... that no live parameter of X leads' (1089); 'a partial or specialized call to X, mutually recursive' (1156); 'a constructor past its fields' (1282); 'a let with no known type' (1322); 'a rewrite motive that is not a \u03bb' (1345); 'a rewrite motive that is not a \u03bb over its evidence' (1353).",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "918-1358"
+  },
+  {
+   "claim": "Nat literals are IN scope: a literal above NAT_MAX=4096 is rewritten to Base's Nat.add(Nat.mul(q, 4096), r); smaller ones unfold to Succ/Zero via lit_step.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "142, 963-970",
+   "quote": "a long Nat is q * NAT_MAX + r, by base's Nat.mul and Nat.add"
+  },
+  {
+   "claim": "U32 and F32 literals are IN scope as 32-bit Word constructor chains emitted as their own defs (U32.litN / F32.litN); strings unfold to SCon/Chr/U32 words (bend.ts lit_step 1089-1099, word_to_term 1064-1070).",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "1264-1304",
+   "quote": "a U32 or F32 word, as a def of its own"
+  },
+  {
+   "claim": "Templates are IN scope by instantiation: 'bend2's instance of a template is the template at its ~ arguments'; items go out once per tuple of closed specialized arguments; a ~ parameter without a closed value becomes an opaque constant k~p with a model (root_cols 257-267).",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "1008-1015, 237-268"
+  },
+  {
+   "claim": "Model synthesis (what stands in for a body-less def): '\u03bbs around a model of the codomain, a datatype's first constructor whose fields all have one..., Unit for a kind, {==} for an equation bend2 converts, else a live \u03bb variable of type T...; none for an empty type'; bounded by MODEL_FUEL/MODEL_DEPTH rounds.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "483-510"
+  },
+  {
+   "claim": "kernel_bin: uses $BENDTT if set, else builds bendtt.lean with 'Lean v4.34.0' into ~/.bend/bendtt/<sha256 prefix>; the build runs lean -c then leanc -O3 (so theorems are elaborated at build time only when this path builds; a prebuilt $BENDTT is trusted as-is).",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "1472-1502"
+  },
+  {
+   "claim": "kernel_check writes the text to a private temp file, runs the kernel with LEAN_STACK_SIZE_KB=4194304, and returns true only on exit 0 with output exactly 'ALL PROOFS CHECK'; any other status (including a missing binary) is false.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "1522-1533",
+   "quote": "got.status === 0 && out.trim() === \"ALL PROOFS CHECK\""
+  },
+  {
+   "claim": "safe_check (the --verdict path) returns got.oos.length === 0 && kernel_check(text): an out-of-scope def makes --verdict fail WITHOUT running the kernel; safe_emit (-o) writes the text and returns one '- name: why' line per out-of-scope def.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "1535-1548"
+  },
+  {
+   "claim": "cli_verdict order: first book_promises (defs that are @unsafe or foreign, or name one) -> FAIL 'N defs rely on unsafe or foreign code'; then, with the kernel, Safe.safe_check false -> FAIL + MISMATCH text; else PASS. The MISMATCH text ('Sorry - this is a mismatch between the TypeScript implementation, and the formalized BendTT kernel...') is printed for any safe_check false, i.e. also for out-of-scope defs and a missing kernel binary (both verified empirically).",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "75-86, 711-729"
+  },
+  {
+   "claim": "book_promises: a def is a promise when 't.u === true || (t.i !== undefined && t.b !== true)' \u2014 Base's own foreign defs are exempt; the promise floods to every def whose type, body or constructor fields name it. Comment: 'a foreign def is a promise like @unsafe is, as the checker reads its type, never its code'.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "731-765"
+  },
+  {
+   "claim": "Holes/unfilled laws are refused before any kernel involvement: book_read throws 'Error: N TODO(s) found.\\nThe code is incomplete, and not a valid proof yet.' when book.hols > 0; verified: a user 'law' with no 'def' gives 'Error: 1 TODO found.' under both --verdict and -o.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "815-818"
+  },
+  {
+   "claim": "-o <file>.bendtt writes the elaboration and prints to stderr 'BendTT: out of scope, so not in <out>:' followed by the reason lines \u2014 the only place --verdict's out-of-scope reasons surface.",
+   "file": "/tmp/bend-fidelity/bend/bend2/main.ts",
+   "lines": "365-369"
+  },
+  {
+   "claim": "Def record fields used by the pipeline: v (body or null), e (bend2's checked body), b (in Base), u (@unsafe), i (foreign import paths).",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "317"
+  },
+  {
+   "claim": "bend2 rejects a user foreign def unless it returns Base IO(...) directly ('a foreign definition returning base IO(...) directly (return type aliases are not unfolded)'); a live reference to an unfilled law is an error ('an unfilled law is a dead claim: live code cannot use it').",
+   "file": "/tmp/bend-fidelity/bend/bend2/bend.ts",
+   "lines": "3321-3322, 3871"
+  },
+  {
+   "claim": "Kernel header CLAIMS: BendTT is 'a dependent affine calculus with Type : Type, no universe levels and no native datatypes'; file holds THEORY, CLAIMS, PROOF; dead parts (types, annotations, motives, q=0 arguments) 'are checked for types only, never run, and may be inconsistent (Girard's paradox fits there)'; live part must be affine, call only earlier defs, self-call only on rebuilt parameters then a piece of one.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "3-31"
+  },
+  {
+   "claim": "Kernel term grammar (what can be expressed): Var, Ref, Ann, Let, Typ *1/*2, All, Lam, App, Sig, Tup, Prj, Enu, Lab, Mat, Efq, Eql, Rfl, Rwt (J), quantities 0/1/2, Def with optional 'opaque'. No native Nat/U32/F32/String/IO: all are \u03a3-over-label encodings.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "40-60"
+  },
+  {
+   "claim": "Opaque defs: 'an opaque def (o) never unfolds; its body is a model, checked with every def transparent'; Def.check picks the transparent lib for an opaque def, checks T : *1, v : T, closedness, and the live check 'affine live code, calls that descend'; FUEL = 400000000 per wnf/conv/check.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "92-99, 143-145, 1279-1296"
+  },
+  {
+   "claim": "Kernel CLI main: parses the file, runs Book.check, prints 'ALL PROOFS CHECK' (exit 0) or 'SOME PROOFS FAIL\\n' + error (exit 1). The parser (Parse.skip, Term.parse*, Book.parse_defs) is a chain of 'partial def's and is outside every Claim (Claims quantify over an already-parsed Book).",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "549-765, 1301-1314"
+  },
+  {
+   "claim": "CLAIMS section CLAIMS the declarative rules 'mirror the checker's, one for one'; Eval 'never runs a dead part'; and 'Part 2 ignores the opaque flag: an opaque def unfolds to its model' \u2014 so the consistency theorem is about the book where every native/foreign def IS its synthetic model.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "1316-1329",
+   "quote": "Part 2 ignores the opaque flag: an opaque def unfolds to its model"
+  },
+  {
+   "claim": "Exact main theorem statement: Claim.consistent := \u2200 bk k d, Book.check bk = .ok () \u2192 Book.get bk k = some d \u2192 \u00ac Conv bk d.T (Enu []). Described as 'no def of a checked book has type Empty (<>), even up to conversion, so no checked def proves False'.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "1529-1534"
+  },
+  {
+   "claim": "Supporting claim statements: Claim.sound (check ok \u2192 Book.WellTyped \u2227 Book.Live); Claim.confluent (Pars diamond); Claim.sr (Par preserves Typed given WellTyped); Claim.progress (closed typed term is a Value or Evals, given WellTyped \u2227 Live); Claim.halts (Acc of Eval for closed Live terms given Book.Live \u2014 'no types needed'); Claim.empty (no Value has type Enu []).",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "1536-1560"
+  },
+  {
+   "claim": "Definitions the claims assume: Book.WellTyped = every def's T : Typ Q1, v : T, v closed; Book.Live = every def closed and its case tree passes Term.tree at its index; Fits allows Conv, Data-fits-any-kind, or enum-label subset; Typed.ref gives 'any instance of a def's type'.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "1383-1443"
+  },
+  {
+   "claim": "All six claims are proven as theorems: book_check : Claim.sound (2211), confluent (1782), sr (2316), progress (2673), empty (2708), halts (3871), consistent (3881-3892, assembled from book_check, halts, progress, empty, pars_sr). grep finds 0 'sorry' and 0 'axiom' in the file; no implemented_by/extern.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "2211, 2316, 2673, 2708, 3871, 3881-3892"
+  },
+  {
+   "claim": "PROOF notes CLAIM the route: 'Type : Type is harmless, since nothing here asks a type to normalize'; termination 'measures the live term, not its type'; 'A dead region may hold Girard's paradox: it is never run, and never measured.'",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "1562-1598"
+  },
+  {
+   "claim": "Gate classes: 'agree (both check), u unsafe (a def relies on @unsafe or foreign code: the goal allows it), bend2 rejects (--verdict stops there, so the kernel never accepts more), - out of scope (the kernel cannot express a def), ! false reject (bend2 checks, the kernel rejects), t timeout' under a 30 s alarm; judge() derives class from stdout text.",
+   "file": "/tmp/bend-fidelity/bend/gates/safe.ts",
+   "lines": "2-16, 76-95"
+  },
+  {
+   "claim": "The gate node obtains out-of-scope reasons only by re-running with -o after seeing 'Sorry - ' in --verdict output; --verdict alone never prints them.",
+   "file": "/tmp/bend-fidelity/bend/gates/safe_node.ts",
+   "lines": "1-30"
+  },
+  {
+   "claim": "RUN proof_insertion_sort/PROOF.bend --verdict: stdout 'ALL PROOFS CHECK', exit 0, real 0m0.122s (user 0.241 sys 0.055). Kernel alone on the emitted .bendtt: 'ALL PROOFS CHECK' in real 0m0.005s.",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_insertion_sort/PROOF.bend",
+   "lines": "1-83"
+  },
+  {
+   "claim": "RUN proof_numerics/PROOF.bend --verdict: 'ALL PROOFS CHECK', exit 0, real 0m0.124s (second run 0.175s; --check-only 0.154s). Emitted book: 116 lines, 12279 bytes, 0 opaque defs; kernel alone real 0m0.022s.",
+   "file": "/tmp/bend-fidelity/bend/demos/proof_numerics/PROOF.bend",
+   "lines": "1-155"
+  },
+  {
+   "claim": "RUN io_http_server/PROOF.bend --verdict: 'SOME PROOFS FAIL\\nError: 2 defs rely on unsafe or foreign code:\\n- main.http_serve\\n- main.main', exit 1, real 0m0.113s. Refused at stage 1 (main.bend line 41 is @unsafe); the kernel never ran.",
+   "file": "/tmp/bend-fidelity/bend/demos/io_http_server/PROOF.bend",
+   "lines": "1-25"
+  },
+  {
+   "claim": "RUN pure_hvm5_mini/PROOF.bend --verdict: 'SOME PROOFS FAIL\\nError: 35 defs rely on unsafe or foreign code:' then 35 names from main.term to main.main, exit 1, real 0m0.236s. main.bend has @unsafe at lines 789, 938, 1104, 1314, 1688, 1769; the kernel never ran.",
+   "file": "/tmp/bend-fidelity/bend/demos/pure_hvm5_mini/PROOF.bend",
+   "lines": "1-212"
+  },
+  {
+   "claim": "RUN -o: proof_insertion_sort emitted to /tmp/bend-fidelity/scratch/bend-kernel-verdict/insertion_sort.bendtt: 113 lines, 8033 bytes, 37 defs, 0 'opaque'. Format: 'name : type =' then an indented body line; each datatype is two defs D.arms (\u03bb-match on the tag giving a \u03a3 chain ending <()>) and D (\u03a3 over the label enum); constructors are tuples '(.Con, (x, (xs, ())))'; defs are \u03b7-long \u03bb/\u03bb-match case trees; quantities appear as -/+ prefixes; specialized instances are suffixed (List.q2, Sigma.q11, id.qv_). Wall 2.99s for the emit run (sys 1.09s).",
+   "file": "/tmp/bend-fidelity/scratch/bend-kernel-verdict/insertion_sort.bendtt",
+   "lines": "1-113"
+  },
+  {
+   "claim": "PROBE missing kernel: BENDTT=<nonexistent> --verdict prints 'SOME PROOFS FAIL' + the MISMATCH text, exit 1 \u2014 a missing kernel is reported as a proof mismatch.",
+   "file": "/tmp/bend-fidelity/bend/bend2/safe.ts",
+   "lines": "1525-1533"
+  },
+  {
+   "claim": "PROBE Base IO (demos/io_hello_world/main.bend, IO.print, no @unsafe): --verdict PASSES 'ALL PROOFS CHECK'. Emitted text line 4: 'opaque IO.print : \u2200x0 : String -> (IO -Unit) = \u03bbx0 => \u03bb-x1 => \u03bbx2 => (.Halt, (U32.lit0, ((.SNil, ()), ())))' \u2014 the kernel checks a synthetic halt-model, never the C/JS in base.bend 160-162. Base's foreign defs are exempt from the promise check (main.ts 741).",
+   "file": "/tmp/bend-fidelity/scratch/bend-kernel-verdict/hello.bendtt",
+   "lines": "4-5, 37-38"
+  },
+  {
+   "claim": "PROBE F32 arithmetic: def f() -> F32: (1.5 + 2.0 : F32) PASSES --verdict; emitted 'opaque F32.add : \u2200x0 : F32 -> \u2200x1 : F32 -> F32 = \u03bbx0 => \u03bbx1 => F32.lit0' (constant-zero model). A law {f() == 3.5 : F32} is rejected by bend2 itself ('expected : F32.add(1.5, 2.0) / observed : 3.5'). F32.add is a Base law with no def (base.bend 1556-1559).",
+   "file": "/tmp/bend-fidelity/scratch/bend-kernel-verdict/f32use.bendtt",
+   "lines": "4-5"
+  },
+  {
+   "claim": "PROBE U32 arithmetic: (x + 1 : U32) and law {inc(0) == 1 : U32} PASS with 0 opaque defs: U32.add has a Base body (base.bend 1343) elaborated through Word.add/Word.adc.group/Bool.full_add \u2014 fully kernel-checked. Bare 'x + 1' is a bend2 parse error ('operators demand annotation').",
+   "file": "/tmp/bend-fidelity/scratch/bend-kernel-verdict/u32ops.bendtt",
+   "lines": "1-40"
+  },
+  {
+   "claim": "PROBE Nat 5000n: PASSES; 'big_eq : {big == (Nat.add (Nat.mul 1 +4096) 904)...' \u2014 the literal is arithmetic over Base Nat.mul/Nat.add (kernel-checked defs). PROBE string \"hi\": PASSES as SCon/Chr/U32.lit104,105 chain. PROBE Array<Nat> value + Array.size law: PASSES, 0 opaque. PROBE template id(~A: Type, x: A): PASSES; instances id.qv_ (at Nat) and id.qv at 'opaque id_7e_A : *1 = Unit'.",
+   "file": "/tmp/bend-fidelity/scratch/bend-kernel-verdict/bignat.bendtt",
+   "lines": "7-10"
+  },
+  {
+   "claim": "PROBE hole (?x): bend2 rejects before the kernel ('expected : Nat / observed : ?x'). PROBE user foreign def returning U32: bend2 rejects (must return IO). PROBE user foreign def returning IO(U32): 'Error: 2 defs rely on unsafe or foreign code: - ffi - main' under both --verdict and --check-only.",
+   "file": "/tmp/bend-fidelity/scratch/bend-kernel-verdict/foreign_io.bend",
+   "lines": "1-7"
+  },
+  {
+   "claim": "PROBE tests/proof/model_no_base.bend (Grow<Pair(A,A)> nested datatype as a ~ parameter): --verdict prints the generic MISMATCH text; -o prints '- reflexive: names reflexive_7e_n, out of scope: no model for reflexive~n'. The fixture's own expectation is only bend2's '#|ALL PROOFS CHECK / Use --verdict for mathematical validity.'",
+   "file": "/tmp/bend-fidelity/bend/tests/proof/model_no_base.bend",
+   "lines": "1-12"
+  },
+  {
+   "claim": "Base inventory (regex scan of base.bend, approximate): 73 laws, 389 defs; 52 laws with no def go out opaque at a model under --verdict: all F32.* (add sub mul div mod pow neg abs sqrt exp log* sin cos tan asin acos atan atan2 sinh cosh tanh floor ceil trunc round is_* show read bits to_u32), U32.to_f32, Array.atomic.{add,and,cas,exch,fadd,max,min,or,xor}, and handle types File/Socket/Listener/Window/Audio/Chan; 90 'import \"' lines (foreign .c/.js fills, roughly 45 defs: IO.*, TCP/UDP, Chan.*, Window.*, Audio.*, File/Socket/Listener.close).",
+   "file": "/tmp/bend-fidelity/bend/bend2/base.bend",
+   "lines": "96-112, 1548-1705, 2314-2363"
+  },
+  {
+   "claim": "Kernel binary provenance: /tmp/bend-fidelity/kernel/bendtt.lean has sha256 e15042434e73aab07ab05cea4b77b5619082c00a6d4924ea2d4a2cdec05facce, identical to bend2/bendtt.lean at the commit; the binary itself was supplied prebuilt (bendtt.c present), so whether Lean elaborated the theorems for this build is not observable here.",
+   "file": "/tmp/bend-fidelity/bend/bend2/bendtt.lean",
+   "lines": "1-3892"
+  }
+ ],
+ "open_questions": [
+  "Trust split per guarantee (for the lead): 'no checked def proves False in the translated book' rests on the Lean theorem consistent (bendtt.lean 3881) given the kernel's unverified partial-def parser; 'the translated book means the same as the Bend source' rests entirely on the AI-written safe.ts (1548 lines) and bend2's type annotations (Def.e); 'bend2 accepted the program' (holes, @unsafe/foreign promises, operator typing) rests on bend2 alone; anything about native F32 ops, Array.atomic.*, or Base IO/foreign effects rests on nothing \u2014 they are replaced by synthetic models before the kernel sees them.",
+  "Does a Lean build of bendtt.lean (lean -c) actually re-elaborate every theorem, and was the supplied /tmp/bend-fidelity/kernel/bendtt built that way? kernel_bin's build path does run lean on the whole file, but a prebuilt $BENDTT is trusted verbatim.",
+  "Can a wrong-but-well-typed model make the kernel accept a book that bend2 would also accept while the real native disagrees (e.g. a user law about F32.add that bend2 proves by rewriting with a Base lemma, if any exist)? Not exercised here; bend2 itself refused the direct F32 equation.",
+  "The Base inventory counts come from a line-regex scan (natives.py in the scratch dir) and undercount multi-line foreign signatures; a precise list would need bend2's parsed Book (tld.v === null / tld.i)."
+ ]
+}

@@ -1,0 +1,15 @@
+SOME PROOFS FAIL
+Error:
+- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
+- observed : run_until_settled
+Context:
+- c : Bool
+- t : Bool
+Location: run_until_settled
+17 |     case FixState{c, t}:
+18>|       Bool.pick(FixState, Bool.or(c, t), run_until_settled(fix_cycle_pass(s)), s)
+   |                                          ^^^^^^^^^^^^^^^^^
+19 | 
+--
+exit 1
+wall 0.12 s
