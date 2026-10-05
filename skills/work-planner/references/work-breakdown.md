@@ -32,8 +32,8 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check Dependencies](commands.md#check-dependencies) derives it from the epic tables.
 - **Task grain.**
   - A task is one pull request's worth of work, and takes further pull requests when a merged one leaves it short of Done.
-  - A task delivering more than three criteria that no other task delivers is split into tasks one pull request each can deliver.
-  - A criterion several tasks deliver, such as a convention every grammar task follows, is shared and counts towards none of them.
+  - A task delivering more than three criteria is split into tasks one pull request each can deliver.
+  - One task delivers each criterion, as [One row](review-criteria.md#one-row) defines.
   - Every test the work calls for accompanies that task. The content steers which kinds those are, including the project's system test when the work is something that test can exercise. A failure in any test the task carries keeps the task open. None of those tests is a later row.
   - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
   - When the behaviour a wired activity produces differs from the behaviour the work expected, that task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold.

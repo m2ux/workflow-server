@@ -110,9 +110,9 @@ An epic states one slice of the initiative's design and lists the tasks that del
 #### Work Breakdown
 
 - A task row's Description follows the [Work Breakdown Guide](work-breakdown.md#tables). A detail it carries beyond that phrase is a criterion of one invariant, cited by the row.
-- Coverage names the epic criteria the task must meet. Each row's criteria are the ones its work makes true: a row does not claim a criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet it.
+- Coverage names the epic criteria the task must meet. Each row's criteria are the ones its work makes true: a row does not claim a criterion another row delivers alone, and a criterion is not left to a row whose work cannot meet it. One task delivers each, as [One row](#one-row) defines.
 - An epic criterion no task row delivers is a gap.
-- A task delivering more than three criteria no other task delivers is split into tasks one pull request each can deliver.
+- A task delivering more than three criteria is split into tasks one pull request each can deliver.
 - Depends on is references only. A task depending on a later task in its epic is a backward reference.
 - A dependency listed twice, or already implied by another in the same cell, is unsound.
 - A cycle is unsound.
@@ -124,6 +124,10 @@ An epic states one slice of the initiative's design and lists the tasks that del
 - Two epics or tasks claiming one piece of work have one owner, and the boundary is stated in both.
 - The same outcome as a task in two epics is a duplicate: remove one, or raise the initiative's.
 - An issue that several row ids link backs several tasks. No row id links it, and the epic cites it under References, or each task has its own issue.
+
+#### One row
+
+One task delivers each criterion. A criterion more than one row cites is imprecise: split it into the invariant each task makes true, and cite each from the one row that delivers it.
 
 #### Acceptance Criteria
 

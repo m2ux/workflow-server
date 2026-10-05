@@ -37,8 +37,8 @@ Left to decide, since each needs new content or a judgement:
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
-  - an epic's task delivering more than three criteria that no other task delivers, a candidate for
-    splitting (a criterion several tasks deliver is shared, and does not count towards any one)
+  - an epic's task delivering more than three criteria, a candidate for splitting, and a criterion
+    more than one task cites, which is imprecise and is split into the invariant each task makes true
   - wording that narrates how the plan changed (moved to, was W06, renumbered, formerly,
     previously, no longer, discharged, superseded, subsumed, used to)
   - a Problem or Proposal that names an epic, task, or acceptance criterion of its own initiative
@@ -450,12 +450,15 @@ class Review:
                 self.decide.append(f'{name}: Coverage cites AC{n}, which is not a criterion')
             delivered |= numbers
             cited.append((name, numbers))
-        if self.kind != 'initiative':
-            rows_citing = {n: sum(n in c for _, c in cited) for n in delivered}
+        if self.kind == 'epic':
+            rows_citing = {n: [name for name, c in cited if n in c] for n in delivered}
+            for n in sorted(rows_citing):
+                if len(rows_citing[n]) > 1:
+                    self.decide.append(f'AC{n} is cited by {", ".join(rows_citing[n])}; one task delivers a '
+                                       'criterion, so split it into the invariant each task makes true')
             for name, numbers in cited:
-                own = {n for n in numbers if rows_citing[n] == 1}
-                if len(own) > MAX_CRITERIA:
-                    self.decide.append(f'{name}: delivers {len(own)} criteria no other task delivers; split it into '
+                if len(numbers) > MAX_CRITERIA:
+                    self.decide.append(f'{name}: delivers {len(numbers)} criteria; split it into '
                                        'tasks one pull request each can deliver')
         for n in sorted(wanted - delivered):
             self.decide.append(f'AC{n} is delivered by no Work Breakdown row')
