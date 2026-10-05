@@ -1,5 +1,5 @@
 id: report-generation
-version: 3.9.0
+version: 3.10.0
 name: Report Generation
 description: Consolidate findings into the final audit report.
 variables:
@@ -10,10 +10,10 @@ variables:
     - domain_map
     - ensemble_enabled
     - gitnexus_available
-    - has_reference_report
     - merge_complete
     - planning_folder_path
     - reconciliation_table
+    - reference_report
     - target_commit
     - target_submodule
     - verification_complete
@@ -100,7 +100,7 @@ exits:
   - id: ensemble
     when: ensemble_enabled == true
   - id: has-reference-report
-    when: has_reference_report == true
+    when: reference_report
   - id: complete
     isDefault: true
 outcome:

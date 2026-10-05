@@ -22,9 +22,13 @@ variables:
       type: boolean
       description: Whether the target codebase is GitNexus-indexed; gates graph-based structural analysis (enumeration, call graph, reachability, blast radius), with grep and full-file reads as the fallback when false
       defaultValue: false
+    - name: planning_folder_path
+      type: string
+      description: The audit's working folder.
     - name: reference_report
       type: string
-      description: Path to professional audit report for gap analysis (optional)
+      description: Path to the reference audit report the request names. Empty where it names none.
+      defaultValue: ""
     - name: target_commit
       type: string
       description: Git commit hash to audit
