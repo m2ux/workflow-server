@@ -33,7 +33,7 @@ class Done(unittest.TestCase):
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
         self.assertNotIn('w01.md', fixed)
 
-    def test_a_merged_pull_request_leaves_done_empty(self):
+    def test_a_merged_pull_request_leaves_done_empty_while_a_criterion_is_unticked(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         fixed = synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')], '--link', 'W01=950')
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
@@ -138,9 +138,11 @@ class TaskLinks(unittest.TestCase):
 
     def test_a_merged_pull_request_with_an_unticked_criterion_is_unmet(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
-        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('unmet: W01 (#950): AC1 unticked', done.stdout)
+        self.assertNotIn('done:', done.stdout)
+        self.assertNotIn('| ✓ |', fixed)
 
     def test_an_open_pull_request_leaves_coverage_unreported(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
@@ -194,10 +196,28 @@ class TaskLinks(unittest.TestCase):
         self.assertIn(f"| [W01]({commit}) | Work | AC1 | | | ✓ |", fixed)
         self.assertIn('closable: yes', done.stdout)
 
-    def test_a_tick_clears_when_the_row_is_not_complete(self):
+    def test_done_ticks_once_the_row_no_longer_names_the_unmet_criterion(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| AC1 |', '| |', 1)
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('done: W01', done.stdout)
+        self.assertNotIn('unmet:', done.stdout)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | | | | ✓ |", fixed)
+
+    def test_a_tick_clears_while_a_cited_criterion_is_unticked(self):
         body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| | |', '| | ✓ |', 1)
         epic = issue(2, '[I01:E00] First: Epic', body=body)
         done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('cleared: W01', done.stdout)
+        self.assertIn('unmet: W01 (#950): AC1 unticked', done.stdout)
+        self.assertNotIn('| ✓ |', fixed)
+
+    def test_a_tick_clears_when_the_pull_request_is_open(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| | |', '| | ✓ |', 1)
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('cleared: W01', done.stdout)
         self.assertNotIn('| ✓ |', fixed)

@@ -53,7 +53,7 @@ Left to decide, since each needs new content or a judgement:
   - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
   - an Coverage cell that does not name the criteria the row delivers (AC2, AC5), or
-    cites one that does not exist, and a criterion no row delivers
+    cites one that does not exist, and a criterion no row delivers. A complete row's cell may be empty
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
   - no theme:* label on an initiative or epic, a title without "Name: Subtitle" (after the prefix,
@@ -441,7 +441,11 @@ class Review:
                     self.decide.append(f'{name}: Description runs to {len(phrase.split())} words; shorten it to a '
                                        f'phrase of at most {MAX_DESCRIPTION}, and state its detail as criteria of '
                                        'one invariant each')
-            listed = r[covered] if covered < len(r) else ''
+            listed = (r[covered] if covered < len(r) else '').strip()
+            done_at = header.index('Done') if 'Done' in header else None
+            done = r[done_at].strip() if done_at is not None and done_at < len(r) else ''
+            if listed == '' and done == TICK:
+                continue
             if not COVERAGE.fullmatch(listed):
                 self.decide.append(f'{name}: Coverage does not name the criteria it delivers')
                 continue

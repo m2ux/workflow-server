@@ -42,10 +42,9 @@ Records work on an initiative, its epics and their task issues: links each task 
    Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited and note are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names. What counts as coverage is [Coverage Reports](work-breakdown.md#coverage-reports).
-   - A criterion that cannot be confirmed stays unticked and is reported with what is missing.
+   - A criterion that cannot be confirmed stays unticked, with what is missing. The further task that adopts it is [Review Mode](review-mode.md)'s Gap rule.
 8. **Tick.**
    Tick the confirmed criteria with [Tick Criteria](commands.md#tick-criteria). It ticks Done as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
-   Link each further pull request on a task that stays unticked, as in step 6.
 9. **Patch.**
    Patch each changed body from its `--fix` file with [Patch Body](commands.md#patch-body).
 10. **Close.**
