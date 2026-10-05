@@ -178,7 +178,7 @@ type ReferencedActivity =
   | { kind: 'missing' };
 
 /**
- * Resolve a borrowed activity reference such as "work-package/02-design-philosophy.yaml": the first
+ * Resolve a borrowed activity reference such as "legacy/02-design-philosophy.yaml": the first
  * segment is the workflow holding the file, the rest its path under that workflow's `activities/`.
  * A file that fails to load is reported as a per-file error, as an activity file of the workflow's
  * own is; a reference that reaches no file is `missing`, which fails the workflow load.

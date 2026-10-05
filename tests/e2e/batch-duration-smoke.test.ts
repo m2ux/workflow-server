@@ -11,7 +11,7 @@ import { liveCorpusRoot } from '../corpus-root.js';
  */
 describe.skipIf(!liveCorpusRoot())('batch duration smoke (#407)', () => {
   it('quantifies what a batch saves over a fresh context per activity', async () => {
-    const opts = { workflowId: 'work-package', activities: DEFAULT_RUN, contextTokens: 200_000, repeat: 1 };
+    const opts = { workflowId: 'legacy', activities: DEFAULT_RUN, contextTokens: 200_000, repeat: 1 };
     const perActivity = await measure('per-activity', opts);
     const batched = await measure('batched', opts);
 

@@ -75,7 +75,7 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
       name: 'dispatch_child',
       arguments: {
         session_index: metaIdx,
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'worker-1',
         planning_slug: '2026-07-24-no-repo',
       },
@@ -100,7 +100,7 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
       name: 'dispatch_child',
       arguments: {
         session_index: metaResp.session_index,
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'worker-1',
         planning_slug: slug,
         repo: 'acme/app',
@@ -138,7 +138,7 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
       name: 'dispatch_child',
       arguments: {
         session_index: metaResp.session_index,
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'worker-1',
         planning_slug: slug,
       },
@@ -155,7 +155,7 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
     expect(stored.workflowId).toBe('meta');
     expect(stored.repo).toBe('acme/app');
     expect(stored.triggeredWorkflows).toHaveLength(1);
-    expect(stored.triggeredWorkflows[0].workflowId).toBe('work-package');
+    expect(stored.triggeredWorkflows[0].workflowId).toBe('legacy');
     expect(stored.triggeredWorkflows[0].state.repo).toBe('acme/app');
   });
 
@@ -174,7 +174,7 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
       name: 'dispatch_child',
       arguments: {
         session_index: metaIdx,
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'worker-1',
         planning_slug: '2026-07-24-conflict',
         repo: 'other/repo',

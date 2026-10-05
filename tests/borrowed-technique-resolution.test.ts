@@ -138,14 +138,14 @@ describe('borrowed-activity technique resolution', () => {
       .toBe('meta/shared-template');
   });
 
-  it.skipIf(!LIVE_CORPUS)('maps the real corpus: remediate-vuln borrows work-package activities', async () => {
+  it.skipIf(!LIVE_CORPUS)('maps the real corpus: remediate-vuln borrows legacy activities', async () => {
     const result = await loadWorkflowWithDiagnostics(WORKFLOW_DIR, 'remediate-vuln');
     expect(result.success).toBe(true);
     if (!result.success) return;
     const sources = result.value.activitySourceWorkflow;
     expect(sources.get('start')).toBe('remediate-vuln');
-    expect(sources.get('design-philosophy')).toBe('work-package');
-    expect(sources.get('implement')).toBe('work-package');
-    expect(sources.get('submit-for-review')).toBe('work-package');
+    expect(sources.get('design-philosophy')).toBe('legacy');
+    expect(sources.get('implement')).toBe('legacy');
+    expect(sources.get('submit-for-review')).toBe('legacy');
   });
 });

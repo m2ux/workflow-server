@@ -102,7 +102,7 @@ describe('delivery ledger helpers', () => {
   it('recordDeliveries merges per-agent entries and deliveredHash reads them back', () => {
     const state = createInitialSessionFile({
       sessionIndex: 'AAAAAA',
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       workflowVersion: '1.0.0',
       agentId: 'solo',
     });
@@ -123,7 +123,7 @@ describe('session schema: contextMode + deliveredContent', () => {
   it('accepts a session file without the delivery fields (back-compat)', () => {
     const state = createInitialSessionFile({
       sessionIndex: 'AAAAAA',
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       workflowVersion: '1.0.0',
       agentId: 'solo',
     });
@@ -134,7 +134,7 @@ describe('session schema: contextMode + deliveredContent', () => {
   it('round-trips contextMode and deliveredContent', () => {
     const state = createInitialSessionFile({
       sessionIndex: 'AAAAAA',
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       workflowVersion: '1.0.0',
       agentId: 'solo',
       contextMode: 'persistent',
@@ -151,7 +151,7 @@ describe('session schema: contextMode + deliveredContent', () => {
   it('rejects an invalid contextMode value', () => {
     const state = createInitialSessionFile({
       sessionIndex: 'AAAAAA',
-      workflowId: 'work-package',
+      workflowId: 'legacy',
       workflowVersion: '1.0.0',
       agentId: 'solo',
     });
@@ -170,7 +170,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
   beforeAll(async () => {
     harness = await createHarness();
     client = harness.client;
-    mcp = sessionOps(harness, 'work-package');
+    mcp = sessionOps(harness, 'legacy');
   });
 
   afterAll(async () => { await harness.close(); });
@@ -193,7 +193,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
   describe('get_activity in the default mode', () => {
     it('delivers the worker bundle in full to an identity the server has not met', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
 
@@ -207,7 +207,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('refers an identity it has already delivered to back to the bundle it holds', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
       const first = splitActivityResponse(await getActivity(idx)).bundle;
@@ -232,7 +232,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('re-delivers everything to a fresh identity in the same session', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
       await getActivity(idx);
@@ -250,7 +250,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
   describe('persistent context mode', () => {
     it('start_session echoes context_mode and re-fetching an activity collapses the bundle to markers', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-03-persistent-refetch'),
         context_mode: 'persistent',
@@ -292,7 +292,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
         expect(isUnchangedMarker(value), `contract ${key} was delivered twice in full`).toBe(true);
       }
       expect(rulesDeliveredInFull(second.bundle), 'the role rules arrived in full a second time').toBe(false);
-      // The activity body itself is still delivered. (`work-package` declares no rules buckets of
+      // The activity body itself is still delivered. (`legacy` declares no rules buckets of
       // its own — its conduct comes from the conduct home and its one activity-scoped rule set sits
       // on the activity that owns it — so no inherited `activity_rules` block reaches this worker.
       // The block's own dedup path is covered against `requirements-refinement` below.)
@@ -342,7 +342,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('across activities, shared inherited techniques collapse while new ones arrive in full', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-03-persistent-cross-activity'),
         context_mode: 'persistent',
@@ -374,7 +374,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('bundle: "full" overrides persistent mode and re-delivers everything', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-03-persistent-full-escape'),
         context_mode: 'persistent',
@@ -423,7 +423,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('a different agent_id on resume starts from an empty ledger (full delivery)', async () => {
       const slug = '2026-07-03-agent-switch';
       const sessionA = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'agent-a',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
@@ -439,7 +439,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       // active (contextMode persisted) but agent-b's ledger is empty, so the
       // bundle arrives in full.
       const sessionB = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'agent-b',
         planning_folder: planningFolder(slug),
       });
@@ -457,7 +457,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
   describe('per-call bundle: "reference" opt-in on a default session', () => {
     it('references content recorded by earlier full-mode deliveries', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
 
@@ -497,7 +497,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('answers a byte-identical refetch with an unchanged-reference; full: true re-fetches', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-03-technique-delta'),
         context_mode: 'persistent',
@@ -538,7 +538,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('never returns references on a default (fresh-context) session', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'codebase-comprehension');
       const stepId = await findTechniqueStepId(idx);
@@ -602,7 +602,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     // a corpus fixture for a defect state goes green the moment the defect is fixed, so this case
     // now pins the RESOLVED annotation instead: a producer in an earlier activity, named.
     it('a step-bound fetch annotates own inputs; inherited inputs ride the named contracts', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       // The review-code step lives on the code-review fan branch; post-impl-review is the join.
       await mcp.enter(idx, 'code-review');
@@ -636,7 +636,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       // `legal_review_note` optional and nothing in the workflow supplies it, so the annotator
       // reports it as optional rather than warning it unresolved. A fresh session opens
       // submit-for-review — the code-review fan branch cannot exit straight there.
-      const optionalSession = await startSession({ workflow_id: 'work-package', agent_id: 'w2' });
+      const optionalSession = await startSession({ workflow_id: 'legacy', agent_id: 'w2' });
       const optionalIdx = optionalSession['session_index'] as string;
       await mcp.enter(optionalIdx, 'submit-for-review');
       const optionalCase = await client.callTool({
@@ -676,7 +676,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('resuming with context_mode: "fresh" downgrades a persistent session to full delivery', async () => {
       const slug = '2026-07-03-resume-downgrade';
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
@@ -706,7 +706,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('resuming with context_mode: "persistent" upgrades a default session and references full-mode deliveries', async () => {
       const slug = '2026-07-03-resume-upgrade';
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder(slug),
       });
@@ -735,7 +735,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('threads context_mode to the child and the ledger lands on the embedded child state', async () => {
       const slug = '2026-07-03-child-ledger';
       const parent = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'parent-orch',
         planning_folder: planningFolder(slug),
       });
@@ -743,7 +743,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
       const dispatch = await client.callTool({
         name: 'dispatch_child',
-        arguments: { session_index: parentIdx, workflow_id: 'work-package', agent_id: 'child-worker', context_mode: 'persistent' },
+        arguments: { session_index: parentIdx, workflow_id: 'legacy', agent_id: 'child-worker', context_mode: 'persistent' },
       });
       expect(dispatch.isError).toBeFalsy();
       const childIdx = (JSON.parse(responseText(dispatch)) as Record<string, unknown>)['session_index'] as string;
@@ -781,7 +781,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       });
       const mutable = await createHarness({ workflowDir: mutableWorkflowDir });
       const client2 = mutable.client;
-      const mutableSession = sessionOps(mutable, 'work-package');
+      const mutableSession = sessionOps(mutable, 'legacy');
 
       try {
         const idx = await mutableSession.start('2026-07-03-mutable', 'solo', 'persistent');
@@ -850,7 +850,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('carries a sibling technique\'s shared contracts as whole items, under reference delivery', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-12-technique-arrives-entire'),
         context_mode: 'persistent',
@@ -862,7 +862,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       // as a probe session is served it, so the pairing follows the definition wherever the activity
       // places the sibling. The probe keeps its own delivery ledger, which leaves A undelivered here.
       const probe = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-12-technique-arrives-entire-probe'),
         context_mode: 'persistent',
@@ -919,7 +919,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('records no block key on the delivery ledger', async () => {
       const slug = '2026-07-12-no-block-ledger-keys';
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
@@ -958,7 +958,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('collapses the ops bundle on a second persistent-mode call; summary stays full', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-12-ops-bundle-slimming-persistent'),
         context_mode: 'persistent',
@@ -988,7 +988,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('never markers the ops bundle in fresh mode', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
 
       const first = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
@@ -1003,7 +1003,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('records the workflow_bundle:<hash> channel key on first persistent delivery', async () => {
       const slug = '2026-07-12-ops-bundle-slimming-ledger-key';
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
@@ -1023,7 +1023,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('answers a byte-identical refetch with an unchanged-reference; full: true re-fetches', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-16-resource-delta'),
         context_mode: 'persistent',
@@ -1062,7 +1062,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('never returns references on a default (fresh-context) session', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'w1' });
       const idx = session['session_index'] as string;
 
       const first = await client.callTool({
@@ -1081,7 +1081,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('does not collapse across different agentIds', async () => {
       const slug = '2026-07-16-resource-agent-scope';
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo-a',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
@@ -1094,7 +1094,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
       // Resume under a different agent_id — empty ledger for that agent.
       const resumed = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo-b',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
@@ -1110,7 +1110,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
 
     it('treats bare and #section resource_ids as independent ledger keys', async () => {
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-16-resource-section-keys'),
         context_mode: 'persistent',
@@ -1150,7 +1150,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('still records resource_fetched when answering with an unchanged-reference', async () => {
       const slug = '2026-07-16-resource-fetched-on-collapse';
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'solo',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
@@ -1203,7 +1203,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     }
 
     it('delivers a fresh worker scope in full and the same scope resumed as references', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
 
@@ -1226,7 +1226,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('never hands one worker the markers of another worker on the same session', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
 
@@ -1243,7 +1243,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('scopes get_technique and get_resource on the same identity', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
       await mcp.enter(idx, 'start-work-package');
       const stepId = await (async () => {
@@ -1266,7 +1266,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     });
 
     it('leaves get_technique and get_resource in full delivery without the opt-in, and honours full: true over it', async () => {
-      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const session = await startSession({ workflow_id: 'legacy', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
 
       // No bundle, default (fresh) session: a byte-identical refetch still arrives in full.
@@ -1281,7 +1281,7 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     it('keys the on-disk ledger under the passed agent_id, leaving the session agent untouched', async () => {
       const slug = '2026-07-30-worker-scoped-ledger';
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'legacy',
         agent_id: 'orchestrator',
         planning_folder: planningFolder(slug),
       });

@@ -13,35 +13,36 @@ const WF_DIR = LIVE_CORPUS ?? '';
 
 describe.skipIf(!LIVE_CORPUS)('technique addressing (:: path)', () => {
   it('resolves an implicit same-workflow sub-technique', async () => {
-    const r = (await resolveTechniques(['validate-build::analyze-failure'], WF_DIR, 'work-package'))[0]!;
+    const r = (await resolveTechniques(['validate-build::analyze-failure'], WF_DIR, 'legacy'))[0]!;
     expect(r.type).toBe('technique');
     expect(r.source).toBe('validate-build');
     expect(r.name).toBe('analyze-failure');
   });
 
   it('resolves the full canonical path workflow::technique::sub', async () => {
-    const r = (await resolveTechniques(['work-package::review-assumptions::collect'], WF_DIR, 'meta'))[0]!;
+    const r = (await resolveTechniques(['legacy::review-assumptions::collect'], WF_DIR, 'meta'))[0]!;
     expect(r.type).toBe('technique');
-    expect(r.workflow).toBe('work-package');
+    // A nested workflow reports the path from the corpus root. At the corpus root that path is the directory name.
+    expect(r.workflow).toBe('work-package/workflows/legacy');
     expect(r.name).toBe('collect');
   });
 
   it('delivers a whole (standalone) technique protocol from a bare ref', async () => {
-    const r = (await resolveTechniques(['implement-task'], WF_DIR, 'work-package'))[0]!;
+    const r = (await resolveTechniques(['implement-task'], WF_DIR, 'legacy'))[0]!;
     expect(r.type).toBe('technique');
     expect((r.body as { protocol?: unknown }).protocol).toBeDefined();
   });
 
   it('resolves a cross-workflow ref (legacy / and :: forms equivalently)', async () => {
-    const slash = (await resolveTechniques(['prism/portfolio-analysis'], WF_DIR, 'work-package'))[0]!;
-    const colons = (await resolveTechniques(['prism::portfolio-analysis'], WF_DIR, 'work-package'))[0]!;
+    const slash = (await resolveTechniques(['prism/portfolio-analysis'], WF_DIR, 'legacy'))[0]!;
+    const colons = (await resolveTechniques(['prism::portfolio-analysis'], WF_DIR, 'legacy'))[0]!;
     expect(slash.type).toBe('technique');
     expect(colons.type).toBe('technique');
     expect(colons.workflow).toBe('prism');
   });
 
   it('group-prefix rule ref still expands (agent-conduct::checkpoint-discipline)', async () => {
-    const resolved = await resolveTechniques(['agent-conduct::checkpoint-discipline'], WF_DIR, 'work-package');
+    const resolved = await resolveTechniques(['agent-conduct::checkpoint-discipline'], WF_DIR, 'legacy');
     expect(resolved.length).toBeGreaterThan(0);
     expect(resolved.every(r => r.type === 'rule')).toBe(true);
   });

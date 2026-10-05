@@ -14,7 +14,7 @@ function minimalSession(overrides: Partial<SessionFile> = {}): SessionFile {
   return {
     schemaVersion: 1,
     sessionIndex: VALID_INDEX,
-    workflowId: 'work-package',
+    workflowId: 'legacy',
     workflowVersion: '3.11.0',
     agentId: 'worker',
     seq: 0,
@@ -42,7 +42,7 @@ describe('SessionFile schema', () => {
       if (result.success) {
         expect(result.data.schemaVersion).toBe(1);
         expect(result.data.sessionIndex).toBe(VALID_INDEX);
-        expect(result.data.workflowId).toBe('work-package');
+        expect(result.data.workflowId).toBe('legacy');
       }
     });
 
@@ -228,7 +228,7 @@ describe('SessionFile schema', () => {
     it('produces a SessionFile that passes schema validation', () => {
       const file = createInitialSessionFile({
         sessionIndex: VALID_INDEX,
-        workflowId: 'work-package',
+        workflowId: 'legacy',
         workflowVersion: '3.11.0',
         agentId: 'worker',
       });
@@ -246,7 +246,7 @@ describe('SessionFile schema', () => {
     it('launches nothing of its own', () => {
       const file = createInitialSessionFile({
         sessionIndex: VALID_INDEX,
-        workflowId: 'work-package',
+        workflowId: 'legacy',
         workflowVersion: '3.11.0',
         agentId: 'worker',
       });
@@ -256,7 +256,7 @@ describe('SessionFile schema', () => {
     it('records the agent path on every fresh session', () => {
       const file = createInitialSessionFile({
         sessionIndex: VALID_INDEX,
-        workflowId: 'work-package',
+        workflowId: 'legacy',
         workflowVersion: '3.11.0',
         agentId: 'worker',
       });
@@ -268,7 +268,7 @@ describe('SessionFile schema', () => {
     it('accepts the runner path when the caller names it', () => {
       const file = createInitialSessionFile({
         sessionIndex: VALID_INDEX,
-        workflowId: 'work-package',
+        workflowId: 'legacy',
         workflowVersion: '3.11.0',
         agentId: 'worker',
         executionPath: 'runner',

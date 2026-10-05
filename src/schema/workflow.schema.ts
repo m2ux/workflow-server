@@ -126,8 +126,8 @@ export type Workflow = z.infer<typeof WorkflowSchema>;
  */
 export const ActivityReferenceSchema = z.string().regex(
   /^[^/]+\/(?:[^/]+\/)*\d+-[^/]+\.ya?ml$/,
-  'an activity reference is `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml`, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`; a workflow\'s own activities are the files in its `activities/` folder and need no reference',
-).describe('Borrowed activity file, `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` (or `.yml`): a file under that workflow\'s `activities/` folder, subfolders included, such as `work-package/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`. The borrowed activity resolves its unqualified technique and routine references in the workflow it is borrowed from. A reference naming no file fails the workflow load; a file that fails validation is excluded from the load, as an activity file of the workflow\'s own is.');
+  'an activity reference is `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml`, such as `legacy/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`; a workflow\'s own activities are the files in its `activities/` folder and need no reference',
+).describe('Borrowed activity file, `<workflow>/[activities/][<folder>/…]<NN>-<id>.yaml` (or `.yml`): a file under that workflow\'s `activities/` folder, subfolders included, such as `legacy/02-design-philosophy.yaml` or `meta/patterns/02-supervisor.yaml`. The borrowed activity resolves its unqualified technique and routine references in the workflow it is borrowed from. A reference naming no file fails the workflow load; a file that fails validation is excluded from the load, as an activity file of the workflow\'s own is.');
 
 /**
  * A workflow definition file as authored. Its own activities are the files in its `activities/`

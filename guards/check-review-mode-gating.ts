@@ -1,8 +1,8 @@
 /**
- * check-review-mode-gating — review-mode checkpoint-friction guard (work-package review-mode
+ * check-review-mode-gating — review-mode checkpoint-friction guard (legacy review-mode
  * optimisation follow-up, R5).
  *
- * Review mode in a workflow (e.g. work-package) is driven by an `is_review_mode` boolean: activities,
+ * Review mode in a workflow (e.g. legacy) is driven by an `is_review_mode` boolean: activities,
  * steps, and checkpoints branch on it. The failure this guards against is the class the review-mode
  * optimisation fixed: a checkpoint that is REACHABLE while `is_review_mode == true`, is NOT itself
  * mode-aware (its own gate never mentions `is_review_mode`), and auto-advances to a CONSEQUENTIAL
@@ -16,7 +16,7 @@
  * `is_review_mode == true` fires first, so later edges behind it (assumptions-review's default edge
  * into `implement`) are correctly treated as unreachable in review mode.
  *
- * A workflow may declare headless auto-advance as its review-mode design (work-package's
+ * A workflow may declare headless auto-advance as its review-mode design (legacy's
  * `review-mode-headless-auto-advance` rule does). Under that design a default that merely RECORDS an
  * assessment is the intended outcome, while a default that authorises CREATING or PUBLISHING
  * something is the defect this guard exists to catch. The guard cannot tell those apart
@@ -50,13 +50,13 @@ const REVIEW_BAG = { is_review_mode: true } as const;
  * approves anything does not qualify — gate it on `is_review_mode` instead.
  */
 export const ACCEPTED_HEADLESS_AUTO_ADVANCE: Record<string, string> = {
-  'work-package::codebase-comprehension::comprehension-sufficient':
+  'legacy::codebase-comprehension::comprehension-sufficient':
     'default accepts the remaining open questions and clears the comprehension loop; it records a '
     + 'sufficiency judgement and mutates nothing outside the run.',
-  'work-package::requirements-elicitation::elicitation-complete':
+  'legacy::requirements-elicitation::elicitation-complete':
     'default closes elicitation once every question domain is covered; it records completion and '
     + 'mutates nothing outside the run.',
-  'work-package::plan-prepare::context-scope-declaration':
+  'legacy::plan-prepare::context-scope-declaration':
     'checkpoint fires only when run evidence could not derive the scope, and the default is the '
     + 'declared repo-only fallback; it records a provenance value and mutates nothing outside the run.',
 };

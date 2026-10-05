@@ -39,7 +39,7 @@ const SCOPE = 'worker-1';
 function base(): SessionFile {
   return createInitialSessionFile({
     sessionIndex: 'AAAAAA',
-    workflowId: 'work-package',
+    workflowId: 'legacy',
     workflowVersion: '1.0.0',
     agentId: 'orchestrator',
   });

@@ -15,7 +15,7 @@ import {
  * navigation metadata when the embedded `state` is absent or summarised.
  */
 export interface EmbeddedSessionRef {
-  /** Child's workflow id (e.g. "work-package"). */
+  /** Child's workflow id (e.g. "legacy"). */
   workflowId: string;
   /** Child's 6-char base32 session_index. */
   sessionIndex: string;

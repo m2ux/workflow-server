@@ -1,7 +1,7 @@
 /**
  * Headless delivery-cost benchmark for reference / persistent context mode.
  *
- * Walks one workflow (`--workflow`, default `work-package`) under the e2e `skip-optional` policy with the robot walker,
+ * Walks one workflow (`--workflow`, default `legacy`) under the e2e `skip-optional` policy with the robot walker,
  * forcing `start_session` `agent_id` / `context_mode`, and probes `get_resource` for
  * technique-linked resources plus a fixed hot-template set on every `get_activity`
  * (cross-activity resource repeat tax). Prints one JSON metrics object to stdout.
@@ -22,7 +22,7 @@
  *     --label=rerecord --context-mode=fresh --no-compare --server-root=$PWD
  *
  * Flags:
- *   --workflow=<id>            Workflow to walk (default: work-package). Recorded in the output; a
+ *   --workflow=<id>            Workflow to walk (default: legacy). Recorded in the output; a
  *                              comparison across two different workflows is reported but never gated.
  *   --fixture-corpus           Build the delivery-cost fixture corpus into a temp root and walk
  *                              that, ignoring WORKFLOWS_DIR. Its `meta` namespace is derived from
@@ -117,7 +117,7 @@ interface ActivityDelivery {
 interface ReferenceFixture {
   label: string;
   description?: string;
-  /** Workflow the fixture walked. Absent on fixtures recorded before the field: those walked work-package. */
+  /** Workflow the fixture walked. Absent on fixtures recorded before the field: those walked legacy. */
   workflowId?: string;
   /** Context mode the fixture was recorded in. A comparison is only valid within one mode. */
   contextMode?: ContextMode;
@@ -235,8 +235,8 @@ function buildVsReference(metrics: Metrics, reference: ReferenceFixture, referen
   // shipped so far was recorded fresh.
   const referenceMode = reference.contextMode ?? metrics.contextMode;
   const modeMatched = referenceMode === metrics.contextMode;
-  // An unlabelled fixture predates the field; every fixture shipped so far walked work-package.
-  const referenceWorkflow = reference.workflowId ?? 'work-package';
+  // An unlabelled fixture predates the field; every fixture shipped so far walked legacy.
+  const referenceWorkflow = reference.workflowId ?? 'legacy';
   const workflowMatched = referenceWorkflow === metrics.workflowId;
   const caveats = [
     modeMatched ? null
@@ -417,7 +417,7 @@ async function main(): Promise<void> {
   // The walked workflow used to be hardcoded, so a run reported a confident delta for a change it
   // could not see — the same failure mode as a guard passing on a corpus it never reached (#327 S4).
   // The robot policy is work-package-shaped, so another workflow needs a policy that can drive it.
-  const workflowId = arg('workflow', 'work-package');
+  const workflowId = arg('workflow', 'legacy');
   const serverRoot = resolve(arg('server-root', process.cwd()));
   const compare = !hasFlag('no-compare');
   const referencePath = resolve(arg('reference', join(serverRoot, DEFAULT_REFERENCE)));

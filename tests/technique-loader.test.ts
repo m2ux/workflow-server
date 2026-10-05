@@ -40,10 +40,10 @@ describe('technique-loader', () => {
 
     it('resolves a cross-workflow technique via the canonical :: form (parity with the / form)', async () => {
       // The `::` cross-workflow prefix must resolve on the standalone readTechnique path exactly as
-      // the legacy `/` form does. `prism::structural-analysis` (referenced from work-package
-      // activities) targets the prism workflow even though the current workflow is work-package.
-      const viaColons = await readTechnique('prism::structural-analysis', WORKFLOW_DIR, 'work-package');
-      const viaSlash = await readTechnique('prism/structural-analysis', WORKFLOW_DIR, 'work-package');
+      // the legacy `/` form does. `prism::structural-analysis` (referenced from legacy
+      // activities) targets the prism workflow even though the current workflow is legacy.
+      const viaColons = await readTechnique('prism::structural-analysis', WORKFLOW_DIR, 'legacy');
+      const viaSlash = await readTechnique('prism/structural-analysis', WORKFLOW_DIR, 'legacy');
       expect(viaColons.success).toBe(true);
       expect(viaSlash.success).toBe(true);
       if (viaColons.success && viaSlash.success) {
@@ -56,7 +56,7 @@ describe('technique-loader', () => {
     it('resolves a nested cross-workflow op via :: (workflow::group::op)', async () => {
       // Nested cross-workflow addressing — only the `::` form handles this (the `/` form cannot
       // express a nested op after the workflow segment).
-      const result = await readTechnique('meta::workflow-engine::dispatch-activity', WORKFLOW_DIR, 'work-package');
+      const result = await readTechnique('meta::workflow-engine::dispatch-activity', WORKFLOW_DIR, 'legacy');
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('dispatch-activity');

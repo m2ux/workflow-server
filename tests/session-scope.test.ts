@@ -262,7 +262,7 @@ describe('session multi-root FS search', () => {
       folderA,
       createInitialSessionFile({
         sessionIndex: idxA,
-        workflowId: 'work-package',
+        workflowId: 'legacy',
         workflowVersion: '1.0.0',
         agentId: 'orchestrator',
         planningFolderPath: folderA,
@@ -273,7 +273,7 @@ describe('session multi-root FS search', () => {
       folderB,
       createInitialSessionFile({
         sessionIndex: idxB,
-        workflowId: 'work-package',
+        workflowId: 'legacy',
         workflowVersion: '1.0.0',
         agentId: 'orchestrator',
         planningFolderPath: folderB,

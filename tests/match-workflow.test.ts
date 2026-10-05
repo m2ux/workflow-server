@@ -82,16 +82,16 @@ describe('rankWorkflows', () => {
 });
 
 describe.skipIf(!LIVE_CORPUS)('loadDiscoveryCatalog', () => {
-  it('loads the live corpus and matches the baseline request to work-package', async () => {
+  it('loads the live corpus and matches the baseline request to legacy', async () => {
     const live = await loadDiscoveryCatalog(LIVE_CORPUS!);
     const specimens = [...indexCorpus(LIVE_CORPUS!).workflows.values()]
       .filter((location) => location.path === 'specimens' || location.path.startsWith('specimens/'))
       .map((location) => location.id);
     expect(specimens.length).toBeGreaterThan(0);
     expect(live.some((entry) => specimens.includes(entry.id))).toBe(false);
-    expect(live.some((entry) => entry.id === 'work-package')).toBe(true);
+    expect(live.some((entry) => entry.id === 'legacy')).toBe(true);
     const result = rankWorkflows(BASELINE_REQUEST, live);
-    expect(result.workflow_id).toBe('work-package');
+    expect(result.workflow_id).toBe('legacy');
     expect(result.ambiguous).toBe(false);
   });
 });

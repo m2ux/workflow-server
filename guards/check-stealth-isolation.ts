@@ -65,13 +65,13 @@ const runtimeRemote = argOf('--remote');
  * (after `::`-normalization) — resolution scope does not matter for cataloging. */
 const DISCLOSURE_REFS: RegExp[] = [
   /^update-pr::(create-pr|mark-ready|post-review-comment|render)$/,
-  /^(work-package::)?update-pr::(create-pr|mark-ready|post-review-comment|render)$/,
+  /^(legacy::)?update-pr::(create-pr|mark-ready|post-review-comment|render)$/,
   /^create-issue$/,
-  /^(work-package::)?create-issue$/,
+  /^(legacy::)?create-issue$/,
   /^github::(comment-issue|assign-issue|create-issue|create-pr)$/,
   /^atlassian::(comment-jira-issue|edit-jira-issue|transition-jira-issue|create-jira-issue)$/,
   /^respond-to-pr-review$/,
-  /^(work-package::)?respond-to-pr-review$/,
+  /^(legacy::)?respond-to-pr-review$/,
 ];
 
 /** Public write invocations that must not appear in any REACHABLE step's composed technique. */

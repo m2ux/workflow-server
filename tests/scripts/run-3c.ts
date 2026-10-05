@@ -1,11 +1,11 @@
 /**
  * Standalone, inspectable Layer 3c run. Drives a single deterministic
- * robot-worker walk of the work-package workflow and prints a readable
+ * robot-worker walk of the legacy workflow and prints a readable
  * transcript — per activity: steps executed, checkpoints fired, artifact stubs
  * written, manifest status, unresolved refs — then lists the files actually
  * created on disk. The workspace is kept for inspection.
  *
- *   npx tsx tests/scripts/run-3c.ts [--policy=full-workflow] [--workflow=work-package]
+ *   npx tsx tests/scripts/run-3c.ts [--policy=full-workflow] [--workflow=legacy]
  */
 import { readdirSync, statSync } from 'node:fs';
 import { mkdtempSync } from 'node:fs';
@@ -33,7 +33,7 @@ const getArg = (k: string, def: string) => {
   return m ? m.slice(k.length + 3) : def;
 };
 const policyName = getArg('policy', 'full-workflow');
-const workflowId = getArg('workflow', 'work-package');
+const workflowId = getArg('workflow', 'legacy');
 /** Exit with a message. Typed `never` so a lookup guarded by it narrows for the reader and the compiler alike. */
 function die(message: string): never {
   process.stderr.write(`${message}\n`);

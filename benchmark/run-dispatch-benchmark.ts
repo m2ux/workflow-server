@@ -22,11 +22,11 @@
  * Usage (from a server checkout with `node_modules` and a populated `workflows/`):
  *
  *   npm run bench:dispatch
- *   npm run bench:dispatch -- --workflow=work-package --activities=6
+ *   npm run bench:dispatch -- --workflow=legacy --activities=6
  *   WORKFLOWS_DIR=/path/to/workflows npm run bench:dispatch -- --gate --min-saving-pct=50
  *
  * Flags:
- *   --workflow=<id>          Workflow to sample (default: work-package)
+ *   --workflow=<id>          Workflow to sample (default: legacy)
  *   --activities=<n>         How many activities to sample from the workflow roster (default: 6)
  *   --gate                   Exit 3 unless the resume pass saves at least --min-saving-pct
  *   --min-saving-pct=<n>     Gate threshold in percent of fresh-pass delivered chars (default: 50)
@@ -102,7 +102,7 @@ function techniqueStepIds(activityBody: string): string[] {
 }
 
 async function main(): Promise<number> {
-  const workflowId = flag('workflow') ?? 'work-package';
+  const workflowId = flag('workflow') ?? 'legacy';
   const activityBudget = Number(flag('activities') ?? 6);
   const minSavingPct = Number(flag('min-saving-pct') ?? 50);
 
