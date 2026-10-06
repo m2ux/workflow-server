@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -39,7 +39,7 @@ identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')
 
 the activity ID executed (e.g., 'sub-crate-review')
 
-#### steps_completed
+#### completed_step_ids
 
 list of step IDs completed (must match activity definition)
 
@@ -77,12 +77,12 @@ observations not formal findings but for orchestrator review (optional)
 - Produce the output the bound technique defines in its `## Output(s)` before proceeding to the next step.
 - If a step cannot be completed (e.g., no `StorageMap`s in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip.
 - If a step requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification.
-- Track which steps have been completed in `{sub_agent_output.steps_completed}`.
+- Track which steps have been completed in `{sub_agent_output.completed_step_ids}`.
 
 ### 3. Verify Output
 
 - Assemble `{sub_agent_output}` by folding every entry of `{step_products}` into its `mandatory_tables`, `checklist_coverage`, and `findings` fields, then verify it against the checks below before returning it.
-- `{sub_agent_output.steps_completed}` matches the activity's step IDs — no steps omitted.
+- `{sub_agent_output.completed_step_ids}` matches the activity's step IDs — no steps omitted.
 - Every FAIL in `{sub_agent_output.checklist_coverage}` has a corresponding finding in `{sub_agent_output.findings}`.
 - Every `{sub_agent_output.mandatory_tables}` entry is either populated or null with justification.
 - `{sub_agent_output}` is well-formed JSON and contains all required fields.

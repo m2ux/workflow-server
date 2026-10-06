@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ discriminant literal `steps_complete`; sibling envelope is `checkpoint_pending`.
 
 #### steps_completed
 
-array of completed step entries, one per step this activity ran, a loop body contributing one entry per step per iteration.
+array of `{step_id, output}` entries, one per step this activity ran — `step_id` the step's declared id, `output` a map keyed by the output ids its bound technique declares and `{}` for a step that declares none — a loop body contributing one entry per step per iteration.
 
 #### checkpoints_responded
 

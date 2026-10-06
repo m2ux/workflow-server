@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ identifier for this agent instance (e.g., 'S1', 'S2', 'V', 'M')
 
 the activity ID executed
 
-#### steps_completed
+#### completed_step_ids
 
 list of step IDs completed (must match activity definition)
 
@@ -64,9 +64,9 @@ per-file, per-pattern scan confirmation
 - For each step, load its bound technique and read the technique's `## Capability` to understand what the step produces and its `## Protocol` for how to produce it.
 - Follow that protocol for the step, producing the technique's declared `## Outputs` before proceeding to the next step.
 - If a step cannot be completed because it requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification — do not silently skip.
-- Track which steps have been completed in a steps-completed list.
+- Track which steps have been completed in `{sub_agent_output.completed_step_ids}`.
 
 ### 3. Verify Output
 
-- Confirm `{sub_agent_output.steps_completed}` matches the activity's step ids — no steps omitted.
+- Confirm `{sub_agent_output.completed_step_ids}` matches the activity's step ids — no steps omitted.
 - Assemble and return `{sub_agent_output}`: confirm it is well-formed JSON carrying all fields required by the [sub-agent output schema](../resources/sub-agent-output-schema.md#schema).
