@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -15,21 +15,9 @@ Ordered list of packages not yet started
 
 ## Outputs
 
-### completed_packages
+### current_package
 
-List of completed package names
-
-### remaining_packages
-
-List of remaining package names
-
-### overall_progress
-
-Progress indicator (e.g., '3/7 complete') as the status table stands after this package.
-
-### package_planning_paths
-
-Map of package name to the child work-package's planning-folder path, rendered as the planning-folder link in each status row
+The package this run selected and launched, named as the roadmap names it.
 
 ### child_session_index
 

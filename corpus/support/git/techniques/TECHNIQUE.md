@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.13.0
+  version: 5.14.0
 ---
 
 ## Capability
@@ -12,6 +12,14 @@ Git techniques for planning folders and artifacts — parent repos, submodules, 
 ### planning_folder_path
 
 Path to the session's planning folder, as the server returned it. Techniques that derive a path from where the session keeps its artifacts take it from here; not every technique needs one.
+
+### is_signed
+
+*(optional)* False by default: a commit this library makes is unsigned. True when it is signed with the configured signing key. The rule `commits-are-unsigned` is stated against this value, so every technique that commits reads it from here.
+
+#### default
+
+`false`
 
 ## Rules
 

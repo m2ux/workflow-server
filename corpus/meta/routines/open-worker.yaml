@@ -1,5 +1,5 @@
 id: open-worker
-version: 1.5.0
+version: 1.6.0
 name: Open Worker
 description: >-
   Compose a stub for a worker that holds no prior deliveries, and spawn one agent with that stub.
@@ -39,6 +39,10 @@ outputs:
     type: string
     optional: true
     description: The stub the spawn received.
+  - id: harness_agent_id
+    type: string
+    optional: true
+    description: The handle the harness addresses the spawned agent by, which a continuation resumes it through.
 
 internals:
   - id: substitutions
@@ -76,6 +80,8 @@ steps:
       inputs:
         composed_prompt: composed_prompt
         planning_folder_path: planning_folder_path
+      outputs:
+        harness_agent_id: harness_agent_id
   - kind: action
     id: name-the-envelope
     actions:

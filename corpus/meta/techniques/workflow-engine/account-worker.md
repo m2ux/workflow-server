@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -27,9 +27,7 @@ The Progress status to write after this activity, when the worker or the harness
 
 ### 1. Record Usage Entry
 
-- Record one usage entry for `{activity_id}`: `record_usage { session_index, activity: activity_id, usage, basis, agent_id: worker_agent_id }`. `usage` and `basis` are read from the harness, and the entry says what the figure counts.
-  > When the harness reports no figure, omit the entry.
-  > A worker does not record its own usage.
+- Account for `{activity_id}` per `account-every-activity`, attributed to `{worker_agent_id}` — the worker this run is closing out, never the context running it.
 
 ### 2. Reconcile Routing
 
@@ -47,7 +45,7 @@ The Progress status to write after this activity, when the worker or the harness
 
 ### account-every-activity
 
-One usage entry per activity. The entry is omitted when the harness reports no figure, and is never recorded as zero.
+One usage entry per activity: `record_usage { session_index, activity, usage, basis, agent_id }`, where `activity` is the activity accounted for and `agent_id` the identity that carried it. `usage` and `basis` are read from the harness, and the entry says what the figure counts. Where the graph runs one activity over a collection, `activity` names that instance. The entry is omitted when the harness reports no figure, and is never recorded as zero.
 
 ### distrust-then-reconcile
 

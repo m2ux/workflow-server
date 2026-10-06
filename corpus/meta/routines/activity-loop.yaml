@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.12.0
+version: 1.13.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -164,7 +164,7 @@ steps:
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
           - action: set
             target: advance_trace_tokens
@@ -190,6 +190,7 @@ steps:
         outputs:
           worker_result: worker_result
           worker_agent_id: worker_agent_id
+          harness_agent_id: harness_agent_id
           advance_trace_tokens: advance_trace_tokens
       - kind: action
         id: append-dispatch-tokens
@@ -197,7 +198,7 @@ steps:
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
           - action: set
             target: advance_trace_tokens
@@ -217,11 +218,17 @@ steps:
             variables_changed: "{worker_result.variables_changed}"
             stands_on_activity: stands_on_activity
             variable_bag: variables
+      - kind: action
+        id: append-entry-tokens
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
       - kind: routine
         id: finish-entered-activity
         when: worker_result.result_type == "steps_complete"
@@ -284,11 +291,17 @@ steps:
             variables_changed: "{worker_result.variables_changed}"
           outputs:
             barrier_destination: fan_convergence_activity
+      - kind: action
+        id: append-fan-tokens
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
       - kind: technique
         id: mint-branches
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -331,11 +344,17 @@ steps:
                 barrier_destination: fan_convergence_activity
                 session_index: session_index
                 planning_folder_path: planning_folder_path
+          - kind: action
+            id: append-retirement-token
+            when: advance_trace_tokens
             actions:
               - action: set
                 target: trace_tokens
-                value: "{advance_trace_tokens}"
+                value: "[{trace_tokens}, {advance_trace_tokens}]"
                 description: The token this retirement returned, appended to the tokens the walk holds.
+              - action: set
+                target: advance_trace_tokens
+                value: null
       - kind: routine
         id: persist-the-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -356,6 +375,11 @@ steps:
           - action: set
             target: walk_aborted
             value: true
+          # The envelope is spent with the fan it opened. Left standing it would meet the
+          # commit below as an activity_complete whose activity is the null just written.
+          - action: set
+            target: worker_result
+            value: null
           - action: set
             target: current_activity
             value: null
@@ -426,11 +450,37 @@ steps:
             planning_folder_path: planning_folder_path
             agent_technique: workflow-engine::activity-worker
             variable_bag: variables
+      - kind: action
+        id: append-resume-tokens
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
+      # The entry above returns the activity's own `steps_complete`, which the side holding the
+      # graph folds. Without this the iteration ends unfolded and the next one re-enters the
+      # activity this one already carried.
+      - kind: routine
+        id: finish-resumed-activity
+        when: worker_result.result_type == "steps_complete"
+        routine: finish-activity
+        with:
+          current_activity: "{worker_result.activity_definition}"
+          exit_destinations: "{worker_result.exit_destinations}"
+          selected_exit: "{worker_result.selected_exit}"
+          steps_completed: "{worker_result.steps_completed}"
+          checkpoints_responded: "{worker_result.checkpoints_responded}"
+          artifacts_produced: "{worker_result.artifacts_produced}"
+          batch_may_continue: "{worker_result.batch_may_continue}"
+          variables_changed: "{worker_result.variables_changed}"
+          planning_folder_path: "{planning_folder_path}"
+          session_index: "{session_index}"
+        outputs:
+          activity_result: worker_result
       - kind: action
         id: clear-checkpoint-reply
         when: checkpoint_reply
@@ -441,7 +491,7 @@ steps:
             value: null
       - kind: routine
         id: commit-activity-artifacts
-        when: worker_result.result_type == "activity_complete"
+        when: worker_result.result_type == "activity_complete" && !walk_aborted
         routine: persist-activity
         with:
           activity_id: current_activity

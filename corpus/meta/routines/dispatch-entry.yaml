@@ -1,5 +1,5 @@
 id: dispatch-entry
-version: 1.3.0
+version: 1.4.0
 name: Dispatch Entry
 description: >-
   Persist entering, advance the session, announce the dispatch, and open one
@@ -42,8 +42,6 @@ inputs:
     description: The harness operation a spawn applies.
   - id: harness_technique
     description: The harness technique a spawn applies.
-  - id: is_signed
-    description: Whether the entering commit is signed.
 
 outputs:
   - id: worker_result
@@ -52,6 +50,10 @@ outputs:
   - id: worker_agent_id
     type: string
     description: The delivery identity bound for the worker. Unset when the session completed.
+  - id: harness_agent_id
+    type: string
+    optional: true
+    description: The handle the harness addresses the spawned worker by, which a continuation resumes it through. Unset when the session completed, or where the harness returns none.
   - id: advance_trace_tokens
     type: array
     description: The trace token the advance returned.
@@ -97,6 +99,7 @@ steps:
       worker_agent_id: worker_agent_id
     outputs:
       worker_result: worker_result
+      harness_agent_id: harness_agent_id
   - kind: routine
     id: finish-activity
     when: worker_result.result_type == "steps_complete"

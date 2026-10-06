@@ -1,5 +1,5 @@
 id: open-branches
-version: 1.4.0
+version: 1.5.0
 name: Open Branches
 description: >-
   Compose one stub per branch, each for a worker that holds no prior deliveries, then emit every
@@ -36,10 +36,20 @@ outputs:
 internals:
   - id: substitutions
     description: Placeholder map for the branch whose stub is being composed. activity_id and agent_id name that branch.
+  - id: composed_prompt
+    description: The stub composed for the branch the iteration holds.
   - id: composed_branch_prompts
-    description: One { description, prompt } per branch, in the order the branches were given, which the batch is emitted from.
+    description: One `{ description, prompt }` per branch, in the order the branches were given, which the batch is emitted from.
 
 steps:
+  - kind: action
+    id: open-the-batch
+    actions:
+      # The accumulator each iteration extends. Seeded here, so the first append has a base
+      # and a rerun of this run starts from an empty batch rather than the last one.
+      - action: set
+        target: composed_branch_prompts
+        value: "[]"
   - kind: loop
     id: compose-each-branch
     name: Compose Each Branch
@@ -76,10 +86,8 @@ steps:
         actions:
           - action: set
             target: composed_branch_prompts
-            value:
-              description: "{branch.activity_id}"
-              prompt: "{composed_prompt}"
-            description: The stub composed for this branch, appended to the batch in the order the branches were given.
+            value: "[{composed_branch_prompts}, { description: {branch.activity_id}, prompt: {composed_prompt} }]"
+            description: The batch so far, extended with the stub composed for this branch, in the order the branches were given.
   - kind: technique
     id: emit-the-batch
     technique:

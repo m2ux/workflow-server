@@ -14,7 +14,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`continue-batch`](continue-batch.md) | Advance the session onto the next activity of a batch the worker already carries |
 | [`create-readme`](create-readme.md) | Planning-folder `README.md` from the universal planning Template under the bound readme-seed profile |
 | [`create-session`](create-session.md) | Fresh client workflow session embedded under the current meta session |
-| [`dispatch-activity`](dispatch-activity.md) | Advance the session onto a target activity, mint the worker identity, and announce the dispatch |
+| [`dispatch-activity`](dispatch-activity.md) | Advance the session onto a target activity and mint the worker identity |
 | [`evaluate-transition`](evaluate-transition.md) | Name the outcome the just-completed activity reached, and read where the workflow sends it |
 | [`compose-steps-complete`](compose-steps-complete.md) | Compose the `steps_complete` envelope from what carrying the activity made observable |
 | [`finalize-activity`](finalize-activity.md) | Fold the exit reading into the activity's `activity_complete` result |

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.11.0
+  version: 1.12.0
 ---
 
 ## Capability
@@ -57,7 +57,7 @@ The opaque trace token the retiring `next_activity` call returned in `_meta.trac
 - A retirement that leaves branches in flight reports them at `outstanding`, each as the id that addresses it.
   > The one that empties the frontier is the one that enters the convergence activity, and only that one: it reports that activity's `name` and `barrier.met` true — see `the-barrier-is-a-reading`.
 
-### 4. Account for the Branch
+### 4. Record Branch Usage
 
 - Account for `{branch_activity}` per `account-worker.account-every-activity`, attributed to `{worker_agent_id}`.
   > Where the graph runs one activity over a collection, the activity names that instance.

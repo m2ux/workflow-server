@@ -1,10 +1,11 @@
 id: end-workflow
-version: 4.12.0
+version: 4.13.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
   reads:
     - client_session_index
+    - client_walk_aborted
     - client_workflow_completed
     - component_path
     - from_activity
@@ -22,6 +23,12 @@ variables:
       description: The envelope the advance onto `__terminal__` closed on
 required: true
 steps:
+  - kind: action
+    id: surface-aborted-walk
+    when: client_walk_aborted == true
+    actions:
+      - action: message
+        message: "The client walk stopped on an engineering push that did not land, so it holds activities it has not carried. Closing here records the session as it stands."
   - kind: technique
     id: read-session
     technique: workflow-engine::read-session

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -23,6 +23,10 @@ Full task prompt for the new agent
 
 The sub-agent's final output (text, including any `<checkpoint_yield>` block) â€” captured when the agent yields or completes
 
+### harness_agent_id
+
+The handle the harness gives this agent, which a later continuation addresses it by. Unset where the harness returns none, and a continuation then has nothing to resume.
+
 ## Protocol
 
 ### 1. Resolve Harness Technique
@@ -35,7 +39,7 @@ The sub-agent's final output (text, including any `<checkpoint_yield>` block) â€
 
 ### 3. Await Result
 
-- Wait until the agent yields a checkpoint or returns (blocking-equivalent); capture its final output as `{agent_result}`.
+- Wait until the agent yields a checkpoint or returns (blocking-equivalent); capture its final output as `{agent_result}`, and the handle the harness addresses it by as `{harness_agent_id}`.
 
 ## Rules
 

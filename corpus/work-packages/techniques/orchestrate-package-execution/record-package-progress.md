@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -52,9 +52,9 @@ Packages finished, including this one.
 ### 1. Update Status
 
 - Record `{child_planning_folder_path}` as `{$package_planning_paths}`, keyed by package name.
-- Update the `START-HERE.md` status table: mark the completed package as done, add its PR link, and add the package's planning-folder link from `{package_planning_paths}`.
+- Update the `START-HERE.md` status table: mark `{current_package}` as done, add its PR link, and add that package's planning-folder link from `{package_planning_paths}`.
 - Recompute `{overall_progress}` to reflect the completed count.
 
 ### 2. Check Remaining
 
-- Remove the completed package from `{remaining_packages}` and add it to `{completed_packages}`.
+- Remove `{current_package}` from `{remaining_packages}` and add it to `{completed_packages}`.
