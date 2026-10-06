@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Full task prompt for the new agent
 
 ### description
 
-Short label for the agent's role (optional; useful for tracing)
+*(optional)* Short label for the agent's role, useful for tracing. Unset when the caller has none.
 
 ## Outputs
 

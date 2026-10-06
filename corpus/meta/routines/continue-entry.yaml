@@ -1,5 +1,5 @@
 id: continue-entry
-version: 1.0.0
+version: 1.1.0
 name: Continue Entry
 description: >-
   Advance the session once, continue the worker that holds the batch, and open a
@@ -26,13 +26,27 @@ inputs:
     description: The harness identifier of the agent carrying worker_agent_id.
   - id: agent_technique
     description: The agent technique a replacement follows.
+  - id: checkpoint_reply
+    description: The answer a yielded gate already holds. Unset when this entry is not crossing a gate.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
+  - id: harness_kind
+    description: The harness a continuation or replacement resolves.
+  - id: harness_operation
+    description: The harness operation a continuation or replacement applies.
+  - id: harness_technique
+    description: The harness technique a continuation or replacement applies.
 
 outputs:
   - id: worker_result
+    type: object
     description: The envelope this entry closes on.
-  - id: worker_agent_id
-    description: The identity now holding the activity.
   - id: advance_trace_tokens
+    type: array
     description: The trace token the advance returned.
 
 steps:

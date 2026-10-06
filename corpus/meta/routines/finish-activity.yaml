@@ -1,5 +1,5 @@
 id: finish-activity
-version: 1.0.0
+version: 1.1.0
 name: Finish Activity
 description: >-
   Read where the activity's exit sends the run, then fold that reading into the activity_complete
@@ -20,9 +20,18 @@ inputs:
     description: The artifacts this activity wrote.
   - id: batch_may_continue
     description: Whether this worker's context may take another activity.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
+  - id: session_index
+    description: The session this activity is finished in.
 
 outputs:
   - id: activity_result
+    type: object
     description: The activity_complete envelope, including the exit reading.
 
 steps:

@@ -1,5 +1,5 @@
 id: continue-worker
-version: 1.0.0
+version: 1.2.0
 name: Continue Worker
 description: >-
   Compose a stub for a worker that already holds deliveries, and continue the harness agent that
@@ -19,14 +19,43 @@ inputs:
     description: The harness identifier of the agent carrying worker_agent_id.
   - id: checkpoint_reply
     description: The answer a yielded gate already holds. Unset when this continuation is not crossing a gate.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: harness_kind
+    description: The harness this continuation resolves.
+  - id: harness_operation
+    description: The harness operation the continuation applies.
+  - id: harness_technique
+    description: The harness technique the continuation applies.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
 
 outputs:
   - id: worker_result
+    type: object
     description: The envelope the continued agent returned.
   - id: composed_prompt
+    type: string
     description: The stub the continuation received.
 
+internals:
+  - id: substitutions
+    description: Placeholder map the stub is composed from. session_index, workflow_id, activity_id, and agent_id.
+
 steps:
+  - kind: action
+    id: name-substitutions
+    when: activity_id && worker_agent_id
+    actions:
+      - action: set
+        target: substitutions
+        value:
+          session_index: "{session_index}"
+          workflow_id: "{workflow_id}"
+          activity_id: "{activity_id}"
+          agent_id: "{worker_agent_id}"
   - kind: technique
     id: compose-continuation
     technique:
@@ -35,11 +64,7 @@ steps:
         agent_technique: workflow-engine::activity-worker
         holds_prior_deliveries: true
         checkpoint_reply: checkpoint_reply
-        substitutions:
-          session_index: session_index
-          workflow_id: workflow_id
-          activity_id: activity_id
-          agent_id: worker_agent_id
+        substitutions: substitutions
   - kind: technique
     id: continue-the-agent
     technique:

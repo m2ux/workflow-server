@@ -1,5 +1,5 @@
 id: open-worker
-version: 1.0.0
+version: 1.2.0
 name: Open Worker
 description: >-
   Compose a stub for a worker that holds no prior deliveries, and spawn one agent with that stub.
@@ -17,14 +17,43 @@ inputs:
     description: The activity the worker carries.
   - id: worker_agent_id
     description: The delivery identity minted for this worker.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: harness_kind
+    description: The harness this spawn resolves.
+  - id: harness_operation
+    description: The harness operation the spawn applies.
+  - id: harness_technique
+    description: The harness technique the spawn applies.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
 
 outputs:
   - id: worker_result
+    type: object
     description: The envelope the spawned agent returned.
   - id: composed_prompt
+    type: string
     description: The stub the spawn received.
 
+internals:
+  - id: substitutions
+    description: Placeholder map the stub is composed from. session_index, workflow_id, activity_id, and agent_id.
+
 steps:
+  - kind: action
+    id: name-substitutions
+    when: activity_id && worker_agent_id
+    actions:
+      - action: set
+        target: substitutions
+        value:
+          session_index: "{session_index}"
+          workflow_id: "{workflow_id}"
+          activity_id: "{activity_id}"
+          agent_id: "{worker_agent_id}"
   - kind: technique
     id: compose-stub
     technique:
@@ -32,11 +61,7 @@ steps:
       inputs:
         agent_technique: agent_technique
         holds_prior_deliveries: false
-        substitutions:
-          session_index: session_index
-          workflow_id: workflow_id
-          activity_id: activity_id
-          agent_id: worker_agent_id
+        substitutions: substitutions
   - kind: technique
     id: spawn-worker
     technique:

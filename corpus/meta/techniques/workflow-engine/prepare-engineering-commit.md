@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -8,18 +8,6 @@ metadata:
 The engineering files a completed activity commits, the checkout and branch that commit is pushed from, and whether `.engineering` is a linked worktree of the host.
 
 ## Inputs
-
-### host_repo_path
-
-Absolute path of the outermost git host for the workspace checkout.
-
-### planning_folder_path
-
-Path to the session's planning folder, as the server returned it.
-
-### activity_id
-
-The activity whose artifacts this commit records.
 
 ### workflow_id
 

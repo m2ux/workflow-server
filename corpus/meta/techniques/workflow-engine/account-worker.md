@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Record the usage entry for a worker that has returned, and reconcile routing where the session record and that envelope disagree.
 
 ## Inputs
-
-### activity_id
-
-The activity the entry counts.
 
 ### worker_agent_id
 
@@ -37,7 +33,8 @@ The Progress status to write after this activity, when the worker or the harness
 
 ### 2. Reconcile Routing
 
-- Where `{worker_result}` is `activity_complete` and the session record disagrees with that envelope on routing or path state, the envelope governs, and the discrepancy is logged (`distrust-then-reconcile`).
+- The envelope governs, and the discrepancy is logged (`distrust-then-reconcile`).
+  > Where `{worker_result}` is `activity_complete` and the session record disagrees with that envelope on routing or path state.
 
 ### 3. Name Follow-up Mark
 

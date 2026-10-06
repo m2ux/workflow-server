@@ -1,5 +1,5 @@
 id: persist-entering
-version: 1.0.0
+version: 1.1.0
 name: Persist Entering
 description: >-
   Write the in-progress Progress mark for the activities that are entering, commit the planning
@@ -24,10 +24,14 @@ inputs:
     description: The working tree the commit and the push run in.
   - id: paths
     description: The planning README, and nothing else.
-
-outputs:
-  - id: paths
-    description: The files the commit staged.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: is_signed
+    description: Whether the entering commit is signed.
+  - id: session_index
+    description: The session this mark is recorded against.
 
 steps:
   - kind: technique

@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.6.0
+version: 1.8.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -24,8 +24,6 @@ inputs:
     description: Path of the component under work, relative to the host repository.
   - id: host_repo_path
     description: Absolute path of the outermost git host for the workspace checkout.
-  - id: kind
-    description: Path kind of the engineering checkout. `worktree` selects the worktree commit; any other value selects an ordinary commit of the host checkout. A caller that binds nothing supplies the host's own kind.
   - id: target_status
     description: The Progress status an entry publishes for the activity it marks.
   - id: workflow_id
@@ -39,6 +37,16 @@ inputs:
     description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
   - id: standing_activity
     description: The activity the session stands on, where an earlier walk left it. The walk opens on that activity and carries it without an advance. Unset, the walk opens on `initial_activity`.
+  - id: mark_progress_na
+    description: True when the completing activity is marked path-skip, cancel, or N/A rather than complete.
+  - id: harness_kind
+    description: The harness a spawn or continuation resolves.
+  - id: harness_operation
+    description: The harness operation a spawn or continuation applies.
+  - id: harness_technique
+    description: The harness technique a spawn or continuation applies.
+  - id: is_signed
+    description: Whether a commit this walk makes is signed.
 
 outputs:
   - id: current_activity
@@ -131,6 +139,9 @@ steps:
           worker_result: worker_result
           worker_agent_id: worker_agent_id
           advance_trace_tokens: advance_trace_tokens
+      - kind: action
+        id: append-dispatch-tokens
+        when: enter_activity == "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
         actions:
           - action: set
             target: trace_tokens
@@ -329,7 +340,6 @@ steps:
           agent_technique: workflow-engine::activity-worker
         outputs:
           worker_result: worker_result
-          worker_agent_id: worker_agent_id
       - kind: technique
         id: resume-entered-activity
         when: worker_result.result_type == "checkpoint_pending" && !worker_agent_id
@@ -387,8 +397,10 @@ steps:
           agent_technique: workflow-engine::activity-worker
         outputs:
           worker_result: worker_result
-          worker_agent_id: worker_agent_id
           advance_trace_tokens: advance_trace_tokens
+      - kind: action
+        id: append-continue-tokens
+        when: push_landed && worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
         actions:
           - action: set
             target: trace_tokens

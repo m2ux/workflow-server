@@ -21,6 +21,12 @@ inputs:
     description: Path of the component under work, relative to the host repository.
   - id: workflow_id
     description: The workflow the activity belongs to.
+  - id: is_signed
+    description: Whether the engineering commit is signed.
+  - id: seed_profile
+    description: The readme-seed profile. Unset when the walk has none.
+  - id: session_index
+    description: The session this persist is recorded against.
 
 outputs:
   - id: push_landed

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -27,10 +27,6 @@ Packages already finished.
 
 ## Outputs
 
-### package_planning_paths
-
-Map of package name to the child planning-folder path.
-
 ### overall_progress
 
 Progress indicator written into the START-HERE status table.
@@ -47,7 +43,7 @@ Packages finished, including this one.
 
 ### 1. Update Status
 
-- Record `{child_planning_folder_path}` as `{package_planning_paths}`, keyed by package name.
+- Record `{child_planning_folder_path}` as `{$package_planning_paths}`, keyed by package name.
 - Update the `START-HERE.md` status table: mark the completed package as done, add its PR link, and add the package's planning-folder link from `{package_planning_paths}`.
 - Recompute `{overall_progress}` to reflect the completed count.
 

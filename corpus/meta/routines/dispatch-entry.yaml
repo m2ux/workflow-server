@@ -1,5 +1,5 @@
 id: dispatch-entry
-version: 1.0.0
+version: 1.1.0
 name: Dispatch Entry
 description: >-
   Persist entering, advance the session, announce the dispatch, and open one
@@ -32,13 +32,28 @@ inputs:
     description: True when the session already stands on activity_id.
   - id: agent_technique
     description: The agent technique the worker follows.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: harness_kind
+    description: The harness a spawn resolves.
+  - id: harness_operation
+    description: The harness operation a spawn applies.
+  - id: harness_technique
+    description: The harness technique a spawn applies.
+  - id: is_signed
+    description: Whether the entering commit is signed.
 
 outputs:
   - id: worker_result
+    type: object
     description: The envelope this entry closes on.
   - id: worker_agent_id
+    type: string
     description: The delivery identity bound for the worker. Unset when the session completed.
   - id: advance_trace_tokens
+    type: array
     description: The trace token the advance returned.
 
 steps:

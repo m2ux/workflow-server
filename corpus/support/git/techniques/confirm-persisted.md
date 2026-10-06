@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -39,7 +39,11 @@ True when the remote tracking branch holds `HEAD` and, where `{paths}` is set, e
 
 ### 1. Read the Tracking Branch
 
-- `git -C {repo_path} rev-parse --verify {branch}@{upstream}` names the commit the remote tracking branch holds. The push has landed when that commit is the commit `HEAD` names.
+- The remote-tracking ref of `{branch}` names the commit the push landed on. The push has landed when that commit is the commit `HEAD` names.
+
+  ```text
+  git -C {repo_path} rev-parse --verify {branch}@{upstream}
+  ```
 
 ### 2. Retry the Push
 
@@ -47,7 +51,11 @@ True when the remote tracking branch holds `HEAD` and, where `{paths}` is set, e
 
 ### 3. Read the Tracking Branch Again
 
-- When the retry ran, `git -C {repo_path} rev-parse --verify {branch}@{upstream}` once more. `{push_landed}` is false when it still does not name `HEAD`.
+- When the retry ran, read that ref once more. `{push_landed}` is false when it still does not name `HEAD`.
+
+  ```text
+  git -C {repo_path} rev-parse --verify {branch}@{upstream}
+  ```
 
 ### 4. Read the Paths
 

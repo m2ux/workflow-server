@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -36,40 +36,25 @@ The opaque trace token the retiring `next_activity` call returned in `_meta.trac
 ### 1. Take Branch Entry
 
 - Take the entry of `{branch_envelopes}` belonging to `{branch_activity}`. The returns are in the order the fan opened the branches, and that order is the correspondence.
-
-### 2. Take Branch Exit
-
 - From that entry, `exit` is `activity_exit`.
   > - Omit `exit` where the entry's `activity_exit` is unset.
   > - The server checks the exit against the destination, not against the branch: an exit taken from another branch's entry passes unchecked.
-
-### 3. Take Step Manifest
-
 - From that entry, `step_manifest` is `steps_completed`.
-
-### 4. Take Changed Variables
-
 - From that entry, `variables_changed` is the field of that name.
-
-### 5. Take Produced Artifacts
-
 - From that entry, `artifacts_produced` is the field of that name.
 
-### 6. Retire Branch
+### 2. Retire Branch
 
 - Call `next_activity { session_index, activity_id: barrier_destination, from_activity: branch_activity, exit, step_manifest, variables_changed, artifacts_produced }`.
 
-### 7. Capture Trace Token
+### 3. Read Retirement
 
 - Capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`.
   > A token not captured is absent from the trace close-out resolves.
-
-### 8. Read Outstanding
-
 - A retirement that leaves branches in flight reports them at `outstanding`, each as the id that addresses it.
   > The one that empties the frontier is the one that enters the convergence activity, and only that one: it reports that activity's `name` and `barrier.met` true — see `the-barrier-is-a-reading`.
 
-### 9. Record Branch Usage
+### 4. Record Branch Usage
 
 - Record one usage entry for `{branch_activity}`: `record_usage { session_index, activity: branch_activity, usage, basis, agent_id: worker_agent_id }`. `usage` and `basis` are read from the harness, and the entry says what the figure counts.
   > - Where the graph runs one activity over a collection, the activity names that instance.

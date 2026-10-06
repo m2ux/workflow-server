@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -27,22 +27,6 @@ The workflow the activity belongs to.
 
 Tracked paths `git status --porcelain` names in the submodule. Empty when the working tree is clean, and the later phases do not run.
 
-### submodule_branch
-
-The branch checked out in the submodule.
-
-### parent_path
-
-The superproject working tree that contains the submodule.
-
-### parent_branch
-
-The branch checked out in `{parent_path}`.
-
-### submodule_message
-
-The submodule commit message after the trailer policy is applied: `<type>({workflow_id}): {activity_id} source changes`.
-
 ## Protocol
 
 ### 1. Read the Tree
@@ -51,7 +35,7 @@ The submodule commit message after the trailer policy is applied: `<type>({workf
 
 ### 2. Honour the Trailer Policy
 
-- Read `{submodule_path}/AGENTS.md` when it is present. `{submodule_message}` is `<type>({workflow_id}): {activity_id} source changes`, and `<type>` is the Conventional Commits type the activity fits: feat for implement, fix for post-impl-review fixes, refactor for cleanup. When the file forbids Co-Authored-By, LLM attribution, or similar trailers, those trailers are not in `{submodule_message}`.
+- Read `{submodule_path}/AGENTS.md` when it is present. `{$submodule_message}` is `<type>({workflow_id}): {activity_id} source changes`, and `<type>` is the Conventional Commits type the activity fits: feat for implement, fix for post-impl-review fixes, refactor for cleanup. When the file forbids Co-Authored-By, LLM attribution, or similar trailers, those trailers are not in `{submodule_message}`.
 
 ### 3. Stage Submodule Paths
 
@@ -63,7 +47,7 @@ The submodule commit message after the trailer policy is applied: `<type>({workf
 
 ### 5. Read the Submodule Branch
 
-- `git -C {submodule_path} branch --show-current` is `{submodule_branch}`.
+- `git -C {submodule_path} branch --show-current` is `{$submodule_branch}`.
 
 ### 6. Push the Submodule
 
@@ -71,7 +55,7 @@ The submodule commit message after the trailer policy is applied: `<type>({workf
 
 ### 7. Read the Parent
 
-- `git -C {submodule_path} rev-parse --show-superproject-working-tree` is `{parent_path}`.
+- `git -C {submodule_path} rev-parse --show-superproject-working-tree` is `{$parent_path}`.
 
 ### 8. Stage the Pointer
 
@@ -83,7 +67,7 @@ The submodule commit message after the trailer policy is applied: `<type>({workf
 
 ### 10. Read the Parent Branch
 
-- `git -C {parent_path} branch --show-current` is `{parent_branch}`.
+- `git -C {parent_path} branch --show-current` is `{$parent_branch}`.
 
 ### 11. Push the Parent
 

@@ -1,5 +1,5 @@
 id: ensure-readme
-version: 1.0.0
+version: 1.1.0
 name: Ensure README
 description: >-
   Measure the planning README. When it is absent, seed it and measure the file that was
@@ -18,11 +18,19 @@ inputs:
     description: Mode flag for seed profiles that key exclusions on review. Unset when the caller has none.
   - id: operation_type
     description: Mode string for seed profiles that key exclusions on create, update, or review. Unset when the caller has none.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: session_index
+    description: The session this readme is recorded against.
 
 outputs:
   - id: readme_conformance
+    type: object
     description: The conformance envelope for the planning README.
   - id: created_readme
+    type: string
     description: Full path to the README this run wrote, when it seeded one.
 
 steps:
