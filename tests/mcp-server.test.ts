@@ -4,6 +4,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse } from 'yaml';
 import { createHarness, parseToolResponse, parseWorkflowResponse, rawText, type Harness, type ParsedResponse } from './e2e/harness.js';
+import { corpusRoot } from './corpus-root.js';
+import { workflowSubdir } from '../src/loaders/corpus-index.js';
 
 /**
  * What a reader expects of a response it navigates.
@@ -1121,13 +1123,16 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
   describe('tool: get_workflow', () => {
     it('should include the technique bundle before the --- separator', async () => {
+      // The orchestrator session, because the bundle carries what the workflow declares at workflow
+      // level and `meta` is the workflow that declares any. A client workflow opens the same shape
+      // with nothing in it, which would make the assertions below hold without measuring anything.
       const result = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_index: sessionToken },
+        arguments: { session_index: metaToken },
       });
       expect(result.isError).toBeFalsy();
       const text = rawText(result);
-      // The technique bundle (the workflow's techniques + core orchestrator techniques) appears before the --- separator
+      // The technique bundle appears before the --- separator, the metadata after it.
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
@@ -1162,9 +1167,19 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     });
 
     it('excludes worker-scoped content (rules.activity, techniques.activity) from the orchestrator response', async () => {
+      // The one workflow declaring both buckets, so the cut between them has something to cut. The
+      // declared refs are read from the definition rather than named here: a roster this file
+      // restates is a roster that stops matching the moment the workflow's own moves.
+      const declared = parse(
+        readFileSync(workflowSubdir(corpusRoot(), 'meta', 'workflow.yaml')!, 'utf-8'),
+      ) as { techniques?: { workflow?: string[]; activity?: string[] } };
+      const workerOnly = (declared.techniques?.activity ?? [])
+        .filter((ref) => !(declared.techniques?.workflow ?? []).includes(ref));
+      expect(workerOnly.length, 'meta declares no worker-only technique to exclude').toBeGreaterThan(0);
+
       const result = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_index: sessionToken },
+        arguments: { session_index: metaToken },
       });
       expect(result.isError).toBeFalsy();
       const text = rawText(result);
@@ -1172,15 +1187,16 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const preamble = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
       const body = parseWorkflowResponse(result);
 
-      // work-package declares `variable-binding` at techniques.activity (worker-inherited). It is NOT
-      // an orchestrator technique, so it is absent from the orchestrator's account of its techniques.
+      // A technique the workflow declares for its activities is a worker's, and reaches that worker
+      // through `get_activity`. It is not the orchestrator's, so no account of the orchestrator's
+      // techniques names it.
       const accounted = Object.keys((preamble['techniques'] ?? {}) as Record<string, unknown>);
       expect(accounted.length).toBeGreaterThan(0);
-      expect(accounted).not.toContain('variable-binding');
+      for (const ref of workerOnly) expect(accounted).not.toContain(ref);
 
       // The metadata body carries the flattened orchestrator `rules` list (workflow + universal),
       // and no `techniques` field — the worker buckets stay out of the orchestrator response.
-      // work-package declares neither bucket, so both are absent here.
+      // meta declares no workflow rules, so that key is absent rather than an empty list.
       expect(body.rules).toBeUndefined();
       expect(body.techniques).toBeUndefined();
     });
