@@ -74,7 +74,7 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // from `get_workflow` holds these protocols and no ordering for them; what closes that gap is a
   // role activity this roster is replaced by, not further entries here.
   'git::commit-regular-files',
-  'project::persist-worktree',
+  'git::commit-worktree',
   'git::commit-submodule',
   // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
   // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
