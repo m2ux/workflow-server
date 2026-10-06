@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -69,7 +69,7 @@ agent-id, scope, specific check to perform
 
 ### 4. Check Structural Completeness
 
-- Across the `{agent_results}`, check that each agent's `steps_completed` list matches the completeness criteria in `{expected_outputs}`. Check that every FAIL verdict has a corresponding finding entry. Check that every `mandatory_tables` field is populated or null with justification.
+- Across the `{agent_results}`, check that each agent's `completed_step_ids` list matches the completeness criteria in `{expected_outputs}`. Check that every FAIL verdict has a corresponding finding entry. Check that every `mandatory_tables` field is populated or null with justification.
 
 ### 5. Check Cross Chain Timestamp
 
