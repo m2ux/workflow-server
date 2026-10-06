@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -59,6 +59,8 @@ The opaque trace tokens this entry accumulated, one per `next_activity` call tha
 ### advance-only-a-session-this-context-owns
 
 This call moves a session pointer from inside the context that then carries the activity, which is sound for one session only: the one this context opened and nothing else can be pointed at. The session a worker was dispatched for has an orchestrator owning its pointer, and advancing that one from here is `activity-worker.worker-control-plane-ban`.
+
+Fetching the body is sound on the same terms. A context carrying an activity itself delegates nothing, so it reads that body on the session it carries it for — which is what `dispatch-activity.no-get-activity-from-orchestrator` forbids only where the work was to be handed to someone else.
 
 ### no-session-left-running
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.16.0
+  version: 1.17.0
 ---
 
 ## Capability
@@ -92,7 +92,7 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
   > - When `{repo}` is passed with `{working_directory}`, it equals that origin.
   > - Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.
   > - When the response has `{opening_decision}` and no `{session_index}`, capture `{opening_decision}`, `{opening_candidates}`, and `{opening_recommendation}`. Retry with the pin `{opening_recommendation}` names.
-  > - When the response has `{client_session_index}`, capture `{client_session_index}` and `{client_initial_activity}`, and take the client's bundle as the bootstrap protocol's client-open path states: its techniques make the first advance. Remaining steps of this technique do not apply.
+  > - When the response has `{client_session_index}`, capture `{client_session_index}` and `{client_initial_activity}`. The meta walk drives that client session; this context does not advance it here.
 
 ### 2. Save Session Bindings
 

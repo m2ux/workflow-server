@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.32.0
+  version: 1.33.0
 ---
 
 ## Capability
@@ -118,7 +118,7 @@ Where the exit taken is bound to several branches rather than one activity, the 
 
 ### no-get-activity-from-orchestrator
 
-Workflow orchestrators NEVER call `get_activity` on the client session. Those activity bodies are the workers', and a context that reads one holds the work it was to delegate. The activity an orchestrator carries itself is fetched on the session it carries it for.
+Workflow orchestrators NEVER call `get_activity` on a session they delegate work on. Those activity bodies are the workers', and a context that reads one holds the work it was to delegate.
 
 ### no-pre-load-techniques
 
