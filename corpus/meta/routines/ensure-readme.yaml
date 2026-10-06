@@ -1,5 +1,5 @@
 id: ensure-readme
-version: 1.1.0
+version: 1.2.0
 name: Ensure README
 description: >-
   Measure the planning README. When it is absent, seed it and measure the file that was
@@ -28,9 +28,11 @@ inputs:
 outputs:
   - id: readme_conformance
     type: object
+    optional: true
     description: The conformance envelope for the planning README.
   - id: created_readme
     type: string
+    optional: true
     description: Full path to the README this run wrote, when it seeded one.
 
 steps:

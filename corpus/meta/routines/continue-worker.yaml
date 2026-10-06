@@ -1,5 +1,5 @@
 id: continue-worker
-version: 1.2.0
+version: 1.3.0
 name: Continue Worker
 description: >-
   Compose a stub for a worker that already holds deliveries, and continue the harness agent that
@@ -38,6 +38,7 @@ outputs:
     description: The envelope the continued agent returned.
   - id: composed_prompt
     type: string
+    optional: true
     description: The stub the continuation received.
 
 internals:

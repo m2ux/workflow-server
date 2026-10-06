@@ -51,12 +51,15 @@ inputs:
 outputs:
   - id: current_activity
     type: string
+    optional: true
     description: The activity the walk holds, and null once the walk reaches `__terminal__`.
   - id: from_activity
     type: string
+    optional: true
     description: The activity an advance retires, which every entry names as the one its exit belongs to.
   - id: trace_tokens
     type: array
+    optional: true
     description: The trace token of every advance the walk made, in the order it made them. A walk opened on `standing_activity` appends to the tokens the host holds.
 
 internals:
