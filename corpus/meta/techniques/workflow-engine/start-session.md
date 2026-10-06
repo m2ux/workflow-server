@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.19.0
+  version: 1.20.0
 ---
 
 ## Capability
@@ -106,10 +106,12 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
   > resume stands where its last walk left it and makes no opening advance; a session reported
   > `completed` has already ended its walk and takes no further advance at all.
 
-### 3. Take Techniques Bundle
+### 3. Re-Establish the Contract After Summarization
 
-- Call `get_workflow { session_index }` and follow the returned techniques bundle. After summarization, re-fetch with the escapes in force-full-after-summarization.
-  > A context whose activity already carries the orchestrator contract has it from the activity, and fetches this bundle only to re-establish it after summarization.
+- Where this context has lost the contract it was delivered, call `get_workflow { session_index }` and follow the returned techniques bundle, with the escapes in force-full-after-summarization.
+  > The contract arrives with the activity that carries it, so an opening context already holds it
+  > and this call has nothing to add. The bundle carries what the workflow declares at
+  > `techniques.workflow`, which is the orchestrator's; a workflow declaring none returns none.
 
 ## Rules
 
