@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -18,13 +18,13 @@ The record Record Entry wrote.
 
 The record Carry Batch wrote.
 
-### left_entry
+### note_left_outputs
 
-The record Note Left wrote.
+The container Note Left filled, one slot per branch the destination named it for.
 
-### right_entry
+### note_right_outputs
 
-The record Note Right wrote.
+The container Note Right filled.
 
 ### planning_folder_path
 
@@ -40,15 +40,15 @@ Absolute path of the document this technique wrote.
 
 ### 1. Entry Roll
 
-- Read the four records whole and lay them out as one row each: entry kind, activity,
-  identity, instant.
-  > Read the containers rather than naming a slot. Which record came from which branch is
-  > carried by the container the branch filled.
+- Read the two records and the two containers whole, and lay out one row each: entry kind,
+  activity, identity, instant.
+  > Read a container rather than naming a slot. Which record came from which branch is carried
+  > by the container that branch filled.
 
 ### 2. Identity Comparison
 
-- State whether `left_entry.agent_id` and `right_entry.agent_id` differ, and whether
-  `cold_entry.agent_id` and `batch_entry.agent_id` match.
+- State whether the two branch containers carry distinct `agent_id` values, and whether the
+  identity on `{cold_entry}` and the identity on `{batch_entry}` match.
   > Two branches sharing an identity, or a continuation arriving under a fresh one, are each
   > a finding about the entry rather than about the activity that recorded it.
 

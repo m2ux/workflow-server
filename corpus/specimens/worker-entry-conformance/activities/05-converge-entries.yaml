@@ -1,14 +1,14 @@
 id: converge-entries
-version: 1.0.0
+version: 1.1.0
 name: Converge Entries
 description: Read every recorded entry whole and write the one report the run leaves behind.
 required: true
 variables:
   reads:
-    - cold_entry
     - batch_entry
-    - left_entry
-    - right_entry
+    - cold_entry
+    - note_left_outputs
+    - note_right_outputs
     - planning_folder_path
   writes:
     - name: report_path

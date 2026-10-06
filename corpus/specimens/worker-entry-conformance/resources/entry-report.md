@@ -26,8 +26,8 @@ Session `{session_index}` · workflow `worker-entry-conformance` · `{written_at
 |---|---|---|---|
 | Cold dispatch | `record-entry` | `{cold_entry.agent_id}` | `{cold_entry.recorded_at}` |
 | Batch continuation | `carry-batch` | `{batch_entry.agent_id}` | `{batch_entry.recorded_at}` |
-| Fan branch | `note-left` | `{left_entry.agent_id}` | `{left_entry.recorded_at}` |
-| Fan branch | `note-right` | `{right_entry.agent_id}` | `{right_entry.recorded_at}` |
+| Fan branch | `note-left` | one row per slot of `{note_left_outputs}` | |
+| Fan branch | `note-right` | one row per slot of `{note_right_outputs}` | |
 
 ## Identities
 

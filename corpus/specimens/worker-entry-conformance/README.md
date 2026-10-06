@@ -14,7 +14,7 @@ the routing, so an activity that did work of its own would change what is being 
 
 Walk it as `workflow_id: worker-entry-conformance`. The run holds no gate, so it reaches
 `__terminal__` unattended. A yielded gate and the continuation that resumes it are walked by
-[`reply-correction`](../reply-correction/README.md), whose checkpoint loops back through the
+[`reply-correction`](/reply-correction/README.md), whose checkpoint loops back through the
 activity that raised it.
 
 ## Copying from it
@@ -22,7 +22,7 @@ activity that raised it.
 Take this when a change touches how the walk enters an activity — the sequence that marks,
 advances, opens, continues or finishes one — and a live run has to show which path ran. The
 four entries are the whole of the form. Work inside an activity, isolated checkouts, and
-commits per branch belong on [`fan-conformance`](../fan-conformance/README.md), which walks
+commits per branch belong on [`fan-conformance`](/fan-conformance/README.md), which walks
 the fan grammar rather than the entry.
 
 ## Graph
