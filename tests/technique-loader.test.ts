@@ -83,7 +83,7 @@ describe('technique-loader', () => {
       }
       // Techniques resolve from their `<op>.md` files via resolveTechniques.
       const resolved = await resolveTechniques(
-        ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::commit-and-persist'],
+        ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::sync-progress-status'],
         WORKFLOW_DIR,
       );
       const ops = resolved.filter((r) => r.type === 'technique');

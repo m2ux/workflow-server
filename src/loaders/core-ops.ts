@@ -66,14 +66,15 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   'harness-compat::claude-code',
   // Every activity boundary.
   'workflow-engine::evaluate-transition',
-  'workflow-engine::commit-and-persist',
-  // The Progress Status writer both dispatch-activity and commit-and-persist name (#324 B2).
+  // The Progress Status writer dispatch-activity names (#324 B2).
   'workflow-engine::sync-progress-status',
-  // State persistence: commit-and-persist invokes these inline (same inline-ref caveat), so bundle
-  // them so the orchestrator gets the worktree, regular-file, and submodule commit protocols.
-  'git::identify-path-type',
+  // State persistence: the worktree, regular-file and submodule commit protocols. The sequence that
+  // orders them is the `persist-activity` routine, which materialises into the activity that binds
+  // it and so reaches a worker rather than this bundle. An orchestrator driving a client workflow
+  // from `get_workflow` holds these protocols and no ordering for them; what closes that gap is a
+  // role activity this roster is replaced by, not further entries here.
   'git::commit-regular-files',
-  'git::commit-worktree',
+  'project::persist-worktree',
   'git::commit-submodule',
   // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
   // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its

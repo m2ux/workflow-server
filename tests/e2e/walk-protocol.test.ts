@@ -168,6 +168,6 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
     expect(techniqueName(advance)).toBe('workflow-engine::dispatch-activity');
     const inputs = (advance.technique as { inputs?: Record<string, string> }).inputs;
     expect(inputs?.['activity_id']).toBe('__terminal__');
-    expect(techniqueName(doc.steps[persist]!)).toBe('workflow-engine::commit-and-persist');
+    expect((doc.steps[persist]! as { routine?: string }).routine).toBe('persist-activity');
   });
 });
