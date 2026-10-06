@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.25.0
+version: 2.26.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -16,7 +16,6 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_statement
-    - push_remote
     - requirements
     - review_summary
     - stealth_mode
@@ -120,9 +119,6 @@ variables:
       type: string
       description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding).
       defaultValue: ""
-    - name: strategic_review_findings
-      type: array
-      description: The findings the scope and artifact review produced, each under the designator its report defines.
 required: true
 steps:
   - kind: technique
