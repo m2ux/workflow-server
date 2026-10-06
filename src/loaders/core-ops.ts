@@ -99,11 +99,15 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // `techniques.activity` — so for a client workflow it was named and never delivered, with no tool
   // able to fetch it by id. A worker that cannot read its own role reads none of the rules it owes.
   'workflow-engine::activity-worker',
+  // The envelope the role returns. `activity-worker` applies it by name from this bundle, and an
+  // inline ref is not re-resolved, so it needs its own entry to arrive at all. Only the context
+  // that executed the steps can say which bag keys they landed, which is why the reading lives
+  // here rather than in `finalize-activity`.
+  'workflow-engine::compose-steps-complete',
   // Step execution surface. The checkpoint pair is in WORKER_CHECKPOINT_TECHNIQUES, added by
-  // `get_activity` where the activity holds a gate. `finalize-activity` is absent: a worker returns
-  // `steps_complete` and the exit reading that folds it into an envelope belongs to the
-  // `finish-activity` routine, on the side that holds the graph. An activity binding it as a step
-  // takes it through step bundling.
+  // `get_activity` where the activity holds a gate. `finalize-activity` is absent: it folds the
+  // exit reading into the envelope and belongs to the `finish-activity` routine, on the side that
+  // holds the graph. An activity binding it as a step takes it through step bundling.
   //
   // The language every step is read in: what a gate expression means, and how many times a loop
   // body runs. A worker evaluates both — the server evaluates no gate — so the semantics ride with
