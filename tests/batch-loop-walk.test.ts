@@ -81,11 +81,11 @@ type Bag = Record<string, unknown>;
  * - `branch-retirement` → the forEach over `branch_activities`, whose `fan::retire-branch` advances
  *   once per branch, the last retirement entering the convergence activity. Its inner steps are
  *   outside this walk, which reads the body only.
- * - `persist-the-fan` → `workflow-engine::commit-and-persist` over the branch activities: the fan's
+ * - `persist-the-fan` → the `persist-activity` routine over the branch activities: the fan's
  *   one commit, at convergence.
  * - `resume-yielded-worker` → `workflow-engine::resume-worker`: returns a fresh envelope under the
  *   identity already held. It does NOT touch the pointer.
- * - `commit-activity-artifacts` → `workflow-engine::commit-and-persist`: the activity's one commit.
+ * - `commit-activity-artifacts` → the `persist-activity` routine: the activity's one commit.
  */
 const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) => void> = {
   'continue-batched-worker': (bag, next, log) => {
