@@ -338,6 +338,32 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 mkdir -p artifacts/planning/<yyyy-mm-dd>[-<ref>]-<slug>
 ```
 
+## Sessions
+
+### Create Task Worktree
+
+Cuts the worktree and branch one unit's session works in, from the initiative's integration branch.
+
+- The worktree, the branch and the base are the ones [Find Available Work](#find-available-work) names.
+- Run it in the checkout of the repository the work changes.
+
+```bash
+git fetch origin i07/main && git worktree add .worktrees/i07-e00-w01 -b i07/e00/w01-queue-plan origin/i07/main
+```
+
+### Dispatch Session
+
+Starts the session that delivers one unit, reading its brief and running on past this session.
+
+- Run it inside the worktree [Create Task Worktree](#create-task-worktree) cut.
+- `brief.md` is the brief [Deliver Mode](deliver-mode.md#brief) states, written to a file.
+- `--add-dir` gives the session the engineering worktree, where it writes the planning record.
+- The log names the unit, and sits beside the worktree so it survives the worktree's removal.
+
+```bash
+nohup claude -p --permission-mode acceptEdits --add-dir <engineering-worktree> < brief.md > ../i07-e00-w01.log 2>&1 &
+```
+
 ## Scripts
 
 ### Check Dependencies
@@ -482,6 +508,56 @@ Decides which initiatives and epics on a theme board move between Backlog, Ready
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/advance.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux
+```
+
+### Find Available Work
+
+Reports each unit of work a theme board makes available, each row a session holds, and each row its dependencies block.
+
+- The rules are [Deliver Mode](deliver-mode.md).
+- `--items` is [Fetch Board Items with Status](#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
+- Give an issue it reports unresolved with `--others`.
+- A `unit` line names the tasks of one session's work, their coverage, and the record folder, branch and worktree their ids and Description give them.
+- A `hold` line names a row a session holds, and the record it links.
+- A `blocked` line names a free row whose dependencies are undelivered, or whose joined task is unavailable.
+- `--date` opens the records on another day than today.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json
+```
+
+### Reserve Row
+
+Holds each named task row for one session, by appending its record folder's link to the row id.
+
+- It refuses a row already held, and one whose id links a pull request or a commit.
+- `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.
+- The folder is the one [Find Available Work](#find-available-work) names, and `--date` is the day it is opened.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --records https://github.com/{owner}/{repo}/tree/engineering/artifacts/planning --fix fixed-943.md
+```
+
+### Record Work Item
+
+Points a held task row at the work item its session wrote, ahead of the record folder's link.
+
+- It refuses a row that no session holds, and one whose id already links that file.
+- The hold stands until the row links its pull request, which [Sync Epic](#sync-epic) writes.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --item W01 --fix fixed-943.md
+```
+
+### Release Row
+
+Frees each named task row, by dropping the record folder's link from the row id.
+
+- It refuses a row that no session holds.
+- A row whose id then links nothing carries the bare task id.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --release W01 --fix fixed-943.md
 ```
 
 ### Summarise Progress

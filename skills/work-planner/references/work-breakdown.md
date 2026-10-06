@@ -81,7 +81,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
 - **Task ids.**
   - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
-  - Once a pull request is open, the id links that pull request and the planning-record link is gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
+  - A session that holds the task adds its record folder's link, which is the hold: `[W01](…/w01.md), [W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. [Deliver Mode](deliver-mode.md) writes and reads it.
+  - Once a pull request is open, the id links that pull request and the planning-record links are gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.

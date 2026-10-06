@@ -4,9 +4,10 @@ description: >-
   Plans and maintains agent-engineering work on GitHub: proposal issues, [Ixx] initiative
   issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
   Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
-  scope the solution, plan out, scope or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
+  scope the solution, or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
   renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
   order, or a Done column that disagrees with its delivery, or a merged task that still carries an unmet criterion; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
+  to deliver a board, start the work it makes available, or dispatch sessions for the ready tasks;
   to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
   or to revise or update the work-planner skill itself.
 ---
@@ -57,6 +58,12 @@ Read the file for the mode the request calls for:
   - A parallel work map for initiatives with no priority
   - Placement of the highest set as In Progress and the next set as Ready
   - Placement of a partly completed epic as In Progress and the next unstarted epic as Ready
+- **[Deliver](references/deliver-mode.md)**
+  - Advance of the board the work is taken from
+  - The units of work its epics make available, and the rows a session holds
+  - A planning record and a row's link that hold each unit for one session
+  - A session per unit, in its own worktree, to plan, implement and open the pull request
+  - A test for each criterion a unit delivers, of the kind that criterion can be observed by
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task
@@ -174,6 +181,9 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **git.**
   - For the planning record: [Add Planning Record](references/commands.md#add-planning-record).
   - For delivery: each initiative's integration branches, which its pull requests target, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
+  - For dispatch: a worktree per unit of work, as [Create Task Worktree](references/commands.md#create-task-worktree) cuts it.
+- **Claude Code CLI (`claude`).**
+  On the path, for the session [Dispatch Session](references/commands.md#dispatch-session) starts for one unit of work.
 - **Sub-agents.**  Where the harness has them, for [Plan Mode](references/plan-mode.md)'s broad evidence sweeps.
 
 ## Rules
