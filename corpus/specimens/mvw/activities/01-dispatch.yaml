@@ -1,5 +1,5 @@
 id: dispatch
-version: 1.0.0
+version: 1.2.0
 name: Dispatch
 description: Dispatch once.
 required: true
@@ -8,14 +8,19 @@ variables:
     - name: dispatch_recorded
       type: boolean
       description: True once the dispatch has executed.
+    - name: unserved_applications
+      type: array
+      description: The technique ids this dispatch applies and was not served. Empty on a sound instance.
 steps:
   - kind: routine
     id: recording
     routine: record-dispatch
     outputs:
       dispatch_recorded: dispatch_recorded
+      unserved_applications: unserved_applications
 exits:
   - id: dispatched
     isDefault: true
 outcome:
   - The dispatch has executed ({dispatch_recorded})
+  - Every technique this dispatch applies was served to it ({unserved_applications})

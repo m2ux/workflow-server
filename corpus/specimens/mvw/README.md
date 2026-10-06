@@ -2,7 +2,9 @@
 
 The live sidecar's first walk: one orchestrator, one activity, one routine, one technique.
 
-A miss here is a miss on the instance.
+A miss here is a miss on the instance. The walk reports what it was served as well as that it
+ran, because a dispatch improvises past a technique that never arrived rather than refusing it —
+so executing is not on its own evidence that the contract was delivered.
 
 Walk it as `workflow_id: mvw`.
 

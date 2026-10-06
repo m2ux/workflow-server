@@ -12,6 +12,13 @@ An activity is entered on one of four paths, and this run walks all four in one 
 Every activity here records the entry it arrived on and nothing else. The evidence is about
 the routing, so an activity that did work of its own would change what is being measured.
 
+The convergence then counts what the walk left in the session record, against what the graph
+requires: identities minted, activities completed, advances traced, usage entries attributed,
+and techniques served against techniques applied. Each of these fails silently — an activity
+committed under a name that never ran, a trace token appended twice, a usage row with no
+identity, a technique improvised past because it never arrived — and a walk that reached
+`__terminal__` is not on its own evidence against any of them.
+
 Walk it as `workflow_id: worker-entry-conformance`. The run holds no gate, so it reaches
 `__terminal__` unattended. A yielded gate and the continuation that resumes it are walked by
 [`reply-correction`](/reply-correction/README.md), whose checkpoint loops back through the
