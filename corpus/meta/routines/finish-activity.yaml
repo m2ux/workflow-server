@@ -1,5 +1,5 @@
 id: finish-activity
-version: 1.2.0
+version: 1.3.0
 name: Finish Activity
 description: >-
   Read where the activity's exit sends the run, then fold that reading into the activity_complete
@@ -18,6 +18,8 @@ inputs:
     description: The checkpoints this activity answered.
   - id: artifacts_produced
     description: The artifacts this activity wrote.
+  - id: variables_changed
+    description: The bag keys this activity mutated, as the worker read them.
   - id: batch_may_continue
     description: Whether this worker's context may take another activity.
   - id: component_path
@@ -53,6 +55,7 @@ steps:
         steps_completed: steps_completed
         checkpoints_responded: checkpoints_responded
         artifacts_produced: artifacts_produced
+        variables_changed: variables_changed
         selected_exit: selected_exit
         batch_may_continue: batch_may_continue
         next_activity_id: next_activity_id

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.15.0
+  version: 1.16.0
 ---
 
 ## Capability
@@ -20,6 +20,10 @@ Array of checkpoint responses (`option_id` + effects).
 ### artifacts_produced
 
 Array of artifact entries (`id`, `name`, `path`).
+
+### variables_changed
+
+The bag keys the activity mutated, as the context that executed its steps read them. Carried into the envelope unchanged.
 
 ### selected_exit
 
@@ -61,7 +65,7 @@ array of checkpoint responses (`option_id` + effects).
 
 #### variables_changed
 
-state variables the activity mutated, reported by the worker — one of the sanctioned sources `variable-mutation-source` names.
+the bag keys the activity mutated, carried through from the worker — one of the sanctioned sources `variable-mutation-source` names.
 
 #### artifacts_produced
 
@@ -91,7 +95,7 @@ Whether this context may take another activity, folded from the input of the sam
 
 ### 1. Fold Activity Results
 
-- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Carry `{batch_may_continue}` unchanged: every successful envelope carries it.
+- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}`, `{variables_changed}` and `{batch_may_continue}` into the `activity_complete` object. Carry `{variables_changed}` and `{batch_may_continue}` unchanged: every successful envelope carries both.
   > Where a checkpoint effect named an exit, include `{selected_exit}`.
 
 ### 2. Fold Routing Fields

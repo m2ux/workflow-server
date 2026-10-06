@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ Canonical agent technique this context follows for the activity — default work
 
 ### worker_result
 
-The envelope this entry closes on — one of three tagged result types. The `checkpoint_pending` or `activity_complete` envelope is the one the activity produced, which this context composes because it carried the activity. The `workflow_complete` envelope, `{ result_type: "workflow_complete" }`, is the one an advance onto `__terminal__` closes on: the session is completed, and no activity was carried.
+The envelope this entry closes on — one of three tagged result types. The `steps_complete` or `checkpoint_pending` envelope is the one the activity produced, which this context composes because it carried the activity; the side holding the graph reads the exit destination and folds `steps_complete` into `activity_complete`. The `workflow_complete` envelope, `{ result_type: "workflow_complete" }`, is the one an advance onto `__terminal__` closes on: the session is completed, and no activity was carried.
 
 ### advance_trace_tokens
 

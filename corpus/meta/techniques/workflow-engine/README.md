@@ -16,7 +16,8 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`create-session`](create-session.md) | Fresh client workflow session embedded under the current meta session |
 | [`dispatch-activity`](dispatch-activity.md) | Advance the session onto a target activity, mint the worker identity, and announce the dispatch |
 | [`evaluate-transition`](evaluate-transition.md) | Name the outcome the just-completed activity reached, and read where the workflow sends it |
-| [`finalize-activity`](finalize-activity.md) | Compile the activity's `activity_complete` result |
+| [`compose-steps-complete`](compose-steps-complete.md) | Compose the `steps_complete` envelope from what carrying the activity made observable |
+| [`finalize-activity`](finalize-activity.md) | Fold the exit reading into the activity's `activity_complete` result |
 | [`generate-summary`](generate-summary.md) | Compose the markdown session summary presented at workflow close |
 | [`handle-sub-workflow`](handle-sub-workflow.md) | Launch a workflow as a child of the current session, and report where it opens and where it writes |
 | [`list-workflows`](list-workflows.md) | Retrieve the catalog of available workflows |

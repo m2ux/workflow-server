@@ -278,12 +278,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/finalize-activity.md:94",
-      "op": "variable-binding",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/finalize-activity.md:34",
       "op": "evaluate-transition",
       "verdict": "fix-later",

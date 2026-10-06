@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.10.0
+version: 1.11.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -182,6 +182,7 @@ steps:
           checkpoints_responded: "{worker_result.checkpoints_responded}"
           artifacts_produced: "{worker_result.artifacts_produced}"
           batch_may_continue: "{worker_result.batch_may_continue}"
+          variables_changed: "{worker_result.variables_changed}"
           planning_folder_path: "{planning_folder_path}"
           session_index: "{session_index}"
         outputs:
