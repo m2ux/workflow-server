@@ -242,18 +242,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:41",
-      "op": "activity-worker",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:42",
-      "op": "workflow-orchestrator",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/create-session.md:42",
       "op": "handle-sub-workflow",
       "verdict": "fix-later",
