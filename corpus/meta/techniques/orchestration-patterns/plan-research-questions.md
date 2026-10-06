@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -25,11 +25,11 @@ Ordered research units `{ id, brief, tools_hint? }`, each independent of the oth
 
 ## Protocol
 
-### 1. Derive the Questions
+### 1. Derive Questions
 
 - Derive breadth-first research questions that cover `{work_goal}` with minimal overlap.
 
-### 2. Emit the Units
+### 2. Emit Units
 
 - Honour `{effort_cap}` when set (prefer fewer sharper questions over exceeding the cap).
 - Emit `{work_units}` with briefs that demand structured findings (claims + sources), not open-ended essays.

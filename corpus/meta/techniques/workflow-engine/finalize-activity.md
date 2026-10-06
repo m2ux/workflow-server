@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.17.0
 ---
 
 ## Capability
@@ -21,13 +21,29 @@ Array of checkpoint responses (`option_id` + effects).
 
 Array of artifact entries (`id`, `name`, `path`).
 
+### variables_changed
+
+The bag keys the activity mutated, as the context that executed its steps read them. Carried into the envelope unchanged.
+
 ### selected_exit
 
 *(optional)* The exit a checkpoint answer in this activity selected.
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity (`activity-worker.batch-ends-where-the-server-says`).
+Whether the worker's context may take another activity.
+
+### next_activity_id
+
+Where the run goes next: an activity id, a list of members, or one activity together with the collection it runs over; or `__terminal__`.
+
+### next_activity_fans
+
+Whether that destination opens several branches rather than one activity.
+
+### activity_exit
+
+The exit id this activity took. Unset where it declares none.
 
 ## Outputs
 
@@ -49,7 +65,7 @@ array of checkpoint responses (`option_id` + effects).
 
 #### variables_changed
 
-state variables the activity mutated, reported by the worker — one of the sanctioned sources `variable-mutation-source` names.
+the bag keys the activity mutated, carried through from the worker — one of the sanctioned sources `variable-mutation-source` names.
 
 #### artifacts_produced
 
@@ -79,18 +95,15 @@ Whether this context may take another activity, folded from the input of the sam
 
 ### 1. Fold Activity Results
 
-- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Carry `{batch_may_continue}` unchanged: every successful envelope carries it.
+- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}`, `{variables_changed}` and `{batch_may_continue}` into the `activity_complete` object. Carry `{variables_changed}` and `{batch_may_continue}` unchanged: every successful envelope carries both.
   > Where a checkpoint effect named an exit, include `{selected_exit}`.
 
-### 2. Read Routing Destination
+### 2. Fold Routing Fields
 
-- Resolve the next activity: with the current activity definition and its `exit_destinations` both in hand from `get_activity`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope, passing `{next_activity_id}` on unread. Every successful envelope carries `{next_activity_id}` and `{next_activity_fans}`, and `{activity_exit}` wherever an exit was taken.
+- Fold `{next_activity_id}`, `{next_activity_fans}` and `{activity_exit}` into the envelope, passing `{next_activity_id}` on unread, and return `{activity_result}`. Every successful envelope carries `{next_activity_id}` and `{next_activity_fans}`, and `{activity_exit}` wherever an exit was taken.
 
-### 3. Return Envelope
-
-- Return `{activity_result}`.
 ## Rules
 
 ### no-readme-persist-on-worker
 
-Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties, and are done elsewhere once the envelope is returned — do not do them here, and do not wait for them. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status is written per owning activity, not per envelope artifact entry.
+This technique does not sync the planning-folder README, does not commit or push engineering artifacts, and does not wait for that work.

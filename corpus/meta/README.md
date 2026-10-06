@@ -13,7 +13,7 @@ The meta workflow is the structural home for the session's orchestration logic. 
 - Excluded from `list_workflows` — not a user-facing workflow.
 - Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the techniques bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
-- The server writes session state and restores it on attach. [commit-and-persist](./techniques/workflow-engine/commit-and-persist.md) commits the session record with the planning folder after each activity and at close-out; on-disk shape: [`docs/state.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state.md).
+- The server writes session state and restores it on attach. [persist-activity](./routines/persist-activity.yaml) commits the session record with the planning folder after each activity and at close-out; on-disk shape: [`docs/state.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state.md).
 
 | # | Activity | Role |
 |---|----------|------|
@@ -113,9 +113,7 @@ corpus/meta/
 ├── activities/
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop, a bounded run of activities per worker
 │   └── 04-end-workflow.yaml                 # Outcome verification, summary
-├── routines/
-│   ├── activity-loop.yaml                   # Walk a session one activity at a time, until it reaches the terminal
-│   └── dispatch-round.yaml                  # Compose, dispatch and gather one round of worker briefs
+├── routines/                                # Runs an activity binds as a step; every member is indexed in routines/README.md
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Root base contract
 │   ├── agent-conduct.md                     # Cross-cutting rules any agent can act on (single source of truth)

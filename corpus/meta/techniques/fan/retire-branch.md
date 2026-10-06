@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.12.0
 ---
 
 ## Capability
@@ -25,6 +25,10 @@ The branch this call retires, instance-qualified where the graph runs one activi
 
 What the branches returned, in the order the fan opened them.
 
+### worker_agent_id
+
+The identity the branch ran under, as `spawn-branches` minted it for this branch.
+
 ## Outputs
 
 ### advance_trace_tokens
@@ -33,14 +37,28 @@ The opaque trace token the retiring `next_activity` call returned in `_meta.trac
 
 ## Protocol
 
-### 1. Retire the branch
+### 1. Take Branch Entry
 
-- Take the entry of `{branch_envelopes}` belonging to `{branch_activity}` — the returns are in the order the fan opened the branches, and that order is the correspondence. Call `next_activity { session_index, activity_id: barrier_destination, from_activity: branch_activity, exit, step_manifest, variables_changed, artifacts_produced }`, taking from that entry `exit` as its `activity_exit`, `step_manifest` as its `steps_completed`, and `variables_changed` and `artifacts_produced` as its fields of those names; capture the `_meta.trace_token` it returns as `{advance_trace_tokens}` per `dispatch-activity.accumulate-trace-per-advance`
+- Take the entry of `{branch_envelopes}` belonging to `{branch_activity}`. The returns are in the order the fan opened the branches, and that order is the correspondence.
+- From that entry, `exit` is `activity_exit`.
   > - Omit `exit` where the entry's `activity_exit` is unset.
   > - The server checks the exit against the destination, not against the branch: an exit taken from another branch's entry passes unchecked.
-  > - A retirement that leaves branches in flight reports them at `outstanding`, each as the id that addresses it. The one that empties the frontier is the one that enters the convergence activity, and only that one: it reports that activity's `name` and `barrier.met` true — see `the-barrier-is-a-reading`.
+- From that entry, `step_manifest` is `steps_completed`.
+- From that entry, `variables_changed` is the field of that name.
+- From that entry, `artifacts_produced` is the field of that name.
 
-### 2. Account for the branch
+### 2. Retire Branch
 
-- Account for `{branch_activity}` per `dispatch-activity.account-every-activity`, which names an instance where the graph runs one activity over a collection
+- Call `next_activity { session_index, activity_id: barrier_destination, from_activity: branch_activity, exit, step_manifest, variables_changed, artifacts_produced }`.
+
+### 3. Read Retirement
+
+- Capture `_meta.trace_token` as `{advance_trace_tokens}` per `dispatch-activity.accumulate-trace-per-advance`.
+- A retirement that leaves branches in flight reports them at `outstanding`, each as the id that addresses it.
+  > The one that empties the frontier is the one that enters the convergence activity, and only that one: it reports that activity's `name` and `barrier.met` true — see `the-barrier-is-a-reading`.
+
+### 4. Record Branch Usage
+
+- Account for `{branch_activity}` per `account-worker.account-every-activity`, attributed to `{worker_agent_id}`.
+  > Where the graph runs one activity over a collection, the activity names that instance.
 

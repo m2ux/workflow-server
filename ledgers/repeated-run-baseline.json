@@ -170,7 +170,7 @@
       "run": [
         "A:message=",
         "T:scope-verification()",
-        "T:workflow-engine::verify-readme-conforms(seed_profile)"
+        "R:ensure-readme(planning_folder_path,seed_profile)"
       ],
       "verdict": "unassigned",
       "rationale": "deprecated-twin-shape"

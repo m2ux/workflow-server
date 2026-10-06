@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 ---
 
 ## Capability
@@ -31,7 +31,11 @@ Harness-specific technique files document how each host expresses blocking-equiv
 
 ### harness-kind-from-host-surface
 
-`{harness_kind}` has no session-state producer — no workflow variable holds it and no step sets it. The executing agent determines it from its own host surface, the only place the fact is observable.
+`{harness_kind}` has no session-state producer. The executing agent reads it from its own host surface.
+
+### a-call-template-reads-braces
+
+A harness call template reads a braced word as a reference and an angle-bracketed word as a value the invoking agent supplies from its own host.
 
 ### index-in-prompt
 

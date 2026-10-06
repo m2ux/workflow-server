@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Target client workflow id (e.g., `work-package`).
 
 ### planning_slug
 
-The work-package planning slug — `YYYY-MM-DD-{initiative_name}`. Names the planning folder the server materialises under its workspace `.engineering` root. Omit when no slug has been derived; the server then falls back to `YYYY-MM-DD-<workflow_id>`.
+The work-package planning slug: the date, then the initiative name. Names the planning folder the server materialises under its workspace `.engineering` root. Omit when no slug has been derived; the server then falls back to the date and the workflow id.
 
 ### repo
 
@@ -40,4 +40,4 @@ The canonical absolute path of the planning folder, as resolved by the server un
 ### 1. Create Session
 
 - Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'orchestrator', planning_slug: {planning_slug}, repo: {repo} }`; capture `{session_index}` and `{planning_folder_path}` (server-resolved; do not compose the path). Child session embed under the parent follows the `dispatch_child` response / [handle-sub-workflow](./handle-sub-workflow.md).
-  Omit `context_mode` (or `"fresh"`) per `dispatch-activity.dispatch-topology` / `dispatch-activity.delivery-keys-on-agent-context`.
+  Omit `context_mode` (or `"fresh"`) per `dispatch-activity.delivery-keys-on-agent-context`.

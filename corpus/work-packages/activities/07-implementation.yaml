@@ -45,6 +45,17 @@ steps:
       - kind: technique
         id: execute-package
         technique: orchestrate-package-execution::execute-package
+      - kind: routine
+        id: walk-package
+        routine: activity-loop
+        with:
+          session_index: child_session_index
+          initial_activity: child_initial_activity
+          planning_folder_path: child_planning_folder_path
+          enter_activity: workflow-engine::take-activity
+      - kind: technique
+        id: record-package-progress
+        technique: orchestrate-package-execution::record-package-progress
 outcome:
   - Every planned package is delivered as merged, reviewed work, so the initiative's intended capability is fully in place
   - Progress tracking reflects a finished initiative, giving stakeholders a trustworthy completion signal

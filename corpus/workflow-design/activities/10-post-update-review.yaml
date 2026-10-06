@@ -7,6 +7,7 @@ variables:
     - component_git_dir
     - host_repo_path
     - manifest_entries
+    - operation_type
     - planning_folder_path
     - pr_number
     - target_path
@@ -291,12 +292,12 @@ steps:
     id: republish-verify-scope-manifest
     technique: scope-verification
     when: needs_recommit == true
-  - kind: technique
+  - kind: routine
     id: republish-verify-planning-readme
-    technique:
-      name: workflow-engine::verify-readme-conforms
-      inputs:
-        seed_profile: workflow-design/readme-seed
+    routine: ensure-readme
+    with:
+      seed_profile: workflow-design/readme-seed
+      planning_folder_path: planning_folder_path
     when: needs_recommit == true
   - kind: technique
     id: republish-stage-and-commit

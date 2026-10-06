@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -47,7 +47,7 @@ A unit's output enters the ordered collection and reaches the parent bag only th
 
 ### one-workspace-one-writer
 
-Workers share the calling worker's workspace, so a worker writes only what its own brief names and never a sibling's output. Nothing here hands a worker a checkout of its own: giving each unit an isolated workspace is what a child session is for, through [handle-sub-workflow](../workflow-engine/handle-sub-workflow.md).
+Workers share the calling worker's workspace, so a worker writes only what its own brief names. Nothing here hands a worker a checkout of its own.
 
 ### workers-see-briefs-only
 
@@ -55,7 +55,7 @@ Worker prompts carry the assigned brief, output contract, and tools — not the 
 
 ### no-nested-orchestrators
 
-Honor [spawn-agent](../harness-compat/spawn-agent.md)::depth-1-only. Hierarchical depth uses [handle-sub-workflow](../workflow-engine/handle-sub-workflow.md) / `dispatch_child`, not nested Task orchestrators.
+Depth past this worker is a child session, through [handle-sub-workflow](../workflow-engine/handle-sub-workflow.md).
 
 ### prefer-activity-composition
 

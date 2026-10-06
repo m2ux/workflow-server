@@ -1,11 +1,14 @@
 id: record-dispatch
-version: 1.0.0
+version: 1.2.0
 name: Record Dispatch
 description: Record that one activity dispatched.
 outputs:
   - id: dispatch_recorded
     type: boolean
     description: True once the dispatch technique has executed.
+  - id: unserved_applications
+    type: array
+    description: The technique ids this dispatch applies and was not served. Empty on a sound instance.
 steps:
   - kind: technique
     id: record

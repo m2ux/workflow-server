@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,14 +33,14 @@ Replan-needed flag.
 
 ## Protocol
 
-### 1. Revise the Decomposition
+### 1. Revise Decomposition
 
 - Incorporate `{prior_step_results}` and `{replan_reason}` into a revised decomposition of `{work_goal}`.
 
-### 2. Emit the New Plan
+### 2. Emit New Plan
 
 - Emit a new `{execution_plan}` that preserves completed useful work and schedules only remaining steps.
 
-### 3. Clear the Replan Flag
+### 3. Clear Replan Flag
 
 - Set `{plan_needs_replan}` to false.
