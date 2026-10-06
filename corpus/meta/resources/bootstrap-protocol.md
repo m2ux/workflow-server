@@ -24,31 +24,29 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
      a new client.
 
 2. Keep the `session_index` the response returns, a 6-character base32 string, and the `repo` it
-   echoes. Later text calls them `meta_session_index` and `target_repo`. The response also returns
-   `planning_folder_path`, and `client`, which carries the already-open client session's own
-   `session_index` and workflow. Where both indices are in hand, the one from step 1 is this
-   session's.
+   echoes. Later text calls them `meta_session_index` and `target_repo`. A fresh open also returns
+   `planning_folder_path` and `client`, the client session it opened alongside this one; a resume
+   returns no `client`. Where two indices are in hand, the one from step 1 is this session's.
 
-3. Call `get_workflow { session_index }`. It delivers the techniques this session orchestrates by
-   and the contract they inherit, and names the activity the walk opens on. Read that activity id
-   from `initialActivity`.
+3. Call `inspect_session { session_index, view: "activities" }` and read `current`, the activities
+   in flight. Where it is empty, call
+   `next_activity { session_index, activity_id: "dispatch-client-workflow" }`. Where it names one,
+   this session stands on that activity already and makes no advance. Where it names several, say
+   so and stop: this opening expects one.
 
-4. Call `inspect_session { session_index, view: "activities" }` and read `current`. Where it is
-   empty, call `next_activity { session_index, activity_id }` naming the `initialActivity` read in
-   step 3. Where it names an activity, this session stands on that activity already and makes no
-   advance.
+   An open checkpoint refuses every other call. Present it and settle it with `respond_checkpoint`
+   before going on.
 
-5. Call `get_activity { session_index, activity_id, context_tokens }`, naming the activity this
-   session now stands on — the one `current` reported, or the one step 4 advanced onto. That
-   activity carries the run that walks the client session and the techniques its steps bind. From
-   here on it governs and this text stops applying.
+4. Call `get_activity { session_index, activity_id, context_tokens }` for the activity this session
+   now stands on. `context_tokens` is your own context window in tokens. That activity carries the
+   run that walks the client session, the techniques its steps bind, and the contract the
+   orchestrator is held to. From here on it governs and this text stops applying.
 
 ## Rules
 
-Both of these bind from your very next call, for the whole session.
+These bind from your very next call, for the whole session.
 
-- Pass `session_index` on every authenticated tool call. A call without it cannot be attributed to
-  this session.
+- **Every call is attributed.** Pass `session_index` on every authenticated tool call.
 
-- Every worker this session spawns is awaited before the next step — no fire-and-forget. On Cursor
-  that means setting `run_in_background=false` explicitly and waiting for the worker's envelope.
+- **Every worker is awaited.** No fire-and-forget. On Cursor that means setting
+  `run_in_background=false` explicitly and waiting for the worker's envelope.

@@ -1,6 +1,6 @@
 # Meta Workflow
 
-> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. `start_session` opens the client when the request uniquely matches a catalog workflow; walk that child. An agent that remains on meta drives the child through dispatch-client-workflow and closes the session. Provides the universal technique repository for all client workflows.
+> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. `start_session` opens the client session alongside this one, and meta drives that child through dispatch-client-workflow and closes the session. Provides the universal technique repository for all client workflows.
 
 ---
 
@@ -33,8 +33,8 @@ The meta workflow is the structural home for the session's orchestration logic. 
 
 ```mermaid
 graph TD
-    startNode(["Bootstrap"]) -->|"start_session → meta walks the client"| childNode(["Client workflow"])
-    startNode -->|"agent stays on meta"| DSP["03 dispatch-client-workflow"]
+    startNode(["Bootstrap"]) -->|"start_session opens the client"| DSP["03 dispatch-client-workflow"]
+    DSP -->|"walks"| childNode(["Client workflow"])
     DSP -->|"current_activity == null"| END["04 end-workflow"]
     END -.->|"return"| DSP
     END --> doneNode(["Session closed"])

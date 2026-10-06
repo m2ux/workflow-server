@@ -10,7 +10,7 @@ Markdown resources providing the bootstrap navigation primer and shared cross-wo
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`, then the meta session opens on the activity that walks the client. Self-contained: it names no corpus file, because its reader holds none. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`, then the session opens on the activity that walks the client. |
 | `session-summary-template` | [Session Summary Template](./session-summary-template.md) | Skeleton for the markdown session summary composed at workflow close |
 | `planning-readme` | [Planning Folder README Guide](./planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`; Progress inventory comes from each workflow's readme-seed profile |
 | `resume-intent-lexicon` | [Resume Intent Lexicon](./resume-intent-lexicon.md) | Continuation-phrase vocabulary and negative cases `start_session` matches when deciding whether to scan saved sessions |

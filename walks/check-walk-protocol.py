@@ -273,6 +273,19 @@ def check() -> list[str]:
     if persist < terminal or "workflow-engine::commit-and-persist" not in close[persist:]:
         fail("terminal-commit", "the terminal advance does not commit the session's completed state")
 
+    # The bootstrap is served before a session exists, so it spells the opening activity out rather
+    # than reading it back from a call. That copy is forced; this is what keeps it true.
+    meta = read("corpus/meta/workflow.yaml")
+    opening = re.search(r"^initialActivity:\s*(\S+)\s*$", meta, re.M)
+    bootstrap = read("corpus/meta/resources/bootstrap-protocol.md")
+    if opening is None:
+        fail("opening-activity", "meta declares no initialActivity")
+    elif f'"{opening.group(1)}"' not in bootstrap:
+        fail(
+            "opening-activity",
+            f"the bootstrap names no activity matching meta's initialActivity {opening.group(1)}",
+        )
+
     return problems
 
 
