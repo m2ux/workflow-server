@@ -53,7 +53,7 @@ Worker agent identity for this dispatch.
 
 ### 5. Return Steps Complete
 
-- Apply `compose-steps-complete` from this response's bundle and return the envelope it composes. It reports the steps this activity ran, the gates it answered, the artifacts it wrote, the bag keys it mutated, this context's batch standing, and the activity definition and exit map this delivery carried. The destination of the exit is not read here.
+- Apply `compose-steps-complete` from this response's bundle and return the `{steps_result}` envelope it composes. It reports the steps this activity ran, the gates it answered, the artifacts it wrote, the bag keys it mutated, this context's batch standing, and the activity definition and exit map this delivery carried. The destination of the exit is not read here.
   > - When the last step completes, or a checkpoint's exit ends the activity.
   > - Where a checkpoint answer held an exit, that technique includes `selected_exit`.
   > On `may_continue: false`, return this activity and stop. A further `get_activity` is refused with the payload undelivered: report that activity as needing its own dispatch and stop.

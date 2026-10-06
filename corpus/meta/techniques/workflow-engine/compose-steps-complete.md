@@ -53,18 +53,18 @@ the exit map that delivery carried, keyed by exit id.
 
 ### 1. Name What Ran
 
-- Set `{steps_completed}` to one entry per step this activity ran, `{checkpoints_responded}` to the gates it answered, and `{artifacts_produced}` to the artifacts it wrote.
+- Set `{$steps_completed}` to one entry per step this activity ran, `{$checkpoints_responded}` to the gates it answered, and `{$artifacts_produced}` to the artifacts it wrote.
   > A loop body contributes one entry per step per iteration, in the order the passes ran.
 
 ### 2. Read Bag Writes
 
-- Set `{variables_changed}` to every bag key this activity mutated: each declared step output landed under its declared id, or under the remapped name where the step remaps it, together with any checkpoint `setVariable` effect already applied.
+- Set `{$variables_changed}` to every bag key this activity mutated: each declared step output landed under its declared id, or under the remapped name where the step remaps it, together with any checkpoint `setVariable` effect already applied.
   > The context that executed the steps is the one that saw them land, so this reading is made here and nowhere later.
 
 ### 3. Carry The Delivery
 
-- Set `{batch_may_continue}` from this context's standing, `{activity_definition}` to the definition this delivery carried, and `{exit_destinations}` to its exit map.
-  > Where a checkpoint answer named an exit, include `{selected_exit}`.
+- Set `{$batch_may_continue}` from this context's standing, `{$activity_definition}` to the definition this delivery carried, and `{$exit_destinations}` to its exit map.
+  > Where a checkpoint answer named an exit, set `{$selected_exit}` to the exit it named.
 
 ### 4. Return Steps Complete
 
