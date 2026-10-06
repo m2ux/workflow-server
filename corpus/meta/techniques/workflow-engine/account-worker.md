@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -38,9 +38,10 @@ The Progress status to write after this activity, when the worker or the harness
 
 ### 3. Name Follow-up Mark
 
-- When the worker or the harness reports blocked, `{followup_status}` is the blocked moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites).
-  > When the path skips or cancels the activity, `{followup_status}` is the path-skip / cancel moment in that resource.
-  > Otherwise `{followup_status}` is unset.
+- `{followup_status}` is the moment in [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites).
+  > - When the worker or the harness reports blocked, that moment is the blocked row.
+  > - When the path skips or cancels the activity, that moment is the path-skip / cancel row.
+  > - Otherwise `{followup_status}` is unset.
 
 ## Rules
 

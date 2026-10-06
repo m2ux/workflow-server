@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -53,15 +53,16 @@ Navigation and document-index skeleton, written to `{planning_folder_path}` from
 
 ## Protocol
 
-### 1. Derive the Slug
+### 1. Derive Slug
 
-- When `{planning_slug}` is unset, `{planning_slug}` is `YYYY-MM-DD-{initiative_name}` (today's date, then the kebab-case initiative name).
+- `{planning_slug}` is the date, then `{initiative_name}`, in kebab case.
+  > When `{planning_slug}` is unset.
 
 ### 2. Resolve Planning Folder
 
 - Compose `{planning_folder_path}` as `{planning_root}{planning_slug}/` at the [planning-folder location](../resources/planning-folder-template.md#folder-location)
 
-### 3. Create Start Here Skeleton
+### 3. Write Start Here
 
 - Write `{start_here_skeleton}` to `{planning_folder_path}` with header and placeholders, from the [START-HERE.md skeleton](../resources/planning-folder-template.md#start-heremd-skeleton)
 

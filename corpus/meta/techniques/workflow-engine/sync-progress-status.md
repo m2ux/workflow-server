@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.13.0
 ---
 
 ## Capability
@@ -41,7 +41,9 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 
 ### 1. Resolve Moment
 
-- When `{target_status}` is unset, take the moment from [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites): the cancelled / N/A row when `{mark_progress_na}` is true, otherwise `activity_complete`. Record that row's status as `{target_status}`.
+- Take the moment from [Progress Status call sites](/meta/resources/planning-readme.md#progress-status-call-sites). Record that row's status as `{target_status}`.
+  > - When `{target_status}` is unset and `{mark_progress_na}` is true, that moment is the cancelled / N/A row.
+  > - When `{target_status}` is unset and `{mark_progress_na}` is not true, that moment is `activity_complete`.
   > - When `{mark_progress_na}` was true, set it false after the row is read.
   > - Where `{activity_id}` holds the branches a fan retired, one resolution covers all of them per `fan.persist-the-fan-at-convergence`.
   > - Apply `account-worker.distrust-then-reconcile` when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.

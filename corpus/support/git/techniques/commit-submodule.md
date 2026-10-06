@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -31,11 +31,14 @@ Tracked paths `git status --porcelain` names in the submodule. Empty when the wo
 
 ### 1. Read the Tree
 
-- `git -C {submodule_path} status --porcelain` is `{paths}`. When it prints nothing, `{paths}` is empty and the later phases do not run.
+- `git -C {submodule_path} status --porcelain` is `{paths}`.
+  > When it prints nothing, `{paths}` is empty and the later phases do not run.
 
-### 2. Honour the Trailer Policy
+### 2. Apply Trailer Policy
 
-- Read `{submodule_path}/AGENTS.md` when it is present. `{$submodule_message}` is `<type>({workflow_id}): {activity_id} source changes`, and `<type>` is the Conventional Commits type the activity fits: feat for implement, fix for post-impl-review fixes, refactor for cleanup. When the file forbids Co-Authored-By, LLM attribution, or similar trailers, those trailers are not in `{submodule_message}`.
+- `{$submodule_message}` is `<type>({workflow_id}): {activity_id} source changes`, and `<type>` is the Conventional Commits type the activity fits: feat for implement, fix for post-impl-review fixes, refactor for cleanup.
+  > - When `{submodule_path}/AGENTS.md` is present, read it.
+  > - When the file forbids Co-Authored-By, LLM attribution, or similar trailers, those trailers are not in `{submodule_message}`.
 
 ### 3. Stage Submodule Paths
 
@@ -45,7 +48,7 @@ Tracked paths `git status --porcelain` names in the submodule. Empty when the wo
 
 - `git -C {submodule_path} commit --no-gpg-sign -m '{submodule_message}'`.
 
-### 5. Read the Submodule Branch
+### 5. Read Submodule Branch
 
 - `git -C {submodule_path} branch --show-current` is `{$submodule_branch}`.
 
@@ -65,7 +68,7 @@ Tracked paths `git status --porcelain` names in the submodule. Empty when the wo
 
 - `git -C {parent_path} commit --no-gpg-sign -m 'chore: update {submodule_path} submodule'`. Skipped, the parent still points at the old submodule commit.
 
-### 10. Read the Parent Branch
+### 10. Read Parent Branch
 
 - `git -C {parent_path} branch --show-current` is `{$parent_branch}`.
 

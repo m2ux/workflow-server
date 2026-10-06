@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ True when the remote tracking branch holds `HEAD` and, where `{paths}` is set, e
 
 ## Protocol
 
-### 1. Read the Tracking Branch
+### 1. Read Tracking Ref
 
 - The remote-tracking ref of `{branch}` names the commit the push landed on. The push has landed when that commit is the commit `HEAD` names.
 
@@ -45,13 +45,15 @@ True when the remote tracking branch holds `HEAD` and, where `{paths}` is set, e
   git -C {repo_path} rev-parse --verify {branch}@{upstream}
   ```
 
-### 2. Retry the Push
+### 2. Retry Push
 
-- When the tracking branch does not hold `HEAD`, `git -C {repo_path} push {remote_name} {branch}`, on the host shell per `host-shell-for-remote-git`.
+- `git -C {repo_path} push {remote_name} {branch}`, on the host shell per `host-shell-for-remote-git`.
+  > When the tracking branch does not hold `HEAD`.
 
-### 3. Read the Tracking Branch Again
+### 3. Reread Tracking Ref
 
-- When the retry ran, read that ref once more. `{push_landed}` is false when it still does not name `HEAD`.
+- Read that ref once more.
+  > When the retry ran and the ref does not name `HEAD`, `{push_landed}` is false.
 
   ```text
   git -C {repo_path} rev-parse --verify {branch}@{upstream}
@@ -59,4 +61,6 @@ True when the remote tracking branch holds `HEAD` and, where `{paths}` is set, e
 
 ### 4. Read the Paths
 
-- When `{paths}` is set and the tracking branch holds `HEAD`, `git -C {repo_path} ls-tree -r --name-only HEAD -- {paths}` lists each of them. `{push_landed}` is false when a path is absent. `{push_landed}` is true when every named path is listed, and when `{paths}` is unset and the tracking branch holds `HEAD`.
+- `git -C {repo_path} ls-tree -r --name-only HEAD -- {paths}` lists each named path.
+  > - When `{paths}` is set and the tracking branch holds `HEAD`, a missing path makes `{push_landed}` false, and a complete list makes it true.
+  > - When `{paths}` is unset and the tracking branch holds `HEAD`, `{push_landed}` is true.

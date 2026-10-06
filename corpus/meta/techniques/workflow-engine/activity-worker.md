@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.23.0
+  version: 1.24.0
 ---
 
 ## Capability
@@ -23,7 +23,9 @@ Worker agent identity for this dispatch.
 
 - Confirm the activity `id` returned by the `get_activity` call the current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, stop and report the expected id against the returned id. Execute no steps.
 - Follow the techniques bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
-- Read `may_continue` from the `batch:` block closing that response. The block reports `activities_delivered`, the characters delivered, and whether this context may take another. `_meta.batch` carries the same reading. Where `bounded` is true the two limits ride alongside those counts, and the tally is read against them. Where `bounded` is false no limit governs this scope, and none is reported.
+- Read `may_continue` from the `batch:` block closing that response. The block reports `activities_delivered`, the characters delivered, and whether this context may take another. `_meta.batch` carries the same reading.
+  > - Where `bounded` is true the two limits ride alongside those counts, and the tally is read against them.
+  > - Where `bounded` is false no limit governs this scope, and none is reported.
 
 ### 2. Load Resources
 
@@ -40,14 +42,17 @@ Worker agent identity for this dispatch.
 
 - Execute each activity step in document order
 - Read the artifact each bound artifact-path input names before the step that consumes it
-- For `kind: technique` steps, load the bound technique as that step is reached. The whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves a step not already inlined. Where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse of the map, the lazy remainder. An inlined step is read from the bundle and is never re-fetched (`fetch-costs-what-it-delivers`).
+- For `kind: technique` steps, load the bound technique as that step is reached. The whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves a step not already inlined. An inlined step is read from the bundle and is never re-fetched (`fetch-costs-what-it-delivers`).
+  > Where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern: begin-beat, reuse of the map, the lazy remainder.
 - Read a technique step from [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag per `gate-evaluation`, and a loop's controls per `loop-control`
 - Read a checkpoint step from [yield-checkpoint](./yield-checkpoint.md)
 
 ### 5. Return Steps Complete
 
-- When the last step completes, or a checkpoint's exit ends the activity, return `result_type: steps_complete` with the values this activity produced: `steps_completed`, `checkpoints_responded`, `artifacts_produced`, `selected_exit` where a checkpoint answer held one, `batch_may_continue` from this context's standing, `activity_definition` as the definition this delivery carried, and `exit_destinations` as that delivery's exit map. The destination of the exit is not read here.
+- Return `result_type: steps_complete` with the values this activity produced: `steps_completed`, `checkpoints_responded`, `artifacts_produced`, `batch_may_continue` from this context's standing, `activity_definition` as the definition this delivery carried, and `exit_destinations` as that delivery's exit map. The destination of the exit is not read here.
+  > - When the last step completes, or a checkpoint's exit ends the activity.
+  > - Where a checkpoint answer held an exit, include `selected_exit`.
   > On `may_continue: false`, return this activity and stop. A further `get_activity` is refused with the payload undelivered: report that activity as needing its own dispatch and stop.
 
 ## Rules

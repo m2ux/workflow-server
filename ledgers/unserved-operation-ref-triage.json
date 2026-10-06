@@ -230,37 +230,37 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:44",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:47",
       "op": "variable-binding",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:46",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:49",
       "op": "yield-checkpoint",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:57",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:62",
       "op": "agent-conduct",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:57",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:62",
       "op": "workflow-engine",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:40",
+      "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:41",
       "op": "activity-worker",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:41",
+      "site": "corpus/meta/techniques/workflow-engine/compose-prompt.md:42",
       "op": "workflow-orchestrator",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
@@ -302,7 +302,7 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/take-activity.md:49",
+      "site": "corpus/meta/techniques/workflow-engine/take-activity.md:51",
       "op": "activity-worker",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -39,10 +39,12 @@ The opaque trace tokens this entry accumulated, one per `next_activity` call tha
 
 ### 1. Advance Session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`. A token not captured is absent from the trace close-out resolves.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`.
   > - A first entry has no prior activity to retire, so `{from_activity}`, `{exit_id}`, `{step_manifest}` and `{variables_changed}` are all unset together.
   > - When `{activity_id}` is `__terminal__`, this advance completes the session: hold the `workflow_complete` envelope as `{worker_result}`, and end here.
   > - When `{stands_on_activity}` is true, or `{checkpoint_reply}` is bound, skip this phase.
+- Capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`.
+  > A token not captured is absent from the trace close-out resolves.
 
 ### 2. Carry Activity
 
@@ -52,7 +54,8 @@ The opaque trace tokens this entry accumulated, one per `next_activity` call tha
 
 ### 3. Record Usage Entry
 
-- Record one usage entry for `{activity_id}`: `record_usage { session_index, activity: activity_id, usage, basis, agent_id }` with the identity this context holds. `usage` and `basis` are read from the harness, and the entry says what the figure counts. When the harness reports no figure, omit the entry.
+- Record one usage entry for `{activity_id}`: `record_usage { session_index, activity: activity_id, usage, basis, agent_id }` with the identity this context holds. `usage` and `basis` are read from the harness, and the entry says what the figure counts.
+  > When the harness reports no figure, omit the entry.
 
 ## Rules
 

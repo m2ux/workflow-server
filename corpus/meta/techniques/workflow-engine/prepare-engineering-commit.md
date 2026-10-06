@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -49,21 +49,26 @@ The branch checked out at `{engineering_repo_path}`.
 
 ### 2. Read Worktree Commondir
 
-- When `.engineering` is absent from the tree, `git -C {host_repo_path}/.engineering rev-parse --git-common-dir`, resolved to an absolute path.
+- `git -C {host_repo_path}/.engineering rev-parse --git-common-dir`, resolved to an absolute path.
+  > When `.engineering` is absent from the tree.
 
 ### 3. Read Parent Commondir
 
-- When `.engineering` is absent from the tree, `git -C {host_repo_path} rev-parse --git-common-dir`, resolved to an absolute path.
+- `git -C {host_repo_path} rev-parse --git-common-dir`, resolved to an absolute path.
+  > When `.engineering` is absent from the tree.
 
 ### 4. Read Worktree Toplevel
 
-- When `.engineering` is absent from the tree, `git -C {host_repo_path}/.engineering rev-parse --show-toplevel`.
+- `git -C {host_repo_path}/.engineering rev-parse --show-toplevel`.
+  > When `.engineering` is absent from the tree.
   > - `{engineering_kind}` is `worktree` when that toplevel is `{host_repo_path}/.engineering` and the two common directories name one directory.
   > - Otherwise `{engineering_kind}` stays unset.
 
 ### 5. Name Checkout
 
-- `{engineering_repo_path}` is `{host_repo_path}/.engineering` when `{engineering_kind}` is `worktree`, and `{host_repo_path}` otherwise.
+- `{engineering_repo_path}` is `{host_repo_path}/.engineering`, or `{host_repo_path}`.
+  > - When `{engineering_kind}` is `worktree`, it is `{host_repo_path}/.engineering`.
+  > - Otherwise it is `{host_repo_path}`.
 
 ### 6. Read Branch
 

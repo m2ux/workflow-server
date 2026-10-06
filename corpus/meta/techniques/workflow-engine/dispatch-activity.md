@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.38.0
+  version: 1.39.0
 ---
 
 ## Capability
@@ -39,11 +39,13 @@ The opaque trace tokens this dispatch accumulated, one per `next_activity` call 
 
 ### 1. Advance Session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`; capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`. A token not captured is absent from the trace close-out resolves.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed }`.
   > - A dispatch whose activity ran steps carries one `step_manifest` entry per completed step; the server validates step completion against it and reports a gap when it is absent.
   > - A first dispatch has no prior worker context to attribute the manifest to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
   > - When `{activity_id}` is `__terminal__`, this advance completes the session: return the `workflow_complete` envelope as `{worker_result}`, and end here.
   > - When `{stands_on_activity}` is true, skip this phase.
+- Capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`.
+  > A token not captured is absent from the trace close-out resolves.
 
 ### 2. Mint Identity
 
