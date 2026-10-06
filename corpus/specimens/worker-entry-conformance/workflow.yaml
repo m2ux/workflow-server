@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: worker-entry-conformance
-version: 1.3.0
+version: 1.4.0
 title: Worker Entry Conformance Workflow
 description: >-
   Walk every shape of worker entry the engine carries — a cold dispatch, a continuation inside
@@ -20,9 +20,6 @@ variables:
   - name: planning_folder_path
     type: string
     description: Absolute path to the planning folder this run writes its report into.
-  - name: session_index
-    type: string
-    description: The session this run walks, whose record the report's ledgers are read from.
 initialActivity: record-entry
 graph:
   record-entry:

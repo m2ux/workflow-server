@@ -15,9 +15,8 @@ the [workflow README](../README.md).
 
 Four activities each sit on one entry path, and the fifth reads what they recorded.
 
-An activity on an entry path records the path it arrived on and the identity it arrived
-under, and does nothing else. It cannot see the routine that entered it, so the only
-evidence it can leave is what the entry handed it.
+What an activity on an entry path may record, and what it may reach for to record it, is held by
+`an-activity-evidences-its-own-entry` and `record-cheaply` on the techniques contract.
 
 The convergence reads every container whole and names no slot. It is the single place the
 four records are compared, because a branch cannot see its sibling and the question the run

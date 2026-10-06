@@ -2,18 +2,16 @@
 name: entry-report
 description: Template and rules for the worker entry report, the one document a run leaves behind.
 metadata:
-  version: 1.2.0
+  version: 1.4.0
   order: 1
 ---
 
 # Entry Report
 
-The shape of the document the run leaves behind: one roll of the entries the walk took, then
-the comparison no branch could make for itself.
-
-Persisted as `worker-entry-report.md` in the session's planning folder.
-
 ## Template
+
+One roll of the entries the walk took, the comparison no branch could make for itself, and the
+ledgers counting what the session record holds against what the graph requires.
 
 ```markdown
 # Worker Entry Report
@@ -31,13 +29,13 @@ Session `{session_index}` · workflow `worker-entry-conformance` · `{written_at
 
 ## Identities
 
-- The two branches held <distinct|the same> identities.
-- The continuation arrived under <the same|a fresh> identity as the cold dispatch.
-- The session minted `{count}` identities against `{expected}` this graph requires.
+- The two branches held identities that were: distinct / the same.
+- The continuation arrived under an identity that was: the same as the cold dispatch / a fresh one.
+- The usage rows carry `{count}` distinct identities against `{expected}` this graph requires.
 
-## Completions
+## Exits
 
-| Activity | Completed | Expected |
+| Activity | Exited | Expected |
 |---|---|---|
 | `record-entry` | `{count}` | 1 |
 | `carry-batch` | `{count}` | 1 |
@@ -47,21 +45,12 @@ Session `{session_index}` · workflow `worker-entry-conformance` · `{written_at
 
 ## Advances
 
-- The trace holds `{count}` advances against `{expected}` this graph requires.
-
-## Usage
-
-| Activity | Entry recorded | Attributed to |
-|---|---|---|
-| `record-entry` | <yes|no> | `{agent_id}` |
-| `carry-batch` | <yes|no> | `{agent_id}` |
-| `note-left` | <yes|no> | `{agent_id}` |
-| `note-right` | <yes|no> | `{agent_id}` |
-| `converge-entries` | <yes|no> | `{agent_id}` |
+- The trace holds `{count}` advances against `{expected}` this graph requires, or reports that
+  tracing held no events for this session.
 
 ## Delivery
 
-- Applied and not served: <none|one row per technique id>.
+- Bound as a step of this activity and not served: none / one row per technique id.
 ```
 
 ## Rules
@@ -81,5 +70,5 @@ compared.
 
 Each ledger carries the number it found beside the number the graph requires, and both are
 written even where they agree. A walk that reached its terminal is not evidence that every
-activity ran once, that every advance was traced, or that every technique applied had been
+activity exited once, that every advance was traced, or that every technique bound had been
 served — only the counts separate those from a walk that succeeded around them.

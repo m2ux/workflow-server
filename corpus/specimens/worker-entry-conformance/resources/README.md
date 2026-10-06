@@ -6,7 +6,7 @@ One guide, for the one document a run leaves behind.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
-| `entry-report` | Entry Report | Creation guide: `worker-entry-report.md` — template, and the rules governing what the roll and the identity comparison may claim |
+| `entry-report` | Entry Report | Creation guide: `worker-entry-report.md` — template, and the rules governing what the roll, the comparison and the ledgers may claim |
 
 ## Planning artifact to guide map
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -18,6 +18,8 @@ evidence of what the entry handed over.
 
 ### record-cheaply
 
-Every technique here reads the stub, the variable bag and the clock. The run exists to
-exercise the entry, so work that costs more than the entry it demonstrates has changed what
-is being measured.
+A technique on an entry path reads the stub, the variable bag and the clock, and reaches no
+further. The run exists to exercise the entry, so a record assembled from anything the entry did
+not hand over is evidence about the lookup rather than about the entry, and work that costs more
+than the entry it demonstrates has changed what is being measured. The convergence is not on an
+entry path: it reads the session record, which is the product it exists to write.

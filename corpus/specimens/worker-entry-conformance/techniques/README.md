@@ -25,5 +25,6 @@ clock and writes one record. Four activities bind it and each passes the entry k
 position names, so the same capability serves a cold dispatch, a continuation and a branch.
 
 [`report-entries`](./report-entries.md) is bound once, at the convergence. It reads the
-containers whole and writes the document the run leaves behind, including the one comparison
-no branch could make for itself: whether the two branches held distinct identities.
+containers whole and writes the document the run leaves behind: the entry roll, the one comparison
+no branch could make for itself, and the ledgers counting what the session record holds against
+what the graph requires.

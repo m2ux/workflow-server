@@ -1,34 +1,31 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-Write the one document the run leaves behind: every entry the walk took, and whether the two
-branches held identities of their own.
+Write the one document the run leaves behind: every entry the walk took, whether the branches
+held identities of their own, and what the session record holds against what the graph requires.
 
 ## Inputs
 
 ### cold_entry
 
-The record Record Entry wrote.
+A record of one entry: its kind, the identity it was carried under, the activity, and the instant
+it was made.
 
 ### batch_entry
 
-The record Carry Batch wrote.
+A record of one entry, in the same shape as `{cold_entry}`.
 
 ### note_left_outputs
 
-The container Note Left filled, one slot per branch the destination named it for.
+A container of records, one slot per branch the destination opened.
 
 ### note_right_outputs
 
-The container Note Right filled.
-
-### session_index
-
-The session this run walked, whose record the ledgers are read from.
+A container of records, in the same shape as `{note_left_outputs}`.
 
 ### planning_folder_path
 
@@ -36,68 +33,72 @@ Absolute path of the session's planning folder, which the report is written into
 
 ## Outputs
 
-### report_path
+### entry_report
 
-Absolute path of the document this technique wrote.
+The document this run leaves behind: the entry roll, the identity comparison, and the ledgers.
+
+#### artifact
+
+`worker-entry-report.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 
 ### 1. Entry Roll
 
-- Read the two records and the two containers whole, and lay out one row each: entry kind,
-  activity, identity, instant.
+- Read `{cold_entry}`, `{batch_entry}`, `{note_left_outputs}` and `{note_right_outputs}` whole, and
+  lay out one row each: entry kind, activity, identity, instant.
   > Read a container rather than naming a slot. Which record came from which branch is carried
   > by the container that branch filled.
 
-### 2. Identity Ledger
+### 2. Identity Comparison
 
 - State whether the two branch containers carry distinct `agent_id` values, and whether the
   identity on `{cold_entry}` and the identity on `{batch_entry}` match.
   > Two branches sharing an identity, or a continuation arriving under a fresh one, are each
   > a finding about the entry rather than about the activity that recorded it.
-- Call `inspect_session { session_index, view: "identity" }` and count the identities the session
-  minted against the three this graph requires: one for the cold dispatch, which the continuation
-  reuses, and one per branch. State any surplus.
+
+### 3. Identity Ledger
+
+- Call `inspect_session { session_index, view: "usage" }`, reading `session_index` from the stub
+  this context was opened with. Count the distinct `agentId` values across its rows against the
+  three this graph requires: one for the cold dispatch, which the continuation reuses, and one per
+  branch.
   > A fourth identity is a continuation that opened a replacement worker instead of continuing the
   > one it held. Both shapes reach the same activity, and only the count tells them apart.
 
-### 3. Completion Ledger
+### 4. Completion Ledger
 
-- Call `inspect_session { session_index, view: "activities" }` and lay out, for every activity
-  the graph declares, how many times it completed. State any count that is not one.
-  > An activity carried and never completed, or completed under a name that never ran, is what a
-  > pointer that moved on the wrong value leaves behind. Neither shows up as a failed call.
+- Call `inspect_session { session_index, view: "history" }` and count the `activity_exited` events
+  per activity.
+  > The `activities` view reports `completed`, which is a de-duplicated set: an activity exited
+  > twice appears there once. The history keeps both events, so it is the only reading that can
+  > tell a double exit from a single one.
 
-### 4. Advance Ledger
+### 5. Advance Ledger
 
-- Call `get_trace { session_index }` and count the advances it holds against the advances this
+- Call `get_trace { session_index }` and count its `next_activity` spans against the advances this
   graph requires: one per activity entered, one per branch retired, one onto `__terminal__`.
-  State any surplus or shortfall.
-  > A token appended twice and a token never appended both read as a successful walk. Only the
-  > count separates them.
-
-### 5. Usage Ledger
-
-- Call `inspect_session { session_index, view: "usage" }` and lay out one row per activity: whether
-  a usage entry was recorded for it, and which identity it was attributed to. State any activity
-  with no entry, and any entry attributed to no identity or to an identity that did not carry it.
-  > A usage call made without the identity that carried the activity records an unattributed
-  > bucket, which the server accepts. Nothing refuses it and nothing else reads it back.
+  > The trace is the server's in-memory record of this session, which holds no event from before a
+  > server restart, and none at all where tracing is off. Skip the count when it holds no events,
+  > rather than reading an empty trace as every advance missing.
 
 ### 6. Delivery Ledger
 
-- Lay out the technique ids this context was served against the ids its activity's steps bind,
-  and the ids those techniques name for work inside their own Protocol. State any id that was
-  applied and not served.
+- Lay out the technique ids this context's activity binds as steps against the ids it was served,
+  and name any that was bound and not served.
   > A technique that never arrived is improvised past rather than refused, so a walk that
-  > succeeded is not evidence that its contract was delivered.
+  > succeeded is not evidence that its contract was delivered. This reading is this context's own:
+  > what the four entry activities were served is not visible from here.
 
 ### 7. Written Report
 
-- Write the roll and every ledger to
-  `{planning_folder_path}/worker-entry-report.md`, following the
-  [entry report](/worker-entry-conformance/resources/entry-report.md) shape, and return that path
-  as `{report_path}`.
+- Write the roll, the comparison and the four ledgers as `{entry_report}` into
+  `{planning_folder_path}`, following the
+  [Template](/worker-entry-conformance/resources/entry-report.md#template).
 
 ## Rules
 
@@ -105,3 +106,10 @@ Absolute path of the document this technique wrote.
 
 This technique names no slot of a fanned container. A fan's width is a run-time value, so an
 authored index is a claim about a run rather than about the workflow.
+
+### read-the-record-for-what-the-record-holds
+
+Each ledger names the view or the event its count comes from, because the readings differ in what
+they can show: a de-duplicated set cannot report a repeat, a scalar cannot report a roster, and an
+empty trace is not the same fact as a missing advance. A ledger read from the wrong surface
+reports clean on a run that failed.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -32,10 +32,3 @@ this activity is carrying under, and `recorded_at` is an ISO 8601 instant.
   > evidence of is which identity this context was handed, and a lookup would report the
   > identity the server holds instead.
 
-## Rules
-
-### record-only-what-the-entry-handed-you
-
-This technique reads the stub and the clock, and reaches no further. The run exists to
-exercise the entry, so a record assembled from anything the entry did not hand over is
-evidence about the lookup rather than about the entry.
