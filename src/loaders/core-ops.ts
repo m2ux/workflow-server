@@ -100,8 +100,11 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // able to fetch it by id. A worker that cannot read its own role reads none of the rules it owes.
   'workflow-engine::activity-worker',
   // Step execution surface. The checkpoint pair is in WORKER_CHECKPOINT_TECHNIQUES, added by
-  // `get_activity` where the activity holds a gate.
-  'workflow-engine::finalize-activity',
+  // `get_activity` where the activity holds a gate. `finalize-activity` is absent: a worker returns
+  // `steps_complete` and the exit reading that folds it into an envelope belongs to the
+  // `finish-activity` routine, on the side that holds the graph. An activity binding it as a step
+  // takes it through step bundling.
+  //
   // The language every step is read in: what a gate expression means, and how many times a loop
   // body runs. A worker evaluates both — the server evaluates no gate — so the semantics ride with
   // the role that applies them. `loop-control` is in LOOP_ONLY_RULES, held back from a run whose
