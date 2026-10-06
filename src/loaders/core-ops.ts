@@ -64,8 +64,11 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // through the map, which stays the single authoritative table.
   'harness-compat::resolve-harness-operation',
   'harness-compat::claude-code',
-  // Every activity boundary.
+  // Every activity boundary. `account-worker` owns the usage entry every closing activity
+  // writes, and the fan techniques cite its rule from a delivery that carries none of the
+  // entry routines, so the roster is the only path that reaches them.
   'workflow-engine::evaluate-transition',
+  'workflow-engine::account-worker',
   // The Progress Status writer dispatch-activity names (#324 B2).
   'workflow-engine::sync-progress-status',
   // State persistence: the worktree, regular-file and submodule commit protocols. The sequence that

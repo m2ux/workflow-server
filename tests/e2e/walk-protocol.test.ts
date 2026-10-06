@@ -63,10 +63,14 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
       expect(declared, rel).toContain('_meta.trace_token');
     }
     const loop = parseYaml(readCorpus('corpus/meta/routines/activity-loop.yaml')) as { steps: YamlStep[] };
+    // Each entry's token is appended by a step of its own, gated on the token that entry
+    // returned, so an entry that advanced nothing appends nothing.
     const appending = loop.steps.flatMap((step) => step.steps ?? []).filter((step) =>
-      step.actions?.some((action) => action.target === 'trace_tokens' && action.value === '{advance_trace_tokens}'));
+      step.actions?.some((action) => action.target === 'trace_tokens'
+        && action.value === '[{trace_tokens}, {advance_trace_tokens}]'));
     const ids = appending.map((step) => step.id);
-    expect(ids).toEqual(expect.arrayContaining(['enter-activity', 'enter-fan', 'resume-entered-activity']));
+    expect(ids).toEqual(expect.arrayContaining(['append-entry-tokens', 'append-fan-tokens', 'append-resume-tokens']));
+    for (const step of appending) expect(step.when, step.id).toBe('advance_trace_tokens');
   });
 
   it('each option states what choosing it means', () => {
