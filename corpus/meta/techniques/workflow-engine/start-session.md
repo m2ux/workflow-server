@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.17.0
+  version: 1.19.0
 ---
 
 ## Capability
@@ -63,6 +63,10 @@ Bound target repository as `owner/repo`, echoing the durable session binding.
 
 Slug the session is keyed on — minted transitionally when no planning folder was supplied.
 
+### initial_activity
+
+First activity id of the session this call opened, which its first advance names. Absent when the call yields an opening decision.
+
 ### client_session_index
 
 6-character base32 index of the embedded client session. Absent when the call yields an opening decision or opens meta alone.
@@ -92,15 +96,20 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
   > - When `{repo}` is passed with `{working_directory}`, it equals that origin.
   > - Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.
   > - When the response has `{opening_decision}` and no `{session_index}`, capture `{opening_decision}`, `{opening_candidates}`, and `{opening_recommendation}`. Retry with the pin `{opening_recommendation}` names.
-  > - When the response has `{client_session_index}`, capture `{client_session_index}` and `{client_initial_activity}`, and take the client's bundle as the bootstrap protocol's client-open path states: its techniques make the first advance. Remaining steps of this technique do not apply.
+  > - When the response has `{client_session_index}`, capture `{client_session_index}` and `{client_initial_activity}`. The meta walk drives that client session; this context does not advance it here.
 
 ### 2. Save Session Bindings
 
 - Save `{session_index}` and `{planning_folder_path}` from the response. Record `{repo}` as bag `{target_repo}` (the echoed binding). Do not compose or reconcile the planning path yourself.
+- Read `{initial_activity}` as the activity this session's first advance names.
+  > The response also reports what the session already stands on, and its lifecycle state. A
+  > resume stands where its last walk left it and makes no opening advance; a session reported
+  > `completed` has already ended its walk and takes no further advance at all.
 
 ### 3. Take Techniques Bundle
 
 - Call `get_workflow { session_index }` and follow the returned techniques bundle. After summarization, re-fetch with the escapes in force-full-after-summarization.
+  > A context whose activity already carries the orchestrator contract has it from the activity, and fetches this bundle only to re-establish it after summarization.
 
 ## Rules
 

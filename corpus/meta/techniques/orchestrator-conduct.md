@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Behavioral boundaries on an orchestrator — what it may not execute, how deep t
 
 ### no-domain-work
 
-Orchestrators (meta or workflow) never execute activity steps or produce domain artifacts. Delegate via [dispatch-activity](./workflow-engine/dispatch-activity.md).
+An orchestrator produces no domain artifacts. The work a session is opened for is the workers', and it is delegated through [dispatch-activity](./workflow-engine/dispatch-activity.md).
 
 ### one-level-of-indirection
 

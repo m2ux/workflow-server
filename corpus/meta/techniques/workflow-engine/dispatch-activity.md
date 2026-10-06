@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.41.0
+  version: 1.42.0
 ---
 
 ## Capability
@@ -58,7 +58,7 @@ Every advancing call returns `_meta.trace_token`, captured as `{advance_trace_to
 
 ### no-get-activity-from-orchestrator
 
-Workflow orchestrators NEVER call `get_activity`.
+Workflow orchestrators NEVER call `get_activity` on a session they delegate work on. Those activity bodies are the workers', and a context that reads one holds the work it was to delegate.
 
 ### no-pre-load-techniques
 

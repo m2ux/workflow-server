@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.6.0
+  version: 2.7.0
 ---
 
 ## Capability
@@ -30,8 +30,8 @@ Orchestrator agent identity for this session.
 
 ### 3. Walk to Completion
 
-- Take one activity at a time under the `activity-loop` run, whose steps decide every branch of a turn — which technique enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this technique; no route hands over the file that declares it, and reading one to execute from is outside this role (`orchestrator-conduct.no-domain-work`)
-  > - Every entry is a worker dispatch — never execute steps inline (`orchestrator-conduct.no-inline-on-resume`, `orchestrator-conduct.no-domain-work`).
+- Take one activity at a time under the `activity-loop` run, whose steps decide every branch of a turn — which technique enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this technique; no route hands over the file that declares it, and reading a delegated activity's body to execute from is `dispatch-activity.no-get-activity-from-orchestrator`
+  > - Every entry is a worker dispatch — never execute a delegated activity's steps inline (`orchestrator-conduct.no-inline-on-resume`).
   > - Where a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable.
 
 ## Rules

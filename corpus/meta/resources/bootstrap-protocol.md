@@ -7,41 +7,58 @@ description: The mandatory session-bootstrap sequence executed by every agent at
 
 IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
-1. Call `start_session { workflow_id: "meta", agent_id: "orchestrator", working_directory, user_request }`.
-   `working_directory` is the absolute path of the checkout under work. The server derives
-   `owner/repo` from that checkout's origin remote. `repo` is optional and must equal the derived
-   origin when present. Origin binds even when the checkout folder is named for a branch.
+1. **Open the session.**
 
-   When the response names a `decision` and has no `session_index`, present the `recommendation`
-   and `candidates` and wait for the user. Retry the same call after they settle it:
+   Call `start_session { workflow_id: "meta", agent_id: "orchestrator", working_directory, user_request }`.
+   > - `working_directory` is the absolute path of the checkout under work.
+   > - The server derives `owner/repo` from that checkout's origin remote.
+   > - `repo` is optional and must equal the derived origin when present.
+   > - Origin binds even when the checkout folder is named for a branch.
 
-   - `unbound-repo`: pass `repo` as `owner/repo`.
-   - `binding-mismatch`: pass `repo` matching the checkout, or a different `working_directory`.
-   - `component-choice`: name a component in the request or pass that component's `working_directory`.
-   - `unmapped-root`: pass a `working_directory` under a checkout this server serves.
-   - `workflow-selection`: pass `target_workflow_id` set to the chosen catalog id, or `user_request`.
-   - `resume-session`: pass `planning_folder` for the chosen saved session, or `fresh: true` to open
-     a new client.
+2. **Settle any opening decision**, where the response names a `decision` and has no `session_index`.
 
-   When the response includes `client.session_index`, the client workflow is already open. Keep the
-   returned `session_index` as the meta index. Call `get_workflow { session_index: client.session_index }`
-   and read the bundle it returns: from here on its techniques govern, and the first `next_activity`
-   they make enters `client.workflow.initialActivity`. Do not call `get_workflow` or `next_activity` on
-   the meta session for this opening. The remaining steps of this protocol do not apply on that path.
+   Present the `recommendation` and `candidates`, wait for the user, then retry the same call with
+   what they chose.
+   > - `unbound-repo`: pass `repo` as `owner/repo`.
+   > - `binding-mismatch`: pass `repo` matching the checkout, or a different `working_directory`.
+   > - `component-choice`: name a component in the request, or pass that component's `working_directory`.
+   > - `unmapped-root`: pass a `working_directory` under a checkout this server serves.
+   > - `workflow-selection`: pass `target_workflow_id` set to the chosen catalog id, or `user_request`.
+   > - `resume-session`: pass `planning_folder` for the chosen saved session, or `fresh: true` for a new client.
 
-2. Keep two values from a session response: the `session_index` it returns, a 6-character base32
-   string, and the `repo` binding it echoes. Later text calls them `meta_session_index` and
-   `target_repo`.
+3. **Keep what the response returns.**
 
-3. Call `get_workflow { session_index }`. The response is the workflow's resolved techniques bundle,
-   then a `\n\n---\n\n` separator, then the workflow's metadata and activity roster.
+   Hold its `session_index`, a 6-character base32 string; its `workflow.initialActivity`, the
+   activity this session opens on; its `current`, the activity already in flight; and its `status`.
+   > - Every call below takes the `session_index`.
+   > - A fresh open also returns `planning_folder_path`, and `client`, the client session it opened
+   >   alongside this one. A resume returns no `client`.
+   > - Where two session indices are in hand, the one this call returned is this session's.
 
-   Read the bundle. From here on the techniques and rules it carries govern, and this bootstrap text
-   stops applying. It names an `initialActivity`: that id is the argument to your first
-   `next_activity` call, which is where the workflow itself takes over.
+4. **Stop**, where `status` came back `completed`.
 
-   Two of its rules bind from your very next call:
+   Tell the user this session's walk has already ended, and ask whether to open a fresh one.
+   > A finished session leaves `current` empty for the same reason a new one does. Advancing it
+   > restarts a walk that is already done, over client work that is already delivered.
 
-   - Pass `session_index` on every authenticated tool call from now on.
-   - Every worker you spawn must be awaited before your next step — no fire-and-forget. On Cursor that
-     means setting `run_in_background=false` explicitly and waiting for the worker's envelope.
+5. **Settle an open checkpoint**, where the response names one.
+
+   Call `present_checkpoint { session_index }` for its question and options, put those to the user,
+   and call `respond_checkpoint { session_index, option_id }` with the option they chose.
+   > - Pass `reply` alongside `option_id` where that option asks for text.
+   > - An open gate refuses every other call, so nothing below runs until it is answered.
+
+6. **Make the opening advance**, where `current` came back empty.
+
+   Call `next_activity { session_index, activity_id }`, naming the `initialActivity` from step 3.
+   > A `current` that already names an activity is a resumed session standing where its last walk
+   > left it. It makes no advance.
+
+7. **Take the activity this session stands on.**
+
+   Call `get_activity { session_index, context_tokens }`.
+   > - `context_tokens` is your own context window in tokens.
+   > - Name no activity: the one in flight is what it serves.
+   > - That activity carries the run that walks the client session, the techniques its steps bind,
+   >   and the contract the orchestrator is held to. From here on it governs and this text stops
+   >   applying.

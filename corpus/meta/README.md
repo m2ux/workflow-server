@@ -1,6 +1,6 @@
 # Meta Workflow
 
-> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. `start_session` opens the client when the request uniquely matches a catalog workflow; walk that child. An agent that remains on meta drives the child through dispatch-client-workflow and closes the session. Provides the universal technique repository for all client workflows.
+> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. A fresh open whose request settles on one catalog workflow opens that client session alongside this one, and meta drives that child through dispatch-client-workflow and closes the session. Provides the universal technique repository for all client workflows.
 
 ---
 
@@ -11,7 +11,7 @@ The meta workflow is the structural home for the session's orchestration logic. 
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`. A unique catalog match returns `client.session_index`; walk that child. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the techniques bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`, then the meta session opens on the activity that walks the client it returned. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the techniques bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - The server writes session state and restores it on attach. [persist-activity](./routines/persist-activity.yaml) commits the session record with the planning folder after each activity and at close-out; on-disk shape: [`docs/state.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state.md).
 
@@ -33,8 +33,8 @@ The meta workflow is the structural home for the session's orchestration logic. 
 
 ```mermaid
 graph TD
-    startNode(["Bootstrap"]) -->|"start_session unique match → walk the child"| childNode(["Client workflow"])
-    startNode -->|"agent stays on meta"| DSP["03 dispatch-client-workflow"]
+    startNode(["Bootstrap"]) -->|"start_session opens the client"| DSP["03 dispatch-client-workflow"]
+    DSP -->|"walks"| childNode(["Client workflow"])
     DSP -->|"current_activity == null"| END["04 end-workflow"]
     END -.->|"return"| DSP
     END --> doneNode(["Session closed"])
@@ -82,7 +82,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`; unique match walks the child. Ongoing delivery policy is in the techniques bundle. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`, then the meta session opens on the activity that walks the client. Ongoing delivery policy is in the techniques bundle. |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
 | `planning-readme` | [Planning Folder README Guide](./resources/planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`. |
 | `resume-intent-lexicon` | [Resume Intent Lexicon](./resources/resume-intent-lexicon.md) | Continuation-phrase vocabulary `start_session` matches when deciding whether to scan saved sessions. |

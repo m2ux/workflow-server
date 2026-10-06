@@ -275,6 +275,39 @@ def check() -> list[str]:
     if persist < terminal or "persist-activity" not in close[persist:]:
         fail("terminal-commit", "the terminal advance does not commit the session's completed state")
 
+    # The bootstrap makes the opening advance, because nothing above the session it opens can.
+    # It takes the activity to name from the call that opened the session, so the id itself stays
+    # in the workflow that declares it rather than being copied into prose nothing can check.
+    meta = read("corpus/meta/workflow.yaml")
+    opening = re.search(r"^initialActivity:\s*(\S+)\s*$", meta, re.M)
+    bootstrap = read("corpus/meta/resources/bootstrap-protocol.md")
+    if opening is None:
+        fail("opening-activity", "meta declares no initialActivity")
+    elif re.search(rf"\b{re.escape(opening.group(1))}\b", bootstrap):
+        fail(
+            "opening-activity",
+            f"the bootstrap spells out the opening activity {opening.group(1)} rather than reading "
+            "it from the response that opened the session",
+        )
+    # The advance and the name it carries are one step, so neither can be dropped while the other
+    # keeps the check green: a mention of initialActivity anywhere else would otherwise stand in
+    # for the call that spends it.
+    advance = next(
+        (
+            block for block in re.split(r"\n(?=\d+\. )", bootstrap)
+            if "next_activity" in block
+        ),
+        None,
+    )
+    if advance is None:
+        fail("opening-activity", "the bootstrap makes no opening advance")
+    elif "activity_id" not in advance or "initialActivity" not in advance:
+        fail(
+            "opening-activity",
+            "the bootstrap's advance does not pass activity_id naming the initialActivity the open "
+            "reported",
+        )
+
     return problems
 
 

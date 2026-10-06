@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.11.0
+  version: 1.12.0
 ---
 
 ## Capability
@@ -60,6 +60,10 @@ The opaque trace tokens this entry accumulated, one per `next_activity` call tha
 ### advance-only-a-session-this-context-owns
 
 This advance moves the pointer of the session this context opened. Nothing else can be pointed at that session.
+
+### fetch-the-body-of-an-activity-carried-here
+
+A context carrying an activity itself delegates nothing, so it reads that body on the session it carries it for. `dispatch-activity.no-get-activity-from-orchestrator` forbids the fetch only where the work was to be handed to someone else.
 
 ### no-session-left-running
 
