@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-area-comprehension-conformance
-version: 1.3.0
+version: 1.4.0
 title: GitNexus Area Comprehension Conformance Workflow
 description: >-
   Hold the gitnexus area-comprehension run to three cases. The positive and negative cases read the
@@ -17,9 +17,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: host_repo_path
     type: string

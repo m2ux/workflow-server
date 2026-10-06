@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-api-surface-review-conformance
-version: 1.4.0
+version: 1.5.0
 title: GitNexus API Surface Review Conformance Workflow
 description: >-
   Hold the gitnexus api-surface-review run to two cases. The positive case names the host
@@ -15,9 +15,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: host_repo_path
     type: string

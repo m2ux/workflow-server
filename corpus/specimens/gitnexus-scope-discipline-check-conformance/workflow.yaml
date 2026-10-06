@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-scope-discipline-check-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Scope Discipline Check Conformance Workflow
 description: >-
   Hold the gitnexus scope-discipline-check run to two cases. The positive case takes the affected
@@ -16,9 +16,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string

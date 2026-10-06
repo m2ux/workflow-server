@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: requirements-refinement
-version: 2.2.0
+version: 2.3.0
 title: Requirements Refinement Workflow
 description: Refine a canonical requirements specification from a set of source documents — meeting transcripts and unstructured documents — preserving the specification protocol verbatim and staging the finalized specification and a change summary in the planning folder.
 author: m2ux
@@ -11,9 +11,6 @@ tags:
   - document-automation
   - validation
   - iterative-refinement
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: host_repo_path
     type: string

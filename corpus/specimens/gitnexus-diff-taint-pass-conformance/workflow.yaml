@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-diff-taint-pass-conformance
-version: 1.3.0
+version: 1.4.0
 title: GitNexus Diff Taint Pass Conformance Workflow
 description: >-
   Hold the gitnexus diff-taint-pass run to three cases. The positive case takes the changed-symbol
@@ -18,9 +18,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string

@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.9.0
+version: 1.10.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -12,9 +12,6 @@ tags:
   - design-principles
   - elicitation
   - conventions
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: planning_folder_path
     type: string

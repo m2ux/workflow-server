@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: worker-entry-conformance
-version: 1.4.0
+version: 1.5.0
 title: Worker Entry Conformance Workflow
 description: >-
   Walk every shape of worker entry the engine carries — a cold dispatch, a continuation inside
@@ -13,9 +13,6 @@ tags:
   - conformance
   - worker-entry
   - routines
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: planning_folder_path
     type: string

@@ -100,7 +100,7 @@ Workflow-specific techniques live under `techniques/`. Some are **technique grou
 | `orchestrate-package-execution::initialize-iteration` | Group op | Build the remaining-packages list and progress indicator | Implementation |
 | `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow | Implementation (loop) |
 | `orchestrate-package-execution::record-package-progress` | Group op | Record a completed package in the roadmap status table and advance the remaining/completed sets | Implementation (loop) |
-| `variable-binding` | Meta | Bind step techniques to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
+| `variable-binding` | Meta | Bind step techniques to the workflow variable bag | Rides every activity's delivery as part of the worker contract |
 | `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
 
 ## Resources

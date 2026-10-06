@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: namespace-conformance
-version: 1.0.0
+version: 1.1.0
 title: Namespace Conformance Workflow
 description: >-
   Bind one operation of a library that declares no workflow of its own, under both spellings that
@@ -13,9 +13,6 @@ tags:
   - conformance
   - reference
   - library
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: component_path
     type: string

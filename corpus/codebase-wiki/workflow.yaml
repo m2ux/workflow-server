@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: codebase-wiki
-version: 1.1.0
+version: 1.2.0
 title: Codebase Wiki Workflow
 description: Build and maintain a durable, citation-backed, navigable LLM knowledge base over a codebase, in the Karpathy LLM-wiki format adapted for code. Its operations are reusable techniques other workflows bind via codebase-wiki/<op> to create, augment, query, or update the wiki.
 author: m2ux
@@ -13,9 +13,6 @@ tags:
   - code-comprehension
 rules:
   activity: []
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: wiki_path
     type: string

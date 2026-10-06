@@ -6,7 +6,7 @@ The technique library for the fan conformance run. Each technique is one capabil
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds the shared input every technique here reads and the rule every technique that runs in a branch obeys — that it records its own start and finish instants, in its own output, because a branch cannot see its siblings and the activity they converge on is where those intervals are compared.
 
-The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity`, not bound per step.
+The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) rides every activity's delivery as part of the worker contract, and is not declared or bound per step.
 
 ---
 

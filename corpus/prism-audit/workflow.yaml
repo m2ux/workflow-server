@@ -1,5 +1,5 @@
 id: prism-audit
-version: 3.0.0
+version: 3.1.0
 title: Security Audit Workflow
 description: Orchestrate security audits by generating tailored audit prompts from user descriptions and triggering prism workflow(s) for analysis. Audit-specific customisation is isolated here, keeping the prism workflow generic.
 author: m2ux
@@ -10,9 +10,6 @@ tags:
   - codebase-analysis
   - vulnerability-assessment
   - report-generation
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: audit_description
     type: string

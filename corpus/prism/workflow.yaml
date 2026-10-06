@@ -1,5 +1,5 @@
 id: prism
-version: 3.2.0
+version: 3.3.0
 title: Structural Analysis Prism Workflow
 description: Apply cognitive lenses to code or text through isolated sub-agent passes, each running in a fresh context window so the passes stay analytically independent.
 author: m2ux
@@ -17,9 +17,6 @@ rules:
     - "LENS HANDOFF: The orchestrator tells the worker which lens resource index to load; it does NOT load or forward the lens prompt itself."
   activity:
     - "LENS LOADING: Load the lens prompt for your pass from the prism workflow resources, using the resource index the orchestrator provides."
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: target
     type: string

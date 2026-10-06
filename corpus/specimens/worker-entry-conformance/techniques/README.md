@@ -11,7 +11,7 @@ points to those authoritative sources.
 activity evidences the entry it arrived on and reaches no further.
 
 The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md)
-is declared at `workflow.techniques.activity`, not bound per step.
+rides every activity's delivery as part of the worker contract, and is not declared or bound here.
 
 ---
 
