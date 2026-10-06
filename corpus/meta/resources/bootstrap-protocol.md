@@ -23,25 +23,17 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
    - `resume-session`: pass `planning_folder` for the chosen saved session, or `fresh: true` to open
      a new client.
 
-   When the response includes `client.session_index`, the client workflow is already open. Keep the
-   returned `session_index` as the meta index. Call `get_workflow { session_index: client.session_index }`
-   and read the bundle it returns: from here on its techniques govern, and the first `next_activity`
-   they make enters `client.workflow.initialActivity`. Do not call `get_workflow` or `next_activity` on
-   the meta session for this opening. The remaining steps of this protocol do not apply on that path.
+2. Keep the `session_index` the response returns, a 6-character base32 string, and the `repo` it
+   echoes. Later text calls them `meta_session_index` and `target_repo`. Pass `session_index` on
+   every authenticated tool call from here on.
 
-2. Keep two values from a session response: the `session_index` it returns, a 6-character base32
-   string, and the `repo` binding it echoes. Later text calls them `meta_session_index` and
-   `target_repo`.
+3. Call `inspect_session { session_index, view: "activities" }` and read `current`. Where it is
+   empty, call `next_activity { session_index, activity_id: "dispatch-client-workflow" }`. Where it
+   names an activity, this session stands on that activity already and makes no advance.
 
-3. Call `get_workflow { session_index }`. The response is the workflow's resolved techniques bundle,
-   then a `\n\n---\n\n` separator, then the workflow's metadata and activity roster.
+4. Call `get_activity { session_index, activity_id: "dispatch-client-workflow", context_tokens }`.
+   That activity carries the run that walks the client session, the techniques its steps bind, and
+   the contract they inherit. From here on it governs and this text stops applying.
 
-   Read the bundle. From here on the techniques and rules it carries govern, and this bootstrap text
-   stops applying. It names an `initialActivity`: that id is the argument to your first
-   `next_activity` call, which is where the workflow itself takes over.
-
-   Two of its rules bind from your very next call:
-
-   - Pass `session_index` on every authenticated tool call from now on.
-   - Every worker you spawn must be awaited before your next step — no fire-and-forget. On Cursor that
-     means setting `run_in_background=false` explicitly and waiting for the worker's envelope.
+   Every worker it spawns is awaited before the next step — no fire-and-forget. On Cursor that means
+   setting `run_in_background=false` explicitly and waiting for the worker's envelope.
