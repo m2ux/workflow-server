@@ -189,8 +189,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'start_session',
     {
       description:
-        'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
-        '`workflow.initialActivity` is the activity the first `next_activity` on this session should name, which a caller that will drive the session itself has no other way to know; `current` is what the session already stands on — empty on a fresh open, and whatever an earlier walk left in flight on a resume, so the opening advance is owed where it is empty. ' +
+        'Start or resume the top-level workflow session. Returns the session\'s `session_index`, `status`, `current` and `workflow` metadata, its canonical `planning_folder_path`, and the bindings the open derived. The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
+        '`workflow.initialActivity` is the activity the first `next_activity` on this session should name, and `current` is what it already stands on — empty on a fresh open, and whatever an earlier walk left in flight on a resume, so the opening advance is owed where it is empty. `get_workflow` reports the same opening activity alongside the orchestrator technique bundle; both are reported here so a caller that only needs to open the session does not fetch that bundle to learn one id. ' +
+        '`status` is `completed` for a session whose walk has ended: it takes no further advance, and a resume that lands on one has reopened a finished session rather than continuing work. ' +
         'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
         'Pass `planning_folder` as an absolute path to resume the session that folder holds, or to pin a new folder, named by its basename, directly under the session\'s planning root; a new folder anywhere else is refused, naming that root. ' +
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
@@ -617,6 +618,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // What the session already stands on: empty on a fresh open, and whatever an earlier walk
         // left in flight on a resume. The opening advance is owed where this is empty.
         current: state.frontier,
+        // A resume can land on a session whose walk has ended. Its frontier is empty for the same
+        // reason a fresh session's is, so the opening is told them apart by this and not by that.
+        status: state.status,
         planning_slug: slug,
         resumed: resumedSession,
       };
@@ -653,7 +657,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'dispatch_child',
     {
       description:
-        'Dispatch a child workflow under the parent session. Returns the child `session_index`, canonical `planning_folder_path`, and `workflow.initialActivity` — the activity its first `next_activity` should name, which the parent otherwise has no way to know. `get_workflow` remains where a session reads its OWN workflow metadata; this reports the CHILD\'s, so a parent need not load a workflow bundle it will not execute. Naming an activity the workflow does not declare fails that call; naming a declared one out of order is recorded with a warning, so the id is worth getting right here rather than relying on the transition check. '
+        'Dispatch a child workflow under the parent session. Returns the child `session_index`, canonical `planning_folder_path`, and `workflow.initialActivity` — the activity its first `next_activity` should name, which the parent otherwise has no way to know. A session reads its OWN workflow metadata from `start_session` or `get_workflow`; this reports the CHILD\'s, so a parent need not load a workflow bundle it will not execute. Naming an activity the workflow does not declare fails that call; naming a declared one out of order is recorded with a warning, so the id is worth getting right here rather than relying on the transition check. '
         + 'From a TRANSIENT parent, promoting onto a planning folder that already holds a session is refused as FOLDER_OCCUPIED; both session files are left untouched. A persistent parent appends a second child. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
 'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
