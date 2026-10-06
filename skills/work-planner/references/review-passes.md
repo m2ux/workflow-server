@@ -10,13 +10,15 @@ Tests the drafts against the [review criteria](review-criteria.md) for the issue
    Take the goal the user stated and confirmed in the interview, as clauses, each an outcome someone could observe.
 2. **Trace.**
    Build a trace table: goal clause, the initiative criteria that make it true, the epics whose Description cells cite those criteria, and the epic criteria that deliver them. Each gap is one the [trace](review-criteria.md#trace) criteria name. Remove a criterion that traces to no clause, or put it to the user. [Check Format](commands.md#check-format) finds an epic criterion no task row delivers.
-3. **Criteria.**
+3. **Align.**
+   Read each source the initiative's References mark, and extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a finding the [sources](review-criteria.md#sources) criteria name.
+4. **Criteria.**
    Check each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) and the Acceptance Criteria for the issue's kind.
-4. **Friction.**
+5. **Friction.**
    Read each Problem and Proposal against the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal), and record each finding the Problem criteria for the issue's kind name. [Check Format](commands.md#check-format) reports each excluded name.
-5. **Outside threats.**
+6. **Outside threats.**
    Look past the clauses for what the [outside threats](review-criteria.md#outside-threats) name.
-6. **Rank.**
+7. **Rank.**
    - Rank the gaps, and flag the few that most threaten the goal.
    - Record the trace table in the planning record, or give it to the user when the change has none.
 
@@ -54,6 +56,8 @@ Each pass reads its inputs first.
 
 1. **Issues.**  Fetch each issue the pass reads, with [Fetch Issue](commands.md#fetch-issue) and [Fetch Body](commands.md#fetch-body).
 2. **Drafts.**  The goal pass that gates creation reads the local drafts.
+3. **Sources.**
+   Fetch each source the initiative's References mark, with [Fetch Source](commands.md#fetch-source). An epic's fetch takes its initiative's.
 
 ## Report
 

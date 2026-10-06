@@ -45,6 +45,15 @@ An initiative states the goal as criteria and lists the epics that deliver them.
 - An initiative criterion no epic delivers, or that its epics' criteria only partly make true, is a gap.
 - A criterion that traces to no clause is scope the user did not ask for.
 
+#### Sources
+
+A marked source in References is a document the initiative's criteria answer to. The criteria are aligned with it in both directions.
+
+- A criterion that misstates or contradicts a marked source fails the [Correct](requirement-characteristics.md#individual) characteristic.
+- A requirement a marked source states that no criterion makes true, and no Non-Goal excludes, is a gap.
+- An epic is aligned against its initiative's marked sources, through the initiative criteria its row covers.
+- A marked source that cannot be read is a finding. Its criteria are unaligned until it is read.
+
 #### Work Breakdown
 
 - An epic row's Description is the epic's title name, and its Coverage names the initiative criteria the epic serves.
@@ -79,6 +88,7 @@ An initiative criterion states what the initiative achieves as a whole. One that
 #### References
 
 - A cross-initiative overlap is recorded in References. An approved edit to another initiative's issue stays minimal.
+- A reference the criteria answer to carries **Source.** after its label: `- **R1.** **Source.** [Title](url) — what it binds`. An unmarked reference is background, and binds no criterion. What a marked one requires of the criteria is the [Sources](#sources) criteria.
 
 #### Outside threats
 
