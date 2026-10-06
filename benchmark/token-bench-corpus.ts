@@ -2,10 +2,7 @@ import { cpSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import {
-  CORE_ORCHESTRATOR_TECHNIQUES,
   CORE_WORKER_TECHNIQUES,
-  FAN_DISPATCH_TECHNIQUES,
-  ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
   WORKER_CHECKPOINT_TECHNIQUES,
 } from '../src/loaders/core-ops.js';
 
@@ -37,11 +34,8 @@ import {
 /** Every technique ref a delivery of this fixture can name, including the reachable-only sets. */
 function contractRefs(): string[] {
   return [...new Set([
-    ...CORE_ORCHESTRATOR_TECHNIQUES,
     ...CORE_WORKER_TECHNIQUES,
-    ...ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
     ...WORKER_CHECKPOINT_TECHNIQUES,
-    ...FAN_DISPATCH_TECHNIQUES,
   ])].sort();
 }
 
