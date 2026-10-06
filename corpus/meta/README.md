@@ -1,6 +1,6 @@
 # Meta Workflow
 
-> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. `start_session` opens the client session alongside this one, and meta drives that child through dispatch-client-workflow and closes the session. Provides the universal technique repository for all client workflows.
+> Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. A fresh open whose request settles on one catalog workflow opens that client session alongside this one, and meta drives that child through dispatch-client-workflow and closes the session. Provides the universal technique repository for all client workflows.
 
 ---
 

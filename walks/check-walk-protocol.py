@@ -281,14 +281,30 @@ def check() -> list[str]:
     bootstrap = read("corpus/meta/resources/bootstrap-protocol.md")
     if opening is None:
         fail("opening-activity", "meta declares no initialActivity")
-    elif opening.group(1) in bootstrap:
+    elif re.search(rf"\b{re.escape(opening.group(1))}\b", bootstrap):
         fail(
             "opening-activity",
             f"the bootstrap spells out the opening activity {opening.group(1)} rather than reading "
             "it from the response that opened the session",
         )
-    if "initialActivity" not in bootstrap:
-        fail("opening-activity", "the bootstrap does not read the opening activity from the open")
+    # The advance and the name it carries are one step, so neither can be dropped while the other
+    # keeps the check green: a mention of initialActivity anywhere else would otherwise stand in
+    # for the call that spends it.
+    advance = next(
+        (
+            block for block in re.split(r"\n(?=\d+\. )", bootstrap)
+            if "next_activity" in block
+        ),
+        None,
+    )
+    if advance is None:
+        fail("opening-activity", "the bootstrap makes no opening advance")
+    elif "activity_id" not in advance or "initialActivity" not in advance:
+        fail(
+            "opening-activity",
+            "the bootstrap's advance does not pass activity_id naming the initialActivity the open "
+            "reported",
+        )
 
     return problems
 

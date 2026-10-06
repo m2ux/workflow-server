@@ -29,25 +29,36 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 3. **Keep what the response returns.**
 
    Hold its `session_index`, a 6-character base32 string; its `workflow.initialActivity`, the
-   activity this session opens on; and its `current`, the activities already in flight.
+   activity this session opens on; its `current`, the activity already in flight; and its `status`.
    > - Every call below takes the `session_index`.
    > - A fresh open also returns `planning_folder_path`, and `client`, the client session it opened
    >   alongside this one. A resume returns no `client`.
    > - Where two session indices are in hand, the one this call returned is this session's.
 
-4. **Make the opening advance**, where `current` came back empty.
+4. **Stop**, where `status` came back `completed`.
+
+   Tell the user this session's walk has already ended, and ask whether to open a fresh one.
+   > A finished session leaves `current` empty for the same reason a new one does. Advancing it
+   > restarts a walk that is already done, over client work that is already delivered.
+
+5. **Settle an open checkpoint**, where the response names one.
+
+   Call `present_checkpoint { session_index }` for its question and options, put those to the user,
+   and call `respond_checkpoint { session_index, option_id }` with the option they chose.
+   > - Pass `reply` alongside `option_id` where that option asks for text.
+   > - An open gate refuses every other call, so nothing below runs until it is answered.
+
+6. **Make the opening advance**, where `current` came back empty.
 
    Call `next_activity { session_index, activity_id }`, naming the `initialActivity` from step 3.
    > A `current` that already names an activity is a resumed session standing where its last walk
    > left it. It makes no advance.
 
-5. **Take the activity this session stands on.**
+7. **Take the activity this session stands on.**
 
    Call `get_activity { session_index, context_tokens }`.
    > - `context_tokens` is your own context window in tokens.
    > - Name no activity: the one in flight is what it serves.
-   > - Where the call reports a checkpoint already open, present it to the user and answer it with
-   >   `respond_checkpoint`, then call again. An open gate refuses every other call.
    > - That activity carries the run that walks the client session, the techniques its steps bind,
    >   and the contract the orchestrator is held to. From here on it governs and this text stops
    >   applying.
