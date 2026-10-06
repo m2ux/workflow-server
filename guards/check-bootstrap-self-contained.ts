@@ -64,7 +64,7 @@ const PRE_SESSION_RESOURCE = join('resources', 'bootstrap-protocol.md');
 export function preSessionResource(root: string, source: CorpusSource = root): string | null {
   return workflowSubdir(source, 'meta', PRE_SESSION_RESOURCE);
 }
-/** Prose the procedure cannot be shorter than and still be one. It runs to 56 lines today. */
+/** Prose the procedure cannot be shorter than and still be one. It runs to 41 lines today. */
 export const MIN_PROSE_LINES = 20;
 
 /** A run of dot-joined lowercase segments — `a.b`, `a.b.c`. Each adjacent pair is tested separately. */
@@ -151,7 +151,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const prose = lines.filter((line) => line.trim() !== '').length;
   // A floor rather than mere presence. An emptied file and a clean one look identical to a hard-zero
   // guard, and so does a file gutted to its heading — which is the shape a bad merge leaves. The
-  // procedure runs to 56 lines of prose; the floor sits well under that and far above a stub.
+  // procedure runs to 41 lines of prose; the floor sits well under that and far above a stub.
   assertScanned(
     prose >= MIN_PROSE_LINES ? prose : 0,
     `lines of pre-session prose (${resourceSite}, at least ${MIN_PROSE_LINES} expected)`,
