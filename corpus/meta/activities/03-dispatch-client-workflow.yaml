@@ -9,6 +9,7 @@ variables:
     - component_path
     - host_repo_path
     - planning_folder_path
+    - target_workflow_id
   writes:
     - name: client_workflow_completed
       type: boolean

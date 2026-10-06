@@ -37,8 +37,6 @@ inputs:
     description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
   - id: standing_activity
     description: The activity the session stands on, where an earlier walk left it. The walk opens on that activity and carries it without an advance. Unset, the walk opens on `initial_activity`.
-  - id: mark_progress_na
-    description: True when the completing activity is marked path-skip, cancel, or N/A rather than complete.
   - id: harness_kind
     description: The harness a spawn or continuation resolves.
   - id: harness_operation

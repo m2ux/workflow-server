@@ -12,6 +12,7 @@ inputs:
   - id: activity_id
     description: The activity whose completion this run records. A fan's convergence passes the list of branches it retired.
   - id: mark_progress_na
+    default: false
     description: True when the completing activity is marked path-skip / cancel / N/A rather than complete.
   - id: planning_folder_path
     description: Path to the session's planning folder, as the server returned it.

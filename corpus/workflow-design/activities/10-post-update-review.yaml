@@ -7,6 +7,7 @@ variables:
     - component_git_dir
     - host_repo_path
     - manifest_entries
+    - operation_type
     - planning_folder_path
     - pr_number
     - target_path
