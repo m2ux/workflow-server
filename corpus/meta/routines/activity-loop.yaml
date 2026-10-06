@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.8.0
+version: 1.9.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -283,7 +283,7 @@ steps:
         when: "!worker_agent_id && worker_result.next_activity_fans && !push_landed"
         actions:
           - action: message
-            message: "The push did not land. The error is surfaced and the walk does not advance."
+            message: "The push did not land."
           - action: set
             target: current_activity
             value: null
@@ -376,7 +376,7 @@ steps:
         when: worker_result.result_type == "activity_complete" && !push_landed
         actions:
           - action: message
-            message: "The push did not land. The error is surfaced and the walk does not advance."
+            message: "The push did not land."
           - action: set
             target: current_activity
             value: null

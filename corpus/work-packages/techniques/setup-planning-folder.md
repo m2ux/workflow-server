@@ -1,21 +1,21 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-The initiative's planning folder resolved from its slug, holding the `START-HERE.md` and `README.md` skeletons as placeholder structures that subsequent work populates. When `{planning_slug}` is unset, the slug is today's date plus `{initiative_name}`.
+The initiative's planning folder resolved from its slug, holding the `START-HERE.md` and `README.md` skeletons as placeholder structures that subsequent work populates.
 
 ## Inputs
 
 ### planning_slug
 
-*(optional)* The slug naming the initiative's planning folder (`YYYY-MM-DD-{initiative_name}`). When unset, this technique composes it from `{initiative_name}`.
+*(optional)* The slug naming the initiative's planning folder: the date, then the initiative name, in kebab case.
 
 ### initiative_name
 
-*(optional)* Kebab-case identifier for the work package: lowercase, alphanumerics and single hyphens. Read when `{planning_slug}` is unset.
+*(optional)* Kebab-case identifier for the work package: lowercase, alphanumerics and single hyphens.
 
 ## Outputs
 

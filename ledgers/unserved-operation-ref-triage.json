@@ -230,25 +230,25 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:47",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:50",
       "op": "variable-binding",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:49",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:52",
       "op": "yield-checkpoint",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:62",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:65",
       "op": "agent-conduct",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:62",
+      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:65",
       "op": "workflow-engine",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.13.0
+  version: 1.14.0
 ---
 
 ## Capability
@@ -79,9 +79,13 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 
 ## Rules
 
-### dispatch-mark-reaches-the-remote
+### a-mark-needs-the-tree
 
-A Progress mark is unreadable to anyone who does not hold the working tree it was written in, and the mark for a running activity exists for a reader watching from the remote. The commit that publishes the in-progress state is made while the activity is still in flight.
+A Progress mark is unreadable to anyone who does not hold the working tree it was written in.
+
+### the-in-progress-commit-is-in-flight
+
+The commit that publishes the in-progress state is made while the activity is still in flight.
 
 ### progress-rows-only
 

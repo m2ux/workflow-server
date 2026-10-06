@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -53,9 +53,6 @@ The opaque trace token the retiring `next_activity` call returned in `_meta.trac
   > A token not captured is absent from the trace close-out resolves.
 - A retirement that leaves branches in flight reports them at `outstanding`, each as the id that addresses it.
   > The one that empties the frontier is the one that enters the convergence activity, and only that one: it reports that activity's `name` and `barrier.met` true — see `the-barrier-is-a-reading`.
-
-### 4. Record Branch Usage
-
 - Record one usage entry for `{branch_activity}`: `record_usage { session_index, activity: branch_activity, usage, basis, agent_id: worker_agent_id }`. `usage` and `basis` are read from the harness, and the entry says what the figure counts.
   > - Where the graph runs one activity over a collection, the activity names that instance.
   > - When the harness reports no figure, omit the entry.
