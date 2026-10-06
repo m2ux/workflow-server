@@ -1,0 +1,23 @@
+id: note-left
+version: 1.0.0
+name: Note Left
+description: Record the entry one branch of the fan arrived on.
+required: true
+variables:
+  writes:
+    - name: left_entry
+      type: object
+      description: The entry this branch arrived on, the identity it was minted, and the instant it was recorded.
+steps:
+  - kind: routine
+    id: recording
+    routine: record-one-entry
+    with:
+      entry_kind: fan-branch
+    outputs:
+      entry_record: left_entry
+exits:
+  - id: noted
+    isDefault: true
+outcome:
+  - This branch's own entry and identity are recorded ({left_entry})

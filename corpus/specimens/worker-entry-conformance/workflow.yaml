@@ -1,0 +1,32 @@
+$schema: ../../../schemas/workflow.schema.json
+id: worker-entry-conformance
+version: 1.0.0
+title: Worker Entry Conformance Workflow
+description: >-
+  Walk every shape of worker entry the engine carries — a cold dispatch, a continuation inside
+  one worker's batch, a fan that opens two branches and converges, and the advance onto
+  `__terminal__` — and report which entry each activity arrived on. Each activity records only
+  what it was entered with, so the run's cost is the entry's cost rather than the work's.
+author: m2ux
+tags:
+  - specimen
+  - conformance
+  - worker-entry
+  - routines
+techniques:
+  activity:
+    - variable-binding
+initialActivity: record-entry
+graph:
+  record-entry:
+    recorded: carry-batch
+  carry-batch:
+    carried:
+      - note-left
+      - note-right
+  note-left:
+    noted: converge-entries
+  note-right:
+    noted: converge-entries
+  converge-entries:
+    converged: __terminal__
