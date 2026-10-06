@@ -11,6 +11,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 2. **Fetch.**
    Fetch the issues under review as [Fetch](review-passes.md#fetch) states: each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites.
    - An initiative's fetch includes every epic its table links, closed epics included, and its format check takes each with `--epic`.
+   - The fetch includes each source the initiative's References mark, for an epic as for the initiative.
    - A closed epic's own body is checked only when the epic is named.
 3. **Check.**
    Check each issue with [Check Format](commands.md#check-format): an epic with its initiative's JSON, an initiative with each of its epics', a proposal with neither. It reports three kinds of finding:
@@ -31,6 +32,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    Check every issue under review against each rule in this mode's Rules from Missing section through Several tasks, and decide the finding with the user. Draft the content the rule states.
 7. **Check criteria.**
    Check every acceptance criterion of the issues under review against [Requirement characteristics](requirement-characteristics.md), through the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the review is clear.
+   - Align them with the sources the initiative's References mark, as the [Sources](review-criteria.md#sources) criteria define, and report each departure and each gap. Draft the criterion a gap calls for, and decide it with the user as in Decide.
 8. **Check Dependencies.**
    - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in Decide. An initiative Depends on cell takes the epics it derives.
@@ -61,6 +63,10 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 - **Criteria check.**
   - The review is not clear while a criterion that fails [Requirement characteristics](requirement-characteristics.md) remains.
   - A finding from that check is not one the user keeps.
+- **Source alignment.**
+  - Apply the initiative [Sources](review-criteria.md#sources) criteria to every criterion of the issues under review.
+  - The review is not clear while a marked source stays unread. A source whose link is dead is repaired, or the mark is removed and the criteria it bound are decided with the user.
+  - A departure from a marked source is corrected in the criterion, unless the user records the departure as a Non-Goal.
 - **Missing section.**
   Draft a missing section from the issue and its epics.
 - **Non-Goals.**

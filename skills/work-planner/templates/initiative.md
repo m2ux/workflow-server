@@ -31,3 +31,4 @@
 ## References
 
 - **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there.}}
+- **R2.** **Source.** [{{Title}}]({{URL}}) — {{The requirements this initiative's criteria answer to, as the [Sources](../references/review-criteria.md#sources) criteria define.}}

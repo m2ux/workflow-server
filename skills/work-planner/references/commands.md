@@ -161,6 +161,16 @@ Closes an issue whose work another issue tracks.
 gh api --method PATCH repos/{owner}/{repo}/issues/874 -f state=closed -f state_reason=not_planned --jq .state
 ```
 
+## Sources
+
+### Fetch Source
+
+Saves a source an initiative's References mark, for the alignment the [Goal Pass](review-passes.md#goal-pass) runs. A path in the checkout is read where it sits. A blob permalink is read at the commit it pins, below. Any other URL is fetched with the harness's web fetch. A source that returns nothing is a finding the [Sources](review-criteria.md#sources) criteria name, and the review states it rather than passing over the criteria it binds.
+
+```bash
+gh api repos/{owner}/{repo}/contents/docs/spec.md?ref=4a217fe6 --jq .content | base64 -d > source-R1.md
+```
+
 ## Pull Requests
 
 ### Fetch Pull Request

@@ -45,6 +45,7 @@ Read the file for the mode the request calls for:
   - Checks of existing issues against the templates and against the rules that bind them
   - Fixes for each issue that departs from its template or from those rules
   - A check of every acceptance criterion against the verifiable rule
+  - An alignment of every acceptance criterion with the sources the initiative marks
   - A further task that adopts each criterion a merged pull request leaves unticked
   - A scan for an initiative criterion still unticked, or ticked early, against the epics that cite it
   - Repair of a work-breakdown cell that disagrees with its delivery
