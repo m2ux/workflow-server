@@ -230,18 +230,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:50",
-      "op": "variable-binding",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:52",
-      "op": "yield-checkpoint",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/activity-worker.md:65",
       "op": "agent-conduct",
       "verdict": "fix-later",
@@ -286,12 +274,6 @@
     {
       "site": "corpus/meta/techniques/workflow-engine/handle-sub-workflow.md:38",
       "op": "create-session",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/respond-checkpoint.md:40",
-      "op": "present-checkpoint-to-user",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },
