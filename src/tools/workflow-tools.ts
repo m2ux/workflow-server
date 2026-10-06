@@ -27,12 +27,9 @@ import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { resolveTechniques, formatTechniqueBundle, dropRulesStatedBy, composeActivityTechnique, projectTechniqueWire, putInheritContracts } from '../loaders/technique-loader.js';
 import { isBareName, SEGMENT_SEPARATOR } from '../loaders/technique-ref.js';
 import {
-  CORE_ORCHESTRATOR_TECHNIQUES,
   CORE_WORKER_TECHNIQUES,
-  FAN_DISPATCH_TECHNIQUES,
   FAN_ONLY_RULES,
   LOOP_ONLY_RULES,
-  ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
   WORKER_CHECKPOINT_TECHNIQUES,
 } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
@@ -895,27 +892,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
       const summaryText = stringifyForResponse(summaryData);
 
-      // Bundle the workflow's orchestrator-level technique refs (`techniques.workflow`) and the core
-      // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
-      // technique resolves it once.
+      // What the workflow declares at `techniques.workflow`, and nothing beside it. An orchestrator
+      // carries a role activity, and `get_activity` serves that activity's own step bindings — so
+      // every operation a walk applies arrives with the activity applying it, and whatever no step
+      // binds is declared on `techniques.activity`. Deduplicate by ref.
       const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
-      // The fan's techniques ride the response for a workflow whose graph actually fans, and no
-      // other. An orchestrator reads this response for the session it is driving, so the procedure
-      // arrives with the graph that needs it; a workflow with no fanning exit pays nothing for a
-      // procedure it can never reach.
-      const fanTechniques = fanGroups(wf).length > 0 ? FAN_DISPATCH_TECHNIQUES : [];
-      // A gate an orchestrator presents and resolves comes from a gate step in some activity, and
-      // the whole roster is loaded here — so a run declaring none takes neither protocol. Both stay
-      // fetchable by id, for the decision an activity never anticipated.
-      const runDeclaresGate = (wf.activities ?? []).some(
-        (a) => flattenActivitySteps(a).some((s) => s.kind === 'checkpoint'),
-      );
-      const orchestratorTechniques = Array.from(new Set([
-        ...wfTechRefs,
-        ...CORE_ORCHESTRATOR_TECHNIQUES,
-        ...(runDeclaresGate ? ORCHESTRATOR_CHECKPOINT_TECHNIQUES : []),
-        ...fanTechniques,
-      ]));
+      const orchestratorTechniques = Array.from(new Set(wfTechRefs));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
       const opsBundle = formatTechniqueBundle(resolvedOrchestrator);
       const opsText = stringifyForResponse(opsBundle);

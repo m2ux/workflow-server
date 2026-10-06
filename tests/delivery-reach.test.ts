@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { resolve } from 'node:path';
 import {
-  CORE_ORCHESTRATOR_TECHNIQUES,
   CORE_WORKER_TECHNIQUES,
-  ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
   WORKER_CHECKPOINT_TECHNIQUES,
   FAN_ONLY_RULES,
   LOOP_ONLY_RULES,
@@ -26,29 +24,23 @@ describe('the checkpoint protocols are held out of the core lists', () => {
     }
   });
 
-  it('keeps the orchestrator pair out of the orchestrator core', () => {
-    for (const ref of ORCHESTRATOR_CHECKPOINT_TECHNIQUES) {
-      expect(CORE_ORCHESTRATOR_TECHNIQUES, `${ref} rides the core list`).not.toContain(ref);
-    }
-  });
-
   /**
    * The cut is safe only because what it leaves out stays reachable. A worker may raise a decision
-   * its activity never declared, and an orchestrator then has to present and resolve it — so both
-   * protocols must be servable by id from any session.
+   * its activity never declared, so the protocol it pauses with must be servable by id from any
+   * session. What the orchestrator answers it with reaches that context on the activity it carries.
    */
   it('leaves every held-back protocol servable by id', () => {
     const servable = contractOperations({});
-    for (const ref of [...WORKER_CHECKPOINT_TECHNIQUES, ...ORCHESTRATOR_CHECKPOINT_TECHNIQUES]) {
+    for (const ref of WORKER_CHECKPOINT_TECHNIQUES) {
       expect(servable, `${ref} is unreachable`).toContain(ref);
     }
   });
 });
 
 describe('the techniques a by-id fetch admits', () => {
-  it('admits both roles\' core techniques, one session serving both', () => {
+  it('admits the worker core, which every session carries', () => {
     const servable = contractOperations({});
-    for (const ref of [...CORE_ORCHESTRATOR_TECHNIQUES, ...CORE_WORKER_TECHNIQUES]) {
+    for (const ref of CORE_WORKER_TECHNIQUES) {
       expect(servable).toContain(ref);
     }
   });
@@ -59,12 +51,13 @@ describe('the techniques a by-id fetch admits', () => {
    * the loader returns `not-found`, which the bundle carries into every delivery of that role — the
    * orchestrator losing its commit protocols, say, with nothing red. That exact drift happened while
    * these techniques were moving into namespaces of their own, and the only thing that caught it was
-   * a walk incidentally counting unresolved refs. This asks the question directly.
+   * a walk incidentally counting unresolved refs. This asks the question directly. What a workflow
+   * declares is covered by the guard that resolves every `techniques[]` reference.
    */
   it.skipIf(!liveCorpusRoot())('names only refs the corpus resolves', async () => {
     const { resolveTechniques } = await import('../src/loaders/technique-loader.js');
     const root = liveCorpusRoot()!;
-    for (const refs of [CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES]) {
+    for (const refs of [CORE_WORKER_TECHNIQUES]) {
       const resolved = await resolveTechniques([...refs], root, 'meta');
       const dead = resolved.filter((entry) => entry.type === 'not-found').map((entry) => entry.ref);
       expect(dead, 'a core delivery ref the corpus no longer holds').toEqual([]);
