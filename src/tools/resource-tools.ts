@@ -190,6 +190,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     {
       description:
         'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
+        '`workflow.initialActivity` is the activity the first `next_activity` on this session should name, which a caller that will drive the session itself has no other way to know; `current` is what the session already stands on — empty on a fresh open, and whatever an earlier walk left in flight on a resume, so the opening advance is owed where it is empty. ' +
         'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
         'Pass `planning_folder` as an absolute path to resume the session that folder holds, or to pin a new folder, named by its basename, directly under the session\'s planning root; a new folder anywhere else is refused, naming that root. ' +
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
@@ -541,12 +542,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           ...(canonicalFolder ? { planningFolderPath: canonicalFolder } : {}),
           ...(boundRepo ? { repo: boundRepo } : {}),
           ...(context_mode ? { contextMode: context_mode } : {}),
-          // This session is the top of its tree: nothing above it can advance it onto its first
-          // activity, so the opening stands here. A session opened under an orchestrator takes
-          // its opening advance from that orchestrator instead.
-          ...(wfPreLoad.success && wfPreLoad.value.initialActivity
-            ? { openingActivity: wfPreLoad.value.initialActivity }
-            : {}),
           // B7 (#166): seed declared defaults into the fresh bag. Conditional
           // on the pre-load succeeding — its failure is only surfaced further
           // down, and an unseeded bag is the correct shape for that path.
@@ -613,8 +608,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           version: workflow.version,
           title: workflow.title,
           description: workflow.description,
+          // The activity the first `next_activity` on this session should name. The caller
+          // otherwise has no way to know it without loading a workflow bundle, and a caller
+          // opening a session it will drive itself has not loaded one yet.
+          initialActivity: workflow.initialActivity,
         },
         session_index: sessionIndex,
+        // What the session already stands on: empty on a fresh open, and whatever an earlier walk
+        // left in flight on a resume. The opening advance is owed where this is empty.
+        current: state.frontier,
         planning_slug: slug,
         resumed: resumedSession,
       };
