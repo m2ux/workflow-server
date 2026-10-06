@@ -6,6 +6,7 @@ import { defaultPolicy } from './policies.js';
 import { activityGraph } from '../../src/utils/activity-variables.js';
 import { loadWorkflow } from '../../src/loaders/workflow-loader.js';
 import type { Workflow } from '../../src/schema/workflow.schema.js';
+import { liveCorpusRoot } from '../corpus-root.js';
 
 /**
  * Every reader that walks a destination reads all three forms. The two silent ones are proved live
@@ -138,36 +139,43 @@ describe('the collection a fan runs over', () => {
   });
 });
 
-describe('the concurrent-dispatch technique reaches the orchestrator that can use it', () => {
-  const workflowBundle = async (workflowId: string): Promise<string> => {
-    const start = await harness.client.callTool({
-      name: 'start_session',
-      arguments: {
-        workflow_id: workflowId,
-        agent_id: 'orchestrator',
-        planning_folder: `${harness.workspaceDir}/.engineering/artifacts/planning/fan-bundle-${workflowId}`,
-      },
-    });
-    const sessionIndex = (JSON.parse((start.content as Array<{ text: string }>)[0]!.text) as { session_index: string }).session_index;
-    const workflow = await harness.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } });
-    return (workflow.content as Array<{ text: string }>)[0]!.text;
-  };
+/**
+ * The fan procedure reaches the orchestrator as the steps of the activity that runs it.
+ *
+ * A step's bound technique rides the activity's delivery, so the binding is what carries the
+ * procedure to the context that reaches the step. `spawn-concurrent` is the one that cannot arrive
+ * any other way: `spawn-branches` applies it from inside its own Protocol, and an inline reference
+ * is never re-resolved, so a delivery that leaves it out hands the orchestrator a Protocol naming a
+ * technique it does not hold.
+ *
+ * Measured against the live corpus rather than the fan fixture, because the binding lives in the
+ * routines the graph-holding activity splices in, which the fixture has no equivalent of.
+ */
+describe.skipIf(!liveCorpusRoot())('the fan procedure reaches the activity that runs it', () => {
+  /** Every technique bound by a step of `id`, at any nesting depth. */
+  async function stepTechniques(workflowId: string, id: string): Promise<string[]> {
+    const result = await loadWorkflow(liveCorpusRoot()!, workflowId);
+    if (!result.success) throw new Error(`${workflowId} failed to load: ${result.error.message}`);
+    const activity = (result.value.activities ?? []).find((a) => a.id === id);
+    expect(activity, `${workflowId} declares no activity '${id}'`).toBeDefined();
+    const found: string[] = [];
+    const collect = (steps: ActivityDef['steps']): void => {
+      for (const step of steps ?? []) {
+        const named = (step as { technique?: { name?: string } }).technique?.name;
+        if (named) found.push(named);
+        collect((step as { steps?: ActivityDef['steps'] }).steps);
+      }
+    };
+    collect(activity!.steps as ActivityDef['steps']);
+    return found;
+  }
 
-  it('rides the response for a workflow whose graph fans, with the batch spawn it applies', async () => {
-    // spawn-branches applies spawn-concurrent mid-Protocol, and a technique named inside another
-    // technique's Protocol has no other delivery path.
-    const bundle = await workflowBundle('instance-fan-fixture');
-    expect(bundle).toContain('enter-fan');
-    expect(bundle).toContain('spawn-branches');
-    expect(bundle).toContain('retire-branch');
-    expect(bundle).toContain('spawn-concurrent');
-  });
-
-  it('is absent from one whose graph fans nowhere, which can never reach it', async () => {
-    const bundle = await workflowBundle('meta');
-    expect(bundle).not.toContain('enter-fan');
-    expect(bundle).not.toContain('spawn-branches');
-    expect(bundle).not.toContain('spawn-concurrent');
+  it('binds the open, the spawn, the retirement and the batch dispatch it applies', async () => {
+    const bound = await stepTechniques('meta', 'dispatch-client-workflow');
+    expect(bound).toContain('fan::enter-fan');
+    expect(bound).toContain('fan::spawn-branches');
+    expect(bound).toContain('fan::retire-branch');
+    expect(bound).toContain('harness-compat::spawn-concurrent');
   });
 });
 

@@ -957,8 +957,12 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
     }
 
     it('collapses the ops bundle on a second persistent-mode call; summary stays full', async () => {
+      // `meta`, because what collapses has to be worth collapsing: the bundle carries the techniques
+      // a workflow declares at workflow level, and meta is the workflow that declares any. On a
+      // client workflow the block holds the role's rules alone, and a marker standing for those
+      // would prove the mechanism against its cheapest possible case.
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'meta',
         agent_id: 'solo',
         planning_folder: planningFolder('2026-07-12-ops-bundle-slimming-persistent'),
         context_mode: 'persistent',
@@ -968,11 +972,14 @@ describe.skipIf(!liveCorpusRoot())('reference-not-repeat delivery (B1)', () => {
       const first = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
       expect(first.isError).toBeFalsy();
       const firstSplit = splitWorkflowResponse(first as never);
-      // First call: ops bundle delivered full, not a marker. What proves "full" is the role's rules
-      // and a body for every technique.
+      // First call: ops bundle delivered full, not a marker. What proves "full" is a body for every
+      // technique — the bytes a marker later stands in for. meta declares no orchestrator rules, so
+      // the block carries none, and a bundle of rules alone would collapse to a marker standing for
+      // almost nothing.
       expect(isUnchangedMarker(parse(firstSplit.opsBlock))).toBe(false);
       const firstBundle = parse(firstSplit.opsBlock) as Record<string, unknown>;
-      expect(Array.isArray(firstBundle['rules'])).toBe(true);
+      expect(Object.keys((firstBundle['techniques'] ?? {}) as Record<string, unknown>).length)
+        .toBeGreaterThan(0);
       expect(firstSplit.opsBlock).toMatch(/capability:/);
 
       const second = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
