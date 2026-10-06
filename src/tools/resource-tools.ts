@@ -541,6 +541,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           ...(canonicalFolder ? { planningFolderPath: canonicalFolder } : {}),
           ...(boundRepo ? { repo: boundRepo } : {}),
           ...(context_mode ? { contextMode: context_mode } : {}),
+          // This session is the top of its tree: nothing above it can advance it onto its first
+          // activity, so the opening stands here. A session opened under an orchestrator takes
+          // its opening advance from that orchestrator instead.
+          ...(wfPreLoad.success && wfPreLoad.value.initialActivity
+            ? { openingActivity: wfPreLoad.value.initialActivity }
+            : {}),
           // B7 (#166): seed declared defaults into the fresh bag. Conditional
           // on the pre-load succeeding — its failure is only surfaced further
           // down, and an unseeded bag is the correct shape for that path.

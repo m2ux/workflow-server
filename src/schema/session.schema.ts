@@ -199,6 +199,15 @@ export function createInitialSessionFile(args: {
   contextMode?: 'persistent' | 'fresh';
   executionPath?: ExecutionPath;
   variables?: Record<string, unknown>;
+  /**
+   * The activity this session opens standing on, for a session nothing else can open.
+   *
+   * A session an orchestrator drives is advanced onto its first activity by that orchestrator,
+   * which is what records the transition. A session with no orchestrator above it has nobody to
+   * make that advance, and the context that will carry it cannot advance a session it has not yet
+   * been told it holds — so the opening is seeded here or it does not happen.
+   */
+  openingActivity?: string;
 }): SessionFile {
   const now = new Date();
   const seeded = args.variables ?? {};
@@ -211,7 +220,7 @@ export function createInitialSessionFile(args: {
     seq: 0,
     ts: Math.floor(now.getTime() / 1000),
     startedAt: now.toISOString(),
-    frontier: [],
+    frontier: args.openingActivity ? [args.openingActivity] : [],
     currentTechnique: '',
     exit: '',
     variables: seeded,
