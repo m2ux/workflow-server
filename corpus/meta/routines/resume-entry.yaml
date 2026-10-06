@@ -1,5 +1,5 @@
 id: resume-entry
-version: 1.1.0
+version: 1.2.0
 name: Resume Entry
 description: >-
   Continue the worker that holds a yielded activity, carrying the checkpoint reply, and
@@ -49,6 +49,7 @@ steps:
       worker_agent_id: worker_agent_id
       harness_agent_id: harness_agent_id
       checkpoint_reply: checkpoint_reply
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       worker_result: worker_result
   - kind: routine
@@ -63,6 +64,8 @@ steps:
       checkpoints_responded: "{worker_result.checkpoints_responded}"
       artifacts_produced: "{worker_result.artifacts_produced}"
       batch_may_continue: "{worker_result.batch_may_continue}"
+      session_index: "{session_index}"
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       activity_result: worker_result
   - kind: routine
@@ -75,6 +78,7 @@ steps:
       workflow_id: workflow_id
       activity_id: activity_id
       worker_agent_id: worker_agent_id
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       worker_result: worker_result
   - kind: routine
@@ -89,6 +93,8 @@ steps:
       checkpoints_responded: "{worker_result.checkpoints_responded}"
       artifacts_produced: "{worker_result.artifacts_produced}"
       batch_may_continue: "{worker_result.batch_may_continue}"
+      session_index: "{session_index}"
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       activity_result: worker_result
   - kind: technique
@@ -98,6 +104,10 @@ steps:
       name: workflow-engine::resume-worker
       inputs:
         worker_result: worker_result
+        activity_id: activity_id
+        session_index: session_index
+        checkpoint_reply: checkpoint_reply
+        planning_folder_path: planning_folder_path
   - kind: technique
     id: account
     technique:
@@ -106,3 +116,6 @@ steps:
         activity_id: activity_id
         worker_agent_id: worker_agent_id
         worker_result: worker_result
+        session_index: session_index
+        checkpoint_reply: checkpoint_reply
+        planning_folder_path: planning_folder_path

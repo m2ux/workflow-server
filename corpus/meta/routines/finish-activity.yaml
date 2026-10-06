@@ -1,5 +1,5 @@
 id: finish-activity
-version: 1.1.0
+version: 1.2.0
 name: Finish Activity
 description: >-
   Read where the activity's exit sends the run, then fold that reading into the activity_complete
@@ -43,6 +43,8 @@ steps:
         current_activity: current_activity
         exit_destinations: exit_destinations
         selected_exit: selected_exit
+        planning_folder_path: planning_folder_path
+        session_index: session_index
   - kind: technique
     id: fold-the-envelope
     technique:
@@ -56,3 +58,7 @@ steps:
         next_activity_id: next_activity_id
         next_activity_fans: next_activity_fans
         activity_exit: activity_exit
+        planning_folder_path: planning_folder_path
+        session_index: session_index
+      outputs:
+        activity_result: activity_result

@@ -1,5 +1,5 @@
 id: open-branches
-version: 1.2.0
+version: 1.3.0
 name: Open Branches
 description: >-
   Compose one stub per branch, each for a worker that holds no prior deliveries, then emit every
@@ -65,12 +65,15 @@ steps:
             agent_technique: agent_technique
             holds_prior_deliveries: false
             substitutions: substitutions
+            session_index: session_index
+            planning_folder_path: planning_folder_path
   - kind: technique
     id: emit-the-batch
     technique:
       name: harness-compat::spawn-concurrent
       inputs:
         agents: composed_branch_prompts
+        planning_folder_path: planning_folder_path
   - kind: action
     id: name-the-returns
     actions:

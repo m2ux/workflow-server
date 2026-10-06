@@ -1,5 +1,5 @@
 id: continue-entry
-version: 1.1.0
+version: 1.2.0
 name: Continue Entry
 description: >-
   Advance the session once, continue the worker that holds the batch, and open a
@@ -62,6 +62,7 @@ steps:
         step_manifest: step_manifest
         variables_changed: variables_changed
         worker_agent_id: worker_agent_id
+        planning_folder_path: planning_folder_path
   - kind: routine
     id: continue-worker
     routine: continue-worker
@@ -71,6 +72,7 @@ steps:
       activity_id: activity_id
       worker_agent_id: worker_agent_id
       harness_agent_id: harness_agent_id
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       worker_result: worker_result
   - kind: routine
@@ -85,6 +87,8 @@ steps:
       checkpoints_responded: "{worker_result.checkpoints_responded}"
       artifacts_produced: "{worker_result.artifacts_produced}"
       batch_may_continue: "{worker_result.batch_may_continue}"
+      session_index: "{session_index}"
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       activity_result: worker_result
   - kind: routine
@@ -97,6 +101,7 @@ steps:
       workflow_id: workflow_id
       activity_id: activity_id
       worker_agent_id: worker_agent_id
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       worker_result: worker_result
   - kind: routine
@@ -111,6 +116,8 @@ steps:
       checkpoints_responded: "{worker_result.checkpoints_responded}"
       artifacts_produced: "{worker_result.artifacts_produced}"
       batch_may_continue: "{worker_result.batch_may_continue}"
+      session_index: "{session_index}"
+      planning_folder_path: "{planning_folder_path}"
     outputs:
       activity_result: worker_result
   - kind: technique
@@ -121,3 +128,7 @@ steps:
         activity_id: activity_id
         worker_agent_id: worker_agent_id
         worker_result: worker_result
+        session_index: session_index
+        exit_id: exit_id
+        step_manifest: step_manifest
+        planning_folder_path: planning_folder_path

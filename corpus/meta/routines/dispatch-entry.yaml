@@ -1,5 +1,5 @@
 id: dispatch-entry
-version: 1.1.0
+version: 1.2.0
 name: Dispatch Entry
 description: >-
   Persist entering, advance the session, announce the dispatch, and open one
@@ -64,6 +64,7 @@ steps:
     with:
       activity_id: activity_id
       planning_folder_path: planning_folder_path
+      session_index: "{session_index}"
       target_status: target_status
       seed_profile: seed_profile
       commit_message: "{activity_id} entering"
@@ -77,6 +78,7 @@ steps:
       inputs:
         activity_id: activity_id
         session_index: session_index
+        planning_folder_path: planning_folder_path
         from_activity: from_activity
         exit_id: exit_id
         step_manifest: step_manifest
@@ -91,6 +93,7 @@ steps:
       session_index: session_index
       workflow_id: workflow_id
       activity_id: activity_id
+      planning_folder_path: "{planning_folder_path}"
       worker_agent_id: worker_agent_id
     outputs:
       worker_result: worker_result
@@ -106,6 +109,8 @@ steps:
       checkpoints_responded: "{worker_result.checkpoints_responded}"
       artifacts_produced: "{worker_result.artifacts_produced}"
       batch_may_continue: "{worker_result.batch_may_continue}"
+      planning_folder_path: "{planning_folder_path}"
+      session_index: "{session_index}"
     outputs:
       activity_result: worker_result
   - kind: technique
@@ -117,6 +122,10 @@ steps:
         activity_id: activity_id
         worker_agent_id: worker_agent_id
         worker_result: worker_result
+        session_index: session_index
+        planning_folder_path: planning_folder_path
+        exit_id: exit_id
+        step_manifest: step_manifest
   - kind: technique
     id: mark-followup
     when: followup_status
@@ -126,3 +135,7 @@ steps:
         activity_id: activity_id
         planning_folder_path: planning_folder_path
         target_status: followup_status
+        session_index: session_index
+        seed_profile: seed_profile
+        exit_id: exit_id
+        step_manifest: step_manifest

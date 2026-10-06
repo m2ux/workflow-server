@@ -1,5 +1,5 @@
 id: persist-entering
-version: 1.1.0
+version: 1.2.0
 name: Persist Entering
 description: >-
   Write the in-progress Progress mark for the activities that are entering, commit the planning
@@ -43,6 +43,7 @@ steps:
         planning_folder_path: planning_folder_path
         seed_profile: seed_profile
         target_status: target_status
+        session_index: session_index
   - kind: technique
     id: commit-entering
     technique:
@@ -50,6 +51,7 @@ steps:
       inputs:
         paths: paths
         commit_message: commit_message
+        planning_folder_path: planning_folder_path
   - kind: technique
     id: push-entering
     technique:
@@ -58,3 +60,4 @@ steps:
         repo_path: repo_path
         branch: branch
         remote_name: origin
+        planning_folder_path: planning_folder_path
