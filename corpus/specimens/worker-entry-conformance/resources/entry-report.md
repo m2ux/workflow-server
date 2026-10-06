@@ -2,7 +2,7 @@
 name: entry-report
 description: Template and rules for the worker entry report, the one document a run leaves behind.
 metadata:
-  version: 1.4.0
+  version: 1.5.0
   order: 1
 ---
 
@@ -31,7 +31,8 @@ Session `{session_index}` · workflow `worker-entry-conformance` · `{written_at
 
 - The two branches held identities that were: distinct / the same.
 - The continuation arrived under an identity that was: the same as the cold dispatch / a fresh one.
-- The usage rows carry `{count}` distinct identities against `{expected}` this graph requires.
+- The session carries `{count}` identities against `{expected}` this graph requires, one of them
+  holding `{count}` completed steps where a continuation holds two.
 
 ## Exits
 
@@ -43,10 +44,9 @@ Session `{session_index}` · workflow `worker-entry-conformance` · `{written_at
 | `note-right` | `{count}` | 1 |
 | `converge-entries` | `{count}` | 1 |
 
-## Advances
+## Arrivals
 
-- The trace holds `{count}` advances against `{expected}` this graph requires, or reports that
-  tracing held no events for this session.
+- The history holds `{count}` activity entries against `{expected}` this graph requires.
 
 ## Delivery
 

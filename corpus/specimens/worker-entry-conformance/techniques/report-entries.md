@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -63,12 +63,14 @@ The document this run leaves behind: the entry roll, the identity comparison, an
 
 ### 3. Identity Ledger
 
-- Call `inspect_session { session_index, view: "usage" }`, reading `session_index` from the stub
-  this context was opened with. Count the distinct `agentId` values across its rows against the
-  three this graph requires: one for the cold dispatch, which the continuation reuses, and one per
-  branch.
-  > A fourth identity is a continuation that opened a replacement worker instead of continuing the
-  > one it held. Both shapes reach the same activity, and only the count tells them apart.
+- Call `inspect_session { session_index, view: "history", agent_id }` once per identity the roll
+  names, reading `session_index` from the stub this context was opened with, and count the
+  `step_completed` events each one carries. One identity carrying two is the continuation; one each
+  is a branch.
+  > - A fourth identity is a continuation that opened a replacement worker instead of continuing
+  >   the one it held. Both shapes reach the same activity, and only the count tells them apart.
+  > - The usage rows carry the same attribution, and carry it only where the walk recorded usage.
+  >   An unaccounted walk has no rows and has not thereby minted no identities.
 
 ### 4. Completion Ledger
 
@@ -78,13 +80,14 @@ The document this run leaves behind: the entry roll, the identity comparison, an
   > twice appears there once. The history keeps both events, so it is the only reading that can
   > tell a double exit from a single one.
 
-### 5. Advance Ledger
+### 5. Arrival Ledger
 
-- Call `get_trace { session_index }` and count its `next_activity` spans against the advances this
-  graph requires: one per activity entered, one per branch retired, one onto `__terminal__`.
-  > The trace is the server's in-memory record of this session, which holds no event from before a
-  > server restart, and none at all where tracing is off. Skip the count when it holds no events,
-  > rather than reading an empty trace as every advance missing.
+- From the same `history` reading, count the `activity_entered` events against the advances this
+  graph requires: one per activity the graph declares, plus the one onto `__terminal__`.
+  > - A fan opens every branch on one call, so two branches entered are two events from one
+  >   advance. What this counts is arrivals, which is what a dropped advance loses.
+  > - The execution trace carries tool spans rather than advances, and holds nothing from before a
+  >   server restart. It is not the surface this count comes from.
 
 ### 6. Delivery Ledger
 
