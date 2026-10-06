@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -28,6 +28,10 @@ Branch creation, PR creation, and code commits run inside the component director
 ### planning-commits-stay-on-the-current-branch
 
 Planning artifact commits under `.engineering/artifacts/` land on the current branch of the checkout that holds that directory. They do not open a new branch.
+
+### persistence-precedes-the-next-advance
+
+A completed activity's source changes and engineering artifacts are on the remote before the next `next_activity` call.
 
 ### automatic-transitions
 

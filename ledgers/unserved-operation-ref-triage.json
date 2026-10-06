@@ -860,12 +860,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/support/git/techniques/commit-regular-files.md:28",
-      "op": "push-branch",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/support/github/techniques/add-labels.md:24",
       "op": "resolve-repo-coordinates",
       "verdict": "fix-later",
