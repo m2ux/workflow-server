@@ -1,5 +1,5 @@
 id: resume-entry
-version: 1.3.0
+version: 1.4.0
 name: Resume Entry
 description: >-
   Continue the worker that holds a yielded activity, carrying the checkpoint reply, and
@@ -43,6 +43,7 @@ steps:
     id: continue-worker
     routine: continue-worker
     with:
+      agent_technique: agent_technique
       session_index: session_index
       workflow_id: workflow_id
       activity_id: activity_id

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Contract and rules for carrying a graph fan — the techniques that open every branch a destination names, give each its own identity, run them in one turn, and retire them against the activity they converge on. Every rule here is one the context orchestrating a fan can act on, whichever of the techniques it is currently in.
+Contract and rules for carrying a graph fan — the techniques that open every branch a destination names, give each its own identity, and retire them against the activity they converge on.
 
 ## Rules
 

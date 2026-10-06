@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.39.0
+  version: 1.40.0
 ---
 
 ## Capability
 
-Advance the session onto a target activity, mint the worker identity, and announce the dispatch.
+Advance the session onto a target activity and mint the worker identity.
 
 ## Inputs
 
@@ -51,14 +51,15 @@ The opaque trace tokens this dispatch accumulated, one per `next_activity` call 
 
 - Mint `{worker_agent_id}` for this dispatch per `delivery-keys-on-agent-context`.
 
-### 3. Announce Dispatch
-
-- Leave the user no silent minute. Before the spawn, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that the activity runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one.
-  > - Where a wait falls between one activity and the next, say that they are waiting and roughly how long, without an account of the machinery imposing the wait.
-  > - A cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching.
-  > - What a completed activity delivered is a separate emission, per the [Run Status Guide](/meta/resources/run-status.md), made once its artifacts are on the remote.
-
 ## Rules
+
+### accumulate-trace-per-advance
+
+Every advancing call returns `_meta.trace_token`, captured as `{advance_trace_tokens}`, and the walk appends that token to the run's `trace_tokens`. A token not captured is absent from the trace close-out resolves.
+
+### say-what-a-dispatch-is-doing
+
+Leave the user no silent minute. Before the spawn, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that the activity runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. Where a wait falls between one activity and the next, say that they are waiting and roughly how long, without an account of the machinery imposing the wait. A cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, per the [Run Status Guide](/meta/resources/run-status.md), made once its artifacts are on the remote.
 
 ### no-get-activity-from-orchestrator
 

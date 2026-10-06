@@ -1,5 +1,5 @@
 id: persist-activity
-version: 1.2.0
+version: 1.3.0
 name: Persist Activity
 description: >-
   Mark a completed activity's Progress and lifecycle status, commit its source changes and its
@@ -34,6 +34,20 @@ outputs:
     type: boolean
     description: Whether the engineering push is on the remote tracking branch, with every named path in that commit.
 
+internals:
+  - id: paths
+    description: The engineering files this activity's commit names.
+  - id: commit_message
+    description: The Conventional Commits message the engineering commit carries.
+  - id: engineering_branch
+    description: The branch checked out where the engineering commit lands, which the push sends.
+  - id: engineering_kind
+    description: Whether `.engineering` is a linked worktree of the host or a checkout of its own.
+  - id: engineering_repo_path
+    description: The checkout the engineering push runs in.
+  - id: has_engineering_changes
+    description: Whether this activity left any engineering file to commit.
+
 steps:
   - kind: technique
     id: sync-progress-status
@@ -53,6 +67,8 @@ steps:
         activity_id: activity_id
         workflow_id: workflow_id
         planning_folder_path: planning_folder_path
+      outputs:
+        paths: source_paths
   - kind: technique
     id: prepare-engineering-commit
     technique:
@@ -63,16 +79,34 @@ steps:
         activity_id: activity_id
         workflow_id: workflow_id
         session_index: session_index
+      outputs:
+        paths: paths
+        commit_message: commit_message
+        engineering_branch: engineering_branch
+        engineering_kind: engineering_kind
+        engineering_repo_path: engineering_repo_path
+        has_engineering_changes: has_engineering_changes
   - kind: technique
-    id: persist-worktree
+    id: commit-worktree
     when: engineering_kind == "worktree" && has_engineering_changes
     technique:
-      name: project::persist-worktree
+      name: git::commit-worktree
       inputs:
         worktree_path: "{host_repo_path}/.engineering"
         paths: paths
         commit_message: commit_message
-        branch: branch
+        is_signed: is_signed
+        planning_folder_path: planning_folder_path
+  - kind: technique
+    id: push-worktree-branch
+    when: engineering_kind == "worktree" && has_engineering_changes
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: "{host_repo_path}/.engineering"
+        branch: engineering_branch
+        remote_name: origin
+        planning_folder_path: planning_folder_path
   - kind: technique
     id: commit-engineering-files
     when: engineering_kind != "worktree" && has_engineering_changes
@@ -89,7 +123,7 @@ steps:
       name: git::push-branch
       inputs:
         repo_path: "{host_repo_path}"
-        branch: branch
+        branch: engineering_branch
         remote_name: origin
         planning_folder_path: planning_folder_path
   - kind: action
@@ -106,7 +140,7 @@ steps:
       name: git::confirm-persisted
       inputs:
         repo_path: engineering_repo_path
-        branch: branch
+        branch: engineering_branch
         paths: paths
         remote_name: origin
         planning_folder_path: planning_folder_path

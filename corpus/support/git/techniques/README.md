@@ -9,6 +9,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`commit-regular-files`](commit-regular-files.md) | Stage and commit files in a regular (non-submodule) directory of the parent repo |
 | [`confirm-persisted`](confirm-persisted.md) | A push is on the remote tracking branch, and any named paths are in the commit that branch holds |
 | [`commit-submodule`](commit-submodule.md) | Commit and push inside a submodule and sync the parent's submodule pointer |
+| [`commit-worktree`](commit-worktree.md) | Stage and commit files on the branch checked out in a linked worktree |
 | [`create-worktree`](create-worktree.md) | Working directory materialised as a git worktree of the component, on either a feature branch created fresh or an existing branch checked out |
 | [`derive-workflows-target-path`](derive-workflows-target-path.md) | Where a session editing the shared workflows library reads, edits and commits, derived from the planning folder that session already has |
 | [`list-components`](list-components.md) | The components a host declares as submodules, each with its infrastructure mark and whether a clone has populated its tree |

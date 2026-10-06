@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.16.0
+  version: 1.17.0
 ---
 
 ## Capability
@@ -31,11 +31,11 @@ The bag keys the activity mutated, as the context that executed its steps read t
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity.
+Whether the worker's context may take another activity.
 
 ### next_activity_id
 
-Where the run goes next, as [evaluate-transition](./evaluate-transition.md) read it. Passed through unread.
+Where the run goes next: an activity id, a list of members, or one activity together with the collection it runs over; or `__terminal__`.
 
 ### next_activity_fans
 

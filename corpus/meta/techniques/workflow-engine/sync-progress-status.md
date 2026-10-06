@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.14.0
+  version: 1.15.0
 ---
 
 ## Capability
@@ -82,10 +82,6 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 ### a-mark-needs-the-tree
 
 A Progress mark is unreadable to anyone who does not hold the working tree it was written in.
-
-### the-in-progress-commit-is-in-flight
-
-The commit that publishes the in-progress state is made while the activity is still in flight.
 
 ### progress-rows-only
 

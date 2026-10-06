@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.14.0
+  version: 1.15.0
 ---
 
 ## Capability
@@ -32,8 +32,7 @@ The opaque trace token the advancing `next_activity` call returned in `_meta.tra
 ### 1. Advance Session
 
 - Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed, agent_id: worker_agent_id }`.
-- Capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`.
-  > A token not captured is absent from the trace close-out resolves.
+- Capture `_meta.trace_token` as `{advance_trace_tokens}` per `dispatch-activity.accumulate-trace-per-advance`.
 
 ## Rules
 

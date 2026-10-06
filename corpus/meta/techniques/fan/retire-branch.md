@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -24,6 +24,10 @@ The branch this call retires, instance-qualified where the graph runs one activi
 ### branch_envelopes
 
 What the branches returned, in the order the fan opened them.
+
+### worker_agent_id
+
+The identity the branch ran under, as `spawn-branches` minted it for this branch.
 
 ## Outputs
 
@@ -49,11 +53,12 @@ The opaque trace token the retiring `next_activity` call returned in `_meta.trac
 
 ### 3. Read Retirement
 
-- Capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`.
-  > A token not captured is absent from the trace close-out resolves.
+- Capture `_meta.trace_token` as `{advance_trace_tokens}` per `dispatch-activity.accumulate-trace-per-advance`.
 - A retirement that leaves branches in flight reports them at `outstanding`, each as the id that addresses it.
   > The one that empties the frontier is the one that enters the convergence activity, and only that one: it reports that activity's `name` and `barrier.met` true — see `the-barrier-is-a-reading`.
-- Record one usage entry for `{branch_activity}`: `record_usage { session_index, activity: branch_activity, usage, basis, agent_id: worker_agent_id }`. `usage` and `basis` are read from the harness, and the entry says what the figure counts.
-  > - Where the graph runs one activity over a collection, the activity names that instance.
-  > - When the harness reports no figure, omit the entry.
+
+### 4. Account for the Branch
+
+- Account for `{branch_activity}` per `account-worker.account-every-activity`, attributed to `{worker_agent_id}`.
+  > Where the graph runs one activity over a collection, the activity names that instance.
 

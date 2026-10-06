@@ -1,11 +1,10 @@
 id: open-branches
-version: 1.3.0
+version: 1.4.0
 name: Open Branches
 description: >-
   Compose one stub per branch, each for a worker that holds no prior deliveries, then emit every
-  stub in one turn. The caller has already minted each branch's identity. composed_branch_prompts
-  is one { prompt: composed_prompt } per branch, in the order branches were given. Returns come
-  back in that order.
+  stub in one turn. The caller has already minted each branch's identity. Returns come back in the
+  order the branches were given.
 
 inputs:
   - id: branches
@@ -37,6 +36,8 @@ outputs:
 internals:
   - id: substitutions
     description: Placeholder map for the branch whose stub is being composed. activity_id and agent_id name that branch.
+  - id: composed_branch_prompts
+    description: One { description, prompt } per branch, in the order the branches were given, which the batch is emitted from.
 
 steps:
   - kind: loop
@@ -65,8 +66,20 @@ steps:
             agent_technique: agent_technique
             holds_prior_deliveries: false
             substitutions: substitutions
+            activity_id: "{branch.activity_id}"
             session_index: session_index
             planning_folder_path: planning_folder_path
+          outputs:
+            composed_prompt: composed_prompt
+      - kind: action
+        id: collect-branch-stub
+        actions:
+          - action: set
+            target: composed_branch_prompts
+            value:
+              description: "{branch.activity_id}"
+              prompt: "{composed_prompt}"
+            description: The stub composed for this branch, appended to the batch in the order the branches were given.
   - kind: technique
     id: emit-the-batch
     technique:

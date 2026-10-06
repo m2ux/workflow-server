@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.14.0
+  version: 1.15.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ The envelope the continuation returned.
 
 ### 1. Read Missing Envelope
 
-- An envelope that is not `checkpoint_pending` or `steps_complete` means the context is gone.
+- `{worker_result}` is neither `checkpoint_pending` nor `steps_complete`, per `reject-partial-worker-result`, so the context that carried it is gone and a replacement is owed.
 
 ## Rules
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -31,9 +31,9 @@ True when `{paths}` names at least one file.
 
 The checkout the engineering push runs in.
 
-### branch
+### engineering_branch
 
-The branch checked out at `{engineering_repo_path}`.
+The branch checked out at `{engineering_repo_path}`, which the engineering push sends.
 
 ### engineering_kind
 
@@ -72,7 +72,7 @@ The branch checked out at `{engineering_repo_path}`.
 
 ### 6. Read Branch
 
-- `git -C {engineering_repo_path} branch --show-current` is `{branch}`.
+- `git -C {engineering_repo_path} branch --show-current` is `{engineering_branch}`.
 
 ### 7. Set Header
 

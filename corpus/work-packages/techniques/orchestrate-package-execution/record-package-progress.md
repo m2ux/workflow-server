@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -29,7 +29,15 @@ Packages already finished.
 
 ### overall_progress
 
-Progress indicator written into the START-HERE status table.
+Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.md status table
+
+#### artifact
+
+`START-HERE.md`
+
+#### audience
+
+`human`
 
 ### remaining_packages
 

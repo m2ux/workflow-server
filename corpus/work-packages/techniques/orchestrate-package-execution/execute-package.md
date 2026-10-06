@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Select the highest-priority unstarted package, trigger its work-package workflow, update the roadmap status on completion, and advance the remaining/completed sets.
+Select the highest-priority unstarted package and trigger its work-package workflow.
 
 ## Inputs
 
@@ -25,15 +25,7 @@ List of remaining package names
 
 ### overall_progress
 
-Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.md status table
-
-#### artifact
-
-`START-HERE.md`
-
-#### audience
-
-`human`
+Progress indicator (e.g., '3/7 complete') as the status table stands after this package.
 
 ### package_planning_paths
 

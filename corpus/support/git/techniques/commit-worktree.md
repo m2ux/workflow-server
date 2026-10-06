@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Stage, commit, and push files on the branch checked out in a linked worktree.
+Stage and commit files on the branch checked out in a linked worktree.
 
 ## Inputs
 
@@ -21,9 +21,13 @@ Array of file paths to stage, relative to `{worktree_path}`.
 
 Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
-### branch
+### is_signed
 
-The branch checked out in the worktree, the branch the push sends.
+*(optional)* False by default: the commit is unsigned. True when this commit is signed with the configured signing key.
+
+#### default
+
+`false`
 
 ## Protocol
 
@@ -33,11 +37,8 @@ The branch checked out in the worktree, the branch the push sends.
 
 ### 2. Commit Files
 
-- `git -C {worktree_path} commit --no-gpg-sign -m '{commit_message}'`.
-
-### 3. Push Branch
-
-- `git -C {worktree_path} push origin {branch}`, on the host shell per `git.host-shell-for-remote-git`. The commit is complete when the push succeeds.
+- When `{is_signed}` is true, `git -C {worktree_path} commit -S -m '{commit_message}'`.
+- When `{is_signed}` is not true, `git -C {worktree_path} commit --no-gpg-sign -m '{commit_message}'`.
 
 ## Rules
 

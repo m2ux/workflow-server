@@ -113,9 +113,7 @@ corpus/meta/
 ├── activities/
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop, a bounded run of activities per worker
 │   └── 04-end-workflow.yaml                 # Outcome verification, summary
-├── routines/
-│   ├── activity-loop.yaml                   # Walk a session one activity at a time, until it reaches the terminal
-│   └── dispatch-round.yaml                  # Compose, dispatch and gather one round of worker briefs
+├── routines/                                # Runs an activity binds as a step; every member is indexed in routines/README.md
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Root base contract
 │   ├── agent-conduct.md                     # Cross-cutting rules any agent can act on (single source of truth)

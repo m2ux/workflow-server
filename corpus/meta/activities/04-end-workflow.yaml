@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.11.0
+version: 4.12.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
@@ -85,7 +85,7 @@ steps:
         message: "The push did not land."
   - kind: action
     id: announce-completion
-    when: push_landed
+    when: client_workflow_completed == true && planning_folder_path != '' && push_landed
     actions:
       - action: log
         message: Workflow session closed

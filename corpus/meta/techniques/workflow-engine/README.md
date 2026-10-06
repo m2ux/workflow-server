@@ -30,7 +30,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`resume-worker`](resume-worker.md) | The reading of a continuation that did not return an accepted envelope |
 | [`revise-session-metrics`](revise-session-metrics.md) | Rewrite the client planning folder's session-trace and token-usage artifacts from the full client session ledger after that workflow has finished — including the terminal activity's own… |
 | [`start-session`](start-session.md) | The top-level workflow session: its index and binding, and either the embedded client or an opening decision |
-| [`sync-progress-status`](sync-progress-status.md) | Orchestrator-owned Progress **status** writer for selected activity (and optional item) rows in the planning-folder README |
+| [`sync-progress-status`](sync-progress-status.md) | Progress **status** writer for selected activity (and optional item) rows in the planning-folder README |
 | [`take-activity`](take-activity.md) | Advance a session this context owns onto an activity and carry that activity here, under the technique a dispatched worker would have carried it under |
 | [`verify-outcomes`](verify-outcomes.md) | Compare a workflow's declared `outcomes` against state and identify gaps |
 | [`verify-readme-conforms`](verify-readme-conforms.md) | Conformance check that the planning-folder `README.md` matches the universal planning Template (and seed-declared append H2s) |

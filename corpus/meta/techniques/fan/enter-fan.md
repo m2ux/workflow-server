@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.13.0
 ---
 
 ## Capability
@@ -55,8 +55,7 @@ The opaque trace token the fan-opening `next_activity` call returned in `_meta.t
 
 ### 2. Read Opened Fan
 
-- Capture `_meta.trace_token` as `{advance_trace_tokens}`. The walk appends that token to the run's `trace_tokens`.
-  > A token not captured is absent from the trace close-out resolves.
+- Capture `_meta.trace_token` as `{advance_trace_tokens}` per `dispatch-activity.accumulate-trace-per-advance`.
 - Read `{branch_activities}` from the response body: the `branches` of every `fan` entry, concatenated in the order the entries come.
 - Read `{barrier_destination}` from the response body: the `barrier`'s `destination`.
 

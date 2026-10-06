@@ -1,5 +1,5 @@
 id: open-worker
-version: 1.4.0
+version: 1.5.0
 name: Open Worker
 description: >-
   Compose a stub for a worker that holds no prior deliveries, and spawn one agent with that stub.
@@ -8,7 +8,8 @@ description: >-
 
 inputs:
   - id: agent_technique
-    description: Canonical agent technique for the worker. Default workflow-engine::activity-worker.
+    default: workflow-engine::activity-worker
+    description: Canonical agent technique for the worker.
   - id: session_index
     description: The session the worker authenticates against.
   - id: workflow_id

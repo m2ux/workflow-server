@@ -1,5 +1,5 @@
 id: continue-worker
-version: 1.4.0
+version: 1.5.0
 name: Continue Worker
 description: >-
   Compose a stub for a worker that already holds deliveries, and continue the harness agent that
@@ -7,6 +7,9 @@ description: >-
   replace a context that is gone.
 
 inputs:
+  - id: agent_technique
+    default: workflow-engine::activity-worker
+    description: Canonical agent technique the continued worker follows.
   - id: session_index
     description: The session the worker authenticates against.
   - id: workflow_id
@@ -62,7 +65,7 @@ steps:
     technique:
       name: workflow-engine::compose-prompt
       inputs:
-        agent_technique: workflow-engine::activity-worker
+        agent_technique: agent_technique
         holds_prior_deliveries: true
         checkpoint_reply: checkpoint_reply
         substitutions: substitutions

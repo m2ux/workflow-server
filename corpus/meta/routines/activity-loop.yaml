@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.11.0
+version: 1.12.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -59,6 +59,10 @@ outputs:
     type: array
     optional: true
     description: The trace token of every advance the walk made, in the order it made them. A walk opened on `standing_activity` appends to the tokens the host holds.
+  - id: walk_aborted
+    type: boolean
+    optional: true
+    description: Whether the walk stopped on an engineering push that did not land. False where it ran to the end of the graph, so a held activity and a finished walk stay distinguishable.
 
 internals:
   - id: fan_convergence_activity
@@ -89,6 +93,9 @@ steps:
         target: worker_result
         value: null
       - action: set
+        target: walk_aborted
+        value: false
+      - action: set
         target: trace_tokens
         value: []
   - kind: action
@@ -107,6 +114,9 @@ steps:
       - action: set
         target: worker_result
         value: null
+      - action: set
+        target: walk_aborted
+        value: false
   - kind: loop
     id: activity-cycle
     name: Activity Cycle
@@ -118,6 +128,47 @@ steps:
       value: null
     maxIterations: 200
     steps:
+      # Every entry this iteration can make is made here, before the activity is carried, so
+      # `worker_result` describes the activity `current_activity` names for the whole iteration.
+      # The commit, the exit reading and the advance below each read that pairing.
+      - kind: action
+        id: open-entry-tokens
+        actions:
+          # A token belongs to the entry that returned it. Clearing as the iteration opens keeps
+          # the token an earlier entry left from being appended a second time.
+          - action: set
+            target: advance_trace_tokens
+            value: null
+      - kind: routine
+        id: continue-batched-worker
+        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
+        routine: continue-entry
+        with:
+          activity_id: "{worker_result.next_activity_id}"
+          session_index: session_index
+          workflow_id: workflow_id
+          planning_folder_path: "{planning_folder_path}"
+          from_activity: from_activity
+          exit_id: "{worker_result.activity_exit}"
+          step_manifest: "{worker_result.steps_completed}"
+          variables_changed: "{worker_result.variables_changed}"
+          worker_agent_id: worker_agent_id
+          harness_agent_id: harness_agent_id
+          agent_technique: workflow-engine::activity-worker
+        outputs:
+          worker_result: worker_result
+          advance_trace_tokens: advance_trace_tokens
+      - kind: action
+        id: append-continue-tokens
+        when: advance_trace_tokens
+        actions:
+          - action: set
+            target: trace_tokens
+            value: "{advance_trace_tokens}"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
       - kind: routine
         id: dispatch-entry
         when: enter_activity == "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
@@ -142,12 +193,15 @@ steps:
           advance_trace_tokens: advance_trace_tokens
       - kind: action
         id: append-dispatch-tokens
-        when: enter_activity == "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
             value: "{advance_trace_tokens}"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
       - kind: technique
         id: enter-activity
         when: enter_activity != "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
@@ -262,7 +316,7 @@ steps:
         name: Branch Retirement
         loopType: forEach
         variable: current_branch
-        over: branch_activities
+        over: branches
         maxIterations: 50
         when: "!worker_agent_id && worker_result.next_activity_fans"
         steps:
@@ -271,7 +325,8 @@ steps:
             technique:
               name: fan::retire-branch
               inputs:
-                branch_activity: current_branch
+                branch_activity: "{current_branch.activity_id}"
+                worker_agent_id: "{current_branch.agent_id}"
                 branch_envelopes: branch_envelopes
                 barrier_destination: fan_convergence_activity
                 session_index: session_index
@@ -298,6 +353,9 @@ steps:
         actions:
           - action: message
             message: "The push did not land."
+          - action: set
+            target: walk_aborted
+            value: true
           - action: set
             target: current_activity
             value: null
@@ -399,35 +457,11 @@ steps:
           - action: message
             message: "The push did not land."
           - action: set
+            target: walk_aborted
+            value: true
+          - action: set
             target: current_activity
             value: null
-      - kind: routine
-        id: continue-batched-worker
-        when: push_landed && worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
-        routine: continue-entry
-        with:
-          activity_id: "{worker_result.next_activity_id}"
-          session_index: session_index
-          workflow_id: workflow_id
-          planning_folder_path: "{planning_folder_path}"
-          from_activity: current_activity
-          exit_id: "{worker_result.activity_exit}"
-          step_manifest: "{worker_result.steps_completed}"
-          variables_changed: "{worker_result.variables_changed}"
-          worker_agent_id: worker_agent_id
-          harness_agent_id: harness_agent_id
-          agent_technique: workflow-engine::activity-worker
-        outputs:
-          worker_result: worker_result
-          advance_trace_tokens: advance_trace_tokens
-      - kind: action
-        id: append-continue-tokens
-        when: push_landed && worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
-        actions:
-          - action: set
-            target: trace_tokens
-            value: "{advance_trace_tokens}"
-            description: The tokens this entry returned, appended to the tokens the walk holds.
       - kind: action
         id: note-exiting-activity
         when: worker_result.result_type == "activity_complete" && push_landed

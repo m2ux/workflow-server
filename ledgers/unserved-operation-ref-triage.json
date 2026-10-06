@@ -266,12 +266,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/finalize-activity.md:34",
-      "op": "evaluate-transition",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/handle-sub-workflow.md:38",
       "op": "create-session",
       "verdict": "fix-later",

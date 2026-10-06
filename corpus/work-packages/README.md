@@ -98,7 +98,8 @@ Workflow-specific techniques live under `techniques/`. Some are **technique grou
 | `document-roadmap` | Standalone | Produce finalized roadmap documentation | Finalize Roadmap |
 | `orchestrate-package-execution` | Group | Trigger and manage work-package workflow instances | Implementation |
 | `orchestrate-package-execution::initialize-iteration` | Group op | Build the remaining-packages list and progress indicator | Implementation |
-| `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow, update status | Implementation (loop) |
+| `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow | Implementation (loop) |
+| `orchestrate-package-execution::record-package-progress` | Group op | Record a completed package in the roadmap status table and advance the remaining/completed sets | Implementation (loop) |
 | `variable-binding` | Meta | Bind step techniques to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
 | `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
 
@@ -148,7 +149,8 @@ work-packages/
 │   └── orchestrate-package-execution/
 │       ├── TECHNIQUE.md
 │       ├── initialize-iteration.md
-│       └── execute-package.md
+│       ├── execute-package.md
+│       └── record-package-progress.md
 └── resources/
     ├── README.md
     ├── planning-folder-template.md
