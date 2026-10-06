@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: routine-conformance
-version: 1.0.0
+version: 1.1.0
 title: Routine Conformance Workflow
 description: >-
   Run one shared run twice against a real checkout, each site supplying a different measurement, and report what each site produced. The run takes its measurement as an argument, holds a repeat-until loop, and steers its own later steps on what that measurement reported — the shape a run has when the operation it binds is the site's choice. The measurements are cheap directory reads, so the run costs little and the evidence is about the construct rather than about the measuring.
@@ -10,9 +10,6 @@ tags:
   - conformance
   - loop
   - argument
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: planning_folder_path
     type: string

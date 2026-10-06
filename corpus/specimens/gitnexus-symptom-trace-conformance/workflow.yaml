@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-symptom-trace-conformance
-version: 1.0.0
+version: 1.1.0
 title: GitNexus Symptom Trace Conformance Workflow
 description: >-
   Hold the gitnexus symptom-trace run to two cases. The positive case binds symptom text the graph
@@ -16,9 +16,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string

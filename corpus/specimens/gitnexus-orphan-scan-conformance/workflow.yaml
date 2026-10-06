@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-orphan-scan-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Orphan Scan Conformance Workflow
 description: >-
   Hold the gitnexus orphan-scan run to two cases. The positive case names files the graph holds and
@@ -14,9 +14,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string

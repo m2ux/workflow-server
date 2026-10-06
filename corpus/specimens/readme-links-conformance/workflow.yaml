@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: readme-links-conformance
-version: 1.0.0
+version: 1.1.0
 title: Planning README Links Conformance
 description: >-
   Bind the shared planning-README operation once with the links table omitted
@@ -10,9 +10,6 @@ author: m2ux
 tags:
   - specimen
   - conformance
-techniques:
-  activity:
-    - variable-binding
 initialActivity: seed-links
 graph:
   seed-links:

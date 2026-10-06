@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: midnight-system-review
-version: 2.0.0
+version: 2.1.0
 title: Midnight System Review Workflow
 description: Evidence-driven system-level review of a midnight-node change-set. Derives investigation areas from the changed surface and a subsystem map, runs bounded per-area evidence probes, adjudicates rubric-graded findings, and renders a 1-5 merge-readiness verdict with per-area accounting, optionally publishing the review to the pull request.
 author: m2ux
@@ -24,9 +24,6 @@ rules:
     - "Coverage contract: the approved investigation-plan artifact is the authoritative coverage contract for probing and for any verdict-driven re-derivation."
     - "Failure-class coverage: the subsystem-map failure classes of every in-scope and coupled subsystem are probe obligations. Area derivation maps each failure class relevant to the change kind to a probe or marks it not-applicable with a reason; evidence probing discharges each as confirmed, refuted with proof the failure mode cannot occur, inconclusive when evidence is insufficient, or recorded blocked. Refuted on correlation-class or atomicity-class obligations requires a join-key discharge table or caller-path anchor; inconclusive is never silently treated as refuted. A change altering an event enum, host-boundary type, runtime metadata, or spec_version puts the release-and-upgrade automation subsystem in scope for its failure classes. No named failure class is silently skipped."
     - "Toolchain availability is probed once: a downstream probe reads what detect-toolchain recorded rather than re-testing the tool itself."
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: has_pr_surface
     type: boolean

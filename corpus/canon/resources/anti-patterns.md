@@ -622,7 +622,7 @@ N steps bind one technique without structural reason to split.
 
 ### AP-39. hoist-universal-techniques
 
-"every activity carries `techniques: - variable-binding`"
+"every activity carries `techniques: - scatter-gather`"
 
 A universal technique is not hoisted to workflow.techniques.activity.
 
@@ -630,7 +630,7 @@ A universal technique is not hoisted to workflow.techniques.activity.
 
 **Detect:** A strategy technique appears on nearly every activity's `techniques[]`. `techniques.workflow` reaches the orchestrator (`get_workflow`). `techniques.activity` is inherited by every activity (`get_activity`). There is no `universal` bucket for techniques. A technique only some activities use stays on those activities. A step-binding duplicate is `techniques-list-disjoint`.
 
-**Do not flag:** Activity-specific strategy techniques used by only some activities.
+**Do not flag:** Activity-specific strategy techniques used by only some activities. A technique the worker contract delivers — `variable-binding` among them — which reaches every activity of every workflow without any declaration, and which a workflow naming it would be declaring a second time.
 
 **Fix:** Declare once under `workflow.techniques.activity`; delete from every activity `techniques[]`; drop emptied activity blocks.
 

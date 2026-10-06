@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-change-risk-assessment-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Change Risk Assessment Conformance Workflow
 description: >-
   Hold the gitnexus change-risk-assessment run to three cases. The positive case names a symbol the
@@ -17,9 +17,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string

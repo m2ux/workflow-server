@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-layer-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Layer Conformance Workflow
 description: >-
   Bind the four gitnexus operations that answer a question of their own — the shortest path between
@@ -17,9 +17,6 @@ tags:
   - conformance
   - technique
   - library
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string
