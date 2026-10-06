@@ -18,9 +18,6 @@ variables:
       description: Path to the planning folder for this initiative
 steps:
   - kind: technique
-    id: create-folder
-    technique: workflow-engine::derive-planning-slug
-  - kind: technique
     id: setup-planning-folder
     technique: setup-planning-folder
   - kind: checkpoint

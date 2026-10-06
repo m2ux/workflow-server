@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.7.0
 ---
 
 ## Capability
@@ -19,16 +19,16 @@ Orchestrator agent identity for this session.
 
 ## Protocol
 
-### 1. Load resources
+### 1. Load Resources
 
 - Load resources declared on bundle techniques per `resource-loading-via-tool`
 - Use `force-full-after-summarization` when the context `{agent_id}` names no longer holds prior deliveries
 
-### 2. Resolve the activity to open with
+### 2. Resolve Opening Activity
 
 - Call `get_workflow_status { session_index }`. Where `in_flight` names an activity, the session already stands on it, and that activity is carried without an advance. Otherwise the first advance enters the `initialActivity` that `get_workflow` returns; a session that has entered no activity reports `in_flight` empty
 
-### 3. Walk the workflow to its end
+### 3. Walk to Completion
 
 - Take one activity at a time under the `activity-loop` run, whose steps decide every branch of a turn — which technique enters, when a yielded checkpoint is answered, when what completed is persisted, and when the worker's identity is released. The run arrives as the steps of this technique; no route hands over the file that declares it, and reading a delegated activity's body to execute from is `dispatch-activity.no-get-activity-from-orchestrator`
   > - Every entry is a worker dispatch — never execute a delegated activity's steps inline (`orchestrator-conduct.no-inline-on-resume`).
@@ -43,11 +43,3 @@ Follow the rules in the techniques bundle throughout — [agent-conduct](../agen
 ### no-state-reconstruction-on-attach
 
 The server restores session state on attach. Read it rather than rebuilding it from history, artifacts, or a prior context.
-
-### orchestrator-worker-boundaries
-
-Honor `dispatch-activity.no-get-activity-from-orchestrator`, `dispatch-activity.no-pre-load-techniques`, `dispatch-activity.delivery-keys-on-agent-context`, `dispatch-activity.batch-is-bounded-by-the-server`, `continue-agent.resume-preserves-delivery-scope`, `dispatch-activity.reject-partial-worker-result`, and `dispatch-activity.distrust-then-reconcile`.
-
-### resolve-trace-at-close-out
-
-At close-out, honor `dispatch-activity.resolve-trace-at-close-out`.

@@ -181,7 +181,7 @@ def check() -> list[str]:
         fail("trace-tokens", "enter-fan does not declare the trace token the fan-opening call captures")
     if "### advance_trace_tokens" not in take or "_meta.trace_token" not in take:
         fail("trace-tokens", "take-activity does not declare the trace tokens it captures")
-    if steps.count('value: "{advance_trace_tokens}"') < 1:
+    if steps.count('value: "[{trace_tokens}, {advance_trace_tokens}]"') < 1:
         fail("trace-tokens", "the walk does not append the tokens an advancing operation returns")
 
     def step_reads(input_id: str) -> bool:
@@ -190,9 +190,11 @@ def check() -> list[str]:
         return bool(re.search(rf"\b{input_id}\b", steps))
 
     unread = [input_id for input_id in (
-        "planning_folder_path", "component_path", "host_repo_path", "kind", "target_status",
+        "component_path", "host_repo_path", "kind",
     ) if step_reads(input_id)]
-    # Those five are declared and no step reads them. A call site must not bind one.
+    # Those three are declared and no step reads them. A call site must not bind one.
+    # `planning_folder_path` and `target_status` are read: the loop threads both into the
+    # entry runs that mark and persist, so a call site binding either names a live value.
     sites = {
         "corpus/meta/activities/03-dispatch-client-workflow.yaml": read("corpus/meta/activities/03-dispatch-client-workflow.yaml"),
         "corpus/prism-audit/activities/02-execute-analysis.yaml": read("corpus/prism-audit/activities/02-execute-analysis.yaml"),
@@ -204,7 +206,7 @@ def check() -> list[str]:
         for keys in call_site_bindings(text):
             bound_any = True
             for key in keys:
-                if key in ("planning_folder_path", "component_path", "host_repo_path", "kind", "target_status"):
+                if key in ("component_path", "host_repo_path", "kind"):
                     fail("call-site", f"{rel} binds activity-loop input {key}, which no step reads")
                 elif not re.search(rf"\b{key}\b", steps):
                     fail("call-site", f"{rel} binds {key}, which no step of activity-loop reads")
@@ -270,7 +272,7 @@ def check() -> list[str]:
     persist = close.find("id: persist-client-completion")
     if terminal < 0 or "activity_id: __terminal__" not in close[terminal:persist if persist > terminal else None]:
         fail("terminal-commit", "close-out does not advance the client session onto __terminal__")
-    if persist < terminal or "workflow-engine::commit-and-persist" not in close[persist:]:
+    if persist < terminal or "persist-activity" not in close[persist:]:
         fail("terminal-commit", "the terminal advance does not commit the session's completed state")
 
     # The bootstrap makes the opening advance, because nothing above the session it opens can.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.18.0
+  version: 1.19.0
 ---
 
 ## Capability
@@ -115,7 +115,11 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ### planning-folder-absolute-or-omit
 
-When targeting a planning folder, `planning_folder` MUST be an absolute path. A new folder outside the planning root of `{working_directory}` is refused, and the refusal names that root. Bare slugs and relative paths are rejected. Omit `planning_folder` entirely for a transient meta bootstrap — the server mints a transitional slug and parks the session until `dispatch_child` promotes it. Always prefer the returned `planning_folder_path` over any path the agent constructed.
+When targeting a planning folder, `planning_folder` is an absolute path. A new folder outside the planning root of `{working_directory}` is refused, and the refusal names that root. Bare slugs and relative paths are rejected. The returned `planning_folder_path` is the path this session uses.
+
+### an-omitted-folder-parks-the-session
+
+Omit `planning_folder` for a transient meta bootstrap. The server mints a transitional slug and parks the session.
 
 ### origin-binds-from-working-directory
 

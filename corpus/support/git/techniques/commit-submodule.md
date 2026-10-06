@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-Commit and push inside a submodule and sync the parent's submodule pointer.
+Commit and push inside a submodule and sync the parent's submodule pointer. A clean submodule working tree ends the technique at the status read.
 
 ## Inputs
 
@@ -13,39 +13,65 @@ Commit and push inside a submodule and sync the parent's submodule pointer.
 
 Path of the submodule from the repo root (e.g., `workflows`, `.engineering/workflows`)
 
+### activity_id
+
+The activity whose source changes this commit records.
+
+### workflow_id
+
+The workflow the activity belongs to.
+
+## Outputs
+
 ### paths
 
-Array of file paths inside the submodule
-
-### submodule_message
-
-Conventional Commits message for the submodule commit
-
-### submodule_branch
-
-Branch to push the submodule commit to
-
-### parent_branch
-
-Branch to push the parent commit to
+Tracked paths `git status --porcelain` names in the submodule. Empty when the working tree is clean, and the later phases do not run.
 
 ## Protocol
 
-### 1. Honour the Submodule's Trailer Policy
+### 1. Read the Tree
 
-- Read `{submodule_path}/AGENTS.md` (when present). If it forbids Co-Authored-By, LLM attribution, or similar trailers, strip them from `{submodule_message}` BEFORE committing — fixing it after commit usually requires a force push, which this technique forbids.
+- `git -C {submodule_path} status --porcelain` is `{paths}`.
+  > When it prints nothing, `{paths}` is empty and the later phases do not run.
 
-### 2. Commit and Push the Submodule
+### 2. Apply Trailer Policy
 
-- `cd {submodule_path}`.
-- `git add {paths} && git commit --no-gpg-sign -m '{submodule_message}' && git push origin {submodule_branch}`. This push MUST complete before the parent commit; if it is skipped, the parent will point to a submodule commit that does not exist on the remote (desync). If you discover the parent already references an unpushed submodule commit, `cd` into the submodule and push the missing commit, then verify the parent pointer resolves.
+- `{$submodule_message}` is `<type>({workflow_id}): {activity_id} source changes`, and `<type>` is the Conventional Commits type the activity fits: feat for implement, fix for post-impl-review fixes, refactor for cleanup.
+  > - When `{submodule_path}/AGENTS.md` is present, read it.
+  > - When the file forbids Co-Authored-By, LLM attribution, or similar trailers, those trailers are not in `{submodule_message}`.
 
-### 3. Update the Parent Pointer
+### 3. Stage Submodule Paths
 
-- `cd` back to the repo root.
-- `git add {submodule_path}`.
-- `git commit --no-gpg-sign -m 'chore: update {submodule_path} submodule'`. This phase updates the parent pointer; skipped, the submodule is committed but the parent still points at the old submodule commit (stale pointer). To fix, `cd` to repo root, `git add` the submodule path, commit, and push.
+- `git -C {submodule_path} add {paths}`.
 
-### 4. Push the Parent
+### 4. Commit the Submodule
 
-- `git push origin {parent_branch}`.
+- `git -C {submodule_path} commit --no-gpg-sign -m '{submodule_message}'`.
+
+### 5. Read Submodule Branch
+
+- `git -C {submodule_path} branch --show-current` is `{$submodule_branch}`.
+
+### 6. Push the Submodule
+
+- `git -C {submodule_path} push origin {submodule_branch}`, on the host shell per `git.host-shell-for-remote-git`. This push completes before the parent commit. Skipped, the parent points at a submodule commit the remote does not hold.
+
+### 7. Read the Parent
+
+- `git -C {submodule_path} rev-parse --show-superproject-working-tree` is `{$parent_path}`.
+
+### 8. Stage the Pointer
+
+- `git -C {parent_path} add {submodule_path}`.
+
+### 9. Commit the Pointer
+
+- `git -C {parent_path} commit --no-gpg-sign -m 'chore: update {submodule_path} submodule'`. Skipped, the parent still points at the old submodule commit.
+
+### 10. Read Parent Branch
+
+- `git -C {parent_path} branch --show-current` is `{$parent_branch}`.
+
+### 11. Push the Parent
+
+- `git -C {parent_path} push origin {parent_branch}`, on the host shell per `git.host-shell-for-remote-git`.

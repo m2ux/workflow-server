@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -42,7 +42,7 @@ Per-id table: `id`, `dispatched` (boolean), `returned` (boolean), `status` (`ok`
 - Normalise `{expected_ids}` to an ordered id list (string as-is; object → `.id`).
 - Index `{dispatched_results}` by `id`.
 
-### 2. Build the Items and the Manifest
+### 2. Build Items Manifest
 
 - For each normalised id, append an `items` entry and a manifest row: present non-empty → `ok`; present empty → `empty`; absent → `missing` with `result: null`.
 

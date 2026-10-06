@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -33,4 +33,4 @@ Completed activities, checkpoint decisions, and artifacts produced.
 
 ### present-only
 
-The summary is presented to the user in the session — it is NOT written to the planning folder as an artifact. The session state file is the durable record of the trace, and the client workflow's own close-out document is the durable record of outcomes; a session-summary artifact would duplicate both.
+The summary is presented to the user in the session. It is not written to the planning folder.

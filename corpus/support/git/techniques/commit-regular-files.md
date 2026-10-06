@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.1
+  version: 1.5.0
 ---
 
 ## Capability
@@ -16,14 +16,6 @@ Array of file paths to stage (under `.engineering/artifacts/`, `.engineering/AGE
 ### commit_message
 
 Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
-
-### is_signed
-
-*(optional)* False by default: the commit is unsigned. True when this commit is signed with the configured signing key.
-
-#### default
-
-`false`
 
 ## Protocol
 

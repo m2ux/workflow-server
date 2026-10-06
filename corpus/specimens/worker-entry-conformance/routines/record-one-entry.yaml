@@ -1,0 +1,25 @@
+id: record-one-entry
+version: 1.0.0
+name: Record One Entry
+description: >-
+  Note the entry path an activity arrived on, together with the identity and activity the stub
+  handed it, so the record names both the path and who took it.
+
+inputs:
+  - id: entry_kind
+    description: The entry path this activity arrived on, as the graph position names it.
+
+outputs:
+  - id: entry_record
+    type: object
+    description: The entry path, the identity the activity carries, and the instant the note was made.
+
+steps:
+  - kind: technique
+    id: note
+    technique:
+      name: note-entry
+      inputs:
+        entry_kind: entry_kind
+      outputs:
+        entry_record: entry_record

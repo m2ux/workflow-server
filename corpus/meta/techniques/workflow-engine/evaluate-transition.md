@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ The exit id this activity took; unset where it declares none.
 
 - Otherwise iterate `{current_activity}.exits[]` in array order, evaluating each `when` against the current `{variable_bag}`, and take the first whose `when` is true. Where more than one holds at the activity boundary, take the first in array order and log a warning. An exit with no `when` is not selected here — it is either the default or one only a checkpoint option names.
 
-### 3. Fall Back To Default
+### 3. Take Default Exit
 
 - Where nothing above selected an exit, take the exit marked `isDefault`. This is also what a checkpoint dismissed on an unmet condition resolves to, and what an activity with a single unconditional exit takes.
 

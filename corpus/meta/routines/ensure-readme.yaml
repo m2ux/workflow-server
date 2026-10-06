@@ -1,0 +1,71 @@
+id: ensure-readme
+version: 1.3.0
+name: Ensure README
+description: >-
+  Measure the planning README. When it is absent, seed it and measure the file that was
+  written. include_links and entity_context keep their defaults unless the caller binds them.
+
+inputs:
+  - id: planning_folder_path
+    description: Path to the planning folder the README is written into.
+  - id: seed_profile
+    description: Resource id of the workflow's readme-seed profile.
+  - id: include_links
+    description: Whether the seeded README carries the Links table. Unset keeps create-readme's default.
+  - id: entity_context
+    description: Header and Links values. Unset keeps create-readme's default.
+  - id: is_review_mode
+    description: Mode flag for seed profiles that key exclusions on review. Unset when the caller has none.
+  - id: operation_type
+    description: Mode string for seed profiles that key exclusions on create, update, or review. Unset when the caller has none.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: session_index
+    description: The session this readme is recorded against.
+
+outputs:
+  - id: readme_conformance
+    type: object
+    optional: true
+    description: The conformance envelope for the planning README.
+  - id: created_readme
+    type: string
+    optional: true
+    description: Full path to the README this run wrote, when it seeded one.
+
+steps:
+  - kind: technique
+    id: measure
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        planning_folder_path: planning_folder_path
+        seed_profile: seed_profile
+      outputs:
+        readme_conformance: readme_conformance
+  - kind: technique
+    id: seed-readme
+    when: readme_absent
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        planning_folder_path: planning_folder_path
+        seed_profile: seed_profile
+        include_links: include_links
+        entity_context: entity_context
+        is_review_mode: is_review_mode
+        operation_type: operation_type
+      outputs:
+        created_readme: created_readme
+  - kind: technique
+    id: measure-seeded
+    when: readme_absent
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        planning_folder_path: planning_folder_path
+        seed_profile: seed_profile
+      outputs:
+        readme_conformance: readme_conformance

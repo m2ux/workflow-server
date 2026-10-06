@@ -1,0 +1,23 @@
+id: record-entry
+version: 1.0.0
+name: Record Entry
+description: Record the entry that opened the session.
+required: true
+variables:
+  writes:
+    - name: cold_entry
+      type: object
+      description: The entry this activity arrived on, and the instant it was recorded.
+steps:
+  - kind: routine
+    id: recording
+    routine: record-one-entry
+    with:
+      entry_kind: cold-dispatch
+    outputs:
+      entry_record: cold_entry
+exits:
+  - id: recorded
+    isDefault: true
+outcome:
+  - The entry that opened the session is recorded ({cold_entry})
