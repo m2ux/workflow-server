@@ -273,14 +273,22 @@ def check() -> list[str]:
     if persist < terminal or "workflow-engine::commit-and-persist" not in close[persist:]:
         fail("terminal-commit", "the terminal advance does not commit the session's completed state")
 
-    # The bootstrap reaches a context holding nothing, so every activity it could name would be a
-    # second home for a bind it cannot read. The session stands on its opening activity before the
-    # text is read, and the fetch names none.
+    # The bootstrap makes the opening advance, because nothing above the session it opens can.
+    # It takes the activity to name from the call that opened the session, so the id itself stays
+    # in the workflow that declares it rather than being copied into prose nothing can check.
+    meta = read("corpus/meta/workflow.yaml")
+    opening = re.search(r"^initialActivity:\s*(\S+)\s*$", meta, re.M)
     bootstrap = read("corpus/meta/resources/bootstrap-protocol.md")
-    if "next_activity" in bootstrap:
-        fail("opening-activity", "the bootstrap advances the session it was served for")
-    if "activity_id" in bootstrap:
-        fail("opening-activity", "the bootstrap names an activity, which it cannot read a bind for")
+    if opening is None:
+        fail("opening-activity", "meta declares no initialActivity")
+    elif opening.group(1) in bootstrap:
+        fail(
+            "opening-activity",
+            f"the bootstrap spells out the opening activity {opening.group(1)} rather than reading "
+            "it from the response that opened the session",
+        )
+    if "initialActivity" not in bootstrap:
+        fail("opening-activity", "the bootstrap does not read the opening activity from the open")
 
     return problems
 
