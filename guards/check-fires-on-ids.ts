@@ -28,7 +28,8 @@
  * `workflow.graph` resolves, `workflow.graph.<anything>` does not.
  *
  * Declarations are read from the three canon homes by {@link readDeclarations}, which is the one
- * parser of the line. YAML front matter and a leading byte-order mark are passed over, so a
+ * parser of the line. Each home is reached through the `canon` namespace, so a corpus that joins
+ * another one under a grouping path is graded on the canon it actually serves. YAML front matter and a leading byte-order mark are passed over, so a
  * front-matter comment is never read as a heading. A fenced block shows markup rather than declaring
  * anything, so its lines are passed over. Fences are counted over the body after the front matter,
  * so a fence marker inside the front matter never pairs with one in the body. An unclosed fence
@@ -67,19 +68,54 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { runGuard, type Finding } from './guard-protocol.js';
-import { assertScanned, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, defaultCorpusDest, namespaceSubdir, requireWorkflowsRoot } from './workflows-root.js';
 import { fencedLines, toLines } from './markdown-refs.js';
 import { SCHEMAS_DIR } from '../scripts/generate-schemas.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
 
-/** The files that hold canon units, relative to the corpus root. */
+/** The namespace that owns the canon homes. */
+const CANON_NAMESPACE = 'canon';
+
+/** The files that hold canon units, named by the reference that reaches each one. */
 export const CANON_HOMES = [
   'corpus/canon/resources/anti-patterns.md',
   'corpus/canon/resources/design-principles.md',
   'corpus/canon/resources/convention-conformance.md',
 ] as const;
+
+/**
+ * Where a home sits on disk under `root`, or `null` for a corpus whose canon namespace nothing
+ * reaches.
+ *
+ * The home is found through the namespace that owns it rather than at the path its reference
+ * spells, because a corpus that joins another one roots the joined namespaces under a grouping
+ * path: `canon` serves every reference by its own name while its files sit below
+ * `corpus/upstream/corpus/`. A home sought at the spelled path is a home a joined tree never holds,
+ * and a guard that finds no home at all reports unmeasured — so the whole canon of the tree being
+ * graded would go unread.
+ */
+function homeFile(root: string, path: string): string | null {
+  const name = path.slice(`corpus/${CANON_NAMESPACE}/`.length);
+  return namespaceSubdir(root, CANON_NAMESPACE, name);
+}
+
+/**
+ * The canon homes under `root`: the text of each one the corpus holds, and the names of those it
+ * does not. This is the one reader of the homes, so the guard and the construct listing agree on
+ * which files the canon of a tree is, as they already agree on what a line in them declares.
+ */
+export function readHomes(root: string): { texts: CanonText[]; absent: string[] } {
+  const texts: CanonText[] = [];
+  const absent: string[] = [];
+  for (const path of CANON_HOMES) {
+    const file = homeFile(root, path);
+    if (file && existsSync(file)) texts.push({ path, text: readFileSync(file, 'utf-8') });
+    else absent.push(path);
+  }
+  return { texts, absent };
+}
 
 /** The ids the canon defines for text no schema covers. */
 export const CANON_DEFINED_IDS: ReadonlySet<string> = new Set(['resource', 'readme', '*']);
@@ -460,20 +496,12 @@ export function checkFiresOn(texts: readonly CanonText[], schemas: SchemaSet): F
 export function collect(root: string, schemasDir: string = SCHEMAS_DIR): Finding[] {
   const schemas = loadSchemas(schemasDir);
   assertScanned(schemas.size, 'generated schemas', schemasDir);
-  const findings: Finding[] = [];
-  const texts: CanonText[] = [];
-  for (const path of CANON_HOMES) {
-    const file = join(root, path);
-    if (existsSync(file)) {
-      texts.push({ path, text: readFileSync(file, 'utf-8') });
-      continue;
-    }
-    findings.push({
-      check: 'missing-home',
-      site: path,
-      detail: 'a canon home the corpus does not hold, so no declaration in it is checked',
-    });
-  }
+  const { texts, absent } = readHomes(root);
+  const findings: Finding[] = absent.map((path) => ({
+    check: 'missing-home',
+    site: path,
+    detail: 'a canon home the corpus does not hold, so no declaration in it is checked',
+  }));
   assertScanned(texts.length, 'canon homes', root);
   return [...findings, ...checkFiresOn(texts, schemas)];
 }
