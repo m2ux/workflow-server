@@ -43,7 +43,28 @@ import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
  * rather than in the body — this walk reads the body only, so a branch retirement is one body step
  * whose inner advances are outside what these scenarios model.
  */
-const ADVANCING_STEPS = ['continue-batched-worker', 'enter-activity', 'enter-fan'];
+const ADVANCING_STEPS = ['continue-batched-worker', 'dispatch-entry', 'enter-activity', 'enter-fan'];
+
+/**
+ * The two entry steps, by the `enter_activity` binding that selects one.
+ *
+ * The loop holds a gated pair — `dispatch-entry` where the binding is the declared default, and
+ * `enter-activity` where it names anything else — and both are live: meta's own host leaves the
+ * input unbound, and four client workflows bind `workflow-engine::take-activity`. A walk that seeds
+ * neither takes the second by accident, because an unset binding is not the default string, so the
+ * path the corpus actually runs goes unwalked. Each scenario below runs under both.
+ */
+const TAKE_ACTIVITY = 'workflow-engine::take-activity';
+
+/** The step id the loop enters through, for a given `enter_activity` binding. */
+function entryStep(binding: string): string {
+  return binding === defaultEntryBinding() ? 'dispatch-entry' : 'enter-activity';
+}
+
+/** Both live bindings, the declared default first. Read lazily: there is no corpus at module load. */
+function entryBindings(): string[] {
+  return [defaultEntryBinding(), TAKE_ACTIVITY];
+}
 
 /** The destination an activity routes to when it ends the run — through an exit, or for want of one. */
 const TERMINAL = '__terminal__';
@@ -65,27 +86,57 @@ interface Envelope {
 type Bag = Record<string, unknown>;
 
 /**
- * What each technique step of the loop does to the variable bag, read off the technique it binds.
+ * Carry the activity the pointer names, under a minted identity, and return its envelope.
+ *
+ * The reading of both entry steps. The advance is skipped where `stands_on_activity` says the session
+ * already stands on the activity — the convergence a fan entered, or the activity an earlier walk left
+ * in flight. Entering `__terminal__` completes the session: it returns the `workflow_complete`
+ * envelope, mints no identity, and runs no worker.
+ */
+function enters(bag: Bag, next: () => Envelope, log: string[]): void {
+  const activity = bag['current_activity'] as string;
+  if (activity === TERMINAL) {
+    log.push('terminal');
+    bag['worker_result'] = { result_type: 'workflow_complete' };
+    return;
+  }
+  if (!bag['stands_on_activity']) log.push('advance');
+  bag['worker_agent_id'] = `worker:${activity}`;
+  bag['worker_result'] = next();
+}
+
+/**
+ * What each technique and routine step of the loop does to the variable bag, read off what it binds.
  * An action step has no row: its `set` actions are read from the definition (`applySets`).
  *
- * - `continue-batched-worker` → `workflow-engine::continue-batch`: advances the pointer, then returns
- *   an envelope and the identity now holding the activity — the held one, or a replacement it spawned.
- * - `enter-activity` → the run's `enter_activity` input: advances the pointer unless
- *   `stands_on_activity` says the session already stands on the activity, mints an identity named for
- *   that activity, and returns an envelope. Entering `__terminal__` completes the session: it returns
- *   the `workflow_complete` envelope and mints no identity.
+ * Every body step is covered, and the coverage is asserted — a step added to the loop, or one
+ * renamed, has to be read and placed here rather than defaulting to no effect. A row that does
+ * nothing says so, and why.
+ *
+ * - `continue-batched-worker` → `continue-entry`: advances the pointer, then returns an envelope and
+ *   the identity now holding the activity — the held one, or a replacement it spawned.
+ * - `dispatch-entry` and `enter-activity` → the gated entry pair, selected by `enter_activity`.
  * - `enter-fan` → `fan::enter-fan`: one call opens every branch and reports the activity they
  *   converge on.
- * - `spawn-branches` → `fan::spawn-branches`: emits the batch and collects the returns. No gate
- *   reads what it produces.
- * - `branch-retirement` → the forEach over `branch_activities`, whose `fan::retire-branch` advances
- *   once per branch, the last retirement entering the convergence activity. Its inner steps are
- *   outside this walk, which reads the body only.
- * - `persist-the-fan` → the `persist-activity` routine over the branch activities: the fan's
- *   one commit, at convergence.
- * - `resume-yielded-worker` → `workflow-engine::resume-worker`: returns a fresh envelope under the
- *   identity already held. It does NOT touch the pointer.
- * - `commit-activity-artifacts` → the `persist-activity` routine: the activity's one commit.
+ * - `mint-branches` → `fan::spawn-branches`, and `open-branches` → the routine that runs them: the
+ *   batch and its returns. No gate reads what either produces.
+ * - `branch-retirement` → the forEach over `branches`, whose `fan::retire-branch` advances once per
+ *   branch, the last retirement entering the convergence activity. Its inner steps are outside this
+ *   walk, which reads the body only.
+ * - `persist-the-fan` → the `persist-activity` routine over the branch activities: the fan's one
+ *   commit, at convergence, reporting whether its push landed.
+ * - `persist-entering` → the `persist-entering` routine: the entering mark for a fan's source.
+ * - `resume-yielded-worker` → `resume-entry`: returns a fresh envelope under the identity already
+ *   held. It does NOT touch the pointer.
+ * - `finish-entered-activity` and `finish-resumed-activity` → `finish-activity`: the fold of a
+ *   worker's `steps_complete` into the envelope the loop's gates read.
+ * - `commit-activity-artifacts` → the `persist-activity` routine: the activity's one commit,
+ *   reporting whether its push landed.
+ *
+ * `advance_trace_tokens` is unmodelled throughout. Every entry returns it and six action steps append
+ * it to `trace_tokens`, but no `when:` in the loop reads the tokens, so modelling them would change
+ * which steps this walk records as fired without changing a single gate. The append steps therefore
+ * stay unfired here, and what the tokens accumulate is asserted elsewhere.
  */
 const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) => void> = {
   'continue-batched-worker': (bag, next, log) => {
@@ -95,19 +146,11 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     // walk cannot tell the two apart; the bag is left alone rather than implying it can.
     bag['worker_result'] = next();
   },
-  // Also declares trace_tokens, which no gate reads.
-  'enter-activity': (bag, next, log) => {
-    const activity = bag['current_activity'] as string;
-    if (activity === TERMINAL) {
-      // The advance onto `__terminal__` completes the session, and no worker runs there.
-      log.push('terminal');
-      bag['worker_result'] = { result_type: 'workflow_complete' };
-      return;
-    }
-    if (!bag['stands_on_activity']) log.push('advance');
-    bag['worker_agent_id'] = `worker:${activity}`;
-    bag['worker_result'] = next();
-  },
+  // The gated entry pair. Both carry the activity the pointer names and return its envelope under a
+  // minted identity; they differ in the binding that selects them, not in what they do to the bag, so
+  // one reading serves both. Each also returns `advance_trace_tokens`, left unmodelled below.
+  'dispatch-entry': enters,
+  'enter-activity': enters,
   'enter-fan': (bag, _next, log) => {
     log.push('advance');
     // One call opens every branch. Branch envelopes belong to the spawn that follows; this walk
@@ -115,9 +158,16 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     bag['fan_convergence_activity'] = 'gather';
     bag['branch_activities'] = ['probe-unit#0', 'probe-unit#1'];
   },
-  'spawn-branches': () => { /* returns branch_envelopes; no gate reads it */ },
+  'mint-branches': () => { /* returns the branches; no gate reads them */ },
+  'open-branches': () => { /* returns branch_envelopes; no gate reads it */ },
   'branch-retirement': () => { /* the forEach whose retirements advance, one per branch */ },
-  'persist-the-fan': (_bag, _next, log) => { log.push('commit'); },
+  'persist-the-fan': (bag, _next, log) => {
+    log.push('commit');
+    bag['push_landed'] = true;
+  },
+  // Writes the entering mark for a fan's source. Gated on a planning folder, which these walks do not
+  // bind, so it is named for the table's completeness and fires in none of them.
+  'persist-entering': () => { /* commits the entering mark; no gate reads what it returns */ },
   // Both declare Outputs, and both are consumed — `user_selection` by `respond-checkpoint`'s
   // `checkpoint_resolution`, `effects` by `resume-worker`'s `effects` — but no `when:` in the loop reads
   // either, so a faithful encoding and an empty one produce identical walks. Left empty, and both named
@@ -141,7 +191,17 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     }
     bag['worker_result'] = envelope;
   },
-  'commit-activity-artifacts': (_bag, _next, log) => { log.push('commit'); },
+  'commit-activity-artifacts': (bag, _next, log) => {
+    log.push('commit');
+    // `persist-activity` reports whether the push landed, and the two steps after this one read it:
+    // one aborts the walk where it did not, the other advances where it did. A commit that reports
+    // nothing reads as a push that failed, and the walk ends on its first activity.
+    bag['push_landed'] = true;
+  },
+  // The fold of a worker's own `steps_complete` into the envelope the loop's gates read. Scenarios
+  // script the post-fold `activity_complete` directly, so the fold itself is outside these walks.
+  'finish-entered-activity': () => { /* folds steps_complete; no scenario scripts that type */ },
+  'finish-resumed-activity': () => { /* folds steps_complete; no scenario scripts that type */ },
 };
 
 interface LoopStep { kind: string; id: string; when?: string; actions?: SetAction[] }
@@ -187,10 +247,28 @@ function activityDef(): { steps: OuterStep[] } {
   ) as { steps: OuterStep[] };
 }
 
-function routineDef(): { steps: OuterStep[] } {
+interface RunDef {
+  steps: OuterStep[];
+  inputs?: Array<{ id: string; default?: unknown }>;
+}
+
+function routineDef(): RunDef {
   return parseYaml(
     readFileSync(workflowSubdir(liveCorpusRoot()!, 'meta', 'routines/activity-loop.yaml')!, 'utf8'),
-  ) as { steps: OuterStep[] };
+  ) as RunDef;
+}
+
+/**
+ * The `enter_activity` binding a caller that binds nothing gets, read from the input's declared
+ * default. Hard-coding it would let the default move to the other entry step with every walk below
+ * still passing, since the two are gated on this exact string.
+ */
+function defaultEntryBinding(): string {
+  const declared = routineDef().inputs?.find((i) => i.id === 'enter_activity')?.default;
+  if (typeof declared !== 'string') {
+    throw new Error(`the loop declares no default enter_activity binding (got ${String(declared)})`);
+  }
+  return declared;
 }
 
 function loop(): LoopDef {
@@ -250,13 +328,22 @@ function opensWalk(prior: Bag): Bag {
  * Walk the loop until its continuation test fails or the scripted envelopes run out.
  * `initialActivity` primes the pointer the way `prime-initial-activity` does, unless `seed`
  * is the bag `opensWalk` already produced. The loop's own test is `current_activity != null`.
+ *
+ * `entryBinding` is the `enter_activity` a caller bound, and selects which of the two entry steps
+ * the body reaches. It is seeded onto the bag whether or not the caller named one, because the
+ * gates compare it against a literal and an unset binding silently picks the non-default branch.
  */
-function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis', seed?: Bag): Walk {
+function walk(
+  envelopes: Envelope[],
+  initialActivity = 'implementation-analysis',
+  seed?: Bag,
+  entryBinding: string = defaultEntryBinding(),
+): Walk {
   const def = loop();
   const body = def.steps;
   const bag: Bag = seed
-    ? { ...seed }
-    : { current_activity: initialActivity, client_session_index: 'AAAAAA' };
+    ? { enter_activity: entryBinding, ...seed }
+    : { current_activity: initialActivity, client_session_index: 'AAAAAA', enter_activity: entryBinding };
   const queue = [...envelopes];
   const iterations: string[][] = [];
   const log: string[] = [];
@@ -325,6 +412,26 @@ function longestWorkflowActivityCount(): number {
 }
 
 describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
+  it('reads every body step, and reads no step the body dropped', () => {
+    // The walk applies `EFFECTS[step.id]` and tolerates a miss, so an unread step and a renamed one
+    // both produce a walk that simply skips it — every scenario below still passing, and the model
+    // quietly describing a loop the corpus no longer has. Both directions are named here instead.
+    const ids = loop().steps.map((s) => s.id);
+    const unread = ids.filter((id) => !EFFECTS[id]).filter((id) => {
+      const step = loop().steps.find((s) => s.id === id);
+      return step?.kind !== 'action';
+    });
+    expect(unread, `read these steps and give each a row in EFFECTS:\n${unread.join('\n')}`).toEqual([]);
+
+    const dead = Object.keys(EFFECTS).filter((id) => !ids.includes(id));
+    expect(dead, `the body holds no such step; drop these rows:\n${dead.join('\n')}`).toEqual([]);
+
+    // An action step's effect is read from its `set` actions, so a row for one would be a second,
+    // divergent reading of something the definition already states.
+    const shadowed = ids.filter((id) => EFFECTS[id] && loop().steps.find((s) => s.id === id)?.kind === 'action');
+    expect(shadowed, `these are action steps; their effects are their own:\n${shadowed.join('\n')}`).toEqual([]);
+  });
+
   it('carries the frame a batch of any length needs, outside the body', () => {
     const def = routineDef();
 
@@ -403,8 +510,10 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
       'terminal with room left': [complete(TERMINAL, true)],
       'two gates on one activity': [gate(), gate(), complete(TERMINAL)],
     };
-    for (const [name, envelopes] of Object.entries(scenarios)) {
-      const result = walk(envelopes);
+    for (const binding of entryBindings()) {
+    for (const [label, envelopes] of Object.entries(scenarios)) {
+      const name = `${label} (${binding})`;
+      const result = walk(envelopes, undefined, undefined, binding);
       for (const [index, fired] of result.iterations.entries()) {
         const advancing = fired.filter((id) => ADVANCING_STEPS.includes(id));
         expect(advancing.length, `${name}, iteration ${index + 1}: ${fired.join(' → ')}`).toBeLessThanOrEqual(1);
@@ -423,7 +532,9 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
       // `__terminal__`, and that entry's iteration runs nothing but the entry and the walk's end — no
       // continuation carries a held worker into it, and no gate or commit follows it.
       expect(result.bag['worker_agent_id'], `${name}: identity`).toBeNull();
-      expect(result.iterations.at(-1), `${name}: terminal iteration`).toEqual(['enter-activity', 'end-walk']);
+      expect(result.iterations.at(-1), `${name}: terminal iteration`)
+        .toEqual(['open-entry-tokens', entryStep(binding), 'end-walk']);
+    }
     }
   });
 
@@ -446,40 +557,49 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
   });
 
   it('walks a clean batch of three as one dispatch and two continuations, then enters the terminal', () => {
-    const result = walk([complete('plan-prepare'), complete('assumptions-review'), complete(TERMINAL)]);
+    for (const binding of entryBindings()) {
+      const result = walk(
+        [complete('plan-prepare'), complete('assumptions-review'), complete(TERMINAL)],
+        undefined, undefined, binding,
+      );
+      const entry = entryStep(binding);
 
-    expect(result.stopped).toBe('condition');
-    expect(result.iterations).toEqual([
-      ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
-      ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
-      ['continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
-      ['enter-activity', 'end-walk'],
-    ]);
-    // Every activity commits before the next advance, the identity is released once, after the last
-    // activity, and the entry onto `__terminal__` is the walk's final advance.
-    expect(result.log).toEqual(['advance', 'commit', 'advance', 'commit', 'advance', 'commit', 'terminal']);
-    expect(result.bag['worker_agent_id']).toBeNull();
-    // One identity carries the whole batch.
-    expect(result.minted).toEqual(['worker:implementation-analysis']);
+      expect(result.stopped, binding).toBe('condition');
+      expect(result.iterations, binding).toEqual([
+        ['open-entry-tokens', entry, 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
+        ['open-entry-tokens', 'continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity'],
+        ['open-entry-tokens', 'continue-batched-worker', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+        ['open-entry-tokens', entry, 'end-walk'],
+      ]);
+      // Every activity commits before the next advance, the identity is released once, after the last
+      // activity, and the entry onto `__terminal__` is the walk's final advance.
+      expect(result.log, binding).toEqual(['advance', 'commit', 'advance', 'commit', 'advance', 'commit', 'terminal']);
+      expect(result.bag['worker_agent_id'], binding).toBeNull();
+      // One identity carries the whole batch.
+      expect(result.minted, binding).toEqual(['worker:implementation-analysis']);
+    }
   });
 
   it('carries the identity across a gate and continues on the following iteration', () => {
-    const result = walk([gate(), complete('plan-prepare'), complete(TERMINAL)]);
+    for (const binding of entryBindings()) {
+      const result = walk([gate(), complete('plan-prepare'), complete(TERMINAL)], undefined, undefined, binding);
 
-    // The gate iteration presents, responds and resumes — and does NOT commit or advance the pointer,
-    // because a gate is not an activity boundary. The resumed envelope then completes the activity in
-    // that same iteration, which is where the commit belongs.
-    expect(result.iterations[0]).toEqual([
-      'enter-activity',
-      'present-yielded-checkpoint',
-      'respond-yielded-checkpoint',
-      'resume-yielded-worker',
-      'commit-activity-artifacts',
-      'note-exiting-activity',
-      'advance-activity',
-    ]);
-    // The identity survived the gate, so the next activity is a continuation rather than a dispatch.
-    expect(result.iterations[1]?.[0]).toBe('continue-batched-worker');
+      // The gate iteration presents, responds and resumes — and does NOT commit or advance the pointer,
+      // because a gate is not an activity boundary. The resumed envelope then completes the activity in
+      // that same iteration, which is where the commit belongs.
+      expect(result.iterations[0], binding).toEqual([
+        'open-entry-tokens',
+        entryStep(binding),
+        'present-yielded-checkpoint',
+        'respond-yielded-checkpoint',
+        'resume-yielded-worker',
+        'commit-activity-artifacts',
+        'note-exiting-activity',
+        'advance-activity',
+      ]);
+      // The identity survived the gate, so the next activity is a continuation rather than a dispatch.
+      expect(result.iterations[1]?.[1], binding).toBe('continue-batched-worker');
+    }
   });
 
   it('answers two gates on one activity under one identity, committing once', () => {
@@ -491,7 +611,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     // takes one more iteration to enter `__terminal__`.
     expect(result.iterations).toHaveLength(3);
     expect(walk([gate(), complete(TERMINAL)]).iterations).toHaveLength(2);
-    expect(result.iterations[1]![0]).toBe('present-yielded-checkpoint');
+    expect(result.iterations[1]![1]).toBe('present-yielded-checkpoint');
     expect(result.iterations[1]!.filter((id) => ADVANCING_STEPS.includes(id))).toEqual([]);
     // One activity, one commit — a second gate does not buy a second commit, or a second advance.
     expect(result.log.filter((e) => e === 'commit')).toHaveLength(1);
@@ -515,10 +635,10 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
 
     expect(result.stopped).toBe('condition');
     expect(result.iterations).toEqual([
-      ['enter-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
-      ['enter-fan', 'spawn-branches', 'branch-retirement', 'persist-the-fan', 'advance-past-fan', 'retire-fan-envelope'],
-      ['enter-activity', 'spend-entered-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
-      ['enter-activity', 'end-walk'],
+      ['open-entry-tokens', 'dispatch-entry', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['open-entry-tokens', 'enter-fan', 'mint-branches', 'open-branches', 'branch-retirement', 'persist-the-fan', 'advance-past-fan', 'retire-fan-envelope'],
+      ['open-entry-tokens', 'dispatch-entry', 'spend-entered-activity', 'commit-activity-artifacts', 'note-exiting-activity', 'advance-activity', 'release-spent-worker'],
+      ['open-entry-tokens', 'dispatch-entry', 'end-walk'],
     ]);
     expect(result.iterations.flat().filter((id) => id === 'continue-batched-worker')).toEqual([]);
     // Two advances: the source's entry and the call that opens the fan. The join's entry adds none —
@@ -535,7 +655,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
 
     expect(result.iterations[0]).toContain('release-spent-worker');
     // Released, so the following iteration reaches dispatch rather than continuation.
-    expect(result.iterations[1]?.[0]).toBe('enter-activity');
+    expect(result.iterations[1]?.[1]).toBe(entryStep(defaultEntryBinding()));
     expect(result.iterations[1]).not.toContain('continue-batched-worker');
   });
 
@@ -548,7 +668,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     expect(result.stopped).toBe('condition');
     expect(result.iterations).toHaveLength(2);
     expect(result.iterations[0]).toContain('release-spent-worker');
-    expect(result.iterations[1]).toEqual(['enter-activity', 'end-walk']);
+    expect(result.iterations[1]).toEqual(['open-entry-tokens', entryStep(defaultEntryBinding()), 'end-walk']);
     expect(result.bag['worker_result']).toEqual({ result_type: 'workflow_complete' });
     expect(result.minted).toEqual(['worker:implementation-analysis']);
     expect(result.bag['current_activity']).toBeNull();
@@ -593,7 +713,7 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
       opened,
     );
     // The standing activity is carried, not advanced onto. The next activity is the one advance.
-    expect(result.iterations[0]).toContain('enter-activity');
+    expect(result.iterations[0]).toContain(entryStep(defaultEntryBinding()));
     expect(result.iterations[0]).toContain('spend-entered-activity');
     expect(result.log.filter((entry) => entry === 'advance')).toEqual(['advance']);
     expect(result.bag['stands_on_activity']).toBe(false);
