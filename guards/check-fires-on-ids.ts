@@ -101,6 +101,22 @@ function homeFile(root: string, path: string): string | null {
   return namespaceSubdir(root, CANON_NAMESPACE, name);
 }
 
+/**
+ * The canon homes under `root`: the text of each one the corpus holds, and the names of those it
+ * does not. This is the one reader of the homes, so the guard and the construct listing agree on
+ * which files the canon of a tree is, as they already agree on what a line in them declares.
+ */
+export function readHomes(root: string): { texts: CanonText[]; absent: string[] } {
+  const texts: CanonText[] = [];
+  const absent: string[] = [];
+  for (const path of CANON_HOMES) {
+    const file = homeFile(root, path);
+    if (file && existsSync(file)) texts.push({ path, text: readFileSync(file, 'utf-8') });
+    else absent.push(path);
+  }
+  return { texts, absent };
+}
+
 /** The ids the canon defines for text no schema covers. */
 export const CANON_DEFINED_IDS: ReadonlySet<string> = new Set(['resource', 'readme', '*']);
 
@@ -480,20 +496,12 @@ export function checkFiresOn(texts: readonly CanonText[], schemas: SchemaSet): F
 export function collect(root: string, schemasDir: string = SCHEMAS_DIR): Finding[] {
   const schemas = loadSchemas(schemasDir);
   assertScanned(schemas.size, 'generated schemas', schemasDir);
-  const findings: Finding[] = [];
-  const texts: CanonText[] = [];
-  for (const path of CANON_HOMES) {
-    const file = homeFile(root, path);
-    if (file && existsSync(file)) {
-      texts.push({ path, text: readFileSync(file, 'utf-8') });
-      continue;
-    }
-    findings.push({
-      check: 'missing-home',
-      site: path,
-      detail: 'a canon home the corpus does not hold, so no declaration in it is checked',
-    });
-  }
+  const { texts, absent } = readHomes(root);
+  const findings: Finding[] = absent.map((path) => ({
+    check: 'missing-home',
+    site: path,
+    detail: 'a canon home the corpus does not hold, so no declaration in it is checked',
+  }));
   assertScanned(texts.length, 'canon homes', root);
   return [...findings, ...checkFiresOn(texts, schemas)];
 }

@@ -2,20 +2,24 @@
 /**
  * The units of the canon that fire on one construct, read at the commit under `--root`.
  *
- * The declarations are parsed by {@link readDeclarations}, the same reader the Fires-on guard uses,
- * so the listing and the guard agree on what a line declares. A unit is listed when it declares the
- * queried id, a prefix of it (its bare kind, or a field the query extends), or `*`. The index is
- * printed and not stored.
+ * The homes are read by {@link readHomes} and their declarations parsed by {@link readDeclarations},
+ * the same readers the Fires-on guard uses, so the listing and the guard agree both on which files
+ * the canon is and on what a line in them declares. A unit is listed when it declares the queried
+ * id, a prefix of it (its bare kind, or a field the query extends), or `*`. The index is printed
+ * and not stored.
+ *
+ * A corpus holding no home is refused rather than listed as empty: a listing that read nothing
+ * prints exactly what one where no unit fires prints, and the caller would take the silence for an
+ * answer.
  *
  * Run: npx tsx guards/list-fires-on.ts <id> [--root <workflows-dir>]
  *
  * Each line is `path:line unit`, the canon home relative to the corpus root and the heading of the unit.
  */
-import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { CANON_HOMES, formatListing, listUnits, type CanonText } from './check-fires-on-ids.js';
-import { defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
+import { formatListing, listUnits, readHomes } from './check-fires-on-ids.js';
+import { assertScanned, defaultCorpusDest, requireWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
@@ -30,15 +34,6 @@ export function queryArg(argv: readonly string[]): string | undefined {
   return argv.find((arg, index) => !skip.has(index) && arg !== '');
 }
 
-function textsAt(root: string): CanonText[] {
-  const texts: CanonText[] = [];
-  for (const path of CANON_HOMES) {
-    const file = join(root, path);
-    if (existsSync(file)) texts.push({ path, text: readFileSync(file, 'utf8') });
-  }
-  return texts;
-}
-
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const query = queryArg(process.argv.slice(2));
   if (!query) {
@@ -46,5 +41,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(2);
   }
   const root = requireWorkflowsRoot(DEFAULT_ROOT);
-  process.stdout.write(formatListing(listUnits(textsAt(root), query)));
+  const { texts } = readHomes(root);
+  try {
+    assertScanned(texts.length, 'canon homes', root);
+  } catch (error) {
+    process.stderr.write(`${(error as Error).message}\n`);
+    process.exit(2);
+  }
+  process.stdout.write(formatListing(listUnits(texts, query)));
 }
