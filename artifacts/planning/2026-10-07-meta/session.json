@@ -176,6 +176,15 @@
             "optionId": "confirmed",
             "respondedAt": "2026-10-07T05:46:52.000Z"
           },
+          "finalize-specification-finalization-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "finalization_accepted": true
+              }
+            },
+            "optionId": "accepted",
+            "respondedAt": "2026-10-07T06:03:21.000Z"
+          },
           "intake-sources-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-10-07T05:36:36.000Z"
@@ -198,6 +207,27 @@
         ],
         "currentTechnique": "record-intake",
         "deliveredContent": {
+          "finalize-worker": {
+            "bundle:agent-conduct": "b9a1d9894f4eccc4",
+            "bundle:contract:meta": "9ff9bc5a37782bb6",
+            "bundle:contract:requirements-refinement": "4293c0d1b8796012",
+            "bundle:contract:workflow-engine": "7e91e9b1690f37b4",
+            "bundle:variable-binding": "9dae996fd78827ff",
+            "bundle:worker-conduct": "2ea72de0afeda0ce",
+            "bundle:workflow-engine::activity-worker": "39eee7342dd2c946",
+            "bundle:workflow-engine::compose-steps-complete": "c97fd92506f03e40",
+            "bundle:workflow-engine::resume-from-checkpoint": "e298305b1468d2cd",
+            "bundle:workflow-engine::step-control": "0137c4b5fd7184fa",
+            "bundle:workflow-engine::yield-checkpoint": "72cc5063739c4988",
+            "note:resources:0eff389311365362": "0eff389311365362",
+            "note:step_techniques:4083f882c5b46610": "4083f882c5b46610",
+            "resource:change-summary": "b2b2d043b9998da3",
+            "resource:meta/writing-register": "d866de322f5554f4",
+            "resource:requirements-refinement/README#planning-artifact-to-guide-map": "21fc8a1a0fed3823",
+            "resource:specification-protocol#final-specification-form": "87d4ded7715423ac",
+            "technique:finalize-specification": "35ae6efc50fd195d",
+            "technique:verify-artifact-conforms": "63d57efdfc26281c"
+          },
           "intake-worker": {
             "bundle:agent-conduct": "b9a1d9894f4eccc4",
             "bundle:contract:meta": "9ff9bc5a37782bb6",
@@ -268,9 +298,9 @@
           }
         },
         "executionPath": "agent",
-        "exit": "done",
+        "exit": "validation-passed",
         "frontier": [
-          "validate-specification"
+          "finalize-specification"
         ],
         "history": [
           {
@@ -1999,19 +2029,237 @@
             },
             "timestamp": "2026-10-07T05:57:04.172Z",
             "type": "activity_delivered"
+          },
+          {
+            "activity": "validate-specification",
+            "timestamp": "2026-10-07T05:58:49.086Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "validation_report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/04-validation-report-1.md"
+            },
+            "timestamp": "2026-10-07T05:58:49.086Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "has_critical_issues",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-10-07T05:58:49.086Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "has_correctable_issues",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-10-07T05:58:49.086Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "validation_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-10-07T05:58:49.086Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "stepId": "validate-specification"
+            },
+            "timestamp": "2026-10-07T05:58:49.086Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "finalize-specification",
+            "timestamp": "2026-10-07T05:58:49.086Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "chars": 46089,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-10-07T05:58:56.557Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "chars": 2226,
+              "delivery": "full",
+              "stepId": "finalize-specification",
+              "techniqueId": "finalize-specification"
+            },
+            "timestamp": "2026-10-07T05:58:56.557Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "stepId": "finalize-specification"
+            },
+            "timestamp": "2026-10-07T05:58:56.557Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "chars": 5851,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-10-07T05:58:56.557Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-10-07T05:58:56.557Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "bundled_steps": 2,
+              "delivery": "full",
+              "eager_budget_chars": 640000,
+              "fixed_chars": 3230,
+              "provenance_passes": 2,
+              "resolved_techniques": 11,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 46089,
+              "spent_chars": 39989,
+              "worker_bundle_chars": 31912
+            },
+            "timestamp": "2026-10-07T05:58:56.557Z",
+            "type": "activity_delivered"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "chars": 747,
+              "delivery": "full",
+              "resourceId": "specification-protocol#final-specification-form"
+            },
+            "timestamp": "2026-10-07T05:59:03.630Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "chars": 1335,
+              "delivery": "full",
+              "resourceId": "change-summary"
+            },
+            "timestamp": "2026-10-07T05:59:04.340Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "chars": 717,
+              "delivery": "full",
+              "resourceId": "requirements-refinement/README#planning-artifact-to-guide-map"
+            },
+            "timestamp": "2026-10-07T06:00:52.321Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "agentId": "finalize-worker",
+              "chars": 2924,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-10-07T06:00:53.277Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "name": "final_specification_path",
+              "source": "yield_checkpoint",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/05-final-spec.md"
+            },
+            "timestamp": "2026-10-07T06:02:32.282Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "name": "change_summary_path",
+              "source": "yield_checkpoint",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/05-change-summary.md"
+            },
+            "timestamp": "2026-10-07T06:02:32.282Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "finalize-specification",
+            "checkpoint": "finalization-confirmed",
+            "timestamp": "2026-10-07T06:02:32.282Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "finalize-specification",
+            "checkpoint": "finalization-confirmed",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-10-07T06:03:21.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "finalize-specification",
+            "data": {
+              "name": "finalization_accepted",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-10-07T06:03:21.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 30,
+        "seq": 39,
         "sessionIndex": "66LSEP",
         "startedAt": "2026-10-07T05:08:48.160Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1791352624,
+        "ts": 1791353010,
         "variables": {
           "analysis_confirmed": true,
-          "change_summary_path": "",
+          "change_summary_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/05-change-summary.md",
           "classified_sources": [
             {
               "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/meetings/2026-09-27-b8c47927.md",
@@ -2079,9 +2327,9 @@
           ],
           "correction_iteration": 1,
           "failure_report_path": "",
-          "final_specification_path": "",
-          "finalization_accepted": false,
-          "has_correctable_issues": true,
+          "final_specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/05-final-spec.md",
+          "finalization_accepted": true,
+          "has_correctable_issues": false,
           "has_critical_issues": false,
           "host_repo_path": "/home/mike1/projects/dev/workflow-server",
           "intake_record_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/01-intake.md",
@@ -2481,8 +2729,8 @@
           "update_pass": 1,
           "update_pass_kind": "correction",
           "user_request": "Start a requirements refinement workflow for the session content at /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-06-work-planner-retrospective/sessions. The project is the 'Work Planner Skill'.",
-          "validation_passed": false,
-          "validation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/04-validation-report-0.md",
+          "validation_passed": true,
+          "validation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/04-validation-report-1.md",
           "working_specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/03-working-spec-1.md"
         },
         "workflowId": "requirements-refinement",
