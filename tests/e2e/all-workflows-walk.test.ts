@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { createHarness, type Harness } from './harness.js';
 import { walk } from './walker.js';
 import { defaultPolicy } from './policies.js';
+import { doubledAnnouncements } from './records.js';
 import { liveCorpusRoot } from '../corpus-root.js';
 import { indexCorpus } from '../../src/loaders/corpus-index.js';
 
@@ -31,6 +32,11 @@ import { indexCorpus } from '../../src/loaders/corpus-index.js';
  * for which workflows exist, and it drifts silently: a workflow added to the corpus and omitted
  * here is not walked, and nothing reports that it was skipped — which is how the workflow above
  * reached a merge with nothing measuring it.
+ *
+ * One thing it does read off each delivery: the artifact contract. Every activity the corpus
+ * declares is delivered here and nowhere else at this breadth, so this is where a contract that
+ * announces one artifact twice is seen — see `doubledAnnouncements` for what the reading is and
+ * why nothing else makes it.
  */
 const LIVE_CORPUS = liveCorpusRoot();
 function corpusWorkflows(): string[] {
@@ -62,6 +68,13 @@ describe.skipIf(!LIVE_CORPUS)('all-workflows E2E walk (workflow-agnostic drift g
       expect(r.steps.flatMap((s) => s.unresolved)).toEqual([]);
       // Every reached activity loaded — including borrowed cross-workflow activities.
       expect(r.loadErrors).toEqual([]);
+      // No activity promised its worker one artifact under two names: one logical artifact is one
+      // file, so a contract naming it twice asks for a second instance the write protocol refuses
+      // to mint, and a reader of the contract cannot tell which entry the path it needs comes from.
+      expect(
+        doubledAnnouncements(r),
+        'a delivered artifact contract names one logical artifact more than once',
+      ).toEqual([]);
     });
   }
 });

@@ -1,0 +1,9 @@
+id: doubled-contract
+version: 1.0.0
+title: Doubled Contract
+description: An activity whose artifact contract announces one findings file twice, and one that announces it once.
+initialActivity: announces-twice
+graph:
+  announces-twice:
+    done: announces-once
+  announces-once: {}
