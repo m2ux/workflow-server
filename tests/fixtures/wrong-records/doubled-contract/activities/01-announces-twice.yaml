@@ -1,0 +1,16 @@
+id: announces-twice
+version: 1.0.0
+name: Announces Twice
+description: Two technique steps whose outputs declare one findings file under two spellings, so the contract composed for this activity names it twice.
+
+steps:
+  - kind: technique
+    id: audit
+    technique: audit-findings
+  - kind: technique
+    id: refresh
+    technique: refresh-findings
+
+exits:
+  - id: done
+    isDefault: true

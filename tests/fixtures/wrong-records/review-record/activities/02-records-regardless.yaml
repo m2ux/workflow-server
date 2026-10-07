@@ -1,0 +1,11 @@
+id: records-regardless
+version: 1.0.0
+name: Records Regardless
+description: Hosts the same run with the conjunct missing — the defect, which a review run reaches and records an answer nobody gave.
+
+steps:
+  - kind: routine
+    id: settle
+    routine: ungated-assumption-run
+    outputs:
+      assumptions_log: assumptions_log

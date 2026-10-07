@@ -1,0 +1,38 @@
+id: guarded-assumption-run
+version: 1.0.0
+name: Guarded Assumption Run
+description: Put the open assumptions to the user as a batch, and record the answer only where somebody was asked.
+
+outputs:
+  - id: assumptions_log
+    type: object
+    description: The assumptions log with the batch outcome recorded.
+
+internals:
+  - id: assumption_outcome
+    description: The outcome the batch gate gave, which the record step writes into the log.
+
+steps:
+  - kind: checkpoint
+    id: batch-gate
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: Open assumptions remain. Accept the agent's positions?
+    options:
+      - id: accept-agent-positions
+        label: Accept agent positions
+        effect:
+          setVariable:
+            assumption_outcome: confirmed
+  - kind: technique
+    id: record-batch
+    technique:
+      name: review-assumptions::record
+      inputs:
+        assumption_outcome: assumption_outcome
+      outputs:
+        assumptions_log: assumptions_log
+    when: is_review_mode != true && has_open_assumptions == true
