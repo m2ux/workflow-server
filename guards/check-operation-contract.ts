@@ -22,23 +22,13 @@
  * reads exactly like a technique that lands nothing. Both families here are derived from the
  * technique file instead, which states its outputs whether or not any contract mentions them.
  *
- * ---
+ * A wider reading of the second family takes in every technique output a later step of the same
+ * activity consumed and nothing outside ever saw. That is what the construct inventory calls the
+ * technique layer's own wiring, and `check-binding-fidelity` answers for it — so the crossing
+ * above is the whole subject, and those places are not findings this program withholds but places
+ * it has no claim on.
  *
- * NOT IN THE GUARD REGISTRY, and `tests/guard-registry.test.ts` records the reason.
- *
- * `check-activity-variables` is a hard-zero guard: every family it carries named a definition defect
- * and each was fixed. `declared-type-mismatch` holds at 12, so this one does not land on zero yet.
- *
- * A wider reading of the second family reported 117 further places, every one a technique output a
- * later step of the same activity consumed and nothing outside ever saw. That is what the
- * construct inventory now calls the technique layer's own wiring, and `check-binding-fidelity`
- * answers for it — so the crossing above is the whole subject, and the 117 are not findings this
- * program withholds but places it has no claim on.
- *
- * The 12 are defects, each a contract and a technique describing one value incompatibly. They are
- * a corpus fix rather than a question, and enrolling before they land would take a green hard-zero
- * sweep red and cost every other family its signal — the state `check-corpus-links` was held out of
- * the registry to avoid. Enrolling is the last step, in the commit that makes it pass.
+ * The program is a registry guard. `check:all` runs it with the rest, and a finding fails that sweep.
  *
  * Run: npx tsx guards/check-operation-contract.ts [--root <workflows-dir>] [--json]
  */

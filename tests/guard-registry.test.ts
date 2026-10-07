@@ -1,8 +1,33 @@
 import { describe, it, expect } from 'vitest';
+import { execFile } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { promisify } from 'node:util';
 import { CORPUS_GUARDS, GUARDS, guardById } from '../guards/guards.js';
 import { findingKey, sortFindings, wantsJson } from '../guards/guard-protocol.js';
+
+const execFileAsync = promisify(execFile);
+
+/**
+ * Scripts that cannot run in the sweep, with the reason. A registered script has no entry here:
+ * an entry is the exemption that lets a file on disk satisfy the registry test without the sweep
+ * ever starting it.
+ */
+const outsideTheSweep: Record<string, string> = {
+  'guards/check-all.ts': 'the runner that walks the registry',
+  'guards/check-delta.ts': 'the runner that diffs a walk against the merge-base',
+  'guards/check-session-contract.ts':
+    'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
+  'guards/check-inherited-input-never-spent.ts':
+    'reads the corpus and holds at the steps each family\'s contracts still hand a required input '
+    + 'nothing produces. Each family clears its own sites, and enrolling is the commit that makes it pass',
+  'guards/check-condition-survey.ts':
+    'grades guards/condition-survey.ts, a record of ONE corpus — the initiative branch this engine '
+    + 'branch pairs with. The sweep is pointed at whatever tree is under review, so enrolling would '
+    + 'grade the record against a corpus it was never taken on. `tests/condition-survey.test.ts` runs '
+    + 'it against the paired corpus instead, which is where the pairing is already decided; it joins '
+    + 'the sweep when the structured condition is gone and the record is empty',
+};
 
 const REPO = resolve(import.meta.dirname, '..');
 
@@ -141,27 +166,6 @@ describe('guard registry', () => {
    * unreachable checkpoint option is carried in the option-coverage groups.
    */
   it('registers every guard script on disk, or records why one runs outside the sweep', () => {
-    const outsideTheSweep: Record<string, string> = {
-      'guards/check-all.ts': 'the runner that walks the registry',
-      'guards/check-delta.ts': 'the runner that diffs a walk against the merge-base',
-      'guards/check-session-contract.ts':
-        'asks whether a run stayed inside its contracts, so it needs a session and has no corpus-wide form',
-      'guards/check-operation-contract.ts':
-        'reads the corpus and holds at 12 findings, each a variable declared a scalar against an '
-        + 'technique publishing members — one value described two incompatible ways. They are a '
-        + 'corpus fix rather than a question, and enrolling before they land would take a green '
-        + 'hard-zero sweep red; enrolling is the last step, in the commit that makes it pass',
-      'guards/check-inherited-input-never-spent.ts':
-        'reads the corpus and holds at the steps each family\'s contracts still hand a required input '
-        + 'nothing produces. Each family clears its own sites, and enrolling is the commit that makes it pass',
-      'guards/check-condition-survey.ts':
-        'grades guards/condition-survey.ts, a record of ONE corpus — the initiative branch this engine '
-        + 'branch pairs with. The sweep is pointed at whatever tree is under review, so enrolling would '
-        + 'grade the record against a corpus it was never taken on. `tests/condition-survey.test.ts` runs '
-        + 'it against the paired corpus instead, which is where the pairing is already decided; it joins '
-        + 'the sweep when the structured condition is gone and the record is empty',
-    };
-
     const onDisk = readdirSync(join(REPO, 'guards'))
       .filter((name) => /^(check|validate)-.*\.ts$/.test(name))
       .map((name) => `guards/${name}`);
@@ -180,6 +184,34 @@ describe('guard registry', () => {
     const stale = Object.keys(outsideTheSweep).filter((path) => !existsSync(join(REPO, path)));
     expect(stale, 'a reason naming a script that no longer exists').toEqual([]);
   });
+
+  /**
+   * The exemption map is the only place a script is excused from the sweep. Registration puts
+   * the check in the walk; an entry here would record that it stays out.
+   */
+  it('holds no exemption for the operation-contract check', () => {
+    expect(outsideTheSweep['guards/check-operation-contract.ts']).toBeUndefined();
+    expect(guardById('operation-contract')?.script).toBe('guards/check-operation-contract.ts');
+  });
+
+  /**
+   * Membership is what the sweep prints after it has run each selected guard. Reading the registry
+   * shows the entry; this run shows the sweep started the check.
+   */
+  it('runs the operation-contract check in the standard sweep', async () => {
+    let out = '';
+    try {
+      const { stdout, stderr } = await execFileAsync('npx', ['tsx', 'guards/check-all.ts'], {
+        cwd: REPO,
+        maxBuffer: 16 * 1024 * 1024,
+      });
+      out = `${stdout}${stderr}`;
+    } catch (err) {
+      const e = err as { stdout?: string; stderr?: string };
+      out = `${e.stdout ?? ''}${e.stderr ?? ''}`;
+    }
+    expect(out).toMatch(/\[(PASS|FAIL|UNMEASURED)\] operation-contract\s+/);
+  }, 180_000);
 });
 
 describe('guard finding protocol', () => {
