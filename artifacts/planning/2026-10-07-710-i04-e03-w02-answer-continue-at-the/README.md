@@ -12,6 +12,7 @@ This work makes the batch reading the only answer. The completion envelope stops
 
 | Artifact | What it holds |
 | --- | --- |
+| [W02](w02.md) | The work item: the sites the two answers live at, the design that leaves one, the two-half delivery and its merge order, and the test named for each criterion. |
 
 ## Links
 
