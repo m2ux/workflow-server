@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
 
 The verification (V) sub-agent's brief, as a single-element brief set.
+
+## Inputs
+
+### workflow_inventory
+
+Complete [inventory of workflow files](../../resources/intermediate-artifact-schemas.md#workflow-inventory) with per-workflow trigger, permission, and checkout classification data.
 
 ## Outputs
 
