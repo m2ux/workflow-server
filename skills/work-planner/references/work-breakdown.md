@@ -79,6 +79,9 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - Every pull request delivering the initiative's work targets its integration branch, never the long-lived branch.
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
+- **Task branches.**
+  - A unit's task branch is cut from the initiative's integration branch, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
+  - Every pull request delivering the unit's work is opened from this branch.
 - **Task ids.**
   - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - A session that holds the task adds its record folder's link, which is the hold: `[W01](…/w01.md), [W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. [Deliver Mode](deliver-mode.md) writes and reads it.
