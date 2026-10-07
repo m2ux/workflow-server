@@ -236,30 +236,13 @@ steps:
         message: "Review mode derived from the request."
   - kind: action
     id: announce-derived-review-pr
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_review_pr
-          operator: "!="
-          value: true
-        - type: simple
-          variable: pr_number
-          operator: exists
+    when: is_review_mode == true && needs_review_pr != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number)
     actions:
       - action: message
         message: "Review PR derived as #{pr_number}."
   - kind: checkpoint
     id: review-mode-detection
-    condition:
-      type: simple
-      variable: needs_review_mode
-      operator: ==
-      value: true
+    when: needs_review_mode == true
     message: Review vs new-implementation intent is unclear from the request.
     options:
       - id: confirm-review
@@ -278,37 +261,14 @@ steps:
             needs_review_mode: false
   - kind: action
     id: mark-review-pr-captured
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_review_pr
-          operator: "!="
-          value: true
-        - type: simple
-          variable: pr_number
-          operator: exists
+    when: is_review_mode == true && needs_review_pr != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number)
     actions:
       - action: set
         target: review_pr_captured
         value: true
   - kind: checkpoint
     id: review-pr-reference
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_review_pr
-          operator: ==
-          value: true
+    when: is_review_mode == true && needs_review_pr == true
     message: "Review mode needs a PR reference (number or URL)."
     options:
       - id: pr-provided
@@ -328,20 +288,7 @@ steps:
   - kind: technique
     id: capture-pr-reference
     technique: review-mode-detection
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: review_pr_captured
-          operator: ==
-          value: true
-        - type: simple
-          variable: branch_name
-          operator: notExists
+    when: 'is_review_mode == true && review_pr_captured == true && !(branch_name != null && (branch_name == false || branch_name == 0 || branch_name == "" || branch_name))'
   - kind: action
     id: mark-run-headless
     when: is_review_mode == true
@@ -411,10 +358,7 @@ steps:
   - kind: technique
     id: update-repo-submodules
     technique: manage-git::update-repo-submodules
-    condition:
-      type: simple
-      variable: host_repo_path
-      operator: exists
+    when: host_repo_path != null && (host_repo_path == false || host_repo_path == 0 || host_repo_path == "" || host_repo_path)
   - kind: routine
     id: analyze-repo-with-gitnexus
     routine: ensure-graph-index
@@ -438,17 +382,7 @@ steps:
     technique: issue-reference-detection
   - kind: checkpoint
     id: issue-verification
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_present
-          operator: ==
-          value: false
+    when: is_review_mode != true && issue_present == false
     message: No GitHub or Jira issue is associated with this work package.
     options:
       - id: provide-existing
@@ -472,11 +406,7 @@ steps:
             issue_creation_declined: true
   - kind: checkpoint
     id: platform-selection
-    condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
+    when: needs_issue_creation == true
     message: The new issue needs a tracker to live in.
     options:
       - id: github
@@ -494,28 +424,7 @@ steps:
   - kind: technique
     id: detect-provided-issue-reference
     technique: issue-reference-detection
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_present
-          operator: ==
-          value: false
-        - type: simple
-          variable: needs_issue_creation
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_creation_declined
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: notExists
+    when: 'is_review_mode != true && issue_present == false && needs_issue_creation != true && issue_creation_declined != true && !(issue_platform != null && (issue_platform == false || issue_platform == 0 || issue_platform == "" || issue_platform))'
   - kind: technique
     id: verify-jira-issue
     technique:
@@ -548,21 +457,7 @@ steps:
         description: true if a GitHub issue referencing jira_issue_key was found, false otherwise
   - kind: checkpoint
     id: github-issue-missing
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
-        - type: simple
-          variable: github_issue_found
-          operator: ==
-          value: false
+    when: is_review_mode != true && issue_platform == "jira" && github_issue_found == false
     message: No GitHub issue mirrors Jira ticket {jira_issue_key}, so the pull request has nothing to trace to in the target repo.
     defaultOption: create
     autoAdvanceMs: 30000
@@ -586,17 +481,7 @@ steps:
     when: needs_github_issue_creation == true
   - kind: checkpoint
     id: jira-project-selection
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
-        - type: simple
-          variable: needs_issue_creation
-          operator: ==
-          value: true
+    when: issue_platform == "jira" && needs_issue_creation == true
     message: The new Jira issue needs a project to live in.
     options:
       - id: select
@@ -613,17 +498,7 @@ steps:
     when: is_review_mode != true && needs_issue_creation != true && issue_creation_declined != true
   - kind: checkpoint
     id: issue-type-selection
-    condition:
-      type: or
-      conditions:
-        - type: simple
-          variable: needs_issue_creation
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_issue_type
-          operator: ==
-          value: true
+    when: needs_issue_creation == true || needs_issue_type == true
     message: The drafted issue's type is unsettled.
     options:
       - id: feature
@@ -663,17 +538,7 @@ steps:
             needs_issue_type: false
   - kind: checkpoint
     id: issue-review
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: needs_issue_creation
-          operator: ==
-          value: true
+    when: is_review_mode != true && needs_issue_creation == true
     message: The drafted issue stands ready as written.
     options:
       - id: create
@@ -795,17 +660,7 @@ steps:
         message: "Continuing with existing PR #{existing_pr_number} (already bound for this branch)."
   - kind: checkpoint
     id: pr-check
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: pr_exists
-          operator: ==
-          value: true
-        - type: simple
-          variable: use_existing_pr
-          operator: "!="
-          value: true
+    when: pr_exists == true && use_existing_pr != true
     message: "PR #{existing_pr_number} is already open for this branch."
     options:
       - id: use-existing
@@ -823,21 +678,7 @@ steps:
             use_existing_pr: false
   - kind: checkpoint
     id: pr-creation
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_cancelled
-          operator: "!="
-          value: true
-        - type: simple
-          variable: use_existing_pr
-          operator: "!="
-          value: true
+    when: is_review_mode != true && issue_cancelled != true && use_existing_pr != true
     message: "Feature branch {branch_name} and its worktree exist. No draft PR is open for the branch yet."
     defaultOption: proceed
     autoAdvanceMs: 30000
@@ -874,48 +715,14 @@ steps:
       inputs:
         issueIdOrKey: "{issue_number}"
         commentBody: "Pull Request: {pr_url}"
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: pr_number
-          operator: exists
-        - type: simple
-          variable: issue_creation_declined
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
+    when: is_review_mode != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number) && issue_creation_declined != true && issue_platform == "jira"
   - kind: technique
     id: link-pr-to-ticket-github
     technique:
       name: github::view-issue
       inputs:
         repo_path: component_git_dir
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: pr_number
-          operator: exists
-        - type: simple
-          variable: issue_creation_declined
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: github
+    when: is_review_mode != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number) && issue_creation_declined != true && issue_platform == "github"
   - kind: action
     id: announce-completion
     actions:

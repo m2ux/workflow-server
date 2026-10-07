@@ -347,11 +347,7 @@ steps:
   - kind: checkpoint
     id: local-validation-permission
     message: The project's validation suite has not been exercised against the checked-out head.
-    condition:
-      type: simple
-      variable: has_critical_blocker
-      operator: "!="
-      value: true
+    when: has_critical_blocker != true
     options:
       - id: run-suite
         label: Run the suite against the checked-out head

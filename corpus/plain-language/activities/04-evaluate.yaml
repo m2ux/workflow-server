@@ -83,18 +83,10 @@ steps:
       - kind: technique
         id: revise-document
         technique: draft-document
-        condition:
-          type: simple
-          variable: needs_revision
-          operator: ==
-          value: true
+        when: needs_revision == true
       - kind: action
         id: count-revision-round
-        condition:
-          type: simple
-          variable: needs_revision
-          operator: ==
-          value: true
+        when: needs_revision == true
         actions:
           - action: set
             target: revision_round
@@ -114,11 +106,7 @@ steps:
         written_artifact: checklist_path
   - kind: checkpoint
     id: evaluation-gate
-    condition:
-      type: simple
-      variable: open_issue_count
-      operator: ">"
-      value: 0
+    when: open_issue_count > 0
     message: "{open_issue_count} open issues remain after the final evaluation round ([evaluation report]({evaluation_report_path}), [ISO checklist]({checklist_path}))."
     options:
       - id: deliver-with-issues

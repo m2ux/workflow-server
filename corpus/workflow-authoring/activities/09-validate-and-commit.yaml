@@ -109,11 +109,7 @@ steps:
         written_artifact: report_path
   - kind: checkpoint
     id: review-disposition
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: review
+    when: operation_type == "review"
     message: "{open_finding_count} findings are open across {target_workflow_ids} ([findings register]({report_path}))."
     options:
       - id: fix-issues
@@ -132,17 +128,7 @@ steps:
             review_closed: true
   - kind: checkpoint
     id: audit-disposition#{remediation_round}
-    condition:
-      type: or
-      conditions:
-        - type: simple
-          variable: has_critical_finding
-          operator: ==
-          value: true
-        - type: simple
-          variable: open_finding_count
-          operator: ">"
-          value: 0
+    when: has_critical_finding == true || open_finding_count > 0
     message: "{open_finding_count} findings are open, critical={has_critical_finding}, blocked units={has_coverage_gap}, files failing validation={fail_count} ([findings register]({report_path}))."
     options:
       - id: remediate
@@ -184,29 +170,7 @@ steps:
     when: remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: checkpoint
     id: approve-to-commit#{remediation_round}
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: remediation_selected
-          operator: "!="
-          value: true
-        - type: simple
-          variable: review_closed
-          operator: "!="
-          value: true
-        - type: simple
-          variable: update_seeded_from_review
-          operator: "!="
-          value: true
-        - type: simple
-          variable: has_critical_finding
-          operator: "!="
-          value: true
+    when: operation_type != "review" && remediation_selected != true && review_closed != true && update_seeded_from_review != true && has_critical_finding != true
     message: "{addressed_count} of {total_count} manifest entries are delivered with {unaddressed_count} outstanding, {open_finding_count} findings open, blocked units={has_coverage_gap} ([change brief]({change_brief_path}), [scope manifest]({scope_manifest_path}), [findings register]({report_path}))."
     options:
       - id: approved

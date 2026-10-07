@@ -189,11 +189,7 @@ steps:
             written_artifact: drafting_plan_path
       - kind: checkpoint
         id: file-approach-confirmed
-        condition:
-          type: simple
-          variable: operation_type
-          operator: "!="
-          value: update
+        when: operation_type != "update"
         message: "Drafting approach for '{current_file}' ([drafting plan]({drafting_plan_path}))."
         defaultOption: confirmed
         autoAdvanceMs: 30000
@@ -244,11 +240,7 @@ steps:
             written_artifact: file_review_note_path
       - kind: checkpoint
         id: file-review
-        condition:
-          type: simple
-          variable: operation_type
-          operator: "!="
-          value: update
+        when: operation_type != "update"
         message: "Drafted content for '{current_file}' ([file review note]({file_review_note_path}))."
         defaultOption: accepted
         autoAdvanceMs: 30000
@@ -283,17 +275,7 @@ steps:
         when: file_draft_disposition == 'revise' || file_draft_disposition == 'redraft'
       - kind: checkpoint
         id: preservation-check
-        condition:
-          type: and
-          conditions:
-            - type: simple
-              variable: operation_type
-              operator: ==
-              value: update
-            - type: simple
-              variable: has_unflagged_removals
-              operator: ==
-              value: true
+        when: operation_type == "update" && has_unflagged_removals == true
         message: "Content removal detected that was not flagged during impact analysis ([file review note]({file_review_note_path}), [impact analysis]({impact_analysis_path}))."
         options:
           - id: proceed
@@ -420,17 +402,7 @@ steps:
         message: "Pre-attestation audit: {principle_finding_count} principle + {anti_pattern_finding_count} anti-pattern findings remain after the fix cycle — [principle findings]({principle_findings_path}), [anti-pattern findings]({anti_pattern_findings_path})."
   - kind: checkpoint
     id: pre-attestation-blocker
-    condition:
-      type: or
-      conditions:
-        - type: simple
-          variable: has_critical_principle_finding
-          operator: "=="
-          value: true
-        - type: simple
-          variable: has_critical_anti_pattern_finding
-          operator: "=="
-          value: true
+    when: has_critical_principle_finding == true || has_critical_anti_pattern_finding == true
     message: "A Critical pre-attestation finding remains after the fix cycle — a schema-invalid or structurally broken construct. Drafted content must not be attested while it stands."
     options:
       - id: redraft
@@ -443,11 +415,7 @@ steps:
         description: The Critical finding stands as a recorded deferral rather than a blocker.
   - kind: checkpoint
     id: draft-attestation
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: update
+    when: operation_type != "update"
     message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
     defaultOption: attested
     autoAdvanceMs: 30000
@@ -462,11 +430,7 @@ steps:
           exit: redraft
   - kind: checkpoint
     id: batch-review-attested
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "=="
-      value: update
+    when: operation_type == "update"
     message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
     defaultOption: attested
     autoAdvanceMs: 30000

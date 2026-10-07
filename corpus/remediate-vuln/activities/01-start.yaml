@@ -68,10 +68,7 @@ steps:
     technique: security-setup::collect-security-inputs
   - kind: checkpoint
     id: sec-vuln-url-input
-    condition:
-      type: simple
-      variable: sec_vuln_url
-      operator: notExists
+    when: '!(sec_vuln_url != null && (sec_vuln_url == false || sec_vuln_url == 0 || sec_vuln_url == "" || sec_vuln_url))'
     message: "Please provide the private security advisory URL:"
     options:
       - id: provided
@@ -102,10 +99,7 @@ steps:
         message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Set commit signing on this repository and re-run.
   - kind: checkpoint
     id: private-fork-url-input
-    condition:
-      type: simple
-      variable: private_fork_url
-      operator: notExists
+    when: '!(private_fork_url != null && (private_fork_url == false || private_fork_url == 0 || private_fork_url == "" || private_fork_url))'
     message: "Please provide the private fork URL for the security vulnerability fix:"
     options:
       - id: provided
@@ -134,10 +128,7 @@ steps:
           exit: abort
   - kind: checkpoint
     id: short-id-input
-    condition:
-      type: simple
-      variable: short_id
-      operator: notExists
+    when: '!(short_id != null && (short_id == false || short_id == 0 || short_id == "" || short_id))'
     message: "Please provide a short advisory slug for the security branch name (e.g. cve-2026-1234):"
     options:
       - id: provided

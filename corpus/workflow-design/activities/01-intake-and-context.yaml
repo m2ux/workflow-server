@@ -73,17 +73,7 @@ steps:
     technique: intake-classification
   - kind: checkpoint
     id: design-intent-batch
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: intent_needs_confirmation
-          operator: ==
-          value: true
-        - type: simple
-          variable: update_seeded_from_review
-          operator: "!="
-          value: true
+    when: intent_needs_confirmation == true && update_seeded_from_review != true
     message: "Design intent needs confirmation — classified `{operation_type}` for `{workflow_id}` (mode ambiguous={operation_type_ambiguous}, change_request_clear={change_request_clear})."
     options:
       - id: confirm-intent
