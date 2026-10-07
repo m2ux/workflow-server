@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.13.0
+  version: 5.14.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Git techniques for planning folders and artifacts — parent repos, submodules, 
 
 ### planning_folder_path
 
-Path to the session's planning folder, as the server returned it. Techniques that derive a path from where the session keeps its artifacts take it from here; not every technique needs one.
+*(optional)* Path to the session's planning folder, as the server returned it. Techniques that derive a path from where the session keeps its artifacts take it from here; not every technique needs one.
 
 ## Rules
 
