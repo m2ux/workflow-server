@@ -5,15 +5,9 @@ description: Hoist each branch container and write the surfaced assumptions once
 variables:
   reads:
     - assumptions_log
-    - branch_name
-    - component_git_dir
     - implementation_analysis_outputs
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
     - research_outputs
-    - target_path
     - target_repo
   writes:
     - name: analysis_assumptions

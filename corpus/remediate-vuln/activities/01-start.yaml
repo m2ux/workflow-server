@@ -6,13 +6,9 @@ variables:
   reads:
     - base_remote
     - branch_name
-    - component_git_dir
     - host_repo_path
     - planning_folder_path
-    - pr_number
     - private_fork_url
-    - problem_statement
-    - requirements
     - sec_vuln_url
     - target_path
     - target_repo

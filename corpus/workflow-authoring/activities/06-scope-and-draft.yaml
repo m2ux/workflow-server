@@ -9,7 +9,6 @@ variables:
     - impact_analysis_path
     - operation_type
     - planning_folder_path
-    - pr_number
     - removals_approved
     - scope_manifest_confirmed
     - target_path

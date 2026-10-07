@@ -15,7 +15,6 @@ variables:
     - issue_url
     - planning_folder_path
     - pr_number
-    - problem_statement
     - push_remote
     - requirements
     - review_summary

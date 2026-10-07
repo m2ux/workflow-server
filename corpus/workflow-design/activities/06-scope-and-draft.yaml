@@ -8,7 +8,6 @@ variables:
     - operation_type
     - pattern_adoption
     - planning_folder_path
-    - pr_number
     - preservation_required
     - verified_findings
     - workflow_id

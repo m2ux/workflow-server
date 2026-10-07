@@ -4,9 +4,7 @@ name: Complete Work Package
 description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
 variables:
   reads:
-    - branch_name
     - changed_files
-    - component_git_dir
     - component_name
     - component_path
     - host_repo_path
@@ -15,10 +13,7 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_complexity
-    - problem_statement
-    - requirements
     - stealth_mode
-    - target_path
     - target_repo
     - worktree_created
   writes:

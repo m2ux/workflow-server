@@ -4,18 +4,13 @@ name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
   reads:
-    - branch_name
     - component_git_dir
     - issue_request
     - issue_title
     - issue_type
     - jira_issue_key
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
     - review_summary
-    - target_path
     - target_repo
     - user_request
   writes:

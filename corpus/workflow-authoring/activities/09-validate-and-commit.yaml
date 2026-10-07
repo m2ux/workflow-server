@@ -6,7 +6,6 @@ variables:
   reads:
     - audit_findings
     - change_brief_path
-    - component_git_dir
     - coverage_ledger
     - fail_count
     - host_repo_path
@@ -15,7 +14,6 @@ variables:
     - manifest_entries
     - operation_type
     - planning_folder_path
-    - pr_number
     - register_sections
     - remediation_round
     - removals_approved
