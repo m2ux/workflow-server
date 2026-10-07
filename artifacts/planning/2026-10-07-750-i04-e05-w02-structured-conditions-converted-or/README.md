@@ -12,6 +12,7 @@ The survey named each site and the measurement behind its disposition. This task
 
 | Artifact | What it holds |
 | --- | --- |
+| [W02](w02.md) | The work item: the gates the survey marks for conversion, the `when` each one becomes, the techniques that stop teaching dismissal, and the checks that the new gate holds when the old one did |
 
 ## Links
 
