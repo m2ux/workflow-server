@@ -12,6 +12,7 @@ W03 made continue-batch advance and continue, and made a refusal or a failed con
 
 | Artifact | What it holds |
 | --- | --- |
+| [W05](w05.md) | The work item: the three returns a continuation can make, and the walk that shows none of them mints a replacement. |
 
 ## Links
 
