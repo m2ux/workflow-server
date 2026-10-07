@@ -33,7 +33,7 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
    >   Where the request asked to open new work, put that to the user before going on: continue
    >   the session that stands there, or retry with a slug that distinguishes this work.
    > - A call naming no slug opens a folder named for the date and a random token, which carries
-   >   nothing about the work and which no later step renames. Compose one.
+   >   nothing about the work. The folder keeps the name it opens with, so compose one.
 
 3. **Settle any opening decision**, where the response names a `decision` and has no `session_index`.
 
@@ -51,8 +51,8 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
    Hold its `session_index`, a 6-character base32 string; its `workflow.initialActivity`, the
    activity this session opens on; its `current`, the activity already in flight; and its `status`.
    > - Every call below takes the `session_index`.
-   > - A fresh open also returns `planning_folder_path`, and `client`, the client session it opened
-   >   alongside this one. A resume returns no `client`.
+   > - Every open returns `planning_folder_path`. A fresh open also returns `client`, the client
+   >   session it opened alongside this one; a resume returns no `client`.
    > - Where two session indices are in hand, the one this call returned is this session's.
 
 5. **Stop**, where `status` came back `completed`.

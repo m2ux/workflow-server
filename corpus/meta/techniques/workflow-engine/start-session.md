@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.22.0
+  version: 1.23.0
 ---
 
 ## Capability
@@ -57,7 +57,7 @@ Stable 6-character base32 index for every subsequent authenticated tool call. Ab
 
 ### planning_folder_path
 
-Canonical absolute planning folder path as resolved by the server. Absent while the session is transient and no durable path has been resolved.
+Canonical absolute planning folder path as resolved by the server. Absent when the call yields an opening decision rather than a session.
 
 ### repo
 
