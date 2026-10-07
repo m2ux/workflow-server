@@ -80,6 +80,7 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
+        seed_profile: seed_profile
         entity_context: "entity_title={document_title}; entity_type={operation_type}; status=Profiling"
         operation_type: operation_type
 exits:

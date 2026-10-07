@@ -19,7 +19,7 @@ variables:
     defaultValue: workflow-authoring/readme-seed
   - name: planning_folder_path
     type: string
-    description: Absolute path to this run's planning folder, seeded when the session opens.
+    description: Absolute path to this run's planning folder.
   - name: headless_mode
     type: boolean
     description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.

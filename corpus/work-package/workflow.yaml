@@ -70,7 +70,7 @@ variables:
     defaultValue: ""
   - name: default_branch
     type: string
-    description: The repository's default branch, which feature branches sync from and merge into.
+    description: The repository's default branch.
   - name: needs_further_discussion
     type: boolean
     description: Whether further stakeholder discussion is needed.
@@ -118,7 +118,7 @@ variables:
     defaultValue: origin
   - name: issue_request
     type: string
-    description: The issue key, URL, or surrounding text the user supplied when opening the work package, or typed in reply to the issue-verification gate.
+    description: An issue key, a URL, or the surrounding text that names one.
     defaultValue: ""
   # Fan barriers write these containers; empty default covers skip-optional → join paths.
   - name: research_outputs

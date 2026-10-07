@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.6.0
+  version: 3.7.0
 ---
 
 ## Capability
@@ -27,7 +27,7 @@ Planning-folder `README.md` from the universal planning Template under the bound
 
 ### seed_profile
 
-Resource id of the workflow's readme-seed profile (Progress inventory, classifier, links defaults, mode-exclusion map).
+*(optional)* Resource id of the workflow's readme-seed profile (Progress inventory, classifier, links defaults, mode-exclusion map). Unset where the workflow owns no readme-seed profile.
 
 ### is_review_mode
 
@@ -60,6 +60,7 @@ Full path to the created `README.md`
 ### 2. Take Seed Profile
 
 - Load the readme-seed profile named by `{seed_profile}`.
+  > When `{seed_profile}` is unset, no profile is loaded and every later phase that reads one leaves the Template's own content standing.
 
 ### 3. Fill Header Links
 

@@ -25,11 +25,11 @@ variables:
   # so they are constants, owned by the file that runs the borrowed activity reading them.
   - name: prior_feedback_triage
     type: object
-    description: Triage of a reviewed PR's prior feedback, always empty in this workflow.
+    description: Triage of a reviewed PR's prior feedback.
     defaultValue: {}
   - name: rating_cap
     type: string
-    description: Ceiling a review's Overall Rating may not exceed, always empty in this workflow.
+    description: Ceiling a review's Overall Rating may not exceed.
     defaultValue: ""
   - name: target_path
     type: string
@@ -49,7 +49,7 @@ variables:
     description: Private fork as owner/repo.
   - name: default_branch
     type: string
-    description: The private fork's default branch, which the security branch syncs from and merges into.
+    description: The private fork's default branch.
   - name: issue_platform
     type: string
     description: The issue tracker the advisory lives in while it stays restricted.

@@ -24,13 +24,13 @@ variables:
     defaultValue: workflow-design/readme-seed
   - name: planning_folder_path
     type: string
-    description: Absolute path to this run's planning folder, seeded when the session opens.
+    description: Absolute path to this run's planning folder.
   # This workflow batches its open judgements into the commit gate rather than interviewing them
   # mid-flow, so the borrowed record operation's per-assumption outcome has no producer here. It is a
   # constant, owned by the file that runs the borrowed operation.
   - name: assumption_outcome
     type: string
-    description: What the gate that decided an assumption gave it — always empty in this workflow.
+    description: The outcome an assumption was decided with.
     defaultValue: ""
   # Seeded with the session and named by the shared contract of the operations this workflow
   # borrows, so the file owns the name and no activity produces it.

@@ -166,6 +166,7 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
+        seed_profile: seed_profile
         include_links: false
   - kind: technique
     id: present-security-overview

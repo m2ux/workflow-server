@@ -22,7 +22,7 @@ variables:
     defaultValue: plain-language/readme-seed
   - name: planning_folder_path
     type: string
-    description: Absolute path to this run's planning folder, seeded when the session opens.
+    description: Absolute path to this run's planning folder.
   - name: user_request
     type: string
     description: The user's free-form request that opened this run.
