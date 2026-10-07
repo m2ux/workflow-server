@@ -455,7 +455,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // context_mode, and bind repo onto session.json when provided.
         // One persist if any changed. Repo is the durable multi-root binding
         // (not a process-local stash).
-        const pathDrift = canonicalFolder !== undefined && state.planningFolderPath !== canonicalFolder;
+        const pathDrift = state.planningFolderPath !== canonicalFolder;
         const agentDrift = state.agentId !== agent_id;
         const modeDrift = context_mode !== undefined && state.contextMode !== context_mode;
         const executionPathUnset = state.executionPath === undefined;
@@ -540,7 +540,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowId: effectiveWorkflowId,
           workflowVersion: effectiveWorkflowVersion,
           agentId: agent_id,
-          ...(canonicalFolder ? { planningFolderPath: canonicalFolder } : {}),
+          planningFolderPath: canonicalFolder,
           ...(boundRepo ? { repo: boundRepo } : {}),
           ...(context_mode ? { contextMode: context_mode } : {}),
           // B7 (#166): seed declared defaults into the fresh bag. Conditional

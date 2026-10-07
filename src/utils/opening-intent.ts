@@ -69,8 +69,8 @@ export async function resolveOpeningIntent(args: {
         decision: 'resume-session',
         candidates: hits.map(hitPayload),
         recommendation: hits.length === 1
-          ? `Retry start_session with planning_folder '${hits[0]!.planning_folder}' to continue, or pass fresh: true to open a new client.`
-          : 'Several saved sessions match. Retry start_session with planning_folder set to one candidate, or pass fresh: true to open a new client.',
+          ? `Retry start_session with planning_slug '${hits[0]!.planning_slug}' to continue, or pass fresh: true to open a new client.`
+          : 'Several saved sessions match. Retry start_session with planning_slug set to one candidate, or pass fresh: true to open a new client.',
       };
     }
   }
