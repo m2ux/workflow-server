@@ -15,7 +15,6 @@ variables:
     - issue_url
     - planning_folder_path
     - pr_number
-    - problem_statement
     - push_remote
     - requirements
     - review_summary
@@ -174,6 +173,7 @@ steps:
       name: workflow-engine::verify-readme-conforms
       inputs:
         seed_profile: work-package/readme-seed
+        session_index: ""
   - kind: technique
     id: ensure-changes-folder-entry
     technique: changes-folder

@@ -4,7 +4,6 @@ name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
   reads:
-    - branch_name
     - component_git_dir
     - is_review_mode
     - issue_number
@@ -13,11 +12,8 @@ variables:
     - needs_further_discussion
     - needs_plan_revision
     - planning_folder_path
-    - pr_number
     - problem_statement
-    - requirements
     - stealth_mode
-    - target_path
     - target_repo
   writes:
     - name: assumptions_log
@@ -70,7 +66,10 @@ steps:
             post_summary_approved: false
   - kind: technique
     id: post-summary-jira
-    technique: atlassian::comment-jira-issue
+    technique:
+      name: atlassian::comment-jira-issue
+      inputs:
+        cloudId: ""
     when: stealth_mode != true && is_review_mode != true && issue_platform == 'jira' && has_deferred_assumptions == true && post_summary_approved == true
   - kind: technique
     id: post-summary-github

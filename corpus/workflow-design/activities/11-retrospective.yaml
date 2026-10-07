@@ -4,12 +4,10 @@ name: Retrospective
 description: A recorded completion summary (create/update) and a session retrospective capturing lessons before the workflow ends.
 variables:
   reads:
-    - component_git_dir
     - host_repo_path
     - manifest_entries
     - operation_type
     - planning_folder_path
-    - pr_number
     - target_path
     - worktree_created
   writes:

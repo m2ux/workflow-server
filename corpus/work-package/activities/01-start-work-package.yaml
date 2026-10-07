@@ -4,18 +4,13 @@ name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
   reads:
-    - branch_name
     - component_git_dir
     - issue_request
     - issue_title
     - issue_type
     - jira_issue_key
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
     - review_summary
-    - target_path
     - target_repo
     - user_request
   writes:
@@ -431,6 +426,7 @@ steps:
       name: atlassian::get-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
+        cloudId: ""
     when: issue_platform == 'jira'
     actions:
       - action: validate
@@ -563,7 +559,10 @@ steps:
     when: needs_issue_creation == true && issue_platform == 'jira'
   - kind: technique
     id: lookup-current-user
-    technique: atlassian::user-info
+    technique:
+      name: atlassian::user-info
+      inputs:
+        cloudId: ""
     when: issue_platform == 'jira' && issue_creation_declined != true
   - kind: technique
     id: assign-issue-jira
@@ -572,6 +571,7 @@ steps:
       inputs:
         issueIdOrKey: "{issue_number}"
         fields: "{ assignee: { accountId: {accountId} } }"
+        cloudId: ""
     when: issue_creation_declined != true && issue_platform == 'jira'
   - kind: technique
     id: transition-issue-jira
@@ -579,6 +579,7 @@ steps:
       name: atlassian::transition-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
+        cloudId: ""
     when: issue_creation_declined != true && issue_platform == 'jira'
   - kind: technique
     id: assign-issue-github
@@ -595,6 +596,7 @@ steps:
       inputs:
         seed_profile: work-package/readme-seed
         is_review_mode: "{is_review_mode}"
+        session_index: ""
   - kind: technique
     id: present-problem-overview
     technique:
@@ -715,6 +717,7 @@ steps:
       inputs:
         issueIdOrKey: "{issue_number}"
         commentBody: "Pull Request: {pr_url}"
+        cloudId: ""
     when: is_review_mode != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number) && issue_creation_declined != true && issue_platform == "jira"
   - kind: technique
     id: link-pr-to-ticket-github

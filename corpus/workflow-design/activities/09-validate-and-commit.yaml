@@ -5,7 +5,6 @@ description: The validated workflow change committed on the session feature bran
 variables:
   reads:
     - compliance_report
-    - component_git_dir
     - draft_attestation_path
     - has_open_assumptions
     - host_repo_path
@@ -13,7 +12,6 @@ variables:
     - manifest_entries
     - operation_type
     - planning_folder_path
-    - pr_number
     - scope_manifest_path
     - specification_path
     - target_path

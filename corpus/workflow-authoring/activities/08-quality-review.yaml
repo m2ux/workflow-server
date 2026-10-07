@@ -4,12 +4,10 @@ name: Quality Review
 description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
 variables:
   reads:
-    - component_git_dir
     - current_file
     - host_repo_path
     - impact_analysis_path
     - planning_folder_path
-    - pr_number
     - remediation_round
     - target_path
     - target_workflow_ids

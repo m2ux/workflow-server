@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.2.2
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The documentation a closing work package leaves behind, and the planning-folder 
 
 ### test_plan
 
-The [test plan](../../resources/test-plan-guide.md#test-plan-structure) artifact for this work package
+*(optional)* The [test plan](../../resources/test-plan-guide.md#test-plan-structure) artifact for this work package. Absent when the run has not written one.
 
 ### planning_folder_path
 
