@@ -131,20 +131,14 @@ steps:
       name: github::view-pr
       inputs:
         repo_path: component_git_dir
-    condition:
-      type: simple
-      variable: pr_number
-      operator: exists
+    when: pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number)
   - kind: technique
     id: verify-pr-body
     technique:
       name: update-pr::verify-body
       inputs:
         rendered_pr_body: pr_body
-    condition:
-      type: simple
-      variable: pr_number
-      operator: exists
+    when: pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number)
   - kind: routine
     id: check-scope-discipline
     routine: gitnexus::scope-discipline-check
@@ -227,17 +221,7 @@ steps:
         is_review_mode: "{is_review_mode}"
   - kind: checkpoint
     id: review-findings
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: strategic_findings_summary
-          operator: "!="
-          value: ""
+    when: is_review_mode != true && strategic_findings_summary != ""
     message: |-
       Strategic review complete.
 
@@ -282,17 +266,7 @@ steps:
             strategic_findings_disposition: re-review
   - kind: checkpoint
     id: findings-delivery
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: strategic_findings_summary
-          operator: "!="
-          value: ""
+    when: is_review_mode == true && strategic_findings_summary != ""
     message: |-
       Strategic review findings. Every finding is the pull-request author's to act on.
 

@@ -49,7 +49,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 7. Capture Selection
 
-- Record the resolved `{user_selection}` — the `option_id`, its reply where the option records one, and its `effects` (or `auto_advance` / `condition_not_met`).
+- Record the resolved `{user_selection}` — the `option_id`, its reply where the option records one, and its `effects`, or `auto_advance` where the gate resolved that way.
 
 ### 8. Relay Selection
 
@@ -62,7 +62,7 @@ A gate is **soft** when it declares an answer the run may take where no person i
 
 ### present-before-any-resolution
 
-`present_checkpoint` returning data is not presentation. A hard gate's every resolution path — `option_id` or `condition_not_met` — is preceded by the host's question primitive displaying the checkpoint's message and options, whatever mode the run is in. A soft gate is presented the same way on an interactive run. `{headless_mode}` is the one exception, and it reaches only a soft mid-flow gate: that gate resolves to its declared answer with nothing put to the user. This rule is the single home for when a checkpoint is presented — a workflow states which gates it has and what opens them, and says nothing about presentation.
+`present_checkpoint` returning data is not presentation. A hard gate resolves by an `option_id`, and that resolution is preceded by the host's question primitive displaying the checkpoint's message and options, whatever mode the run is in. A soft gate is presented the same way on an interactive run. `{headless_mode}` is the one exception, and it reaches only a soft mid-flow gate: that gate resolves to its declared answer with nothing put to the user. This rule is the single home for when a checkpoint is presented — a workflow states which gates it has and what opens them, and says nothing about presentation.
 
 ### a-correction-lands-in-the-bag
 

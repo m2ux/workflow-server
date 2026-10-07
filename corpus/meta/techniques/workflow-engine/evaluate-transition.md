@@ -47,7 +47,7 @@ The exit id this activity took; unset where it declares none.
 
 ### 3. Fall Back To Default
 
-- Where nothing above selected an exit, take the exit marked `isDefault`. This is also what a checkpoint dismissed on an unmet condition resolves to, and what an activity with a single unconditional exit takes.
+- Where nothing above selected an exit, take the exit marked `isDefault`. An activity with a single unconditional exit takes that exit.
 
 ### 4. Read Exit Destination
 

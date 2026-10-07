@@ -57,10 +57,7 @@ steps:
   - kind: checkpoint
     id: confirm-mode
     message: "[Recommended analysis configuration]({analysis_plan_path}) for {target}."
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: notExists
+    when: '!(pipeline_mode != null && (pipeline_mode == false || pipeline_mode == 0 || pipeline_mode == "" || pipeline_mode))'
     options:
       - id: accept
         label: Proceed

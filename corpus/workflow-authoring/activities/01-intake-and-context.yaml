@@ -108,17 +108,7 @@ steps:
     when: update_seeded_from_review != true
   - kind: checkpoint
     id: design-intent-batch
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: intent_needs_confirmation
-          operator: ==
-          value: true
-        - type: simple
-          variable: update_seeded_from_review
-          operator: "!="
-          value: true
+    when: intent_needs_confirmation == true && update_seeded_from_review != true
     message: "Design intent needs confirmation — classified `{operation_type}` for `{workflow_id}` (mode ambiguous={operation_type_ambiguous}, change_request_clear={change_request_clear})."
     options:
       - id: confirm-intent
@@ -227,11 +217,7 @@ steps:
     when: operation_type == 'update'
   - kind: checkpoint
     id: judgements-disposition
-    condition:
-      type: simple
-      variable: open_judgements_count
-      operator: ">"
-      value: 0
+    when: open_judgements_count > 0
     message: "{open_judgements_count} design judgements are open in the [change brief]({change_brief_path}), each with the effect of deciding it either way."
     options:
       - id: accept-positions
@@ -248,11 +234,7 @@ steps:
             judgements_disposition: carried-open
   - kind: checkpoint
     id: impact-approved
-    condition:
-      type: simple
-      variable: removal_count
-      operator: ">"
-      value: 0
+    when: removal_count > 0
     message: "{removal_count} content removals are inventoried in the [impact analysis]({impact_analysis_path})."
     options:
       - id: approve-removals

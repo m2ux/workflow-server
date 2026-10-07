@@ -72,11 +72,7 @@ steps:
           exit: revise-investigation
   - kind: checkpoint
     id: publish-decision
-    condition:
-      type: simple
-      variable: has_pr_surface
-      operator: ==
-      value: true
+    when: has_pr_surface == true
     message: The target has a pull-request surface that accepts a formal review comment.
     options:
       - id: publish

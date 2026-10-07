@@ -105,11 +105,7 @@ steps:
         message: The scope-confirmation round this gate presents, one higher than the round already answered.
   - kind: checkpoint
     id: scope-confirmed#{scope_round}
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != "review"
     message: "{file_count} files are enumerated for `{workflow_id}` ([scope manifest]({scope_manifest_path}))."
     options:
       - id: confirmed
@@ -153,11 +149,7 @@ steps:
         technique: review-drafted-file
       - kind: checkpoint
         id: preservation-check#{current_file.path}
-        condition:
-          type: simple
-          variable: has_unflagged_removals
-          operator: ==
-          value: true
+        when: has_unflagged_removals == true
         message: "The draft of `{current_file.path}` removes content the [impact analysis]({impact_analysis_path}) does not account for."
         options:
           - id: flag-and-proceed

@@ -49,11 +49,7 @@ steps:
     technique: derive-design-dimensions
   - kind: checkpoint
     id: design-context
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: update
+    when: operation_type != "update"
     message: "Optional design context — reference workflows, integration points, or operators and triggers."
     defaultOption: skip-context
     autoAdvanceMs: 30000
