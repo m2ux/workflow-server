@@ -142,7 +142,7 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - A task issue belongs to one epic. Its title carries that epic's prefix.
   - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced, and the row is added as [Unplaced](#unplaced) states. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
-  - The pull request's body cites the issue by its URL.
+  - The pull request's body cites the issue with a closing keyword, not under References.
   - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
 - **Issues backing several tasks.**
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.

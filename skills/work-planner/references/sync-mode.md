@@ -37,7 +37,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Unmerged.**
      An epic base its pull requests target that has not merged into the initiative integration branch, once every task is delivered and every criterion is ticked. The Close step opens its pull request, or leaves a draft for the reviewer to mark ready, as [Review pull request](work-breakdown.md#review-pull-request) states.
    - **Uncited.**
-     A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
+     A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
    - **Note.**  A row links its task issue. Link the pull request as in step 4.
    - **Unplaced.**
      A task issue of this epic whose id is not a row. [Plan Mode](plan-mode.md) adds the row, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, then this sync is run again.

@@ -24,4 +24,4 @@
 
 ## References
 
-- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there. An integration pull request lists each pull request the branch carries. A task pull request cites its issue by URL. Delete the section when there is none.}}
+- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there. Delete the section when there is none.}}

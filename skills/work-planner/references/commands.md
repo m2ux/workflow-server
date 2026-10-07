@@ -219,7 +219,7 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/e00/main' --jq
 
 Replaces a pull request's body.
 
-- The file is the whole body. When the task has its own issue, the body cites that issue by its URL.
+- The file is the whole body. When the task has its own issue, the body cites that issue with a closing keyword, not under References.
 
 ```bash
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .html_url
