@@ -12,6 +12,7 @@ W02 left the batch reading as the only answer a worker is given. This task is th
 
 | Artifact | What it holds |
 | --- | --- |
+| [W03](w03.md) | The work item: the mint inside the advance, the design that leaves the advance as an advance, the two-half delivery and its merge order, and the test named for each criterion. |
 
 ## Links
 
