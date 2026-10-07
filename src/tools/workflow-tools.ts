@@ -48,6 +48,7 @@ import { contentHash, deliveredHash, deliveryScope, recordDeliveries, stageNote,
 import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchReading, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
+import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
@@ -1575,14 +1576,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (planningFolder) {
         const declared = next.declaredArtifacts ?? [];
         const declaredIds = new Set(declared.map(a => a.id));
-        // Outside-folder declared paths → unknown (not missing).
+        // Outside-folder declared paths: verify presence at destination.
         for (const a of declared) {
           if (!a.path) continue;
           const abs = a.path.startsWith('/') ? a.path : pathJoin(planningFolder, a.path);
           if (!abs.startsWith(planningFolder + '/') && abs !== planningFolder) {
-            artifactWarnings.push(
-              `Declared artifact id '${a.id}' (name '${a.name}') writes outside the planning folder — status unknown (not missing).`,
-            );
+            if (!existsSync(abs)) {
+              artifactWarnings.push(
+                `Declared artifact id '${a.id}' (name '${a.name}') missing at bound destination '${abs}'.`,
+              );
+            }
           }
         }
         try {
