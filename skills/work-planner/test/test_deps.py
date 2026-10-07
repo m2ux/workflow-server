@@ -9,10 +9,23 @@ import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 
-from fixtures import SCRIPTS
+from fixtures import SCRIPTS, epic_body
 
 sys.path.insert(0, str(SCRIPTS))
 from deps import eligible_unjoined, main  # noqa: E402
+
+
+def run(bodies: list[tuple[str, str]]) -> tuple[int, str]:
+    with tempfile.TemporaryDirectory() as directory:
+        args = []
+        for name, body in bodies:
+            path = Path(directory) / f'{name}.md'
+            path.write_text(body)
+            args.append(f'{name}={path}')
+        output = io.StringIO()
+        with redirect_stdout(output):
+            code = main(args)
+    return code, output.getvalue()
 
 
 class EligibleUnjoined(unittest.TestCase):
@@ -53,3 +66,35 @@ class EligibleUnjoined(unittest.TestCase):
         self.assertIn('E06:W01 and E06:W03 can share a pull request and do not name each other', text)
         self.assertIn('E06:W02 and E06:W03 can share a pull request and do not name each other', text)
         self.assertNotIn('E06:W01 and E06:W02', text)
+
+
+class WholeEpics(unittest.TestCase):
+    def test_reports_an_unearned_whole_epic_edge(self):
+        upstream = epic_body(
+            ('W01', 'Finding roster', ''),
+            ('W02', 'Train weights', 'W01'),
+            ('W03', 'Publish model', 'W02'),
+        )
+        dependent = epic_body(('W01', 'Attribute intake', 'E01'))
+        code, text = run([('E01', upstream), ('E02', dependent)])
+        row = next(line for line in dependent.splitlines() if line.startswith('| W01 |'))
+        self.assertEqual(code, 0)
+        self.assertNotIn('E01:W03', row)
+        self.assertNotIn('Publish model', row)
+        self.assertIn(
+            'E02:W01 depends on E01 (3 rows), binding E01:W03 level 2, earliest E01:W01 level 0',
+            text)
+        self.assertNotIn('already implied', text)
+
+    def test_narrowed_edge_is_not_a_whole_epic(self):
+        upstream = epic_body(
+            ('W01', 'Finding roster', ''),
+            ('W02', 'Train weights', 'W01'),
+            ('W03', 'Publish model', 'W02'),
+        )
+        dependent = epic_body(('W01', 'Attribute intake', 'E01:W01'))
+        code, text = run([('E01', upstream), ('E02', dependent)])
+        self.assertEqual(code, 0)
+        self.assertIn('--- whole epics\nnone', text)
+        self.assertNotIn('depends on E01 (', text)
+        self.assertIn('1 E02:W01', text)

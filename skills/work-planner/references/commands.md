@@ -369,6 +369,7 @@ Checks the task dependency graph across the epics given, and with `I=` the initi
 
 - It also reports dependencies listed twice or already implied, and Joins pairs.
 - It prints each pair of tasks in an epic where neither depends on the other and the two do not name each other in Joins.
+- It prints each whole-epic dependency with that epic's row count, the binding row and its level, and the earliest row and its level.
 - It reads bodies from [Fetch Body](#fetch-body), or local drafts.
 
 ```bash
