@@ -12,6 +12,7 @@ W02 settled the contracts the check reports on and showed the check is empty on 
 
 | Artifact | What it holds |
 | --- | --- |
+| [W03](./w03.md) | The work item: what the task delivers, the friction it answers, the design, and the parts of the work |
 
 ## Links
 
