@@ -12,6 +12,9 @@ This work declares the entry fields of every list-returning code-graph operation
 
 | Artifact | What it holds |
 | --- | --- |
+| [W01](./w01.md) | The work item: what the task delivers, the friction it answers, the design, and the parts of the work |
+| [Declarations](./declarations.md) | How the subject was derived, the response each operation gave, and whether the settlement was a declaration or a statement that the answer has no entry to name |
+| [Coverage](./coverage.md) | AC1, AC2 and AC3, the test that observes each, the runs that show it, and the places a declaration rests on something no test reaches |
 
 ## Links
 
