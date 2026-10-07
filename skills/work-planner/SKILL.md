@@ -185,9 +185,8 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - For the planning record: [Add Planning Record](references/commands.md#add-planning-record).
   - For delivery: each initiative's integration branches, which its pull requests target, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
   - For dispatch: a worktree per unit of work, as [Create Task Worktree](references/commands.md#create-task-worktree) cuts it.
-- **Claude Code CLI (`claude`).**
-  On the path, for the session [Dispatch Session](references/commands.md#dispatch-session) starts for one unit of work.
-- **Sub-agents.**  Where the harness has them, for [Plan Mode](references/plan-mode.md)'s broad evidence sweeps.
+- **Sub-agents.**
+  The dispatch of the session this skill runs in. [Deliver Mode](references/deliver-mode.md#rules) starts each unit's session with it, and [Plan Mode](references/plan-mode.md) delegates a broad evidence sweep to it.
 
 ## Rules
 
