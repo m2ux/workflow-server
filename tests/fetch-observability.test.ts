@@ -455,7 +455,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
       expect(started.length).toBeGreaterThanOrEqual(2);
     });
 
-    it('PR366-TC-24/25: undeclared planning file warned; outside-folder unknown; success', async () => {
+    it('undeclared planning file warned; outside-folder verified when present, warned when missing', async () => {
       const { writeFileSync, mkdirSync } = await import('node:fs');
       const slug = '2026-07-31-pr366-artifacts';
       const folder = session.folder(slug);
@@ -464,6 +464,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
       writeFileSync(join(folder, 'rogue-undeclared.md'), '# rogue\n', 'utf8');
       const outside = join(harness.workspaceDir, 'outside-plan.md');
       writeFileSync(outside, '# out\n', 'utf8');
+      const missingOutside = join(harness.workspaceDir, 'missing-outside.md');
       const result = await client.callTool({
         name: 'next_activity',
         arguments: {
@@ -473,6 +474,7 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
           artifacts_produced: [
             { id: 'declared-ok', name: 'declared-ok.md' },
             { id: 'outside-art', name: 'outside-plan.md', path: outside },
+            { id: 'missing-art', name: 'missing-outside.md', path: missingOutside },
           ],
           step_manifest: [{ step_id: 'detect-review-mode', output: { result: 'ok' } }],
         },
@@ -480,14 +482,16 @@ describe.skipIf(!liveCorpusRoot())('fetch observability (#166 B8)', () => {
       expect(result.isError).toBeFalsy();
       const warnings = ((result._meta as Record<string, unknown>)['validation'] as { warnings: string[] }).warnings;
       expect(warnings.some(w => w.includes('rogue-undeclared.md'))).toBe(true);
-      expect(warnings.some(w => w.includes('outside-art') && w.includes('unknown') && w.includes('not missing'))).toBe(true);
-      // Outside-folder is never framed as a plain "missing" status.
-      expect(warnings.some(w => w.includes('outside-art') && /\bmissing\b/.test(w) && !w.includes('not missing'))).toBe(false);
+      // Existing outside file is verified without unknown warning
+      expect(warnings.some(w => w.includes('outside-art'))).toBe(false);
+      // Missing outside file warns about being missing at destination
+      expect(warnings.some(w => w.includes('missing-art') && w.includes('missing at bound destination'))).toBe(true);
       // declared id accumulation is on session
       const state = JSON.parse(readFileSync(join(folder, 'session.json'), 'utf8')) as {
         declaredArtifacts?: Array<{ id: string }>;
       };
       expect(state.declaredArtifacts?.some(a => a.id === 'declared-ok')).toBe(true);
+      expect(state.declaredArtifacts?.some(a => a.id === 'outside-art')).toBe(true);
     });
 
     it('PR366-TC-26: declaration at activity N suppresses warning at N+1', async () => {
