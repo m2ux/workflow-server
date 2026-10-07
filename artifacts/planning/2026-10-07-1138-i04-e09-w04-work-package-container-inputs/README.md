@@ -12,6 +12,7 @@ Work-package is one of the families the guard still names. This task clears that
 
 | Artifact | What it holds |
 | --- | --- |
+| [Work item](w04.md) | The container inputs, where each one lives, and the guard run that observes them |
 
 ## Links
 
