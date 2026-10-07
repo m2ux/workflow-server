@@ -380,18 +380,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/continue-batch.md:72",
-      "op": "spawn-agent",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/continue-batch.md:82",
-      "op": "dispatch-activity",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/create-session.md:42",
       "op": "handle-sub-workflow",
       "verdict": "fix-later",
