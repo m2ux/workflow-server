@@ -35,5 +35,5 @@ The child workflow's `initialActivity`, and the only route into it: a session th
 
 ### 1. Open Child Session
 
-- Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'workflow-orchestrator' }`; capture `{child_session_index}`, `{child_planning_folder_path}` (server-resolved; do not compose the path), and `workflow.initialActivity` as `{child_initial_activity}`. The server embeds the child under the parent, in the parent's own planning folder: a child takes no folder of its own
+- Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'workflow-orchestrator' }`; capture `{child_session_index}`, `{child_planning_folder_path}` (server-resolved; do not compose the path), and `workflow.initialActivity` as `{child_initial_activity}`. A child takes no folder of its own: its artifacts land in the parent's planning folder
 

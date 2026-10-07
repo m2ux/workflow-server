@@ -19,6 +19,8 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
    >   hyphens, a handful of words. Name the subject, not the activity performed on it —
    >   `work-planner-retrospective`, not `start-a-retrospective`.
    > - The slug is a single path segment. The server resolves which planning root it lands in.
+   > - This slug is the session's name, and the folder keeps it. The initiative name an activity
+   >   settles later names the initiative, not the folder.
 
 2. **Open the session.**
 
@@ -27,10 +29,11 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
    > - The server derives `owner/repo` from that checkout's origin remote.
    > - `repo` is optional and must equal the derived origin when present.
    > - Origin binds even when the checkout folder is named for a branch.
-   > - A `planning_slug` that already holds a session resumes it. Where that is not what the
-   >   request asked for, compose a slug that distinguishes this work and call again.
-   > - Omitting `planning_slug` opens a folder named only for the date it was opened, which no
-   >   later step renames. Compose one.
+   > - A `planning_slug` that already holds a session resumes it, and `resumed` comes back true.
+   >   Where the request asked to open new work, put that to the user before going on: continue
+   >   the session that stands there, or retry with a slug that distinguishes this work.
+   > - A call naming no slug opens a folder named for the date and a random token, which carries
+   >   nothing about the work and which no later step renames. Compose one.
 
 3. **Settle any opening decision**, where the response names a `decision` and has no `session_index`.
 
@@ -41,7 +44,7 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
    > - `component-choice`: name a component in the request, or pass that component's `working_directory`.
    > - `unmapped-root`: pass a `working_directory` under a checkout this server serves.
    > - `workflow-selection`: pass `target_workflow_id` set to the chosen catalog id, or `user_request`.
-   > - `resume-session`: pass `planning_folder` for the chosen saved session, or `fresh: true` for a new client.
+   > - `resume-session`: pass `planning_slug` set to the chosen saved session's slug, in place of the one composed at step 1, or `fresh: true` for a new client.
 
 4. **Keep what the response returns.**
 

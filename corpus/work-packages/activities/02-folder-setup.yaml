@@ -34,7 +34,7 @@ steps:
           setVariable:
             analysis_type: context
   - kind: checkpoint
-    id: folder-created
+    id: scaffolds-written
     message: The planning folder and its entry-point scaffolds stand at [planning folder]({planning_folder_path}).
     options:
       - id: proceed

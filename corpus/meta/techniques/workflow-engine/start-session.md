@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.21.0
+  version: 1.22.0
 ---
 
 ## Capability
@@ -19,11 +19,11 @@ Optional. Fresh-session workflow id (default `meta`). Ignored on resume.
 
 ### planning_slug
 
-The slug naming this session's planning folder — the date, the issue or pull-request reference the work carries, and its kebab-case name — composed per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). A single path segment; the server resolves which planning root it lands in. A slug holding a session resumes it.
+Optional. A single path segment naming this session's planning folder, composed per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). The server resolves the planning root it lands in.
 
 ### planning_folder
 
-Optional. Absolute path of one planning folder, for a folder outside the planning root of `{working_directory}`: a folder holding a session resumes. Mutually exclusive with `{planning_slug}`.
+Optional. Absolute path of one planning folder. A folder already holding a session resumes, wherever it sits.
 
 ### repo
 
@@ -115,17 +115,17 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ## Rules
 
-### the-slug-names-the-session
+### the-returned-path-is-the-session-folder
 
-`{planning_slug}` names the session's folder in the planning root the server resolves, so this call never composes a planning path. The returned `planning_folder_path` is the path this session uses.
-
-### a-nameless-session-stays-nameless
-
-A call naming neither a slug nor a folder opens a folder named only for the date it was opened, and no later step renames it. Compose the slug before the call.
+The returned `planning_folder_path` is the folder this session uses, and this call composes no planning path of its own.
 
 ### planning-folder-is-absolute
 
-`planning_folder` is an absolute path, for a folder outside the planning root. Bare slugs and relative paths are rejected, and a call passing it alongside `{planning_slug}` is refused.
+`planning_folder` is an absolute path. A new folder sits directly under the planning root of this session, and one named anywhere else is refused, naming that root. Bare slugs and relative paths are rejected.
+
+### one-designator-names-the-folder
+
+A call names its folder with `{planning_slug}` or with `{planning_folder}`. A call passing both is refused.
 
 ### origin-binds-from-working-directory
 

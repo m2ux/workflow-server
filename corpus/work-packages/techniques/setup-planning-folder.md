@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -35,16 +35,13 @@ Navigation and document-index skeleton, written to `{planning_folder_path}` from
 
 ## Protocol
 
-### 1. Write Start Here
+### 1. Write the Planning Skeletons
 
 - Write `{start_here_skeleton}` to `{planning_folder_path}` with header and placeholders, from the [START-HERE.md skeleton](../resources/planning-folder-template.md#start-heremd-skeleton)
-
-### 2. Create Readme Skeleton
-
 - Write `{readme_skeleton}` to `{planning_folder_path}` for navigation, from the [README.md skeleton](../resources/planning-folder-template.md#readmemd-skeleton)
 
 ## Rules
 
 ### the-folder-is-the-one-the-session-opened
 
-`{planning_folder_path}` is the folder the server resolved for this session. This technique writes into it and composes no path of its own: a folder composed here is a second home for one session's artifacts, and the session records only the server's.
+`{planning_folder_path}` is the folder the server resolved for this session. This technique writes into it and composes no path of its own.
