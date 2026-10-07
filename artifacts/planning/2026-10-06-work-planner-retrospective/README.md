@@ -14,6 +14,7 @@ This record carries the requirements the skill answers to. They exist nowhere el
 | --- | --- |
 | [Sources](sources.md) | How each session file was extracted, what selection kept, what redaction removed, and which planner branches have no transcript. |
 | [Joins](joins.md) | Every pair of tasks that could share a pull request and does not, with why. |
+| [Review — 2026-10-07](review-2026-10-07.md) | The criteria re-derived against the requirements specification: the decisions taken, the trace from each requirement, and where each finding is resolved. |
 | [2026-09-27 — b8c47927](sessions/2026-09-27-b8c47927.md) | The founding session. Succinct table descriptions, the title form, criteria as single invariants, Hoist mode, the Goals-to-Acceptance-Criteria rename, and the rule that every initiative criterion names its instrument. |
 | [2026-09-28 — 52f3fc03](sessions/2026-09-28-52f3fc03.md) | Hoist mode exercised on three orphans, settling where an issue goes when two epics could take it. |
 | [2026-09-28 — 8d61d701](sessions/2026-09-28-8d61d701.md) | Progress across repositories: what one summary covers, the level of detail per line, how many Next items appear, and how a summary links from Slack. |

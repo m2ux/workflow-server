@@ -21,3 +21,12 @@ Each task of E01, E02, E04 and E05 was a directive given on its own and answered
 | W02 with W03 and W04 | W02 is a line in the skill's themes table; W03 and W04 are status derivation. |
 
 W01 and W02 share a pull request, and name each other.
+
+## E10
+
+| Pair | Why they are separate |
+| --- | --- |
+| W02 with each of W01, W03, W04 and W05 | W02 extends the renumber and sync scripts, which read issues and pull requests; the others add checks over the skill's own files. One pull request over both would mix two subjects and two reviews. |
+| W04 with W05 | W04 decides the guide split and the interface rule from static text; W05 decides each house rule against the operations the commands file names. |
+
+W03 and W04 share a pull request, and name each other.
