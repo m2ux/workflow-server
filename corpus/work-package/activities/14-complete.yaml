@@ -105,7 +105,10 @@ steps:
     when: is_review_mode != true
   - kind: technique
     id: read-session
-    technique: workflow-engine::read-session
+    technique:
+      name: workflow-engine::read-session
+      inputs:
+        session_index: ""
   - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective::retrospective

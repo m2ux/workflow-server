@@ -66,7 +66,10 @@ steps:
             post_summary_approved: false
   - kind: technique
     id: post-summary-jira
-    technique: atlassian::comment-jira-issue
+    technique:
+      name: atlassian::comment-jira-issue
+      inputs:
+        cloudId: ""
     when: stealth_mode != true && is_review_mode != true && issue_platform == 'jira' && has_deferred_assumptions == true && post_summary_approved == true
   - kind: technique
     id: post-summary-github

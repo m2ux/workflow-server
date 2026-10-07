@@ -265,6 +265,7 @@ steps:
       name: prism/read-run-manifest
       inputs:
         output_path: child_planning_folder_path
+        target_content: ""
     actions:
       - action: validate
         target: run_status != 'error'
@@ -274,6 +275,8 @@ steps:
     when: pipeline_mode == 'full-prism'
     technique:
       name: prism/read-definitive-findings
+      inputs:
+        target_content: ""
       outputs:
         definitive_findings: structural_findings
   - kind: technique

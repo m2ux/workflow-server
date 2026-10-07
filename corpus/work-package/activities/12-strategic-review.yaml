@@ -173,6 +173,7 @@ steps:
       name: workflow-engine::verify-readme-conforms
       inputs:
         seed_profile: work-package/readme-seed
+        session_index: ""
   - kind: technique
     id: ensure-changes-folder-entry
     technique: changes-folder
