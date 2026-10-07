@@ -13,7 +13,6 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`doc`](doc.md) | Generate API documentation to verify inline doc comments compile |
 | [`fmt-check`](fmt-check.md) | Canonical formatting verdict for the sources in scope, matching what CI enforces |
 | [`fmt-fix`](fmt-fix.md) | Apply rustfmt formatting in place |
-| [`metadata`](metadata.md) | The workspace's own package graph, resolved without compiling or fetching: the cheapest proof that a cargo toolchain works against a checkout |
 | [`preflight`](preflight.md) | The unmet system dependencies a workspace's cargo build would need — `protoc`, openssl headers, `pkg-config` and their like — as a structured environment finding |
 | [`run-suite`](run-suite.md) | One validation verdict for a rust-substrate project — compilation, lints, tests and formatting — with each check's diagnostics carried beside its status |
 | [`test`](test.md) | Run tests with bounded test parallelism |
