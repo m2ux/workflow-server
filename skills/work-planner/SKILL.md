@@ -67,6 +67,8 @@ Read the file for the mode the request calls for:
   - A session per unit, in a worktree of its own
   - A test for each criterion a unit delivers, of the kind that criterion can be observed by
   - A test plan table mapping each test to the parent epic criteria it covers
+  - Placement of a completed task issue as In Review on the board
+  - Hoisting of issues arising from the delivery of a unit
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task
