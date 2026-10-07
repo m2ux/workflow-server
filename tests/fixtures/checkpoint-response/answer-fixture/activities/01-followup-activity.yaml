@@ -1,0 +1,10 @@
+id: followup-activity
+version: 1.0.0
+name: Followup Activity
+description: Transition target so answer-activity's exit is bound.
+steps:
+  - kind: action
+    id: noop
+    actions:
+      - action: log
+        message: Nothing to do — this activity exists so answer-activity's exit is bound.
