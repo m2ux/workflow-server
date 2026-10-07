@@ -1,0 +1,21 @@
+id: write-unbound
+version: 1.0.0
+name: Write Unbound
+description: Write an artifact without a bound destination, defaulting to the planning folder.
+variables:
+  reads:
+    - planning_folder_path
+  writes:
+    - name: unbound_artifact_written
+      type: boolean
+      description: True once the unbound artifact is written.
+required: true
+steps:
+  - kind: technique
+    id: write-unbound-artifact
+    technique: record-unbound-artifact
+exits:
+  - id: unbound_written
+    isDefault: true
+outcome:
+  - The unbound artifact is written to the session planning folder
