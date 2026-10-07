@@ -12,6 +12,7 @@ The corpus no longer carries a structured condition that dismissed a checkpoint.
 
 | Artifact | What it holds |
 | --- | --- |
+| [W03](w03.md) | The work item: the two inputs that resolve a checkpoint, the option the answer records, and the checks that dismissal is gone from the response tool |
 
 ## Links
 
