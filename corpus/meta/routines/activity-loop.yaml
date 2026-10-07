@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.4.0
+version: 1.5.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -49,6 +49,8 @@ internals:
     description: The activity a fan's branches converge on, which the walk resumes from once the fan is opened.
   - id: stands_on_activity
     description: Whether the session already stands on the activity the next entry carries, the advance that entered it having been made.
+  - id: continuation_held
+    description: Whether the continuation just attempted holds the activity the advance entered. False where the reading refused or the continuation returned nothing.
 
 steps:
   - kind: action
@@ -116,11 +118,28 @@ steps:
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
             variable_bag: variables
+          outputs:
+            continuation_held: continuation_held
         actions:
           - action: set
             target: trace_tokens
             value: "{advance_trace_tokens}"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+      - kind: action
+        id: release-unheld-worker
+        when: continuation_held == false
+        actions:
+          # The advance refused this context, or the continuation returned nothing. The pointer
+          # already stands on the activity, so the dispatch that follows makes no advance.
+          - action: set
+            target: worker_agent_id
+            value: null
+          - action: set
+            target: stands_on_activity
+            value: true
+          - action: set
+            target: continuation_held
+            value: null
       - kind: technique
         id: enter-activity
         when: "!worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != 'checkpoint_pending'"
@@ -318,9 +337,9 @@ steps:
         id: release-spent-worker
         when: worker_result.result_type == "activity_complete" && (worker_result.next_activity_id == "__terminal__" || worker_result.next_activity_fans)
         actions:
-          # A destination no worker of this batch can take ends the batch here. Where the bound ends
-          # it instead, the advance that read the standing has already replaced the context for the
-          # activity it entered, so the identity the next iteration reads is a live one either way.
+          # A destination no worker of this batch can take ends the batch here: the terminal
+          # activity, or a destination that fans. A context the advance refused is released by
+          # release-unheld-worker, before the dispatch for the activity the pointer already stands on.
           - action: set
             target: worker_agent_id
             value: null
