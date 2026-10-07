@@ -64,71 +64,71 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
   });
 
   it('dispatch_child binds repo onto session.json when start_session omitted it', async () => {
-    const meta = await client.callTool({
-      name: 'start_session',
-      arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
-    });
-    expect(meta.isError).toBeFalsy();
-    const metaResp = parseToolResponse(meta);
-    expect(metaResp.repo_unbound).toBe(true);
-
     const slug = '2026-07-24-worker-repo';
-    const child = await client.callTool({
-      name: 'dispatch_child',
-      arguments: {
-        session_index: metaResp.session_index,
-        workflow_id: 'work-package',
-        agent_id: 'worker-1',
-        planning_slug: slug,
-        repo: 'acme/app',
-      },
-    });
-    expect(child.isError).toBeFalsy();
-    const childResp = parseToolResponse(child);
-    expect(childResp.planning_slug).toBe(slug);
-
-    const promoted = join(engMulti, 'app', '.engineering', 'artifacts', 'planning', slug);
-    expect(existsSync(join(promoted, 'session.json'))).toBe(true);
-    expect(childResp.planning_folder_path).toBe(promoted);
-
-    const stored = JSON.parse(readFileSync(join(promoted, 'session.json'), 'utf8'));
-    expect(stored.repo).toBe('acme/app');
-    expect(stored.triggeredWorkflows[0].state.repo).toBe('acme/app');
-  });
-
-  it('start_session with repo binds session.json and dispatch_child promotes under projects/<repo>/.engineering', async () => {
     const meta = await client.callTool({
       name: 'start_session',
       arguments: {
         workflow_id: 'meta',
         agent_id: 'orchestrator',
         repo: 'acme/app',
+        planning_slug: slug,
       },
     });
     expect(meta.isError).toBeFalsy();
     const metaResp = parseToolResponse(meta);
-    expect(metaResp.repo).toBe('acme/app');
-    expect(metaResp.repo_unbound).toBeUndefined();
 
-    const slug = '2026-07-24-with-repo';
     const child = await client.callTool({
       name: 'dispatch_child',
       arguments: {
         session_index: metaResp.session_index,
         workflow_id: 'work-package',
         agent_id: 'worker-1',
-        planning_slug: slug,
+        repo: 'acme/app',
       },
     });
     expect(child.isError).toBeFalsy();
     const childResp = parseToolResponse(child);
-    expect(childResp.planning_slug).toBe(slug);
 
-    const promoted = join(engMulti, 'app', '.engineering', 'artifacts', 'planning', slug);
-    expect(existsSync(join(promoted, 'session.json'))).toBe(true);
-    expect(childResp.planning_folder_path).toBe(promoted);
+    const folder = join(engMulti, 'app', '.engineering', 'artifacts', 'planning', slug);
+    expect(existsSync(join(folder, 'session.json'))).toBe(true);
+    expect(childResp.planning_folder_path).toBe(folder);
 
-    const stored = JSON.parse(readFileSync(join(promoted, 'session.json'), 'utf8'));
+    const stored = JSON.parse(readFileSync(join(folder, 'session.json'), 'utf8'));
+    expect(stored.repo).toBe('acme/app');
+    expect(stored.triggeredWorkflows[0].state.repo).toBe('acme/app');
+  });
+
+  it('start_session with repo plans under projects/<repo>/.engineering, and the child embeds there', async () => {
+    const slug = '2026-07-24-with-repo';
+    const meta = await client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'meta',
+        agent_id: 'orchestrator',
+        repo: 'acme/app',
+        planning_slug: slug,
+      },
+    });
+    expect(meta.isError).toBeFalsy();
+    const metaResp = parseToolResponse(meta);
+    expect(metaResp.repo).toBe('acme/app');
+
+    const child = await client.callTool({
+      name: 'dispatch_child',
+      arguments: {
+        session_index: metaResp.session_index,
+        workflow_id: 'work-package',
+        agent_id: 'worker-1',
+      },
+    });
+    expect(child.isError).toBeFalsy();
+    const childResp = parseToolResponse(child);
+
+    const folder = join(engMulti, 'app', '.engineering', 'artifacts', 'planning', slug);
+    expect(existsSync(join(folder, 'session.json'))).toBe(true);
+    expect(childResp.planning_folder_path).toBe(folder);
+
+    const stored = JSON.parse(readFileSync(join(folder, 'session.json'), 'utf8'));
     expect(stored.workflowId).toBe('meta');
     expect(stored.repo).toBe('acme/app');
     expect(stored.triggeredWorkflows).toHaveLength(1);
@@ -143,6 +143,7 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
         workflow_id: 'meta',
         agent_id: 'orchestrator',
         repo: 'acme/app',
+        planning_slug: '2026-07-24-conflict',
       },
     });
     const metaIdx = parseToolResponse(meta).session_index;
@@ -153,7 +154,6 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
         session_index: metaIdx,
         workflow_id: 'work-package',
         agent_id: 'worker-1',
-        planning_slug: '2026-07-24-conflict',
         repo: 'other/repo',
       },
     });

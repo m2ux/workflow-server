@@ -2194,8 +2194,8 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
       expect(response.planning_slug).toBeDefined();
       expect(response.session_scope).toBeUndefined();
-      // Fresh meta without repo is unbound until bind; agents should pass repo always.
-      expect(response.repo_unbound).toBe(true);
+      // No repo was passed and none was derived, so the response echoes no binding.
+      expect(response.repo).toBeUndefined();
     });
 
     it('accepts workflow_id for non-meta workflow', async () => {
