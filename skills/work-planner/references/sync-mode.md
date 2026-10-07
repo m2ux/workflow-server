@@ -56,7 +56,7 @@ Records work on an initiative, its epics and their task issues: links each task 
     - When it reports an integration branch unmerged, open that pull request with [Open Integration Pull Request](commands.md#open-integration-pull-request) and leave the initiative open.
     - [Close as Completed](commands.md#close-as-completed) the initiative when it reports closable, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 12. **Sync the board.**
-    Sync it after the issues are patched and any closable issue is closed, fetching the issues again first. An open initiative is set In Review as this mode's In Review rule states.
+    Sync it after the issues are patched and any closable issue is closed, fetching the issues again first. An open initiative or epic is set In Review as this mode's In Review rule states.
     - **Find it.**
       - The board is the initiative's theme board, per SKILL.md's [Themes and Boards](../SKILL.md#themes-and-boards): run [Find Theme Board](commands.md#find-theme-board) with its theme.
       - When no open board carries that theme, create it with [Create Board](commands.md#create-board), titled as [Themes and Boards](../SKILL.md#themes-and-boards) states, then sync it.
@@ -75,5 +75,5 @@ Records work on an initiative, its epics and their task issues: links each task 
 - **Open questions.**
   An epic is not synced while its Open Questions section remains. Ready it in [Plan Mode](plan-mode.md) first.
 - **In Review.**
-  An open initiative whose criteria are all ticked is In Review.
+  An open initiative or epic whose criteria are all ticked is In Review.
 
