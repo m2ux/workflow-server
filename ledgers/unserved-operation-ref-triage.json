@@ -284,12 +284,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/midnight-system-review/techniques/evidence-probes/probe-area.md:63",
-      "op": "`gitnexus`",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/ponytail/techniques/scope-intake.md:35",
       "op": "context",
       "verdict": "fix-later",
