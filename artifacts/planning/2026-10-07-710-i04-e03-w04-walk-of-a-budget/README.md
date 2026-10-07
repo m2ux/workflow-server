@@ -12,6 +12,7 @@ The bound is what the advance counts, and a fetch that happens after open is par
 
 | Artifact | What it holds |
 | --- | --- |
+| [W04](w04.md) | The work item: the reading taken before the fetches, the walk that spends the budget after open, and the replacement that walk shows. |
 
 ## Links
 
