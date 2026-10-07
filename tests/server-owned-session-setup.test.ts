@@ -183,6 +183,62 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(second['workflow']).toMatchObject({ id: 'seed-fixture' });
   });
 
+  it('a named planning_slug takes that folder in the checkout\'s own planning root', async () => {
+    const checkout = join(harness.workspaceDir, 'named', 'workflow-server');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const body = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: checkout,
+      planning_slug: '2026-10-07-1183-bootstrap-planning-slug',
+    });
+    expect(body['planning_slug']).toBe('2026-10-07-1183-bootstrap-planning-slug');
+    expect(body['planning_folder_path']).toBe(
+      planningFolderPath(harness.workspaceDir, '2026-10-07-1183-bootstrap-planning-slug'),
+    );
+    expect(existsSync(join(body['planning_folder_path'] as string, SESSION_FILE_NAME))).toBe(true);
+  });
+
+  it('a named planning_slug that already holds a session resumes it', async () => {
+    const checkout = join(harness.workspaceDir, 'named-resume', 'workflow-server');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const first = await callOk('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: checkout,
+      planning_slug: '2026-10-07-named-resume',
+    });
+    const second = await callOk('start_session', {
+      workflow_id: 'bare-fixture',
+      working_directory: checkout,
+      planning_slug: '2026-10-07-named-resume',
+    });
+    expect(second['session_index']).toBe(first['session_index']);
+    expect(second['workflow']).toMatchObject({ id: 'seed-fixture' });
+  });
+
+  it('a planning_slug carrying a path separator is refused, naming the alternative', async () => {
+    const checkout = join(harness.workspaceDir, 'named-nested', 'workflow-server');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const err = await callErr('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: checkout,
+      planning_slug: 'nested/2026-10-07-slug',
+    });
+    expect(err).toContain('single path segment');
+    expect(err).toContain('planning_folder');
+  });
+
+  it('a call naming both a slug and a folder is refused', async () => {
+    const checkout = join(harness.workspaceDir, 'named-both', 'workflow-server');
+    await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
+    const err = await callErr('start_session', {
+      workflow_id: 'seed-fixture',
+      working_directory: checkout,
+      planning_slug: '2026-10-07-both',
+      planning_folder: planningFolderPath(harness.workspaceDir, '2026-10-07-both'),
+    });
+    expect(err).toContain('not both');
+  });
+
   it('PR528-TC-07: transient dispatch_child onto an occupied folder throws FOLDER_OCCUPIED', async () => {
     const slug = '2026-09-11-promote-occupied';
     const folder = planningFolderPath(harness.workspaceDir, slug);

@@ -72,7 +72,7 @@ import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.
 import { appendStepStartedIfAbsent } from '../utils/step-events.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
-import { basename, dirname, isAbsolute, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 
 /** Re-export for callers/tests that imported section extraction from this module. */
 export { extractMarkdownSection } from '../utils/resource-ref.js';
@@ -198,7 +198,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'A meta session without `working_directory` is a transient bootstrap in a temp folder, unless `planning_folder` names a folder that already holds a session; `dispatch_child` promotes it later. `resumed` says whether the call opened a session that already existed, so a resume by path that missed reads false. Children use `dispatch_child`, not this tool. ' +
         'Every session records `execution_path`, `agent`: a caller walks the definition. The session records it and this response echoes it. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks. ' +
-        'With `working_directory`, planning lives under the top-level project folder holding that checkout, `<project>/.engineering/artifacts/planning/`, shared by every clone and worktree inside it. A call that pins no `planning_folder` opens a `YYYY-MM-DD-<token>` folder there, named for nothing: pin the folder to name the session for the work it carries. ' +
+        'With `working_directory`, planning lives under the top-level project folder holding that checkout, `<project>/.engineering/artifacts/planning/`, shared by every clone and worktree inside it. Name the session for the work it carries by passing `planning_slug`, `YYYY-MM-DD-<issue-or-pr-ref>-<kebab-name>`, which the server resolves against that root; a call that names no folder opens a `YYYY-MM-DD-<token>` folder there, named for nothing. ' +
         'The bag is seeded with `user_request`, `planning_folder_path`, and the checkout facts `host_repo_path`, `target_repo`, `component_path`, `is_monorepo`, as host paths; a client this call opens and a child `dispatch_child` opens carry the same facts. ' +
         'A fresh durable meta session that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client in this call and returns `client.session_index` plus `client.workflow.initialActivity`. ' +
         'A durable meta start that cannot uniquely open a client returns a `decision` with no `session_index`; retry with `user_request`, `target_workflow_id`, `planning_folder`, or `fresh`. ' +
@@ -207,6 +207,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
           planning_folder: z.string().optional().describe('Optional. Absolute path of one planning folder: a folder holding a session resumes; a new folder must sit directly under the session\'s planning root, and its basename is the planning slug. Bare/relative paths rejected. Omit for transient meta bootstrap.'),
+          planning_slug: z.string().optional().describe('Optional. Names the session\'s planning folder in its own planning root, which the server resolves — `YYYY-MM-DD-<issue-or-pr-ref>-<kebab-name>`, dropping the ref segment when the work carries none. A slug holding a session resumes it. Omit to open a folder named for nothing. Mutually exclusive with planning_folder, which names a folder outside that root by path.'),
           working_directory: z.string().optional().describe('Optional. Absolute path of the checkout under work. The bound repository is that checkout\'s origin. Bare/relative paths rejected.'),
           repo: z.string().optional().describe('Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.'),
           user_request: z.string().optional().describe('The user\'s free-form request that opened this session. Seeded into the variable bag as `user_request`, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.'),
@@ -217,7 +218,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         })
         .strict(),
     },
-    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, working_directory, repo, agent_id, context_mode, user_request, target_workflow_id, fresh }) => {
+    withAuditLog('start_session', withSessionStoreErrors(async ({ workflow_id, planning_folder, planning_slug: named_slug, working_directory, repo, agent_id, context_mode, user_request, target_workflow_id, fresh }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
@@ -303,6 +304,35 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const effectiveWfId = workflow_id ?? DEFAULT_WORKFLOW_ID;
       const wouldBeTransient = effectiveWfId === DEFAULT_WORKFLOW_ID && working_directory === undefined;
       const repoForRoot = derived?.repo ?? repo;
+
+      // A named slug takes a folder in the session's own planning root, which
+      // the server resolves here: the caller names the session for the work it
+      // carries without composing a path it cannot derive. From here it is a
+      // pinned folder like any other.
+      if (named_slug !== undefined) {
+        if (planning_folder !== undefined) {
+          throw new Error(
+            `start_session: pass planning_slug to name a folder in this session's own planning root, ` +
+            `or planning_folder to name one by absolute path — not both.`,
+          );
+        }
+        if (named_slug !== basename(named_slug) || named_slug === '.' || named_slug === '..') {
+          throw new Error(
+            `start_session: planning_slug must be a single path segment, got '${named_slug}'. ` +
+            `Pass an absolute planning_folder to name a folder by path.`,
+          );
+        }
+        if (!wouldBeTransient) {
+          const namedRoot = derived
+            ? resolveCheckoutSessionRoot(sessionScope, { hostRepoPath: derived.host_repo_path, repo: derived.repo })
+            : resolveSessionRoot(sessionScope, { repo: repoForRoot });
+          pinnedFolder = join(
+            planningRoot(namedRoot.engineeringDir, namedRoot.planningRelativeDir),
+            named_slug,
+          );
+        }
+      }
+
       // A pinned folder names one planning folder exactly: one holding a session resumes.
       const resumeFolder = pinnedFolder !== undefined && await sessionFileExists(pinnedFolder)
         ? pinnedFolder
@@ -312,7 +342,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // pinned new folder sits in that root; a call that pins none takes an
       // unnamed dated folder there.
       let durableRoot: ResolvedSessionRoot | undefined;
-      let planning_slug = pinnedFolder !== undefined ? basename(pinnedFolder) : undefined;
+      // A transient bootstrap resolves no root, so a named slug rides on the
+      // session until dispatch_child promotes it to a folder of that name.
+      let planning_slug = pinnedFolder !== undefined ? basename(pinnedFolder) : named_slug;
       if (!resumeFolder && !wouldBeTransient) {
         durableRoot = derived
           ? resolveCheckoutSessionRoot(sessionScope, { hostRepoPath: derived.host_repo_path, repo: derived.repo })
