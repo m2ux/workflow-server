@@ -27,12 +27,9 @@ import { DEFAULT_FAN_MAX_BRANCHES } from '../config.js';
 import { resolveTechniques, formatTechniqueBundle, dropRulesStatedBy, composeActivityTechnique, projectTechniqueWire, putInheritContracts } from '../loaders/technique-loader.js';
 import { isBareName, SEGMENT_SEPARATOR } from '../loaders/technique-ref.js';
 import {
-  CORE_ORCHESTRATOR_TECHNIQUES,
   CORE_WORKER_TECHNIQUES,
-  FAN_DISPATCH_TECHNIQUES,
   FAN_ONLY_RULES,
   LOOP_ONLY_RULES,
-  ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
   WORKER_CHECKPOINT_TECHNIQUES,
 } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
@@ -51,6 +48,7 @@ import { contentHash, deliveredHash, deliveryScope, recordDeliveries, stageNote,
 import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchReading, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
+import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
@@ -815,7 +813,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
-        'repo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work; a transient meta bootstrap may start unbound and binds when dispatch_child promotes it; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
+        'repo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work, and the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. A call naming no working_directory passes repo: "owner/repo", which resolves the root its planning folder sits in. The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
       ];
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);
@@ -892,27 +890,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
       const summaryText = stringifyForResponse(summaryData);
 
-      // Bundle the workflow's orchestrator-level technique refs (`techniques.workflow`) and the core
-      // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
-      // technique resolves it once.
+      // What the workflow declares at `techniques.workflow`, and nothing beside it. An orchestrator
+      // carries a role activity, and `get_activity` serves that activity's own step bindings — so
+      // every operation a walk applies arrives with the activity applying it, and whatever no step
+      // binds is declared on `techniques.activity`. Deduplicate by ref.
       const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
-      // The fan's techniques ride the response for a workflow whose graph actually fans, and no
-      // other. An orchestrator reads this response for the session it is driving, so the procedure
-      // arrives with the graph that needs it; a workflow with no fanning exit pays nothing for a
-      // procedure it can never reach.
-      const fanTechniques = fanGroups(wf).length > 0 ? FAN_DISPATCH_TECHNIQUES : [];
-      // A gate an orchestrator presents and resolves comes from a gate step in some activity, and
-      // the whole roster is loaded here — so a run declaring none takes neither protocol. Both stay
-      // fetchable by id, for the decision an activity never anticipated.
-      const runDeclaresGate = (wf.activities ?? []).some(
-        (a) => flattenActivitySteps(a).some((s) => s.kind === 'checkpoint'),
-      );
-      const orchestratorTechniques = Array.from(new Set([
-        ...wfTechRefs,
-        ...CORE_ORCHESTRATOR_TECHNIQUES,
-        ...(runDeclaresGate ? ORCHESTRATOR_CHECKPOINT_TECHNIQUES : []),
-        ...fanTechniques,
-      ]));
+      const orchestratorTechniques = Array.from(new Set(wfTechRefs));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
       const opsBundle = formatTechniqueBundle(resolvedOrchestrator);
       const opsText = stringifyForResponse(opsBundle);
@@ -1217,11 +1200,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     return { key: branchKey(base), slot: instanceIndex(entry) ?? 0, unit: base };
   }
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: the destination the workflow graph binds to the exit the activity took. Each transition starts from where the previous one left the session, so issue it only once the previous transition has answered. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`. Where a fan is involved — the call that opens one, each branch retirement, and any call leaving several activities in flight — the response also carries `barrier`: `destination`, the activity the branches converge on; `pending`, the frontier the call leaves; and `met`, true on the call that enters the destination. The call that opens a fan carries `fan` as well: each member\'s `branches`, as the ids that address them.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: the `initialActivity` that start_session and get_workflow both report; later: the destination the workflow graph binds to the exit the activity took. Each transition starts from where the previous one left the session, so issue it only once the previous transition has answered. Optional manifests enable advisory validation. With one activity in flight the response carries its `name`; with several it carries `outstanding` instead — the branches still to return, each as the id that addresses it, instance-qualified where one activity runs once per element of a collection. Pass one of those verbatim as the next `from_activity` or `get_activity` `activity_id`. Where a fan is involved — the call that opens one, each branch retirement, and any call leaving several activities in flight — the response also carries `barrier`: `destination`, the activity the branches converge on; `pending`, the frontier the call leaves; and `met`, true on the call that enters the destination. The call that opens a fan carries `fan` as well: each member\'s `branches`, as the ids that address them.',
     {
       ...sessionIndexParam,
       activity_id: DestinationSchema.describe(
-        'Where the run goes next, read from the graph where the graph states it: naming `from_activity` and `exit` together settles the destination, including its shape, so an exit the graph fans opens one branch per element of the collection it names whatever this field holds. What this field decides is the walk\'s opening, where nothing is retired yet — the `initialActivity` from get_workflow — and a call naming no exit the retiring activity declares, as an activity id or `__terminal__`. A fan opens only on an exit the graph binds to it, so a list or instance fan here with no binding behind it is refused.',
+        'Where the run goes next, read from the graph where the graph states it: naming `from_activity` and `exit` together settles the destination, including its shape, so an exit the graph fans opens one branch per element of the collection it names whatever this field holds. What this field decides is the walk\'s opening, where nothing is retired yet — the `initialActivity` that start_session and get_workflow both report — and a call naming no exit the retiring activity declares, as an activity id or `__terminal__`. A fan opens only on an exit the graph binds to it, so a list or instance fan here with no binding behind it is refused.',
       ),
       from_activity: z.string().optional().describe(
         'The activity this call is exiting — the one `exit`, `step_manifest`, `variables_changed` and `artifacts_produced` belong to, instance-qualified (`challenge-pass#1`) where the graph runs that activity once per element of a collection. Required whenever anything is in flight, which is every call but a session\'s first, so a call always names the activity it is returning rather than leaving the server to infer it. Omitted only on that first call, when the frontier is empty.',
@@ -1590,14 +1573,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (planningFolder) {
         const declared = next.declaredArtifacts ?? [];
         const declaredIds = new Set(declared.map(a => a.id));
-        // Outside-folder declared paths → unknown (not missing).
+        // Outside-folder declared paths: verify presence at destination.
         for (const a of declared) {
           if (!a.path) continue;
           const abs = a.path.startsWith('/') ? a.path : pathJoin(planningFolder, a.path);
           if (!abs.startsWith(planningFolder + '/') && abs !== planningFolder) {
-            artifactWarnings.push(
-              `Declared artifact id '${a.id}' (name '${a.name}') writes outside the planning folder — status unknown (not missing).`,
-            );
+            if (!existsSync(abs)) {
+              artifactWarnings.push(
+                `Declared artifact id '${a.id}' (name '${a.name}') missing at bound destination '${abs}'.`,
+              );
+            }
           }
         }
         try {

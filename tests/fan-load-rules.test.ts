@@ -519,17 +519,38 @@ describe('fan load rules', () => {
         activity('research-pass', {
           exits: exits('researched'),
           variables: { reads: ['research_topic'] },
-          steps: [{ kind: 'technique', id: 'persist', technique: 'workflow-engine::commit-and-persist' }],
+          steps: [{ kind: 'technique', id: 'persist', technique: 'workflow-engine::sync-progress-status' }],
         }),
         instanceFanFixture.activities[2]!,
       ],
     });
     expect(rendered(errors)).toContain(
-      "Activity 'research-pass' is fanned by 'scope-research.scoped' and binds 'workflow-engine::commit-and-persist'.",
+      "Activity 'research-pass' is fanned by 'scope-research.scoped' and binds 'workflow-engine::sync-progress-status'.",
     );
     // The reason is what the instances share beyond their checkouts, so it reads the same whether
     // or not the destination splits the trees.
-    expect(rendered(errors)).toContain('persists the session record and the planning folder');
+    expect(rendered(errors)).toContain('writes the planning README Progress surface');
+  });
+
+  // The persist run reaches a branch as the steps it stands for, so each README writer among them
+  // carries its own refusal rather than the run carrying one for all of them.
+  it('L14 refuses a fanned activity binding the engineering-commit preparation', async () => {
+    const errors = await loadErrors({
+      ...instanceFanFixture,
+      activities: [
+        instanceFanFixture.activities[0]!,
+        activity('research-pass', {
+          exits: exits('researched'),
+          variables: { reads: ['research_topic'] },
+          steps: [{ kind: 'technique', id: 'prepare', technique: 'workflow-engine::prepare-engineering-commit' }],
+        }),
+        instanceFanFixture.activities[2]!,
+      ],
+    });
+    expect(rendered(errors)).toContain(
+      "Activity 'research-pass' is fanned by 'scope-research.scoped' and binds 'workflow-engine::prepare-engineering-commit'.",
+    );
+    expect(rendered(errors)).toContain('sets the planning README lifecycle header');
   });
 
   it('L14 refuses a fanned activity binding a version-control technique', async () => {
@@ -624,13 +645,13 @@ describe('fan load rules', () => {
           variables: { reads: ['research_topic'] },
           steps: [
             { kind: 'technique', id: 'worktree', technique: 'git::create-worktree' },
-            { kind: 'technique', id: 'persist', technique: 'workflow-engine::commit-and-persist' },
+            { kind: 'technique', id: 'persist', technique: 'workflow-engine::sync-progress-status' },
           ],
         }),
         instanceFanFixture.activities[2]!,
       ],
     });
-    expect(rendered(errors)).toContain("binds 'workflow-engine::commit-and-persist'");
+    expect(rendered(errors)).toContain("binds 'workflow-engine::sync-progress-status'");
     expect(rendered(errors)).toContain('what that splits is the working tree, not the record');
   });
 

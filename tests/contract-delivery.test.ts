@@ -11,11 +11,15 @@ import { sessionOps, type SessionOps } from './session-ops.js';
 /**
  * An agent receives its whole contract when it receives its work.
  *
- * Both role-facing deliveries sit on a path their role cannot skip: `get_workflow` opens every
+ * Both role-facing deliveries sit on a path their role cannot skip: `get_workflow` opens the
  * orchestrator, and `get_activity` is the call a dispatched worker makes to receive its work. Each
  * carries every technique of that role's contract entire — capability, interface, procedure and the
  * rules it is held to — and what one tool result may carry is measured and reported rather than
  * spent deciding which of those to withhold.
+ *
+ * What a role's contract holds is what its definition declares. The orchestrator's is the workflow's
+ * `techniques.workflow`; a worker's is its activity's, with the worker baseline the engine owes
+ * every activity beside it.
  */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,6 +91,16 @@ function ruleLines(bundle: Record<string, unknown>, where: 'list' | 'bodies'): s
   return list.filter(([name, line]) => stated.has(key(name, line))).map(([name]) => name);
 }
 
+/**
+ * The workflow whose startup response carries a contract.
+ *
+ * `get_workflow` delivers what the workflow declares at workflow level, and `meta` is the one that
+ * declares any: it holds the graph, and the orchestrator it opens is the only agent whose work
+ * arrives through this call. A client workflow's techniques sit on its activities, and reach the
+ * agent that runs them through `get_activity` — measured by the worker describe below.
+ */
+const ORCHESTRATED = 'meta';
+
 describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrator contract whole', () => {
   let harness: Harness;
   let client: Client;
@@ -100,10 +114,10 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
   beforeAll(async () => {
     harness = await createHarness();
     client = harness.client;
-    mcp = sessionOps(harness, 'work-package');
+    mcp = sessionOps(harness, ORCHESTRATED);
     const session = await client.callTool({
       name: 'start_session',
-      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: mcp.folder('2026-09-17-startup-contract') },
+      arguments: { workflow_id: ORCHESTRATED, agent_id: 'orchestrator', planning_folder: mcp.folder('2026-09-17-startup-contract') },
     });
     expect(session.isError).toBeFalsy();
     sessionIndex = (JSON.parse(responseText(session)) as { session_index: string }).session_index;
@@ -138,15 +152,12 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
     expect(Object.keys(contracts).length, 'inherited rules had no contract to ride').toBeGreaterThan(0);
   });
 
-  it('carries the role\'s own rules, and states no rule twice', () => {
+  it('states no rule twice', () => {
     // A rule has one home, and which home is decided by what it governs. A rule a technique
     // declares rides that technique's body; a rule a scope shares rides that scope's contract;
     // `rules` carries what governs the agent rather than any one technique. Reading both and
     // finding a line in each would be a reader asked to hold the same boundary twice over,
     // from two places that can drift apart.
-    expect(Array.isArray(ops['rules'])).toBe(true);
-    const list = ops['rules'] as Array<[string, string]>;
-    expect(list.length).toBeGreaterThan(0);
     expect(ruleLines(ops, 'list'), 'the list restates a rule a body or contract already carries')
       .toEqual([]);
   });
@@ -174,9 +185,9 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
   });
 
   /**
-   * The limit reports; it decides nothing. `work-package` is the corpus's widest startup response,
-   * so this reads what the largest opening call now comes to — and a result over the limit is a
-   * workflow that wants dividing, which the server logs and delivers anyway.
+   * The limit reports; it decides nothing. This reads what the one startup response carrying a
+   * contract comes to — and a result over the limit is a workflow that wants dividing, which the
+   * server logs and delivers anyway.
    */
   it('goes out whole whether or not it fits what one tool result may carry', () => {
     expect(wholeResult).toBeGreaterThan(0);
@@ -208,6 +219,36 @@ describe.skipIf(!liveCorpusRoot())('the startup response carries the orchestrato
       arguments: { session_index: sessionIndex, technique_id: 'agent-conduct', step_id: 'resolve-target' },
     });
     expect(fetched.isError).toBe(true);
+  });
+});
+
+/**
+ * A rule the workflow states for its orchestrator reaches it on the same response.
+ *
+ * Measured on a workflow that declares one, which is not the workflow that declares techniques: the
+ * two buckets are independent, and no workflow of the corpus declares both. So the describe above
+ * weighs the technique bodies and this one weighs the rules list, each where its subject exists.
+ */
+describe.skipIf(!liveCorpusRoot())('the startup response carries the role\'s own rules', () => {
+  let harness: Harness;
+
+  afterAll(async () => { await harness.close(); });
+
+  it('carries them as a list, for a workflow that states any', async () => {
+    harness = await createHarness();
+    const mcp = sessionOps(harness, 'work-package');
+    const session = await harness.client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: mcp.folder('2026-10-06-role-rules') },
+    });
+    expect(session.isError).toBeFalsy();
+    const index = (JSON.parse(responseText(session)) as { session_index: string }).session_index;
+    const result = await harness.client.callTool({ name: 'get_workflow', arguments: { session_index: index } });
+    expect(result.isError).toBeFalsy();
+
+    const bundle = splitWorkflowResponse(responseText(result)).ops;
+    expect(Array.isArray(bundle['rules'])).toBe(true);
+    expect((bundle['rules'] as unknown[]).length).toBeGreaterThan(0);
   });
 });
 

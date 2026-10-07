@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto';
+import { createHmac, randomBytes } from 'node:crypto';
 import { realpathSync } from 'node:fs';
 import { getOrCreateServerKey } from './crypto.js';
 
@@ -50,6 +50,23 @@ function base32Truncated(bytes: Buffer, length: number): string {
     out += BASE32_ALPHABET[symbol];
   }
   return out;
+}
+
+/**
+ * Slug for a planning folder opened without a name: today's date, then a
+ * random 6-character base32 token drawn from the same alphabet as the session
+ * index.
+ *
+ * A caller that knows what the session is for pins the folder on
+ * `start_session` and this never runs. The token is random rather than derived
+ * so no two unnamed sessions contend for one folder, and the date keeps the
+ * planning root sortable alongside the named folders.
+ *
+ * The session index cannot serve here: it is an HMAC of the folder path, so it
+ * exists only once the folder does.
+ */
+export function mintUnnamedPlanningSlug(now: Date = new Date()): string {
+  return `${now.toISOString().slice(0, 10)}-${base32Truncated(randomBytes(8), SESSION_INDEX_LENGTH)}`;
 }
 
 /**

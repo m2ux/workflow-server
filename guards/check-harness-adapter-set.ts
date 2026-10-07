@@ -8,8 +8,8 @@
  *
  * The obligation is real and stated only in prose: each adapter exposes the same technique kinds. And the
  * set is enumerated twice, in places that must agree — the resolution map, which calls itself
- * authoritative, and `CORE_ORCHESTRATOR_TECHNIQUES`, whose own comment explains why a technique named
- * inside another technique's Protocol has no other delivery path. A fifth adapter has to be added in both.
+ * authoritative, and meta's `techniques.activity`, which carries what a technique named inside
+ * another technique's Protocol has no other delivery path to. A fifth adapter is added in both.
  *
  * ## Reading prose safely
  *
@@ -38,7 +38,7 @@ import { type CorpusSource, indexCorpus } from '../src/loaders/corpus-index.js';
 import { assertScanned, requireWorkflowsRoot, UnreachableCorpusError, workflowSubdir, defaultCorpusDest } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
 import { fencedLines, toLines } from './markdown-refs.js';
-import { CORE_ORCHESTRATOR_TECHNIQUES } from '../src/loaders/core-ops.js';
+import { parseDefinition } from '../src/utils/serialization.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = defaultCorpusDest(join(DIR, '..'));
@@ -172,8 +172,16 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     });
   }
 
+  // The adapters reach an orchestrator on the activity it carries, declared at the meta workflow's
+  // `techniques.activity`: the map is applied from inside another technique's Protocol, and an
+  // inline ref is never re-resolved, so no step binding can deliver it.
+  const metaWorkflowPath = join(groupDir(index), '..', '..', 'workflow.yaml');
+  const declared = existsSync(metaWorkflowPath)
+    ? ((parseDefinition(readFileSync(metaWorkflowPath, 'utf-8')) as
+      { techniques?: { activity?: string[] } } | null)?.techniques?.activity ?? [])
+    : [];
   const coreAdapters = new Set(
-    CORE_ORCHESTRATOR_TECHNIQUES
+    declared
       .filter((ref) => ref.startsWith('harness-compat::'))
       .map((ref) => ref.slice('harness-compat::'.length))
       .filter((op) => !GENERIC_OPS.has(op)),
@@ -254,7 +262,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       findings.push({
         check: 'adapter-undelivered',
         site,
-        detail: `'harness-compat::${slug}' is absent from CORE_ORCHESTRATOR_TECHNIQUES, so an orchestrator `
+        detail: `'harness-compat::${slug}' is absent from meta's techniques.activity, so an orchestrator `
           + 'reaches the dispatch step with nothing to apply for this kind',
       });
     }

@@ -238,7 +238,7 @@ export function resolveSessionRoot(
   if (scope.mode === 'multi') {
     throw new Error(
       'start_session: repo is required when the server is bound to a projects multi-root ' +
-        '(HOST_PROJECTS_ROOT). Pass working_directory so the server derives owner/repo from that checkout\'s origin, or pass repo: "owner/repo" when creating a transient session without a working_directory. ' +
+        '(HOST_PROJECTS_ROOT). Pass working_directory so the server derives owner/repo from that checkout\'s origin, or pass repo: "owner/repo" when opening a session without a working_directory. ' +
         'Planning lives at <project>/.engineering/artifacts/planning/ of the top-level project folder holding that checkout.',
     );
   }

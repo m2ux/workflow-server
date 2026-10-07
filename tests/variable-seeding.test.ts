@@ -313,34 +313,15 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(body.workflow.id).toBe('child-fixture');
     // The child's, not the parent's — the seed-fixture parent starts at `checkpoint-activity`.
     expect(body.workflow.initialActivity).toBe('child-activity');
-    // The response carries the workflow's metadata and nothing about a prior run: re-dispatching from a
-    // transient parent replaces the child rather than continuing it, which is #429.
+    // The response carries the workflow's metadata and nothing about a prior run.
     expect(Object.keys(body.workflow)).toEqual(['id', 'version', 'initialActivity']);
   });
 
-  it('reports the first activity from the transient-promotion path too, which is the one bootstrap takes', async () => {
-    // `start_session` with no planning folder is how the meta bootstrap opens, so the promotion branch
-    // is the return site production reaches. It is a second `return` in the same handler, and covering
-    // only the persistent-parent one leaves the live path free to drop the field.
-    const started = await call('start_session', { agent_id: 'orchestrator' });
-    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
-    const result = await call('dispatch_child', {
-      session_index: sessionIndex,
-      workflow_id: 'child-fixture',
-      planning_slug: '2026-07-07-promoted-initial',
-    });
-    const body = JSON.parse((result.content[0] as { type: 'text'; text: string }).text) as {
-      planning_slug?: string; workflow: { id: string; initialActivity?: string };
-    };
-    expect(body.planning_slug).toBe('2026-07-07-promoted-initial');
-    expect(body.workflow.initialActivity).toBe('child-activity');
-  });
-
-  it('dispatch_child (transient meta promotion) seeds both the promoted parent and the embedded child', async () => {
-    const started = await call('start_session', { agent_id: 'orchestrator' });
-    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+  it('dispatch_child seeds both the parent bag and the embedded child', async () => {
     const slug = '2026-07-07-seed-promoted';
-    await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture', planning_slug: slug });
+    const started = await call('start_session', { agent_id: 'orchestrator', planning_slug: slug });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture' });
     const stored = readSession(slug);
     expect(stored.variables).toEqual({ bootstrap_ready: false, planning_folder_path: planningFolder(slug) });
     expect(stored.triggeredWorkflows[0].state.variables).toEqual({
@@ -472,10 +453,10 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     });
 
     it('dispatch_child hands user_request down to the child bag', async () => {
-      const started = await call('start_session', { agent_id: 'orchestrator', user_request: 'plan issue 141' });
-      const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       const slug = '2026-07-28-request-inherited';
-      await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture', planning_slug: slug });
+      const started = await call('start_session', { agent_id: 'orchestrator', user_request: 'plan issue 141', planning_slug: slug });
+      const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+      await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture' });
       const stored = readSession(slug);
       expect(stored.variables.user_request).toBe('plan issue 141');
       expect(stored.triggeredWorkflows[0].state.variables).toEqual({

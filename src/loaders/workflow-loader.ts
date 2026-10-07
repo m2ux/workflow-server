@@ -688,10 +688,13 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
 
 /**
  * Techniques a fan's branch cannot execute whatever its destination declares, so a fanned activity
- * binding one fails the load rather than failing inside a worker. Both are refused for what the
- * instances share beyond their checkouts: the persist technique writes the session record and the
- * planning folder, and the child-workflow dispatch records one activity id where a fan holds
- * several in flight.
+ * binding one fails the load rather than failing inside a worker. Each is refused for what the
+ * instances share beyond their checkouts: the planning README writers edit one file every instance
+ * holds, and the child-workflow dispatch records one activity id where a fan holds several in
+ * flight.
+ *
+ * The keys are techniques rather than the `persist-activity` routine that orders them, because
+ * routines materialise before this runs and the branch arrives carrying the steps they stand for.
  *
  * The git namespace is the conditional case and is handled at the rule rather than here.
  * It is refused where a fan's branches share one working tree and one git index — a commit derives
@@ -701,8 +704,12 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
  */
 const OPERATIONS_A_BRANCH_CANNOT_EXECUTE: ReadonlyMap<string, string> = new Map([
   [
-    'workflow-engine::commit-and-persist',
-    'This technique persists the session record and the planning folder, which every instance of a fan shares however their checkouts are split — so the instances would each commit a folder their siblings are still writing. Persist once, at the activity the fan converges on. Taking a checkout of its own does not admit it either: what that splits is the working tree, not the record.',
+    'workflow-engine::sync-progress-status',
+    'This technique writes the planning README Progress surface, which every instance of a fan shares however their checkouts are split — so the instances would each write a file their siblings are still writing. Mark once, at the activity the fan converges on. Taking a checkout of its own does not admit it either: what that splits is the working tree, not the record.',
+  ],
+  [
+    'workflow-engine::prepare-engineering-commit',
+    'This technique sets the planning README lifecycle header and collects the engineering paths, both of which every instance of a fan shares however their checkouts are split. Prepare once, at the activity the fan converges on. Taking a checkout of its own does not admit it either: what that splits is the working tree, not the record.',
   ],
   [
     'workflow-engine::handle-sub-workflow',

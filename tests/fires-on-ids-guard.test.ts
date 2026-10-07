@@ -644,6 +644,14 @@ describe('fires-on-ids guard', () => {
       });
     });
 
+    it('reads every canon home of a corpus that joins canon under a grouping path', () => {
+      const joined = (path: string): string => `corpus/upstream/${path}`;
+      const homes = Object.fromEntries(CANON_HOMES.map((path) => [joined(path), unit('nosuch.id')]));
+      withCorpus(homes, (root) => {
+        expect(collect(root).map((f) => f.site)).toEqual(CANON_HOMES.map((path) => `${path}:5`));
+      });
+    });
+
     it('reports a canon home the corpus does not hold', () => {
       withCorpus({ [CANON_HOMES[0]]: unit('resource'), [CANON_HOMES[2]]: unit('resource') }, (root) => {
         const findings = collect(root);

@@ -3,7 +3,6 @@ import {
   open,
   readFile,
   readdir,
-  rm,
   stat,
 } from 'node:fs/promises';
 import {
@@ -16,8 +15,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
-import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
-import { tmpdir } from 'node:os';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getOrCreateServerKey } from './crypto.js';
 import type { SessionJsonPath } from './derivation.js';
 import { assertPathInsideRoot } from '../../worktree-validator.js';
@@ -416,8 +414,7 @@ async function persistSessionFile(
 
 /**
  * Write `state` to a planning folder unconditionally, replacing whatever the
- * folder holds. For a session file no read stands behind: a fresh session, a
- * promoted transient parent.
+ * folder holds. For a session file no read stands behind: a fresh session.
  *
  * A write that carries forward state read from disk goes through
  * `replaceSessionFile` instead, so a concurrent write is refused rather than
@@ -561,8 +558,6 @@ export interface SessionLocation {
  * for the root session). Walks top-level folders, reading each folder's
  * `session.json` to match the stored `sessionIndex` field at the root and
  * recursively under `triggeredWorkflows[i].state`.
- *
- * Transient (in-memory) sessions resolve via the registry first.
  */
 /**
  * Search one engineering root for a session_index. Returns all matches
@@ -680,12 +675,6 @@ export async function resolveSessionLocation(
     );
   }
 
-  // Transient (meta-bootstrap) sessions live under os.tmpdir() and never
-  // appear in the workspace enumeration. They are always at the root of
-  // their tmp folder (no embedded children for transients).
-  const transient = transientFolderByIndex.get(sessionIndex);
-  if (transient) return { folder: transient, jsonPath: [] };
-
   const roots = options?.searchRoots?.length
     ? [...options.searchRoots]
     : [workspaceDir];
@@ -794,32 +783,6 @@ export async function findPlanningFolderBySlug(
   );
 }
 
-const MAX_DERIVED_SLUG_ATTEMPTS = 100;
-
-/**
- * First dated slug under the planning root that does not already hold a session.
- * The base (`YYYY-MM-DD-<workflow_id>`) is tried first; then `base-2`, `base-3`, …
- * A derived start_session uses this so an occupied dated folder opens a new run
- * in one call rather than refusing.
- */
-export async function allocateDerivedPlanningSlug(
-  workspaceDir: string,
-  baseSlug: string,
-  options?: { planningRelativeDir?: string; searchRoots?: readonly string[] },
-): Promise<string> {
-  assertValidSlug(baseSlug);
-  for (let n = 1; n <= MAX_DERIVED_SLUG_ATTEMPTS; n++) {
-    const slug = n === 1 ? baseSlug : `${baseSlug}-${n}`;
-    const existing = await findPlanningFolderBySlug(workspaceDir, slug, options);
-    if (existing === undefined) return slug;
-  }
-  throw new SessionStoreError(
-    `no free derived planning slug under ${baseSlug} after ${MAX_DERIVED_SLUG_ATTEMPTS} attempts`,
-    'FOLDER_OCCUPIED',
-    { slug: baseSlug },
-  );
-}
-
 /**
  * Create a top-level planning folder at
  * `<workspaceDir>/<activePlanningRelativeDir>/<slug>` with mode 0700.
@@ -840,91 +803,6 @@ export async function ensurePlanningFolder(
   assertPathInsideRoot(absoluteWorkspace, folder);
   await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
   return folder;
-}
-
-/**
- * Transient (bootstrap) session support. Orchestrator-only sessions (notably
- * the meta workflow) never need a workspace folder — their state lives only
- * long enough to dispatch a child workflow. On that dispatch the parent is
- * promoted to a durable workspace planning folder and the transient index is
- * repointed at it (see `dispatch_child`'s transient branch); the child is then
- * embedded under `triggeredWorkflows[0].state` in that file.
- *
- * To keep the workspace planning root free of one-shot bootstrap folders,
- * transient sessions live under `os.tmpdir()/workflow-server-transient-<uuid>/`
- * and are registered in an in-memory map keyed by `session_index` (and
- * optionally by slug for cross-call lookups during the same dispatch).
- *
- * Registry is process-local; on server restart, any /tmp leftovers are
- * orphaned and reaped by the OS.
- */
-const TRANSIENT_DIR_PREFIX = 'workflow-server-transient-';
-const transientFolderByIndex = new Map<string, string>();
-const transientFolderBySlug = new Map<string, string>();
-
-/** Create a fresh transient planning folder under `os.tmpdir()`. */
-export async function createTransientFolder(): Promise<string> {
-  const folder = join(tmpdir(), `${TRANSIENT_DIR_PREFIX}${randomUUID()}`);
-  await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
-  return folder;
-}
-
-/** Register a transient folder so `resolveSessionLocation` and slug-lookup find it. */
-export function registerTransient(
-  sessionIndex: string,
-  folder: string,
-  slug?: string,
-): void {
-  transientFolderByIndex.set(sessionIndex, folder);
-  if (slug) transientFolderBySlug.set(slug, folder);
-}
-
-/** Look up a transient folder by the slug it was registered under. */
-export function lookupTransientBySlug(slug: string): string | undefined {
-  return transientFolderBySlug.get(slug);
-}
-
-/** Reverse lookup: find the slug a transient folder was registered under. */
-export function lookupTransientSlugByFolder(folder: string): string | undefined {
-  for (const [slug, f] of transientFolderBySlug.entries()) {
-    if (f === folder) return slug;
-  }
-  return undefined;
-}
-
-/** `true` if `folder` lives under the os.tmpdir() transient prefix. */
-export function isTransientFolder(folder: string): boolean {
-  return folder.startsWith(join(tmpdir(), TRANSIENT_DIR_PREFIX));
-}
-
-/**
- * Used by dispatch_child after promoting a transient parent to a workspace
- * planning folder. The caller's session_index (issued at start_session
- * against the tmp folder) would otherwise be orphaned: a naive folder swap
- * would drop the index→folder entry, and resolveSessionLocation derives indices
- * by hashing folder paths — so the workspace folder hashes to a different
- * value. Repointing the existing transientFolderByIndex entry at the new
- * workspace folder keeps the caller's index resolvable for the lifetime of
- * this process. The slug-keyed entry is dropped (the workspace folder owns
- * the slug now; nothing should look it up via the transient registry).
- * The tmp folder is removed last.
- */
-export async function redirectTransientToWorkspace(
-  oldFolder: string,
-  newFolder: string,
-): Promise<void> {
-  if (!isTransientFolder(oldFolder)) return;
-  for (const [idx, f] of transientFolderByIndex.entries()) {
-    if (f === oldFolder) transientFolderByIndex.set(idx, newFolder);
-  }
-  for (const [slug, f] of transientFolderBySlug.entries()) {
-    if (f === oldFolder) transientFolderBySlug.delete(slug);
-  }
-  try {
-    await rm(oldFolder, { recursive: true, force: true });
-  } catch {
-    /* best-effort */
-  }
 }
 
 /**

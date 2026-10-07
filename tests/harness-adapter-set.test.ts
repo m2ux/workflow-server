@@ -47,12 +47,24 @@ const MAP = (rows: string[], slices: string[], vocabulary?: string): string => [
  */
 function rootWith(
   adapters: Record<string, string[] | null>,
-  opts?: { slices?: string[]; orphan?: string; vocabulary?: string; fenced?: string; rows?: string[] },
+  opts?: {
+    slices?: string[]; orphan?: string; vocabulary?: string; fenced?: string; rows?: string[];
+    delivered?: string[];
+  },
 ): string {
   const root = mkdtempSync(join(tmpdir(), 'harness-set-'));
   roots.push(root);
   const dir = join(root, 'meta', 'techniques', 'harness-compat');
   mkdirSync(dir, { recursive: true });
+
+  // The delivery half of the set, which the guard reads where the corpus declares it: the meta
+  // workflow's `techniques.activity`. Written here rather than left to `declareFixtureWorkflows`,
+  // whose three-line stub declares no technique and would leave every adapter undelivered.
+  writeFileSync(join(root, 'meta', 'workflow.yaml'), [
+    'id: meta', 'version: 1.0.0', 'title: meta', 'techniques:', '  activity:',
+    ...(opts?.delivered ?? DELIVERED).map((kind) => `    - harness-compat::${kind}`),
+    '',
+  ].join('\n'));
 
   const slices = opts?.slices ?? ['spawn', 'resume', 'concurrent'];
   const rows = opts?.rows
@@ -74,7 +86,14 @@ function rootWith(
 const checks = (...args: Parameters<typeof rootWith>): string[] =>
   collectFindings(rootWith(...args)).map((f) => f.check);
 
-/** The four kinds the real core-ops list registers, so a synthetic set can be delivered. */
+/**
+ * The kinds the fixture's meta workflow delivers, and the rows that resolve to them.
+ *
+ * The guard holds two enumerations against each other — the map's rows and what the workflow
+ * declares for its activities — so a fixture has to state both. `DELIVERED` is the declaration;
+ * `REGISTERED` seeds the same four kinds into the adapters map a case then varies.
+ */
+const DELIVERED = ['claude-code', 'cursor', 'cline', 'generic'];
 const REGISTERED = { 'claude-code': null, cursor: null, cline: null, generic: null };
 const ALL = ['spawn', 'resume', 'concurrent'];
 

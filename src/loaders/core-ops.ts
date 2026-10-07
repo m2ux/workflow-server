@@ -20,74 +20,6 @@
  * Technique refs every orchestrator needs at the workflow level. Returned by
  * get_workflow alongside the workflow's declared technique refs.
  */
-/**
- * The fan's own techniques, delivered to an orchestrator whose workflow graph actually fans an exit
- * rather than to every orchestrator. None is core: a workflow with no fanning exit can never reach
- * any of them, and together they cost several thousand characters of what an orchestrator receives
- * before its first decision. `get_workflow` adds them where the graph in the same response shows a
- * fan, so the procedure and the routing that needs it arrive together.
- *
- * The three `fan::` techniques are the steps the activity loop takes on a fanning exit — open every
- * branch, spawn them together, retire them in order. Their shared rules ride in on the group
- * contract each of them sits beneath.
- *
- * `spawn-concurrent` is here because `spawn-branches` applies it mid-Protocol, and a technique named
- * inside another technique's Protocol has no other delivery path — `get_technique` resolves only
- * step-bound or first-declared techniques, and no tool loads a technique by id. Without it the
- * orchestrator reaches the spawn step holding the instruction to emit the batch in one turn and
- * nothing that says what a batch is.
- */
-export const FAN_DISPATCH_TECHNIQUES: readonly string[] = [
-  'fan::enter-fan',
-  'fan::spawn-branches',
-  'fan::retire-branch',
-  'harness-compat::spawn-concurrent',
-];
-
-/**
- * Technique refs every orchestrator needs at the workflow level. Returned by `get_workflow`
- * alongside the workflow's declared technique refs.
- *
- * The order is the reading order: the techniques every dispatch applies lead, then the ones a run
- * applies at its own boundaries, then the ones a particular run may never reach at all.
- */
-export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
-  // Every dispatch. compose-prompt and spawn-agent are invoked inline by dispatch-activity's body,
-  // and an inline ref is not re-resolved, so each needs its own entry to reach the orchestrator at
-  // all; without them it reaches the dispatch step with nothing to apply and improvises.
-  'workflow-engine::dispatch-activity',
-  'workflow-engine::compose-prompt',
-  'harness-compat::spawn-agent',
-  'harness-compat::continue-agent',
-  // The kind → file map spawn-agent and continue-agent apply mid-Protocol. All four harness files
-  // ship because nothing binds `{harness_kind}` server-side; the orchestrator selects its own
-  // through the map, which stays the single authoritative table.
-  'harness-compat::resolve-harness-operation',
-  'harness-compat::claude-code',
-  // Every activity boundary.
-  'workflow-engine::evaluate-transition',
-  'workflow-engine::commit-and-persist',
-  // The Progress Status writer both dispatch-activity and commit-and-persist name (#324 B2).
-  'workflow-engine::sync-progress-status',
-  // State persistence: commit-and-persist invokes these inline (same inline-ref caveat), so bundle
-  // them so the orchestrator gets the worktree, regular-file, and submodule commit protocols.
-  'git::identify-path-type',
-  'git::commit-regular-files',
-  'git::commit-worktree',
-  'git::commit-submodule',
-  // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
-  // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
-  // writing rules are not an orchestrator's to honour. The bodies are a capability line apiece;
-  // what binds is their rules.
-  'agent-conduct',
-  'orchestrator-conduct',
-  // What a particular run may never reach: a child workflow it never launches, and the three
-  // harness files that are not the one it runs under.
-  'workflow-engine::handle-sub-workflow',
-  'harness-compat::cursor',
-  'harness-compat::cline',
-  'harness-compat::generic',
-];
 
 /**
  * Technique refs every activity worker needs at the activity level. Returned by
@@ -98,9 +30,16 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // `techniques.activity` — so for a client workflow it was named and never delivered, with no tool
   // able to fetch it by id. A worker that cannot read its own role reads none of the rules it owes.
   'workflow-engine::activity-worker',
+  // The envelope the role returns. `activity-worker` applies it by name from this bundle, and an
+  // inline ref is not re-resolved, so it needs its own entry to arrive at all. Only the context
+  // that executed the steps can say which bag keys they landed, which is why the reading lives
+  // here rather than in `finalize-activity`.
+  'workflow-engine::compose-steps-complete',
   // Step execution surface. The checkpoint pair is in WORKER_CHECKPOINT_TECHNIQUES, added by
-  // `get_activity` where the activity holds a gate.
-  'workflow-engine::finalize-activity',
+  // `get_activity` where the activity holds a gate. `finalize-activity` is absent: it folds the
+  // exit reading into the envelope and belongs to the `finish-activity` routine, on the side that
+  // holds the graph. An activity binding it as a step takes it through step bundling.
+  //
   // The language every step is read in: what a gate expression means, and how many times a loop
   // body runs. A worker evaluates both — the server evaluates no gate — so the semantics ride with
   // the role that applies them. `loop-control` is in LOOP_ONLY_RULES, held back from a run whose
@@ -131,11 +70,6 @@ export const WORKER_CHECKPOINT_TECHNIQUES: readonly string[] = [
   'workflow-engine::resume-from-checkpoint',
 ];
 
-export const ORCHESTRATOR_CHECKPOINT_TECHNIQUES: readonly string[] = [
-  'workflow-engine::present-checkpoint-to-user',
-  'workflow-engine::respond-checkpoint',
-];
-
 /**
  * Rules that govern an activity only where the graph runs it as a branch of a fan, by the ref the
  * bundle resolves them under.
@@ -143,8 +77,7 @@ export const ORCHESTRATOR_CHECKPOINT_TECHNIQUES: readonly string[] = [
  * A rule arrives with the whole file it is declared in, so a technique that is otherwise wanted
  * carries these to every activity — including the ones whose exits fan onto nothing, where the
  * rule describes a position in the graph the activity never occupies. Named here, they are held
- * back from those, on the same terms `FAN_DISPATCH_TECHNIQUES` is held back from a workflow whose
- * graph fans nothing.
+ * back from those.
  */
 export const FAN_ONLY_RULES: readonly string[] = [
   'variable-binding::a-branch-lands-under-its-own-derived-key',
@@ -182,11 +115,8 @@ export function contractOperations(refs: {
   activityOwnTechniques?: readonly string[] | undefined;
 }): Set<string> {
   return new Set([
-    ...CORE_ORCHESTRATOR_TECHNIQUES,
     ...CORE_WORKER_TECHNIQUES,
     ...WORKER_CHECKPOINT_TECHNIQUES,
-    ...ORCHESTRATOR_CHECKPOINT_TECHNIQUES,
-    ...FAN_DISPATCH_TECHNIQUES,
     ...(refs.workflowTechniques ?? []),
     ...(refs.activityTechniques ?? []),
     ...(refs.activityOwnTechniques ?? []),

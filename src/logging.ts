@@ -114,7 +114,25 @@ async function appendTraceEvent(
     );
     traceStore.append(state.sessionIndex, event);
   } catch (e) {
-    logWarn('Trace capture skipped: session_index resolution failed', { tool: toolName, error: e instanceof Error ? e.message : String(e) });
+    // The session record enriches a span with the workflow, the activity and the agent; it does
+    // not make the call it describes. A span dropped because the enrichment failed leaves a gap
+    // the trace reads as an advance that never happened, and the caller is told nothing — so the
+    // span is kept with the fields this call already carries, and the shortfall is said once.
+    const callAgentId = typeof params['agent_id'] === 'string' && params['agent_id'].length > 0
+      ? params['agent_id']
+      : '';
+    const named = params['from_activity'] ?? params['activity_id'];
+    const callActivity = typeof named === 'string' ? named : '';
+    const opts: { err?: string } = {};
+    if (errorMessage !== undefined) opts.err = errorMessage;
+    traceStore.append(
+      sessionIndex,
+      createTraceEvent(sessionIndex, toolName, durationMs, status, '', callActivity, callAgentId, opts),
+    );
+    logWarn('Trace span kept without session-derived fields: session_index resolution failed', {
+      tool: toolName,
+      error: e instanceof Error ? e.message : String(e),
+    });
   }
 }
 

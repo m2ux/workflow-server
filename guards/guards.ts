@@ -461,6 +461,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'authored',
   },
   {
+    id: 'resource-statement-home',
+    script: 'guards/check-resource-statement-home.ts',
+    npmScript: 'check:statement-home',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'no resource statement is authored at two sites',
+    form: 'authored',
+  },
+  {
     id: 'stealth-isolation',
     script: 'guards/check-stealth-isolation.ts',
     npmScript: 'check:stealth',
