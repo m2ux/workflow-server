@@ -11,7 +11,7 @@ What this folder holds, and what each member contributes. The order work runs in
 | [`dispatch-entry`](dispatch-entry.yaml) | Persist entering, advance, announce, and open one worker |
 | [`resume-entry`](resume-entry.yaml) | Continue a yielded worker with its checkpoint reply, and open a replacement when that continuation is not an accepted envelope |
 | [`dispatch-round`](dispatch-round.yaml) | Compose one brief per work unit, dispatch the briefs one at a time inside the calling worker, and gather the returns against an expectation list |
-| [`persist-activity`](persist-activity.yaml) | Mark a completed activity, commit its source changes and engineering artifacts, push the engineering commit, and emit the run status once that push is on the remote |
+| [`persist-activity`](persist-activity.yaml) | Mark a completed activity, commit its source changes and engineering artifacts, push both commits, and emit the run status once the engineering push is on the remote |
 | [`persist-entering`](persist-entering.yaml) | Write the in-progress Progress mark, commit the planning README once, and push that commit before any spawn |
 | [`open-worker`](open-worker.yaml) | Compose a stub for a fresh worker identity and spawn one agent with it |
 | [`continue-worker`](continue-worker.yaml) | Compose a stub for a worker that already holds deliveries and continue its harness agent |

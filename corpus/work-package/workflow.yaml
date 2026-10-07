@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 4.10.0
+version: 4.11.0
 title: Work Package Implementation Workflow
 description: Defines how to carry ONE work package to the terminal state its mode reaches — implementation from inception to a merged pull request, or review from inception to a posted review awaiting the author's disposition. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, an audit of an existing pull request, or any other deliverable. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -13,6 +13,10 @@ tags:
   - pr
   - review
 variables:
+  - name: seed_profile
+    type: string
+    description: Resource id of this workflow's readme-seed profile.
+    defaultValue: work-package/readme-seed
   - name: is_review_mode
     type: boolean
     defaultValue: false
@@ -66,7 +70,7 @@ variables:
     defaultValue: ""
   - name: default_branch
     type: string
-    description: The repository's default branch, which feature branches sync from and merge into.
+    description: The repository's default branch.
   - name: needs_further_discussion
     type: boolean
     description: Whether further stakeholder discussion is needed.
@@ -114,7 +118,7 @@ variables:
     defaultValue: origin
   - name: issue_request
     type: string
-    description: The issue key, URL, or surrounding text the user supplied when opening the work package, or typed in reply to the issue-verification gate.
+    description: An issue key, a URL, or the surrounding text that names one.
     defaultValue: ""
   # Fan barriers write these containers; empty default covers skip-optional → join paths.
   - name: research_outputs

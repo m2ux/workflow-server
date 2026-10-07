@@ -1,5 +1,5 @@
 id: post-update-review
-version: 1.13.0
+version: 1.14.0
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation, with automatic remediation of remaining findings published to the open pull request.
 variables:
@@ -10,6 +10,7 @@ variables:
     - operation_type
     - planning_folder_path
     - pr_number
+    - seed_profile
     - target_path
     - verified_findings
     - workflow_branch
@@ -296,7 +297,6 @@ steps:
     id: republish-verify-planning-readme
     routine: ensure-readme
     with:
-      seed_profile: workflow-design/readme-seed
       planning_folder_path: planning_folder_path
     when: needs_recommit == true
   - kind: technique

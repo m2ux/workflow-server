@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 7.3.0
+version: 7.4.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -71,3 +71,6 @@ variables:
   - name: target_workflow_id
     type: string
     description: Catalog id of the embedded client workflow
+  - name: seed_profile
+    type: string
+    description: Resource id of the client workflow's readme-seed profile

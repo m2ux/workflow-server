@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.10.0
+version: 1.11.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -13,9 +13,13 @@ tags:
   - elicitation
   - conventions
 variables:
+  - name: seed_profile
+    type: string
+    description: Resource id of this workflow's readme-seed profile.
+    defaultValue: workflow-authoring/readme-seed
   - name: planning_folder_path
     type: string
-    description: Absolute path to this run's planning folder, seeded when the session opens.
+    description: Absolute path to this run's planning folder.
   - name: headless_mode
     type: boolean
     description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
