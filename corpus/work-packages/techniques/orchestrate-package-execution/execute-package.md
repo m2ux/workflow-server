@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -34,10 +34,6 @@ Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.m
 #### audience
 
 `human`
-
-#### package_planning_paths
-
-Map of package name to the child work-package's planning-folder path, rendered as the planning-folder link in each status row
 
 ## Protocol
 
