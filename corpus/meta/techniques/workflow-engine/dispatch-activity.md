@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.33.0
+  version: 1.34.0
 ---
 
 ## Capability
@@ -23,7 +23,11 @@ Transition the session to a target activity and spawn a worker to carry it, and 
 
 ### agent_technique
 
-Canonical agent technique for the worker — default workflow-engine::activity-worker.
+Canonical agent technique for the worker.
+
+#### default
+
+`workflow-engine::activity-worker`
 
 ### planning_folder_path
 

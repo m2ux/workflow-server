@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -19,7 +19,11 @@ Local branch name to push.
 
 ### remote_name
 
-*(optional, default: `origin`)* Remote name to push to.
+*(optional)* Remote name to push to.
+
+#### default
+
+`origin`
 
 ### force_with_lease
 
