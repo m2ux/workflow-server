@@ -40,7 +40,7 @@ Starts the work a theme board makes available. It advances the board, holds each
 What the prompt tells one session, written from the facts the `unit` line and the epic carry.
 
 - **The work.**
-  The epic's issue URL, the unit's task ids, their Descriptions, the acceptance criteria its Coverage names, and the integration branch its pull request targets.
+  The epic's issue URL, the unit's task ids, their Descriptions, the acceptance criteria its Coverage names, the branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and the integration branch its pull request targets.
 - **The record.**
   The reserved folder, which is where its planning artifacts go.
 - **Plan.**
@@ -67,6 +67,8 @@ What the prompt tells one session, written from the facts the `unit` line and th
   A held row stays held while its session plans and implements. [Sync Epic](commands.md#sync-epic) replaces the record's link with the pull request's, which frees the row.
 - **One unit, one session.**
   A unit is a task row, or the tasks that name each other in Joins, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. One unit is one pull request's work.
+- **Task branches.**
+  A unit works on the branch [Find Available Work](commands.md#find-available-work) names, cut from the integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - **Tests.**
   - Every criterion the unit's Coverage names has a test in the work item that observes it, and the pull request carries that test.
   - What the criterion observes picks the kind: a unit test for one component's behaviour, an integration test for the seam between components, an end-to-end or system test for behaviour only a running system shows. A criterion about a run is not met by a check on a file.

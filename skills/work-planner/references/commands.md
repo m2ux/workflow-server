@@ -354,7 +354,7 @@ mkdir -p artifacts/planning/<yyyy-mm-dd>[-<ref>]-<slug>
 
 Cuts the worktree and branch one unit's session works in, from the initiative's integration branch.
 
-- The worktree, the branch and the base are the ones [Find Available Work](#find-available-work) names.
+- The worktree, the branch and the base are the ones [Find Available Work](#find-available-work) names, with the branch following the [Work Breakdown Guide](work-breakdown.md#delivery).
 - Run it in the checkout of the repository the work changes.
 
 ```bash
