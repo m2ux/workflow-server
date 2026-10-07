@@ -15,9 +15,8 @@ async function initRepo(dir: string, origin: string): Promise<void> {
   await execFileAsync('git', ['-C', dir, 'remote', 'add', 'origin', origin], { encoding: 'utf8' });
 }
 
-function datedSlug(workflowId: string): string {
-  return `${new Date().toISOString().slice(0, 10)}-${workflowId}`;
-}
+/** Shape of a planning slug the server mints for a session that pinned no folder. */
+const UNNAMED_SLUG = /^\d{4}-\d{2}-\d{2}-[A-Z2-7]{6}$/;
 
 function toolText(result: { content: Array<{ text?: string }> }): string {
   return result.content[0]?.text ?? '';
@@ -65,20 +64,23 @@ describe.sequential('planning root under a projects multi-root follows the proje
 
   it('plans under the project folder passed in, not the folder named for its repository', async () => {
     const body = await callOk('start_session', { workflow_id: 'seed-fixture', working_directory: clone });
-    const folder = join(planningOf(clone), datedSlug('seed-fixture'));
+    const slug = body['planning_slug'] as string;
+    expect(slug).toMatch(UNNAMED_SLUG);
     expect(body['repo']).toBe('acme/agent-eng');
-    expect(body['planning_folder_path']).toBe(folder);
-    expect(existsSync(join(folder, SESSION_FILE_NAME))).toBe(true);
-    expect(existsSync(join(planningOf(canonical), datedSlug('seed-fixture')))).toBe(false);
+    expect(body['planning_folder_path']).toBe(join(planningOf(clone), slug));
+    expect(existsSync(join(planningOf(clone), slug, SESSION_FILE_NAME))).toBe(true);
+    expect(existsSync(join(planningOf(canonical), slug))).toBe(false);
   });
 
-  it('numbers a dated slug against the project\'s own root alone', async () => {
+  it('gives each unnamed session a folder of its own, in the root of the project it plans', async () => {
     const first = await callOk('start_session', { workflow_id: 'child-fixture', working_directory: canonical });
-    expect(first['planning_slug']).toBe(datedSlug('child-fixture'));
     const second = await callOk('start_session', { workflow_id: 'child-fixture', working_directory: clone });
-    expect(second['planning_slug']).toBe(datedSlug('child-fixture'));
     const third = await callOk('start_session', { workflow_id: 'child-fixture', working_directory: clone });
-    expect(third['planning_slug']).toBe(`${datedSlug('child-fixture')}-2`);
+    for (const body of [first, second, third]) expect(body['planning_slug']).toMatch(UNNAMED_SLUG);
+    expect(new Set([first, second, third].map((b) => b['planning_slug'])).size).toBe(3);
+    expect(first['planning_folder_path']).toBe(join(planningOf(canonical), first['planning_slug'] as string));
+    expect(second['planning_folder_path']).toBe(join(planningOf(clone), second['planning_slug'] as string));
+    expect(third['planning_folder_path']).toBe(join(planningOf(clone), third['planning_slug'] as string));
   });
 
   it('creates a pinned new folder under the project root', async () => {
@@ -174,7 +176,7 @@ describe.sequential('planning root under a projects multi-root follows the proje
     expect(created['resumed']).toBe(false);
     const resumed = await callOk('start_session', { planning_folder: folder });
     expect(resumed['resumed']).toBe(true);
-    const missed = await callOk('start_session', { workflow_id: 'meta', planning_folder: join(planningOf(clone), '2026-09-29-never-made') });
+    const missed = await callOk('start_session', { workflow_id: 'seed-fixture', working_directory: clone, planning_folder: join(planningOf(clone), '2026-09-29-never-made') });
     expect(missed['resumed']).toBe(false);
   });
 

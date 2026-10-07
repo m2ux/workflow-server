@@ -2194,8 +2194,8 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
       expect(response.planning_slug).toBeDefined();
       expect(response.session_scope).toBeUndefined();
-      // Fresh meta without repo is unbound until bind; agents should pass repo always.
-      expect(response.repo_unbound).toBe(true);
+      // No repo was passed and none was derived, so the response echoes no binding.
+      expect(response.repo).toBeUndefined();
     });
 
     it('accepts workflow_id for non-meta workflow', async () => {
@@ -2212,8 +2212,7 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     it('accepts long-form planning_folder (absolute path), derives slug from basename, and records the canonical path in session.json', async () => {
       const slug = '2026-05-31-path-input';
       const folderPath = planningFolder(slug);
-      // Non-meta workflow: persistent workspace folder (meta is transient and
-      // doesn't record planningFolderPath until dispatch_child promotion).
+      // The folder is recorded on the session from the open.
       const result = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: folderPath },
@@ -2328,15 +2327,12 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(childResponse.session_index).not.toBe(parentIdx);
     });
 
-    it('meta sessions live in os.tmpdir() (not the workspace) and are discarded when a child captures them', async () => {
+    it('a child embeds under the parent in the planning folder the parent opened', async () => {
       const { existsSync, readFileSync } = await import('node:fs');
       const path = await import('node:path');
 
-      // 1. Start a meta session. The slug is a label only — the workspace
-      //    planning root must not see a folder for it. Meta state lives
-      //    under os.tmpdir() per the bootstrap-transient design.
       const metaSlug = 'meta-bootstrap';
-      const metaWorkspaceFolder = path.join(workspaceDir, '.engineering/artifacts/planning', metaSlug);
+      const metaFolder = path.join(workspaceDir, '.engineering/artifacts/planning', metaSlug);
 
       const meta = await client.callTool({
         name: 'start_session',
@@ -2347,22 +2343,10 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(metaResponse.workflow.id).toBe('meta');
       expect(metaResponse.session_index).toMatch(/^[A-Z2-7]{6}$/);
 
-      // Workspace folder must not exist — meta is transient (tmp-rooted).
-      expect(existsSync(metaWorkspaceFolder)).toBe(false);
+      // The folder is the session's from the open, sealed, with no second home.
+      expect(existsSync(path.join(metaFolder, 'session.json'))).toBe(true);
+      expect(existsSync(path.join(metaFolder, '.session-token'))).toBe(true);
 
-      // The transient folder this meta was given, by name. The registry keys it
-      // under the caller-supplied slug, so the assertion after the dispatch can
-      // name one path — os.tmpdir() is shared by every concurrently running test
-      // file, and a listing of it also holds their transient sessions.
-      const { lookupTransientBySlug } = await import('../src/utils/session/store.js');
-      const metaTmpFolder = lookupTransientBySlug(metaSlug);
-      expect(metaTmpFolder).toBeDefined();
-      expect(existsSync(metaTmpFolder!)).toBe(true);
-
-      // 2. Dispatch a child workflow from the meta session. The server
-      //    promotes the meta's state onto disk under the workspace planning
-      //    slug it was registered under, embeds the child under
-      //    triggeredWorkflows[0].state, and discards the tmp folder.
       const metaIdx = metaResponse.session_index;
       const child = await client.callTool({
         name: 'dispatch_child',
@@ -2376,98 +2360,25 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       const childResponse = parseToolResponse(child) as WorkflowView;
       expect(childResponse.workflow.id).toBe('work-package');
 
-      // The promoted folder lives under the workspace at the slug the meta
-      // was bound to (meta-bootstrap), sealed.
-      const promotedFolder = path.join(workspaceDir, '.engineering/artifacts/planning', metaSlug);
-      expect(existsSync(path.join(promotedFolder, 'session.json'))).toBe(true);
-      expect(existsSync(path.join(promotedFolder, '.session-token'))).toBe(true);
-
-      // Contract: meta is at the top of the promoted file; work-package is
-      // embedded under triggeredWorkflows[0].state — the persistent-parent
-      // embedding shape applies here too.
-      const topState = JSON.parse(readFileSync(path.join(promotedFolder, 'session.json'), 'utf8'));
+      // Meta is at the top of that same file; work-package is embedded under
+      // triggeredWorkflows[0].state.
+      const topState = JSON.parse(readFileSync(path.join(metaFolder, 'session.json'), 'utf8'));
       expect(topState.workflowId).toBe('meta');
       expect(topState.triggeredWorkflows).toHaveLength(1);
       const entry = topState.triggeredWorkflows[0];
       expect(entry.workflowId).toBe('work-package');
       expect(entry.sessionIndex).toBe(childResponse.session_index);
       expect(entry.status).toBe('running');
-      expect(entry.state).toBeDefined();
       expect(entry.state.workflowId).toBe('work-package');
       expect(entry.state.sessionIndex).toBe(childResponse.session_index);
 
-      // The meta's own tmp folder is gone — the redirect removed it.
-      expect(existsSync(metaTmpFolder!)).toBe(false);
-    });
-
-    it('dispatch_child accepts planning_slug to control the promoted workspace folder', async () => {
-      const { existsSync } = await import('node:fs');
-      const path = await import('node:path');
-
-      // start_session without a planning_slug — the server mints a synthetic
-      // transition-<uuid> sentinel that is deliberately NOT registered in
-      // the folder→slug map (it would leak the UUID into the workspace).
-      const meta = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
-      });
-      const metaIdx = parseToolResponse(meta).session_index;
-
-      const derivedSlug = '2026-05-28-remove-separate-parity-db-instances';
-      const child = await client.callTool({
-        name: 'dispatch_child',
-        arguments: {
-          session_index: metaIdx,
-          workflow_id: 'work-package',
-          agent_id: 'worker-1',
-          planning_slug: derivedSlug,
-        },
-      });
-      expect(child.isError).toBeFalsy();
-      const childResponse = parseToolResponse(child);
-      expect(childResponse.planning_slug).toBe(derivedSlug);
-
-      // The promoted folder uses the caller-supplied slug (NOT the
-      // YYYY-MM-DD-<workflow_id> fallback).
-      const promotedFolder = path.join(workspaceDir, '.engineering/artifacts/planning', derivedSlug);
-      expect(existsSync(path.join(promotedFolder, 'session.json'))).toBe(true);
-      // The fallback-named folder must NOT exist.
-      const today = new Date().toISOString().slice(0, 10);
-      const fallbackFolder = path.join(workspaceDir, '.engineering/artifacts/planning', `${today}-work-package`);
-      expect(existsSync(fallbackFolder)).toBe(false);
-    });
-
-    it('the parent session_index keeps resolving after dispatch_child promotes a transient meta', async () => {
-      // Regression: a naive promote would drop the caller's session_index
-      // entry along with the tmp folder. The workspace
-      // folder hashes to a different value, so the orchestrator was unable
-      // to authenticate next_activity for subsequent meta activities.
-      const meta = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
-      });
-      const metaIdx = parseToolResponse(meta).session_index;
-
-      await client.callTool({
-        name: 'dispatch_child',
-        arguments: {
-          session_index: metaIdx,
-          workflow_id: 'work-package',
-          agent_id: 'worker-1',
-          planning_slug: 'redirect-test-meta',
-        },
-      });
-
-      // The orchestrator's original meta index must still authenticate.
+      // The parent's index keeps authenticating after the dispatch.
       const after = await client.callTool({
         name: 'get_workflow',
         arguments: { session_index: metaIdx },
       });
       expect(after.isError).toBeFalsy();
-      const afterResponse = parseWorkflowResponse(after);
-      // get_workflow returns the meta workflow definition (the promoted
-      // file is at the top of the planning folder; meta is its workflowId).
-      expect(afterResponse.id).toBe('meta');
+      expect(parseWorkflowResponse(after).id).toBe('meta');
     });
 
     it('three-level dispatch (A → B → C → D) records the full chain in D\'s session.json', async () => {
@@ -2476,10 +2387,8 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
 
       // Build the chain root → leaf via start_session for the root and
       // dispatch_child for each subsequent level. Layout:
-      // - A (meta) is transient (/tmp) at start. When B is dispatched, the
-      //   server promotes A onto disk under slugA and embeds B under
-      //   A.triggeredWorkflows[0].state. The tmp folder is discarded.
-      // - C, D are EMBEDDED recursively inside the promoted top file under
+      // - A (meta) opens the planning folder at slugA and holds it.
+      // - B, C, D are EMBEDDED recursively inside A's file under
       //   triggeredWorkflows[N].state. The single top-level session.json at
       //   slugA holds the entire chain.
       const aResult = await client.callTool({
@@ -2523,7 +2432,6 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
     });
 
     it('creates a fresh planning folder under .engineering/artifacts/planning/<slug>/ for non-meta workflows', async () => {
-      // Non-meta workflows persist in the workspace; only meta is transient.
       const slug = 'fresh-folder';
       const result = await client.callTool({
         name: 'start_session',

@@ -14,7 +14,7 @@ export interface SavedClientHit {
 /**
  * Client sessions under the engineering planning root whose workflow id
  * matches `workflowId`. A meta folder whose triggered child matches also
- * counts — resume that folder with `planning_folder`.
+ * counts — resume it with `planning_slug`, the folder's basename.
  */
 export async function scanSavedClientSessions(args: {
   workspaceDir: string;
