@@ -11,7 +11,7 @@ Techniques for common Jira and Confluence tasks via the Atlassian MCP server —
 
 ### cloudId
 
-*(optional until resolve-cloud-id caches it)* UUID of the target Atlassian cloud site. A site-scoped call passes it; user-info takes none.
+*(optional)* UUID of the target Atlassian cloud site. A site-scoped call passes it; [user-info](./user-info.md) takes none.
 
 ## Rules
 
