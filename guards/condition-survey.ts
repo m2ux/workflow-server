@@ -29,10 +29,9 @@
  *
  * A checkpoint site also carries `dismissal`, the reading of whether anything downstream reads its
  * dismissal record. A dismissal selects no option, so it applies no `setVariable`, records no reply
- * and names no exit; the only trace is the session's own response under the `__condition_not_met__`
- * sentinel, which no definition can address. The nearest a definition gets is testing a variable the
- * withheld choice would have written, and `observedWrites` is the part of that set some other gate in
- * the same activity tests.
+ * and names no exit. No definition can address a response that names no option. The nearest a
+ * definition gets is testing a variable the withheld choice would have written, and `observedWrites`
+ * is the part of that set some other gate in the same activity tests.
  *
  * There is no flag that regenerates this file. A disposition is a judgement about what a gate is
  * for, and a record a command rewrites absorbs a new site silently — the failure mode the retired

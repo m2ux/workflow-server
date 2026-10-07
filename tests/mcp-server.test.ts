@@ -1886,63 +1886,6 @@ describe.skipIf(!liveCorpusRoot())('mcp-server integration', () => {
       expect(errorText).toContain('it is a hard checkpoint');
     });
 
-    it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {
-      const act = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'post-impl-review' },
-      });
-      const actMeta = act._meta as Record<string, unknown>;
-      const tokenWithAct = actMeta['session_index'] as string;
-      // A checkpoint declaring no `condition` — the rejection path under test.
-      const unconditionalCpId = 'file-index-table';
-
-      const yieldResult = await client.callTool({
-        name: 'yield_checkpoint',
-        arguments: { session_index: tokenWithAct, checkpoint_id: unconditionalCpId },
-      });
-      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_index'] as string;
-
-      const result = await client.callTool({
-        name: 'respond_checkpoint',
-        arguments: { session_index: cpHandle, condition_not_met: true },
-      });
-      expect(result.isError).toBe(true);
-      const errorText = rawText(result);
-      expect(errorText).toContain('no condition field');
-    });
-
-    it('respond_checkpoint with condition_not_met should accept conditional checkpoint', async () => {
-      const act = await client.callTool({
-        name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'start-work-package' },
-      });
-      const actMeta = act._meta as Record<string, unknown>;
-      const tokenWithAct = actMeta['session_index'] as string;
-      const conditionalCpId = 'pr-check';
-
-      const yieldResult = await client.callTool({
-        name: 'yield_checkpoint',
-        arguments: { session_index: tokenWithAct, checkpoint_id: conditionalCpId },
-      });
-      const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_index'] as string;
-
-      const result = await client.callTool({
-        name: 'respond_checkpoint',
-        arguments: { session_index: cpHandle, condition_not_met: true },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.dismissed).toBe(true);
-
-      // Status reports the dismissal as one, not as an option chosen.
-      const status = parseToolResponse(await client.callTool({
-        name: 'get_workflow_status',
-        arguments: { session_index: cpHandle },
-      }));
-      expect(status.last_checkpoint).toEqual(expect.objectContaining({ checkpoint_id: conditionalCpId, dismissed: true }));
-      expect(status.last_checkpoint).not.toHaveProperty('option_id');
-    });
-
     it('respond_checkpoint should return effects from selected option', async () => {
       const act = await client.callTool({
         name: 'next_activity',

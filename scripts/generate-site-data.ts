@@ -399,7 +399,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   respond_checkpoint: [
     'Submits the user\'s checkpoint decision and clears the active checkpoint.',
     'Present the checkpoint to the user and wait for input before calling this.',
-    'Provide exactly one of: `option_id` (user picked an option), `auto_advance` (timer elapsed on a checkpoint with a default), or `condition_not_met` (conditional checkpoint whose condition was false).',
+    'Provide exactly one of: `option_id` (user picked an option) or `auto_advance` (timer elapsed on a checkpoint with a default).',
     'Variable effects from the chosen option are applied; type mismatches produce warnings in `_meta.validation` but do not block the response.',
     'An option whose effect declares `recordReply` takes the text the user typed as `reply`, stored in that variable. `reply` is refused with any other option.',
   ],
@@ -442,7 +442,6 @@ const SITE_PARAM_HINTS: Record<string, string> = {
   option_id: 'Option the user selected. Must match one of the checkpoint\'s defined options.',
   reply: 'Text the user typed with `option_id`. Required when that option declares `recordReply`, refused otherwise.',
   auto_advance: 'Set `true` to use the checkpoint\'s default option after its timer elapses.',
-  condition_not_met: 'Set `true` to dismiss a conditional checkpoint whose condition evaluated to false.',
   step_id: 'Step within the current activity. Omit to get the first technique for the activity or workflow.',
   full: 'Force full content even when persistent mode would return an unchanged marker (`get_technique` or `get_resource`).',
   resource_id: 'Resource slug, optionally workflow-prefixed (`meta/style-guide`), optionally with `#section` anchor.',

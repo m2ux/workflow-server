@@ -351,12 +351,11 @@ export function measureVacuity(condition: Condition, domains: Map<string, Domain
 /* -------------------------------------------------------------------------------------------- */
 
 /**
- * What a `condition_not_met` dismissal of one checkpoint site leaves for anything downstream.
+ * What a dismissal of one checkpoint site leaves for anything downstream.
  *
  * A dismissal selects no option, so it applies no `setVariable`, records no reply and names no exit.
- * The only trace is the session's own response record under the `__condition_not_met__` sentinel,
- * and no definition can address that record: a gate reads session variables, and an exit reads the
- * option a choice named. So the nearest a definition gets to reading a dismissal is reading one of
+ * No definition can address a response that names no option: a gate reads session variables, and an
+ * exit reads the option a choice named. So the nearest a definition gets to reading a dismissal is reading one of
  * the variables the withheld choice would have written — `optionWrites` is that set, and
  * `observedWrites` is the part of it some other gate in the activity tests.
  *
