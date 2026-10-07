@@ -48,7 +48,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Implement.**
   Deliver the work in the worktree, with every test the work item names, as the [Work Breakdown Guide](work-breakdown.md#tables) states.
 - **Open the pull request.**
-  Title it for the epic and body it from the [pull request template](../templates/pull-request.md), targeting the integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
+  Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Stop there.**
   Merging the pull request is the user's call.
 
@@ -66,6 +66,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
   - A criterion whose instrument does not exist yet is work the task carries, as the [Verified](review-criteria.md#verified) rule defines.
   - A criterion no test can observe is named in the coverage report, as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
   - The project's own system test is the instrument where the criterion is something that test can exercise.
+  - The pull request's Test Plan table has one row for each test plan item, in that item's order. Criteria names the parent epic's acceptance criteria that item observes, by id, several as `AC1, AC3`, and is empty when the item observes none. Every criterion the unit's Coverage names appears in at least one row. A criterion that Coverage names and no item observes is a following row whose Test cell is empty.
 - **Release is the user's call.**
   A held row is released only on the user's word. This mode reads no clock and reclaims nothing on its own.
 - **Dispatch is confirmed.**
