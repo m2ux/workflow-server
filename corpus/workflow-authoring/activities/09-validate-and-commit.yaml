@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.8.0
+version: 1.9.0
 name: Validate and Commit
 description: "A verified findings register with the operator's disposition, and for an authored change its commit, pull request and close-out record."
 variables:
@@ -22,6 +22,7 @@ variables:
     - scope_manifest_path
     - target_path
     - target_workflow_ids
+    - user_request
     - workflow_branch
     - worktree_created
   writes:

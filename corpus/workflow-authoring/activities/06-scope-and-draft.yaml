@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.10.0
+version: 1.11.0
 name: Scope and Draft
 description: "A confirmed file manifest for the change, with every file it names authored against its schema."
 variables:
@@ -13,6 +13,7 @@ variables:
     - removals_approved
     - scope_manifest_confirmed
     - target_path
+    - user_request
     - workflow_id
   writes:
     - name: current_file
