@@ -1,0 +1,1267 @@
+[
+  {
+    "key": "codebase-wiki/activities/03-lint-wiki.yaml::lint-wiki::lint-findings-confirmed",
+    "condition": {
+      "type": "simple",
+      "variable": "lint_findings_count",
+      "operator": ">",
+      "value": 0
+    },
+    "priorWhen": null,
+    "when": "lint_findings_count > 0"
+  },
+  {
+    "key": "midnight-system-review/activities/07-verdict-and-report.yaml::verdict-and-report::publish-decision",
+    "condition": {
+      "type": "simple",
+      "variable": "has_pr_surface",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "has_pr_surface == true"
+  },
+  {
+    "key": "plain-language/activities/01-intake-and-profile.yaml::intake-and-profile::intent-and-profile-batch",
+    "condition": {
+      "type": "simple",
+      "variable": "intent_needs_confirmation",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "intent_needs_confirmation == true"
+  },
+  {
+    "key": "plain-language/activities/02-source-analysis.yaml::source-analysis::analysis-reviewed",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "==",
+      "value": "audit"
+    },
+    "priorWhen": null,
+    "when": "operation_type == \"audit\""
+  },
+  {
+    "key": "plain-language/activities/04-evaluate.yaml::evaluate::evaluate-revise-loop/count-revision-round",
+    "condition": {
+      "type": "simple",
+      "variable": "needs_revision",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "needs_revision == true"
+  },
+  {
+    "key": "plain-language/activities/04-evaluate.yaml::evaluate::evaluate-revise-loop/revise-document",
+    "condition": {
+      "type": "simple",
+      "variable": "needs_revision",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "needs_revision == true"
+  },
+  {
+    "key": "plain-language/activities/04-evaluate.yaml::evaluate::evaluation-gate",
+    "condition": {
+      "type": "simple",
+      "variable": "open_issue_count",
+      "operator": ">",
+      "value": 0
+    },
+    "priorWhen": null,
+    "when": "open_issue_count > 0"
+  },
+  {
+    "key": "prism-audit/activities/01-prompt-generation.yaml::prompt-generation::no-security-characteristics",
+    "condition": {
+      "type": "simple",
+      "variable": "security_characteristics_count",
+      "operator": "==",
+      "value": 0
+    },
+    "priorWhen": null,
+    "when": "security_characteristics_count == 0"
+  },
+  {
+    "key": "prism/activities/00-select-mode.yaml::select-mode::confirm-mode",
+    "condition": {
+      "type": "simple",
+      "variable": "pipeline_mode",
+      "operator": "notExists"
+    },
+    "priorWhen": null,
+    "when": "!(pipeline_mode != null && (pipeline_mode == false || pipeline_mode == 0 || pipeline_mode == \"\" || pipeline_mode))"
+  },
+  {
+    "key": "remediate-vuln/activities/01-start.yaml::start::private-fork-url-input",
+    "condition": {
+      "type": "simple",
+      "variable": "private_fork_url",
+      "operator": "notExists"
+    },
+    "priorWhen": null,
+    "when": "!(private_fork_url != null && (private_fork_url == false || private_fork_url == 0 || private_fork_url == \"\" || private_fork_url))"
+  },
+  {
+    "key": "remediate-vuln/activities/01-start.yaml::start::sec-vuln-url-input",
+    "condition": {
+      "type": "simple",
+      "variable": "sec_vuln_url",
+      "operator": "notExists"
+    },
+    "priorWhen": null,
+    "when": "!(sec_vuln_url != null && (sec_vuln_url == false || sec_vuln_url == 0 || sec_vuln_url == \"\" || sec_vuln_url))"
+  },
+  {
+    "key": "remediate-vuln/activities/01-start.yaml::start::short-id-input",
+    "condition": {
+      "type": "simple",
+      "variable": "short_id",
+      "operator": "notExists"
+    },
+    "priorWhen": null,
+    "when": "!(short_id != null && (short_id == false || short_id == 0 || short_id == \"\" || short_id))"
+  },
+  {
+    "key": "requirements-refinement/activities/01-intake.yaml::intake::target-doc-named",
+    "condition": {
+      "type": "simple",
+      "variable": "target_doc_path",
+      "operator": "notExists"
+    },
+    "priorWhen": "source_readable == true",
+    "when": "source_readable == true && !(target_doc_path != null && (target_doc_path == false || target_doc_path == 0 || target_doc_path == \"\" || target_doc_path))"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::announce-derived-review-pr",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "needs_review_pr",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "pr_number",
+          "operator": "exists"
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode == true && needs_review_pr != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == \"\" || pr_number)"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::capture-pr-reference",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "review_pr_captured",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "branch_name",
+          "operator": "notExists"
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode == true && review_pr_captured == true && !(branch_name != null && (branch_name == false || branch_name == 0 || branch_name == \"\" || branch_name))"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::detect-provided-issue-reference",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_present",
+          "operator": "==",
+          "value": false
+        },
+        {
+          "type": "simple",
+          "variable": "needs_issue_creation",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_creation_declined",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_platform",
+          "operator": "notExists"
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && issue_present == false && needs_issue_creation != true && issue_creation_declined != true && !(issue_platform != null && (issue_platform == false || issue_platform == 0 || issue_platform == \"\" || issue_platform))"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::github-issue-missing",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_platform",
+          "operator": "==",
+          "value": "jira"
+        },
+        {
+          "type": "simple",
+          "variable": "github_issue_found",
+          "operator": "==",
+          "value": false
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && issue_platform == \"jira\" && github_issue_found == false"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::issue-review",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "needs_issue_creation",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && needs_issue_creation == true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::issue-type-selection",
+    "condition": {
+      "type": "or",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "needs_issue_creation",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "needs_issue_type",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "needs_issue_creation == true || needs_issue_type == true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::issue-verification",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_present",
+          "operator": "==",
+          "value": false
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && issue_present == false"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::jira-project-selection",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "issue_platform",
+          "operator": "==",
+          "value": "jira"
+        },
+        {
+          "type": "simple",
+          "variable": "needs_issue_creation",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "issue_platform == \"jira\" && needs_issue_creation == true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::link-pr-to-ticket-github",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "pr_number",
+          "operator": "exists"
+        },
+        {
+          "type": "simple",
+          "variable": "issue_creation_declined",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_platform",
+          "operator": "==",
+          "value": "github"
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == \"\" || pr_number) && issue_creation_declined != true && issue_platform == \"github\""
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::link-pr-to-ticket-jira",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "pr_number",
+          "operator": "exists"
+        },
+        {
+          "type": "simple",
+          "variable": "issue_creation_declined",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_platform",
+          "operator": "==",
+          "value": "jira"
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == \"\" || pr_number) && issue_creation_declined != true && issue_platform == \"jira\""
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::mark-review-pr-captured",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "needs_review_pr",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "pr_number",
+          "operator": "exists"
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode == true && needs_review_pr != true && pr_number != null && (pr_number == false || pr_number == 0 || pr_number == \"\" || pr_number)"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::platform-selection",
+    "condition": {
+      "type": "simple",
+      "variable": "needs_issue_creation",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "needs_issue_creation == true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::pr-check",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "pr_exists",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "use_existing_pr",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "pr_exists == true && use_existing_pr != true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::pr-creation",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_cancelled",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "use_existing_pr",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && issue_cancelled != true && use_existing_pr != true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::review-mode-detection",
+    "condition": {
+      "type": "simple",
+      "variable": "needs_review_mode",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "needs_review_mode == true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::review-pr-reference",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "needs_review_pr",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode == true && needs_review_pr == true"
+  },
+  {
+    "key": "work-package/activities/01-start-work-package.yaml::start-work-package::update-repo-submodules",
+    "condition": {
+      "type": "simple",
+      "variable": "host_repo_path",
+      "operator": "exists"
+    },
+    "priorWhen": null,
+    "when": "host_repo_path != null && (host_repo_path == false || host_repo_path == 0 || host_repo_path == \"\" || host_repo_path)"
+  },
+  {
+    "key": "work-package/activities/02-design-philosophy.yaml::design-philosophy::classification-confirmed",
+    "condition": {
+      "type": "simple",
+      "variable": "is_review_mode",
+      "operator": "!=",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true"
+  },
+  {
+    "key": "work-package/activities/02-design-philosophy.yaml::design-philosophy::ticket-completeness",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "ticket_gaps_documented",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode == true && ticket_gaps_documented == true"
+  },
+  {
+    "key": "work-package/activities/02-design-philosophy.yaml::design-philosophy::workflow-path-selected",
+    "condition": {
+      "type": "simple",
+      "variable": "is_review_mode",
+      "operator": "!=",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true"
+  },
+  {
+    "key": "work-package/activities/06-plan-prepare.yaml::plan-prepare::approach-confirmed",
+    "condition": {
+      "type": "simple",
+      "variable": "is_review_mode",
+      "operator": "!=",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true"
+  },
+  {
+    "key": "work-package/activities/06-plan-prepare.yaml::plan-prepare::context-scope-declaration",
+    "condition": {
+      "type": "simple",
+      "variable": "needs_context_scope",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "needs_context_scope == true"
+  },
+  {
+    "key": "work-package/activities/06-plan-prepare.yaml::plan-prepare::research-reconciliation/research-convergence",
+    "condition": {
+      "type": "simple",
+      "variable": "has_reconcilable_research",
+      "operator": "==",
+      "value": false
+    },
+    "priorWhen": null,
+    "when": "has_reconcilable_research == false"
+  },
+  {
+    "key": "work-package/activities/07-assumptions-review.yaml::assumptions-review::post-summary-review",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "stealth_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "issue_platform",
+          "operator": "exists"
+        },
+        {
+          "type": "simple",
+          "variable": "has_deferred_assumptions",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "stealth_mode != true && is_review_mode != true && issue_platform != null && (issue_platform == false || issue_platform == 0 || issue_platform == \"\" || issue_platform) && has_deferred_assumptions == true"
+  },
+  {
+    "key": "work-package/activities/09-lean-coding-audit.yaml::lean-coding-audit::audit-findings-confirmed",
+    "condition": {
+      "type": "simple",
+      "variable": "is_review_mode",
+      "operator": "!=",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true"
+  },
+  {
+    "key": "work-package/activities/10-post-impl-review.yaml::post-impl-review::local-validation-permission",
+    "condition": {
+      "type": "simple",
+      "variable": "has_critical_blocker",
+      "operator": "!=",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "has_critical_blocker != true"
+  },
+  {
+    "key": "work-package/activities/12-strategic-review.yaml::strategic-review::findings-delivery",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "strategic_findings_summary",
+          "operator": "!=",
+          "value": ""
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode == true && strategic_findings_summary != \"\""
+  },
+  {
+    "key": "work-package/activities/12-strategic-review.yaml::strategic-review::read-live-pr-body",
+    "condition": {
+      "type": "simple",
+      "variable": "pr_number",
+      "operator": "exists"
+    },
+    "priorWhen": null,
+    "when": "pr_number != null && (pr_number == false || pr_number == 0 || pr_number == \"\" || pr_number)"
+  },
+  {
+    "key": "work-package/activities/12-strategic-review.yaml::strategic-review::review-findings",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "strategic_findings_summary",
+          "operator": "!=",
+          "value": ""
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && strategic_findings_summary != \"\""
+  },
+  {
+    "key": "work-package/activities/12-strategic-review.yaml::strategic-review::verify-pr-body",
+    "condition": {
+      "type": "simple",
+      "variable": "pr_number",
+      "operator": "exists"
+    },
+    "priorWhen": null,
+    "when": "pr_number != null && (pr_number == false || pr_number == 0 || pr_number == \"\" || pr_number)"
+  },
+  {
+    "key": "work-package/activities/13-submit-for-review.yaml::submit-for-review::await-review-loop/review-received",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "stealth_mode",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && stealth_mode != true"
+  },
+  {
+    "key": "work-package/activities/13-submit-for-review.yaml::submit-for-review::body-non-conformant",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "stealth_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "body_conforms",
+          "operator": "==",
+          "value": false
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && stealth_mode != true && body_conforms == false"
+  },
+  {
+    "key": "work-package/activities/13-submit-for-review.yaml::submit-for-review::build-artifact-check",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "stealth_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "project_type",
+          "operator": "==",
+          "value": "rust-substrate"
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && stealth_mode != true && project_type == \"rust-substrate\""
+  },
+  {
+    "key": "work-package/activities/13-submit-for-review.yaml::submit-for-review::dco-sign-off-confirmation",
+    "condition": {
+      "type": "simple",
+      "variable": "is_review_mode",
+      "operator": "!=",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true"
+  },
+  {
+    "key": "work-package/activities/13-submit-for-review.yaml::submit-for-review::private-push-confirmation",
+    "condition": {
+      "type": "simple",
+      "variable": "stealth_mode",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "stealth_mode == true"
+  },
+  {
+    "key": "work-package/activities/13-submit-for-review.yaml::submit-for-review::review-outcome",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "stealth_mode",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && stealth_mode != true"
+  },
+  {
+    "key": "work-package/activities/15-codebase-comprehension.yaml::codebase-comprehension::deep-dive-iteration/comprehension-sufficient",
+    "condition": {
+      "type": "simple",
+      "variable": "has_open_questions",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "has_open_questions == true"
+  },
+  {
+    "key": "work-package/activities/16-prism-decision.yaml::prism-decision::full-prism-decision",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "problem_complexity",
+          "operator": "==",
+          "value": "complex"
+        },
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "problem_complexity == \"complex\" && is_review_mode != true"
+  },
+  {
+    "key": "work-package/activities/21-implementation-join.yaml::implementation-join::provenance-settle-cycle/provenance-retry/symbol-provenance-confirmed",
+    "condition": {
+      "type": "simple",
+      "variable": "needs_symbol_confirmation",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "needs_symbol_confirmation == true"
+  },
+  {
+    "key": "work-package/routines/residual-assumption-interview.yaml::residual-assumption-interview::batch-gate",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "is_review_mode",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "has_open_assumptions",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "is_review_mode != true && has_open_assumptions == true"
+  },
+  {
+    "key": "workflow-authoring/activities/01-intake-and-context.yaml::intake-and-context::design-intent-batch",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "intent_needs_confirmation",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "update_seeded_from_review",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "intent_needs_confirmation == true && update_seeded_from_review != true"
+  },
+  {
+    "key": "workflow-authoring/activities/01-intake-and-context.yaml::intake-and-context::impact-approved",
+    "condition": {
+      "type": "simple",
+      "variable": "removal_count",
+      "operator": ">",
+      "value": 0
+    },
+    "priorWhen": null,
+    "when": "removal_count > 0"
+  },
+  {
+    "key": "workflow-authoring/activities/01-intake-and-context.yaml::intake-and-context::judgements-disposition",
+    "condition": {
+      "type": "simple",
+      "variable": "open_judgements_count",
+      "operator": ">",
+      "value": 0
+    },
+    "priorWhen": null,
+    "when": "open_judgements_count > 0"
+  },
+  {
+    "key": "workflow-authoring/activities/06-scope-and-draft.yaml::scope-and-draft::file-drafting-loop/preservation-check#{current_file.path}",
+    "condition": {
+      "type": "simple",
+      "variable": "has_unflagged_removals",
+      "operator": "==",
+      "value": true
+    },
+    "priorWhen": null,
+    "when": "has_unflagged_removals == true"
+  },
+  {
+    "key": "workflow-authoring/activities/06-scope-and-draft.yaml::scope-and-draft::scope-confirmed#{scope_round}",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "!=",
+      "value": "review"
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"review\""
+  },
+  {
+    "key": "workflow-authoring/activities/09-validate-and-commit.yaml::validate-and-commit::approve-to-commit#{remediation_round}",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "operation_type",
+          "operator": "!=",
+          "value": "review"
+        },
+        {
+          "type": "simple",
+          "variable": "remediation_selected",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "review_closed",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "update_seeded_from_review",
+          "operator": "!=",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "has_critical_finding",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"review\" && remediation_selected != true && review_closed != true && update_seeded_from_review != true && has_critical_finding != true"
+  },
+  {
+    "key": "workflow-authoring/activities/09-validate-and-commit.yaml::validate-and-commit::audit-disposition#{remediation_round}",
+    "condition": {
+      "type": "or",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "has_critical_finding",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "open_finding_count",
+          "operator": ">",
+          "value": 0
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "has_critical_finding == true || open_finding_count > 0"
+  },
+  {
+    "key": "workflow-authoring/activities/09-validate-and-commit.yaml::validate-and-commit::review-disposition",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "==",
+      "value": "review"
+    },
+    "priorWhen": null,
+    "when": "operation_type == \"review\""
+  },
+  {
+    "key": "workflow-design/activities/01-intake-and-context.yaml::intake-and-context::design-intent-batch",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "intent_needs_confirmation",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "update_seeded_from_review",
+          "operator": "!=",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "intent_needs_confirmation == true && update_seeded_from_review != true"
+  },
+  {
+    "key": "workflow-design/activities/03-requirements-refinement.yaml::requirements-refinement::design-context",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "!=",
+      "value": "update"
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"update\""
+  },
+  {
+    "key": "workflow-design/activities/05-impact-analysis.yaml::impact-analysis::impact-and-preservation-confirmed",
+    "condition": {
+      "type": "simple",
+      "variable": "removal_count",
+      "operator": ">",
+      "value": 0
+    },
+    "priorWhen": null,
+    "when": "removal_count > 0"
+  },
+  {
+    "key": "workflow-design/activities/06-scope-and-draft.yaml::scope-and-draft::batch-review-attested",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "==",
+      "value": "update"
+    },
+    "priorWhen": null,
+    "when": "operation_type == \"update\""
+  },
+  {
+    "key": "workflow-design/activities/06-scope-and-draft.yaml::scope-and-draft::draft-attestation",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "!=",
+      "value": "update"
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"update\""
+  },
+  {
+    "key": "workflow-design/activities/06-scope-and-draft.yaml::scope-and-draft::file-drafting-loop/file-approach-confirmed",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "!=",
+      "value": "update"
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"update\""
+  },
+  {
+    "key": "workflow-design/activities/06-scope-and-draft.yaml::scope-and-draft::file-drafting-loop/file-review",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "!=",
+      "value": "update"
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"update\""
+  },
+  {
+    "key": "workflow-design/activities/06-scope-and-draft.yaml::scope-and-draft::file-drafting-loop/preservation-check",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "operation_type",
+          "operator": "==",
+          "value": "update"
+        },
+        {
+          "type": "simple",
+          "variable": "has_unflagged_removals",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "operation_type == \"update\" && has_unflagged_removals == true"
+  },
+  {
+    "key": "workflow-design/activities/06-scope-and-draft.yaml::scope-and-draft::pre-attestation-blocker",
+    "condition": {
+      "type": "or",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "has_critical_principle_finding",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "type": "simple",
+          "variable": "has_critical_anti_pattern_finding",
+          "operator": "==",
+          "value": true
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "has_critical_principle_finding == true || has_critical_anti_pattern_finding == true"
+  },
+  {
+    "key": "workflow-design/activities/08-quality-review.yaml::quality-review::review-disposition",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "==",
+      "value": "review"
+    },
+    "priorWhen": null,
+    "when": "operation_type == \"review\""
+  },
+  {
+    "key": "workflow-design/activities/09-validate-and-commit.yaml::validate-and-commit::approve-to-commit",
+    "condition": {
+      "type": "simple",
+      "variable": "operation_type",
+      "operator": "!=",
+      "value": "review"
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"review\""
+  },
+  {
+    "key": "workflow-design/activities/09-validate-and-commit.yaml::validate-and-commit::scope-verified",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "operation_type",
+          "operator": "!=",
+          "value": "review"
+        },
+        {
+          "type": "simple",
+          "variable": "unaddressed_count",
+          "operator": ">",
+          "value": 0
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"review\" && unaddressed_count > 0"
+  },
+  {
+    "key": "workflow-design/activities/09-validate-and-commit.yaml::validate-and-commit::validation-passed",
+    "condition": {
+      "type": "and",
+      "conditions": [
+        {
+          "type": "simple",
+          "variable": "operation_type",
+          "operator": "!=",
+          "value": "review"
+        },
+        {
+          "type": "simple",
+          "variable": "fail_count",
+          "operator": ">",
+          "value": 0
+        }
+      ]
+    },
+    "priorWhen": null,
+    "when": "operation_type != \"review\" && fail_count > 0"
+  }
+]
