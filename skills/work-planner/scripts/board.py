@@ -21,7 +21,8 @@ Status, first match wins:
   Done         closed as completed
   (removed)    closed any other way
   In Review    an open pull request ready for review names it: its title names the epic by the
-               initiative's row id, and for a task issue its title or body also cites the issue
+               initiative's row id, and for a task issue its title or body also cites the issue;
+               or an open initiative or epic whose criteria are all ticked
   In Progress  an open draft pull request names it
   Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
                and that has no Open Questions
@@ -33,9 +34,8 @@ started, an In Progress or In Review entry becomes Backlog. One not yet on the b
 Progress when a row has been delivered or an epic is Done, and Backlog when work has not started.
 Advance mode moves Ready, Backlog and, when no pull request is open, In Progress.
 
-An open initiative is In Review when every acceptance criterion is ticked, which holds while it
-waits for its integration branches to merge. It is In Progress when any epic is In Review or In
-Progress.
+An open initiative or epic is In Review when every acceptance criterion is ticked. An initiative
+is In Progress when any epic is In Review or In Progress.
 
 The board's Status field offers Backlog, Ready, In Progress and Done. In Review is optional: on a
 board whose Status lacks it, an issue In Review is set In Progress.
@@ -324,6 +324,8 @@ def main() -> int:
             task_epic[task_issue] = number
         if epic['state'] == 'closed':
             status[number] = 'Done' if completed(epic) else None
+        elif criteria_met(epic):
+            status[number] = 'In Review'
         elif (found := pr_status(epic_key)) == 'In Review':
             status[number] = 'In Review'
         elif found:

@@ -99,7 +99,8 @@ class InitiativeStatus(unittest.TestCase):
         self.assertNotIn('In Review', out)
 
     def open_pair(self, initiative_status: str, epic_status: str, epic: dict | None = None,
-                  pulls: str = '') -> str:
+                  pulls: str = '',
+                  statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'Done')) -> str:
         epic = epic or issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
         initiative = issue(1, '[I01] First: Initiative',
                            body=initiative_body((f"[E00]({url('issues', 2)})", '')))
@@ -115,7 +116,7 @@ class InitiativeStatus(unittest.TestCase):
             fields, items, prs = Path(tmp, 'fields.json'), Path(tmp, 'items.json'), Path(tmp, 'prs.json')
             root.write_text(json.dumps(initiative))
             epic_path.write_text(json.dumps(epic))
-            fields.write_text(json.dumps(board_fields('Backlog', 'Ready', 'In Progress', 'Done')))
+            fields.write_text(json.dumps(board_fields(*statuses)))
             items.write_text(json.dumps(on_board))
             prs.write_text(pulls)
             done = run('board.py', str(root), '--epics', str(epic_path), '--prs', str(prs),
@@ -140,6 +141,15 @@ class InitiativeStatus(unittest.TestCase):
         merged = json.dumps(pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')) + '\n'
         out = self.open_pair('In Progress', 'In Review', epic, merged)
         self.assertIn('set #2 [I01:E00] First: Epic: In Review → In Progress', out)
+
+    def test_ticked_criteria_move_an_open_epic_to_in_review(self):
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', ''))
+                     .replace('- [ ] **AC1.**', '- [x] **AC1.**'))
+        merged = json.dumps(pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')) + '\n'
+        out = self.open_pair('In Progress', 'In Progress', epic, merged,
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        self.assertIn('set #2 [I01:E00] First: Epic: In Progress → In Review', out)
 
     def test_a_ready_epic_with_a_delivered_row_stays_ready(self):
         epic = issue(2, '[I01:E00] First: Epic',
