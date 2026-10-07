@@ -61,6 +61,7 @@ class ModeSummaries(unittest.TestCase):
                     departures.append(f'{path.parent.name} {mode}: {why}: {bullet}')
         self.assertEqual(departures, [])
         self.assertIn('work-planner Advance', seen)
+        self.assertIn('work-planner Align', seen)
         self.assertIn('workflow-canon Audit', seen)
 
     def test_a_placement_rule_is_not_a_capability_phrase(self):

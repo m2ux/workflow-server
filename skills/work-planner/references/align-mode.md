@@ -1,15 +1,15 @@
-# Review Mode
+# Align Mode
 
-Checks existing proposal, initiative, epic, task and standalone issues against their templates and against the rules that bind them, and fixes them.
+Aligns existing proposal, initiative, epic, task and standalone issues with their templates and with the rules that bind them, and fixes them.
 
 ## Procedure
 
-1. **Select.**  Review the issues the user names, or an initiative with its open epics.
-   - Review covers open issues only. A closed issue is reviewed only when named.
+1. **Select.**  Align the issues the user names, or an initiative with its open epics.
+   - Alignment covers open issues only. A closed issue is aligned only when named.
    - Naming another initiative's issue approves format edits to it.
-   - An open standalone issue that a reviewed initiative, epic or task cites is reviewed with it.
+   - An open standalone issue that an aligned initiative, epic or task cites is aligned with it.
 2. **Fetch.**
-   Fetch the issues under review as [Fetch](review-passes.md#fetch) states: each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites.
+   Fetch the issues to align as [Fetch](review-passes.md#fetch) states: each issue whole, with its initiative when it is an epic, its epics when it is an initiative, and the standalone issues it cites.
    - An initiative's fetch includes every epic its table links, closed epics included, and its format check takes each with `--epic`.
    - The fetch includes each source the initiative's References mark, for an epic as for the initiative.
    - A closed epic's own body is checked only when the epic is named.
@@ -24,20 +24,20 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
    - Read the diff to confirm it changes structure only, then [Patch Body](commands.md#patch-body) from `fixed-943.md`.
    - Make the title and label changes the check names, with [Retitle Issue](commands.md#retitle-issue), [Add Labels](commands.md#add-labels) and [Remove Label](commands.md#remove-label).
 5. **Check the rules.**
-   Run the [Review Passes](review-passes.md) on the issues under review: the goal pass, the consistency pass, and the ordering pass.
+   Run the [Review Passes](review-passes.md) on the issues being aligned: the goal pass, the consistency pass, and the ordering pass.
    - A proposal, against [Propose Mode](propose-mode.md)'s Problem scope rule.
    - An initiative or epic body, against the [Work Breakdown Guide](work-breakdown.md)'s [Rules](work-breakdown.md#rules) and the skill's [Rules](../SKILL.md#rules) for what a body states.
    State each finding as [Report](review-passes.md#report) states.
 6. **Decide.**
-   Check every issue under review against each rule in this mode's Rules from Missing section through Several tasks, and decide the finding with the user. Draft the content the rule states.
+   Check every issue being aligned against each rule in this mode's Rules from Missing section through Several tasks, and decide the finding with the user. Draft the content the rule states.
 7. **Check criteria.**
-   Check every acceptance criterion of the issues under review against [Requirement characteristics](requirement-characteristics.md), through the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the review is clear.
+   Check every acceptance criterion of the issues being aligned against [Requirement characteristics](requirement-characteristics.md), through the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the alignment is clear.
    - Align them with the sources the initiative's References mark, as the [Sources](review-criteria.md#sources) criteria define, and report each departure and each gap. Draft the criterion a gap calls for, and decide it with the user as in Decide.
 8. **Check Dependencies.**
-   - Check them whenever an initiative or epic is reviewed: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
+   - Check them whenever an initiative or epic is aligned: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as in Decide. An initiative Depends on cell takes the epics it derives.
 9. **Coverage.**
-   For each epic under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Epic](commands.md#sync-epic) with `--fix`.
+   For each epic being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Epic](commands.md#sync-epic) with `--fix`.
    - **Unmet.**
      Each task [Sync Epic](commands.md#sync-epic) reports unmet is a gap, as this mode's Gap rule states.
    - **Repair.**
@@ -46,7 +46,7 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
      A row that links a pull request the fetch did not return is fetched with [Fetch Pull Request](commands.md#fetch-pull-request), and the sync is run again.
    - **Unlinked.**
      A criterion ticked while its row links no pull request and no commit: link the one delivery [Fetch Comments](commands.md#fetch-comments) names, a path taken as the commit that holds it, then run the sync again. Several candidates, or none, go to the user.
-   For an initiative under review, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Initiative](commands.md#sync-initiative) with `--fix` and every epic its table links.
+   For an initiative being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Initiative](commands.md#sync-initiative) with `--fix` and every epic its table links.
    - **Ready to verify.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
    - **Ticked early.**
@@ -59,13 +59,13 @@ Checks existing proposal, initiative, epic, task and standalone issues against t
 ## Rules
 
 - **The rules.**
-  The review checks each issue against the rules that bind its kind, and against its template.
+  The alignment checks each issue against the rules that bind its kind, and against its template.
 - **Criteria check.**
-  - The review is not clear while a criterion that fails [Requirement characteristics](requirement-characteristics.md) remains.
+  - The alignment is not clear while a criterion that fails [Requirement characteristics](requirement-characteristics.md) remains.
   - A finding from that check is not one the user keeps.
 - **Source alignment.**
-  - Apply the initiative [Sources](review-criteria.md#sources) criteria to every criterion of the issues under review.
-  - The review is not clear while a marked source stays unread. A source whose link is dead is repaired, or the mark is removed and the criteria it bound are decided with the user.
+  - Apply the initiative [Sources](review-criteria.md#sources) criteria to every criterion of the issues being aligned.
+  - The alignment is not clear while a marked source stays unread. A source whose link is dead is repaired, or the mark is removed and the criteria it bound are decided with the user.
   - A departure from a marked source is corrected in the criterion, unless the user records the departure as a Non-Goal.
 - **Missing section.**
   Draft a missing section from the issue and its epics.

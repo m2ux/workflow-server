@@ -6,7 +6,7 @@ Records work on an initiative, its epics and their task issues: links each task 
 
 1. **Select.**
    - Select an initiative with its open epics, or the epics the user names.
-   - Run [Review Mode](review-mode.md) first on any issue whose format [Check Format](commands.md#check-format) rejects, since sync mode reads the agent-engineering table.
+   - Run [Align Mode](align-mode.md) first on any issue whose format [Check Format](commands.md#check-format) rejects, since sync mode reads the agent-engineering table.
 2. **Fetch.**
    - [Fetch Issue](commands.md#fetch-issue) for each issue, including each task issue titled `[I07:E00:Wzz]` under an epic being synced.
    - [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) for the pull requests that name the initiative.
@@ -42,7 +42,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited and note are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names. What counts as coverage is [Coverage Reports](work-breakdown.md#coverage-reports).
-   - A criterion that cannot be confirmed stays unticked, with what is missing. The further task that adopts it is [Review Mode](review-mode.md)'s Gap rule.
+   - A criterion that cannot be confirmed stays unticked, with what is missing. The further task that adopts it is [Align Mode](align-mode.md)'s Gap rule.
 8. **Tick.**
    Tick the confirmed criteria with [Tick Criteria](commands.md#tick-criteria). It ticks Done as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
 9. **Patch.**
