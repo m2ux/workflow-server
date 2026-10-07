@@ -12,6 +12,8 @@ The scanner inputs were named by the guard and not yet given a home. This task i
 
 | Artifact | What it holds |
 | --- | --- |
+| [W03](w03.md) | The work item: the scanner inputs a bound operation never reads, the unread dispatch input, and the guard run that shows the workflow clean |
+| [W03](w03.md) | The scanner inputs the guard reports, and where each one is sourced |
 
 ## Links
 
