@@ -242,20 +242,8 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/create-session.md:42",
-      "op": "handle-sub-workflow",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:44",
       "op": "continue-batch",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
-      "site": "corpus/meta/techniques/workflow-engine/handle-sub-workflow.md:38",
-      "op": "create-session",
       "verdict": "fix-later",
       "rationale": "operation-reference-predating-the-guard"
     },

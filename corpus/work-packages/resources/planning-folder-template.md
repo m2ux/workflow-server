@@ -1,6 +1,6 @@
 ---
 name: planning-folder-template
-description: .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/
+description: Skeletons for the documents a planning folder opens with.
 metadata:
   version: 1.0.0
   order: 0
@@ -15,11 +15,7 @@ metadata:
 
 ## Folder Location
 
-```
-.engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/
-```
-
-Use the current date and a hyphenated initiative name derived from `initiative_name`.
+The folder is `{planning_folder_path}`, which the server resolves when the session opens. Its basename is the planning slug the session was named with.
 
 ---
 

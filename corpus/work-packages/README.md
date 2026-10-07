@@ -13,7 +13,7 @@ The Work Packages workflow handles **planning and prioritization** of multiple r
 
 **Key characteristics:**
 - Sequential flow with clear progression
-- Creates planning folder with documentation
+- Fills the session's planning folder with documentation
 - Loops through packages for planning and implementation
 - Triggers `work-package` workflow for each package
 
@@ -54,7 +54,7 @@ Confirms this is a genuine multi-package initiative and produces an agreed inven
 
 ### 2. [Folder Setup](activities/02-folder-setup.yaml)
 
-Creates the planning folder and its initial documentation skeletons (`START-HERE.md` and `README.md`), giving the initiative a canonical home before analysis begins, and settles which analysis the next activity performs.
+Fills the session's planning folder with its initial documentation skeletons (`START-HERE.md` and `README.md`), and settles which analysis the next activity performs.
 
 ### 3. [Analysis](activities/03-analysis.yaml)
 
@@ -87,7 +87,7 @@ Workflow-specific techniques live under `techniques/`. Some are **technique grou
 | Technique / Technique | Type | Capability | Used By |
 |-----------------------|------|------------|---------|
 | `assess-initiative-scope` | Standalone | Identify and categorize work packages | Scope Assessment |
-| `setup-planning-folder` | Standalone | Compose the planning-folder slug when none is bound, and create `START-HERE.md` and `README.md` skeletons | Folder Setup |
+| `setup-planning-folder` | Standalone | Write the `START-HERE.md` and `README.md` skeletons into the session's planning folder | Folder Setup |
 | `analyze-initiative-context` | Group | Initiative-level analysis grounding package planning | Analysis |
 | `analyze-initiative-context::analyze-completion` | Group op | Assess the completion state of existing progress | Analysis (continuing) |
 | `analyze-initiative-context::analyze-context` | Group op | Establish the starting context for a fresh initiative | Analysis (new) |

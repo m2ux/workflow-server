@@ -11,7 +11,7 @@ The meta workflow is the structural home for the session's orchestration logic. 
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: `start_session` with `working_directory` and `user_request`, then the meta session opens on the activity that walks the client it returned. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the techniques bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: the session is named, `start_session` opens it, and the meta session advances onto the activity that walks the client it returned. Named decisions (`workflow-selection`, `resume-session`) return with no session. Ongoing delivery policy lives in the techniques bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)).
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - The server writes session state and restores it on attach. [persist-activity](./routines/persist-activity.yaml) commits the session record with the planning folder after each activity and at close-out; on-disk shape: [`docs/state.md`](https://github.com/m2ux/workflow-server/blob/main/docs/state.md).
 
@@ -82,7 +82,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — `start_session` with `working_directory` and `user_request`, then the meta session opens on the activity that walks the client. Ongoing delivery policy is in the techniques bundle. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover`: how a session is named, opened, and advanced onto the activity that walks the client. Ongoing delivery policy is in the techniques bundle. |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
 | `planning-readme` | [Planning Folder README Guide](./resources/planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`. |
 | `resume-intent-lexicon` | [Resume Intent Lexicon](./resources/resume-intent-lexicon.md) | Continuation-phrase vocabulary `start_session` matches when deciding whether to scan saved sessions. |
@@ -124,7 +124,7 @@ corpus/meta/
 │   ├── verify-artifact-conforms.md          # Artifact-conformance pass bound by any workflow that persists artifacts
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
-│   │   └── {op}.md                          #   one file per technique (start-session, create-session, dispatch-activity, ...)
+│   │   └── {op}.md                          #   one file per technique (start-session, dispatch-activity, ...)
 │   ├── harness-compat/                      # Harness-independent agent dispatch
 │   ├── orchestration-patterns/              # Atomic dispatch/gather/synthesise ops for pattern activities
 │   └── fan/                                 # Contract and rules for carrying a graph fan

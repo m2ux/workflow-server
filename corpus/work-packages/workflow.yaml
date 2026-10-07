@@ -27,7 +27,7 @@ variables:
     description: List of completed work packages
   - name: planning_folder_path
     type: string
-    description: Path to the planning folder for this initiative
+    description: The planning folder this initiative's artifacts live in, seeded into the bag by the server when the session opens.
   - name: package_plans
     type: array
     description: List of created plan document paths

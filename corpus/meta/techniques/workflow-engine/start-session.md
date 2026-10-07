@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.20.0
+  version: 1.23.0
 ---
 
 ## Capability
@@ -17,9 +17,13 @@ Absolute path of the checkout under work.
 
 Optional. Fresh-session workflow id (default `meta`). Ignored on resume.
 
+### planning_slug
+
+Optional. A single path segment naming this session's planning folder, composed per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). The server resolves the planning root it lands in.
+
 ### planning_folder
 
-Optional. Absolute path of one planning folder: a folder holding a session resumes, and a new folder sits directly under the planning root of `{working_directory}`, its basename the planning slug. Omit for a transient meta bootstrap when the slug is not yet known.
+Optional. Absolute path of one planning folder. A folder already holding a session resumes, wherever it sits.
 
 ### repo
 
@@ -53,15 +57,11 @@ Stable 6-character base32 index for every subsequent authenticated tool call. Ab
 
 ### planning_folder_path
 
-Canonical absolute planning folder path as resolved by the server. Absent while the session is transient and no durable path has been resolved.
+Canonical absolute planning folder path as resolved by the server. Absent when the call yields an opening decision rather than a session.
 
 ### repo
 
 Bound target repository as `owner/repo`, echoing the durable session binding.
-
-### planning_slug
-
-Slug the session is keyed on — minted transitionally when no planning folder was supplied.
 
 ### initial_activity
 
@@ -91,7 +91,7 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ### 1. Open Session
 
-- Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}`, `{repo}`, `{target_workflow_id}`, and `{fresh_client}` as `fresh`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `{context_mode}` or pass `"fresh"`.
+- Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, `{planning_slug}`, and optional `{planning_folder}`, `{repo}`, `{target_workflow_id}`, and `{fresh_client}` as `fresh`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `{context_mode}` or pass `"fresh"`.
   > - The bound `{repo}` is the origin remote of `{working_directory}`.
   > - When `{repo}` is passed with `{working_directory}`, it equals that origin.
   > - Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.
@@ -115,13 +115,17 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ## Rules
 
-### planning-folder-absolute-or-omit
+### the-returned-path-is-the-session-folder
 
-When targeting a planning folder, `planning_folder` is an absolute path. A new folder outside the planning root of `{working_directory}` is refused, and the refusal names that root. Bare slugs and relative paths are rejected. The returned `planning_folder_path` is the path this session uses.
+The returned `planning_folder_path` is the folder this session uses, and this call composes no planning path of its own.
 
-### an-omitted-folder-parks-the-session
+### planning-folder-is-absolute
 
-Omit `planning_folder` for a transient meta bootstrap. The server mints a transitional slug and parks the session.
+`planning_folder` is an absolute path. A new folder sits directly under the planning root of this session, and one named anywhere else is refused, naming that root. Bare slugs and relative paths are rejected.
+
+### one-designator-names-the-folder
+
+A call names its folder with `{planning_slug}` or with `{planning_folder}`. A call passing both is refused.
 
 ### origin-binds-from-working-directory
 

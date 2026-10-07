@@ -63,7 +63,7 @@ Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`.
 
 ### 3. Locate the Worktree
 
-- Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
+- Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}`, taken whole, so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
 - Take `{$checkout_root}` as the ancestor of `{planning_folder_path}` above `.engineering/artifacts/planning/`, and set `{target_path}` to `{$checkout_root}/.worktrees/{$wp_slug}/` — the gitignored feature-worktree directory nested in the checkout.
 
 ## Rules
