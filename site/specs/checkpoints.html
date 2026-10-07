@@ -175,14 +175,13 @@
   <p>When a worker reaches a checkpoint step it calls <a href="../api/tools.html#yield_checkpoint"><code>yield_checkpoint</code></a>. The server records the checkpoint as <code>activeCheckpoint</code> in <code>session.json</code>. The worker emits an empty <code>&lt;checkpoint_yield&gt;</code> block in its final output and stops; the orchestrator relays the block upward, and the user-facing agent reads the open checkpoint from the session with <code>present_checkpoint</code>. A new checkpoint cannot be yielded while one is already active — nested yields are a hard error.</p>
 
   <h2 id="resolve">Resolving</h2>
-  <p>The meta orchestrator calls <a href="../api/tools.html#present_checkpoint"><code>present_checkpoint</code></a> to fetch the human-readable message, options, and effects, presents the decision through the host UI, then finalizes with <a href="../api/tools.html#respond_checkpoint"><code>respond_checkpoint</code></a> in exactly one of three modes:</p>
+  <p>The meta orchestrator calls <a href="../api/tools.html#present_checkpoint"><code>present_checkpoint</code></a> to fetch the human-readable message, options, and effects, presents the decision through the host UI, then finalizes with <a href="../api/tools.html#respond_checkpoint"><code>respond_checkpoint</code></a> in exactly one of two modes:</p>
   <div class="table-wrap">
     <table>
       <thead><tr><th scope="col">Mode</th><th scope="col">Meaning</th><th scope="col">Server enforcement</th></tr></thead>
       <tbody>
         <tr><td><code>option_id</code></td><td>You selected an option</td><td>Option validated against the definition; minimum response time (default 3s) blocks instant self-resolution</td></tr>
         <tr><td><code>auto_advance</code></td><td>Timer elapsed, use the default option</td><td>Only for checkpoints with <code>autoAdvanceMs</code>; the full timer must have elapsed since the yield</td></tr>
-        <tr><td><code>condition_not_met</code></td><td>Conditional checkpoint's prerequisite is false</td><td>Only valid when the checkpoint defines a <code>condition</code></td></tr>
       </tbody>
     </table>
   </div>

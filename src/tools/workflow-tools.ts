@@ -759,9 +759,6 @@ export function projectSessionView(
 }
 
 
-/** The option id a `condition_not_met` dismissal is recorded under, which selects no option. */
-const DISMISSED_OPTION_ID = '__condition_not_met__';
-
 /** A checkpoint answer's exit as the worker and the user-facing agent read it. */
 interface ExitReport { id: string; next_activity?: string | string[]; ends_activity?: true }
 
@@ -2797,16 +2794,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
   server.tool('respond_checkpoint',
     'Clear the active-checkpoint gate. *MUST* present the checkpoint to the user first. ' +
-    'Provide exactly one of `option_id`, `auto_advance`, or `condition_not_met`. ' +
+    'Provide exactly one of `option_id` or `auto_advance`. ' +
     'An option whose effect declares `recordReply` takes the text the user typed as `reply`, stored in that variable.',
     {
       ...sessionIndexParam,
       option_id: z.string().optional().describe('User-selected option id (must match a defined option).'),
       reply: z.string().min(1).optional().describe('The text the user typed with `option_id`. Required when that option declares `recordReply`, and refused otherwise.'),
       auto_advance: z.boolean().optional().describe('Use defaultOption after autoAdvanceMs with no user input. Only valid when the checkpoint has both.'),
-      condition_not_met: z.boolean().optional().describe('Dismiss a conditional checkpoint whose condition was not met.'),
     },
-    withAuditLog('respond_checkpoint', withSessionStoreErrors(async ({ session_index, option_id, reply, auto_advance, condition_not_met }) => {
+    withAuditLog('respond_checkpoint', withSessionStoreErrors(async ({ session_index, option_id, reply, auto_advance }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -2818,22 +2814,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
       const checkpoint_id = active.checkpointId;
 
-      const modeCount = [option_id, auto_advance, condition_not_met].filter(v => v !== undefined).length;
+      const modeCount = [option_id, auto_advance].filter(v => v !== undefined).length;
       if (modeCount !== 1) {
-        throw new Error('Exactly one of option_id, auto_advance, or condition_not_met must be provided.');
+        throw new Error('Exactly one of option_id or auto_advance must be provided.');
       }
       if (reply !== undefined && option_id === undefined) {
-        throw new Error('respond_checkpoint: reply accompanies option_id; an auto-advance or a dismissal carries no typed reply.');
+        throw new Error('respond_checkpoint: reply accompanies option_id; an auto-advance carries no typed reply.');
       }
 
       const result = await loadWorkflow(config.workflowDir, state.workflowId);
       if (!result.success) throw result.error;
       // A gate the activity did not declare carries its options on
       // activeCheckpoint (#477). It has no defaultOption and no autoAdvanceMs,
-      // so auto-advance and condition-not-met both refuse it below — a decision
-      // admitted mid-run is answered, never timed out.
+      // so auto-advance refuses it below — a decision admitted mid-run is
+      // answered, never timed out.
       const checkpoint = active.adhoc
-        ? { options: active.adhoc.options, condition: undefined, defaultOption: undefined, autoAdvanceMs: undefined }
+        ? { options: active.adhoc.options, defaultOption: undefined, autoAdvanceMs: undefined }
         : getCheckpoint(result.value, active.activityId, checkpoint_id);
       if (!checkpoint) throw new Error(`Checkpoint definition not found: ${checkpoint_id} in activity ${active.activityId}`);
 
@@ -2841,7 +2837,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Time since the checkpoint was yielded (recorded on activeCheckpoint).
       const yieldedAtSeconds = Math.floor(new Date(active.yieldedAt).getTime() / 1000);
       const elapsed = now - yieldedAtSeconds;
-      let resolvedOptionId: string | undefined;
+      let resolvedOptionId: string;
       let effect: Record<string, unknown> | undefined;
 
       if (option_id !== undefined) {
@@ -2890,13 +2886,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const defaultOpt = checkpoint.options.find(o => o.id === checkpoint.defaultOption)!;
         resolvedOptionId = checkpoint.defaultOption;
         effect = defaultOpt.effect as Record<string, unknown> | undefined;
-      } else if (condition_not_met) {
-        if (!checkpoint.condition) {
-          throw new Error(
-            `Cannot dismiss checkpoint '${checkpoint_id}': it has no condition field. ` +
-            `Only conditional checkpoints can be dismissed with condition_not_met.`
-          );
-        }
+      } else {
+        throw new Error('Exactly one of option_id or auto_advance must be provided.');
       }
 
       // Variable declarations, for warn-only validation of setVariable effects
@@ -2910,10 +2901,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         delete draft.activeCheckpoint;
         const recordKey = `${active.activityId}-${checkpoint_id}`;
         const respondedAt = new Date(now * 1000).toISOString();
-        // CheckpointResponseSchema requires `optionId` + `respondedAt`; for
-        // `condition_not_met` dismissals we still record the resolution with
-        // a sentinel option id so the on-disk schema stays valid.
-        const recordedOptionId = resolvedOptionId ?? (condition_not_met ? DISMISSED_OPTION_ID : '__unknown__');
+        // CheckpointResponseSchema requires `optionId` + `respondedAt`. Both
+        // resolution modes name an option, and that id is what the record stores.
         // Unwrap the response effect into the schema-flat shape: the encoded effect gives
         // { setVariable: {...}, exit: '...' } and the schema stores variablesSet / exit.
         const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; recordReply?: string; exit?: string };
@@ -2925,7 +2914,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           : undefined;
         const selectedExit = effectObj?.exit;
         const record: { optionId: string; respondedAt: string; effects?: { variablesSet?: Record<string, unknown>; exit?: string } } = {
-          optionId: recordedOptionId,
+          optionId: resolvedOptionId,
           respondedAt,
         };
         if (variablesSet || selectedExit) {
@@ -2939,7 +2928,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           type: 'checkpoint_response',
           activity: active.activityId,
           checkpoint: checkpoint_id,
-          data: { optionId: recordedOptionId },
+          data: { optionId: resolvedOptionId },
         });
         // Apply variable assignments to the rolled-up bag. Values are stored
         // as written; a declared-type mismatch is warn-only (#166 B7).
@@ -2977,9 +2966,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         resolved: true,
         session_index,
       };
-      if (resolvedOptionId !== undefined) responseData['resolved_option'] = resolvedOptionId;
+      responseData['resolved_option'] = resolvedOptionId;
       if (effect !== undefined) responseData['effect'] = effect;
-      if (condition_not_met) responseData['dismissed'] = true;
       // The option named an outcome; the workflow graph says what follows it. An immediate exit
       // ends the sequence here, so the worker is told to stop rather than run the remaining steps.
       const chosenExit = (effect as { exit?: string } | undefined)?.exit;
@@ -3066,7 +3054,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered (its activity, checkpoint, the option chosen or `dismissed`, and time), and the variable bag.',
+    'Session status (active, blocked, completed or aborted), the activities in flight, completed activities, the last checkpoint answered (its activity, checkpoint, the option chosen, and time), and the variable bag.',
     {
       ...sessionIndexParam,
     },
@@ -3110,9 +3098,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         response['last_checkpoint'] = {
           activity_id: lastAnswer.activity,
           checkpoint_id: lastAnswer.checkpoint,
-          ...(lastAnswer.data?.['optionId'] === DISMISSED_OPTION_ID
-            ? { dismissed: true }
-            : { option_id: lastAnswer.data?.['optionId'] }),
+          option_id: lastAnswer.data?.['optionId'],
           timestamp: lastAnswer.timestamp,
         };
       }

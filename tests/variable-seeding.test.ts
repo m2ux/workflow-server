@@ -430,7 +430,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const stray = await respondText({ session_index: sessionIndex, option_id: 'matching-assignment', reply: 'text' });
       expect(stray.isError).toBe(true);
       expect(stray.text).toMatch(/records no typed reply/);
-      const bare = await respondText({ session_index: sessionIndex, condition_not_met: true, reply: 'text' });
+      const bare = await respondText({ session_index: sessionIndex, auto_advance: true, reply: 'text' });
       expect(bare.isError).toBe(true);
       expect(bare.text).toMatch(/reply accompanies option_id/);
     });

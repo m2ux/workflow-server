@@ -1,0 +1,26 @@
+id: answer-activity
+version: 1.0.0
+name: Answer Activity
+description: One hard checkpoint and one soft checkpoint.
+steps:
+  - kind: checkpoint
+    id: choose
+    message: Pick an option.
+    options:
+      - id: proceed
+        label: Proceed
+      - id: stop
+        label: Stop
+  - kind: checkpoint
+    id: unattended
+    message: The declared default may be taken once the wait has passed.
+    defaultOption: proceed
+    autoAdvanceMs: 1000
+    options:
+      - id: proceed
+        label: Proceed
+      - id: stop
+        label: Stop
+exits:
+  - id: done
+    isDefault: true

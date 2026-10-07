@@ -187,13 +187,11 @@ describe('operation-contract guard', () => {
 
   /**
    * The run over the corpus, which is what the family's zero is a claim about. The fixtures above
-   * prove the guard still fires; only a run says the corpus carries none of what it fires on, and
-   * the twelve this guard held at were a population rather than one defect at a time.
+   * prove the guard still fires; only a run says the corpus carries none of what it fires on.
    *
    * Definitions and code sit on different branches, so this reads whichever workflows checkout is
-   * present and `WORKFLOWS_DIR` points it at a corpus worktree to verify ahead of the merge. It is
-   * asserted here rather than left to the sweep because the guard is not a registry entry yet: with
-   * nothing running it over the corpus, a declaration reintroducing the class would land unmeasured.
+   * present and `WORKFLOWS_DIR` points it at a corpus worktree. It skips where no checkout is
+   * present. The sweep runs the same program wherever corpus CI points it.
    */
   it.skipIf(!liveCorpusRoot())('holds the corpus clean of a contract disagreeing with the technique filling the value', async () => {
     expect(await collectFindings(liveCorpusRoot()!)).toEqual([]);
