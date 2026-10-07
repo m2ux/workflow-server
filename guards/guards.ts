@@ -660,6 +660,16 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no instruction a role receives turns on a call that role is forbidden to make',
     form: 'none',
   },
+  {
+    id: 'declared-fallbacks',
+    script: 'guards/check-declared-fallbacks.ts',
+    npmScript: 'check:fallbacks',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'no input states an absent-value fallback unless its declaration carries a default',
+    form: 'none',
+  },
 ];
 
 export const CORPUS_GUARDS = GUARDS.filter((g) => g.scope === 'corpus');
