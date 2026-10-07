@@ -166,6 +166,16 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "analyze-sources-analysis-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "analysis_confirmed": true,
+                "update_pass_kind": "initial"
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-10-07T05:46:52.000Z"
+          },
           "intake-sources-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-10-07T05:36:36.000Z"
@@ -180,7 +190,9 @@
             "respondedAt": "2026-10-07T05:19:17.000Z"
           }
         },
-        "completedActivities": [],
+        "completedActivities": [
+          "intake"
+        ],
         "currentTechnique": "record-intake",
         "deliveredContent": {
           "intake-worker": {
@@ -196,9 +208,17 @@
             "bundle:workflow-engine::step-control": "0137c4b5fd7184fa",
             "bundle:workflow-engine::yield-checkpoint": "72cc5063739c4988",
             "note:bundle:74a2082322fa379c": "74a2082322fa379c",
+            "note:resources:b2ed3bbf8437c4cb": "b2ed3bbf8437c4cb",
             "note:step_techniques:4083f882c5b46610": "4083f882c5b46610",
             "resource:intake-record": "5ac37b5244eceaee",
+            "resource:requirements-analysis-report#rules": "f8def0a1e6f94497",
+            "resource:requirements-analysis-report#source-coverage-matrix": "6909a656813fa117",
+            "resource:requirements-analysis-report#template": "478a23ab036e7df4",
+            "resource:specification-protocol#identifier-schemes": "35ff8f625a7da922",
+            "resource:specification-protocol#source-reference-format": "baa4ad84e38cc267",
             "resource:transcript-redaction": "4fcd17f9bd9eb393",
+            "resource:validation-rubric#source-coverage": "a74d541c4624d7e5",
+            "technique:analyze-source": "8e23d47bcb51d48d",
             "technique:intake-sources": "06e482babfe3ddc2",
             "technique:record-intake": "67086b7fe52c3d27",
             "technique:redact-transcripts": "3ad813779f3e2fc6",
@@ -207,9 +227,9 @@
           }
         },
         "executionPath": "agent",
-        "exit": "",
+        "exit": "sources-confirmed",
         "frontier": [
-          "intake"
+          "analyze-sources"
         ],
         "history": [
           {
@@ -1086,18 +1106,221 @@
             },
             "timestamp": "2026-10-07T05:36:36.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake",
+            "timestamp": "2026-10-07T05:38:54.209Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake",
+            "data": {
+              "agentId": "intake-worker",
+              "stepId": "resolve-inputs"
+            },
+            "timestamp": "2026-10-07T05:38:54.209Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake",
+            "data": {
+              "agentId": "intake-worker",
+              "stepId": "intake-sources"
+            },
+            "timestamp": "2026-10-07T05:38:54.209Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake",
+            "data": {
+              "agentId": "intake-worker",
+              "stepId": "record-intake"
+            },
+            "timestamp": "2026-10-07T05:38:54.209Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "analyze-sources",
+            "timestamp": "2026-10-07T05:38:54.209Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "chars": 17129,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "chars": 4488,
+              "delivery": "full",
+              "stepId": "analyze-source",
+              "techniqueId": "analyze-source"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "stepId": "analyze-source"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "bundled": true,
+              "chars": 1233,
+              "delivery": "full",
+              "resourceId": "requirements-analysis-report#rules"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "bundled": true,
+              "chars": 679,
+              "delivery": "full",
+              "resourceId": "specification-protocol#identifier-schemes"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "bundled": true,
+              "chars": 1565,
+              "delivery": "full",
+              "resourceId": "specification-protocol#source-reference-format"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "bundled": true,
+              "chars": 533,
+              "delivery": "full",
+              "resourceId": "validation-rubric#source-coverage"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "bundled": true,
+              "chars": 891,
+              "delivery": "full",
+              "resourceId": "requirements-analysis-report#source-coverage-matrix"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "bundled": true,
+              "chars": 1585,
+              "delivery": "full",
+              "resourceId": "requirements-analysis-report#template"
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "agentId": "intake-worker",
+              "bundled_steps": 1,
+              "delivery": "reference",
+              "eager_budget_chars": 640000,
+              "fixed_chars": 2795,
+              "provenance_passes": 1,
+              "resolved_techniques": 11,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 17129,
+              "spent_chars": 12589,
+              "worker_bundle_chars": 1615
+            },
+            "timestamp": "2026-10-07T05:39:05.811Z",
+            "type": "activity_delivered"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "name": "requirements_analysis_path",
+              "source": "yield_checkpoint",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/02-requirements-analysis.md"
+            },
+            "timestamp": "2026-10-07T05:44:48.323Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "analyze-sources",
+            "checkpoint": "analysis-confirmed",
+            "timestamp": "2026-10-07T05:44:48.323Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "analyze-sources",
+            "checkpoint": "analysis-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-10-07T05:46:52.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "name": "analysis_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-10-07T05:46:52.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "analyze-sources",
+            "data": {
+              "name": "update_pass_kind",
+              "source": "setVariable",
+              "value": "initial"
+            },
+            "timestamp": "2026-10-07T05:46:52.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 14,
+        "seq": 19,
         "sessionIndex": "66LSEP",
         "startedAt": "2026-10-07T05:08:48.160Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1791351423,
+        "ts": 1791352019,
         "variables": {
-          "analysis_confirmed": false,
+          "analysis_confirmed": true,
           "change_summary_path": "",
           "classified_sources": [
             {
@@ -1174,7 +1397,7 @@
           "intake_record_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/01-intake.md",
           "is_monorepo": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta",
-          "requirements_analysis_path": "",
+          "requirements_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/02-requirements-analysis.md",
           "source_paths": [
             "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-06-work-planner-retrospective/sessions/2026-09-27-b8c47927.md",
             "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-06-work-planner-retrospective/sessions/2026-09-28-52f3fc03.md",
