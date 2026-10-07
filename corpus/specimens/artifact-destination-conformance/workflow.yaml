@@ -1,0 +1,25 @@
+$schema: ../../../schemas/workflow.schema.json
+id: artifact-destination-conformance
+version: 1.0.0
+title: Artifact Destination Conformance
+description: >-
+  Walk bound and unbound artifact destinations on an isolated root, confirming products
+  land at bound destinations while session state remains isolated in the planning folder.
+author: m2ux
+tags:
+  - specimen
+  - conformance
+variables:
+  - name: artifact_destination
+    type: string
+    description: Absolute path to the destination directory where bound products land.
+    defaultValue: "."
+  - name: planning_folder_path
+    type: string
+    description: Absolute path to the session planning directory.
+initialActivity: write-bound
+graph:
+  write-bound:
+    bound_written: write-unbound
+  write-unbound:
+    unbound_written: __terminal__

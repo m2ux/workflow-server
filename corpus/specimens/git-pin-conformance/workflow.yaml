@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: git-pin-conformance
-version: 1.0.0
+version: 1.1.0
 title: Git Pin Conformance Workflow
 description: >-
   Stand two worktrees of the host repository, name a revision of each kind for them — a branch, a
@@ -14,9 +14,6 @@ tags:
   - conformance
   - routine
   - library
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: planning_folder_path
     type: string

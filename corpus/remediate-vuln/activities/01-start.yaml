@@ -1,5 +1,5 @@
 id: start
-version: 2.4.2
+version: 2.5.0
 name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
 variables:
@@ -10,6 +10,7 @@ variables:
     - planning_folder_path
     - private_fork_url
     - sec_vuln_url
+    - seed_profile
     - target_path
     - target_repo
   writes:
@@ -152,7 +153,7 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
-        seed_profile: remediate-vuln/readme-seed
+        seed_profile: seed_profile
         include_links: false
   - kind: technique
     id: present-security-overview

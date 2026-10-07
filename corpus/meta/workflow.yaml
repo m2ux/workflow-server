@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 7.1.1
+version: 7.4.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -19,8 +19,17 @@ techniques:
     - workflow-engine::continue-batch
     - workflow-engine::workflow-orchestrator
   activity:
-    - variable-binding
     - workflow-engine::activity-worker
+    # The orchestrator baseline: what a meta activity applies and no step of it binds.
+    - workflow-engine::workflow-orchestrator
+    - workflow-engine::take-activity
+    - workflow-engine::handle-sub-workflow
+    - orchestrator-conduct
+    - harness-compat::resolve-harness-operation
+    - harness-compat::claude-code
+    - harness-compat::cursor
+    - harness-compat::cline
+    - harness-compat::generic
 initialActivity: dispatch-client-workflow
 graph:
   dispatch-client-workflow:
@@ -62,3 +71,6 @@ variables:
   - name: target_workflow_id
     type: string
     description: Catalog id of the embedded client workflow
+  - name: seed_profile
+    type: string
+    description: Resource id of the client workflow's readme-seed profile

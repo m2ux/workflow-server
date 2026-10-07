@@ -13,6 +13,14 @@ Git techniques for planning folders and artifacts — parent repos, submodules, 
 
 *(optional)* Path to the session's planning folder, as the server returned it. Techniques that derive a path from where the session keeps its artifacts take it from here; not every technique needs one.
 
+### is_signed
+
+*(optional)* False by default: a commit this library makes is unsigned. True when it is signed with the configured signing key. The rule `commits-are-unsigned` is stated against this value, so every technique that commits reads it from here.
+
+#### default
+
+`false`
+
 ## Rules
 
 ### host-shell-for-remote-git
@@ -33,7 +41,7 @@ NEVER skip hooks (`--no-verify`) unless the user explicitly requests it.
 
 ### explicit-commit
 
-NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits only — distinct from `commit-and-persist.commit-after-activity`, which mandates commit+push after each completed activity, and from any bound technique whose own rules mandate a commit as the value it produces.
+NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits only — distinct from the `persist-activity` run, which commits and pushes after each completed activity, and from any bound technique whose own rules mandate a commit as the value it produces.
 
 ### read-agents-md
 

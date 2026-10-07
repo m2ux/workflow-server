@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: schema-hygiene-conformance
-version: 1.1.0
+version: 1.2.0
 title: Schema Hygiene Conformance
 description: >-
   Live evidence for the session status, declared-checkpoint yield, bare rule reference, borrowed
@@ -8,9 +8,6 @@ description: >-
 author: m2ux
 tags:
   - specimen
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: flag_on
     type: boolean

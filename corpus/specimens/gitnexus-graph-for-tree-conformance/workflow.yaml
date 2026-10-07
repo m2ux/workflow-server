@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-graph-for-tree-conformance
-version: 1.3.0
+version: 1.4.0
 title: GitNexus Graph For Tree Conformance Workflow
 description: >-
   Hold the gitnexus graph-for-tree run to two cases. The positive case binds the host repository, a
@@ -14,9 +14,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: host_repo_path
     type: string

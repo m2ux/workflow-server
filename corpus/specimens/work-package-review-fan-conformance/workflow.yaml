@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: work-package-review-fan-conformance
-version: 1.0.0
+version: 1.1.0
 title: Work Package Review Fan Conformance Workflow
 description: >-
   Hold the automated review fan by borrowing the three work-package branch activities and walking
@@ -12,9 +12,6 @@ tags:
   - conformance
   - fan
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: planning_folder_path
     type: string

@@ -1,12 +1,16 @@
 id: intake-and-context
-version: 1.14.0
+version: 1.15.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 variables:
   reads:
+    - component_git_dir
     - host_repo_path
     - planning_folder_path
+    - pr_number
     - report_path
+    - seed_profile
+    - target_path
     - update_seeded_from_review
   writes:
     - name: change_category
@@ -70,7 +74,17 @@ steps:
     technique: intake-classification
   - kind: checkpoint
     id: design-intent-batch
-    when: intent_needs_confirmation == true && update_seeded_from_review != true
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: intent_needs_confirmation
+          operator: ==
+          value: true
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
     message: "Design intent needs confirmation — classified `{operation_type}` for `{workflow_id}` (mode ambiguous={operation_type_ambiguous}, change_request_clear={change_request_clear})."
     options:
       - id: confirm-intent
@@ -159,8 +173,8 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
+        seed_profile: seed_profile
         entity_context: "entity_title={workflow_id}; entity_type={operation_type}; status=Planning"
-        seed_profile: workflow-design/readme-seed
         operation_type: "{operation_type}"
     when: operation_type != 'review'
   - kind: technique

@@ -24,7 +24,7 @@ Resolved directly from the named workflow — no copy is held here.
 
 | Reference | Used for |
 |-----------|----------|
-| [`variable-binding`](/meta/techniques/variable-binding.md) | Declared at `workflow.techniques.activity`; inherited by every activity rather than bound per step |
+| [`variable-binding`](/meta/techniques/variable-binding.md) | Rides every activity's delivery as part of the worker contract, rather than being declared or bound per step |
 | [`workflow-engine::create-readme`](/meta/techniques/workflow-engine/create-readme.md) | Seed the planning-folder `README.md` from the universal Template under this workflow's seed profile |
 | [`work-package::manage-artifacts`](/work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` — the numbered planning-folder artifact write |
 

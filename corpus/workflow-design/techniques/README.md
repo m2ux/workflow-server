@@ -6,7 +6,7 @@ The technique library for the workflow-design workflow. Each technique is one ca
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds shared Inputs, Outputs, and Rules for every technique here.
 
-The cross-cutting meta strategy techniques [`variable-binding`](/meta/techniques/variable-binding.md) and [`scatter-gather`](/meta/techniques/scatter-gather.md) are declared at `workflow.techniques.activity` / activity level, not bound per step.
+[`variable-binding`](/meta/techniques/variable-binding.md) rides every activity's delivery as part of the worker contract. [`scatter-gather`](/meta/techniques/scatter-gather.md) is declared at activity level, not bound per step.
 
 For the full technique-to-activity table with capability summaries, see the [workflow README](../README.md#techniques).
 

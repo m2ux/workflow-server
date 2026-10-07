@@ -1,10 +1,13 @@
 id: activity-loop
-version: 1.5.0
+version: 1.13.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
   checkpoint it yields, commit what it produced, and advance onto what its exit routes to — until
-  the walk reaches `__terminal__`.
+  the walk reaches `__terminal__`. A worker carries a bounded run of activities and is continued
+  across each boundary. Where an exit names several branches, one call opens every branch, they
+  run in one turn under their own identities, each branch is one activity and is not continued, and the run resumes from the
+  activity they converge on. The fan's width is the destination's.
 
 inputs:
   - id: session_index
@@ -21,36 +24,51 @@ inputs:
     description: Path of the component under work, relative to the host repository.
   - id: host_repo_path
     description: Absolute path of the outermost git host for the workspace checkout.
-  - id: kind
-    description: Path kind of the engineering checkout. `worktree` selects the worktree commit; any other value selects an ordinary commit of the host checkout. A caller that binds nothing supplies the host's own kind.
   - id: target_status
     description: The Progress status an entry publishes for the activity it marks.
+  - id: workflow_id
+    description: The workflow a dispatched worker executes.
+  - id: seed_profile
+    description: The readme-seed profile for an entering mark. Unset when the walk has none.
+  - id: branch
+    description: The branch checked out where an entering mark is pushed.
   - id: completes_session
     default: true
     description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
   - id: standing_activity
     description: The activity the session stands on, where an earlier walk left it. The walk opens on that activity and carries it without an advance. Unset, the walk opens on `initial_activity`.
-  - id: worker_context_tokens
-    description: The declared window of the contexts this walk dispatches workers into, in tokens, which each advance reads the worker's standing against. A caller that binds nothing supplies the window the harness gives those contexts.
+  - id: harness_kind
+    description: The harness a spawn or continuation resolves.
+  - id: harness_operation
+    description: The harness operation a spawn or continuation applies.
+  - id: harness_technique
+    description: The harness technique a spawn or continuation applies.
+  - id: is_signed
+    description: Whether a commit this walk makes is signed.
 
 outputs:
   - id: current_activity
     type: string
+    optional: true
     description: The activity the walk holds, and null once the walk reaches `__terminal__`.
   - id: from_activity
     type: string
+    optional: true
     description: The activity an advance retires, which every entry names as the one its exit belongs to.
   - id: trace_tokens
     type: array
+    optional: true
     description: The trace token of every advance the walk made, in the order it made them. A walk opened on `standing_activity` appends to the tokens the host holds.
+  - id: walk_aborted
+    type: boolean
+    optional: true
+    description: Whether the walk stopped on an engineering push that did not land. False where it ran to the end of the graph, so a held activity and a finished walk stay distinguishable.
 
 internals:
   - id: fan_convergence_activity
     description: The activity a fan's branches converge on, which the walk resumes from once the fan is opened.
   - id: stands_on_activity
     description: Whether the session already stands on the activity the next entry carries, the advance that entered it having been made.
-  - id: continuation_held
-    description: Whether the continuation just attempted holds the activity the advance entered. False where the reading refused or the continuation returned nothing.
 
 steps:
   - kind: action
@@ -75,6 +93,9 @@ steps:
         target: worker_result
         value: null
       - action: set
+        target: walk_aborted
+        value: false
+      - action: set
         target: trace_tokens
         value: []
   - kind: action
@@ -93,6 +114,9 @@ steps:
       - action: set
         target: worker_result
         value: null
+      - action: set
+        target: walk_aborted
+        value: false
   - kind: loop
     id: activity-cycle
     name: Activity Cycle
@@ -104,61 +128,124 @@ steps:
       value: null
     maxIterations: 200
     steps:
-      - kind: technique
+      # Every entry this iteration can make is made here, before the activity is carried, so
+      # `worker_result` describes the activity `current_activity` names for the whole iteration.
+      # The commit, the exit reading and the advance below each read that pairing.
+      - kind: action
+        id: open-entry-tokens
+        actions:
+          # A token belongs to the entry that returned it. Clearing as the iteration opens keeps
+          # the token an earlier entry left from being appended a second time.
+          - action: set
+            target: advance_trace_tokens
+            value: null
+      - kind: routine
         id: continue-batched-worker
-        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
-        technique:
-          name: workflow-engine::continue-batch
-          inputs:
-            activity_id: "{worker_result.next_activity_id}"
-            exit_id: "{worker_result.activity_exit}"
-            session_index: session_index
-            worker_agent_id: worker_agent_id
-            context_tokens: worker_context_tokens
-            step_manifest: "{worker_result.steps_completed}"
-            variables_changed: "{worker_result.variables_changed}"
-            variable_bag: variables
-          outputs:
-            continuation_held: continuation_held
+        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
+        routine: continue-entry
+        with:
+          activity_id: "{worker_result.next_activity_id}"
+          session_index: session_index
+          workflow_id: workflow_id
+          planning_folder_path: "{planning_folder_path}"
+          from_activity: from_activity
+          exit_id: "{worker_result.activity_exit}"
+          step_manifest: "{worker_result.steps_completed}"
+          variables_changed: "{worker_result.variables_changed}"
+          worker_agent_id: worker_agent_id
+          harness_agent_id: harness_agent_id
+          agent_technique: workflow-engine::activity-worker
+        outputs:
+          worker_result: worker_result
+          advance_trace_tokens: advance_trace_tokens
+      - kind: action
+        id: append-continue-tokens
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
-      - kind: action
-        id: release-unheld-worker
-        when: continuation_held == false
-        actions:
-          # The advance refused this context, or the continuation returned nothing. The pointer
-          # already stands on the activity, so the dispatch that follows makes no advance.
           - action: set
-            target: worker_agent_id
+            target: advance_trace_tokens
             value: null
+      - kind: routine
+        id: dispatch-entry
+        when: enter_activity == "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
+        routine: dispatch-entry
+        with:
+          activity_id: current_activity
+          session_index: session_index
+          workflow_id: workflow_id
+          planning_folder_path: planning_folder_path
+          target_status: target_status
+          seed_profile: seed_profile
+          branch: branch
+          from_activity: from_activity
+          exit_id: "{worker_result.activity_exit}"
+          step_manifest: "{worker_result.steps_completed}"
+          variables_changed: "{worker_result.variables_changed}"
+          stands_on_activity: stands_on_activity
+          agent_technique: workflow-engine::activity-worker
+        outputs:
+          worker_result: worker_result
+          worker_agent_id: worker_agent_id
+          harness_agent_id: harness_agent_id
+          advance_trace_tokens: advance_trace_tokens
+      - kind: action
+        id: append-dispatch-tokens
+        when: advance_trace_tokens
+        actions:
           - action: set
-            target: stands_on_activity
-            value: true
+            target: trace_tokens
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
+            description: The tokens this entry returned, appended to the tokens the walk holds.
           - action: set
-            target: continuation_held
+            target: advance_trace_tokens
             value: null
       - kind: technique
         id: enter-activity
-        when: "!worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != 'checkpoint_pending'"
+        when: enter_activity != "workflow-engine::dispatch-activity" && !worker_agent_id && !worker_result.next_activity_fans && worker_result.result_type != "checkpoint_pending"
         technique:
           name: enter_activity
           inputs:
             activity_id: current_activity
             exit_id: "{worker_result.activity_exit}"
             session_index: session_index
+            planning_folder_path: planning_folder_path
             agent_technique: workflow-engine::activity-worker
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
             stands_on_activity: stands_on_activity
             variable_bag: variables
+      - kind: action
+        id: append-entry-tokens
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
+      - kind: routine
+        id: finish-entered-activity
+        when: worker_result.result_type == "steps_complete"
+        routine: finish-activity
+        with:
+          current_activity: "{worker_result.activity_definition}"
+          exit_destinations: "{worker_result.exit_destinations}"
+          selected_exit: "{worker_result.selected_exit}"
+          steps_completed: "{worker_result.steps_completed}"
+          checkpoints_responded: "{worker_result.checkpoints_responded}"
+          artifacts_produced: "{worker_result.artifacts_produced}"
+          batch_may_continue: "{worker_result.batch_may_continue}"
+          variables_changed: "{worker_result.variables_changed}"
+          planning_folder_path: "{planning_folder_path}"
+          session_index: "{session_index}"
+        outputs:
+          activity_result: worker_result
       - kind: action
         id: spend-entered-activity
         when: stands_on_activity
@@ -175,6 +262,20 @@ steps:
           - action: set
             target: current_activity
             value: null
+      - kind: routine
+        id: persist-entering
+        when: "!worker_agent_id && worker_result.next_activity_fans && planning_folder_path"
+        routine: persist-entering
+        with:
+          activity_id: current_activity
+          planning_folder_path: planning_folder_path
+          session_index: "{session_index}"
+          target_status: target_status
+          seed_profile: seed_profile
+          commit_message: "{current_activity} entering"
+          branch: branch
+          repo_path: "."
+          paths: "{planning_folder_path}/README.md"
       - kind: technique
         id: enter-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
@@ -184,32 +285,51 @@ steps:
             fan_destination: current_activity
             exit_id: "{worker_result.activity_exit}"
             session_index: session_index
+            planning_folder_path: planning_folder_path
+            from_activity: from_activity
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
           outputs:
             barrier_destination: fan_convergence_activity
+      - kind: action
+        id: append-fan-tokens
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
       - kind: technique
-        id: spawn-branches
+        id: mint-branches
         when: "!worker_agent_id && worker_result.next_activity_fans"
         technique:
           name: fan::spawn-branches
           inputs:
             branch_activities: branch_activities
-            agent_technique: workflow-engine::activity-worker
-            variable_bag: variables
+            planning_folder_path: planning_folder_path
           outputs:
-            branch_envelopes: branch_envelopes
+            branches: branches
+      - kind: routine
+        id: open-branches
+        when: "!worker_agent_id && worker_result.next_activity_fans"
+        routine: open-branches
+        with:
+          branches: branches
+          agent_technique: workflow-engine::activity-worker
+          session_index: session_index
+          workflow_id: workflow_id
+          planning_folder_path: "{planning_folder_path}"
+        outputs:
+          branch_envelopes: branch_envelopes
       - kind: loop
         id: branch-retirement
         name: Branch Retirement
         loopType: forEach
         variable: current_branch
-        over: branch_activities
+        over: branches
         maxIterations: 50
         when: "!worker_agent_id && worker_result.next_activity_fans"
         steps:
@@ -218,26 +338,54 @@ steps:
             technique:
               name: fan::retire-branch
               inputs:
-                branch_activity: current_branch
+                branch_activity: "{current_branch.activity_id}"
+                worker_agent_id: "{current_branch.agent_id}"
                 branch_envelopes: branch_envelopes
                 barrier_destination: fan_convergence_activity
                 session_index: session_index
+                planning_folder_path: planning_folder_path
+          - kind: action
+            id: append-retirement-token
+            when: advance_trace_tokens
             actions:
               - action: set
                 target: trace_tokens
-                value: "{advance_trace_tokens}"
+                value: "[{trace_tokens}, {advance_trace_tokens}]"
                 description: The token this retirement returned, appended to the tokens the walk holds.
-      - kind: technique
+              - action: set
+                target: advance_trace_tokens
+                value: null
+      - kind: routine
         id: persist-the-fan
         when: "!worker_agent_id && worker_result.next_activity_fans"
-        technique:
-          name: workflow-engine::commit-and-persist
-          inputs:
-            activity_id: "{branch_activities}"
-            session_index: session_index
+        routine: persist-activity
+        with:
+          activity_id: "{branch_activities}"
+          planning_folder_path: "{planning_folder_path}"
+          session_index: "{session_index}"
+          workflow_id: "{workflow_id}"
+        outputs:
+          push_landed: push_landed
+      - kind: action
+        id: surface-unlanded-fan-push
+        when: "!worker_agent_id && worker_result.next_activity_fans && !push_landed"
+        actions:
+          - action: message
+            message: "The push did not land."
+          - action: set
+            target: walk_aborted
+            value: true
+          # The envelope is spent with the fan it opened. Left standing it would meet the
+          # commit below as an activity_complete whose activity is the null just written.
+          - action: set
+            target: worker_result
+            value: null
+          - action: set
+            target: current_activity
+            value: null
       - kind: action
         id: advance-past-fan
-        when: fan_convergence_activity
+        when: fan_convergence_activity && push_landed
         actions:
           - action: set
             target: current_activity
@@ -248,7 +396,7 @@ steps:
             value: true
       - kind: action
         id: retire-fan-envelope
-        when: fan_convergence_activity
+        when: fan_convergence_activity && push_landed
         actions:
           # After the fan is opened the walk holds the convergence as current_activity.
           # The envelope and the convergence name stay unset so later steps in this
@@ -266,6 +414,7 @@ steps:
           name: workflow-engine::present-checkpoint-to-user
           inputs:
             session_index: session_index
+            planning_folder_path: planning_folder_path
       - kind: technique
         id: respond-yielded-checkpoint
         when: worker_result.result_type == "checkpoint_pending"
@@ -273,18 +422,23 @@ steps:
           name: workflow-engine::respond-checkpoint
           inputs:
             session_index: session_index
+            planning_folder_path: planning_folder_path
             checkpoint_resolution: user_selection
-      - kind: technique
+      - kind: routine
         id: resume-yielded-worker
         when: worker_result.result_type == "checkpoint_pending" && worker_agent_id
-        technique:
-          name: workflow-engine::resume-worker
-          inputs:
-            session_index: session_index
-            activity_id: current_activity
-            worker_agent_id: worker_agent_id
-            checkpoint_reply: checkpoint_reply
-            variable_bag: variables
+        routine: resume-entry
+        with:
+          session_index: session_index
+          workflow_id: workflow_id
+          activity_id: current_activity
+          planning_folder_path: "{planning_folder_path}"
+          worker_agent_id: worker_agent_id
+          harness_agent_id: harness_agent_id
+          checkpoint_reply: checkpoint_reply
+          agent_technique: workflow-engine::activity-worker
+        outputs:
+          worker_result: worker_result
       - kind: technique
         id: resume-entered-activity
         when: worker_result.result_type == "checkpoint_pending" && !worker_agent_id
@@ -293,13 +447,40 @@ steps:
           inputs:
             activity_id: current_activity
             session_index: session_index
+            planning_folder_path: planning_folder_path
             agent_technique: workflow-engine::activity-worker
             variable_bag: variables
+      - kind: action
+        id: append-resume-tokens
+        when: advance_trace_tokens
         actions:
           - action: set
             target: trace_tokens
-            value: "{advance_trace_tokens}"
+            value: "[{trace_tokens}, {advance_trace_tokens}]"
             description: The tokens this entry returned, appended to the tokens the walk holds.
+          - action: set
+            target: advance_trace_tokens
+            value: null
+      # The entry above returns the activity's own `steps_complete`, which the side holding the
+      # graph folds. Without this the iteration ends unfolded and the next one re-enters the
+      # activity this one already carried.
+      - kind: routine
+        id: finish-resumed-activity
+        when: worker_result.result_type == "steps_complete"
+        routine: finish-activity
+        with:
+          current_activity: "{worker_result.activity_definition}"
+          exit_destinations: "{worker_result.exit_destinations}"
+          selected_exit: "{worker_result.selected_exit}"
+          steps_completed: "{worker_result.steps_completed}"
+          checkpoints_responded: "{worker_result.checkpoints_responded}"
+          artifacts_produced: "{worker_result.artifacts_produced}"
+          batch_may_continue: "{worker_result.batch_may_continue}"
+          variables_changed: "{worker_result.variables_changed}"
+          planning_folder_path: "{planning_folder_path}"
+          session_index: "{session_index}"
+        outputs:
+          activity_result: worker_result
       - kind: action
         id: clear-checkpoint-reply
         when: checkpoint_reply
@@ -308,17 +489,32 @@ steps:
           - action: set
             target: checkpoint_reply
             value: null
-      - kind: technique
+      - kind: routine
         id: commit-activity-artifacts
-        when: worker_result.result_type == "activity_complete"
-        technique:
-          name: workflow-engine::commit-and-persist
-          inputs:
-            activity_id: current_activity
-            session_index: session_index
+        when: worker_result.result_type == "activity_complete" && !walk_aborted
+        routine: persist-activity
+        with:
+          activity_id: current_activity
+          planning_folder_path: "{planning_folder_path}"
+          session_index: "{session_index}"
+          workflow_id: "{workflow_id}"
+        outputs:
+          push_landed: push_landed
+      - kind: action
+        id: surface-unlanded-push
+        when: worker_result.result_type == "activity_complete" && !push_landed
+        actions:
+          - action: message
+            message: "The push did not land."
+          - action: set
+            target: walk_aborted
+            value: true
+          - action: set
+            target: current_activity
+            value: null
       - kind: action
         id: note-exiting-activity
-        when: worker_result.result_type == "activity_complete"
+        when: worker_result.result_type == "activity_complete" && push_landed
         actions:
           # Kept before the pointer moves: every advance names the activity it retires, and the
           # next step makes current_activity the destination. Each operation's `from_activity`
@@ -328,18 +524,15 @@ steps:
             value: "{current_activity}"
       - kind: action
         id: advance-activity
-        when: worker_result.result_type == "activity_complete"
+        when: worker_result.result_type == "activity_complete" && push_landed
         actions:
           - action: set
             target: current_activity
             value: "{worker_result.next_activity_id}"
       - kind: action
         id: release-spent-worker
-        when: worker_result.result_type == "activity_complete" && (worker_result.next_activity_id == "__terminal__" || worker_result.next_activity_fans)
+        when: worker_result.result_type == "activity_complete" && (!worker_result.batch_may_continue || worker_result.next_activity_id == "__terminal__" || worker_result.next_activity_fans)
         actions:
-          # A destination no worker of this batch can take ends the batch here: the terminal
-          # activity, or a destination that fans. A context the advance refused is released by
-          # release-unheld-worker, before the dispatch for the activity the pointer already stands on.
           - action: set
             target: worker_agent_id
             value: null

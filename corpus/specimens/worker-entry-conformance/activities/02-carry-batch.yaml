@@ -1,0 +1,24 @@
+id: carry-batch
+version: 1.1.0
+name: Carry Batch
+description: Record the entry a second activity arrived on, and hand the run to the branches.
+required: true
+variables:
+  writes:
+    - name: batch_entry
+      type: object
+      description: The entry this activity arrived on, and the instant it was recorded.
+steps:
+  - kind: routine
+    id: recording
+    routine: record-one-entry
+    with:
+      entry_kind: batch-continuation
+    outputs:
+      entry_record: batch_entry
+exits:
+  - id: carried
+    isDefault: true
+outcome:
+  - The entry this activity arrived on is recorded ({batch_entry})
+  - Whether one worker carried both activities is a fact in the record rather than an inference

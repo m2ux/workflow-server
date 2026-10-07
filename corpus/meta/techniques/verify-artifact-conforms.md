@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.1
+  version: 1.7.0
 ---
 
 ## Capability
@@ -45,25 +45,25 @@ array of `{ file, reason }` entries — one per artifact the pass held against n
 
 ## Protocol
 
-### 1. Enumerate and Resolve
+### 1. Resolve Artifact Guides
 
 - Enumerate the human-audience artifacts this run persisted into `{artifact_dir}` and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
   > Scope per `only-what-this-run-wrote`.
 - Record an artifact whose guide no map names in `unmeasured` and carry it no further
 
-### 2. Measure Against the Guide and the Map
+### 2. Measure Conformance
 
 - Check each artifact against the `## Rules` of its guide and, when `{canonical_home_map}` is bound, against that map; apply each rule by cite and do not restate its criteria here
 - An artifact carrying a fact the map homes elsewhere is a finding whether or not the fact is accurate
 - Check each human-audience artifact's prose, tables and links against [Artifact Writing Register](/meta/resources/writing-register.md); a passage, table or link that breaks the register is a `writing-register` violation
 
-### 3. Correct in Place
+### 3. Correct In Place
 
 - Replace a restated fact with a pointer to its canonical home, as the Links rules of the [Artifact Writing Register](/meta/resources/writing-register.md) state, delete a section whose content is an absence, collapse a table whose every row passes, condense prose over its guide's budget, and rewrite a passage that breaks the register
 - Preserve content the user asked for explicitly, whatever the budget says
 - Leave an artifact under a published contract as it stands, recording its violations with `fixed` false — see `published-contracts-are-reported`
 
-### 4. Surface the Exceptions
+### 4. Surface Exceptions
 
 - Compose `{artifact_conformance}`: its `violations` array carries every detected violation with its fix status, its `unmeasured` array carries every artifact held against no guide, and `conforms` is true iff every violation was fixed
 - Report exceptions only — an artifact that already conformed gets no line

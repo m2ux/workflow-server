@@ -11,4 +11,4 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`assess-initiative-scope`](assess-initiative-scope.md) | Identify and categorize work packages from a multi-package initiative description |
 | [`document-roadmap`](document-roadmap.md) | Produce finalized roadmap documentation with timeline, navigation, and success criteria |
 | [`prioritize-packages`](prioritize-packages.md) | Evaluate and order work packages by dependencies, value, risk, and effort |
-| [`setup-planning-folder`](setup-planning-folder.md) | The initiative's planning folder resolved from its slug, holding the `START-HERE.md` and `README.md` skeletons as placeholder structures that subsequent work populates |
+| [`setup-planning-folder`](setup-planning-folder.md) | The session's planning folder holding the `START-HERE.md` and `README.md` skeletons, as placeholder structures that subsequent work populates |

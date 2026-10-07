@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.11.0
+  version: 2.16.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Compose a minimal stub that binds agent identity and directs the agent to Apply 
 
 ### agent_technique
 
-Canonical agent technique — workflow-engine::activity-worker or workflow-engine::workflow-orchestrator. A worker continued past a gate takes activity-worker.
+Canonical agent technique the spawned agent applies: workflow-engine::activity-worker. A worker continued past a gate takes it too.
 
 ### substitutions
 
@@ -29,23 +29,23 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ## Protocol
 
-### 1. Bind identity
+### 1. Bind Identity
 
-- Emit a one-line role from `{agent_technique}`: activity worker for `{workflow_id}`, or workflow orchestrator for `{workflow_id}`
+- Emit a one-line role from `{agent_technique}`: activity worker for `{workflow_id}`
 - Emit Session bindings from `{substitutions}` (`session_index`, `workflow_id`, `agent_id`, and `activity_id` when present)
 
-### 2. Emit entry tools
+### 2. Emit Entry Tools
 
-- When `{checkpoint_reply}` is bound, and `{agent_technique}` is activity-worker: instruct `resume_checkpoint { session_index }` FIRST, carrying `{checkpoint_reply}`, then the activity-worker line below
-- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise
-- When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `get_workflow { session_index }`, which delivers the techniques bundle the Direct Apply phase names. Its session is already open and its identity is bound in the block above; this call scopes to neither, and the orchestrator spends `agent_id` on the delivery calls that take one
+- Instruct [resume-from-checkpoint](./resume-from-checkpoint.md) before the `get_activity` line below, and carry `{checkpoint_reply}` on its `resume_checkpoint` call.
+  > When `{checkpoint_reply}` is bound.
+- Instruct `get_activity { session_index, context_tokens, agent_id, activity_id }` — `agent_id` scopes delivery to this worker context (`agent-id-scopes-delivery`); `activity_id` names the activity this worker was dispatched for. Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise
 
 ### 3. Direct Apply
 
 - Instruct the agent to Apply `{agent_technique}` from the returned ops bundle and follow that technique's Protocol and Rules
 - Do not project the technique Protocol into the stub
 
-### 4. Return stub
+### 4. Emit Composed Prompt
 
 - Emit the assembled text as `{composed_prompt}`
 
@@ -53,4 +53,4 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### context-travels-as-state
 
-Prior-activity context reaches a worker as state, not as prose in the stub. Artifact paths, decisions, and measurements already live in the session bag and in the artifacts those bag variables point at; the worker binds them through its activity's step inputs. Do not restate artifact content, decisions, or scope lists in `{composed_prompt}`. A fact the worker needs and no variable carries is a missing declaration, not a licence to inline.
+`{composed_prompt}` does not restate artifact content, decisions, or scope lists. A fact the worker needs and no variable carries is a missing declaration.

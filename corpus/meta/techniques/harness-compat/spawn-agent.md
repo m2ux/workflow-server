@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.1
+  version: 1.8.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Full task prompt for the new agent
 
 ### description
 
-Short label for the agent's role (optional; useful for tracing)
+*(optional)* Short label for the agent's role, useful for tracing. Unset when the caller has none.
 
 ## Outputs
 
@@ -23,24 +23,26 @@ Short label for the agent's role (optional; useful for tracing)
 
 The sub-agent's final output (text, including any `<checkpoint_yield>` block) — captured when the agent yields or completes
 
+### harness_agent_id
+
+The handle the harness gives this agent, which a later continuation addresses it by. Unset where the harness returns none, and a continuation then has nothing to resume.
+
 ## Protocol
 
-### 1. Resolve harness technique
+### 1. Resolve Harness Technique
 
 - Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: spawn` → `{harness_technique}`, `{harness_operation}`.
 
-### 2. Dispatch
+### 2. Dispatch Agent
 
 - Dispatch by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{composed_prompt}` and `{description}`, under `foreground-always`.
 
-### 3. Await result
+### 3. Await Result
 
-- Wait until the agent yields a checkpoint or returns (blocking-equivalent); capture its final output as `{agent_result}`.
+- Wait until the agent yields a checkpoint or returns (blocking-equivalent); capture its final output as `{agent_result}`, and the handle the harness addresses it by as `{harness_agent_id}`.
 
 ## Rules
 
 ### depth-1-only
 
-spawn-agent operates depth-1 only. Spawned sub-agents do not inherit the orchestrator's dispatch primitive. Workflows MUST NOT design around nested orchestrator agents — one orchestrator agent drives all orchestrator-level work across all session levels. Harness-specific nesting limits are documented in the harness technique files.
-
-A spawned agent therefore has no dispatch primitive, and `concurrency = 1` is its scatter contract, not a shortfall against it: any [scatter-gather](../scatter-gather.md) it runs is the sequential case, and running one is conformance, not deviation. Parallel scatter is available only where the dispatch primitive is — at the orchestrator. Hoist a pass there when its fan-out is worth an orchestrator-owned step; otherwise author it sequential and size the work accordingly.
+A spawned agent does not inherit a dispatch primitive. One orchestrator drives the orchestrator-level work.

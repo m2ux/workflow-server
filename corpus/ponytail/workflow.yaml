@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: ponytail
-version: 2.1.0
+version: 2.2.0
 title: Ponytail Lean-Coding Workflow
 description: Drive a coding task, change, or codebase toward the leanest solution that still clears a non-negotiable safety floor, tracking every deliberate simplification as ponytail debt.
 author: m2ux
@@ -14,9 +14,6 @@ rules:
   universal:
     - "safety-floor-never-simplified: No rung is climbed at the cost of an obligation the ladder places on its safety floor."
     - "understand-before-climb: The real end-to-end flow a change touches is read and traced before a rung is selected."
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: task_description
     type: string

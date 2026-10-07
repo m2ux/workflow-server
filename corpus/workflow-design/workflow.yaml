@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.40.0
+version: 1.42.0
 title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
 description: >-
   DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already in flight can finish; it is removed once none remain. Guide agents through creating, updating, or reviewing workflow definitions.
@@ -17,19 +17,20 @@ tags:
 rules:
   activity:
     - The target specification's design dimensions are elicited once and carried forward as the run's own record
-techniques:
-  activity:
-    - variable-binding
 variables:
+  - name: seed_profile
+    type: string
+    description: Resource id of this workflow's readme-seed profile.
+    defaultValue: workflow-design/readme-seed
   - name: planning_folder_path
     type: string
-    description: Absolute path to this run's planning folder, seeded when the session opens.
+    description: Absolute path to this run's planning folder.
   # This workflow batches its open judgements into the commit gate rather than interviewing them
   # mid-flow, so the borrowed record operation's per-assumption outcome has no producer here. It is a
   # constant, owned by the file that runs the borrowed operation.
   - name: assumption_outcome
     type: string
-    description: What the gate that decided an assumption gave it — always empty in this workflow.
+    description: The outcome an assumption was decided with.
     defaultValue: ""
   # Seeded with the session and named by the shared contract of the operations this workflow
   # borrows, so the file owns the name and no activity produces it.

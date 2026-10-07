@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-Select the highest-priority unstarted package, trigger its work-package workflow, update the roadmap status on completion, and advance the remaining/completed sets.
+Select the highest-priority unstarted package and trigger its work-package workflow.
 
 ## Inputs
 
@@ -15,25 +15,21 @@ Ordered list of packages not yet started
 
 ## Outputs
 
-### completed_packages
+### current_package
 
-List of completed package names
+The package this run selected and launched, named as the roadmap names it.
 
-### remaining_packages
+### child_session_index
 
-List of remaining package names
+The child session the launch opened.
 
-### overall_progress
+### child_initial_activity
 
-Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.md status table
+The child workflow's initial activity.
 
-#### artifact
+### child_planning_folder_path
 
-`START-HERE.md`
-
-#### audience
-
-`human`
+The child session's planning folder, as the launch returned it.
 
 ## Protocol
 
@@ -45,18 +41,8 @@ Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.m
 ### 2. Launch the Work Package
 
 - Apply the [workflow-triggering-protocol](../../resources/workflow-triggering-protocol.md#triggering-a-work-package) triggering procedure to compose the launch context: package name, scope from plan document, dependencies, and `{planning_folder_path}`
-- Apply [workflow-engine](/meta/techniques/workflow-engine/TECHNIQUE.md)::[handle-sub-workflow](/meta/techniques/workflow-engine/handle-sub-workflow.md) with `workflow_id: work-package`; capture `{child_planning_folder_path}`. That technique walks the package to its end, so this step returns with the package delivered.
+- Apply [workflow-engine](/meta/techniques/workflow-engine/TECHNIQUE.md)::[handle-sub-workflow](/meta/techniques/workflow-engine/handle-sub-workflow.md) with `workflow_id: work-package`; capture `{child_session_index}`, `{child_initial_activity}`, and `{child_planning_folder_path}`. The child session is open. Its walk is the binding activity's.
   > If the `work-package` workflow cannot be loaded or started, refresh the catalog via [list-workflows](/meta/techniques/workflow-engine/list-workflows.md), then retry.
-
-### 3. Update Status
-
-- Record `{child_planning_folder_path}` — the launch's own output — as `{$package_planning_paths}`, keyed by package name
-- Update the `START-HERE.md` status table: mark the completed package as done, add its PR link, and add the package's planning-folder link from `{package_planning_paths}`
-- Recompute `{overall_progress}` to reflect the completed count
-
-### 4. Check Remaining
-
-- Remove the completed package from `{remaining_packages}`, add it to `{completed_packages}`
 
 ## Rules
 

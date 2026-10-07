@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-narrow-to-changed-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus Narrow To Changed Conformance Workflow
 description: >-
   Hold the gitnexus narrow-to-changed run to three cases. The positive and negative cases carry the
@@ -17,9 +17,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string

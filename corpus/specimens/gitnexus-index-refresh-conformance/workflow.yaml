@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-index-refresh-conformance
-version: 1.5.0
+version: 1.6.0
 title: GitNexus Index Refresh Conformance Workflow
 description: >-
   Hold the gitnexus index-refresh run to three cases. The positive case names the graph covering
@@ -17,9 +17,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: host_repo_path
     type: string

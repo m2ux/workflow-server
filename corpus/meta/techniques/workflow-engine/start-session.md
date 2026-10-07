@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.17.0
+  version: 1.23.0
 ---
 
 ## Capability
@@ -15,15 +15,15 @@ Absolute path of the checkout under work.
 
 ### workflow_id
 
-Optional. Fresh-session workflow id. Ignored on resume.
+Optional. Fresh-session workflow id (default `meta`). Ignored on resume.
 
-#### default
+### planning_slug
 
-`meta`
+Optional. A single path segment naming this session's planning folder, composed per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). The server resolves the planning root it lands in.
 
 ### planning_folder
 
-Optional. Absolute path of one planning folder: a folder holding a session resumes, and a new folder sits directly under the planning root of `{working_directory}`, its basename the planning slug. Omit for a transient meta bootstrap when the slug is not yet known.
+Optional. Absolute path of one planning folder. A folder already holding a session resumes, wherever it sits.
 
 ### repo
 
@@ -35,7 +35,7 @@ The user's free-form request that opened this session.
 
 ### target_workflow_id
 
-Optional. Catalog id of the client workflow. Distinct from `workflow_id`, which is the top-level session.
+Optional. Catalog id of the client workflow. Distinct from `workflow_id`, which is the top-level session (default `meta`).
 
 ### fresh_client
 
@@ -43,11 +43,7 @@ Optional. True means this call opens a new client despite resume phrasing.
 
 ### agent_id
 
-Agent identity stored on the session.
-
-#### default
-
-`orchestrator`
+Agent identity stored on the session (default `orchestrator`).
 
 ### context_mode
 
@@ -61,15 +57,15 @@ Stable 6-character base32 index for every subsequent authenticated tool call. Ab
 
 ### planning_folder_path
 
-Canonical absolute planning folder path as resolved by the server. Absent while the session is transient and no durable path has been resolved.
+Canonical absolute planning folder path as resolved by the server. Absent when the call yields an opening decision rather than a session.
 
 ### repo
 
 Bound target repository as `owner/repo`, echoing the durable session binding.
 
-### planning_slug
+### initial_activity
 
-Slug the session is keyed on — minted transitionally when no planning folder was supplied.
+First activity id of the session this call opened, which its first advance names. Absent when the call yields an opening decision.
 
 ### client_session_index
 
@@ -95,26 +91,41 @@ Retry instruction for the opening decision. Absent when `opening_decision` is ab
 
 ### 1. Open Session
 
-- Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, and optional `{planning_folder}`, `{repo}`, `{target_workflow_id}`, and `{fresh_client}` as `fresh`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `{context_mode}` or pass `"fresh"`.
+- Call `start_session` with `{working_directory}`, `{workflow_id}`, `{agent_id}`, `{user_request}`, `{planning_slug}`, and optional `{planning_folder}`, `{repo}`, `{target_workflow_id}`, and `{fresh_client}` as `fresh`, per the [bootstrap protocol](/meta/resources/bootstrap-protocol.md). Omit `{context_mode}` or pass `"fresh"`.
   > - The bound `{repo}` is the origin remote of `{working_directory}`.
   > - When `{repo}` is passed with `{working_directory}`, it equals that origin.
   > - Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.
   > - When the response has `{opening_decision}` and no `{session_index}`, capture `{opening_decision}`, `{opening_candidates}`, and `{opening_recommendation}`. Retry with the pin `{opening_recommendation}` names.
-  > - When the response has `{client_session_index}`, capture `{client_session_index}` and `{client_initial_activity}`, and take the client's bundle as the bootstrap protocol's client-open path states: its techniques make the first advance. Remaining steps of this technique do not apply.
+  > - When the response has `{client_session_index}`, capture `{client_session_index}` and `{client_initial_activity}`. The meta walk drives that client session; this context does not advance it here.
 
 ### 2. Save Session Bindings
 
 - Save `{session_index}` and `{planning_folder_path}` from the response. Record `{repo}` as bag `{target_repo}` (the echoed binding). Do not compose or reconcile the planning path yourself.
+- Read `{initial_activity}` as the activity this session's first advance names.
+  > The response also reports what the session already stands on, and its lifecycle state. A
+  > resume stands where its last walk left it and makes no opening advance; a session reported
+  > `completed` has already ended its walk and takes no further advance at all.
 
-### 3. Take Techniques Bundle
+### 3. Re-Establish the Contract After Summarization
 
-- Call `get_workflow { session_index }` and follow the returned techniques bundle. After summarization, re-fetch with the escapes in force-full-after-summarization.
+- Where this context has lost the contract it was delivered, call `get_workflow { session_index }` and follow the returned techniques bundle, with the escapes in force-full-after-summarization.
+  > The contract arrives with the activity that carries it, so an opening context already holds it
+  > and this call has nothing to add. The bundle carries what the workflow declares at
+  > `techniques.workflow`, which is the orchestrator's; a workflow declaring none returns none.
 
 ## Rules
 
-### planning-folder-absolute-or-omit
+### the-returned-path-is-the-session-folder
 
-When targeting a planning folder, `planning_folder` MUST be an absolute path. A new folder outside the planning root of `{working_directory}` is refused, and the refusal names that root. Bare slugs and relative paths are rejected. Omit `planning_folder` entirely for a transient meta bootstrap — the server mints a transitional slug and parks the session until `dispatch_child` promotes it. Always prefer the returned `planning_folder_path` over any path the agent constructed.
+The returned `planning_folder_path` is the folder this session uses, and this call composes no planning path of its own.
+
+### planning-folder-is-absolute
+
+`planning_folder` is an absolute path. A new folder sits directly under the planning root of this session, and one named anywhere else is refused, naming that root. Bare slugs and relative paths are rejected.
+
+### one-designator-names-the-folder
+
+A call names its folder with `{planning_slug}` or with `{planning_folder}`. A call passing both is refused.
 
 ### origin-binds-from-working-directory
 

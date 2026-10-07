@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -30,8 +30,8 @@ The reply the server returns on clearing the active checkpoint: `resolved_option
 
 - Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns its reply. Capture the reply as `{checkpoint_reply}` and propagate it to the worker on resume.
   > - When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
-  > - When the call returns `Invalid option`, STOP. Apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to retrieve the valid options. Never guess.
-  > - When the call refuses an option that records the user's typed reply, the reply was not captured: apply [present-checkpoint-to-user](./present-checkpoint-to-user.md) on the same `{session_index}` to ask for it. Never compose it.
+  > - When the call returns `Invalid option`, STOP. Apply the available `present-checkpoint-to-user` on the same `{session_index}` to retrieve the valid options. Never guess.
+  > - When the call refuses an option that records the user's typed reply, the reply was not captured: apply the available `present-checkpoint-to-user` on the same `{session_index}` to ask for it. Never compose it.
 
 ## Rules
 

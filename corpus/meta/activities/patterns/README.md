@@ -38,7 +38,7 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
    An activity routes through the `exits` it declares, and the borrower's `graph` binds every one.
 
-2. **Bind your own names.** A technique step takes `{ name, inputs }` deviations and a `kind: routine` step takes its arguments and output bindings at the reference, so a consumer whose bag spells a value differently says so at the site rather than inside the shared run. Read the run's signature off its file under [`meta/routines/`](../../routines/).
+2. **Bind your own names.** A technique step takes `{ name, inputs }` deviations and a `kind: routine` step takes its arguments in `.with`: a braced word is a reference to a host variable and a bare word is a literal, because the routine expands before a bag exists to resolve a name against. Read the run's signature off its file under [`meta/routines/`](../../routines/).
 
 3. **Seed the bag** before the pattern runs (consumer responsibility). Each activity's `variables.reads` names what it expects to find there, and its `variables.writes` what it puts back — read them off the `.yaml`.
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -21,15 +21,15 @@ Array of agent results, one per dispatched agent
 
 ## Protocol
 
-### 1. Resolve harness technique
+### 1. Resolve Harness Technique
 
 - Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: concurrent` → `{harness_technique}`, `{harness_operation}`.
 
-### 2. Dispatch batch
+### 2. Dispatch Batch
 
 - Dispatch all agents by applying `{harness_technique}`'s `{harness_operation}` Rules section under `foreground-always`.
 
-### 3. Await results
+### 3. Await Results
 
 - Wait until every agent yields or completes (blocking-equivalent); collect each agent's final output into `{results}` in input order.
 

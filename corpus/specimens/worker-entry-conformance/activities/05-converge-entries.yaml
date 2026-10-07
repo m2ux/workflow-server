@@ -1,0 +1,27 @@
+id: converge-entries
+version: 1.4.0
+name: Converge Entries
+description: Read every recorded entry whole and write the one report the run leaves behind.
+required: true
+variables:
+  reads:
+    - batch_entry
+    - cold_entry
+    - note_left_outputs
+    - note_right_outputs
+    - planning_folder_path
+  writes:
+    - name: entry_report
+      type: string
+      description: The document this run leaves behind, as the guide shapes it.
+steps:
+  - kind: technique
+    id: write-the-report
+    technique: report-entries
+exits:
+  - id: converged
+    isDefault: true
+outcome:
+  - Every entry the run took is accounted for in one document ({entry_report})
+  - Whether the two branches held distinct identities is readable from the report rather than inferred
+  - An activity exited twice or never, a trace short of its advances, and a technique bound without being served are each counted from the record rather than inferred from the walk succeeding

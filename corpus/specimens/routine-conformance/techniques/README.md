@@ -6,7 +6,7 @@ The technique library for the routine conformance run. Each technique is one cap
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) holds the shared input every technique here reads and the contract every measurement owes the run that binds it — that it answers under one name, and that it names the target to follow or names none.
 
-The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity`, not bound per step.
+The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) rides every activity's delivery as part of the worker contract, and is not declared or bound per step.
 
 ---
 

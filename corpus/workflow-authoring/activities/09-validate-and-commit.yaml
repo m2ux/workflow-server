@@ -6,6 +6,7 @@ variables:
   reads:
     - audit_findings
     - change_brief_path
+    - component_git_dir
     - coverage_ledger
     - fail_count
     - host_repo_path
@@ -14,13 +15,14 @@ variables:
     - manifest_entries
     - operation_type
     - planning_folder_path
+    - pr_number
     - register_sections
     - remediation_round
     - removals_approved
     - scope_manifest_path
+    - seed_profile
     - target_path
     - target_workflow_ids
-    - user_request
     - workflow_branch
     - worktree_created
   writes:
@@ -104,14 +106,15 @@ steps:
       inputs:
         bare_filename: findings-register.md
         artifact_content: findings_register
-        branch_name: workflow_branch
-        problem_statement: change_brief
-        requirements: change_brief
       outputs:
         written_artifact: report_path
   - kind: checkpoint
     id: review-disposition
-    when: operation_type == "review"
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: review
     message: "{open_finding_count} findings are open across {target_workflow_ids} ([findings register]({report_path}))."
     options:
       - id: fix-issues
@@ -130,7 +133,17 @@ steps:
             review_closed: true
   - kind: checkpoint
     id: audit-disposition#{remediation_round}
-    when: has_critical_finding == true || open_finding_count > 0
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: has_critical_finding
+          operator: ==
+          value: true
+        - type: simple
+          variable: open_finding_count
+          operator: ">"
+          value: 0
     message: "{open_finding_count} findings are open, critical={has_critical_finding}, blocked units={has_coverage_gap}, files failing validation={fail_count} ([findings register]({report_path}))."
     options:
       - id: remediate
@@ -163,17 +176,37 @@ steps:
     id: verify-scope-manifest
     technique: scope-verification
     when: operation_type != 'review' && remediation_selected != true && review_closed != true && update_seeded_from_review != true
-  - kind: technique
+  - kind: routine
     id: verify-planning-readme
-    technique:
-      name: workflow-engine::verify-readme-conforms
-      inputs:
-        seed_profile: workflow-authoring/readme-seed
-        session_index: ""
+    routine: ensure-readme
+    with:
+      planning_folder_path: planning_folder_path
     when: remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: checkpoint
     id: approve-to-commit#{remediation_round}
-    when: operation_type != "review" && remediation_selected != true && review_closed != true && update_seeded_from_review != true && has_critical_finding != true
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: remediation_selected
+          operator: "!="
+          value: true
+        - type: simple
+          variable: review_closed
+          operator: "!="
+          value: true
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
+        - type: simple
+          variable: has_critical_finding
+          operator: "!="
+          value: true
     message: "{addressed_count} of {total_count} manifest entries are delivered with {unaddressed_count} outstanding, {open_finding_count} findings open, blocked units={has_coverage_gap} ([change brief]({change_brief_path}), [scope manifest]({scope_manifest_path}), [findings register]({report_path}))."
     options:
       - id: approved
@@ -231,18 +264,10 @@ steps:
       inputs:
         bare_filename: COMPLETE.md
         artifact_content: completion_document
-        branch_name: workflow_branch
-        problem_statement: change_brief
-        requirements: change_brief
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: remove-worktree
-    technique:
-      name: work-package::manage-git::remove-worktree
-      inputs:
-        branch_name: workflow_branch
-        problem_statement: change_brief
-        requirements: change_brief
+    technique: work-package::manage-git::remove-worktree
     when: worktree_created == true && commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
 exits:
   - id: remediation-selected

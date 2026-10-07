@@ -1,0 +1,103 @@
+id: open-branches
+version: 1.5.0
+name: Open Branches
+description: >-
+  Compose one stub per branch, each for a worker that holds no prior deliveries, then emit every
+  stub in one turn. The caller has already minted each branch's identity. Returns come back in the
+  order the branches were given.
+
+inputs:
+  - id: branches
+    description: The branches to open, in order. Each entry has activity_id and agent_id.
+  - id: agent_technique
+    description: Canonical agent technique for each branch worker.
+  - id: session_index
+    description: The session each branch authenticates against.
+  - id: workflow_id
+    description: The workflow the branches execute.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: harness_kind
+    description: The harness each branch spawn resolves.
+  - id: harness_operation
+    description: The harness operation each branch spawn applies.
+  - id: harness_technique
+    description: The harness technique each branch spawn applies.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
+
+outputs:
+  - id: branch_envelopes
+    type: array
+    description: What each branch returned, one per entry of branches and in that order.
+
+internals:
+  - id: substitutions
+    description: Placeholder map for the branch whose stub is being composed. activity_id and agent_id name that branch.
+  - id: composed_prompt
+    description: The stub composed for the branch the iteration holds.
+  - id: composed_branch_prompts
+    description: One `{ description, prompt }` per branch, in the order the branches were given, which the batch is emitted from.
+
+steps:
+  - kind: action
+    id: open-the-batch
+    actions:
+      # The accumulator each iteration extends. Seeded here, so the first append has a base
+      # and a rerun of this run starts from an empty batch rather than the last one.
+      - action: set
+        target: composed_branch_prompts
+        value: "[]"
+  - kind: loop
+    id: compose-each-branch
+    name: Compose Each Branch
+    loopType: forEach
+    variable: branch
+    over: branches
+    maxIterations: 50
+    steps:
+      - kind: action
+        id: name-branch-substitutions
+        actions:
+          - action: set
+            target: substitutions
+            value:
+              session_index: "{session_index}"
+              workflow_id: "{workflow_id}"
+              activity_id: "{branch.activity_id}"
+              agent_id: "{branch.agent_id}"
+      - kind: technique
+        id: compose-branch-stub
+        technique:
+          name: workflow-engine::compose-prompt
+          inputs:
+            agent_technique: agent_technique
+            holds_prior_deliveries: false
+            substitutions: substitutions
+            activity_id: "{branch.activity_id}"
+            session_index: session_index
+            planning_folder_path: planning_folder_path
+          outputs:
+            composed_prompt: composed_prompt
+      - kind: action
+        id: collect-branch-stub
+        actions:
+          - action: set
+            target: composed_branch_prompts
+            value: "[{composed_branch_prompts}, { description: {branch.activity_id}, prompt: {composed_prompt} }]"
+            description: The batch so far, extended with the stub composed for this branch, in the order the branches were given.
+  - kind: technique
+    id: emit-the-batch
+    technique:
+      name: harness-compat::spawn-concurrent
+      inputs:
+        agents: composed_branch_prompts
+        planning_folder_path: planning_folder_path
+  - kind: action
+    id: name-the-returns
+    actions:
+      - action: set
+        target: branch_envelopes
+        value: "{results}"

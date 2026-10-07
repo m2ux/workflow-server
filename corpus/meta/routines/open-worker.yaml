@@ -1,0 +1,90 @@
+id: open-worker
+version: 1.6.0
+name: Open Worker
+description: >-
+  Compose a stub for a worker that holds no prior deliveries, and spawn one agent with that stub.
+  A replacement uses the activity the spent context was already on. Announce, the advance, and the
+  cost stay with the caller.
+
+inputs:
+  - id: agent_technique
+    default: workflow-engine::activity-worker
+    description: Canonical agent technique for the worker.
+  - id: session_index
+    description: The session the worker authenticates against.
+  - id: workflow_id
+    description: The workflow the worker is executing an activity for.
+  - id: activity_id
+    description: The activity the worker carries.
+  - id: worker_agent_id
+    description: The delivery identity minted for this worker.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: harness_kind
+    description: The harness this spawn resolves.
+  - id: harness_operation
+    description: The harness operation the spawn applies.
+  - id: harness_technique
+    description: The harness technique the spawn applies.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
+
+outputs:
+  - id: worker_result
+    type: object
+    description: The envelope the spawned agent returned.
+  - id: composed_prompt
+    type: string
+    optional: true
+    description: The stub the spawn received.
+  - id: harness_agent_id
+    type: string
+    optional: true
+    description: The handle the harness addresses the spawned agent by, which a continuation resumes it through.
+
+internals:
+  - id: substitutions
+    description: Placeholder map the stub is composed from. session_index, workflow_id, activity_id, and agent_id.
+
+steps:
+  - kind: action
+    id: name-substitutions
+    when: activity_id && worker_agent_id
+    actions:
+      - action: set
+        target: substitutions
+        value:
+          session_index: "{session_index}"
+          workflow_id: "{workflow_id}"
+          activity_id: "{activity_id}"
+          agent_id: "{worker_agent_id}"
+  - kind: technique
+    id: compose-stub
+    technique:
+      name: workflow-engine::compose-prompt
+      inputs:
+        agent_technique: agent_technique
+        holds_prior_deliveries: false
+        substitutions: substitutions
+        activity_id: activity_id
+        session_index: session_index
+        planning_folder_path: planning_folder_path
+      outputs:
+        composed_prompt: composed_prompt
+  - kind: technique
+    id: spawn-worker
+    technique:
+      name: harness-compat::spawn-agent
+      inputs:
+        composed_prompt: composed_prompt
+        planning_folder_path: planning_folder_path
+      outputs:
+        harness_agent_id: harness_agent_id
+  - kind: action
+    id: name-the-envelope
+    actions:
+      - action: set
+        target: worker_result
+        value: "{agent_result}"

@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-tool-surface-conformance
-version: 1.2.0
+version: 1.3.0
 title: GitNexus Tool Surface Conformance Workflow
 description: >-
   Hold the gitnexus tool-surface run to two cases. The positive case names the host repository,
@@ -16,9 +16,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: host_repo_path
     type: string

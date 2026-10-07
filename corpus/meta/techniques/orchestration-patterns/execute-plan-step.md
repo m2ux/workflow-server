@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -41,15 +41,15 @@ Object `{ id, outcome, evidence? }` for `{current_step.id}`.
 
 ## Protocol
 
-### 1. Execute the Step
+### 1. Execute Step
 
 - Execute `{current_step.instruction}` using available tools and `{prior_step_results}` when needed.
 
-### 2. Record the Result
+### 2. Record Result
 
 - Emit `{step_result}` with the outcome.
 - Append `{step_result}` onto `{prior_step_results}` (create the list when absent) — never overwrite a prior step's entry. Downstream loop iterations and [replan](./replan.md) read the accumulated history.
 
-### 3. Decide Whether to Replan
+### 3. Decide On Replan
 
 - If the world differs from the plan (missing resource, failed precondition, contradictory evidence), set `{plan_needs_replan}` true and `{replan_reason}`; otherwise set `{plan_needs_replan}` false.

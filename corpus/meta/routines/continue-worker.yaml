@@ -1,0 +1,91 @@
+id: continue-worker
+version: 1.5.0
+name: Continue Worker
+description: >-
+  Compose a stub for a worker that already holds deliveries, and continue the harness agent that
+  carries that worker. A bound checkpoint_reply is carried into the stub. This run does not
+  replace a context that is gone.
+
+inputs:
+  - id: agent_technique
+    default: workflow-engine::activity-worker
+    description: Canonical agent technique the continued worker follows.
+  - id: session_index
+    description: The session the worker authenticates against.
+  - id: workflow_id
+    description: The workflow the worker is executing an activity for.
+  - id: activity_id
+    description: The activity the continuation carries.
+  - id: worker_agent_id
+    description: The delivery identity the worker already holds.
+  - id: harness_agent_id
+    description: The harness identifier of the agent carrying worker_agent_id.
+  - id: checkpoint_reply
+    description: The answer a yielded gate already holds. Unset when this continuation is not crossing a gate.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: harness_kind
+    description: The harness this continuation resolves.
+  - id: harness_operation
+    description: The harness operation the continuation applies.
+  - id: harness_technique
+    description: The harness technique the continuation applies.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: planning_folder_path
+    description: Path to the session's planning folder, as the server returned it.
+
+outputs:
+  - id: worker_result
+    type: object
+    description: The envelope the continued agent returned.
+  - id: composed_prompt
+    type: string
+    optional: true
+    description: The stub the continuation received.
+
+internals:
+  - id: substitutions
+    description: Placeholder map the stub is composed from. session_index, workflow_id, activity_id, and agent_id.
+
+steps:
+  - kind: action
+    id: name-substitutions
+    when: activity_id && worker_agent_id
+    actions:
+      - action: set
+        target: substitutions
+        value:
+          session_index: "{session_index}"
+          workflow_id: "{workflow_id}"
+          activity_id: "{activity_id}"
+          agent_id: "{worker_agent_id}"
+  - kind: technique
+    id: compose-continuation
+    technique:
+      name: workflow-engine::compose-prompt
+      inputs:
+        agent_technique: agent_technique
+        holds_prior_deliveries: true
+        checkpoint_reply: checkpoint_reply
+        substitutions: substitutions
+        activity_id: activity_id
+        session_index: session_index
+        planning_folder_path: planning_folder_path
+      outputs:
+        composed_prompt: composed_prompt
+  - kind: technique
+    id: continue-the-agent
+    technique:
+      name: harness-compat::continue-agent
+      inputs:
+        agent_id: harness_agent_id
+        session_index: session_index
+        composed_prompt: composed_prompt
+        planning_folder_path: planning_folder_path
+  - kind: action
+    id: name-the-envelope
+    actions:
+      - action: set
+        target: worker_result
+        value: "{agent_result}"

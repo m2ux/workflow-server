@@ -20,7 +20,7 @@ The `§3.X` keys in the `checklist_coverage` object below are the manual-review 
 {
   "agent_id": "<string: unique identifier, e.g. 'group-a-nto', 'group-b', 'group-d'>",
   "activity_followed": "<string: activity ID executed, e.g. 'sub-crate-review'>",
-  "steps_completed": ["<string: step IDs in order of completion>"],
+  "completed_step_ids": ["<string: step IDs in order of completion>"],
   "steps_skipped": [
     {
       "step_id": "<string>",
@@ -89,7 +89,7 @@ The `§3.X` keys in the `checklist_coverage` object below are the manual-review 
 
 The orchestrator validates each sub-agent's output before accepting it into the structured merge table:
 
-1. **steps_completed** must match the activity definition's step IDs (no omissions)
+1. **completed_step_ids** must match the activity definition's step IDs (no omissions)
 2. **steps_skipped** must be empty or have explicit justifications
 3. Every **FAIL** in `checklist_coverage` must have a corresponding entry in `findings`
 4. Every entry in `mandatory_tables` must be populated or null with a justification string

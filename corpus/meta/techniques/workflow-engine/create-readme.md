@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.5.0
+  version: 3.7.0
 ---
 
 ## Capability
@@ -27,7 +27,7 @@ Planning-folder `README.md` from the universal planning Template under the bound
 
 ### seed_profile
 
-Resource id of the workflow's readme-seed profile (Progress inventory, classifier, links defaults, mode-exclusion map).
+*(optional)* Resource id of the workflow's readme-seed profile (Progress inventory, classifier, links defaults, mode-exclusion map). Unset where the workflow owns no readme-seed profile.
 
 ### is_review_mode
 
@@ -60,14 +60,15 @@ Full path to the created `README.md`
 ### 2. Take Seed Profile
 
 - Load the readme-seed profile named by `{seed_profile}`.
+  > When `{seed_profile}` is unset, no profile is loaded and every later phase that reads one leaves the Template's own content standing.
 
-### 3. Fill Header And Links
+### 3. Fill Header Links
 
 - Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status) and the Executive Summary placeholder, each per its entry in [Rules](/meta/resources/planning-readme.md#rules).
 - When `{include_links}` is true, populate the Links table from the seed defaults merged with `{entity_context}` URLs when present, per [Links table](/meta/resources/planning-readme.md#links-table).
   > When `{include_links}` is false, delete the Links section the template loaded, heading and table, before the file is written. The written README has no Links section.
 
-### 4. Lay In Progress Rows
+### 4. Lay Progress Rows
 
 - Replace the Progress table body with the seed profile's Progress inventory rows as authored (icons from [Status vocabulary](/meta/resources/planning-readme.md#status-vocabulary)). Insert any seed-declared append H2 sections after Solution Overview and before Progress.
 

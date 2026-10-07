@@ -5,7 +5,6 @@
     "prism-evaluate",
     "prism",
     "workflow-authoring",
-    "midnight-system-review",
     "work-packages",
     "ponytail",
     "plain-language",
@@ -25,6 +24,10 @@
     {
       "id": "routine-conformance",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it, and the routine walk drives its two reference sites directly."
+    },
+    {
+      "id": "worker-entry-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk still enters it. What it evidences is that each entry path a worker arrives on — cold dispatch, batch continuation, fan branch — leaves the record that path hands over, which a sidecar walk measures."
     },
     {
       "id": "cicd-pipeline-security-audit",

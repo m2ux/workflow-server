@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.6.0
+version: 2.7.0
 name: Post-Implementation Review
 description: Review the implementation after the automated reviews.
 variables:
@@ -7,9 +7,11 @@ variables:
     - base_branch
     - block_line_range
     - block_path
+    - branch_name
     - changed_files
     - code_review_outputs
     - commit_sha
+    - component_git_dir
     - component_name
     - component_path
     - host_repo_path
@@ -17,7 +19,11 @@ variables:
     - issue_title
     - pipeline_mode
     - planning_folder_path
+    - pr_number
+    - problem_statement
     - push_remote
+    - requirements
+    - seed_profile
     - structural_analysis_outputs
     - target_path
     - target_repo
@@ -265,7 +271,6 @@ steps:
       name: prism/read-run-manifest
       inputs:
         output_path: child_planning_folder_path
-        target_content: ""
     actions:
       - action: validate
         target: run_status != 'error'
@@ -275,8 +280,6 @@ steps:
     when: pipeline_mode == 'full-prism'
     technique:
       name: prism/read-definitive-findings
-      inputs:
-        target_content: ""
       outputs:
         definitive_findings: structural_findings
   - kind: technique
@@ -345,7 +348,11 @@ steps:
   - kind: checkpoint
     id: local-validation-permission
     message: The project's validation suite has not been exercised against the checked-out head.
-    when: has_critical_blocker != true
+    condition:
+      type: simple
+      variable: has_critical_blocker
+      operator: "!="
+      value: true
     options:
       - id: run-suite
         label: Run the suite against the checked-out head

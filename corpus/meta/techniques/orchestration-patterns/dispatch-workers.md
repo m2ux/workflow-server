@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -21,15 +21,15 @@ Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness ag
 
 ## Protocol
 
-### 1. Normalise the Briefs
+### 1. Normalise Briefs
 
 - Normalise `{worker_briefs}` into ordered `{ description, prompt }` entries, keeping each brief's id alongside.
 
-### 2. Spawn One Agent per Brief
+### 2. Spawn Each Agent
 
 - For each brief in order, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with that brief's prompt; append each `{ id, result }` to `{dispatched_results}`.
 
-### 3. Record What Came Back
+### 3. Record Gap Results
 
 - Record empty or failed slots in `{dispatched_results}`; do not invent results.
 
@@ -37,4 +37,4 @@ Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness ag
 
 ### one-worker-at-a-time
 
-Briefs are dispatched one after another, in the calling worker's own turn. Running work units together is the graph's business: bind the exit that reaches the per-unit activity to a destination naming that activity and the collection to run it over, and the run opens one worker per element. That route gives each unit its own frontier entry, its own slot in the branch container and its own identity, none of which a worker dispatching from inside its own turn can offer.
+Briefs are dispatched one after another, in the calling worker's own turn. Running the units together is a graph destination, not a dispatch from this turn.

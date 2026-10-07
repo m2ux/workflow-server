@@ -1,6 +1,6 @@
 $schema: ../../../schemas/workflow.schema.json
 id: gitnexus-api-change-gate-conformance
-version: 1.1.0
+version: 1.2.0
 title: GitNexus API Change Gate Conformance Workflow
 description: >-
   Hold the gitnexus api-change-gate run to three cases. The positive case names a route the graph
@@ -17,9 +17,6 @@ tags:
   - conformance
   - routine
   - cases
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: repo_name
     type: string

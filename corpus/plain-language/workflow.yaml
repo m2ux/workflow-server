@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: plain-language
-version: 1.5.0
+version: 1.7.0
 title: Plain Language Workflow
 description: >-
   Author, rewrite, or audit a document so its readers can find what they need, understand what they find, and use it. Applies the four principles and guidelines of ISO 24495-1, with an optional ASD-STE100 controlled-language overlay for technical documentation.
@@ -15,13 +15,14 @@ tags:
 rules:
   activity:
     - "reader-governs — the document is written for its readers, not its author: every drafting and evaluation decision cites the reader profile and the governing guideline rather than the writer's preference."
-techniques:
-  activity:
-    - variable-binding
 variables:
+  - name: seed_profile
+    type: string
+    description: Resource id of this workflow's readme-seed profile.
+    defaultValue: plain-language/readme-seed
   - name: planning_folder_path
     type: string
-    description: Absolute path to this run's planning folder, seeded when the session opens.
+    description: Absolute path to this run's planning folder.
   - name: user_request
     type: string
     description: The user's free-form request that opened this run.

@@ -4,7 +4,7 @@
 
 The technique library for the git pin conformance run. Each technique is one capability a step binds via `step.technique`; the authoritative capability, inputs, outputs, protocol and rules live in the per-technique `.md` file. This file orients readers to the library layout and points to those authoritative sources.
 
-The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity`, not bound per step.
+The cross-cutting meta strategy technique [`variable-binding`](/meta/techniques/variable-binding.md) rides every activity's delivery as part of the worker contract, and is not declared or bound per step.
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-Lifecycle activities that run inside the meta session when the agent remains on meta after `start_session` has opened the client. Unique catalog matches walk the child from [bootstrap](../resources/bootstrap-protocol.md). Each activity's role and place in the sequence is indexed in the [Meta Workflow README](../README.md).
+Lifecycle activities that run inside the meta session after `start_session` has opened the client. The session opens from [bootstrap](../resources/bootstrap-protocol.md) on the activity the workflow declares as its `initialActivity`. Each activity's role and place in the sequence is indexed in the [Meta Workflow README](../README.md).
 
 Borrowable mid-phase orchestration pattern activities live under [`patterns/`](./patterns/README.md) and are **not** part of this lifecycle list.
 
@@ -12,7 +12,7 @@ The authoritative definition of each activity — its steps, technique bindings,
 
 ### 03. Dispatch Client Workflow
 
-Drives the already-open client workflow end to end inline via [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml), which refers to the [`activity-loop`](../routines/activity-loop.yaml) run for the turn it takes per activity. `client_session_index` and `client_initial_activity` come from `start_session`. Each worker carries a bounded run of activities, so a fresh context is established once a run rather than once an activity; the bound is the server's, enforced at delivery ([batch-is-bounded-by-the-server](../techniques/workflow-engine/dispatch-activity.md#batch-is-bounded-by-the-server)). Role and auth boundaries: [agent-conduct](../techniques/agent-conduct.md) + [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md). Leads to [End Workflow](#04-end-workflow) once the client walk reaches an exit leading to `__terminal__`, the client session standing on the activity that took it.
+Drives the already-open client workflow end to end inline via [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml), which refers to the [`activity-loop`](../routines/activity-loop.yaml) run for the turn it takes per activity. `client_session_index` and `client_initial_activity` come from `start_session`. Each worker carries a bounded run of activities, so a fresh context is established once a run rather than once an activity; the bound is the server's, enforced at delivery ([batch-is-bounded-by-the-server](../techniques/workflow-engine/continue-batch.md#batch-is-bounded-by-the-server)). Role and auth boundaries: [agent-conduct](../techniques/agent-conduct.md) + [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md). Leads to [End Workflow](#04-end-workflow) once the client walk reaches an exit leading to `__terminal__`, the client session standing on the activity that took it.
 
 Definition: [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml)
 

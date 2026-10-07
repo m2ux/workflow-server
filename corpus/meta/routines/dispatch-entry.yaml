@@ -1,0 +1,145 @@
+id: dispatch-entry
+version: 1.4.0
+name: Dispatch Entry
+description: >-
+  Persist entering, advance the session, announce the dispatch, and open one
+  worker. A terminal advance completes the session and opens no worker.
+
+inputs:
+  - id: activity_id
+    description: The activity this entry carries.
+  - id: session_index
+    description: The session whose pointer this entry advances.
+  - id: workflow_id
+    description: The workflow the worker executes.
+  - id: planning_folder_path
+    description: The planning folder whose Progress mark is published. Unset until the folder exists.
+  - id: target_status
+    description: The dispatch-moment Progress status.
+  - id: seed_profile
+    description: The readme-seed profile. Unset when the walk has none.
+  - id: branch
+    description: The branch checked out where the mark is pushed.
+  - id: from_activity
+    description: The activity this entry retires. Unset on a first entry.
+  - id: exit_id
+    description: The exit the retired activity took.
+  - id: step_manifest
+    description: The steps the retired activity completed.
+  - id: variables_changed
+    description: The bag writes of the retired activity.
+  - id: stands_on_activity
+    description: True when the session already stands on activity_id.
+  - id: agent_technique
+    description: The agent technique the worker follows.
+  - id: component_path
+    description: Path of the component under work, relative to the host repository.
+  - id: host_repo_path
+    description: Absolute path of the outermost git host for the workspace checkout.
+  - id: harness_kind
+    description: The harness a spawn resolves.
+  - id: harness_operation
+    description: The harness operation a spawn applies.
+  - id: harness_technique
+    description: The harness technique a spawn applies.
+
+outputs:
+  - id: worker_result
+    type: object
+    description: The envelope this entry closes on.
+  - id: worker_agent_id
+    type: string
+    description: The delivery identity bound for the worker. Unset when the session completed.
+  - id: harness_agent_id
+    type: string
+    optional: true
+    description: The handle the harness addresses the spawned worker by, which a continuation resumes it through. Unset when the session completed, or where the harness returns none.
+  - id: advance_trace_tokens
+    type: array
+    description: The trace token the advance returned.
+
+steps:
+  - kind: routine
+    id: persist-entering
+    when: planning_folder_path && activity_id != "__terminal__"
+    routine: persist-entering
+    with:
+      activity_id: activity_id
+      planning_folder_path: planning_folder_path
+      session_index: "{session_index}"
+      target_status: target_status
+      seed_profile: seed_profile
+      commit_message: "{activity_id} entering"
+      branch: branch
+      repo_path: "."
+      paths: "{planning_folder_path}/README.md"
+  - kind: technique
+    id: advance-and-announce
+    technique:
+      name: workflow-engine::dispatch-activity
+      inputs:
+        activity_id: activity_id
+        session_index: session_index
+        planning_folder_path: planning_folder_path
+        from_activity: from_activity
+        exit_id: exit_id
+        step_manifest: step_manifest
+        variables_changed: variables_changed
+        stands_on_activity: stands_on_activity
+  - kind: routine
+    id: open-worker
+    when: worker_result.result_type != "workflow_complete"
+    routine: open-worker
+    with:
+      agent_technique: agent_technique
+      session_index: session_index
+      workflow_id: workflow_id
+      activity_id: activity_id
+      planning_folder_path: "{planning_folder_path}"
+      worker_agent_id: worker_agent_id
+    outputs:
+      worker_result: worker_result
+      harness_agent_id: harness_agent_id
+  - kind: routine
+    id: finish-activity
+    when: worker_result.result_type == "steps_complete"
+    routine: finish-activity
+    with:
+      current_activity: "{worker_result.activity_definition}"
+      exit_destinations: "{worker_result.exit_destinations}"
+      selected_exit: "{worker_result.selected_exit}"
+      steps_completed: "{worker_result.steps_completed}"
+      checkpoints_responded: "{worker_result.checkpoints_responded}"
+      artifacts_produced: "{worker_result.artifacts_produced}"
+      batch_may_continue: "{worker_result.batch_may_continue}"
+      variables_changed: "{worker_result.variables_changed}"
+      planning_folder_path: "{planning_folder_path}"
+      session_index: "{session_index}"
+    outputs:
+      activity_result: worker_result
+  - kind: technique
+    id: account
+    when: worker_result.result_type != "workflow_complete"
+    technique:
+      name: workflow-engine::account-worker
+      inputs:
+        activity_id: activity_id
+        worker_agent_id: worker_agent_id
+        worker_result: worker_result
+        session_index: session_index
+        planning_folder_path: planning_folder_path
+        exit_id: exit_id
+        step_manifest: step_manifest
+  - kind: technique
+    id: mark-followup
+    when: followup_status
+    technique:
+      name: workflow-engine::sync-progress-status
+      inputs:
+        activity_id: activity_id
+        planning_folder_path: planning_folder_path
+        target_status: followup_status
+        session_index: session_index
+        seed_profile: seed_profile
+        exit_id: exit_id
+        step_manifest: step_manifest

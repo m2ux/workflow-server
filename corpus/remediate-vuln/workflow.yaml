@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.3.3
+version: 3.5.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities on the private remote.
 author: m2ux
@@ -15,20 +15,21 @@ rules:
     - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."
     - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
     - "PRIVATE RESEARCH ONLY: Outbound research and web queries MUST NOT contain advisory-identifying strings (CVE identifiers, advisory URLs, vulnerable symbol or project names). Research generically, or against local sources only."
-techniques:
-  activity:
-    - variable-binding
 variables:
+  - name: seed_profile
+    type: string
+    description: Resource id of this workflow's readme-seed profile.
+    defaultValue: remediate-vuln/readme-seed
   # This workflow opens on its own `start` rather than work-package's `start-work-package`, so the
   # review-mode values that opener produces have no producer here. It never reviews an existing PR,
   # so they are constants, owned by the file that runs the borrowed activity reading them.
   - name: prior_feedback_triage
     type: object
-    description: Triage of a reviewed PR's prior feedback, always empty in this workflow.
+    description: Triage of a reviewed PR's prior feedback.
     defaultValue: {}
   - name: rating_cap
     type: string
-    description: Ceiling a review's Overall Rating may not exceed, always empty in this workflow.
+    description: Ceiling a review's Overall Rating may not exceed.
     defaultValue: ""
   - name: target_path
     type: string
@@ -48,7 +49,7 @@ variables:
     description: Private fork as owner/repo.
   - name: default_branch
     type: string
-    description: The private fork's default branch, which the security branch syncs from and merges into.
+    description: The private fork's default branch.
   - name: issue_platform
     type: string
     description: The issue tracker the advisory lives in while it stays restricted.

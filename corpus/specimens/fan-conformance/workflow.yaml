@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: fan-conformance
-version: 3.0.0
+version: 3.1.0
 title: Fan Conformance Workflow
 description: >-
   Run every form of graph fan against a real checkout and report what the run did: one worker per branch, each with its own identity and its own container slot, entering the activity they converge on once. A destination names activities to run side by side, one activity with a collection to run it once per element of, or both together in one list. The work each branch does is a cheap survey of the component, so the run costs little and the evidence is about the routing rather than about the survey.
@@ -10,9 +10,6 @@ tags:
   - conformance
   - concurrency
   - graph
-techniques:
-  activity:
-    - variable-binding
 variables:
   - name: planning_folder_path
     type: string

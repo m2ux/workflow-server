@@ -13,7 +13,7 @@ The Work Packages workflow handles **planning and prioritization** of multiple r
 
 **Key characteristics:**
 - Sequential flow with clear progression
-- Creates planning folder with documentation
+- Fills the session's planning folder with documentation
 - Loops through packages for planning and implementation
 - Triggers `work-package` workflow for each package
 
@@ -54,7 +54,7 @@ Confirms this is a genuine multi-package initiative and produces an agreed inven
 
 ### 2. [Folder Setup](activities/02-folder-setup.yaml)
 
-Creates the planning folder and its initial documentation skeletons (`START-HERE.md` and `README.md`), giving the initiative a canonical home before analysis begins, and settles which analysis the next activity performs.
+Fills the session's planning folder with its initial documentation skeletons (`START-HERE.md` and `README.md`), and settles which analysis the next activity performs.
 
 ### 3. [Analysis](activities/03-analysis.yaml)
 
@@ -87,7 +87,7 @@ Workflow-specific techniques live under `techniques/`. Some are **technique grou
 | Technique / Technique | Type | Capability | Used By |
 |-----------------------|------|------------|---------|
 | `assess-initiative-scope` | Standalone | Identify and categorize work packages | Scope Assessment |
-| `setup-planning-folder` | Standalone | Create `START-HERE.md` and `README.md` skeletons | Folder Setup |
+| `setup-planning-folder` | Standalone | Write the `START-HERE.md` and `README.md` skeletons into the session's planning folder | Folder Setup |
 | `analyze-initiative-context` | Group | Initiative-level analysis grounding package planning | Analysis |
 | `analyze-initiative-context::analyze-completion` | Group op | Assess the completion state of existing progress | Analysis (continuing) |
 | `analyze-initiative-context::analyze-context` | Group op | Establish the starting context for a fresh initiative | Analysis (new) |
@@ -98,9 +98,9 @@ Workflow-specific techniques live under `techniques/`. Some are **technique grou
 | `document-roadmap` | Standalone | Produce finalized roadmap documentation | Finalize Roadmap |
 | `orchestrate-package-execution` | Group | Trigger and manage work-package workflow instances | Implementation |
 | `orchestrate-package-execution::initialize-iteration` | Group op | Build the remaining-packages list and progress indicator | Implementation |
-| `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow, update status | Implementation (loop) |
-| `workflow-engine::derive-planning-slug` | Meta | Derive the canonical planning-folder slug | Folder Setup |
-| `variable-binding` | Meta | Bind step techniques to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
+| `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow | Implementation (loop) |
+| `orchestrate-package-execution::record-package-progress` | Group op | Record a completed package in the roadmap status table and advance the remaining/completed sets | Implementation (loop) |
+| `variable-binding` | Meta | Bind step techniques to the workflow variable bag | Rides every activity's delivery as part of the worker contract |
 | `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
 
 ## Resources
@@ -149,7 +149,8 @@ work-packages/
 │   └── orchestrate-package-execution/
 │       ├── TECHNIQUE.md
 │       ├── initialize-iteration.md
-│       └── execute-package.md
+│       ├── execute-package.md
+│       └── record-package-progress.md
 └── resources/
     ├── README.md
     ├── planning-folder-template.md

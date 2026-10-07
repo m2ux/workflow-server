@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.25.0
+version: 2.27.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -15,9 +15,10 @@ variables:
     - issue_url
     - planning_folder_path
     - pr_number
-    - push_remote
+    - problem_statement
     - requirements
     - review_summary
+    - seed_profile
     - stealth_mode
     - target_path
     - target_repo
@@ -119,9 +120,6 @@ variables:
       type: string
       description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding).
       defaultValue: ""
-    - name: strategic_review_findings
-      type: array
-      description: The findings the scope and artifact review produced, each under the designator its report defines.
 required: true
 steps:
   - kind: technique
@@ -130,14 +128,20 @@ steps:
       name: github::view-pr
       inputs:
         repo_path: component_git_dir
-    when: pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number)
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
   - kind: technique
     id: verify-pr-body
     technique:
       name: update-pr::verify-body
       inputs:
         rendered_pr_body: pr_body
-    when: pr_number != null && (pr_number == false || pr_number == 0 || pr_number == "" || pr_number)
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
   - kind: routine
     id: check-scope-discipline
     routine: gitnexus::scope-discipline-check
@@ -167,13 +171,11 @@ steps:
       inputs:
         canonical_home_map: work-package/canonical-home-map
         guide_map: work-package/README#planning-artifact-to-guide-map
-  - kind: technique
+  - kind: routine
     id: verify-readme
-    technique:
-      name: workflow-engine::verify-readme-conforms
-      inputs:
-        seed_profile: work-package/readme-seed
-        session_index: ""
+    routine: ensure-readme
+    with:
+      planning_folder_path: planning_folder_path
   - kind: technique
     id: ensure-changes-folder-entry
     technique: changes-folder
@@ -221,7 +223,17 @@ steps:
         is_review_mode: "{is_review_mode}"
   - kind: checkpoint
     id: review-findings
-    when: is_review_mode != true && strategic_findings_summary != ""
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: strategic_findings_summary
+          operator: "!="
+          value: ""
     message: |-
       Strategic review complete.
 
@@ -266,7 +278,17 @@ steps:
             strategic_findings_disposition: re-review
   - kind: checkpoint
     id: findings-delivery
-    when: is_review_mode == true && strategic_findings_summary != ""
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: strategic_findings_summary
+          operator: "!="
+          value: ""
     message: |-
       Strategic review findings. Every finding is the pull-request author's to act on.
 

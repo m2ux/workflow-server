@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-Stage, commit, and push files on the branch checked out in a linked worktree.
+Stage and commit files on the branch checked out in a linked worktree.
 
 ## Inputs
 
@@ -21,20 +21,16 @@ Array of file paths to stage, relative to `{worktree_path}`.
 
 Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
-### branch
-
-Branch checked out in the worktree, the branch the push sends.
-
 ## Protocol
 
-### 1. Stage and Commit
+### 1. Stage Paths
 
 - `git -C {worktree_path} add {paths}`.
-- `git -C {worktree_path} commit --no-gpg-sign -m '{commit_message}'`.
 
-### 2. Push the Branch
+### 2. Commit Files
 
-- Apply [push-branch](./push-branch.md) with `repo_path` = `{worktree_path}`, `{branch}`, and `remote_name` `origin`. Push the existing `{branch}` only. The commit is complete when the push succeeds.
+- When `{is_signed}` is true, `git -C {worktree_path} commit -S -m '{commit_message}'`.
+- When `{is_signed}` is not true, `git -C {worktree_path} commit --no-gpg-sign -m '{commit_message}'`.
 
 ## Rules
 
