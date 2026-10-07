@@ -66,6 +66,7 @@ Read the file for the mode the request calls for:
   - A planning record and a row's link that hold each unit for one session
   - A session per unit, in a worktree of its own
   - A test for each criterion a unit delivers, of the kind that criterion can be observed by
+  - A test plan table mapping each test to the parent epic criteria it covers
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task

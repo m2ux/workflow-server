@@ -14,6 +14,12 @@
 
 - [ ] **T1.** {{A check that the change holds.}}
 
+| Test | Criteria |
+| --- | --- |
+| T1 | AC1 |
+
+{{The table is filled as [Deliver mode](../references/deliver-mode.md#rules) states under Tests. Delete the table when the pull request delivers no task.}}
+
 ## Open Questions
 
 - {{An undecided point. Resolve it, then delete the section.}}
