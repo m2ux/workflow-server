@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.5.1
+version: 1.5.2
 name: Quality Review
 description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
 variables:
@@ -13,6 +13,7 @@ variables:
     - remediation_round
     - target_path
     - target_workflow_ids
+    - user_request
     - verified_findings
   writes:
     - name: audit_findings
@@ -93,6 +94,9 @@ steps:
       inputs:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis
+        branch_name: ""
+        problem_statement: change_brief
+        requirements: change_brief
       outputs:
         written_artifact: impact_analysis_path
     when: remediation_round > 0
@@ -103,6 +107,8 @@ steps:
     id: survey-reference-workflows
     technique:
       name: workflow-engine::list-workflows
+      inputs:
+        session_index: ""
       outputs:
         workflow_catalog: reference_workflows
   - kind: loop
