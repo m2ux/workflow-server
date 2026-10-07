@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.13.0
+version: 4.14.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
@@ -11,6 +11,7 @@ variables:
     - from_activity
     - host_repo_path
     - planning_folder_path
+    - seed_profile
     - target_workflow_id
     - target_workflow_outcomes
     - worker_result

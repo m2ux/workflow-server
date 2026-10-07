@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 3.4.0
+version: 3.5.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities on the private remote.
 author: m2ux
@@ -16,6 +16,10 @@ rules:
     - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
     - "PRIVATE RESEARCH ONLY: Outbound research and web queries MUST NOT contain advisory-identifying strings (CVE identifiers, advisory URLs, vulnerable symbol or project names). Research generically, or against local sources only."
 variables:
+  - name: seed_profile
+    type: string
+    description: Resource id of this workflow's readme-seed profile.
+    defaultValue: remediate-vuln/readme-seed
   # This workflow opens on its own `start` rather than work-package's `start-work-package`, so the
   # review-mode values that opener produces have no producer here. It never reviews an existing PR,
   # so they are constants, owned by the file that runs the borrowed activity reading them.

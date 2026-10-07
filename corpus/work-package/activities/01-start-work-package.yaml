@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.30.0
+version: 3.31.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -15,6 +15,7 @@ variables:
     - problem_statement
     - requirements
     - review_summary
+    - seed_profile
     - target_path
     - target_repo
     - user_request
@@ -728,7 +729,6 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
-        seed_profile: work-package/readme-seed
         is_review_mode: "{is_review_mode}"
   - kind: technique
     id: present-problem-overview
