@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.13.0
 ---
 
 ## Capability
@@ -46,7 +46,7 @@ Worker agent identity for this dispatch.
 
 ### 5. Finalize the activity
 
-- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the steps this activity ran as `steps_completed`, the checkpoints it answered as `checkpoints_responded`, the artifacts it wrote as `artifacts_produced`, the `{selected_exit}` a checkpoint answer held, where one did, and the `may_continue` this context's standing reports (`batch-ends-where-the-server-says`) as `batch_may_continue`
+- When the last step completes, or a checkpoint's exit ends the activity, apply [finalize-activity](./finalize-activity.md), passing the steps this activity ran as `steps_completed`, the checkpoints it answered as `checkpoints_responded`, the artifacts it wrote as `artifacts_produced`, and the `{selected_exit}` a checkpoint answer held, where one did
 
 ## Rules
 
