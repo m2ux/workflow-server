@@ -31,10 +31,9 @@ const steps = Object.values(workflow.jobs ?? {}).flatMap((job) => job.steps ?? [
  * What this file can and cannot say. A criterion about when a CI run happens is observed by the run,
  * and no test here starts one: these assertions are a parse of the workflow and a read of its
  * configuration, which is the whole of what exists before a trigger has ever fired. They catch the
- * trigger written wrong — a cron that is not weekly, a branch list that drops the default branch, a
- * dispatch aimed at nothing — and they catch the walk being changed while the trigger was added.
- * They are not evidence that a push or a Monday starts a walk. That evidence is the first run after
- * merge, on the Actions tab.
+ * trigger written wrong — a branch list that drops the default branch, a dispatch aimed at nothing —
+ * and they catch the walk being changed while the trigger was added. They are not evidence that a
+ * push starts a walk. That evidence is the first run after merge, on the Actions tab.
  */
 describe('the full coverage walk trigger', () => {
   it('parses as a workflow with triggers and a job', () => {
@@ -47,9 +46,8 @@ describe('the full coverage walk trigger', () => {
     expect(workflow.on?.push?.branches).toEqual(['main', 'i[0-9][0-9]/main']);
   });
 
-  it('runs on one weekly schedule', () => {
-    // Minute 17, hour 3, every month, on day-of-week 1 — 03:17 UTC on Mondays.
-    expect(workflow.on?.schedule).toEqual([{ cron: '17 3 * * 1' }]);
+  it('has no scheduled trigger', () => {
+    expect(workflow.on?.schedule).toBeUndefined();
   });
 
   /**

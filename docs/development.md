@@ -121,7 +121,7 @@ Zero means the edit reaches nothing in flight. A non-zero count is the set of ru
 
 ## What runs after a merge
 
-[`.github/workflows/coverage-walk.yml`](../.github/workflows/coverage-walk.yml) starts the full coverage walk on a push to `main` or to an `iNN/main` integration branch, and again at 03:17 UTC each Monday. It runs no walk of its own: its one step dispatches `coverage.yml` on the corpus branch this engine pairs with, and that workflow walks the full roster for any event that is not a pull request. The trigger lives here because a push reaches only the workflows of the branch pushed to, and GitHub raises a `schedule` event only for a workflow file on the default branch.
+[`.github/workflows/coverage-walk.yml`](../.github/workflows/coverage-walk.yml) starts the full coverage walk on a push to `main` or to an `iNN/main` integration branch. It runs no walk of its own: its one step dispatches `coverage.yml` on the corpus branch this engine pairs with, and that workflow walks the full roster for any event that is not a pull request. The trigger lives here because a push reaches only the workflows of the branch pushed to.
 
 ## The two branches
 
