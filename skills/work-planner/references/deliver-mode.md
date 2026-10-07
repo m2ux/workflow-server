@@ -53,6 +53,8 @@ What the prompt tells one session, written from the facts the `unit` line and th
   Deliver the work in the worktree, with every test the work item names, as the [Work Breakdown Guide](work-breakdown.md#tables) states.
 - **Open the pull request.**
   Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
+- **Move task issue to review.**
+  When every item in the pull request's test plan is closed out, set the unit's task issue, where one exists, to In Review on the board with [Set Item Status](commands.md#set-item-status).
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
 - **Stop there.**
@@ -83,6 +85,6 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Dispatch is confirmed.**
   No session starts until the user confirms the set of units.
 - **Status.**
-  This mode sets a dispatched unit's task issue and its epic to In Progress. The queue stays [Advance Mode](advance-mode.md)'s.
+  This mode sets a dispatched unit's task issue and its epic to In Progress. When a unit completes and every item in its pull request's test plan is closed out, its task issue, where one exists, is set to In Review. The queue stays [Advance Mode](advance-mode.md)'s.
 - **Arising issues.**
   Issues arising from the delivery of a single work item are raised as standalone issues and hoisted through [Hoist Mode](hoist-mode.md) once the pull request is open and the epic synced.
