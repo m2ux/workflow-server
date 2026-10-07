@@ -12,6 +12,7 @@ This work names the three signals and the two carve-outs in the entry, and puts 
 
 | Artifact | What it holds |
 | --- | --- |
+| [W04](w04.md) | The work item: the pass whose scope stops at the family, the section load that reaches the entry, and the walk and file read that show it. |
 
 ## Links
 
