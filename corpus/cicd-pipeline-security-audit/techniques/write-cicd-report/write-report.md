@@ -1,11 +1,21 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
 Produce the final audit report: write the executive summary, per-finding details, severity distribution, remediation roadmap, and methodology, then assemble them into the complete report.
+
+## Inputs
+
+### scored_findings
+
+Merged findings annotated with severity levels and scoring rationale.
+
+### verification_report
+
+Scan completeness [verification](../../resources/intermediate-artifact-schemas.md#verification-report) with file and per-pattern coverage.
 
 ## Protocol
 

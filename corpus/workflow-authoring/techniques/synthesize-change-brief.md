@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -43,7 +43,7 @@ Number of design judgements recorded as unresolved in `{change_brief}`. Zero whe
 
 ### 1. Load the Change Sources
 
-- Load `{change_category}`, `{user_description}` and `{structural_inventory}`
+- Load `{change_category}`, `{user_request}` and `{structural_inventory}`
 - When `{report_path}` is non-empty, load that register and treat its rows as the change specification
 
 ### 2. Assemble the Changed Dimensions

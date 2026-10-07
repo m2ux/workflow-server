@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.10.0
+version: 1.11.0
 name: Scope and Draft
 description: "A confirmed file manifest for the change, with every file it names authored against its schema."
 variables:
@@ -12,6 +12,7 @@ variables:
     - removals_approved
     - scope_manifest_confirmed
     - target_path
+    - user_request
     - workflow_id
   writes:
     - name: current_file
@@ -92,6 +93,9 @@ steps:
       inputs:
         bare_filename: scope-manifest.md
         artifact_content: scope_manifest_report
+        branch_name: workflow_branch
+        problem_statement: change_brief
+        requirements: change_brief
       outputs:
         written_artifact: scope_manifest_path
     when: operation_type != 'review'
@@ -170,6 +174,9 @@ steps:
           inputs:
             bare_filename: impact-analysis.md
             artifact_content: impact_analysis
+            branch_name: workflow_branch
+            problem_statement: change_brief
+            requirements: change_brief
           outputs:
             written_artifact: impact_analysis_path
         when: has_unflagged_removals == true && removal_disposition == 'flagged'

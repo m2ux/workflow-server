@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.7.3
+  version: 2.8.1
 ---
 
 ## Capability
@@ -31,7 +31,11 @@ Path to the repo root; used with `.engineering/` (in-tree or linked worktree) to
 
 ### pr_template_variant
 
-*(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render
+*(optional, enum: `initial` | `final`)* Which PR body template to render
+
+#### default
+
+`final`
 
 ## Outputs
 

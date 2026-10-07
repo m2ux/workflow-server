@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -15,7 +15,11 @@ The branches the fan opened, each as the id that addresses it, in the order the 
 
 ### agent_technique
 
-Canonical agent technique for each branch worker — default workflow-engine::activity-worker.
+Canonical agent technique for each branch worker.
+
+#### default
+
+`workflow-engine::activity-worker`
 
 ### variable_bag
 

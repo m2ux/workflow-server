@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.9.0
+version: 1.10.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -19,6 +19,9 @@ variables:
   - name: planning_folder_path
     type: string
     description: Absolute path to this run's planning folder, seeded when the session opens.
+  - name: user_request
+    type: string
+    description: Free-form statement of the workflow to create, change or audit.
   - name: headless_mode
     type: boolean
     description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
