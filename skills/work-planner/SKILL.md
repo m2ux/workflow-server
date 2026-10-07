@@ -4,7 +4,7 @@ description: >-
   Plans and maintains agent-engineering work on GitHub: proposal issues, [Ixx] initiative
   issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
   Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
-  scope the solution, or break down work, or write a work plan or work breakdown; to raise, plan, restructure, review or
+  scope the solution, or break down work, or write a work plan or work breakdown; to raise, plan, restructure, align or
   renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
   order, or a Done column that disagrees with its delivery, or a merged task that still carries an unmet criterion; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
   to deliver the work on a board, start the work it makes available, or dispatch sessions for ready tasks;
@@ -41,7 +41,7 @@ Read the file for the mode the request calls for:
   - Dependency checks
   - Renumbering of epics and tasks
   - Folding review findings into issues
-- **[Review](references/review-mode.md)**
+- **[Align](references/align-mode.md)**
   - Checks of existing issues against the templates and against the rules that bind them
   - Fixes for each issue that departs from its template or from those rules
   - A check of every acceptance criterion against the verifiable rule

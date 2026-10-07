@@ -1,6 +1,6 @@
 # Requirement Characteristics
 
-The characteristics an acceptance criterion meets, and the characteristics a set of them meets. Condensed from ISO/IEC/IEEE 29148:2018, clauses 5.2.4 to 5.2.7. [Plan](plan-mode.md) writes criteria to these, and [Review](review-mode.md) checks them.
+The characteristics an acceptance criterion meets, and the characteristics a set of them meets. Condensed from ISO/IEC/IEEE 29148:2018, clauses 5.2.4 to 5.2.7. [Plan](plan-mode.md) writes criteria to these, and [Align](align-mode.md) checks them.
 
 ## Individual
 
