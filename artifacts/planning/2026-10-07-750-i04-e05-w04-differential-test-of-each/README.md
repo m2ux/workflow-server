@@ -12,6 +12,7 @@ The conversion is on the corpus. This task is the measurement that the two forms
 
 | Artifact | What it holds |
 | --- | --- |
+| [Work item](w04.md) | The differential comparison of each converted gate and the structured condition it replaced |
 
 ## Links
 
