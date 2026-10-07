@@ -81,6 +81,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'authored',
   },
   {
+    id: 'operation-contract',
+    script: 'guards/check-operation-contract.ts',
+    npmScript: 'check:operation-contract',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'every contract agrees with the technique filling each value on the shape it publishes and on a write the activity routes on',
+    form: 'authored',
+  },
+  {
     id: 'artifact-status-once',
     script: 'guards/check-artifact-status-once.ts',
     npmScript: 'check:status-once',
