@@ -12,6 +12,8 @@ This work is the survey that has to precede retiring one of them. Every site car
 
 | Artifact | What it holds |
 | --- | --- |
+| [W01](w01.md) | The work item: what the survey delivers, the friction it answers, the design of the record and the grading program, and the parts of the work |
+| [Survey](survey.md) | The survey itself — the corpus it was taken on, the method, the 74 sites with their dispositions and sweeps, the dismissal reading at each of the 63 checkpoints, and what the conversion inherits |
 
 ## Links
 
