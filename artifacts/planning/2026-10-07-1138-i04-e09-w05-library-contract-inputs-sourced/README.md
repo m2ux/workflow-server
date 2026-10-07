@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-The inherited-input-never-spent guard reports no finding in the github, atlassian, and git libraries. A required input a descendant reads has a source in the contract that declares it.
+The inherited-input-never-spent guard reports no finding in the github, atlassian, and git libraries. `cloudId` and `planning_folder_path` are optional on their library contracts; GitHub's repository inputs already are.
 
 Those three libraries are the set this task covers. A finding left in any one of them is the task unfinished.
 
@@ -12,6 +12,7 @@ Those three libraries are the set this task covers. A finding left in any one of
 
 | Artifact | What it holds |
 | --- | --- |
+| [W05](w05.md) | Library contract inputs marked optional where a bound operation never reads them |
 
 ## Links
 
