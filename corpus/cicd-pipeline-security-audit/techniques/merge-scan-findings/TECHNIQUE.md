@@ -1,17 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
 Merge findings from multiple scanner agents into a unified set: deduplicate findings sharing the same file, line, and pattern; identify compound vulnerability chains where multiple patterns converge on one workflow; and produce a reconciliation table mapping every scanner finding to its merged counterpart. The techniques in this set decompose that merge into output-loading, deduplication, cross-pattern correlation, reconciliation, and output-writing phases.
-
-## Inputs
-
-### scanner_outputs
-
-The per-submodule scanner [output files](../../resources/sub-agent-output-schema.md#schema), one per scanner agent
 
 ## Outputs
 
