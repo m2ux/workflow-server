@@ -124,7 +124,7 @@ corpus/meta/
 │   ├── verify-artifact-conforms.md          # Artifact-conformance pass bound by any workflow that persists artifacts
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
-│   │   └── {op}.md                          #   one file per technique (start-session, create-session, dispatch-activity, ...)
+│   │   └── {op}.md                          #   one file per technique (start-session, dispatch-activity, ...)
 │   ├── harness-compat/                      # Harness-independent agent dispatch
 │   ├── orchestration-patterns/              # Atomic dispatch/gather/synthesise ops for pattern activities
 │   └── fan/                                 # Contract and rules for carrying a graph fan
