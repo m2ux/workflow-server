@@ -12,6 +12,7 @@ This work puts the full walk on a schedule as well, so coverage is measured on a
 
 | Artifact | What it holds |
 | --- | --- |
+| [W03](w03.md) | The work item: why a cron on the corpus branch would never fire, the weekly cadence and the reason for it, and the checks that accompany it. |
 
 ## Links
 

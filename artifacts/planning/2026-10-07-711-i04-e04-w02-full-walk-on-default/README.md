@@ -12,6 +12,7 @@ This work runs the full walk on a push to the default branch and again on a sche
 
 | Artifact | What it holds |
 | --- | --- |
+| [W02](w02.md) | The work item: why a push to the default branch reaches no coverage workflow today, the workflow that carries the trigger, and the checks that accompany it. |
 
 ## Links
 
