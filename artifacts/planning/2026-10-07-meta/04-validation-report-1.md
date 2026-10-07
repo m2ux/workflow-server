@@ -1,0 +1,5 @@
+# Validation Report — pass 1
+
+**Verdict:** passed · **Source coverage:** complete
+
+Every check passes: the seven canonical sections stand in template order with 2.1–2.5 instantiated; 52 entries carry unique identifiers in the correct category, each a title with `SHALL`, a rationale closing on its citation list, an optional plain quote-block note, and `Status: pending`; all 222 relative hrefs resolve from the target specification's folder to a file listed in section 2, and every fragment matches a heading in the file it names; every heading the analysis records against a requirement appears in that requirement's citation list; and all 163 normative rows of the source-coverage matrix carry a covering requirement across all twelve sources. Both pass-0 findings are resolved — REQ-F040 now states that the planning-artifact link replaces the reservation link and carries no note, and REQ-F033 includes every initiative holding reported work — and the document differs from pass 0 in those two corrections alone.
