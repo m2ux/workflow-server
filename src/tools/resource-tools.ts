@@ -27,12 +27,6 @@ import {
   replaceSessionFile,
   verifySeal,
   computeSessionIndex,
-  createTransientFolder,
-  registerTransient,
-  lookupTransientBySlug,
-  lookupTransientSlugByFolder,
-  isTransientFolder,
-  redirectTransientToWorkspace,
   computeEmbeddedSessionIndex,
   buildSessionScope,
   resolveSessionRoot,
@@ -71,7 +65,6 @@ import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
 import { appendStepStartedIfAbsent } from '../utils/step-events.js';
 import { createTraceEvent } from '../trace.js';
-import { randomUUID } from 'node:crypto';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 
 /** Re-export for callers/tests that imported section extraction from this module. */
@@ -104,8 +97,8 @@ function openDecisionResponse(payload: Record<string, unknown>) {
 }
 
 /**
- * The facts a session opens with. `folder` is the durable planning folder,
- * unset for a transient bootstrap, which has none an agent may write to.
+ * The facts a session opens with. `folder` is the planning folder the session
+ * resolved, which every session holds.
  */
 function openingBagFacts(
   derived: DerivationOk | undefined,
@@ -195,7 +188,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
         'Pass `planning_folder` as an absolute path to resume the session that folder holds, or to pin a new folder, named by its basename, directly under the session\'s planning root; a new folder anywhere else is refused, naming that root. ' +
         '`repo` is optional; when present it must equal the derived owner/repo. ' +
-        'A meta session without `working_directory` is a transient bootstrap in a temp folder, unless `planning_folder` names a folder that already holds a session; `dispatch_child` promotes it later. `resumed` says whether the call opened a session that already existed, so a resume by path that missed reads false. Children use `dispatch_child`, not this tool. ' +
+        'A meta session without `working_directory` plans under the root its bound `repo` resolves, so one or the other is required. `resumed` says whether the call opened a session that already existed, so a resume by path that missed reads false. Children use `dispatch_child`, not this tool. ' +
         'Every session records `execution_path`, `agent`: a caller walks the definition. The session records it and this response echoes it. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks. ' +
         'With `working_directory`, planning lives under the top-level project folder holding that checkout, `<project>/.engineering/artifacts/planning/`, shared by every clone and worktree inside it. Name the session for the work it carries by passing `planning_slug`, `YYYY-MM-DD-<issue-or-pr-ref>-<kebab-name>`, which the server resolves against that root; a call that names no folder opens a `YYYY-MM-DD-<token>` folder there, named for nothing. ' +
@@ -206,7 +199,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
-          planning_folder: z.string().optional().describe('Optional. Absolute path of one planning folder: a folder holding a session resumes; a new folder must sit directly under the session\'s planning root, and its basename is the planning slug. Bare/relative paths rejected. Omit for transient meta bootstrap.'),
+          planning_folder: z.string().optional().describe('Optional. Absolute path of one planning folder: a folder holding a session resumes; a new folder must sit directly under the session\'s planning root, and its basename is the planning slug. Bare/relative paths rejected.'),
           planning_slug: z.string().optional().describe('Optional. Names the session\'s planning folder in its own planning root, which the server resolves — `YYYY-MM-DD-<issue-or-pr-ref>-<kebab-name>`, dropping the ref segment when the work carries none. A slug holding a session resumes it. Omit to open a folder named for nothing. Mutually exclusive with planning_folder, which names a folder outside that root by path.'),
           working_directory: z.string().optional().describe('Optional. Absolute path of the checkout under work. The bound repository is that checkout\'s origin. Bare/relative paths rejected.'),
           repo: z.string().optional().describe('Optional. Target owner/repo (or github URL). When working_directory is set, must equal the derived origin. Written to session.json#repo.'),
@@ -229,8 +222,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // `planning_folder` names one planning folder by its absolute path. A
       // folder holding a session is resumed wherever it sits. A new folder
       // must sit directly under the planning root of the session being
-      // opened, and its basename is the slug; a transient bootstrap keeps the
-      // basename for the promotion that gives it a durable folder.
+      // opened, and its basename is the slug.
       //
       // `working_directory` is the checkout under work. The server inverts
       // path presentation, derives owner/repo from that checkout's origin, and
@@ -302,7 +294,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       const effectiveWfId = workflow_id ?? DEFAULT_WORKFLOW_ID;
-      const wouldBeTransient = effectiveWfId === DEFAULT_WORKFLOW_ID && working_directory === undefined;
       const repoForRoot = derived?.repo ?? repo;
 
       // A named slug takes a folder in the session's own planning root, which
@@ -322,15 +313,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             `Pass an absolute planning_folder to name a folder by path.`,
           );
         }
-        if (!wouldBeTransient) {
-          const namedRoot = derived
-            ? resolveCheckoutSessionRoot(sessionScope, { hostRepoPath: derived.host_repo_path, repo: derived.repo })
-            : resolveSessionRoot(sessionScope, { repo: repoForRoot });
-          pinnedFolder = join(
-            planningRoot(namedRoot.engineeringDir, namedRoot.planningRelativeDir),
-            named_slug,
-          );
-        }
+        const namedRoot = derived
+          ? resolveCheckoutSessionRoot(sessionScope, { hostRepoPath: derived.host_repo_path, repo: derived.repo })
+          : resolveSessionRoot(sessionScope, { repo: repoForRoot });
+        pinnedFolder = join(
+          planningRoot(namedRoot.engineeringDir, namedRoot.planningRelativeDir),
+          named_slug,
+        );
       }
 
       // A pinned folder names one planning folder exactly: one holding a session resumes.
@@ -342,10 +331,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // pinned new folder sits in that root; a call that pins none takes an
       // unnamed dated folder there.
       let durableRoot: ResolvedSessionRoot | undefined;
-      // A transient bootstrap resolves no root, so a named slug rides on the
-      // session until dispatch_child promotes it to a folder of that name.
-      let planning_slug = pinnedFolder !== undefined ? basename(pinnedFolder) : named_slug;
-      if (!resumeFolder && !wouldBeTransient) {
+      let planning_slug = pinnedFolder !== undefined ? basename(pinnedFolder) : undefined;
+      if (!resumeFolder) {
         durableRoot = derived
           ? resolveCheckoutSessionRoot(sessionScope, { hostRepoPath: derived.host_repo_path, repo: derived.repo })
           : resolveSessionRoot(sessionScope, { repo: repoForRoot, planningFolder: pinnedFolder });
@@ -357,18 +344,20 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             `Pin a folder directly under that root, or omit planning_folder to take an unnamed dated folder there.`,
           );
         }
-        if (derived && pinnedFolder === undefined) {
+        if (pinnedFolder === undefined) {
           planning_slug = mintUnnamedPlanningSlug();
         }
       }
+      const slug = planning_slug ?? basename(resumeFolder ?? '');
       const derivedDurable = derived !== undefined && pinnedFolder === undefined;
-      const slugIsSynthetic = planning_slug === undefined;
-      const slug = planning_slug ?? `transition-${randomUUID()}`;
 
+      // A meta open settles its client here, from the checkout under work. A
+      // call naming no checkout has no request to match a workflow against, so
+      // it opens meta alone.
       let openingEmbedId: string | undefined;
       const openingEligible = effectiveWfId === DEFAULT_WORKFLOW_ID
         && !resumeFolder
-        && !wouldBeTransient;
+        && derived !== undefined;
       if (openingEligible) {
         const opening = await resolveStartSessionOpening({
           userRequest: user_request ?? '',
@@ -394,7 +383,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       let folder: string;
       let sessionRoot: { engineeringDir: string; planningRelativeDir: string; repo?: string };
 
-      const isTransientSession = !resumeFolder && wouldBeTransient;
       if (resumeFolder) {
         folder = resumeFolder;
         sessionRoot = {
@@ -402,28 +390,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           planningRelativeDir: sessionScope.planningRelativeDir,
           ...(repoForRoot?.trim() ? { repo: repoForRoot.trim() } : {}),
         };
-      } else if (durableRoot) {
-        // Fresh durable session in the root resolved above.
-        sessionRoot = durableRoot;
+      } else {
+        // Fresh session in the durable root resolved above.
+        sessionRoot = durableRoot!;
         folder = await ensurePlanningFolder(sessionRoot.engineeringDir, slug, {
           planningRelativeDir: sessionRoot.planningRelativeDir,
         });
-      } else {
-        // Transient meta bootstrap needs no durable repo root.
-        try {
-          sessionRoot = resolveSessionRoot(sessionScope, {
-            repo: repoForRoot,
-            planningFolder: pinnedFolder,
-          });
-        } catch {
-          // Multi-root without repo: still allow pure meta bootstrap in tmp.
-          sessionRoot = {
-            engineeringDir: planningRootDir,
-            planningRelativeDir: sessionScope.planningRelativeDir,
-          };
-        }
-        const existing = lookupTransientBySlug(slug);
-        folder = existing ?? await createTransientFolder();
       }
 
       // The effective workflow_id resolves in this order:
@@ -456,8 +428,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const resumedSession = await sessionFileExists(folder);
       // Canonical absolute path of the folder we resolved to — recorded in
       // session.json so the agent can read it back and the server can detect
-      // drift on resume. Skipped for transient (tmp) sessions.
-      const canonicalFolder = isTransientSession ? undefined : resolve(folder);
+      // drift on resume.
+      const canonicalFolder = resolve(folder);
       if (await sessionFileExists(folder)) {
         const { state: rawState, bytes: loadedBytes } = await verifySeal(folder);
         const parsed = safeValidateSessionFile(rawState);
@@ -584,7 +556,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           },
         });
         state = newState;
-        if (!isTransientSession && openingEmbedId) {
+        if (openingEmbedId) {
           const eager = await embedFreshMetaClient({
             parent: state,
             parentFolder: folder,
@@ -596,24 +568,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           eagerClient = eager.client;
         }
         await createSessionFile(folder, state);
-
-        // If this is a transient session, register so its session_index
-        // resolves back to the os.tmpdir() folder. Done AFTER createSessionFile
-        // so the registry only points at fully-sealed folders. The slug is
-        // registered only when the caller actually supplied one — synthetic
-        // `transition-<uuid>` slugs are minted per-call from a fresh UUID, so
-        // a slug-keyed entry for them would never be hit by a future lookup,
-        // and leaving it out lets `lookupTransientSlugByFolder` return
-        // undefined for the synthetic case (which dispatch_child relies on to
-        // fall through to the dated workflow-id folder name). Repo lives on
-        // session.json, not the process-local registry.
-        if (isTransientSession) {
-          registerTransient(
-            sessionIndex,
-            folder,
-            slugIsSynthetic ? undefined : slug,
-          );
-        }
       }
 
       if (config.traceStore) {
@@ -658,11 +612,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
       // Echo the durable session binding (session.json#repo), not a path-only hint.
       if (state.repo) response['repo'] = state.repo;
-      // Fail-soft: transient without session.repo still boots; bind via start_session
-      // or dispatch_child before promote / durable path resolution needs it.
-      if (isTransientSession && !state.repo) {
-        response['repo_unbound'] = true;
-      }
       if (state.contextMode) response['context_mode'] = state.contextMode;
       response['execution_path'] = resolveExecutionPath(state);
       if (derived?.repo_source) response['repo_source'] = derived.repo_source;
@@ -686,8 +635,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     {
       description:
         'Dispatch a child workflow under the parent session. Returns the child `session_index`, canonical `planning_folder_path`, and `workflow.initialActivity` — the activity its first `next_activity` should name, which the parent otherwise has no way to know. A session reads its OWN workflow metadata from `start_session` or `get_workflow`; this reports the CHILD\'s, so a parent need not load a workflow bundle it will not execute. Naming an activity the workflow does not declare fails that call; naming a declared one out of order is recorded with a warning, so the id is worth getting right here rather than relying on the transition check. '
-        + 'From a TRANSIENT parent, promoting onto a planning folder that already holds a session is refused as FOLDER_OCCUPIED; both session files are left untouched. A persistent parent appends a second child. ' +
-        'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
+        + 'A child embeds under the parent and takes the parent\'s planning folder; a second dispatch appends a second child. ' +
 'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
         'The child records `execution_path` and this response echoes it. ' +
         'Never set `context_mode: "persistent"` on worker-dispatched children — a worker takes full delivery on the first activity of its run and collapses against its own ledger thereafter.',
@@ -695,16 +643,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         ...sessionIndexParam,
         workflow_id: z.string().describe('Child workflow id (e.g. "work-package").'),
         agent_id: z.string().default('worker').describe('Child agent_id (default "worker").'),
-        planning_slug: z.string().optional().describe('Optional. Promotion slug when the parent is a transient meta bootstrap. Ignored if the parent is already persistent.'),
         repo: z.string().optional().describe('Bind owner/repo onto the parent session when missing (must match if already set). session.json#repo is the source of truth.'),
         context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for worker-dispatched walks.'),
       }).strict(),
     },
-    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, repo, context_mode }) => {
+    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, repo, context_mode }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const parentFolder = loaded.folderAbsPath;
-      const parentIsTransient = isTransientFolder(parentFolder);
 
       // Resolve workflow version up-front (carried onto the child SessionFile).
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
@@ -734,7 +680,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       });
 
       // Bind-if-missing on the parent session. session.json#repo is the single
-      // source of truth for path resolution / promotion; dispatch_child.repo
+      // source of truth for path resolution; dispatch_child.repo
       // never overrides a prior bind. The bind travels on the state the child
       // is embedded into, so this call writes the file once — a second write
       // from the same read is the stale-write shape the store refuses.
@@ -749,110 +695,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      if (parentIsTransient) {
-        // Transient parent (meta-bootstrap) — promote the parent's state onto
-        // disk under a stable workspace planning folder, then embed the child
-        // under triggeredWorkflows[0].state exactly like the persistent-parent
-        // branch below. The only differences from that branch are:
-        //   - the workspace folder is materialised here (the parent never had
-        //     one), and
-        //   - the original tmp folder is discarded once the new file is durable
-        //     (but the parent's session_index entry in transientFolderByIndex
-        //     is repointed at the promoted folder so the caller's original
-        //     index keeps resolving — without this, the orchestrator that
-        //     called dispatch_child can no longer authenticate next_activity
-        //     for subsequent meta activities).
-        // The promoted slug is taken from (in order): the explicit
-        // `planning_slug` argument (callers that derive a descriptive
-        // initiative slug AFTER start_session pass it here); the slug the
-        // caller supplied to start_session (looked up via the folder-keyed
-        // registry); an unnamed `YYYY-MM-DD-<token>` folder. start_session
-        // does not register synthetic `transition-<uuid>` slugs in the
-        // folder registry, so the last fires for a bootstrap-only meta
-        // session that reached dispatch without naming its work, and keeps
-        // the transitional UUID out of the workspace.
-        const promotedSlug =
-          planning_slug
-          ?? lookupTransientSlugByFolder(parentFolder)
-          ?? mintUnnamedPlanningSlug();
-        // Promote using session.json#repo only (bound above if dispatch passed repo).
-        const promoteRoot = (() => {
-          try {
-            return resolveSessionRoot(sessionScope, { repo: parentState.repo });
-          } catch (err) {
-            throw new Error(
-              `dispatch_child: cannot promote transient session without session.repo. ` +
-                `Bind repo on start_session or pass repo on dispatch_child. ` +
-                `(${err instanceof Error ? err.message : String(err)})`,
-            );
-          }
-        })();
-        const promotedWorkspaceFolder = await ensurePlanningFolder(
-          promoteRoot.engineeringDir,
-          promotedSlug,
-          { planningRelativeDir: promoteRoot.planningRelativeDir },
-        );
-        if (await sessionFileExists(promotedWorkspaceFolder)) {
-          const { state: occupied } = await verifySeal(promotedWorkspaceFolder);
-          const parsed = safeValidateSessionFile(occupied);
-          if (!parsed.success) {
-            const issues = parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
-            throw new Error(
-              `dispatch_child: existing session.json at ${promotedWorkspaceFolder} does not match the SessionFile schema (${issues}). ` +
-              `A rotated signing key is the likely cause. Nothing was written.`,
-            );
-          }
-          throw new SessionStoreError(
-            `planning folder ${promotedWorkspaceFolder} already holds a session`,
-            'FOLDER_OCCUPIED',
-            { folder: promotedWorkspaceFolder, session_index: parsed.data.sessionIndex },
-          );
-        }
-        const childSessionIndex = await computeEmbeddedSessionIndex(
-          promotedWorkspaceFolder,
-          ['triggeredWorkflows', 0, 'state'],
-        );
-        const childInitial = createInitialSessionFile({
-          sessionIndex: childSessionIndex,
-          workflowId: workflow_id,
-          workflowVersion: effectiveWorkflowVersion,
-          agentId: agent_id,
-          ...(parentState.repo ? { repo: parentState.repo } : {}),
-          ...(context_mode ? { contextMode: context_mode } : {}),
-          variables: childVariables(wfResult.value, promotedWorkspaceFolder),
-        });
-        const parentNext = advanceSession(parentState, (draft) => {
-          draft.variables = {
-            ...draft.variables,
-            planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder,
-          };
-          draft.triggeredWorkflows.push({
-            workflowId: workflow_id,
-            sessionIndex: childSessionIndex,
-            triggeredAt,
-            triggeredFrom: { activityId: draft.frontier[0] ?? '' },
-            status: 'running',
-            state: childInitial,
-          });
-          draft.history.push({
-            timestamp: triggeredAt,
-            type: 'workflow_triggered',
-            activity: draft.frontier[0],
-            data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
-          });
-        });
-        await createSessionFile(promotedWorkspaceFolder, parentNext);
-        // The promoted file is durable; redirect the caller's transient
-        // index to it and remove the tmp folder.
-        await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
-        return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder, execution_path: resolveExecutionPath(childInitial) }, null, 2) }],
-          _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
-        };
-      }
-
-      // Persistent parent — embed the child inline under
-      // triggeredWorkflows[N].state. The child's sessionIndex is derived
+      // Embed the child inline under triggeredWorkflows[N].state. The child's sessionIndex is derived
       // from the top folder + jsonPath so it stays stable as long as the
       // array index doesn't shift (triggeredWorkflows is append-only).
       // Use parentState (may include a just-bound repo) rather than the

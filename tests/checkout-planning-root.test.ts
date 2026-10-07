@@ -176,7 +176,7 @@ describe.sequential('planning root under a projects multi-root follows the proje
     expect(created['resumed']).toBe(false);
     const resumed = await callOk('start_session', { planning_folder: folder });
     expect(resumed['resumed']).toBe(true);
-    const missed = await callOk('start_session', { workflow_id: 'meta', planning_folder: join(planningOf(clone), '2026-09-29-never-made') });
+    const missed = await callOk('start_session', { workflow_id: 'seed-fixture', working_directory: clone, planning_folder: join(planningOf(clone), '2026-09-29-never-made') });
     expect(missed['resumed']).toBe(false);
   });
 

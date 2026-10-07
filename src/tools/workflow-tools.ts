@@ -815,7 +815,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
-        'repo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work; a transient meta bootstrap may start unbound and binds when dispatch_child promotes it; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
+        'repo_binding: every session binds a repository before it holds work — pass working_directory as the absolute path of the checkout under work, and the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. A call naming no working_directory passes repo: "owner/repo", which resolves the root its planning folder sits in. The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
       ];
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);

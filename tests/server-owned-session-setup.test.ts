@@ -8,8 +8,6 @@ import { promisify } from 'node:util';
 import { createHarness, parseToolResponse, type Harness } from './e2e/harness.js';
 import { planningFolderPath } from './session-ops.js';
 import {
-  isTransientFolder,
-  lookupTransientBySlug,
   SEAL_FILE_NAME,
   SESSION_FILE_NAME,
 } from '../src/utils/session/store.js';
@@ -68,7 +66,7 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     return toolText(result as { content: Array<{ text?: string }> });
   }
 
-  it('PR528-TC-01: working_directory binds origin, creates durable folder, no transient', async () => {
+  it('PR528-TC-01: working_directory binds origin and creates the planning folder', async () => {
     const checkout = join(harness.workspaceDir, 'workflow-server');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const body = await callOk('start_session', {
@@ -83,8 +81,6 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(slug).toMatch(UNNAMED_SLUG);
     const folder = planningFolderPath(harness.workspaceDir, slug);
     expect(existsSync(join(folder, SESSION_FILE_NAME))).toBe(true);
-    expect(lookupTransientBySlug(slug)).toBeUndefined();
-    expect(isTransientFolder(folder)).toBe(false);
     expect(body['planning_folder_path']).toBe(folder);
   });
 
@@ -239,34 +235,8 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(err).toContain('not both');
   });
 
-  it('PR528-TC-07: transient dispatch_child onto an occupied folder throws FOLDER_OCCUPIED', async () => {
-    const slug = '2026-09-11-promote-occupied';
-    const folder = planningFolderPath(harness.workspaceDir, slug);
-    const occupied = await callOk('start_session', {
-      workflow_id: 'seed-fixture',
-      planning_folder: folder,
-      repo: 'acme/workflow-server',
-    });
-    const sessionBefore = readFileSync(join(folder, SESSION_FILE_NAME));
-    const sealBefore = readFileSync(join(folder, SEAL_FILE_NAME));
-    const meta = await callOk('start_session', {
-      workflow_id: 'meta',
-      agent_id: 'orchestrator',
-      repo: 'acme/workflow-server',
-    });
-    const err = await callErr('dispatch_child', {
-      session_index: meta['session_index'],
-      workflow_id: 'child-fixture',
-      planning_slug: slug,
-    });
-    expect(err).toMatch(/already holds a run|already holds a session/);
-    expect(err).toContain(String(occupied['session_index']));
-    expect(readFileSync(join(folder, SESSION_FILE_NAME))).toEqual(sessionBefore);
-    expect(readFileSync(join(folder, SEAL_FILE_NAME))).toEqual(sealBefore);
-  });
-
-  it('PR528-TC-08: transient promote onto a broken seal throws SEAL_MISMATCH; files untouched', async () => {
-    const slug = '2026-09-11-promote-unreadable';
+  it('PR528-TC-08: a resume onto a broken seal is refused and leaves both files untouched', async () => {
+    const slug = '2026-09-11-resume-unreadable';
     const folder = planningFolderPath(harness.workspaceDir, slug);
     await callOk('start_session', {
       workflow_id: 'seed-fixture',
@@ -278,17 +248,11 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     const tampered = readFileSync(sessionPath).toString('utf8').replace('seed-fixture', 'tampered-id');
     writeFileSync(sessionPath, tampered);
     const sealAfterTamper = readFileSync(sealPath);
-    const meta = await callOk('start_session', {
-      workflow_id: 'meta',
+    const err = await callErr('start_session', {
+      planning_folder: folder,
       repo: 'acme/workflow-server',
     });
-    const err = await callErr('dispatch_child', {
-      session_index: meta['session_index'],
-      workflow_id: 'child-fixture',
-      planning_slug: slug,
-    });
     expect(err).toMatch(/SEAL_MISMATCH|seal mismatch|rotated signing key/);
-    expect(err).toMatch(/rotated signing key/);
     expect(readFileSync(sessionPath, 'utf8')).toBe(tampered);
     expect(readFileSync(sealPath)).toEqual(sealAfterTamper);
   });

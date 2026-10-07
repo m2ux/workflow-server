@@ -51,39 +51,16 @@ describe.skipIf(!liveCorpusRoot())('session.repo bootstrap binding', () => {
     expect(health.session_scope).toBeUndefined();
   });
 
-  it('start_session without repo sets repo_unbound on transient meta', async () => {
+  it('start_session without a repo or a working_directory is refused, naming both ways out', async () => {
     const result = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
     });
-    expect(result.isError).toBeFalsy();
-    const response = parseToolResponse(result);
-    expect(response.repo_unbound).toBe(true);
-    expect(response.repo).toBeUndefined();
-    expect(response.session_scope).toBeUndefined();
-    expect(response.promotion_requires_repo).toBeUndefined();
-  });
-
-  it('dispatch_child fails without session.repo', async () => {
-    const meta = await client.callTool({
-      name: 'start_session',
-      arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
-    });
-    const metaIdx = parseToolResponse(meta).session_index;
-
-    const child = await client.callTool({
-      name: 'dispatch_child',
-      arguments: {
-        session_index: metaIdx,
-        workflow_id: 'work-package',
-        agent_id: 'worker-1',
-        planning_slug: '2026-07-24-no-repo',
-      },
-    });
-    expect(child.isError).toBeTruthy();
-    const text = (child.content as { text: string }[])[0]?.text ?? '';
-    expect(text).toMatch(/cannot promote transient session without session\.repo/i);
-    expect(text).toMatch(/Bind repo on start_session or pass repo on dispatch_child/i);
+    expect(result.isError).toBeTruthy();
+    const text = (result.content as { text: string }[])[0]?.text ?? '';
+    expect(text).toMatch(/repo is required when the server is bound to a projects multi-root/i);
+    expect(text).toMatch(/Pass working_directory/i);
+    expect(text).toMatch(/or pass repo/i);
   });
 
   it('dispatch_child binds repo onto session.json when start_session omitted it', async () => {
