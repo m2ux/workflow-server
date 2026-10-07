@@ -12,6 +12,9 @@ This work settles each declared value against the shape its filling operation pu
 
 | Artifact | What it holds |
 | --- | --- |
+| [W02](./w02.md) | The work item: what the task delivers, the friction it answers, the design, and the parts of the work |
+| [Declarations](./declarations.md) | Every finding the check reports against the integration branch, the operation output behind it, the direction each value was settled in and why, and the files the edit touched |
+| [Coverage](./coverage.md) | AC4 and AC5, the test that observes each, the runs that show it, and the places a declared value's shape is settled by something the check does not inspect |
 
 ## Links
 
