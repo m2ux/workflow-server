@@ -193,7 +193,8 @@
         "completedActivities": [
           "intake",
           "analyze-sources",
-          "update-specification"
+          "update-specification",
+          "validate-specification"
         ],
         "currentTechnique": "record-intake",
         "deliveredContent": {
@@ -244,18 +245,27 @@
             "bundle:workflow-engine::resume-from-checkpoint": "e298305b1468d2cd",
             "bundle:workflow-engine::step-control": "0137c4b5fd7184fa",
             "bundle:workflow-engine::yield-checkpoint": "72cc5063739c4988",
+            "note:bundle:74a2082322fa379c": "74a2082322fa379c",
             "note:resources:0eff389311365362": "0eff389311365362",
+            "note:resources:b2ed3bbf8437c4cb": "b2ed3bbf8437c4cb",
             "note:step_techniques:4083f882c5b46610": "4083f882c5b46610",
             "resource:specification-protocol": "3dcfa23e7a835f28",
+            "resource:specification-protocol#identifier-schemes": "35ff8f625a7da922",
+            "resource:specification-protocol#requirement-entry-format": "34926bffa05c6613",
+            "resource:specification-protocol#source-listings": "e5a1dfbd3d762414",
+            "resource:specification-protocol#source-reference-format": "baa4ad84e38cc267",
+            "resource:specification-protocol#status-conventions": "856c8d037141ece4",
+            "resource:specification-protocol#template": "9f000080fb3809d4",
             "resource:validation-report": "1adaf92b82d0a243",
             "resource:validation-rubric": "bab45d857582781b",
+            "technique:update-specification": "88914c5623f50b95",
             "technique:validate-specification": "2ac90dc99b018128"
           }
         },
         "executionPath": "agent",
-        "exit": "done",
+        "exit": "correctable",
         "frontier": [
-          "validate-specification"
+          "update-specification"
         ],
         "history": [
           {
@@ -1635,16 +1645,216 @@
             },
             "timestamp": "2026-10-07T05:52:50.543Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-specification",
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "validation_report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/04-validation-report-0.md"
+            },
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "has_critical_issues",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "has_correctable_issues",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "validation_passed",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "name": "update_pass_kind",
+              "source": "variables_changed",
+              "value": "correction"
+            },
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "stepId": "validate-specification"
+            },
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "update-specification",
+            "timestamp": "2026-10-07T05:55:47.704Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "chars": 18599,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "chars": 18599,
+              "priorAgentId": "intake-worker"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "chars": 5926,
+              "delivery": "full",
+              "stepId": "update-specification",
+              "techniqueId": "update-specification"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "stepId": "update-specification"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "bundled": true,
+              "chars": 620,
+              "delivery": "full",
+              "resourceId": "specification-protocol#source-listings"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "bundled": true,
+              "chars": 1565,
+              "delivery": "full",
+              "resourceId": "specification-protocol#source-reference-format"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "bundled": true,
+              "chars": 679,
+              "delivery": "full",
+              "resourceId": "specification-protocol#identifier-schemes"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "bundled": true,
+              "chars": 547,
+              "delivery": "full",
+              "resourceId": "specification-protocol#status-conventions"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "bundled": true,
+              "chars": 1358,
+              "delivery": "full",
+              "resourceId": "specification-protocol#template"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "bundled": true,
+              "chars": 1642,
+              "delivery": "full",
+              "resourceId": "specification-protocol#requirement-entry-format"
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "validate-worker",
+              "bundled_steps": 1,
+              "delivery": "reference",
+              "eager_budget_chars": 640000,
+              "fixed_chars": 2046,
+              "provenance_passes": 1,
+              "resolved_techniques": 11,
+              "response_bound_chars": 60000,
+              "response_spent_chars": 18599,
+              "spent_chars": 13952,
+              "worker_bundle_chars": 1615
+            },
+            "timestamp": "2026-10-07T05:56:00.330Z",
+            "type": "activity_delivered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 26,
+        "seq": 28,
         "sessionIndex": "66LSEP",
         "startedAt": "2026-10-07T05:08:48.160Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1791352370,
+        "ts": 1791352560,
         "variables": {
           "analysis_confirmed": true,
           "change_summary_path": "",
@@ -1717,7 +1927,7 @@
           "failure_report_path": "",
           "final_specification_path": "",
           "finalization_accepted": false,
-          "has_correctable_issues": false,
+          "has_correctable_issues": true,
           "has_critical_issues": false,
           "host_repo_path": "/home/mike1/projects/dev/workflow-server",
           "intake_record_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/01-intake.md",
@@ -2115,10 +2325,10 @@
             }
           ],
           "update_pass": 0,
-          "update_pass_kind": "initial",
+          "update_pass_kind": "correction",
           "user_request": "Start a requirements refinement workflow for the session content at /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-06-work-planner-retrospective/sessions. The project is the 'Work Planner Skill'.",
           "validation_passed": false,
-          "validation_report_path": "",
+          "validation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/04-validation-report-0.md",
           "working_specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-07-meta/03-working-spec-0.md"
         },
         "workflowId": "requirements-refinement",
