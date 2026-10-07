@@ -27,9 +27,13 @@ Starts the work a theme board makes available. It advances the board, holds each
    - Run [Reserve Row](commands.md#reserve-row) for the unit's tasks and [Patch Body](commands.md#patch-body) with the body it writes.
    - Set each task issue of the unit, where one exists, to In Progress with [Set Item Status](commands.md#set-item-status), and its epic with it.
 7. **Dispatch.**
-   For each held unit, [Create Task Worktree](commands.md#create-task-worktree), write the [brief](#brief) to a file, and [Dispatch Session](commands.md#dispatch-session).
+   For each held unit:
+   - [Create Task Worktree](commands.md#create-task-worktree), and write the [brief](#brief) to a file in that worktree.
+   - Start the unit's session with the sub-agent dispatch of the session this mode was called from.
+   - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
+   - The session is left running.
 8. **Report.**
-   Each unit dispatched, with its record, branch, worktree and log; each row left held; each blocked row and what blocks it.
+   Each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
 
 ## Brief
 
@@ -54,6 +58,9 @@ What the prompt tells one session, written from the facts the `unit` line and th
 
 ## Rules
 
+- **The calling session dispatches.**
+  The agent running this mode starts each unit through the sub-agent dispatch of the session it was called from, and that dispatch is the only way a unit's session starts.
+  - When that session provides no sub-agent dispatch, this mode reports that and stops before any unit begins.
 - **The hold precedes the session.**
   A unit's record exists, its row carries that record's link, and the body is patched, before its session starts. A session is never dispatched for a row another one holds.
 - **The hold stands until the pull request.**

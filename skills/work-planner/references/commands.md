@@ -361,19 +361,6 @@ Cuts the worktree and branch one unit's session works in, from the initiative's 
 git fetch origin i07/main && git worktree add .worktrees/i07-e00-w01 -b i07/e00/w01-queue-plan origin/i07/main
 ```
 
-### Dispatch Session
-
-Starts the session that delivers one unit, reading its brief and running on past this session.
-
-- Run it inside the worktree [Create Task Worktree](#create-task-worktree) cut.
-- `brief.md` is the brief [Deliver Mode](deliver-mode.md#brief) states, written to a file.
-- `--add-dir` gives the session the engineering worktree, where it writes the planning record.
-- The log names the unit, and sits beside the worktree so it survives the worktree's removal.
-
-```bash
-nohup claude -p --permission-mode acceptEdits --add-dir <engineering-worktree> < brief.md > ../i07-e00-w01.log 2>&1 &
-```
-
 ## Scripts
 
 ### Check Dependencies
