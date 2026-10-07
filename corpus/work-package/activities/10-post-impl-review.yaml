@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 2.6.0
+version: 2.7.0
 name: Post-Implementation Review
 description: Review the implementation after the automated reviews.
 variables:
@@ -23,6 +23,7 @@ variables:
     - problem_statement
     - push_remote
     - requirements
+    - seed_profile
     - structural_analysis_outputs
     - target_path
     - target_repo

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.15.0
+  version: 1.16.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Progress **status** writer for selected activity (and optional item) rows in the
 
 ### seed_profile
 
-Resource id of the workflow's readme-seed profile, which carries the [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map) selection resolves through.
+*(optional)* Resource id of the workflow's readme-seed profile, which carries the [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map) selection resolves through. Unset where the workflow under walk owns no readme-seed profile.
 
 ### item_match
 
@@ -59,6 +59,7 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 ### 4. Read Owned Rows
 
 - Load `{seed_profile}` and read the Item labels `{artifact_prefix}` owns from its [row-ownership map](/meta/resources/planning-readme.md#row-ownership-map).
+  > When `{seed_profile}` is unset, the labels are every Item the Progress surface carries against `{artifact_prefix}`.
 
 ### 5. Narrow To Scope
 

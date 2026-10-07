@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 6.4.0
+version: 6.5.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 variables:
@@ -31,6 +31,9 @@ variables:
     - name: trace_tokens
       type: array
       description: The trace token of every advance the client walk made, in the order it made them
+    - name: seed_profile
+      type: string
+      description: Resource id of the client workflow's readme-seed profile
 required: true
 steps:
   - kind: action
@@ -49,6 +52,13 @@ steps:
         in_flight: client_in_flight
         session_state: client_session_state
         execution_trace: client_execution_trace
+  - kind: action
+    id: name-seed-profile
+    actions:
+      - action: set
+        target: seed_profile
+        value: "{client_session_state.seed_profile}"
+        description: The readme-seed profile the client workflow declares, which every Progress mark the walk writes resolves row ownership through.
   - kind: routine
     id: client-activity-loop
     routine: activity-loop

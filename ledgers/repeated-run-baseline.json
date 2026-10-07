@@ -172,7 +172,7 @@
       "run": [
         "A:message=",
         "T:scope-verification()",
-        "R:ensure-readme(planning_folder_path,seed_profile)"
+        "R:ensure-readme(planning_folder_path)"
       ],
       "verdict": "unassigned",
       "rationale": "deprecated-twin-shape"

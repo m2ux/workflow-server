@@ -1,10 +1,11 @@
 id: intake-and-profile
-version: 1.3.0
+version: 1.4.0
 name: Intake and Profile
 description: "Classify the request as author, rewrite or audit, settle the reader profile and content selection, and persist the document profile the rest of the run is built on."
 variables:
   reads:
     - planning_folder_path
+    - seed_profile
     - user_request
   writes:
     - name: controlled_language
@@ -79,8 +80,8 @@ steps:
     technique:
       name: workflow-engine::create-readme
       inputs:
+        seed_profile: seed_profile
         entity_context: "entity_title={document_title}; entity_type={operation_type}; status=Profiling"
-        seed_profile: plain-language/readme-seed
         operation_type: operation_type
 exits:
   - id: has-source

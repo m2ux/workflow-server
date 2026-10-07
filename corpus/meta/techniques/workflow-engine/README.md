@@ -21,6 +21,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`handle-sub-workflow`](handle-sub-workflow.md) | Launch a workflow as a child of the current session, and report where it opens and where it writes |
 | [`list-workflows`](list-workflows.md) | Retrieve the catalog of available workflows |
 | [`prepare-engineering-commit`](prepare-engineering-commit.md) | The engineering files a completed activity commits, the checkout and branch that commit is pushed from, and whether `.engineering` is a linked worktree of the host |
+| [`prepare-source-commit`](prepare-source-commit.md) | The source-side files a completed activity commits, the checkout and branch that commit is pushed from, and whether the component under work is a submodule of the host |
 | [`present-checkpoint-to-user`](present-checkpoint-to-user.md) | Load the active checkpoint's details and present them to the user |
 | [`publish-run-status`](publish-run-status.md) | The run status emitted once the engineering push is on the remote |
 | [`read-session`](read-session.md) | The live session record — its variable bag, the activities it stands on, and its execution trace — for a consumer that reasons over where the session stands and what it has done |
