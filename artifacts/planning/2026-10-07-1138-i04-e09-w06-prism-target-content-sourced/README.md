@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-The inherited-input-never-spent guard reports no finding in prism. Target content stays on the root container and is optional, so a step that never reads it inherits no required slot.
+The inherited-input-never-spent guard reports no finding in prism. Target content stays on the root container and is optional, so a step that never reads it inherits no required slot. A decomposed subsystem is optional on its group container for the same reason.
 
 Prism is the last family this set of tasks clears before the guard can join the standard sweep. This task is that family clear.
 
