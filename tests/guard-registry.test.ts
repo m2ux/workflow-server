@@ -153,6 +153,12 @@ describe('guard registry', () => {
       'guards/check-inherited-input-never-spent.ts':
         'reads the corpus and holds at the steps each family\'s contracts still hand a required input '
         + 'nothing produces. Each family clears its own sites, and enrolling is the commit that makes it pass',
+      'guards/check-condition-survey.ts':
+        'grades guards/condition-survey.ts, a record of ONE corpus — the initiative branch this engine '
+        + 'branch pairs with. The sweep is pointed at whatever tree is under review, so enrolling would '
+        + 'grade the record against a corpus it was never taken on. `tests/condition-survey.test.ts` runs '
+        + 'it against the paired corpus instead, which is where the pairing is already decided; it joins '
+        + 'the sweep when the structured condition is gone and the record is empty',
     };
 
     const onDisk = readdirSync(join(REPO, 'guards'))
