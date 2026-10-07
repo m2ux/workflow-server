@@ -94,6 +94,9 @@ steps:
       inputs:
         bare_filename: scope-manifest.md
         artifact_content: scope_manifest_report
+        branch_name: workflow_branch
+        problem_statement: change_brief
+        requirements: change_brief
       outputs:
         written_artifact: scope_manifest_path
     when: operation_type != 'review'
@@ -172,6 +175,9 @@ steps:
           inputs:
             bare_filename: impact-analysis.md
             artifact_content: impact_analysis
+            branch_name: workflow_branch
+            problem_statement: change_brief
+            requirements: change_brief
           outputs:
             written_artifact: impact_analysis_path
         when: has_unflagged_removals == true && removal_disposition == 'flagged'

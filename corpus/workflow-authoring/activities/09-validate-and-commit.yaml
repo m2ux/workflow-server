@@ -106,6 +106,9 @@ steps:
       inputs:
         bare_filename: findings-register.md
         artifact_content: findings_register
+        branch_name: workflow_branch
+        problem_statement: change_brief
+        requirements: change_brief
       outputs:
         written_artifact: report_path
   - kind: checkpoint
@@ -168,6 +171,7 @@ steps:
       name: workflow-engine::verify-readme-conforms
       inputs:
         seed_profile: workflow-authoring/readme-seed
+        session_index: ""
     when: remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: checkpoint
     id: approve-to-commit#{remediation_round}
@@ -229,10 +233,18 @@ steps:
       inputs:
         bare_filename: COMPLETE.md
         artifact_content: completion_document
+        branch_name: workflow_branch
+        problem_statement: change_brief
+        requirements: change_brief
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: remove-worktree
-    technique: work-package::manage-git::remove-worktree
+    technique:
+      name: work-package::manage-git::remove-worktree
+      inputs:
+        branch_name: workflow_branch
+        problem_statement: change_brief
+        requirements: change_brief
     when: worktree_created == true && commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
 exits:
   - id: remediation-selected

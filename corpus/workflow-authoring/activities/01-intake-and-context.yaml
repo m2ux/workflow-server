@@ -154,6 +154,7 @@ steps:
       inputs:
         entity_context: "entity_title={workflow_id}; entity_type={operation_type}; status=Planning"
         seed_profile: workflow-authoring/readme-seed
+        session_index: ""
     when: operation_type != 'review'
   - kind: technique
     id: select-dimension-set
@@ -203,6 +204,9 @@ steps:
       inputs:
         bare_filename: change-brief.md
         artifact_content: change_brief
+        branch_name: ""
+        problem_statement: change_brief
+        requirements: change_brief
       outputs:
         written_artifact: change_brief_path
     when: operation_type != 'review'
@@ -213,6 +217,9 @@ steps:
       inputs:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis
+        branch_name: ""
+        problem_statement: change_brief
+        requirements: change_brief
       outputs:
         written_artifact: impact_analysis_path
     when: operation_type == 'update'

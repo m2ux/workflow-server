@@ -94,6 +94,9 @@ steps:
       inputs:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis
+        branch_name: ""
+        problem_statement: change_brief
+        requirements: change_brief
       outputs:
         written_artifact: impact_analysis_path
     when: remediation_round > 0
@@ -104,6 +107,8 @@ steps:
     id: survey-reference-workflows
     technique:
       name: workflow-engine::list-workflows
+      inputs:
+        session_index: ""
       outputs:
         workflow_catalog: reference_workflows
   - kind: loop
