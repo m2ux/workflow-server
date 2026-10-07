@@ -50,12 +50,12 @@ const TERMINAL = '__terminal__';
 
 interface Envelope {
   /**
-   * `none` is not a result type the corpus declares — it is this file's way of scripting a worker that
-   * returned no accepted envelope at all, which the declared types cannot express and which is the
-   * case every worker-producing technique carries a recovery branch for. `workflow_complete` is never
-   * scripted: the entry onto `__terminal__` composes it, since no worker runs there.
+   * `none` and `absent` are not result types the corpus declares. `absent` scripts a worker that ended
+   * before yielding, so the call returned no envelope. `none` scripts a return that is not one of the
+   * two tagged results. `workflow_complete` is never scripted: the entry onto `__terminal__` composes
+   * it, since no worker runs there.
    */
-  result_type: 'activity_complete' | 'checkpoint_pending' | 'workflow_complete' | 'none';
+  result_type: 'activity_complete' | 'checkpoint_pending' | 'workflow_complete' | 'none' | 'absent';
   next_activity_id?: string | Record<string, unknown>;
   next_activity_fans?: boolean;
   steps_completed?: unknown[];
@@ -78,8 +78,9 @@ type Bag = Record<string, unknown>;
  *
  * - `continue-batched-worker` → `workflow-engine::continue-batch`: advances the pointer and, where the
  *   reading leaves room, continues the held identity and returns its envelope. It mints nothing. A
- *   reading that refuses, or a continuation that returns no envelope, leaves the held identity in
- *   place and sets `continuation_held` false, so the loop can release it and dispatch.
+ *   missing envelope, a reading that refuses, or a continuation that is not an accepted result leaves
+ *   the held identity in place, leaves `worker_result` unset, and sets `continuation_held` false, so
+ *   the loop can release it and dispatch.
  * - `enter-activity` → the run's `enter_activity` input: advances the pointer unless
  *   `stands_on_activity` says the session already stands on the activity, mints an identity named for
  *   that activity, and returns an envelope. Entering `__terminal__` completes the session: it returns
@@ -106,18 +107,28 @@ interface EnvelopeSource {
 const EFFECTS: Record<string, (bag: Bag, next: EnvelopeSource, log: string[]) => void> = {
   'continue-batched-worker': (bag, next, log) => {
     log.push('advance');
-    // The advance answers the standing before anything is composed. A context the reading refuses,
-    // or a continuation that returns nothing, is not replaced here: the envelope of the activity
-    // just entered belongs to the dispatch that follows the release, and a `none` is the failed
-    // continuation itself, which is not that activity's result.
+    // The advance answers the standing before anything is composed. A missing envelope, a context
+    // the reading refuses, or a return that is not an accepted result is not replaced here: the
+    // identity stays the one that entered, and the result is left unset. The envelope of the
+    // activity just entered belongs to the dispatch that follows the release. A refusal carries
+    // that envelope, so it is put back. An `absent` is the worker ending with nothing to put back,
+    // and a `none` is the failed continuation itself — neither is that activity's result.
     const envelope = next();
-    if (envelope.advanceFoundRoom === false) {
+    const unheld = (): void => {
       bag['continuation_held'] = false;
+      delete bag['worker_result'];
+    };
+    if (envelope.result_type === 'absent') {
+      unheld();
+      return;
+    }
+    if (envelope.advanceFoundRoom === false) {
+      unheld();
       next.restore(envelope);
       return;
     }
     if (envelope.result_type === 'none') {
-      bag['continuation_held'] = false;
+      unheld();
       return;
     }
     bag['continuation_held'] = true;
@@ -338,7 +349,9 @@ const complete = (next: string | Record<string, unknown>, fans = false): Envelop
 const completeAfterRefusal = (next: string | Record<string, unknown>): Envelope =>
   ({ ...complete(next), advanceFoundRoom: false });
 const gate = (): Envelope => ({ result_type: 'checkpoint_pending' });
-/** A continuation that returned no accepted envelope — the context ended, or answered with neither type. */
+/** The worker ended before yielding, so the continuation returned no envelope. */
+const absent = (): Envelope => ({ result_type: 'absent' });
+/** A continuation that returned something other than the two tagged results. */
 const gone = (): Envelope => ({ result_type: 'none' });
 
 /** This file's runaway stop, well above the longest scenario and unrelated to the declared ceiling. */
@@ -600,6 +613,31 @@ describe.skipIf(!liveCorpusRoot())('client activity loop walked (#407)', () => {
     ]);
     expect(refusedSecond.minted).toEqual(['worker:implementation-analysis', 'worker:plan-prepare']);
     expect(refusedSecond.bag['worker_agent_id']).toBeNull();
+  });
+
+  it('walks a missing envelope, a refusal, and a failed continue without minting a replacement', () => {
+    // Three returns, one observation. The identity that enters the continuation is the identity
+    // that leaves it. The only identities the walk records are the opening dispatch and the
+    // dispatch after the release — nothing is written between them.
+    const room = walk([complete('plan-prepare'), complete('assumptions-review'), complete(TERMINAL)]);
+    const paths: Record<string, Envelope[]> = {
+      'a missing envelope': [complete('plan-prepare'), absent(), complete('assumptions-review'), complete(TERMINAL)],
+      'a refusal': [complete('plan-prepare'), completeAfterRefusal('assumptions-review'), complete(TERMINAL)],
+      'a failed continue': [complete('plan-prepare'), gone(), complete('assumptions-review'), complete(TERMINAL)],
+    };
+    for (const [name, envelopes] of Object.entries(paths)) {
+      const result = walk(envelopes);
+      expect(result.stopped, name).toBe('condition');
+      expect(result.log, name).toEqual(room.log);
+      expect(result.log.filter((e) => e === 'advance'), name).toHaveLength(3);
+      expect(result.iterations[1]?.slice(0, 3), name).toEqual([
+        'continue-batched-worker',
+        'release-unheld-worker',
+        'enter-activity',
+      ]);
+      expect(result.minted, name).toEqual(['worker:implementation-analysis', 'worker:plan-prepare']);
+      expect(result.bag['worker_agent_id'], name).toBeNull();
+    }
   });
 
   it('dispatches after releasing a continuation that returns no envelope', () => {
