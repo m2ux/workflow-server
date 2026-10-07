@@ -1,0 +1,24 @@
+{
+  "note": "Triage of the resource-statement-home guard's findings. A statement a resource makes has one home, so correcting it corrects every reader; the same statement in a second resource drifts with nothing holding the copies together. The guard finds every such pair mechanically; whether the copy is debt to close or content that legitimately stands alone is a judgement, and this file records it. A site is keyed by the references that reach the resources holding the statement, joined by ' + ' in sorted order, so an entry survives a tree that joins this corpus under a grouping path. A duplication absent from this file is untriaged and reported; an entry matching nothing is stale and reported.",
+  "rationales": {
+    "seed-population": "A duplication the corpus already held when the guard arrived. It is debt to close by keeping one home and citing it at section grain, counted here so the guard is hard-zero for anything written after it rather than silent about everything.",
+    "independently-authored": "The two resources state the same thing because each is read on its own by a consumer that receives neither the other nor a citation into it. Closing this would send a reader somewhere the delivery never carries."
+  },
+  "entries": [
+    {
+      "site": "plain-language/resources/readme-seed.md + workflow-authoring/resources/readme-seed.md + workflow-design/resources/readme-seed.md",
+      "verdict": "debt",
+      "rationale": "seed-population"
+    },
+    {
+      "site": "work-package/resources/assumption-reconciliation.md + work-package/resources/research-reconciliation.md",
+      "verdict": "debt",
+      "rationale": "seed-population"
+    },
+    {
+      "site": "workflow-authoring/resources/readme-seed.md + workflow-design/resources/readme-seed.md",
+      "verdict": "debt",
+      "rationale": "seed-population"
+    }
+  ]
+}
