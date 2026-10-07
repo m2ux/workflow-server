@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 ## Capability
@@ -11,13 +11,13 @@ Techniques for common Jira and Confluence tasks via the Atlassian MCP server —
 
 ### cloudId
 
-UUID of the target Atlassian cloud site. Required by every product-specific technique.
+*(optional until resolve-cloud-id caches it)* UUID of the target Atlassian cloud site. A site-scoped call passes it; user-info takes none.
 
 ## Rules
 
 ### resolve-cloud-id-once
 
-Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the `{cloudId}`. Every product-specific technique requires it.
+Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the `{cloudId}`. A site-scoped call passes that id; when the id is absent the call resolves it and retries. [user-info](./user-info.md) takes no cloud id.
 
 ### content-format-markdown
 
