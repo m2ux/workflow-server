@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,7 +15,11 @@ Shared inputs and domain invariants for every plain-language technique in this g
 
 ### controlled_language
 
-*(optional)* Default `false`. When `true`, the technique applies the [ASD-STE100 overlay](../resources/asd-ste100.md) over the ISO 24495-1 base for technical documentation.
+*(optional)* When `true`, the technique applies the [ASD-STE100 overlay](../resources/asd-ste100.md) over the ISO 24495-1 base for technical documentation.
+
+#### default
+
+`false`
 
 ## Rules
 

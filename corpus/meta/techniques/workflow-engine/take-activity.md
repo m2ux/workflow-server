@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -23,7 +23,11 @@ Advance a session this context owns onto an activity and carry that activity her
 
 ### agent_technique
 
-Canonical agent technique this context follows for the activity — default workflow-engine::activity-worker.
+Canonical agent technique this context follows for the activity.
+
+#### default
+
+`workflow-engine::activity-worker`
 
 ## Outputs
 
@@ -46,7 +50,7 @@ The opaque trace tokens this entry accumulated, one per `next_activity` call tha
 
 ### 2. Carry the activity
 
-- Follow `{agent_technique}` here — [activity-worker](./activity-worker.md) by default — with `{variable_bag}` supplying the bindings its steps resolve against: call `get_activity { session_index, context_tokens }`, execute the activity's steps, and finalise per [finalize-activity](./finalize-activity.md); hold what that produced as `{worker_result}`
+- Follow `{agent_technique}` here — [activity-worker](./activity-worker.md) — with `{variable_bag}` supplying the bindings its steps resolve against: call `get_activity { session_index, context_tokens }`, execute the activity's steps, and finalise per [finalize-activity](./finalize-activity.md); hold what that produced as `{worker_result}`
   > - Pass `{checkpoint_reply}` to `{agent_technique}` where it is bound.
   > - Delivery is scoped to this context's own identity, which one context legitimately holds for a session it owns (`agent-id-scopes-delivery`).
 

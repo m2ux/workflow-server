@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.16.0
+  version: 1.17.0
 ---
 
 ## Capability
@@ -15,7 +15,11 @@ Absolute path of the checkout under work.
 
 ### workflow_id
 
-Optional. Fresh-session workflow id (default `meta`). Ignored on resume.
+Optional. Fresh-session workflow id. Ignored on resume.
+
+#### default
+
+`meta`
 
 ### planning_folder
 
@@ -31,7 +35,7 @@ The user's free-form request that opened this session.
 
 ### target_workflow_id
 
-Optional. Catalog id of the client workflow. Distinct from `workflow_id`, which is the top-level session (default `meta`).
+Optional. Catalog id of the client workflow. Distinct from `workflow_id`, which is the top-level session.
 
 ### fresh_client
 
@@ -39,7 +43,11 @@ Optional. True means this call opens a new client despite resume phrasing.
 
 ### agent_id
 
-Agent identity stored on the session (default `orchestrator`).
+Agent identity stored on the session.
+
+#### default
+
+`orchestrator`
 
 ### context_mode
 
