@@ -1,11 +1,21 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
 
 Assumptions from the work classified against the bound assumption categories in the assumptions log.
+
+## Inputs
+
+### assumption_source
+
+The work the assumptions are drawn from — the design decision, the plan, the analysis, or the change under construction.
+
+### assumption_categories
+
+The categories an assumption is classified into.
 
 ## Outputs
 

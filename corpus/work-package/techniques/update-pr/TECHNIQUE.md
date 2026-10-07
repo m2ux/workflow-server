@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.7.2
+  version: 2.7.3
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ PR finalization for review — body update and ready mark, or consolidated revie
 
 ### branch_name
 
-The feature branch whose commits and PR are being updated
+*(optional)* The feature branch whose commits and PR are being updated. Absent when the run has not opened one.
 
 ### pr_number
 
@@ -27,7 +27,7 @@ Path to the repo root; used with `.engineering/` (in-tree or linked worktree) to
 
 ### target_path
 
-Path to the target checkout (where the PR lives), from which the target repo URL is resolved
+*(optional)* Path to the target checkout (where the PR lives), from which the target repo URL is resolved. Absent when the run has not opened that checkout.
 
 ### pr_template_variant
 
