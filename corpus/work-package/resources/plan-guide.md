@@ -1,0 +1,96 @@
+---
+name: plan-guide
+description: Guidelines for creating the work package plan artifact.
+metadata:
+  version: 1.4.1
+  order: 10
+  legacy_id: 10
+---
+
+# Work Package Plan Guide
+
+## Specification
+
+The work package plan is the detailed implementation specification: enough detail for an implementer to begin work.
+
+## When to Write the Plan
+
+Create it when the work package has 3+ distinct tasks, modifies multiple components or files, requires architectural decisions, or has performance/quality targets.
+
+## Template
+
+```markdown
+# [Work Package Name] - Implementation Plan
+
+> plan · [HIGH/MEDIUM/LOW] · [Planning/Ready/In Progress/Complete] · X-Yh agentic + Zh review · [date]
+
+## Overview
+
+### Problem & Scope
+[One line linking the canonical statement: Problem, scope, and success criteria: [requirements](requirements-elicitation.md). Do not restate them here.]
+
+## Inputs
+
+[One line per consumed artifact — link the section that shaped the approach (anchors permitted), never restate its findings:]
+- [Knowledge Base Research](kb-research.md#recommended-approach) — [what it contributed, one line]
+- [Implementation Analysis](implementation-analysis.md#gap-analysis) — [what it contributed, one line]
+
+## Proposed Approach
+
+### Solution Design
+[How will we solve the problem?]
+
+### Alternatives Considered
+| Option | Pros | Cons | Decision |
+|--------|------|------|----------|
+| Option A | Pro 1 | Con 1 | **Selected** |
+| Option B | Pro 1 | Con 1 | Rejected |
+
+### Assumptions
+[One line: Assumptions underlying the approach: [assumptions log](assumptions-log.md). Do not restate them here.]
+
+## Implementation Tasks
+
+### Task 1: [Name] (X-Y min)
+**Goal:** [Objective]
+**Deliverables:**
+- [The component or behaviour delivered, in words] — [description]
+- [The tests that cover it, in words] — [coverage]
+**Contract:**
+- **Signatures:** [public APIs, entry points or artifacts this task introduces or changes]
+- **Behaviours:** [observable behaviours under normal conditions]
+- **Error cases:** [refusals, failures and boundary conditions the contract names]
+- **Acceptance:** [checks that hold when the task is done]
+
+### Task 2: [Name] (X-Y min)
+[Continue pattern...]
+
+## Success Criteria
+
+[One line: Success criteria: [requirements](requirements-elicitation.md#success-criteria); baselines and measurement: [implementation analysis](implementation-analysis.md#baseline-metrics). Add ONLY task-level acceptance items that exist nowhere else, each linked to its gap ID.]
+
+## Testing Strategy
+
+[One line: Test cases and acceptance matrix: `test-plan.md`. Add ONLY ordering or fixture constraints the test plan does not carry.]
+
+## Dependencies & Risks
+
+### Requires (Blockers)
+[Omit this section if none]
+- [ ] Dependency A
+
+### Risks
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| [Risk 1] | HIGH/MEDIUM/LOW | HIGH/MEDIUM/LOW | [Strategy] |
+```
+
+## Rules
+
+- **Problem & Scope, Success Criteria, Testing Strategy, Assumptions** — link-only slots: a markdown link to the canonical home plus at most one line (see the [canonical-home map](./canonical-home-map.md#map)). Restating homed content in these slots is a conformance violation.
+- **Inputs** — one line per consumed artifact, linking the specific section that shaped the approach; never reproduce findings. The plan documents what it *decided*, the inputs document what was *learned*.
+- **Proposed Approach** — the plan's canonical content: describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale so reviewers and implementers can validate or challenge it. Design decisions home here (durable ones graduate to an ADR at completion).
+- **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverables and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
+- **Contract** — each task carries a Contract block with Signatures, Behaviours, Error cases and Acceptance. The block is the public specification an independent agent tests against before the code exists; it names what the task exposes and how it behaves, not how the code is structured. Omit none of the four fields; write `none` when a field has no content.
+- **Dependencies & Risks** — the planning risk register homes here: list blockers; every risk gets impact, probability, and a mitigation strategy.
+- **Line budget** — 150 lines excluding each task's Contract block. A Contract stays within 12 lines. A plan over budget is restating homed content or padding; cut before committing.
