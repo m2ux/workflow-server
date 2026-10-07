@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -21,6 +21,10 @@ The activity this advance retires — the one `{exit_id}`, `{step_manifest}` and
 
 Server-side worker identity the batch is carried under — the identity the delivery ledger is keyed on.
 
+### context_tokens
+
+The declared window of the context the batch is carried under, in tokens — the same figure that context declares on its own delivery calls, and what its bound is measured against.
+
 ## Outputs
 
 ### worker_result
@@ -29,7 +33,7 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### worker_agent_id
 
-The identity now holding the advanced activity: the one the batch was carried under when the continuation succeeded, or a freshly minted one when it did not and a replacement was spawned in its place.
+The identity now holding the advanced activity: the one the batch was carried under where the advance left it room for that activity and the continuation succeeded, or a freshly minted one where it did not and a replacement was spawned in its place.
 
 ### advance_trace_tokens
 
@@ -39,12 +43,13 @@ The opaque trace token the advancing `next_activity` call returned in `_meta.tra
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed, agent_id: worker_agent_id }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`.
+- Call `next_activity { session_index, activity_id, from_activity, exit: exit_id, step_manifest, variables_changed, agent_id: worker_agent_id, context_tokens }`; capture `_meta.trace_token` per `dispatch-activity.accumulate-trace-per-advance`, and hold the `may_continue` its batch reading returns as `{$batch_has_room}` — this context's standing against `{activity_id}`, the activity just advanced onto.
   > This call is the transition a commit has to precede (`commit-and-persist.commit-after-activity`). Where the finished activity has not landed, commit it first.
 
 ### 2. Compose the continuation stub
 
 - Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{variable_bag}` as substitutions, binding `activity_id` to the advanced activity and `agent_id` to `{worker_agent_id}`.
+  > Where `{batch_has_room}` is false the held context may not take the advanced activity, and nothing is composed for it: replace the context below.
 
 ### 3. Continue the worker
 
@@ -53,7 +58,7 @@ The opaque trace token the advancing `next_activity` call returned in `_meta.tra
 ### 4. Await the envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
-  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results (`dispatch-activity.reject-partial-worker-result`), which is also how a server refusal of the advanced activity surfaces — ends the batch here. Replace the context below.
+  > A continuation returning no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results (`dispatch-activity.reject-partial-worker-result`) — ends the batch here. Replace the context below.
 
 ### 5. Replace a spent context
 

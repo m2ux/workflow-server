@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -24,10 +24,6 @@ Array of artifact entries (`id`, `name`, `path`).
 ### selected_exit
 
 *(optional)* The exit a checkpoint answer in this activity selected.
-
-### batch_may_continue
-
-Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity (`activity-worker.batch-ends-where-the-server-says`).
 
 ## Outputs
 
@@ -71,15 +67,11 @@ Whether that destination opens several branches rather than one activity.
 
 The exit id this activity took; unset where it declares none.
 
-#### batch_may_continue
-
-Whether this context may take another activity, folded from the input of the same name.
-
 ## Protocol
 
 ### 1. Fold Activity Results
 
-- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Carry `{batch_may_continue}` unchanged: every successful envelope carries it.
+- Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}` and `{artifacts_produced}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied.
   > Where a checkpoint effect named an exit, include `{selected_exit}`.
 
 ### 2. Read Routing Destination

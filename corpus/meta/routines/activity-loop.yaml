@@ -1,5 +1,5 @@
 id: activity-loop
-version: 1.3.0
+version: 1.4.0
 name: Activity Loop
 description: >-
   Walk a session one activity at a time — enter the current activity and carry it, answer any
@@ -30,6 +30,8 @@ inputs:
     description: Whether the walk makes the advance onto `__terminal__`, which completes the session. Where false, the walk ends on the envelope that names `__terminal__`, held as `worker_result`, and the session stays on `from_activity`.
   - id: standing_activity
     description: The activity the session stands on, where an earlier walk left it. The walk opens on that activity and carries it without an advance. Unset, the walk opens on `initial_activity`.
+  - id: worker_context_tokens
+    description: The declared window of the contexts this walk dispatches workers into, in tokens, which each advance reads the worker's standing against. A caller that binds nothing supplies the window the harness gives those contexts.
 
 outputs:
   - id: current_activity
@@ -102,7 +104,7 @@ steps:
     steps:
       - kind: technique
         id: continue-batched-worker
-        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
+        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.next_activity_id != "__terminal__" && !worker_result.next_activity_fans
         technique:
           name: workflow-engine::continue-batch
           inputs:
@@ -110,6 +112,7 @@ steps:
             exit_id: "{worker_result.activity_exit}"
             session_index: session_index
             worker_agent_id: worker_agent_id
+            context_tokens: worker_context_tokens
             step_manifest: "{worker_result.steps_completed}"
             variables_changed: "{worker_result.variables_changed}"
             variable_bag: variables
@@ -313,8 +316,11 @@ steps:
             value: "{worker_result.next_activity_id}"
       - kind: action
         id: release-spent-worker
-        when: worker_result.result_type == "activity_complete" && (!worker_result.batch_may_continue || worker_result.next_activity_id == "__terminal__" || worker_result.next_activity_fans)
+        when: worker_result.result_type == "activity_complete" && (worker_result.next_activity_id == "__terminal__" || worker_result.next_activity_fans)
         actions:
+          # A destination no worker of this batch can take ends the batch here. Where the bound ends
+          # it instead, the advance that read the standing has already replaced the context for the
+          # activity it entered, so the identity the next iteration reads is a live one either way.
           - action: set
             target: worker_agent_id
             value: null

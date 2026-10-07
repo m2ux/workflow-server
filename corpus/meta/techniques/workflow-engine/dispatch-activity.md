@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.31.0
+  version: 1.32.0
 ---
 
 ## Capability
@@ -130,7 +130,7 @@ Delivery mode follows the agent context, not the session: one worker `agent_id` 
 
 ### batch-is-bounded-by-the-server
 
-A worker's batch is bounded at delivery, not by this technique's judgement: the server refuses the next activity once that context has been delivered the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the `activity_complete` envelope reports [`batch_may_continue`](./finalize-activity.md#batch_may_continue) true. That answer is given when the worker takes an activity, before the lazy fetches of that activity draw down the same budget, so a batch reported as having room can still be refused at the next boundary; the refusal is an ordinary outcome, met by ending the batch and spawning a replacement ([continue-batch](./continue-batch.md)).
+A worker's batch is bounded at delivery, not by this technique's judgement: the server refuses the next activity once that context has been delivered the cap of distinct activities or accumulated more delivery than its batch budget allows, and answers where a context stands against the activity an advance moves onto. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the advance that retires an activity reports room for the next one. That answer is read at the boundary, after everything the finished activity fetched has drawn down the same budget, so it is the standing the next delivery will be measured against; a context it refuses is replaced for that activity ([continue-batch](./continue-batch.md)), which is an ordinary outcome rather than a fault.
 
 ### reject-partial-worker-result
 

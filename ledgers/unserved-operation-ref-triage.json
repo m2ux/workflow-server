@@ -422,12 +422,6 @@
       "rationale": "operation-reference-predating-the-guard"
     },
     {
-      "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:139",
-      "op": "`batch_may_continue`",
-      "verdict": "fix-later",
-      "rationale": "operation-reference-predating-the-guard"
-    },
-    {
       "site": "corpus/meta/techniques/workflow-engine/dispatch-activity.md:58",
       "op": "sync-progress-status",
       "verdict": "fix-later",
