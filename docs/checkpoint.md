@@ -489,7 +489,7 @@ Five earlier reads are exempt, because each already has an answer or loses nothi
 | Exempt                                   | Why                                                                                                       |
 | ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | The variable declares a default          | Seeding puts it in the bag at session creation, so the earlier gate reads the default rather than nothing |
-| The earlier gate tests presence          | A presence test answers on a missing variable; absence is one of its two answers                          |
+| The earlier gate tests presence          | A presence test answers on a missing variable; absence is one of its two answers, whether the gate writes `exists` or the inline test that holds for every present non-null value |
 | The earlier step only announces          | An announcement that does not fire costs nothing                                                          |
 | The deciding option leaves the activity  | The run meets the earlier step again on its next visit, and that visit reads what the option wrote        |
 | The two gates demand incompatible values | No single run reaches both steps, so the earlier one was never waiting on this decision                   |
