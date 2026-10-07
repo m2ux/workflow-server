@@ -116,6 +116,7 @@ describe('guard registry', () => {
 
   it('lists the engine workflow files', () => {
     expect(readdirSync(join(REPO, '.github/workflows')).sort()).toEqual([
+      'coverage-walk.yml',
       'deploy-docs.yml',
       'docker-publish.yml',
       'verify.yml',
