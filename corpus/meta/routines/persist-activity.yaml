@@ -1,10 +1,12 @@
 id: persist-activity
-version: 1.4.0
+version: 1.6.0
 name: Persist Activity
 description: >-
   Mark a completed activity's Progress and lifecycle status, commit its source changes and its
-  engineering artifacts, push that engineering commit, and emit the run status once the push is
-  on the remote. The completion status lands on the cell the in-progress mark used, so the commit
+  engineering artifacts, push both commits, and emit the run status once the engineering push is
+  on the remote. The source commit takes the shape the component has: a submodule carries its own
+  commit and the parent's pointer, and a component inside the host checkout carries its changes on
+  the host branch. The completion status lands on the cell the in-progress mark used, so the commit
   carries the outcome. Where the activity holds the branches a fan retired, the run persists once
   for all of them.
 
@@ -35,6 +37,18 @@ outputs:
     description: Whether the engineering push is on the remote tracking branch, with every named path in that commit.
 
 internals:
+  - id: source_kind
+    description: Whether the component under work is a submodule of the host.
+  - id: source_repo_path
+    description: The checkout the source commit and its push run in.
+  - id: source_branch
+    description: The branch checked out where the source commit lands, which the source push sends.
+  - id: source_paths
+    description: The component files this activity's source commit names.
+  - id: source_commit_message
+    description: The Conventional Commits message the source commit carries.
+  - id: has_source_changes
+    description: Whether this activity left any component file to commit.
   - id: paths
     description: The engineering files this activity's commit names.
   - id: commit_message
@@ -60,7 +74,26 @@ steps:
         seed_profile: seed_profile
         session_index: session_index
   - kind: technique
-    id: commit-source
+    id: prepare-source-commit
+    technique:
+      name: workflow-engine::prepare-source-commit
+      inputs:
+        component_path: component_path
+        host_repo_path: host_repo_path
+        planning_folder_path: planning_folder_path
+        activity_id: activity_id
+        workflow_id: workflow_id
+        session_index: session_index
+      outputs:
+        source_kind: source_kind
+        source_repo_path: source_repo_path
+        source_branch: source_branch
+        source_paths: source_paths
+        source_commit_message: source_commit_message
+        has_source_changes: has_source_changes
+  - kind: technique
+    id: commit-source-submodule
+    when: source_kind == "submodule" && has_source_changes
     technique:
       name: git::commit-submodule
       inputs:
@@ -70,6 +103,25 @@ steps:
         planning_folder_path: planning_folder_path
       outputs:
         paths: source_paths
+  - kind: technique
+    id: commit-source-files
+    when: source_kind != "submodule" && has_source_changes
+    technique:
+      name: git::commit-regular-files
+      inputs:
+        paths: source_paths
+        commit_message: source_commit_message
+        planning_folder_path: planning_folder_path
+  - kind: technique
+    id: push-source-branch
+    when: source_kind != "submodule" && has_source_changes
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: source_repo_path
+        branch: source_branch
+        remote_name: origin
+        planning_folder_path: planning_folder_path
   - kind: technique
     id: prepare-engineering-commit
     technique:
