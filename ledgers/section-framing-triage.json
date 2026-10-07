@@ -2,7 +2,7 @@
   "note": "Triage of the section-framing guard's findings. A resource cited by anchor is delivered one section at a time, so prose above the first '##' reaches whoever loads the whole file and nobody who asks for a section. The guard finds every such site mechanically; whether the prose is an obligation or an orientation is a judgement, and this file records it. orientation-only = the framing says what the resource is and who reads it, so a section consumer needs none of it. operative-owed-a-section = the framing states a rule that binds work the section consumer does, which is real debt: suppressed here and counted, to be closed by moving the rule into a section a citer can request. A site absent from this file is untriaged and reported; an entry matching nothing is stale and reported.",
   "rationales": {
     "orientation-only": "The framing names the resource, its subject and its reader. A consumer that asks for one section can apply that section without it, so nothing is stranded. This is the shape the creation guides share: 'Creation guide for bare filename X', then what the document answers.",
-    "operative-owed-a-section": "The framing states a rule rather than an orientation, and a consumer citing a section never receives it. Closing this means moving the rule into a section a citer can request, or into the technique that applies it \u2014 a content change in the owning workflow, not a triage entry. Counted here so the debt is visible rather than silent."
+    "operative-owed-a-section": "The framing states a rule rather than an orientation, and a consumer citing a section never receives it. Closing this means moving the rule into a section a citer can request, or into the technique that applies it — a content change in the owning workflow, not a triage entry. Counted here so the debt is visible rather than silent."
   },
   "entries": [
     {
@@ -52,46 +52,6 @@
     },
     {
       "site": "meta/resources/writing-register.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/change-surface.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/evidence-log.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/findings-register.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/grading-rubric.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/investigation-plan.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/publication-record.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/review-format.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "midnight-system-review/resources/verdict-rubric.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
     },

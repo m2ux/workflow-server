@@ -19,8 +19,8 @@ One object per target, carrying the three count groups, the activity ids in orde
   "catalog_source": "committed workflow catalog (list_workflows)",
   "targets": [
     {
-      "workflow_id": "midnight-system-review",
-      "title": "Midnight System Review",
+      "workflow_id": "codebase-wiki",
+      "title": "Codebase Wiki Workflow",
       "version": "2.4.0",
       "initial_activity": "01-intake-and-scope",
       "file_counts": {
