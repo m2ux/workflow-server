@@ -33,9 +33,9 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 5. **Create issues.**
    Create them with [Create Issue](commands.md#create-issue), so that every number exists before it is cited:
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
-   2. the epics in dependency order, each citing the initiative and the epics created before it, with placeholders for any it cites that do not exist yet;
+   2. the epics in dependency order, with placeholders in Depends on for any epic it cites that does not exist yet;
    3. a [Patch Body](commands.md#patch-body) replacing every remaining placeholder, in the initiative and in any epic that holds one. Grep the local files for `#E[0-9]` until none is left;
-   4. a task issue from the [task template](../templates/task.md) for each task that needs one, citing its epic, its acceptance criteria written to this mode's Criteria at creation rule;
+   4. a task issue from the [task template](../templates/task.md) for each task that needs one, its acceptance criteria written to this mode's Criteria at creation rule;
    5. [Check Format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch Body](commands.md#patch-body) from each fixed body.
 6. **Review.**  Run the [Review Passes](review-passes.md):
    - Fetch the issues as [Fetch](review-passes.md#fetch) states.

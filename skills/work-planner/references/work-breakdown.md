@@ -91,7 +91,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Tasks with their own issue.**
   - The row links the pull request, not the issue.
-  - The pull request's body cites the issue by its URL.
+  - The pull request's body cites the issue with a closing keyword, not under References.
   - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
 - **Issues backing several tasks.**
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.

@@ -32,7 +32,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
    - **In flight.**  Open pull requests still linked from no row. Match them as in step 4.
    - **Uncited.**
-     A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
+     A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
    - **Note.**  A row links its task issue. Link the pull request as in step 4.
    - **Open questions.**
      The epic's Open Questions section remains. This mode's Open questions rule says what follows.

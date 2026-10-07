@@ -202,6 +202,8 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything.
   - How the plan evolved goes in the planning record and in commit and pull request bodies.
 - **Other initiatives.**  Editing another initiative's issue needs the user's explicit approval.
+- **References.**
+  The References section does not link issues or pull requests on the same board. Relational logic is communicated by the GitHub project, not by bare links.
 - **Replies to feedback.**
   - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on Issue](references/commands.md#comment-on-issue).
   - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.

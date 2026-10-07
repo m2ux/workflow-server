@@ -20,4 +20,4 @@
 
 ## References
 
-- **R1.** [{{Epic title}}](https://github.com/{{OWNER}}/{{REPO}}/issues/{{EPIC_ISSUE}}) — I{{NN}} E{{NN}}, the epic this task belongs to.
+- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there. Delete the section when there is none.}}
