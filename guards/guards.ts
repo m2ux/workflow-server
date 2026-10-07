@@ -650,6 +650,16 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every reference a technique makes to another technique is classified, a technique being served only where a role contract names it',
     form: 'none',
   },
+  {
+    id: 'role-barred-calls',
+    script: 'guards/check-role-barred-calls.ts',
+    npmScript: 'check:role-calls',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'no instruction a role receives turns on a call that role is forbidden to make',
+    form: 'none',
+  },
 ];
 
 export const CORPUS_GUARDS = GUARDS.filter((g) => g.scope === 'corpus');
