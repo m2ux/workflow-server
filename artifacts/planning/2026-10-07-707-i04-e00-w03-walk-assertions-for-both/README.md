@@ -12,6 +12,7 @@ This work puts the assertion behind each: the all-workflows walk fails a deliver
 
 | Artifact | What it holds |
 | --- | --- |
+| [W03](w03.md) | Walk assertions for both records — the two predicates, where each assertion sits, and the fixture run that shows it bite |
 
 ## Links
 
