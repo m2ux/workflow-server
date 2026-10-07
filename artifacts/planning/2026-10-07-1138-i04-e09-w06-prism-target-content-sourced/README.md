@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-The inherited-input-never-spent guard reports no finding in prism. Target content a descendant reads is sourced from the container that requires it.
+The inherited-input-never-spent guard reports no finding in prism. Target content stays on the root container and is optional, so a step that never reads it inherits no required slot.
 
 Prism is the last family this set of tasks clears before the guard can join the standard sweep. This task is that family clear.
 
@@ -12,6 +12,7 @@ Prism is the last family this set of tasks clears before the guard can join the 
 
 | Artifact | What it holds |
 | --- | --- |
+| [W06](w06.md) | Prism target content marked optional on the root container |
 
 ## Links
 
