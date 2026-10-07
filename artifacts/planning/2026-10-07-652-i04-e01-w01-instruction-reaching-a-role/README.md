@@ -12,6 +12,7 @@ This work delivers both checks and registers them in the standard sweep. Each ha
 
 | Artifact | What it holds |
 | --- | --- |
+| [W01](w01.md) | The work item: the three readings the role check takes, the conditional-clause carve-out, and the parts of the work |
 
 ## Links
 
