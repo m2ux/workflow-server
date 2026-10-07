@@ -12,6 +12,7 @@ The guard already names this class. This task is workflow-authoring cleared of i
 
 | Artifact | What it holds |
 | --- | --- |
+| [Work item](w02.md) | The request the session seeds, and the borrowed inputs a step is not required to hold |
 
 ## Links
 
