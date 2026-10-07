@@ -27,7 +27,9 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - In an initiative: the initiative's criteria the epic serves, so each traces to its epics.
 - **Depends on.**
   References only, with no prose, and only what no other entry in the cell already implies.
-  - In an epic: what must be true before the task starts. An earlier task in the epic (`W03`, `W04–W09`), a task or the whole of an earlier epic (`[E01:W02](…)`, `[E01](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
+  - In an epic, a task row names the rows it depends on. An earlier task in the epic (`W03`, `W04–W09`), a row of an earlier epic (`[E01:W02](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
+  - A task row names a whole epic (`[E01](…)`) only when every row of that epic must hold before the task starts, which is when the task consumes an output every row of the epic produces. The dependency is the row that produces the output the task consumes.
+  - Planning completes cross-epic dependencies to rows before any issue of the epic is created. Both tables exist, and each edge names the row that produces what the dependent row consumes.
   - In an initiative: epics only, never tasks. The other epics this epic's tasks depend on, less those another named epic already depends on (`[E02](…), [E04](…)`). [Check Dependencies](commands.md#check-dependencies) derives it from the epic tables.
 - **Task grain.**
   - A task is one pull request's worth of work.

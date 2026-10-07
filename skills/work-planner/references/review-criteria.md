@@ -125,6 +125,7 @@ An epic states one slice of the initiative's design and lists the tasks that del
 - A task delivering more than three criteria is split into tasks one pull request each can deliver.
 - Depends on is references only. A task depending on a later task in its epic is a backward reference.
 - A dependency listed twice, or already implied by another in the same cell, is unsound.
+- A whole-epic dependency the epic's own rows do not all establish is unsound, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
 - A cycle is unsound.
 - A Joins pair that is one-way, or where one task depends on the other, directly or through a task outside the pair, is unsound.
 - A pair [Check Dependencies](commands.md#check-dependencies) prints, and that the planning record does not name, is unfinished planning.

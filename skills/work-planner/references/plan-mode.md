@@ -21,6 +21,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
+   - Complete cross-epic dependencies to rows, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, before any issue of the epic is created.
    - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines.
    - Every test the work calls for accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The content steers which kinds, including the project's system test when the work calls for it.
    - Spec, create, and test reusable routines, techniques, and resources before an activity binds them, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
