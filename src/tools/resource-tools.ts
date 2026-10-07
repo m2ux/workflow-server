@@ -21,7 +21,7 @@ import {
   describeSessionStoreError,
   SessionStoreError,
   ensurePlanningFolder,
-  allocateDerivedPlanningSlug,
+  mintUnnamedPlanningSlug,
   sessionFileExists,
   createSessionFile,
   replaceSessionFile,
@@ -198,7 +198,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'A meta session without `working_directory` is a transient bootstrap in a temp folder, unless `planning_folder` names a folder that already holds a session; `dispatch_child` promotes it later. `resumed` says whether the call opened a session that already existed, so a resume by path that missed reads false. Children use `dispatch_child`, not this tool. ' +
         'Every session records `execution_path`, `agent`: a caller walks the definition. The session records it and this response echoes it. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks. ' +
-        'With `working_directory`, planning lives under the top-level project folder holding that checkout, `<project>/.engineering/artifacts/planning/`, shared by every clone and worktree inside it. A derived dated slug that already holds a session there opens the next free `YYYY-MM-DD-<workflow_id>-N` folder in the same call. ' +
+        'With `working_directory`, planning lives under the top-level project folder holding that checkout, `<project>/.engineering/artifacts/planning/`, shared by every clone and worktree inside it. A call that pins no `planning_folder` opens a `YYYY-MM-DD-<token>` folder there, named for nothing: pin the folder to name the session for the work it carries. ' +
         'The bag is seeded with `user_request`, `planning_folder_path`, and the checkout facts `host_repo_path`, `target_repo`, `component_path`, `is_monorepo`, as host paths; a client this call opens and a child `dispatch_child` opens carry the same facts. ' +
         'A fresh durable meta session that uniquely matches a catalog workflow, and that does not state resume intent, also dispatches that client in this call and returns `client.session_index` plus `client.workflow.initialActivity`. ' +
         'A durable meta start that cannot uniquely open a client returns a `decision` with no `session_index`; retry with `user_request`, `target_workflow_id`, `planning_folder`, or `fresh`. ' +
@@ -309,8 +309,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         : undefined;
 
       // A fresh durable session plans under the project the checkout belongs to. A
-      // pinned new folder sits in that root; otherwise the dated slug takes the
-      // first number free in that root alone.
+      // pinned new folder sits in that root; a call that pins none takes an
+      // unnamed dated folder there.
       let durableRoot: ResolvedSessionRoot | undefined;
       let planning_slug = pinnedFolder !== undefined ? basename(pinnedFolder) : undefined;
       if (!resumeFolder && !wouldBeTransient) {
@@ -322,15 +322,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           throw new Error(
             `start_session: planning_folder '${planning_folder}' is not in the planning root of this session, ` +
             `'${presentPlanningPath(rootPlanningDir) ?? rootPlanningDir}'. ` +
-            `Pin a folder directly under that root, or omit planning_folder to take the next dated folder there.`,
+            `Pin a folder directly under that root, or omit planning_folder to take an unnamed dated folder there.`,
           );
         }
         if (derived && pinnedFolder === undefined) {
-          planning_slug = await allocateDerivedPlanningSlug(
-            durableRoot.engineeringDir,
-            `${new Date().toISOString().slice(0, 10)}-${effectiveWfId}`,
-            { planningRelativeDir: durableRoot.planningRelativeDir },
-          );
+          planning_slug = mintUnnamedPlanningSlug();
         }
       }
       const derivedDurable = derived !== undefined && pinnedFolder === undefined;
@@ -738,15 +734,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // `planning_slug` argument (callers that derive a descriptive
         // initiative slug AFTER start_session pass it here); the slug the
         // caller supplied to start_session (looked up via the folder-keyed
-        // registry); a `YYYY-MM-DD-<workflow_id>` fallback. start_session
+        // registry); an unnamed `YYYY-MM-DD-<token>` folder. start_session
         // does not register synthetic `transition-<uuid>` slugs in the
-        // folder registry, so the fallback fires for the common case of
-        // bootstrap-only meta sessions and produces a stable dated folder
-        // name instead of leaking the transitional UUID into the workspace.
+        // folder registry, so the last fires for a bootstrap-only meta
+        // session that reached dispatch without naming its work, and keeps
+        // the transitional UUID out of the workspace.
         const promotedSlug =
           planning_slug
           ?? lookupTransientSlugByFolder(parentFolder)
-          ?? `${new Date().toISOString().slice(0, 10)}-${workflow_id}`;
+          ?? mintUnnamedPlanningSlug();
         // Promote using session.json#repo only (bound above if dispatch passed repo).
         const promoteRoot = (() => {
           try {

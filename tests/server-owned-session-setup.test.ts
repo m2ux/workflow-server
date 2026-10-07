@@ -28,9 +28,8 @@ async function initRepo(dir: string, origin?: string): Promise<void> {
   if (origin) await git(dir, ['remote', 'add', 'origin', origin]);
 }
 
-function datedSlug(workflowId: string): string {
-  return `${new Date().toISOString().slice(0, 10)}-${workflowId}`;
-}
+/** Shape of a planning slug the server mints for a session that pinned no folder. */
+const UNNAMED_SLUG = /^\d{4}-\d{2}-\d{2}-[A-Z2-7]{6}$/;
 
 function toolText(result: { content: Array<{ text?: string }> }): string {
   return result.content[0]?.text ?? '';
@@ -80,7 +79,8 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(body['session_index']).toMatch(/^[A-Z2-7]{6}$/);
     expect(body['repo']).toBe('acme/workflow-server');
     expect(body['repo_source']).toBe('origin');
-    const slug = datedSlug('seed-fixture');
+    const slug = body['planning_slug'] as string;
+    expect(slug).toMatch(UNNAMED_SLUG);
     const folder = planningFolderPath(harness.workspaceDir, slug);
     expect(existsSync(join(folder, SESSION_FILE_NAME))).toBe(true);
     expect(lookupTransientBySlug(slug)).toBeUndefined();
@@ -143,7 +143,7 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
     expect(planning.filter((n) => n.includes('tc04'))).toEqual([]);
   });
 
-  it('PR528-TC-05: derived slug that already holds a session opens the next free dated folder', async () => {
+  it('PR528-TC-05: a second unnamed session on one checkout opens a folder of its own', async () => {
     const checkout = join(harness.workspaceDir, 'tc05', 'workflow-server');
     await initRepo(checkout, 'https://github.com/acme/workflow-server.git');
     const first = await callOk('start_session', {
@@ -151,7 +151,8 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
       working_directory: checkout,
       target_workflow_id: 'seed-fixture',
     });
-    const slug = datedSlug('meta');
+    const slug = first['planning_slug'] as string;
+    expect(slug).toMatch(UNNAMED_SLUG);
     const folder = planningFolderPath(harness.workspaceDir, slug);
     const sessionBefore = readFileSync(join(folder, SESSION_FILE_NAME));
     const sealBefore = readFileSync(join(folder, SEAL_FILE_NAME));
@@ -161,7 +162,8 @@ describe.sequential('server-owned session setup (PR528-TC-01..10)', () => {
       target_workflow_id: 'seed-fixture',
     });
     expect(second['session_index']).not.toBe(first['session_index']);
-    expect(second['planning_slug']).toBe(`${slug}-2`);
+    expect(second['planning_slug']).toMatch(UNNAMED_SLUG);
+    expect(second['planning_slug']).not.toBe(slug);
     expect(readFileSync(join(folder, SESSION_FILE_NAME))).toEqual(sessionBefore);
     expect(readFileSync(join(folder, SEAL_FILE_NAME))).toEqual(sealBefore);
   });
