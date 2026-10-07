@@ -1,9 +1,10 @@
 import { execFile } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { basename, dirname, join, relative, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { normalizeRepoPath, type PathPresentationMap } from '../../config.js';
-import { isPathUnderRoot, receivePathFromAgent } from '../path-presentation.js';
+import { isPathUnderRoot, presentPathToAgent, receivePathFromAgent } from '../path-presentation.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -238,6 +239,19 @@ function sitsUnderSearchRoots(path: string, searchRoots: string[]): boolean {
   return searchRoots.some((root) => isPathUnderRoot(path, root));
 }
 
+function normalizeMappedRoots(roots: string[]): string[] {
+  const out = new Set<string>();
+  for (const r of roots) {
+    if (!r) continue;
+    const resolved = resolve(r);
+    out.add(resolved);
+    if (basename(resolved) === '.engineering') {
+      out.add(dirname(resolved));
+    }
+  }
+  return [...out];
+}
+
 function decision(
   name: DerivationDecisionName,
   facts: DerivationFacts,
@@ -258,11 +272,50 @@ function decision(
 export async function deriveWorkingDirectory(
   input: DeriveWorkingDirectoryInput,
 ): Promise<WorkingDirectoryDerivation> {
-  const inverted = receivePathFromAgent(input.workingDirectory, input.pathPresentation);
-  if (!inverted) {
+  if (!input.workingDirectory || input.workingDirectory.trim() === '') {
+    return { kind: 'refuse', message: 'working_directory is empty after path inversion' };
+  }
+  const trimmed = input.workingDirectory.trim();
+  if (!isAbsolute(trimmed)) {
+    return {
+      kind: 'refuse',
+      message:
+        `working_directory '${input.workingDirectory}' is not an absolute path. ` +
+        'Pass the absolute path of a repository working tree.',
+    };
+  }
+
+  const inverted = receivePathFromAgent(trimmed, input.pathPresentation);
+  if (!inverted || inverted.trim() === '') {
     return { kind: 'refuse', message: 'working_directory is empty after path inversion' };
   }
   const workingDir = resolve(inverted);
+
+  const rawRoots = (input.mappedRoots ?? input.searchRoots)?.filter(Boolean) ?? [];
+  const effectiveRoots = normalizeMappedRoots(rawRoots);
+
+  if (effectiveRoots.length > 0 && !sitsUnderSearchRoots(workingDir, effectiveRoots)) {
+    const presentedRoots = [
+      ...new Set(
+        effectiveRoots.map((r) => presentPathToAgent(r, input.pathPresentation) ?? r),
+      ),
+    ];
+    return decision(
+      'unmapped-root',
+      {},
+      [{ search_roots: presentedRoots }],
+      'Pass a working_directory under a checkout this server serves — the projects root, that checkout, or a branch worktree inside it.',
+    );
+  }
+
+  if (!existsSync(workingDir)) {
+    return {
+      kind: 'refuse',
+      message:
+        `working_directory '${workingDir}' does not exist. ` +
+        'Pass the absolute path of a repository working tree.',
+    };
+  }
 
   const innermost = await showToplevel(workingDir);
   if (!innermost) {
@@ -309,12 +362,20 @@ export async function deriveWorkingDirectory(
     repoSource = 'caller';
   }
 
-  const roots = (input.mappedRoots ?? input.searchRoots)?.filter(Boolean) ?? [];
-  if (roots.length > 0 && !sitsUnderSearchRoots(innermost, roots) && !sitsUnderSearchRoots(ascent.hostToplevel, roots)) {
+  if (
+    effectiveRoots.length > 0 &&
+    !sitsUnderSearchRoots(innermost, effectiveRoots) &&
+    !sitsUnderSearchRoots(ascent.hostToplevel, effectiveRoots)
+  ) {
+    const presentedRoots = [
+      ...new Set(
+        effectiveRoots.map((r) => presentPathToAgent(r, input.pathPresentation) ?? r),
+      ),
+    ];
     return decision(
       'unmapped-root',
       facts,
-      [{ toplevel: innermost, host_repo_path: ascent.hostToplevel, search_roots: roots }],
+      [{ toplevel: innermost, host_repo_path: ascent.hostToplevel, search_roots: presentedRoots }],
       'Pass a working_directory under a checkout this server serves — the projects root, that checkout, or a branch worktree inside it.',
     );
   }
