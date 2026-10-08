@@ -37,7 +37,7 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
    - Check them whenever an initiative or epic is aligned: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as an [Interview](interview.md). An initiative Depends on cell takes the epics it derives.
 9. **Coverage.**
-   For each epic being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Epic](commands.md#sync-epic) with `--fix`.
+   For each epic being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests), [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links), and run [Sync Epic](commands.md#sync-epic) with `--fix`.
    - **Unmet.**
      Each task [Sync Epic](commands.md#sync-epic) reports unmet is a gap, as this mode's Gap rule states.
    - **Repair.**
@@ -46,7 +46,7 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
      A row that links a pull request the fetch did not return is fetched with [Fetch Pull Request](commands.md#fetch-pull-request), and the sync is run again.
    - **Unlinked.**
      A criterion ticked while its row links no pull request and no commit: link the one delivery [Fetch Comments](commands.md#fetch-comments) names, a path taken as the commit that holds it, then run the sync again. Several candidates, or none, go to the user as an [Interview](interview.md).
-   For an initiative being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and run [Sync Initiative](commands.md#sync-initiative) with `--fix` and every epic its table links.
+   For an initiative being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests), [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links), and run [Sync Initiative](commands.md#sync-initiative) with `--fix` and every epic its table links.
    - **Ready to verify.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
    - **Ticked early.**

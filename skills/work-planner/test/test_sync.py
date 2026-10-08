@@ -8,19 +8,27 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import epic_body, initiative_body, issue, pr, run, url
+from fixtures import epic_body, initiative_body, issue, links, pr, run, url
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from format import Review  # noqa: E402
 
 
-def synced(record: dict, pulls: list[dict], *args: str) -> str:
+def links_file(root: Path, held: list[dict]) -> str:
+    """The issue links its pull requests hold, as --links reads them."""
+    path = root / 'links.json'
+    path.write_text(json.dumps(held))
+    return str(path)
+
+
+def synced(record: dict, pulls: list[dict], *args: str, held: list[dict] = ()) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
         body.write_text(json.dumps(record))
         pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
         done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                   '--links', links_file(root, list(held)),
                    '--project', project(root, 'docker', 'main', 'workflows'), *args)
         if done.returncode != 0:
             raise AssertionError(done.stderr.strip() or done.stdout)
@@ -82,7 +90,8 @@ class Done(unittest.TestCase):
 
 
 class TaskLinks(unittest.TestCase):
-    def run_sync(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = ()):
+    def run_sync(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = (),
+                 held: list[dict] = ()):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
@@ -95,6 +104,7 @@ class TaskLinks(unittest.TestCase):
                 task_paths.append(str(path))
             extra = ['--tasks', *task_paths] if task_paths else []
             done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                       '--links', links_file(root, list(held)),
                        '--project', project(root, 'docker', 'main', 'workflows'), *extra, *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
@@ -137,32 +147,40 @@ class TaskLinks(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn(f"[W01]({url('pull', 950)})", fixed)
         self.assertNotIn(url('issues', 3), fixed)
-        self.assertIn('uncited: #950 does not link W01 #3 with a closing keyword', done.stdout)
+        self.assertIn('uncited: #950 does not link W01 #3', done.stdout)
 
-    def test_a_pull_request_that_closes_the_task_issue_is_not_uncited(self):
+    def test_a_pull_request_whose_development_field_links_the_task_issue_is_not_uncited(self):
         task = issue(3, '[I01:E00:W01] Task: One')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        pulls = [pr(950, '[I01:E00] Work', body=f"Closes {url('issues', 3)}")]
-        done, fixed = self.run_sync(epic, pulls, '--link', 'W01=950', tasks=[task])
+        done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950',
+                                    tasks=[task], held=[links(950, 3)])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn(f"[W01]({url('pull', 950)})", fixed)
         self.assertNotIn('uncited:', done.stdout)
 
-    def test_a_pull_request_closing_the_task_issue_by_number_is_not_uncited(self):
+    def test_a_pull_request_linking_another_issue_is_uncited(self):
         task = issue(3, '[I01:E00:W01] Task: One')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work', body='Closes #3')], '--link', 'W01=950',
-                                tasks=[task])
+        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950',
+                                tasks=[task], held=[links(950, 4)])
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertNotIn('uncited:', done.stdout)
+        self.assertIn('uncited: #950 does not link W01 #3', done.stdout)
 
-    def test_a_pull_request_that_mentions_the_task_issue_without_a_keyword_is_uncited(self):
+    def test_a_link_to_the_same_number_in_another_repository_is_uncited(self):
         task = issue(3, '[I01:E00:W01] Task: One')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        pulls = [pr(950, '[I01:E00] Work', body=f"See {url('issues', 3)}")]
+        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950',
+                                tasks=[task], held=[links(950, 3, issue_repo='o/s')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('uncited: #950 does not link W01 #3', done.stdout)
+
+    def test_a_pull_request_that_names_the_task_issue_in_its_body_is_uncited(self):
+        task = issue(3, '[I01:E00:W01] Task: One')
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', body=f"Closes {url('issues', 3)}")]
         done, _ = self.run_sync(epic, pulls, '--link', 'W01=950', tasks=[task])
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertIn('uncited: #950 does not link W01 #3 with a closing keyword', done.stdout)
+        self.assertIn('uncited: #950 does not link W01 #3', done.stdout)
 
     def test_a_merged_pull_request_with_an_unticked_criterion_is_unmet(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
@@ -250,6 +268,32 @@ class TaskLinks(unittest.TestCase):
         self.assertIn('cleared: W01', done.stdout)
         self.assertNotIn('| ✓ |', fixed)
 
+    def test_the_links_query_names_every_fetched_pull_request(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            pulls_path = Path(tmp, 'prs.json')
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in
+                                            [pr(950, '[I01:E00] Work'), pr(951, '[I01:E00] More')]))
+            done = run('sync.py', '--links-query', '--prs', str(pulls_path))
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('{nodes(ids:["PR_node950", "PR_node951"])', done.stdout)
+        self.assertIn('closingIssuesReferences(first:10)', done.stdout)
+
+    def test_the_links_query_needs_the_pull_requests(self):
+        done = run('sync.py', '--links-query')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--links-query needs --prs', done.stderr)
+
+    def test_pull_requests_without_their_issue_links_are_refused(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path = root / 'issue.json', root / 'prs.json'
+            body.write_text(json.dumps(epic))
+            pulls_path.write_text(json.dumps(pr(950, '[I01:E00] Work')))
+            done = run('sync.py', str(body), '--prs', str(pulls_path))
+            self.assertNotEqual(done.returncode, 0)
+            self.assertIn('needs --links', done.stderr)
+
     def test_a_closed_task_issue_stays_delivered_until_its_pull_request_is_linked(self):
         task = issue(3, '[I01:E00:W01] Task: Done', 'closed')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
@@ -308,7 +352,7 @@ def project(root: Path, *names: str) -> str:
 
 
 class InitiativeClose(unittest.TestCase):
-    def run_sync(self, pulls: list[dict] | None, ticked: bool = True, branches: tuple[str, ...] = ('docker', 'main', 'workflows', 'workspace')) -> str:
+    def run_sync(self, pulls: list[dict] | None, ticked: bool = True, branches: tuple[str, ...] = ('docker', 'main', 'workflows', 'workspace'), held: list[dict] = ()) -> str:
         epic = issue(2, '[I01:E00] First: Epic', 'closed')
         body = initiative_body((f"[E00]({url('issues', 2)})", ''))
         if ticked:
@@ -323,7 +367,7 @@ class InitiativeClose(unittest.TestCase):
             if pulls is not None:
                 pulls_path = root / 'prs.json'
                 pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
-                args.extend(['--prs', str(pulls_path)])
+                args.extend(['--prs', str(pulls_path), '--links', links_file(root, list(held))])
             done = run('sync.py', *args)
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout
@@ -339,6 +383,22 @@ class InitiativeClose(unittest.TestCase):
         out = self.run_sync(pulls)
         self.assertIn('unmerged: i01/main (#980 open)', out)
         self.assertIn('closable: no (unmerged i01/main (#980 open))', out)
+
+    def test_an_integration_pull_request_that_links_no_issue_is_uncited(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
+                 pr(980, '[I01] First', base='main', head='i01/main')]
+        out = self.run_sync(pulls)
+        self.assertIn('uncited: #980 does not link I01 #1', out)
+
+    def test_an_integration_pull_request_linking_the_initiative_issue_is_not_uncited(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
+                 pr(980, '[I01] First', base='main', head='i01/main')]
+        out = self.run_sync(pulls, held=[links(980, 1)])
+        self.assertNotIn('uncited:', out)
+
+    def test_a_task_pull_request_is_not_reported_as_an_integration_pull_request(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic')])
+        self.assertNotIn('uncited:', out)
 
     def test_a_merged_integration_branch_is_closable(self):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
@@ -400,7 +460,7 @@ def ticked(body: str) -> str:
 
 
 class EpicClose(unittest.TestCase):
-    def run_sync(self, body: str, pulls: list[dict]) -> str:
+    def run_sync(self, body: str, pulls: list[dict], held: list[dict] = ()) -> str:
         epic = issue(2, '[I01:E00] First: Epic', body=body)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -408,6 +468,7 @@ class EpicClose(unittest.TestCase):
             issue_path.write_text(json.dumps(epic))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--links', links_file(root, list(held)),
                        '--project', project(root, 'docker', 'main', 'workflows'))
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout
@@ -431,6 +492,22 @@ class EpicClose(unittest.TestCase):
         self.assertIn('unmerged: i01/e00/main (#980 open)', out)
         self.assertNotIn('in flight:', out)
         self.assertNotIn('unmatched:', out)
+
+    def test_a_review_pull_request_that_links_no_issue_is_uncited(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('uncited: #980 does not link E00 #2', out)
+
+    def test_a_review_pull_request_linking_the_epic_issue_is_not_uncited(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls, held=[links(980, 2)])
+        self.assertNotIn('uncited:', out)
 
     def test_a_merged_epic_base_is_closable(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
@@ -583,6 +660,7 @@ class TestPlanAgreement(unittest.TestCase):
             body.write_text(json.dumps(epic))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                       '--links', links_file(root, []),
                        '--project', project(root, 'docker', 'main', 'workflows'), *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
@@ -728,6 +806,7 @@ class ReviewReferences(unittest.TestCase):
             issue_path.write_text(json.dumps(epic))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--links', links_file(root, []),
                        '--project', project(root, 'docker', 'main', 'workflows'))
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout

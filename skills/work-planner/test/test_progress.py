@@ -65,7 +65,7 @@ class Completed(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
         task = issue(3, '[I01:E00:W01] Task Issue: Done', 'closed', IN)
         out = summary([item(epic, 'In Progress'), item(task, 'Done')],
-                      [pr(53, '[I01:E00] Delivers it', IN, body='Closes #3')])
+                      [pr(53, '[I01:E00] Delivers it', IN, body='See #3')])
         self.assertNotIn('Delivers it', out)
 
     def test_pull_request_citing_an_unlisted_task_issue_is_kept(self):
@@ -78,7 +78,7 @@ class Completed(unittest.TestCase):
     def test_pull_request_citing_a_listed_task_issue_no_row_links_is_left_out(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W02', 'More', '')))
         out = summary([item(epic, 'In Progress'), item(issue(4, '[I01:E00:W02] More: Task', 'closed', IN), 'Done')],
-                      [pr(51, '[I01:E00] More', IN, body='Closes #4')])
+                      [pr(51, '[I01:E00] More', IN, body='See #4')])
         self.assertEqual(section(out, 'Completed')[1:], [f"    ✅ W02 More — {url('issues', 4)}"])
 
     def test_a_pull_request_given_twice_is_listed_once(self):
