@@ -60,10 +60,19 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
     - Each such long-lived branch has the initiative's integration branch. Cut a missing one with [Create Integration Branch](commands.md#create-integration-branch).
     - That epic has a base cut from that integration branch. Cut a missing one with [Create Epic Base](commands.md#create-epic-base). The base is cut from the integration branch's tip, so it carries what that branch already holds.
     - An open pull request that delivers the epic's tasks, and whose base is the integration branch or the long-lived branch, is pointed at that epic base with [Retarget Pull Request](commands.md#retarget-pull-request).
+    - When that pull request is not mergeable, [Update Task Branch](commands.md#update-task-branch) merges the epic base into the task branch. A conflict is reported and the pull request stays open.
     - An open pull request whose head is an epic base keeps the integration branch as its base. One whose head is an integration branch keeps the long-lived branch as its base.
     - A merged pull request is left as merged.
     - A base that is none of these is put to the user as an [Interview](interview.md).
-11. **Re-run.**
+11. **Test plans.**
+    For each open pull request that delivers an aligned epic's tasks, make the checked list match the table, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and write it with [Patch Pull Request Body](commands.md#patch-pull-request-body).
+    - A row whose Test cell names a check has one box with that id. A row whose Test cell is empty has no box.
+    - A box that is already ticked stays ticked. The alignment ticks no box.
+12. **Unplaced task issues.**
+    A task issue [Sync Epic](commands.md#sync-epic) reports unplaced gains a row in that epic, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Run [Sync Epic](commands.md#sync-epic) again.
+13. **Review pull requests.**
+    Run [Sync Epic](commands.md#sync-epic) for each open epic. When it reports an epic base unmerged and names no open pull request, open that pull request with [Open Epic Pull Request](commands.md#open-epic-pull-request) and leave the epic open.
+14. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
 
@@ -118,7 +127,13 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
   - Run [Sync Epic](commands.md#sync-epic) again. It ticks Done on the delivered task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
   - A criterion the user confirms already holds is ticked in [Sync Mode](sync-mode.md), and it stays on the delivered task.
 - **Branches.**
-  An initiative in progress has the integration branches and epic bases the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and an open pull request that delivers its tasks targets the epic base.
+  An initiative in progress has the integration branches and epic bases the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and an open pull request that delivers its tasks targets the epic base. A retarget that leaves the pull request unmergeable is followed by [Update Task Branch](commands.md#update-task-branch).
+- **Test plan.**
+  An open task pull request's checked list matches its table, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. The alignment ticks no box.
+- **Unplaced.**
+  A task issue [Sync Epic](commands.md#sync-epic) reports unplaced gains a row, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- **Review pull request.**
+  An epic base [Sync Epic](commands.md#sync-epic) reports unmerged, with no open pull request named, has the pull request [Open Epic Pull Request](commands.md#open-epic-pull-request) opens. The epic stays open.
 - **Table.**
   A Done cell that disagrees with whether its row is complete, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, is repaired. A ticked criterion whose row links no delivery is linked when the comments name one delivery, a path taken as the commit that holds it. Several candidates, or none, are decided with the user.
 

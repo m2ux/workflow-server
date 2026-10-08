@@ -109,7 +109,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Tasks with their own issue.**
   - A task issue belongs to one epic. Its title carries that epic's prefix.
-  - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it and [Plan Mode](plan-mode.md) adds the row. Once the row exists, that epic's planning manages the issue.
+  - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced. [Plan Mode](plan-mode.md) and [Align Mode](align-mode.md) add the row. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
   - The pull request's body cites the issue by its URL.
   - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
