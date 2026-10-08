@@ -12,8 +12,8 @@ from fixtures import issue, item, pr, run, url
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
 PLAN = ('## Test Plan\n\n'
-        '| Test | Description | Coverage |\n| --- | --- | --- |\n'
-        '| - [x] T1 | The check holds. | AC1 |\n')
+        '| Test | Description | Coverage | Done |\n| --- | --- | --- | --- |\n'
+        '| T1 | The check holds. | AC1 | ✓ |\n')
 
 
 def epic_body(*rows: tuple[str, str, str, str]) -> str:
@@ -132,11 +132,11 @@ class Survey(unittest.TestCase):
         self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
 
-    def test_an_unticked_box_is_not_merged(self):
+    def test_an_open_done_cell_is_not_merged(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
         output = survey(staged((record, 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('- [x]', '- [ ]'),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('✓', ''),
                             base='i07/e00/main')])
         self.assertNotIn('merge #', output)
         self.assertIn('merge: 0', output)

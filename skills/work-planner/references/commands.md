@@ -229,7 +229,7 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .ht
 
 Merges a task pull request into its epic base.
 
-- Run it when every box in the pull request's test plan is ticked, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. [Update Integration Branch](#update-integration-branch) and [Update Epic Base](#update-epic-base) have run first.
+- Run it when every check's Done cell in the pull request's test plan carries a tick, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. [Update Integration Branch](#update-integration-branch) and [Update Epic Base](#update-epic-base) have run first.
 - A refusal is followed by [Update Task Branch](#update-task-branch), then this command again. A conflict in that update leaves the pull request open. Report it.
 - The merge method is a merge commit.
 

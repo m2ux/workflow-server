@@ -12,9 +12,9 @@
 
 ## Test Plan
 
-| Test | Description | Coverage |
-| --- | --- | --- |
-| - [ ] T1 | {{A check that the change holds.}} | AC1 |
+| Test | Description | Coverage | Done |
+| --- | --- | --- | --- |
+| T1 | {{A check that the change holds.}} | AC1 | |
 
 {{The table is filled as [Deliver mode](../references/deliver-mode.md#rules) states under Tests. Delete the section when the pull request delivers no task.}}
 

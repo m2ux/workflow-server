@@ -552,8 +552,8 @@ def epic_rows(*rows: tuple[str, str, str]) -> str:
 
 def test_plan(*rows: tuple[str, str], prose: str = '') -> str:
     """A pull request body whose Test Plan table holds rows of (test, coverage)."""
-    lines = ['## Test Plan', '', '| Test | Description | Coverage |', '| --- | --- | --- |']
-    lines += [f'| {test} | The check holds. | {coverage} |' for test, coverage in rows]
+    lines = ['## Test Plan', '', '| Test | Description | Coverage | Done |', '| --- | --- | --- | --- |']
+    lines += [f'| {test} | The check holds. | {coverage} | |' for test, coverage in rows]
     if prose:
         lines += ['', prose]
     return '\n'.join(lines) + '\n'

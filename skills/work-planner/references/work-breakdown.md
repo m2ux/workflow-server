@@ -116,14 +116,15 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - A unit's task branch is cut from the epic base [Find Available Work](commands.md#find-available-work) names for it, for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
   - Every pull request delivering the unit's work is opened from this branch.
 - **Test plan.**
-  - A task pull request carries its test plan as one table, with columns Test, Description and Coverage.
-    - The Test cell holds the box and the id.
+  - A task pull request carries its test plan as one table, with columns Test, Description, Coverage and Done. Done is last.
+    - Test names the id.
     - Description names the check.
     - Coverage names the criteria the check observes, `AC1, AC3`, and is empty when the check observes none.
-    - A row whose Test cell is empty has no box.
-  - An item has passed when it has been run and it held, and its box is ticked to record that.
-  - The test plan has passed when every box is ticked.
-  - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a box is unticked.
+    - A row whose Test cell is empty names a criterion no check observes, and its Done cell is empty.
+    - Done is empty while the check is open, and a tick, ✓, when the check has passed.
+  - An item has passed when it has been run and it held, and its Done cell carries that tick.
+  - The test plan has passed when every such Done cell carries that tick.
+  - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a check's Done cell is empty.
   - After that merge, Deliver Mode syncs that epic and its task issues. It does not sync the initiative or the board.
   - [Sync Epic](commands.md#sync-epic) compares each linked pull request's test plan with the Coverage of the rows that pull request delivers. Each disagreement names the pull request and the row, and the sync goes on to link, tick and mark Done.
     - A criterion the plan names that those rows do not cover.
