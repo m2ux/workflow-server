@@ -227,7 +227,7 @@ gh api --paginate repos/{owner}/{repo}/pulls/950/files --jq '.[].filename' > cha
 
 Replaces a pull request's body.
 
-- The file is the whole body. When the task has its own issue, the body cites that issue with a closing keyword, not under References.
+- The file is the whole body, and it carries the issue link the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
 
 ```bash
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .html_url
@@ -341,13 +341,26 @@ Merges the epic base into the unit's task branch.
 git fetch origin i07/e00/main && git merge --no-edit origin/i07/e00/main && git push origin HEAD:refs/heads/i07/e00/w01-queue-plan
 ```
 
+### Open Task Pull Request
+
+Opens the pull request that delivers a unit's work into its epic base.
+
+- Run it in the unit's worktree once the work is pushed, as [Deliver Mode](deliver-mode.md#brief) states.
+- The title is the epic's prefix and the unit's purpose: `[I07:E00] Purpose`.
+- The head is the unit's task branch and the base is the epic base it was cut from, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- The body is drafted from the [pull request template](../templates/pull-request.md), with its Test Plan filled as [Deliver Mode](deliver-mode.md#rules) states under Tests, and it opens with the closing keyword for each task issue the unit delivers, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
+
+```bash
+gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07:E00] Purpose' -f head='i07/e00/w01-queue-plan' -f base='i07/e00/main' -F body=@body.md --jq .html_url
+```
+
 ### Open Integration Pull Request
 
 Opens the pull request that merges an integration branch into its long-lived branch.
 
 - Run it when [Sync Initiative](#sync-initiative) reports that branch unmerged. The initiative stays open until the pull request merges.
 - The title is the initiative's prefix and name: `[I07] Name`.
-- The body is drafted from the [pull request template](../templates/pull-request.md).
+- The body is drafted from the [pull request template](../templates/pull-request.md), and it opens with the closing keyword for the initiative's issue, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07] Name' -f head='i07/main' -f base='main' -F body=@body.md --jq .html_url
@@ -361,6 +374,7 @@ Opens the pull request that merges an epic base into its initiative integration 
 - The title is the epic's prefix and name: `[I07:E00] Name`.
 - The head is the epic base and the base is the integration branch it was cut from, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - The body is drafted from the [pull request template](../templates/pull-request.md), in the shape [Review pull request](work-breakdown.md#review-pull-request) gives it: Overview, Changes and References, with no Test Plan. [Update Review Pull Request](#update-review-pull-request) carries each later merge into it.
+- It opens with the closing keyword for the epic's issue, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
 - A draft line opens it as a draft, with `-F draft=true`. An unmerged base that names no pull request omits that field, so the pull request opens ready for review.
 
 ```bash
@@ -641,7 +655,7 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - A row whose id links its task issue links the pull request instead.
 - A task is delivered as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - A pull request whose head is an epic base merges that base, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and is not matched to a task.
-- It takes the epic's task issues. A linked pull request that does not cite a task's issue is reported uncited.
+- It takes the epic's task issues. A linked pull request whose body carries no closing keyword for a task's issue is reported uncited, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
 - A task issue whose id is not a row is reported unplaced, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - When a task has merged into an epic base and the epic is not yet complete, that base is reported draft, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - It reports a review pull request whose References differ from the task pull requests merged into its base, naming both sets, as the [Work Breakdown Guide](work-breakdown.md#review-pull-request) states.

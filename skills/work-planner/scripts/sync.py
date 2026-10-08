@@ -18,7 +18,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose body names the task's issue after no closing keyword as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -54,6 +54,7 @@ ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 BELONGS = re.compile(r'\b(?:belongs? to|left to|owned by)\s+(W\d\d)\b', re.IGNORECASE)
+KEYWORD = r'\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b:?\s+'
 INTEGRATION = re.compile(r'^(?:refs/heads/)?i(\d\d)/([^/]+)$')
 LONG_LIVED: tuple[str, ...] = ()
 
@@ -67,6 +68,17 @@ def cites(pr: dict, key: tuple[str, int]) -> bool:
         return True
     home = PULL_HOME.search(pr.get('html_url') or '')
     return bool(home) and home[1].lower() == repo.lower() and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
+
+
+def closes(pr: dict, key: tuple[str, int]) -> bool:
+    """Whether a pull request's body names the issue after a closing keyword, which is what fills
+    its Development field. The issue is named as cites names it, in the body alone."""
+    repo, number = key
+    qualified = rf'(?:https?://github\.com/)?{re.escape(repo)}(?:/issues/|#){number}\b'
+    home = PULL_HOME.search(pr.get('html_url') or '')
+    if home and home[1].lower() == repo.lower():
+        qualified = rf'(?:{qualified}|#{number}\b)'
+    return bool(re.search(KEYWORD + qualified, pr.get('body') or '', re.IGNORECASE))
 
 
 def issue_done(issue: dict) -> bool:
@@ -171,8 +183,9 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
             key = (repo, task_issue['number'])
             for number in pulls:
                 pr = named.get(number)
-                if pr and not cites(pr, key):
-                    report['uncited'].append(f"#{number} does not cite {task} #{task_issue['number']}")
+                if pr and not closes(pr, key):
+                    report['uncited'].append(
+                        f"#{number} does not link {task} #{task_issue['number']} with a closing keyword")
         delivered[task] = landed
     for number, group in by_pr.items():
         apart = [f'{a}+{b}' for a, ja in group for b, _ in group if a < b and b not in ja]

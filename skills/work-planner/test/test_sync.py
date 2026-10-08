@@ -137,16 +137,32 @@ class TaskLinks(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn(f"[W01]({url('pull', 950)})", fixed)
         self.assertNotIn(url('issues', 3), fixed)
-        self.assertIn(f'uncited: #950 does not cite W01 #3', done.stdout)
+        self.assertIn('uncited: #950 does not link W01 #3 with a closing keyword', done.stdout)
 
-    def test_a_pull_request_that_cites_the_task_issue_is_not_uncited(self):
+    def test_a_pull_request_that_closes_the_task_issue_is_not_uncited(self):
         task = issue(3, '[I01:E00:W01] Task: One')
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
-        pulls = [pr(950, '[I01:E00] Work', body=f"See {url('issues', 3)}")]
+        pulls = [pr(950, '[I01:E00] Work', body=f"Closes {url('issues', 3)}")]
         done, fixed = self.run_sync(epic, pulls, '--link', 'W01=950', tasks=[task])
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn(f"[W01]({url('pull', 950)})", fixed)
         self.assertNotIn('uncited:', done.stdout)
+
+    def test_a_pull_request_closing_the_task_issue_by_number_is_not_uncited(self):
+        task = issue(3, '[I01:E00:W01] Task: One')
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        done, _ = self.run_sync(epic, [pr(950, '[I01:E00] Work', body='Closes #3')], '--link', 'W01=950',
+                                tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('uncited:', done.stdout)
+
+    def test_a_pull_request_that_mentions_the_task_issue_without_a_keyword_is_uncited(self):
+        task = issue(3, '[I01:E00:W01] Task: One')
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', body=f"See {url('issues', 3)}")]
+        done, _ = self.run_sync(epic, pulls, '--link', 'W01=950', tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('uncited: #950 does not link W01 #3 with a closing keyword', done.stdout)
 
     def test_a_merged_pull_request_with_an_unticked_criterion_is_unmet(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
