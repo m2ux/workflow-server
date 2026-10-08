@@ -119,8 +119,7 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - A task pull request carries its test plan as the checked list in its body. Each table row whose Test cell names a check has one box with the same id. A row whose Test cell is empty has no box.
   - An item has passed when it has been run and it held, and its box is ticked to record that.
   - The test plan has passed when every box is ticked.
-  - The pull request's criteria are met when every criterion its plan names, and every criterion the task's Coverage names, is ticked.
-  - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed and its criteria are met, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a box is unticked or a criterion it names is unticked.
+  - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a box is unticked.
   - After that merge, Deliver Mode syncs that epic and its task issues. It does not sync the initiative or the board.
 - **Task ids.**
   - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.

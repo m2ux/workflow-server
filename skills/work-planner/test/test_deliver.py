@@ -140,19 +140,20 @@ class Survey(unittest.TestCase):
         self.assertNotIn('merge #', output)
         self.assertIn('merge: 0', output)
 
-    def test_an_unticked_coverage_criterion_is_not_merged(self):
+    def test_an_unticked_coverage_criterion_does_not_withhold_the_merge(self):
         linked = f"[W01]({url('pull', 950)})"
         record = epic(943, (linked, 'Queue plan', '', ''))
         record['body'] = record['body'].replace('| AC1 |', '| AC1, AC2 |', 1)
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.** Holds.\n- [ ] **AC2.** Holds.')
         output = survey(staged((record, 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
-        self.assertNotIn('merge #', output)
+        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
 
-    def test_an_unticked_criterion_is_not_merged(self):
+    def test_a_passed_plan_merges_while_no_criterion_is_ticked(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
-        self.assertNotIn('merge #', output)
+        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
 
     def test_a_merged_pull_request_is_not_merged_again(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))
