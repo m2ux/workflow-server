@@ -225,6 +225,21 @@ Replaces a pull request's body.
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .html_url
 ```
 
+### Update Review Pull Request
+
+Adds a merged task pull request's change to the review pull request that merges the epic base it landed in.
+
+- Run it after [Sync Epic](#sync-epic), on the session that merged, as the [Work Breakdown Guide](work-breakdown.md#review-pull-request) states.
+- The first call prints the review pull request's number, by the epic base as head. It prints nothing while no pull request merges that base, and the base opens as a draft first.
+- The second writes the current body to a file. The unit's change goes under Changes, beneath the heading for its area or a new one, and its pull request is appended to References as the next R number.
+- The third replaces the body with that file.
+
+```bash
+gh api "repos/{owner}/{repo}/pulls?state=open&head={owner}:i07/e00/main" --jq '.[0].number'
+gh api repos/{owner}/{repo}/pulls/980 --jq .body > review-980.md
+gh api --method PATCH repos/{owner}/{repo}/pulls/980 -F body=@review-980.md --jq .html_url
+```
+
 ### Merge Pull Request
 
 Merges a task pull request into its epic base.
@@ -337,7 +352,7 @@ Opens the pull request that merges an epic base into its initiative integration 
 - Run it when [Sync Epic](#sync-epic) reports a draft line, or reports that branch unmerged and names no pull request. The epic stays open until the pull request merges.
 - The title is the epic's prefix and name: `[I07:E00] Name`.
 - The head is the epic base and the base is the integration branch it was cut from, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-- The body is drafted from the [pull request template](../templates/pull-request.md).
+- The body is drafted from the [pull request template](../templates/pull-request.md), in the shape [Review pull request](work-breakdown.md#review-pull-request) gives it: Overview, Changes and References, with no Test Plan. [Update Review Pull Request](#update-review-pull-request) carries each later merge into it.
 - A draft line opens it as a draft, with `-F draft=true`. An unmerged base that names no pull request omits that field, so the pull request opens ready for review.
 
 ```bash
@@ -560,6 +575,7 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - It takes the epic's task issues. A linked pull request that does not cite a task's issue is reported uncited.
 - A task issue whose id is not a row is reported unplaced, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - When a task has merged into an epic base and the epic is not yet complete, that base is reported draft, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- It reports a review pull request whose References differ from the task pull requests merged into its base, naming both sets, as the [Work Breakdown Guide](work-breakdown.md#review-pull-request) states.
 - When every row is delivered and every criterion is ticked, an epic base its pull requests target that has not merged is reported unmerged. A draft pull request is named draft. The epic is closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - `--project` is `<main>`, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Without those subfolders, an epic or initiative that would otherwise be closable is not.
 

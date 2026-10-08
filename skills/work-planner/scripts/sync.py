@@ -18,7 +18,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -345,6 +345,48 @@ def draft_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[
     return pending
 
 
+def pull_numbers(found: set[int]) -> str:
+    return ', '.join(f'#{n}' for n in sorted(found)) or 'none'
+
+
+def references(body: str, repo: str) -> set[int]:
+    """The pull requests a body's References section cites, by URL in repo or as a bare number."""
+    _, sections = split_sections((body or '').replace('\r\n', '\n'))
+    text = '\n'.join(next((l for h, l in sections if h == 'References'), []))
+    found = {int(n) for n in re.findall(rf'github\.com/{re.escape(repo)}/pull/(\d+)', text, re.IGNORECASE)} if repo else set()
+    return found | {int(n) for n in re.findall(r'(?<![\w/.-])#(\d+)\b', text)}
+
+
+def review_references(prs: list[dict], initiative: str, epic: str, home: str) -> list[str]:
+    """Open review pull requests whose References differ from the merges into their base.
+
+    A review pull request's head is an epic base, and the task pull requests merged into that base
+    are what its References cite. A difference is one line naming the cited set and the merged set."""
+    landed: dict[tuple[str, str], set[int]] = {}
+    reviews = []
+    for pr in prs:
+        repo = pr_repo(pr)
+        base = (pr.get('base') or {}).get('ref') or ''
+        head = (pr.get('head') or {}).get('ref') or ''
+        title = PR_REF.match(pr.get('title') or '')
+        if not title or title.groups() != (initiative, epic):
+            continue
+        if pr.get('merged_at') and epic_base(base, initiative, epic):
+            landed.setdefault((repo, base), set()).add(pr['number'])
+        if epic_base(head, initiative, epic) and pr.get('state') == 'open':
+            reviews.append(pr)
+    lines = []
+    for pr in sorted(reviews, key=lambda p: p['number']):
+        repo = pr_repo(pr)
+        key = (repo, (pr.get('head') or {}).get('ref') or '')
+        merged, cites = landed.get(key, set()), references(pr.get('body') or '', repo)
+        if cites == merged:
+            continue
+        name = key[1] if not repo or repo.lower() == home.lower() else f'{repo}:{key[1]}'
+        lines.append(f"{name} (#{pr['number']}) cites {pull_numbers(cites)}; merged {pull_numbers(merged)}")
+    return lines
+
+
 def cited(text: str) -> list[int]:
     """The acceptance criteria an Coverage cell names."""
     return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
@@ -591,7 +633,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft')}
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)
@@ -677,9 +719,11 @@ def main() -> int:
             report['unmerged'].extend(pending)
             if report['unmerged']:
                 branches = 'unmerged ' + ', '.join(report['unmerged'])
-    if kind == 'epic' and not epic_ready and args.prs and LONG_LIVED:
+    if kind == 'epic' and args.prs and LONG_LIVED:
         home = issue['repository_url'].split('/repos/', 1)[1]
-        report['draft'].extend(draft_bases(prs, initiative, epic, home))
+        if not epic_ready:
+            report['draft'].extend(draft_bases(prs, initiative, epic, home))
+        report['references'].extend(review_references(prs, initiative, epic, home))
     print(f"#{issue['number']} {kind} ({issue['state']})")
     for name, items in report.items():
         for item in items:

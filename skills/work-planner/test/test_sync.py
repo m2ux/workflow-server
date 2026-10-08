@@ -693,3 +693,94 @@ class TestPlanAgreement(unittest.TestCase):
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
+
+
+def review_body(*numbers: int) -> str:
+    """A review pull request body whose References cite the given pull requests."""
+    lines = ['## Overview', '', 'The base carries the epic.', '', '## References', '']
+    lines += [f"- **R{i}.** [Work]({url('pull', n)}) — a task delivery." for i, n in enumerate(numbers, 1)]
+    return '\n'.join(lines + [''])
+
+
+class ReviewReferences(unittest.TestCase):
+    def run_sync(self, pulls: list[dict], body: str | None = None) -> str:
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=body or epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--project', project(root, 'docker', 'main', 'workflows'))
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_a_review_body_that_cites_every_merge_is_silent(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main',
+                    body=review_body(950))]
+        self.assertNotIn('references:', self.run_sync(pulls))
+
+    def test_a_merge_the_review_body_omits_names_both_sets(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(951, '[I01:E00] More', merged='2026-09-02T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w02-more'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main',
+                    body=review_body(950))]
+        out = self.run_sync(pulls)
+        self.assertIn('references: i01/e00/main (#980) cites #950; merged #950, #951', out)
+
+    def test_a_review_body_with_no_references_names_the_merges(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(pulls)
+        self.assertIn('references: i01/e00/main (#980) cites none; merged #950', out)
+
+    def test_a_cited_pull_request_that_did_not_merge_into_the_base_is_named(self):
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main',
+                    body=review_body(950, 44))]
+        out = self.run_sync(pulls)
+        self.assertIn('references: i01/e00/main (#980) cites #44, #950; merged #950', out)
+
+    def test_a_bare_number_cites_a_pull_request(self):
+        body = '\n'.join(['## References', '', '- **R1.** #950 — a task delivery.', ''])
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main', body=body)]
+        self.assertNotIn('references:', self.run_sync(pulls))
+
+    def test_a_citation_outside_references_is_not_read(self):
+        body = '\n'.join(['## Overview', '', 'Opened on #950.', '', '## References', ''])
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main', body=body)]
+        out = self.run_sync(pulls)
+        self.assertIn('references: i01/e00/main (#980) cites none; merged #950', out)
+
+    def test_each_base_is_measured_against_its_own_merges(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''),
+                                (f"[W02]({url('pull', 951)})", 'More', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/workflows', head='i01/e00/w02-more'),
+                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main', body=review_body(950)),
+                 pr(981, '[I01:E00] First', base='i01/workflows', head='i01/e00/workflows',
+                    body=review_body(950))]
+        out = self.run_sync(pulls, body=body)
+        self.assertIn('references: i01/e00/workflows (#981) cites #950; merged #951', out)
+        self.assertNotIn('(#980)', out)
+
+    def test_a_merged_review_pull_request_is_not_measured(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                    base='i01/main', head='i01/e00/main')]
+        self.assertNotIn('references:', self.run_sync(pulls, body=body))
