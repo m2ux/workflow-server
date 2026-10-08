@@ -49,6 +49,7 @@ Read the file for the mode the request calls for:
   - A further task that adopts each criterion a merged pull request leaves unticked
   - A scan for an initiative criterion still unticked, or ticked early, against the epics that cite it
   - Repair of a work-breakdown cell that disagrees with its delivery
+  - Epic bases for an initiative in progress, and open task pull requests pointed at them
 - **[Sync](references/sync-mode.md)**
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
