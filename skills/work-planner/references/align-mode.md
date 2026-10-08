@@ -54,6 +54,7 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
    Put each of those to the user as an [Interview](interview.md). Verifying and ticking it is [Sync Mode](sync-mode.md). A Done change the fix file writes is applied with [Patch Body](commands.md#patch-body), without asking. The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
 10. **Branches.**
     For an initiative being aligned, bring each open epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states. Cut each missing branch as [Missing branches](work-breakdown.md#missing-branches) states.
+    - [List Long-Lived Branches](commands.md#list-long-lived-branches) prints the names, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. When it reports them unevaluable, the branch step stops and that report is the finding.
     - [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). [List Epic Bases](commands.md#list-epic-bases) for each open epic.
     - The long-lived branch a pull request base names is the last segment of that base when the segment is a long-lived branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. `i07/main`, `main`, and `i07/e00/main` all name `main`.
     - An epic base is cut from the integration branch's tip, so it carries what that branch already holds.
