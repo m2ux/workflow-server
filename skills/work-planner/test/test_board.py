@@ -142,6 +142,14 @@ class InitiativeStatus(unittest.TestCase):
         out = self.open_pair('In Progress', 'In Review', epic, merged)
         self.assertIn('set #2 [I01:E00] First: Epic: In Review → In Progress', out)
 
+    def test_an_open_pull_request_with_an_unticked_criterion_leaves_the_epic_in_progress(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        open_pr = json.dumps(pr(9, '[I01:E00] Go')) + '\n'
+        out = self.open_pair('Backlog', 'Backlog', epic, open_pr,
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        self.assertIn('set #2 [I01:E00] First: Epic: Backlog → In Progress', out)
+        self.assertNotIn('→ In Review', out)
+
     def test_ticked_criteria_move_an_open_epic_to_in_review(self):
         epic = issue(2, '[I01:E00] First: Epic',
                      body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', ''))

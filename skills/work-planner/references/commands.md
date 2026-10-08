@@ -482,7 +482,7 @@ Derives each issue's Status and assignees, and prints the call for each issue to
 
 - Give an issue it reports unresolved with `--others`.
 - `--assignee` is the user [Find User](#find-user) prints.
-- An open initiative or epic whose criteria are all ticked is In Review.
+- An open initiative or epic whose criteria are all ticked is In Review. An epic with an open pull request and a criterion unticked is In Progress.
 - An initiative or an epic with no open pull request and unticked criteria keeps Ready or Backlog, and keeps In Progress when delivery has started. In Review then becomes In Progress. One not yet on the board is added at Backlog, or at In Progress when delivery has started. [Advance Mode](advance-mode.md#rules) sets the queue.
 
 ```bash
