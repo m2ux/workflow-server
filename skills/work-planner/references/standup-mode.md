@@ -7,11 +7,8 @@ Summarises a project board as a standup, in Slack markup for pasting into a chan
 1. **Bring the board current.**
    When issues have closed or pull requests have merged since the board was last synced, run [Sync Mode](sync-mode.md) first: the summary reads each item's Status as it stands.
 2. **Find the board.**
-   - The board is a theme's board, per SKILL.md's [Themes and Boards](../SKILL.md#themes-and-boards): run [Find Theme Board](commands.md#find-theme-board) for the theme the user names.
-   - When the request names none, ask which theme, or all, as an [Interview](interview.md), and summarise each board in turn.
-3. **Fetch.**
-   - [Find Status Field](commands.md#find-status-field) on the chosen board, then [Fetch Board Items with Status](commands.md#fetch-board-items-with-status).
-   - [Fetch All Initiative Pull Requests](commands.md#fetch-all-initiative-pull-requests), appending those of each further repository the board's issues live in.
+   Select it as [Select](board.md#select) states, or all, and summarise each board in turn.
+3. **Fetch.** Read the board as [Read](board.md#read) states.
 4. **Summarise.**  Run [Summarise Progress](commands.md#summarise-progress).
    - **Window.**
      The window opens a week before today. Give `--since` for another, such as the previous working day for a daily standup.

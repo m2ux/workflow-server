@@ -53,7 +53,7 @@ Records work on an initiative, its epics and their task issues: links each task 
 9. **Patch.**
    Patch each changed body from its `--fix` file with [Patch Body](commands.md#patch-body).
 10. **Close.**
-    - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open that pull request with [Open Epic Pull Request](commands.md#open-epic-pull-request) and leave the epic open.
+    - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open it as [Review pull request](work-breakdown.md#review-pull-request) states.
     - [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
     - Run [Sync Initiative](commands.md#sync-initiative), with the epic JSON fetched after closing and the pull requests from [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown Guide](work-breakdown.md#tables) defines.

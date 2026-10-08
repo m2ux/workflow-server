@@ -53,12 +53,10 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
      An initiative criterion [Sync Mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
    Put each of those to the user as an [Interview](interview.md). Verifying and ticking it is [Sync Mode](sync-mode.md). A Done change the fix file writes is applied with [Patch Body](commands.md#patch-body), without asking. The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
 10. **Branches.**
-    For an initiative being aligned, bring each open epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states.
-    - The long-lived names are the subfolders of `.project` in the main working tree.
+    For an initiative being aligned, bring each open epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states. Cut each missing branch as [Missing branches](work-breakdown.md#missing-branches) states.
     - [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). [List Epic Bases](commands.md#list-epic-bases) for each open epic.
-    - The long-lived branch a pull request base names is the last segment of that base when the segment is one of those subfolders. `i07/main`, `main`, and `i07/e00/main` all name `main`.
-    - Each such long-lived branch has the initiative's integration branch. Cut a missing one with [Create Integration Branch](commands.md#create-integration-branch).
-    - That epic has a base cut from that integration branch. Cut a missing one with [Create Epic Base](commands.md#create-epic-base). The base is cut from the integration branch's tip, so it carries what that branch already holds.
+    - The long-lived branch a pull request base names is the last segment of that base when the segment is a long-lived branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. `i07/main`, `main`, and `i07/e00/main` all name `main`.
+    - An epic base is cut from the integration branch's tip, so it carries what that branch already holds.
     - An open pull request that delivers the epic's tasks, and whose base is the integration branch or the long-lived branch, is pointed at that epic base with [Retarget Pull Request](commands.md#retarget-pull-request).
     - When that pull request is not mergeable, [Update Task Branch](commands.md#update-task-branch) merges the epic base into the task branch. A conflict is reported and the pull request stays open.
     - An open pull request whose head is an epic base keeps the integration branch as its base. One whose head is an integration branch keeps the long-lived branch as its base.
@@ -68,10 +66,9 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
     For each open pull request that delivers an aligned epic's tasks, make the checked list match the table, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and write it with [Patch Pull Request Body](commands.md#patch-pull-request-body).
     - A row whose Test cell names a check has one box with that id. A row whose Test cell is empty has no box.
     - A box that is already ticked stays ticked. The alignment ticks no box.
-12. **Unplaced task issues.**
-    A task issue [Sync Epic](commands.md#sync-epic) reports unplaced gains a row in that epic, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Run [Sync Epic](commands.md#sync-epic) again.
+12. **Unplaced task issues.** Handle each one as [Unplaced](work-breakdown.md#unplaced) states.
 13. **Review pull requests.**
-    Run [Sync Epic](commands.md#sync-epic) for each open epic. When it reports an epic base unmerged and names no open pull request, open that pull request with [Open Epic Pull Request](commands.md#open-epic-pull-request) and leave the epic open.
+    Run [Sync Epic](commands.md#sync-epic) for each open epic, and open a reported base as [Review pull request](work-breakdown.md#review-pull-request) states.
 14. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
@@ -131,9 +128,9 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
 - **Test plan.**
   An open task pull request's checked list matches its table, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. The alignment ticks no box.
 - **Unplaced.**
-  A task issue [Sync Epic](commands.md#sync-epic) reports unplaced gains a row, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+  Apply [Unplaced](work-breakdown.md#unplaced).
 - **Review pull request.**
-  An epic base [Sync Epic](commands.md#sync-epic) reports unmerged, with no open pull request named, has the pull request [Open Epic Pull Request](commands.md#open-epic-pull-request) opens. The epic stays open.
+  Apply [Review pull request](work-breakdown.md#review-pull-request).
 - **Table.**
   A Done cell that disagrees with whether its row is complete, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, is repaired. A ticked criterion whose row links no delivery is linked when the comments name one delivery, a path taken as the commit that holds it. Several candidates, or none, are decided with the user.
 

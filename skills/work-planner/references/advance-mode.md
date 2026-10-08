@@ -4,14 +4,12 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
 
 ## Procedure
 
-1. **Select.**
-   - The board is a theme's board, per SKILL.md's [Themes and Boards](../SKILL.md#themes-and-boards): run [Find Theme Board](commands.md#find-theme-board) for the theme the user names.
-   - When the request names none, ask which theme as an [Interview](interview.md). Run this mode on one board at a time.
+1. **Select.** Select the board as [Select](board.md#select) states.
 2. **Sync.**
    Run [Sync Mode](sync-mode.md) for each open initiative on the board, so Status matches delivery before the queue is decided.
 3. **Fetch.**
-   - [Fetch Board Fields](commands.md#fetch-board-fields), [Find Status Field](commands.md#find-status-field), and [Fetch Board Items with Status](commands.md#fetch-board-items-with-status).
-   - [Fetch All Initiative Pull Requests](commands.md#fetch-all-initiative-pull-requests) for the board's repository, appending each further repository the board's issues live in.
+   Read the board as [Read](board.md#read) states.
+   - [Fetch Board Fields](commands.md#fetch-board-fields).
    - [Find User](commands.md#find-user) for the assignee.
 4. **Plan.**
    Run [Plan Queue](commands.md#plan-queue). Ask only from a line it prints. The queue is not finished while an `order` or `ask` line is printed.

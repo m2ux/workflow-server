@@ -91,6 +91,22 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - Every pull request delivering the epic's tasks targets that base, never the integration branch or the long-lived branch.
   - [Deliver Mode](deliver-mode.md) merges the integration branch into the epic base after that, then merges the task pull request. When that merge is refused, it updates the task branch from the epic base and merges again. A conflict in that update leaves the pull request open.
   - Once every task is delivered and every criterion is ticked, moving the epic to In Review opens the pull request that merges each base into its integration branch, and the epic stays open until each such pull request has merged. Merging it is the reviewer's call, so no part of an epic with an unticked criterion or an undelivered task reaches an integration branch.
+
+### Missing branches
+
+For each long-lived branch the epic's tasks change:
+
+- The initiative has that integration branch. Cut a missing one with [Create Integration Branch](commands.md#create-integration-branch).
+- The epic has a base cut from that integration branch. Cut a missing one with [Create Epic Base](commands.md#create-epic-base).
+
+### Review pull request
+
+When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open it with [Open Epic Pull Request](commands.md#open-epic-pull-request) and leave the epic open.
+
+### Unplaced
+
+When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the row, then run [Sync Epic](commands.md#sync-epic) again.
+
 - **Task branches.**
   - A unit's task branch is cut from the epic base [Find Available Work](commands.md#find-available-work) names for it, for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
   - Every pull request delivering the unit's work is opened from this branch.
@@ -109,7 +125,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Tasks with their own issue.**
   - A task issue belongs to one epic. Its title carries that epic's prefix.
-  - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced. [Plan Mode](plan-mode.md) and [Align Mode](align-mode.md) add the row. Once the row exists, that epic's planning manages the issue.
+  - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced, and the row is added as [Unplaced](#unplaced) states. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
   - The pull request's body cites the issue by its URL.
   - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
