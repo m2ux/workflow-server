@@ -87,7 +87,6 @@ An initiative criterion states what the initiative achieves as a whole. One that
 
 #### References
 
-- A cross-initiative overlap is recorded in References. An approved edit to another initiative's issue stays minimal.
 - A reference the criteria answer to carries **Source.** after its label: `- **R1.** **Source.** [Title](url) — what it binds`. An unmarked reference is background, and binds no criterion. What a marked one requires of the criteria is the [Sources](#sources) criteria.
 
 #### Outside threats
@@ -190,6 +189,11 @@ These criteria bind every issue, whatever its kind.
 #### Stale references
 
 - Task and epic numbers, issue links, and wording from a superseded decision are stale.
+
+#### References
+
+- References does not link issues or pull requests on the same board; relational logic is communicated by the GitHub project.
+- A cross-initiative overlap is recorded in References. An approved edit to another initiative's issue stays minimal.
 
 #### Body
 
