@@ -2,9 +2,14 @@
 
 Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
-  python3 sync.py issue-943.json --prs prs.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
-  python3 sync.py issue-936.json --epics issue-943.json issue-937.json ... --prs prs.json
+  python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
+  python3 sync.py issue-936.json --epics issue-943.json issue-937.json ... --prs prs.json --links links.json
   python3 sync.py --names --project <main> --initiative 07 --refs heads.txt
+  python3 sync.py --links-query --prs prs.json > links.graphql
+
+With --links-query it prints the GraphQL query for the issue links of the pull requests in --prs,
+which `gh api graphql -F query=@links.graphql` answers and Fetch Pull Request Issue Links reduces to
+links.json.
 
 With --names it prints the long-lived branch names of --project, one per line. Where .project is absent, the names are the ones --initiative's integration branches in --refs carry. Where neither yields a name, it reports the names unevaluable.
 
@@ -12,13 +17,18 @@ Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns
 pull requests as JSON lines, as the REST API returns them:
   gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
 
+links.json holds the closing issue references GitHub holds for those pull requests, as Fetch Pull
+Request Issue Links writes them: an array of {repo, number, closingIssuesReferences: [{repo, number}]}.
+An epic or initiative given --prs is given --links with them, and that file is where the issue a
+pull request links is read.
+
 A pull request's title names the epic it works on: [I07:E00] Purpose. Which of the epic's tasks it
 delivers is read from its changes against the tasks' Descriptions, and recorded by linking each task's
 id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose body names the task's issue after no closing keyword as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -26,7 +36,8 @@ and every integration branch its pull requests target has merged into its long-l
 request that targets an integration branch, or an epic base cut from one, associates that integration
 branch. --prs supplies those pull requests; without it an initiative whose criteria are all ticked is
 not closable. Each integration branch still unmerged is reported unmerged, naming an open pull request
-that merges it when one is open.
+that merges it when one is open. An integration pull request whose Development field does not link the
+initiative's issue is reported uncited.
 
 Reported for each acceptance criterion of a task, epic or initiative:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
@@ -54,7 +65,6 @@ ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 BELONGS = re.compile(r'\b(?:belongs? to|left to|owned by)\s+(W\d\d)\b', re.IGNORECASE)
-KEYWORD = r'\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b:?\s+'
 INTEGRATION = re.compile(r'^(?:refs/heads/)?i(\d\d)/([^/]+)$')
 LONG_LIVED: tuple[str, ...] = ()
 
@@ -70,15 +80,29 @@ def cites(pr: dict, key: tuple[str, int]) -> bool:
     return bool(home) and home[1].lower() == repo.lower() and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
 
 
-def closes(pr: dict, key: tuple[str, int]) -> bool:
-    """Whether a pull request's body names the issue after a closing keyword, which is what fills
-    its Development field. The issue is named as cites names it, in the body alone."""
+def attach_links(prs: list[dict], path: str) -> None:
+    """Give each pull request the closing issue references GitHub holds for it.
+
+    The file is what Fetch Pull Request Issue Links writes: an array of
+    {repo, number, closingIssuesReferences: [{repo, number}]}. A pull request the file does not
+    name holds no link."""
+    held = {(entry.get('repo', '').lower(), entry['number']): entry.get('closingIssuesReferences') or []
+            for entry in json.loads(Path(path).read_text())}
+    for pr in prs:
+        pr['closingIssuesReferences'] = held.get((pr_repo(pr).lower(), pr['number']), [])
+
+
+def links_issue(pr: dict, key: tuple[str, int]) -> bool:
+    """Whether the issue is among the pull request's closing issue references, which is what its
+    Development field shows. Repository names match in any case."""
     repo, number = key
-    qualified = rf'(?:https?://github\.com/)?{re.escape(repo)}(?:/issues/|#){number}\b'
-    home = PULL_HOME.search(pr.get('html_url') or '')
-    if home and home[1].lower() == repo.lower():
-        qualified = rf'(?:{qualified}|#{number}\b)'
-    return bool(re.search(KEYWORD + qualified, pr.get('body') or '', re.IGNORECASE))
+    return any(ref.get('number') == number and (ref.get('repo') or '').lower() == repo.lower()
+               for ref in pr.get('closingIssuesReferences') or [])
+
+
+def issue_key(issue: dict) -> tuple[str, int]:
+    """The issue as repository and number, the form links_issue matches."""
+    return issue['repository_url'].split('/repos/', 1)[1], issue['number']
 
 
 def issue_done(issue: dict) -> bool:
@@ -179,13 +203,12 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
             report['note'].append(f'{task} links task issue #{number}; link its pull request')
         task_issue = by_task.get(task)
         if task_issue:
-            repo = task_issue['repository_url'].split('/repos/', 1)[1]
-            key = (repo, task_issue['number'])
+            key = issue_key(task_issue)
             for number in pulls:
                 pr = named.get(number)
-                if pr and not closes(pr, key):
+                if pr and not links_issue(pr, key):
                     report['uncited'].append(
-                        f"#{number} does not link {task} #{task_issue['number']} with a closing keyword")
+                        f"#{number} does not link {task} #{task_issue['number']}")
         delivered[task] = landed
     for number, group in by_pr.items():
         apart = [f'{a}+{b}' for a, ja in group for b, _ in group if a < b and b not in ja]
@@ -400,6 +423,37 @@ def review_references(prs: list[dict], initiative: str, epic: str, home: str) ->
     return lines
 
 
+def unlinked_reviews(prs: list[dict], initiative: str, epic: str, key: tuple[str, int]) -> list[str]:
+    """Review pull requests whose Development field does not link the epic's issue.
+
+    A review pull request's head is this epic's base. One that closed without merging delivers
+    nothing and is left out."""
+    lines = []
+    for pr in sorted(prs, key=lambda p: p['number']):
+        head = (pr.get('head') or {}).get('ref') or ''
+        if not epic_base(head, initiative, epic):
+            continue
+        if (pr.get('merged_at') or pr.get('state') == 'open') and not links_issue(pr, key):
+            lines.append(f"#{pr['number']} does not link E{epic} #{key[1]}")
+    return lines
+
+
+def unlinked_integrations(prs: list[dict], initiative: str, key: tuple[str, int]) -> list[str]:
+    """Integration pull requests whose Development field does not link the initiative's issue.
+
+    An integration pull request's head is an integration branch of this initiative and its base is
+    the long-lived branch that branch carries. One that closed without merging is left out."""
+    lines = []
+    for pr in sorted(prs, key=lambda p: p['number']):
+        head = (pr.get('head') or {}).get('ref') or ''
+        base = (pr.get('base') or {}).get('ref') or ''
+        if not integration_branch(head, initiative) or head != f'i{initiative}/{base}':
+            continue
+        if (pr.get('merged_at') or pr.get('state') == 'open') and not links_issue(pr, key):
+            lines.append(f"#{pr['number']} does not link I{initiative} #{key[1]}")
+    return lines
+
+
 def cited(text: str) -> list[int]:
     """The acceptance criteria an Coverage cell names."""
     return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
@@ -573,6 +627,17 @@ def long_lived_names(project: str, refs: list[str] | None = None, initiative: st
     return derived
 
 
+def links_query(path: str) -> int:
+    """Print the GraphQL query for the issue links of the pull requests in --prs.
+
+    The pull requests are named by the node ids their REST records carry, so the query covers what
+    was fetched and no number is typed out."""
+    ids = json.dumps([pr['node_id'] for pr in pull_requests(path)])
+    print('{nodes(ids:' + ids + '){... on PullRequest{number repository{nameWithOwner}'
+          ' closingIssuesReferences(first:10){nodes{number repository{nameWithOwner}}}}}}')
+    return 0
+
+
 def list_long_lived(project: str, refs_path: str, initiative: str) -> int:
     """Print the long-lived branch names, one per line."""
     if not project:
@@ -609,6 +674,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('issue', nargs='?')
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
+    parser.add_argument('--links', help='epic or initiative: the closing issue references its pull requests hold')
+    parser.add_argument('--links-query', action='store_true', help='print the GraphQL query for the issue links of --prs')
     parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
     parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, e.g. W01=950,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
@@ -622,6 +689,10 @@ def main() -> int:
     args = parser.parse_args()
     if args.names:
         return list_long_lived(args.project, args.refs, args.initiative)
+    if args.links_query:
+        if not args.prs:
+            sys.exit('--links-query needs --prs')
+        return links_query(args.prs)
     if not args.issue:
         sys.exit('an issue file is required')
     global LONG_LIVED
@@ -640,7 +711,11 @@ def main() -> int:
     kind = 'task' if task else 'epic' if epic else 'initiative'
     if kind != 'initiative' and not args.prs:
         sys.exit(f'a {kind} needs --prs')
+    if kind != 'task' and args.prs and not args.links:
+        sys.exit('--prs needs --links, which holds the issue each pull request links')
     prs = pull_requests(args.prs) if args.prs else []
+    if args.links:
+        attach_links(prs, args.links)
     named = for_epic(prs, initiative, epic) if epic else {}
     links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
     body = (issue.get('body') or '').replace('\r\n', '\n')
@@ -737,6 +812,9 @@ def main() -> int:
         if not epic_ready:
             report['draft'].extend(draft_bases(prs, initiative, epic, home))
         report['references'].extend(review_references(prs, initiative, epic, home))
+        report['uncited'].extend(unlinked_reviews(prs, initiative, epic, issue_key(issue)))
+    if kind == 'initiative' and args.prs and LONG_LIVED:
+        report['uncited'].extend(unlinked_integrations(prs, initiative, issue_key(issue)))
     print(f"#{issue['number']} {kind} ({issue['state']})")
     for name, items in report.items():
         for item in items:

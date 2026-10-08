@@ -50,12 +50,19 @@ def initiative_body(*rows: tuple[str, str]) -> str:
 def pr(number: int, title: str, merged: str | None = None, state: str | None = None, draft: bool = False,
        body: str = '', repo: str = REPO, base: str | None = None, head: str | None = None) -> dict:
     record = {'number': number, 'title': title, 'body': body, 'html_url': url('pull', number, repo),
+              'node_id': f'PR_node{number}',
               'state': state or ('closed' if merged else 'open'), 'draft': draft, 'merged_at': merged}
     if base:
         record['base'] = {'ref': base}
     if head:
         record['head'] = {'ref': head}
     return record
+
+
+def links(number: int, *issues: int, repo: str = REPO, issue_repo: str | None = None) -> dict:
+    """One pull request's closing issue references, as Fetch Pull Request Issue Links writes them."""
+    return {'repo': repo, 'number': number,
+            'closingIssuesReferences': [{'repo': issue_repo or repo, 'number': n} for n in issues]}
 
 
 def run(script: str, *args: str, tz: str = 'UTC') -> subprocess.CompletedProcess:

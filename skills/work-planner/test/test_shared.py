@@ -26,27 +26,27 @@ class Cites(unittest.TestCase):
         self.assertTrue(cites(pr(1, 'T', body='See o/r#12', repo='o/s'), self.key))
 
     def test_bare_number_cites_from_the_same_repository(self):
-        self.assertTrue(cites(pr(1, 'T', body='Closes #12'), self.key))
+        self.assertTrue(cites(pr(1, 'T', body='See #12'), self.key))
 
     def test_bare_number_from_another_repository_cites_nothing(self):
-        self.assertFalse(cites(pr(1, 'T', body='Closes #12', repo='o/s'), self.key))
+        self.assertFalse(cites(pr(1, 'T', body='See #12', repo='o/s'), self.key))
 
     def test_another_repositorys_reference_cites_nothing(self):
         self.assertFalse(cites(pr(1, 'T', body='See o/s#12'), self.key))
 
     def test_longer_number_cites_nothing(self):
-        self.assertFalse(cites(pr(1, 'T', body='Closes #120'), self.key))
+        self.assertFalse(cites(pr(1, 'T', body='See #120'), self.key))
 
     def test_repository_whose_name_ends_the_same_cites_nothing(self):
         self.assertFalse(cites(pr(1, 'T', body='See xo/r#12'), self.key))
         self.assertFalse(cites(pr(1, 'T', body='See https://github.com/xo/r/issues/12'), self.key))
 
     def test_repository_names_match_in_any_case(self):
-        self.assertTrue(cites(pr(1, 'T', body='Closes O/R#12', repo='o/s'), self.key))
-        self.assertTrue(cites(pr(1, 'T', body='Closes #12', repo='O/R'), self.key))
+        self.assertTrue(cites(pr(1, 'T', body='See O/R#12', repo='o/s'), self.key))
+        self.assertTrue(cites(pr(1, 'T', body='See #12', repo='O/R'), self.key))
 
     def test_pull_request_url_of_another_shape_still_reads(self):
-        record = {**pr(1, 'T', body='Closes #12'), 'html_url': 'https://github.com/o/r/pull/1/'}
+        record = {**pr(1, 'T', body='See #12'), 'html_url': 'https://github.com/o/r/pull/1/'}
         self.assertTrue(cites(record, self.key))
         self.assertFalse(cites({**record, 'html_url': 'not a url'}, self.key))
 
@@ -85,10 +85,11 @@ class UnreadableTable(unittest.TestCase):
 
     def test_sync_exits_with_the_message(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path, prs = Path(tmp, 'issue.json'), Path(tmp, 'prs.json')
+            path, prs, held = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'links.json')
             path.write_text(json.dumps(self.broken))
             prs.write_text('')
-            done = run('sync.py', str(path), '--prs', str(prs))
+            held.write_text('[]')
+            done = run('sync.py', str(path), '--prs', str(prs), '--links', str(held))
         self.assertNotEqual(done.returncode, 0)
         self.assertEqual(done.stderr.strip(), 'Work Breakdown has no table')
 
