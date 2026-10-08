@@ -19,7 +19,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Unmatched.**  A merged pull request it reports names the epic, and no row links it yet.
    - **In flight.**  An open pull request it reports names the epic, and no row links it yet.
    - Read its changes and description against the tasks' Descriptions, and name the tasks it works on: one task, or tasks that name each other in Joins.
-   - Put any match that is not clear to the user.
+   - Put any match that is not clear to the user as an [Interview](interview.md).
 5. **Sync each task issue.**
    - Run [Sync Task Issue](commands.md#sync-task-issue) when a merged pull request delivered it.
    - Verify and tick its criteria as in steps 7–8.
@@ -28,7 +28,7 @@ Records work on an initiative, its epics and their task issues: links each task 
 6. **Sync each epic.**
    Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. Linking a pull request replaces the planning-record link on that task, as [Task ids](work-breakdown.md#delivery) defines. It reports:
    - **Conflict.**
-     Tasks that share a pull request and do not name each other in Joins. Put that to the user. A row linked to a pull request whose title names another epic is reported, and the row is delivered once that pull request has merged.
+     Tasks that share a pull request and do not name each other in Joins. Put that to the user as an [Interview](interview.md). A row linked to a pull request whose title names another epic is reported, and the row is delivered once that pull request has merged.
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
    - **In flight.**  Open pull requests still linked from no row. Match them as in step 4.
      - A pull request whose head is an epic base is not matched to a task, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.

@@ -6,7 +6,7 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
 
 1. **Select.**
    - The board is a theme's board, per SKILL.md's [Themes and Boards](../SKILL.md#themes-and-boards): run [Find Theme Board](commands.md#find-theme-board) for the theme the user names.
-   - When the request names none, ask which theme. Run this mode on one board at a time.
+   - When the request names none, ask which theme as an [Interview](interview.md). Run this mode on one board at a time.
 2. **Sync.**
    Run [Sync Mode](sync-mode.md) for each open initiative on the board, so Status matches delivery before the queue is decided.
 3. **Fetch.**

@@ -196,7 +196,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **Work Breakdown Guide.**
   Every mode reads the [Work Breakdown Guide](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables, and what a [Problem and a Proposal](references/work-breakdown.md#problem-and-proposal) hold.
 - **Decisions.**
-  - Ask them one at a time, each with a recommended option.
+  - Ask them one at a time, as an [Interview](references/interview.md).
   - Record each answer in the affected issues and, when there is one, the planning record.
 - **Measured claims.**  A count or a chain comes from a command's output, never from a hand count.
 - **Bodies state the plan as it is.**

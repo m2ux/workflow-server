@@ -6,7 +6,7 @@ Starts the work a theme board makes available. It advances the board, holds each
 
 1. **Select.**
    - The board is a theme's board, per SKILL.md's [Themes and Boards](../SKILL.md#themes-and-boards): run [Find Theme Board](commands.md#find-theme-board) for the theme the user names.
-   - When the request names none, ask which theme. Run this mode on one board at a time.
+   - When the request names none, ask which theme as an [Interview](interview.md). Run this mode on one board at a time.
 2. **Advance.**
    Run [Advance Mode](advance-mode.md) for the board, so the epics that are Ready and In Progress are the ones the queue decides.
 3. **Fetch.**
@@ -16,11 +16,11 @@ Starts the work a theme board makes available. It advances the board, holds each
 4. **Survey.**
    The long-lived branches are the subfolder names of `.project` in the main working tree, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. List each epic's bases with [List Epic Bases](commands.md#list-epic-bases), then run [Find Available Work](commands.md#find-available-work) with those names and `--project` set to that tree. Give an issue it reports unresolved with `--others`, and run it again.
    - **Held work.**
-     Put each `hold` line to the user before any unit is dispatched, with the record it links and whether a session is still running. The user releases it or leaves it. A released row goes through [Release Row](commands.md#release-row) and [Patch Body](commands.md#patch-body), and the command runs again.
+     Put each `hold` line to the user as an [Interview](interview.md) before any unit is dispatched, with the record it links and whether a session is still running. The user releases it or leaves it. A released row goes through [Release Row](commands.md#release-row) and [Patch Body](commands.md#patch-body), and the command runs again.
    - **Blocked work.**
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Confirm.**
-   Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and dispatch only the units the user confirms.
+   Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 6. **Hold.**
    For each confirmed unit, before its session starts:
    - Add its record with [Add Planning Record](commands.md#add-planning-record), named as the `unit` line gives it, and commit and push the engineering worktree.
