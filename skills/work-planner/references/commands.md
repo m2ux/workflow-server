@@ -399,6 +399,14 @@ Saves a board's items with their Status, each carrying its issue whole.
 gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=419167630" > items.json
 ```
 
+### Fetch Board Item
+
+Reads one board item, including its Status. The item list can lag a write. This read is what confirms a status just set.
+
+```bash
+gh api "users/{owner}/projectsV2/9/items/1001?fields=419167630"
+```
+
 ### Add Issue to Board
 
 Adds an issue to a board and prints the new item's id. The issue's `id` comes from [Fetch Issue](#fetch-issue), not its number.

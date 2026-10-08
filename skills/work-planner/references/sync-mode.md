@@ -71,7 +71,9 @@ Records work on an initiative, its epics and their task issues: links each task 
       - Run [Plan Board Changes](commands.md#plan-board-changes) with the user from [Find User](commands.md#find-user), which prints the call for each board and assignee change.
     - **Write.**
       - Run each call it prints.
-      - Fetch the issues and items again and re-run: that re-read confirms every write, and the board is current when it reports nothing to do.
+      - Confirm each status write with [Fetch Board Item](commands.md#fetch-board-item). The item list lags a write, so a fresh list does not confirm it.
+      - When the item still shows the previous status, run that write again and read the item again.
+      - Fetch the issues and items again and re-run [Plan Board Changes](commands.md#plan-board-changes) to find anything not yet written. The board is current when that plan reports nothing to do and each confirmed item shows the status written.
       - An issue added in one pass gets its Status in the next.
 13. **Report.**
     Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, what was closed, and each board and assignee change. What the report names about criteria is [Coverage Reports](work-breakdown.md#coverage-reports).

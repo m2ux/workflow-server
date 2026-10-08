@@ -57,6 +57,7 @@ Left to decide, since each needs new content or a judgement:
     cites one that does not exist, and a criterion no row delivers. A complete row's cell may be empty
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
+  - a References section that links issues or pull requests on the same board
   - no theme:* label on an initiative or epic, a title without "Name: Subtitle" (after the prefix,
     or whole for a standalone issue), or a title whose name is not two or three words or whose
     subtitle runs past ten
@@ -356,6 +357,7 @@ class Review:
                     self.check_criteria(section[1])
             elif h == 'References':
                 section[1] = self.fix_list(section[1], 'R', checkbox=False)
+                self.check_references(section[1])
 
         self.check_outcomes(sections)
         self.check_history(sections)
@@ -386,6 +388,50 @@ class Review:
             if named:
                 self.decide.append(f'AC{criterion[1]} names {", ".join(named)}; an initiative\'s criterion names no '
                                    'initiative, epic, task or issue, and is local to this initiative')
+
+    def check_references(self, lines: list[str]) -> None:
+        """The References section does not link issues or pull requests on the same board."""
+        if self.kind not in ('initiative', 'epic', 'task') or not self.number:
+            return
+        same_nums: set[str] = set()
+        if self.issue.get('number'):
+            same_nums.add(str(self.issue['number']))
+        if self.initiative:
+            if self.initiative.get('number'):
+                same_nums.add(str(self.initiative['number']))
+            same_nums.update(str(n) for n in epic_issues(self.initiative.get('body') or '').values())
+        elif self.kind == 'initiative':
+            same_nums.update(str(n) for n in epic_issues(self.issue.get('body') or '').values())
+        same_nums.update(str(n) for n in self.epics)
+
+        own_ref = re.compile(rf'\bI{self.number}(?:[: ]E\d\d(?:[: ]W\d\d)?)?\b|'
+                             r'(?<![\w:])E\d\d(?:[: ]W\d\d)?\b|(?<![\w:])W\d\d\b')
+        issue_or_pr = re.compile(r'github\.com/[^)\s]*/(?:issues|pull)/(\d+)|#(\d+)\b')
+
+        found: list[str] = []
+        for line in lines:
+            if not line.startswith('- '):
+                continue
+            text_without_urls = LINK.sub(r'\1', line)
+            for m in own_ref.finditer(text_without_urls):
+                found.append(m.group(0))
+            for m in LINK.finditer(line):
+                url = m.group(2)
+                pr_m = re.search(r'github\.com/[^)\s]*/pull/(\d+)', url)
+                if pr_m:
+                    found.append(f'#{pr_m.group(1)}')
+                iss_m = re.search(r'github\.com/[^)\s]*/issues/(\d+)', url)
+                if iss_m and iss_m.group(1) in same_nums:
+                    found.append(f'#{iss_m.group(1)}')
+            for m in issue_or_pr.finditer(text_without_urls):
+                num = m.group(1) or m.group(2)
+                if num in same_nums:
+                    found.append(f'#{num}')
+
+        if found:
+            names = ', '.join(dict.fromkeys(found))
+            self.decide.append(f'References: names {names}; the References section does not link issues or '
+                               'pull requests on the same board')
 
     def check_plan_ids(self, sections: list[list]) -> None:
         """A Problem or Proposal names no epic, task, or acceptance criterion of its own initiative."""

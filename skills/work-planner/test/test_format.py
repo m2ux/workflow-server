@@ -198,3 +198,86 @@ class Proposal(unittest.TestCase):
         r.run()
         self.assertTrue(any('initiative template' in item for item in r.decide))
 
+
+class References(unittest.TestCase):
+    def test_a_reference_naming_own_initiative_is_a_finding(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Work | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## References\n\n- **R1.** [Initiative](https://github.com/o/r/issues/10) — I01, the initiative.\n')
+        r = Review(issue(2, '[I01:E00] First: Epic', body=body, labels=('type:epic', 'theme:mechanical')),
+                   initiative=issue(10, '[I01] Main: Initiative'))
+        r.run()
+        self.assertTrue(any('References: names' in item and 'same board' in item for item in r.decide))
+
+    def test_a_reference_naming_own_epic_is_a_finding(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Work | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## References\n\n- **R1.** [E00](https://github.com/o/r/issues/2) — earlier epic.\n')
+        r = Review(issue(3, '[I01:E01] Second: Epic', body=body, labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertTrue(any('References: names' in item and 'same board' in item for item in r.decide))
+
+    def test_a_reference_naming_a_pull_request_is_a_finding(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Work | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## References\n\n- **R1.** [PR #950](https://github.com/o/r/pull/950) — pull request.\n')
+        r = Review(issue(2, '[I01:E00] First: Epic', body=body, labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertTrue(any('References: names' in item and 'same board' in item for item in r.decide))
+
+    def test_a_reference_to_an_external_doc_is_left(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Work | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## References\n\n- **R1.** [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) — HTTP Semantics.\n')
+        r = Review(issue(2, '[I01:E00] First: Epic', body=body, labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('References:' in item for item in r.decide))
+
+    def test_a_reference_to_a_planning_record_is_left(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Work | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## References\n\n- **R1.** [Planning record](https://github.com/o/r/blob/main/planning/w01.md) — The record.\n')
+        r = Review(issue(2, '[I01:E00] First: Epic', body=body, labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('References:' in item for item in r.decide))
+
+    def test_a_reference_to_another_initiative_is_left(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Work | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## References\n\n- **R1.** [I05:E00 Language](https://github.com/o/r/issues/500) — Language spec.\n')
+        r = Review(issue(2, '[I01:E00] First: Epic', body=body, labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('References:' in item for item in r.decide))
+
+    def test_an_initiative_check_with_its_epics_reads_their_numbers(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n'
+                '| --- | --- | --- | --- | --- |\n'
+                '| [E00](https://github.com/o/r/issues/2) | Work | AC1 | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## Non-Goals\n\n- Out.\n\n'
+                '## References\n\n- **R1.** [Epic](https://github.com/o/r/issues/2) — the epic.\n')
+        epic = issue(2, '[I01:E00] First: Epic')
+        r = Review(issue(1, '[I01] Main: Initiative', body=body,
+                         labels=('type:initiative', 'theme:mechanical')), epics=[epic])
+        r.run()
+        self.assertTrue(any('References: names' in item and '#2' in item for item in r.decide))
+
