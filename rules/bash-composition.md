@@ -56,7 +56,14 @@ A run that exits non-zero ends with a line naming the roots it could write, so `
 
 # GitHub CLI
 
-**REST only — no GraphQL.** `gh pr create`, `gh pr view`, `gh pr list`, and any call that reaches `api.github.com/graphql` are forbidden: GraphQL is deprecated and unreliable here, and these fail. Create and manage PRs through REST instead:
+**Projects (classic) is sunset, and `gh 2.46.0` still asks for it.** The classic `Project` family — `projectCards` among them — answers with a hard `NOT_FOUND` carrying the [sunset notice](https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/). A hard error nulls its parent and fails the whole query, so a `gh` subcommand whose built-in query names that field dies whatever you asked it for.
+
+- **Denied here** — `gh pr view <n>` and `gh pr edit`, which name `repository.pullRequest.projectCards`.
+- **Reach the same data with `--json`** — `gh pr view <n> --json number,title,state`, `gh issue view <n> --json …`. The `--json` form builds its query from the fields named, so the classic field never enters it.
+- **Unaffected** — `gh pr create`, `gh pr list`, `gh pr status`, `gh issue list`, `gh issue edit`, `gh project *`, and `gh api` in both its REST and GraphQL forms.
+- **`gh 2.73.0` retires this bullet list.** It feature-detects classic projects, and the Ubuntu archive is what pins this host to 2.46.0.
+
+**GraphQL is permitted, and REST stays the default.** REST is the shape every issue and pull request operation takes:
 
 ```bash
 git push -u origin HEAD
@@ -64,6 +71,12 @@ gh api --method POST repos/{owner}/{repo}/pulls -f title='...' -f head='branch' 
 ```
 
 Other operations take the same shape: `gh api repos/...`, `gh api --method PATCH|POST|GET ...`.
+
+Where REST exposes nothing, `gh api graphql` is the way. Avoid the classic `Project`, `ProjectCard` and `ProjectColumn` types; `projectsV2`, `projectItems` and `closingIssuesReferences` are current.
+
+- **The query goes in a file.** A GraphQL variable is a literal `$`, which the shell rules deny, so the mutation carries its ids inline and the file is passed with `-F query=@file`. Node ids come from REST, as each object's `node_id`.
+- **A pull request's Development field is set this way.** `addCloseIssueReferences(input: {issueId, pullRequestIds})` links up to ten pull requests to one issue, on any base branch and after a merge; `removeCloseIssueReferences` unlinks them. One call fills both views of the link: the issue's `Linked pull requests` project field and the pull request's `closingIssuesReferences`.
+- **A closing keyword does not do this.** GitHub reads `Closes #123` only when the pull request targets the repository's default branch, and ignores it everywhere else, so a body keyword links nothing on an epic base or an integration branch.
 
 ## Auth and the agent shell
 
