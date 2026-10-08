@@ -49,7 +49,7 @@ TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
-LONG_LIVED = ('main', 'workflows', 'workspace')
+LONG_LIVED: tuple[str, ...] = ()
 
 
 def cites(pr: dict, key: tuple[str, int]) -> bool:
@@ -339,6 +339,17 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
     return changed
 
 
+def long_lived_names(project: str) -> tuple[str, ...]:
+    """The long-lived branches: the subfolder names of .project in that checkout."""
+    root = Path(project) / '.project'
+    if not root.is_dir():
+        sys.exit(f'no .project directory under {project}')
+    names = tuple(sorted(p.name for p in root.iterdir() if p.is_dir() and not p.name.startswith('.')))
+    if not names:
+        sys.exit(f'{root} has no subfolders')
+    return names
+
+
 def pull_requests(path: str) -> list[dict]:
     """Pull requests written as JSON lines, as `gh api --paginate ... --jq '.[] | ...'` writes them."""
     return [json.loads(l) for l in Path(path).read_text().splitlines() if l.strip()]
@@ -370,8 +381,14 @@ def main() -> int:
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
+    parser.add_argument('--project', default='', help='checkout whose .project subfolders are the long-lived branches')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
+    global LONG_LIVED
+    if args.project:
+        LONG_LIVED = long_lived_names(args.project)
+    elif Path('.project').is_dir():
+        LONG_LIVED = long_lived_names('.')
     if (args.tick or args.link) and not args.fix:
         sys.exit('--tick and --link need --fix, which holds the body')
 
@@ -464,6 +481,8 @@ def main() -> int:
     if (kind == 'initiative' and not open_criteria) or epic_ready:
         if kind == 'initiative' and not args.prs:
             branches = 'integration branches not given'
+        elif not LONG_LIVED:
+            branches = 'long-lived branches not given'
         elif args.prs:
             home = issue['repository_url'].split('/repos/', 1)[1]
             pending = (unmerged_bases(prs, initiative, home) if kind == 'initiative'

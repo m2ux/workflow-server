@@ -65,6 +65,24 @@ class Survey(unittest.TestCase):
                       'branch i07/e00/w01-queue-plan, worktree .worktrees/i07-e00-w01', output)
         self.assertIn('available: 1, held: 0, blocked: 0', output)
 
+    def test_a_unit_names_its_epic_base(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / '.project' / 'main').mkdir(parents=True)
+            output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+                            None, '--project', str(root), '--bases', 'i07/e00/main,i07/e00/workspace')
+        self.assertIn('base i07/e00/main', output)
+        self.assertNotIn('workspace', output)
+
+    def test_a_unit_names_each_of_its_epic_bases(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / '.project' / 'main').mkdir(parents=True)
+            (root / '.project' / 'workflows').mkdir()
+            output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+                            None, '--project', str(root), '--bases', 'i07/e00/workflows,i07/e00/main')
+        self.assertIn('bases i07/e00/main i07/e00/workflows', output)
+
     def test_epic_in_backlog_offers_nothing(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'Backlog')))
         self.assertNotIn('unit', output)

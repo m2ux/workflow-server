@@ -16,10 +16,12 @@ from format import Review  # noqa: E402
 
 def synced(record: dict, pulls: list[dict], *args: str) -> str:
     with tempfile.TemporaryDirectory() as tmp:
-        body, pulls_path, fixed = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'fixed.md')
+        root = Path(tmp)
+        body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
         body.write_text(json.dumps(record))
         pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
-        done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *args)
+        done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                   '--project', project(root, 'docker', 'main', 'workflows'), *args)
         if done.returncode != 0:
             raise AssertionError(done.stderr.strip() or done.stdout)
         return fixed.read_text()
@@ -82,16 +84,18 @@ class Done(unittest.TestCase):
 class TaskLinks(unittest.TestCase):
     def run_sync(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = ()):
         with tempfile.TemporaryDirectory() as tmp:
-            body, pulls_path, fixed = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'fixed.md')
+            root = Path(tmp)
+            body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
             body.write_text(json.dumps(epic))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             task_paths = []
             for n, task in enumerate(tasks):
-                path = Path(tmp, f'task-{n}.json')
+                path = root / f'task-{n}.json'
                 path.write_text(json.dumps(task))
                 task_paths.append(str(path))
             extra = ['--tasks', *task_paths] if task_paths else []
-            done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *extra, *args)
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                       '--project', project(root, 'docker', 'main', 'workflows'), *extra, *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_an_open_pull_request_is_linked_and_does_not_deliver(self):
@@ -272,20 +276,28 @@ class DoneColumn(unittest.TestCase):
         self.assertIn('| W01 | Reads count ([#1053](https://github.com/o/r/pull/1053)) | AC1 | | | ✓ |', fixed)
 
 
+def project(root: Path, *names: str) -> str:
+    """A checkout whose .project subfolders are the long-lived branches."""
+    for name in names:
+        (root / '.project' / name).mkdir(parents=True)
+    return str(root)
+
+
 class InitiativeClose(unittest.TestCase):
-    def run_sync(self, pulls: list[dict] | None, ticked: bool = True) -> str:
+    def run_sync(self, pulls: list[dict] | None, ticked: bool = True, branches: tuple[str, ...] = ('docker', 'main', 'workflows', 'workspace')) -> str:
         epic = issue(2, '[I01:E00] First: Epic', 'closed')
         body = initiative_body((f"[E00]({url('issues', 2)})", ''))
         if ticked:
             body = body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
         initiative = issue(1, '[I01] First: Initiative', body=body)
         with tempfile.TemporaryDirectory() as tmp:
-            epic_path, issue_path = Path(tmp, 'epic.json'), Path(tmp, 'issue.json')
+            root = Path(tmp)
+            epic_path, issue_path = root / 'epic.json', root / 'issue.json'
             epic_path.write_text(json.dumps(epic))
             issue_path.write_text(json.dumps(initiative))
-            args = [str(issue_path), '--epics', str(epic_path)]
+            args = [str(issue_path), '--epics', str(epic_path), '--project', project(root, *branches)]
             if pulls is not None:
-                pulls_path = Path(tmp, 'prs.json')
+                pulls_path = root / 'prs.json'
                 pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
                 args.extend(['--prs', str(pulls_path)])
             done = run('sync.py', *args)
@@ -345,6 +357,19 @@ class InitiativeClose(unittest.TestCase):
         self.assertIn('unmerged: i01/main', out)
         self.assertIn('closable: no (unmerged i01/main)', out)
 
+    def test_a_branch_outside_project_folders_is_not_long_lived(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/workspace', head='i01/e00/w01-work')],
+                            branches=('docker', 'main', 'workflows'))
+        self.assertNotIn('workspace', out)
+        self.assertIn('closable: yes', out)
+
+    def test_a_project_folder_is_a_long_lived_branch(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/docker', head='i01/e00/w01-work')],
+                            branches=('docker', 'main', 'workflows'))
+        self.assertIn('unmerged: i01/docker', out)
+
 
 def ticked(body: str) -> str:
     return body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
@@ -354,10 +379,12 @@ class EpicClose(unittest.TestCase):
     def run_sync(self, body: str, pulls: list[dict]) -> str:
         epic = issue(2, '[I01:E00] First: Epic', body=body)
         with tempfile.TemporaryDirectory() as tmp:
-            issue_path, pulls_path = Path(tmp, 'issue.json'), Path(tmp, 'prs.json')
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
             issue_path.write_text(json.dumps(epic))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
-            done = run('sync.py', str(issue_path), '--prs', str(pulls_path))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--project', project(root, 'docker', 'main', 'workflows'))
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout
 

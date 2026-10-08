@@ -73,10 +73,14 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
   - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which is how [Sync Mode](sync-mode.md) tells it from a task pull request.
+- **Long-lived branches.**
+  - A project's long-lived branches are the subfolder names of `.project`.
+  - **Example.**
+    workflow-server's `.project` subfolders are `docker`, `main` and `workflows`.
 - **Integration branches.**
   - Each long-lived branch an initiative changes has an integration branch, named for the initiative and that branch and cut from it.
   - **Example.**
-    workflow-server's long-lived branches are `main`, `workflows` and `workspace`, and an integration branch cut from `main` is `i07/main`.
+    An integration branch cut from `main` is `i07/main`.
   - An epic base is cut from the integration branch, and the pull request that merges that base targets it.
   - An integration branch takes its long-lived branch's later changes by merge, so the pull requests open against it keep their base.
   - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
@@ -85,16 +89,17 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - **Example.**
     An epic base cut from `i07/main` is `i07/e00/main`.
   - Every pull request delivering the epic's tasks targets that base, never the integration branch or the long-lived branch.
-  - A base takes its integration branch's later changes by merge, so the pull requests open against it keep their base.
+  - [Deliver Mode](deliver-mode.md) merges the initiative integration branch into the epic base before it merges a task pull request, so that pull request merges onto the integration branch's later changes.
   - Once every task is delivered and every criterion is ticked, moving the epic to In Review opens the pull request that merges each base into its integration branch, and the epic stays open until each such pull request has merged. Merging it is the reviewer's call, so no part of an epic with an unticked criterion or an undelivered task reaches an integration branch.
 - **Task branches.**
-  - A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
+  - A unit's task branch is cut from the epic base [Find Available Work](commands.md#find-available-work) names for it, for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
   - Every pull request delivering the unit's work is opened from this branch.
 - **Test plan.**
-  - A task pull request carries its test plan as the checked list in its body.
+  - A task pull request carries its test plan as the checked list in its body, one box for each row of the table, with the same id.
   - An item has passed when it has been run and it held, and its box is ticked to record that.
-  - The test plan has passed when it has at least one item and every item has passed.
-  - [Deliver Mode](deliver-mode.md) merges that pull request into the epic base when the test plan has passed. The pull request stays open while the test plan has not passed.
+  - The test plan has passed when it has at least one item and every box is ticked.
+  - [Deliver Mode](deliver-mode.md) merges the initiative integration branch into the epic base, then merges that pull request into the epic base, when the test plan has passed. The pull request stays open while the test plan has not passed.
+  - After that merge, Deliver Mode syncs that epic and its task issues. It does not sync the initiative or the board.
 - **Task ids.**
   - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - A session that holds the task adds its record folder's link, which is the hold: `[W01](…/w01.md), [W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. [Deliver Mode](deliver-mode.md) writes and reads it.
@@ -103,6 +108,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A link to an open pull request does not deliver the task.
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Tasks with their own issue.**
+  - A task issue belongs to one epic. Its title carries that epic's prefix, and that epic's table has its row.
+  - A task issue that belongs to no epic is hoisted, as [Hoist Mode](hoist-mode.md) defines. Once it belongs to an epic, that epic's planning manages it.
   - The row links the pull request, not the issue.
   - The pull request's body cites the issue by its URL.
   - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.

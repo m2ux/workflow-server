@@ -228,7 +228,7 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .ht
 
 Merges a task pull request into its epic base.
 
-- Run it when the pull request's test plan has passed, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- Run it when every box in the pull request's test plan is ticked, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. [Update Epic Base](#update-epic-base) has merged the initiative integration branch into that base first.
 - A refusal leaves the pull request open. Report the refusal.
 - The merge method is a merge commit.
 
@@ -257,6 +257,26 @@ Cuts an epic's base branch from the tip of the initiative's integration branch o
 
 ```bash
 git fetch origin i07/main && git push origin origin/i07/main:refs/heads/i07/e00/main
+```
+
+### List Epic Bases
+
+Prints one epic's base branches on the remote. A base is a head `i07/e00/<name>` whose `<name>` is a subfolder of `.project`, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+
+```bash
+git ls-remote --heads origin 'refs/heads/i07/e00/*'
+```
+
+### Update Epic Base
+
+Merges an initiative integration branch into the epic base.
+
+- Run it before [Merge Pull Request](#merge-pull-request), as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- Run it outside the unit's task worktree, so that checkout stays on the task branch.
+- A conflict stops the merge. The task pull request stays open, and the conflict is reported.
+
+```bash
+git fetch origin i07/main i07/e00/main && git worktree add --detach .worktrees/i07-e00-main origin/i07/e00/main && git -C .worktrees/i07-e00-main merge --no-edit origin/i07/main && git -C .worktrees/i07-e00-main push origin HEAD:refs/heads/i07/e00/main && git worktree remove .worktrees/i07-e00-main
 ```
 
 ### Open Integration Pull Request
@@ -391,8 +411,8 @@ mkdir -p artifacts/planning/<yyyy-mm-dd>[-<ref>]-<slug>
 
 Cuts the worktree and branch one unit's session works in, from the epic's base branch.
 
-- The worktree and the branch are the ones [Find Available Work](#find-available-work) names, with the branch following the [Work Breakdown Guide](work-breakdown.md#delivery).
-- The base is the epic base for the long-lived branch the unit changes.
+- The worktree, the branch and the base are the ones [Find Available Work](#find-available-work) names, with the branch following the [Work Breakdown Guide](work-breakdown.md#delivery).
+- When the unit line names several bases, cut from the one for the long-lived branch the unit changes.
 - Run it in the checkout of the repository the work changes.
 
 ```bash
@@ -489,9 +509,10 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - A pull request whose head is an epic base merges that base, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and is not matched to a task.
 - It takes the epic's task issues. A linked pull request that does not cite a task's issue is reported uncited.
 - When every row is delivered and every criterion is ticked, an epic base its pull requests target that has not merged is reported unmerged. The epic is closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- `--project` is the checkout whose `.project` subfolders are the long-lived branches. Without them, an epic or initiative that would otherwise be closable is not.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --project <workspace> --fix fixed-943.md
 ```
 
 ### Tick Criteria
@@ -513,7 +534,7 @@ Reports an initiative's delivery state against its epics, and ticks Done on an e
 - Without the pull requests, an initiative whose criteria are all ticked is not closable.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --prs prs.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --prs prs.json --project <workspace>
 ```
 
 ### Plan Board Changes
@@ -555,13 +576,15 @@ Reports each unit of work a theme board makes available, each row a session hold
 - The rules are [Deliver Mode](deliver-mode.md).
 - `--items` is [Fetch Board Items with Status](#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
 - Give an issue it reports unresolved with `--others`.
-- A `unit` line names the tasks of one session's work, their coverage, and the record folder, branch and worktree their ids and Description give them.
+- `--project` is the checkout whose `.project` subfolders are the long-lived branches, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. A base whose last segment is not one of those subfolders is ignored.
+- `--bases` is the list [List Epic Bases](#list-epic-bases) prints for the board's epics, comma-separated.
+- A `unit` line names the tasks of one session's work, their coverage, and the record folder, branch, base and worktree their ids and Description give them. One base is `base i07/e00/main`. Several are `bases i07/e00/main i07/e00/workflows`.
 - A `hold` line names a row a session holds, and the record it links.
 - A `blocked` line names a free row whose dependencies are undelivered, or whose joined task is unavailable.
 - `--date` opens the records on another day than today.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --project <workspace> --bases i07/e00/main,i07/e00/workflows
 ```
 
 ### Reserve Row
