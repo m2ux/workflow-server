@@ -108,6 +108,14 @@ For each long-lived branch the epic's tasks change:
 
 When [Sync Epic](commands.md#sync-epic) reports a draft line, open that base with [Open Epic Pull Request](commands.md#open-epic-pull-request) as a draft and leave the epic open. When it reports an epic base unmerged and names no pull request, open it ready for review and leave the epic open. When the pull request it names is a draft, the reviewer marks it ready.
 
+- **The body states the branch.**
+  - Overview is one paragraph on what the base carries. Changes holds one heading per area, with a bullet per functional change. References cites each task pull request merged into that base.
+  - It carries no Test Plan, since it delivers no task of its own, and no statement about what the epic has yet to deliver. The epic's Work Breakdown is where delivery state is read.
+- **Each task merge updates it.**
+  The session that merged a task pull request runs [Update Review Pull Request](commands.md#update-review-pull-request) after [Sync Epic](commands.md#sync-epic), adding its unit's change under Changes and its pull request under References.
+- **References are measured against the merges.**
+  [Sync Epic](commands.md#sync-epic) compares the pull requests a review body cites with the task pull requests merged into that base, and reports a difference naming both sets.
+
 ### Unplaced
 
 When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the row, then run [Sync Epic](commands.md#sync-epic) again.

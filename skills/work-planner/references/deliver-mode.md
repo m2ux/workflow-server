@@ -21,7 +21,7 @@ Starts the work a theme board makes available. It advances the board, merges eac
    Merge each `merge` line, an open pull request whose test plan has passed, into the epic base it names, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. Do not ask.
    - [Update Integration Branch](commands.md#update-integration-branch), then [Update Epic Base](commands.md#update-epic-base), then [Merge Pull Request](commands.md#merge-pull-request).
    - When that merge is refused, [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
-   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each task the pull request delivers and [Sync Epic](commands.md#sync-epic). Do not sync the initiative or the board.
+   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each task the pull request delivers and [Sync Epic](commands.md#sync-epic), then [Update Review Pull Request](commands.md#update-review-pull-request) for the base the merge landed in. Do not sync the initiative or the board.
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 7. **Hold.**
@@ -36,7 +36,7 @@ Starts the work a theme board makes available. It advances the board, merges eac
    - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
    - The session is left running.
 9. **Report.**
-   Each pull request merged, and each left open by a conflict; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
+   Each pull request merged, and each left open by a conflict; each review pull request updated; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
 
 ## Brief
 
@@ -60,7 +60,8 @@ What the prompt tells one session, written from the facts the `unit` line and th
   - Tick each passed check's Pass cell with [Patch Pull Request Body](commands.md#patch-pull-request-body). The mark is ✓, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. A row whose Test cell is empty keeps an empty Pass cell.
   - When every such Pass cell carries that tick, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
   - When the pull request merge is refused, update the task branch from the epic base with [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
-  - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. A draft line opens that epic base as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states. Do not sync the initiative or the board.
+  - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. A draft line opens that epic base as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states.
+  - Then run [Update Review Pull Request](commands.md#update-review-pull-request) for the epic base, adding the unit's change under Changes and its pull request under References. Do not sync the initiative or the board.
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
 
@@ -92,6 +93,8 @@ What the prompt tells one session, written from the facts the `unit` line and th
   A run merges each open pull request whose test plan has passed. [Find Available Work](commands.md#find-available-work) reports each on a `merge` line, and the run does not ask.
 - **Merge.**
   The unit's pull request is merged as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, with [Merge Pull Request](commands.md#merge-pull-request).
+- **Review body.**
+  A merge the session makes reaches the review pull request of the base it landed in, as [Review pull request](work-breakdown.md#review-pull-request) states, so that body names every change the base carries.
 - **Status.**
   This mode sets a dispatched unit's task issue and its epic to In Progress. The queue stays [Advance Mode](advance-mode.md)'s.
 - **Arising issues.**
