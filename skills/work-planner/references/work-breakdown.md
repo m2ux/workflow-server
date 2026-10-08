@@ -94,7 +94,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
     An epic base cut from `i07/main` is `i07/e00/main`.
   - Every pull request delivering the epic's tasks targets that base, never the integration branch or the long-lived branch.
   - [Deliver Mode](deliver-mode.md) merges the integration branch into the epic base after that, then merges the task pull request. When that merge is refused, it updates the task branch from the epic base and merges again. A conflict in that update leaves the pull request open.
-  - Once every task is delivered and every criterion is ticked, moving the epic to In Review opens the pull request that merges each base into its integration branch, and the epic stays open until each such pull request has merged. Merging it is the reviewer's call, so no part of an epic with an unticked criterion or an undelivered task reaches an integration branch.
+  - When the first task merges into an epic base, the pull request that merges that base into the integration branch opens as a draft. [Sync Epic](commands.md#sync-epic) reports that base on a draft line. A draft cannot merge, so no part of an epic with an unticked criterion or an undelivered task reaches an integration branch.
+  - Once every task is delivered and every criterion is ticked, that pull request is the review pull request. Where none is open, moving the epic to In Review opens it. Where it is a draft, the reviewer marks it ready. Merging it is the reviewer's call, and the epic stays open until each such pull request has merged.
 
 ### Missing branches
 
@@ -105,7 +106,7 @@ For each long-lived branch the epic's tasks change:
 
 ### Review pull request
 
-When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open it with [Open Epic Pull Request](commands.md#open-epic-pull-request) and leave the epic open.
+When [Sync Epic](commands.md#sync-epic) reports a draft line, open that base with [Open Epic Pull Request](commands.md#open-epic-pull-request) as a draft and leave the epic open. When it reports an epic base unmerged and names no pull request, open it ready for review and leave the epic open. When the pull request it names is a draft, the reviewer marks it ready.
 
 ### Unplaced
 

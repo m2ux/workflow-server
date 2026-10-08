@@ -60,7 +60,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
   - Tick each test plan box that has passed with [Patch Pull Request Body](commands.md#patch-pull-request-body). A row whose Test cell is empty has no box, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
   - When every box is ticked, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
   - When the pull request merge is refused, update the task branch from the epic base with [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
-  - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. Do not sync the initiative or the board.
+  - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. A draft line opens that epic base as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states. Do not sync the initiative or the board.
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
 

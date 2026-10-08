@@ -32,8 +32,10 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
    - **In flight.**  Open pull requests still linked from no row. Match them as in step 4.
      - A pull request whose head is an epic base is not matched to a task, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+   - **Draft.**
+     An epic base a merged task targets that has no pull request merging it, while a task is undelivered or a criterion is unticked. Open it as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states.
    - **Unmerged.**
-     An epic base its pull requests target that has not merged into the initiative integration branch, once every task is delivered and every criterion is ticked. The Close step opens its pull request.
+     An epic base its pull requests target that has not merged into the initiative integration branch, once every task is delivered and every criterion is ticked. The Close step opens its pull request, or leaves a draft for the reviewer to mark ready, as [Review pull request](work-breakdown.md#review-pull-request) states.
    - **Uncited.**
      A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
    - **Note.**  A row links its task issue. Link the pull request as in step 4.

@@ -401,6 +401,7 @@ class EpicClose(unittest.TestCase):
                     base='i01/e00/main', head='i01/e00/w01-work')]
         out = self.run_sync(body, pulls)
         self.assertIn('unmerged: i01/e00/main', out)
+        self.assertNotIn('draft:', out)
         self.assertIn('closable: no (unmerged i01/e00/main)', out)
         self.assertNotIn('in flight:', out)
 
@@ -445,6 +446,32 @@ class EpicClose(unittest.TestCase):
         out = self.run_sync(body, pulls)
         self.assertNotIn('unmerged', out)
         self.assertIn('closable: no (unticked AC1)', out)
+
+    def test_the_first_merged_task_opens_the_epic_base_as_a_draft(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('draft: i01/e00/main', out)
+        self.assertNotIn('unmerged', out)
+        self.assertIn('closable: no (undelivered W02)', out)
+
+    def test_an_open_draft_is_not_opened_again(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', ''))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('draft:', out)
+
+    def test_a_draft_epic_pull_request_is_named_when_the_epic_is_complete(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('unmerged: i01/e00/main (#980 draft)', out)
+        self.assertNotIn('draft:', out)
 
     def test_an_undelivered_task_does_not_report_an_unmerged_epic_base(self):
         body = ticked(epic_body(('W01', 'Work', '')))
