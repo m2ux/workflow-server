@@ -12,7 +12,7 @@
 
 ## Test Plan
 
-| Test | Description | Coverage | Done |
+| Test | Description | Coverage | Pass |
 | --- | --- | --- | --- |
 | T1 | {{A check that the change holds.}} | AC1 | |
 

@@ -12,7 +12,7 @@ from fixtures import issue, item, pr, run, url
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
 PLAN = ('## Test Plan\n\n'
-        '| Test | Description | Coverage | Done |\n| --- | --- | --- | --- |\n'
+        '| Test | Description | Coverage | Pass |\n| --- | --- | --- | --- |\n'
         '| T1 | The check holds. | AC1 | ✓ |\n')
 
 
@@ -132,7 +132,7 @@ class Survey(unittest.TestCase):
         self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
 
-    def test_an_open_done_cell_is_not_merged(self):
+    def test_an_open_pass_cell_is_not_merged(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
         output = survey(staged((record, 'In Progress')),

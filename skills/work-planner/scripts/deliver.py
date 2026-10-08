@@ -166,12 +166,12 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
 
 
 def plan_passed(body: str) -> bool:
-    """Whether the body has a Test Plan table and every check's Done cell carries a tick."""
+    """Whether the body has a Test Plan table and every check's Pass cell carries a tick."""
     rows = plan_rows(body)
     if not rows:
         return False
-    checks = [done for test, _coverage, done in rows if test.strip()]
-    return bool(checks) and all(done_mark(done) == TICK for done in checks)
+    checks = [mark for test, _coverage, mark in rows if test.strip()]
+    return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 
 def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:

@@ -351,7 +351,7 @@ def cited(text: str) -> list[int]:
 
 
 def plan_rows(body: str) -> list[tuple[str, str, str]] | None:
-    """Rows of the Test Plan table as (Test, Coverage, Done). None when that table is absent."""
+    """Rows of the Test Plan table as (Test, Coverage, Pass). None when that table is absent."""
     _, sections = split_sections((body or '').replace('\r\n', '\n'))
     lines = next((item for heading, item in sections if heading == 'Test Plan'), None)
     if lines is None:
@@ -360,19 +360,19 @@ def plan_rows(body: str) -> list[tuple[str, str, str]] | None:
     if len(table) < 2:
         return None
     header = cells(table[0])
-    if 'Test' not in header or 'Coverage' not in header or 'Done' not in header:
+    if 'Test' not in header or 'Coverage' not in header or 'Pass' not in header:
         return None
     found = []
     for line in table[2:]:
         parsed = cells(line)
-        found.append((cell(header, parsed, 'Test'), cell(header, parsed, 'Coverage'), cell(header, parsed, 'Done')))
+        found.append((cell(header, parsed, 'Test'), cell(header, parsed, 'Coverage'), cell(header, parsed, 'Pass')))
     return found
 
 
 def plan_claims(body: str) -> tuple[set[int], set[int]]:
     """Criteria a test plan's Coverage column names, and those a row with a Test cell names. An empty Test cell names its criteria and observes none."""
     named, observed = set(), set()
-    for test, coverage, _done in plan_rows(body) or []:
+    for test, coverage, _mark in plan_rows(body) or []:
         acs = set(cited(coverage))
         named |= acs
         if test.strip():
