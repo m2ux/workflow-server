@@ -48,6 +48,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
    - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
+   - A task issue [Sync Epic](commands.md#sync-epic) reports unplaced is a row of this epic. Add the row, then sync the epic again.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
    - **Integration branches exist.**

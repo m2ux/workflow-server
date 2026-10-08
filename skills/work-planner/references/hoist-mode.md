@@ -93,7 +93,5 @@ A placement is the choice of where an orphan's work goes. The table states what 
 
 ## Rules
 
-- **A task issue belongs to an epic.**
-  One that belongs to none is hoisted, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Once it belongs to an epic, that epic's planning manages it.
 - **Already stated.**
   A candidate whose work an existing criterion already states is subsumed into the issue holding that criterion, with no new row. For a cited standalone issue, that issue is usually the one citing it.

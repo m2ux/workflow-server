@@ -18,7 +18,7 @@
 | --- | --- |
 | T1 | AC1 |
 
-{{The table is filled as [Deliver mode](../references/deliver-mode.md#rules) states under Tests. Each table row has one checkbox above it, with the same id. Delete the table and the list when the pull request delivers no task.}}
+{{The table is filled as [Deliver mode](../references/deliver-mode.md#rules) states under Tests. Each row whose Test cell names a check has one checkbox above it, with the same id. A row whose Test cell is empty has no checkbox. Delete the table and the list when the pull request delivers no task.}}
 
 ## Open Questions
 

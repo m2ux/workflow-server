@@ -98,6 +98,13 @@ class TaskLinks(unittest.TestCase):
                        '--project', project(root, 'docker', 'main', 'workflows'), *extra, *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
+    def test_a_task_issue_with_no_row_is_unplaced(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        task = issue(3, '[I01:E00:W02] Other: Work')
+        done, _fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')], tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unplaced: W02 #3', done.stdout)
+
     def test_an_open_pull_request_is_linked_and_does_not_deliver(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')

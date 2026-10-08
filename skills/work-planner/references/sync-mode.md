@@ -37,12 +37,14 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Uncited.**
      A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
    - **Note.**  A row links its task issue. Link the pull request as in step 4.
+   - **Unplaced.**
+     A task issue of this epic whose id is not a row. [Plan Mode](plan-mode.md) adds the row, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, then this sync is run again.
    - **Open questions.**
      The epic's Open Questions section remains. This mode's Open questions rule says what follows.
    - **Ready to verify.**  Criteria whose delivering rows are all delivered.
    - **Ticked early.**
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
-   Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited and note are clear, apart from a pull request the user leaves unmatched.
+   Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited, note and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names. What counts as coverage is [Coverage Reports](work-breakdown.md#coverage-reports).
    - A criterion that cannot be confirmed stays unticked, with what is missing. The further task that adopts it is [Align Mode](align-mode.md)'s Gap rule.

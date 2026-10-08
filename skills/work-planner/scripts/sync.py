@@ -121,6 +121,10 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
         if title and title[1] == initiative and title[2] == epic and title[3]:
             by_task[f'W{title[3]}'] = issue
     at = header.index('Task')
+    row_tasks = {row_id(r[at]) for r in rows}
+    for task, issue in sorted(by_task.items()):
+        if task not in row_tasks:
+            report['unplaced'].append(f"{task} #{issue['number']}")
     for r in rows:
         task = row_id(r[at])
         if task in links:
@@ -406,7 +410,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unmerged')}
+                              'unmet', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)

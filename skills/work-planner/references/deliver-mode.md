@@ -14,7 +14,7 @@ Starts the work a theme board makes available. It advances the board, holds each
    - [Fetch All Initiative Pull Requests](commands.md#fetch-all-initiative-pull-requests) for the board's repository, appending each further repository the board's issues live in.
    - [Find User](commands.md#find-user) for the assignee.
 4. **Survey.**
-   The long-lived branches are the subfolder names of `.project`, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. List each epic's bases with [List Epic Bases](commands.md#list-epic-bases), then run [Find Available Work](commands.md#find-available-work) with them. Give an issue it reports unresolved with `--others`, and run it again.
+   The long-lived branches are the subfolder names of `.project` in the main working tree, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. List each epic's bases with [List Epic Bases](commands.md#list-epic-bases), then run [Find Available Work](commands.md#find-available-work) with those names and `--project` set to that tree. Give an issue it reports unresolved with `--others`, and run it again.
    - **Held work.**
      Put each `hold` line to the user before any unit is dispatched, with the record it links and whether a session is still running. The user releases it or leaves it. A released row goes through [Release Row](commands.md#release-row) and [Patch Body](commands.md#patch-body), and the command runs again.
    - **Blocked work.**
@@ -54,9 +54,9 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Open the pull request.**
   Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the epic base, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Merge.**
-  - Tick each test plan box that has passed with [Patch Pull Request Body](commands.md#patch-pull-request-body). One box for each table row, with the same id, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-  - When every box is ticked, merge the initiative integration branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then merge the pull request with [Merge Pull Request](commands.md#merge-pull-request).
-  - A refusal or a conflict leaves the pull request open and is reported.
+  - Tick each test plan box that has passed with [Patch Pull Request Body](commands.md#patch-pull-request-body). A row whose Test cell is empty has no box, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+  - When every box is ticked, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
+  - When the pull request merge is refused, update the task branch from the epic base with [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. Do not sync the initiative or the board.
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
@@ -80,7 +80,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
   - A criterion whose instrument does not exist yet is work the task carries, as the [Verified](review-criteria.md#verified) rule defines.
   - A criterion no test can observe is named in the coverage report, as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
   - The project's own system test is the instrument where the criterion is something that test can exercise.
-  - The pull request's Test Plan table has one row for each test plan item, in that item's order, and the checked list has one box for that row with the same id. Criteria names the parent epic's acceptance criteria that item observes, by id, several as `AC1, AC3`, and is empty when the item observes none. Every criterion the unit's Coverage names appears in at least one row. A criterion that Coverage names and no item observes is a following row whose Test cell is empty. The plan has passed when every box is ticked, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+  - The pull request's Test Plan table has one row for each test plan item, in that item's order. A row whose Test cell names a check has one box with the same id. A row whose Test cell is empty has no box. Criteria names the parent epic's acceptance criteria that item observes, by id, several as `AC1, AC3`, and is empty when the item observes none. Every criterion the unit's Coverage names appears in at least one row. A criterion that Coverage names and no item observes is a following row whose Test cell is empty. The plan has passed when every box is ticked, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - **Release is the user's call.**
   A held row is released only on the user's word. This mode reads no clock and reclaims nothing on its own.
 - **Dispatch is confirmed.**
