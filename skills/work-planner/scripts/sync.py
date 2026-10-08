@@ -69,17 +69,6 @@ INTEGRATION = re.compile(r'^(?:refs/heads/)?i(\d\d)/([^/]+)$')
 LONG_LIVED: tuple[str, ...] = ()
 
 
-def cites(pr: dict, key: tuple[str, int]) -> bool:
-    """Whether a pull request's title or body cites the issue: by its URL or owner/repo#number, or
-    as a bare #number from the issue's own repository. Repository names match in any case."""
-    repo, number = key
-    text = f"{pr['title']}\n{pr.get('body') or ''}"
-    if re.search(rf'(?<![\w.-]){re.escape(repo)}(?:/issues/|#){number}\b', text, re.IGNORECASE):
-        return True
-    home = PULL_HOME.search(pr.get('html_url') or '')
-    return bool(home) and home[1].lower() == repo.lower() and bool(re.search(rf'(?<![\w/.-])#{number}\b', text))
-
-
 def attach_links(prs: list[dict], path: str) -> None:
     """Give each pull request the closing issue references GitHub holds for it.
 

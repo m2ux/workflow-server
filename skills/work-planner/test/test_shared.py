@@ -8,47 +8,41 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import SCRIPTS, issue, pr, run, url
+from fixtures import SCRIPTS, issue, links as held_links, pr, run
 
 sys.path.insert(0, str(SCRIPTS))
-from board import Board, cites, status_of  # noqa: E402
+from board import Board, status_of  # noqa: E402
 from format import cell, description, phrase  # noqa: E402
-from sync import Unreadable  # noqa: E402
+from sync import Unreadable, attach_links, links_issue  # noqa: E402
 
 
-class Cites(unittest.TestCase):
+class LinksIssue(unittest.TestCase):
     key = ('o/r', 12)
 
-    def test_url_cites_from_any_repository(self):
-        self.assertTrue(cites(pr(1, 'T', body=f"See {url('issues', 12)}", repo='o/s'), self.key))
+    def attached(self, *held: dict) -> dict:
+        """The pull request, given the issue links the file holds."""
+        record = pr(1, 'T')
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp, 'links.json')
+            path.write_text(json.dumps(list(held)))
+            attach_links([record], str(path))
+        return record
 
-    def test_owner_repo_number_cites_from_any_repository(self):
-        self.assertTrue(cites(pr(1, 'T', body='See o/r#12', repo='o/s'), self.key))
+    def test_a_linked_issue_reads_as_linked(self):
+        self.assertTrue(links_issue(self.attached(held_links(1, 12)), self.key))
 
-    def test_bare_number_cites_from_the_same_repository(self):
-        self.assertTrue(cites(pr(1, 'T', body='See #12'), self.key))
+    def test_another_repositorys_issue_of_that_number_links_nothing(self):
+        self.assertFalse(links_issue(self.attached(held_links(1, 12, issue_repo='o/s')), self.key))
 
-    def test_bare_number_from_another_repository_cites_nothing(self):
-        self.assertFalse(cites(pr(1, 'T', body='See #12', repo='o/s'), self.key))
+    def test_another_number_links_nothing(self):
+        self.assertFalse(links_issue(self.attached(held_links(1, 120)), self.key))
 
-    def test_another_repositorys_reference_cites_nothing(self):
-        self.assertFalse(cites(pr(1, 'T', body='See o/s#12'), self.key))
-
-    def test_longer_number_cites_nothing(self):
-        self.assertFalse(cites(pr(1, 'T', body='See #120'), self.key))
-
-    def test_repository_whose_name_ends_the_same_cites_nothing(self):
-        self.assertFalse(cites(pr(1, 'T', body='See xo/r#12'), self.key))
-        self.assertFalse(cites(pr(1, 'T', body='See https://github.com/xo/r/issues/12'), self.key))
+    def test_a_pull_request_the_file_omits_links_nothing(self):
+        self.assertFalse(links_issue(self.attached(), self.key))
+        self.assertFalse(links_issue(self.attached(held_links(2, 12)), self.key))
 
     def test_repository_names_match_in_any_case(self):
-        self.assertTrue(cites(pr(1, 'T', body='See O/R#12', repo='o/s'), self.key))
-        self.assertTrue(cites(pr(1, 'T', body='See #12', repo='O/R'), self.key))
-
-    def test_pull_request_url_of_another_shape_still_reads(self):
-        record = {**pr(1, 'T', body='See #12'), 'html_url': 'https://github.com/o/r/pull/1/'}
-        self.assertTrue(cites(record, self.key))
-        self.assertFalse(cites({**record, 'html_url': 'not a url'}, self.key))
+        self.assertTrue(links_issue(self.attached(held_links(1, 12, repo='O/R', issue_repo='O/R')), self.key))
 
 
 class Cells(unittest.TestCase):

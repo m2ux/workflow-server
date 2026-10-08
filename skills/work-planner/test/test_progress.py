@@ -8,7 +8,8 @@ import unittest
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, pr, progress, section, url
+from fixtures import (SCRIPTS, epic_body, initiative_body, issue, item, links, pr, progress, run,
+                      section, url)
 
 sys.path.insert(0, str(SCRIPTS))
 from progress import week_before  # noqa: E402
@@ -18,8 +19,8 @@ IN = '2026-09-26T08:00:00Z'
 BEFORE = '2026-09-20T08:00:00Z'
 
 
-def summary(items, prs=(), *args, tz='UTC'):
-    done = progress(items, list(prs), '--since', SINCE, *args, tz=tz)
+def summary(items, prs=(), *args, tz='UTC', held=()):
+    done = progress(items, list(prs), '--since', SINCE, *args, tz=tz, held=held)
     if done.returncode:
         raise AssertionError(done.stderr)
     return done.stdout
@@ -61,24 +62,24 @@ class Completed(unittest.TestCase):
         out = summary([item(epic, 'In Progress')], [pr(52, '[I01:E00] Unlinked fix', IN)])
         self.assertIn(f"    ✅ Unlinked fix — {url('pull', 52)}", section(out, 'Completed'))
 
-    def test_pull_request_citing_a_listed_task_issue_is_left_out(self):
+    def test_pull_request_linking_a_listed_task_issue_is_left_out(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
         task = issue(3, '[I01:E00:W01] Task Issue: Done', 'closed', IN)
         out = summary([item(epic, 'In Progress'), item(task, 'Done')],
-                      [pr(53, '[I01:E00] Delivers it', IN, body='See #3')])
+                      [pr(53, '[I01:E00] Delivers it', IN)], held=(links(53, 3),))
         self.assertNotIn('Delivers it', out)
 
-    def test_pull_request_citing_an_unlisted_task_issue_is_kept(self):
+    def test_pull_request_linking_an_unlisted_task_issue_is_kept(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
         task = issue(3, '[I01:E00:W01] Task Issue: Open')
         out = summary([item(epic, 'In Progress'), item(task, 'In Progress')],
-                      [pr(53, '[I01:E00] Part of it', IN, body='Part of #3')])
+                      [pr(53, '[I01:E00] Part of it', IN)], held=(links(53, 3),))
         self.assertIn(f"    ✅ Part of it — {url('pull', 53)}", section(out, 'Completed'))
 
-    def test_pull_request_citing_a_listed_task_issue_no_row_links_is_left_out(self):
+    def test_pull_request_linking_a_listed_task_issue_no_row_links_is_left_out(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W02', 'More', '')))
         out = summary([item(epic, 'In Progress'), item(issue(4, '[I01:E00:W02] More: Task', 'closed', IN), 'Done')],
-                      [pr(51, '[I01:E00] More', IN, body='See #4')])
+                      [pr(51, '[I01:E00] More', IN)], held=(links(51, 4),))
         self.assertEqual(section(out, 'Completed')[1:], [f"    ✅ W02 More — {url('issues', 4)}"])
 
     def test_a_pull_request_given_twice_is_listed_once(self):
@@ -113,12 +114,13 @@ class InProgress(unittest.TestCase):
         out = summary([item(epic, 'Ready')], [pr(54, '[I01:E00] Open work')])
         self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 First*, next W01 In flight — {url('issues', 2)}"])
 
-    def test_a_pull_request_citing_another_repository_places_the_task_issue(self):
+    def test_a_pull_request_linking_another_repository_places_the_task_issue(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 41, 'o/s')})", 'Task', '')),
                      repo='o/s')
         task = issue(3, '[I01:E00:W01] Task Issue: Open')
         out = summary([item(epic, 'In Progress'), item(task, 'In Review')],
-                      [pr(41, '[I01:E00] Elsewhere', body=f"See {url('issues', 3)}", repo='o/s')])
+                      [pr(41, '[I01:E00] Elsewhere', repo='o/s')],
+                      held=(links(41, 3, repo='o/s', issue_repo='o/r'),))
         text = section(out, 'In progress')
         self.assertIn(f"    👀 W01 Task Issue — {url('issues', 3)}", text)
         self.assertNotIn(url('pull', 41, 'o/s'), '\n'.join(text))
@@ -144,22 +146,22 @@ class InProgress(unittest.TestCase):
             f"🔄 *I01:E00 First* — {url('issues', 2)}",
             f"    👀 W01 Task Issue — {url('issues', 3)}"])
 
-    def test_active_task_issue_stands_for_the_pull_requests_citing_it(self):
+    def test_active_task_issue_stands_for_the_pull_requests_linking_it(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
         task = issue(3, '[I01:E00:W01] Task Issue: Open')
         out = summary([item(epic, 'In Progress'), item(task, 'In Review')],
-                      [pr(56, '[I01:E00] For the task', body='For #3')])
+                      [pr(56, '[I01:E00] For the task')], held=(links(56, 3),))
         self.assertEqual(section(out, 'In progress'), [
             f"🔄 *I01:E00 First* — {url('issues', 2)}",
             f"    👀 W01 Task Issue — {url('issues', 3)}"])
 
-    def test_bare_number_from_another_repository_cites_nothing(self):
-        # The epic in o/s links a task issue in o/r; a bare #3 in an o/s pull request means o/s#3.
+    def test_a_link_to_another_repositorys_issue_of_that_number_stands_apart(self):
+        # The epic in o/s links a task issue in o/r; the o/s pull request links o/s#3.
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')),
                      repo='o/s')
         task = issue(3, '[I01:E00:W01] Task Issue: Open')
         out = summary([item(epic, 'In Progress'), item(task, 'In Progress')],
-                      [pr(41, '[I01:E00] Elsewhere', body='See #3', repo='o/s')])
+                      [pr(41, '[I01:E00] Elsewhere', repo='o/s')], held=(links(41, 3, repo='o/s'),))
         self.assertIn(f"    👀 Elsewhere — {url('pull', 41, 'o/s')}", section(out, 'In progress'))
 
     def test_epic_with_nothing_open_names_its_next_task(self):
@@ -285,6 +287,15 @@ class Options(unittest.TestCase):
         broken = item(issue(4, '[I09:E01] Broken: Epic', body='## Work Breakdown\n\nTBD\n'), 'Ready')
         done = progress([*self.items, broken], [], '--since', SINCE, '--initiative', 'I08')
         self.assertEqual(done.stderr, '')
+
+    def test_pull_requests_without_their_issue_links_are_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            items, prs = Path(tmp, 'items.json'), Path(tmp, 'prs.json')
+            items.write_text('[]')
+            prs.write_text('')
+            done = run('progress.py', '--items', str(items), '--prs', str(prs))
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--links', done.stderr)
 
     def test_items_without_status_exit(self):
         done = progress([item(issue(2, '[I08:E00] Eight: Epic'), None)], [], '--since', SINCE)

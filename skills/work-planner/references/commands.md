@@ -201,7 +201,7 @@ gh api --paginate "repos/{owner}/{other}/pulls?state=all&per_page=100" --jq '.[]
 
 ### Fetch Pull Request Issue Links
 
-Saves the issue each pull request links, which [Sync Epic](#sync-epic) and [Sync Initiative](#sync-initiative) read as `--links`.
+Saves the issue each pull request links, which [Sync Epic](#sync-epic), [Sync Initiative](#sync-initiative), [Plan Board Changes](#plan-board-changes) and [Summarise Progress](#summarise-progress) read as `--links`.
 
 - Run it on the `prs.json` a fetch above wrote, and again after [Link Pull Request to Issue](#link-pull-request-to-issue) sets a link.
 - The first call writes the query from the node ids `prs.json` carries, so the query names the pull requests already fetched and no number is typed out.
@@ -738,11 +738,12 @@ Derives each issue's Status and assignees, and prints the call for each issue to
 
 - Give an issue it reports unresolved with `--others`.
 - `--assignee` is the user [Find User](#find-user) prints.
+- `--links` is the file [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links) writes for those pull requests, and is where the issue a pull request delivers is read. A call without it is refused.
 - An open initiative or epic whose criteria are all ticked is In Review. An epic with an open pull request and a criterion unticked is In Progress.
 - An initiative or an epic with no open pull request and unticked criteria keeps Ready or Backlog, and keeps In Progress when delivery has started. In Review then becomes In Progress. One not yet on the board is added at Backlog, or at In Progress when delivery has started. [Advance Mode](advance-mode.md#rules) sets the queue.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --links links.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/ --assignee m2ux
 ```
 
 ### Plan Queue
@@ -821,16 +822,17 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/de
 
 Prints the standup from [Fetch Board Items with Status](#fetch-board-items-with-status) and [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
 
+- `--links` is the file [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links) writes for those pull requests, and is where the issue a pull request delivers is read. A call without it is refused.
 - `--since` opens the window on another date than a week before today.
 - `--initiative I08` limits it to one initiative, or `owner/repo:I08` where that number names initiatives in several repositories.
 - `--initiatives` gives the initiatives off the board, each from [Fetch Issue](#fetch-issue).
 - `--summary` gives the paragraph for management.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --initiatives issue-946.json
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --since 2026-09-21 --initiative I08 --summary summary.txt
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json --since 2026-09-21 --initiative I08
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json --initiatives issue-946.json
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json --since 2026-09-21 --initiative I08 --summary summary.txt
 ```
 
 ### Run Tests

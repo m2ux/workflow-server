@@ -24,4 +24,4 @@
 
 ## References
 
-- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there. The issue this pull request delivers is cited here by its URL, as the [Work Breakdown Guide](../references/work-breakdown.md#delivery) states under Issue links. Delete the section when there is none.}}
+- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there. The issue this pull request delivers is not a reference: the Development field carries that link, as the [Work Breakdown Guide](../references/work-breakdown.md#delivery) states under Issue links. Delete the section when there is none.}}

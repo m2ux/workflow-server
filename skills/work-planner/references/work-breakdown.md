@@ -81,8 +81,8 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - The link is addressed by issue, so a pull request whose work carries no issue links nothing. A task pull request delivering rows that have no issue of their own is the whole of what stays unlinked.
   - The link is stored on the pull request. It holds on any base branch and on a pull request that has merged, and a later body edit leaves it standing.
   - A linked pull request closes its issue when it merges into the default branch. On any other base the issue stays open, and [Sync Mode](sync-mode.md) closes it once its criteria hold.
-  - The issue is cited under References as any other reference is, by its URL.
-  - [Sync Epic](commands.md#sync-epic) and [Sync Initiative](commands.md#sync-initiative) report a pull request that links no issue as uncited, reading the links GitHub holds.
+  - The field is the whole of the relation: neither body links the other. The pull request's References carry its sources, and the issue it delivers is not among them.
+  - [Sync Epic](commands.md#sync-epic), [Sync Initiative](commands.md#sync-initiative), [Plan Board Changes](commands.md#plan-board-changes) and [Summarise Progress](commands.md#summarise-progress) read the links GitHub holds, from [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links). Sync reports a pull request that links no issue as uncited.
 - **Long-lived branches.**
   - Where the main working tree has a `.project` directory, its subfolder names are the long-lived branches. A linked worktree uses that tree.
   - Where that directory is absent, the names are the ones the initiative's integration branches carry. An integration branch `i01/workflows` names `workflows`.
@@ -158,7 +158,7 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - A task issue belongs to one epic. Its title carries that epic's prefix.
   - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced, and the row is added as [Unplaced](#unplaced) states. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
-  - The pull request's body links the issue as [Delivery](#delivery) states under Issue links.
+  - The pull request's Development field links the issue as [Delivery](#delivery) states under Issue links.
   - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
 - **Issues backing several tasks.**
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.

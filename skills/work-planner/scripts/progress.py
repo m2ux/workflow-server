@@ -2,13 +2,14 @@
 accomplished, then what completed, what is in progress, and what is next.
 
 Usage:
-  python3 progress.py --items items.json --prs prs.json [--since 2026-09-25] [--initiative [owner/repo:]I08]
-      [--initiatives issue-946.json ...] [--summary summary.txt]
+  python3 progress.py --items items.json --prs prs.json --links links.json [--since 2026-09-25]
+      [--initiative [owner/repo:]I08] [--initiatives issue-946.json ...] [--summary summary.txt]
 
 items.json is the board's items with the Status field, as board.py reads them; each item carries
 its issue whole, body included, and the script exits when no item carries Status. prs.json holds
 pull requests as JSON lines, as sync.py reads them, from as many repositories as the board spans:
-a pull request is known by its URL, and cites an issue as board.py reads a citation. --initiatives
+a pull request is known by its URL, and links an issue through the closing issue references
+links.json carries, as board.py reads them. --initiatives
 gives initiative issues off the board, as `gh api repos/{owner}/{repo}/issues/946` returns them:
 they place their epics and describe their work as a board initiative does, and hold no Status.
 --summary gives a plain-language paragraph of what the window accomplished, for management; its
@@ -20,8 +21,8 @@ first link read deciding where more than one does. Repository names match in any
   - An epic belongs to the initiative whose Work Breakdown links it, or else to the initiative of
     its number in its own repository.
   - A task issue belongs to the epic whose row links it, or else to the epic of its reference in
-    its own repository, or else to the epic whose pull request cites it, and stands for the pull
-    requests that cite it.
+    its own repository, or else to the epic whose pull request links it, and stands for the pull
+    requests that link it.
   - A pull request titled with an epic's reference counts towards that epic when it lives in the
     epic's repository or its initiative's, the epic's own first. A row whose id links a pull
     request reads it by URL, whatever its title or repository.
@@ -34,9 +35,9 @@ epic's repository.
   Completed    items Done whose issue closed in the window: an initiative, an epic, or a task issue
                under its epic. Under each epic, the tasks whose row id links a pull request merged
                in the window, and each other pull request counting towards the epic, merged in the
-               window, that cites none of the epic's task issues listed.
+               window, that links none of the epic's task issues listed.
   In progress  epics and task issues In Progress or In Review, each epic with its open pull
-               requests that cite none of its task issues In Progress or In Review, ready for
+               requests that link none of its task issues In Progress or In Review, ready for
                review (In Review) or draft, or else, with no line under it, its next task.
   Next         epics and task issues Ready, ranked by priority label (a larger number first;
                no label after every number), then by reference; the first five, and a count of
@@ -71,9 +72,9 @@ from collections.abc import Callable
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
-from board import Board, Key, PREFIX, PULL_REF, cites, key_of, label, linked_issue, pages, status_of
+from board import Board, Key, PREFIX, PULL_REF, key_of, label, linked_issue, pages, status_of
 from format import LINK, cell, epic_name, id_cell, phrase
-from sync import PR_REF, PULL_URL, Unreadable, pull_requests
+from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
 SHOWN = 5
@@ -171,6 +172,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--items', required=True, help="the board's items, fetched with the Status field")
     parser.add_argument('--prs', required=True, help='pull requests as JSON lines')
+    parser.add_argument('--links', required=True,
+                        help='the closing issue references those pull requests hold')
     parser.add_argument('--since', help='the first day of the window, YYYY-MM-DD')
     parser.add_argument('--initiative', help='only this initiative, e.g. I08 or owner/repo:I08')
     parser.add_argument('--initiatives', nargs='*', default=[], help='initiative issues off the board, as JSON')
@@ -196,6 +199,7 @@ def main() -> int:
         if (t := tags(given['title'])) and not t[1]:
             issues.setdefault(key_of(given), given)
     prs = pull_requests(args.prs)
+    attach_links(prs, args.links)
     unresolved: list[str] = []
     home = Counter(k[0] for k in issues).most_common(1)[0][0] if issues else ''
     board = Summary(issues, unresolved, home, prs)
@@ -283,7 +287,7 @@ def main() -> int:
             prs_of.setdefault(chosen_epic, []).append(p)
     for ek, named_prs in prs_of.items():
         for tk in tasks:
-            if tk not in epic_of and any(cites(p, tk) for p in named_prs):
+            if tk not in epic_of and any(links_issue(p, tk) for p in named_prs):
                 epic_of[tk] = ek
     owned: dict[Key, dict[str, Key]] = {}
     for tk, ek in epic_of.items():
@@ -345,7 +349,7 @@ def main() -> int:
         task_issues = {n for r in rows.values() if (n := on_board(linked_issue(id_cell(header, r))))} | set(owned.get(ek, {}).values())
 
         def listed(pr: dict, shown) -> bool:
-            return any(shown(n) and cites(pr, n) for n in task_issues)
+            return any(shown(n) and links_issue(pr, n) for n in task_issues)
 
         linked = set()
         for tid, r in rows.items():
