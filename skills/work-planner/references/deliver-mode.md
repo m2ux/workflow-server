@@ -1,6 +1,6 @@
 # Deliver mode
 
-Starts the work a theme board makes available. It advances the board, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request and hoist arising issues.
+Starts the work a theme board makes available. It advances the board, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, and hoist arising issues.
 
 ## Procedure
 
@@ -53,12 +53,12 @@ What the prompt tells one session, written from the facts the `unit` line and th
   Deliver the work in the worktree, with every test the work item names, as the [Work Breakdown Guide](work-breakdown.md#tables) states.
 - **Open the pull request.**
   Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the epic base, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
-- **Move task issue to review.**
-  When every item in the pull request's test plan is closed out, set the unit's task issue, where one exists, to In Review on the board with [Set Item Status](commands.md#set-item-status).
+- **Merge.**
+  - Tick each test plan item that has passed with [Patch Pull Request Body](commands.md#patch-pull-request-body).
+  - When the test plan has passed, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, merge the pull request with [Merge Pull Request](commands.md#merge-pull-request).
+  - A refusal leaves the pull request open and is reported.
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
-- **Stop there.**
-  Merging the pull request is the user's call.
 
 ## Rules
 
@@ -84,7 +84,9 @@ What the prompt tells one session, written from the facts the `unit` line and th
   A held row is released only on the user's word. This mode reads no clock and reclaims nothing on its own.
 - **Dispatch is confirmed.**
   No session starts until the user confirms the set of units.
+- **Merge.**
+  The unit's pull request is merged as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, with [Merge Pull Request](commands.md#merge-pull-request).
 - **Status.**
-  This mode sets a dispatched unit's task issue and its epic to In Progress. When a unit completes and every item in its pull request's test plan is closed out, its task issue, where one exists, is set to In Review. The queue stays [Advance Mode](advance-mode.md)'s.
+  This mode sets a dispatched unit's task issue and its epic to In Progress. The queue stays [Advance Mode](advance-mode.md)'s.
 - **Arising issues.**
   Issues arising from the delivery of a single work item are raised as standalone issues and hoisted through [Hoist Mode](hoist-mode.md) once the pull request is open and the epic synced.

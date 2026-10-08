@@ -224,6 +224,18 @@ Replaces a pull request's body.
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -F body=@pr-950.md --jq .html_url
 ```
 
+### Merge Pull Request
+
+Merges a task pull request into its epic base.
+
+- Run it when the pull request's test plan has passed, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- A refusal leaves the pull request open. Report the refusal.
+- The merge method is a merge commit.
+
+```bash
+gh api --method PUT repos/{owner}/{repo}/pulls/950/merge -f merge_method='merge' --jq .merged
+```
+
 ### Create Integration Branch
 
 Cuts an initiative's integration branch from the tip of a long-lived branch on the remote.

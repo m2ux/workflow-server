@@ -90,6 +90,11 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 - **Task branches.**
   - A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
   - Every pull request delivering the unit's work is opened from this branch.
+- **Test plan.**
+  - A task pull request carries its test plan as the checked list in its body.
+  - An item has passed when it has been run and it held, and its box is ticked to record that.
+  - The test plan has passed when it has at least one item and every item has passed.
+  - [Deliver Mode](deliver-mode.md) merges that pull request into the epic base when the test plan has passed. The pull request stays open while the test plan has not passed.
 - **Task ids.**
   - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - A session that holds the task adds its record folder's link, which is the hold: `[W01](…/w01.md), [W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. [Deliver Mode](deliver-mode.md) writes and reads it.
