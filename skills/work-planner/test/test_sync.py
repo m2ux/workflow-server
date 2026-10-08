@@ -466,3 +466,42 @@ class EpicClose(unittest.TestCase):
                     base='i01/e00/main', head='i01/e00/w01-work', repo='o/other')]
         out = self.run_sync(body, pulls)
         self.assertIn('closable: no (unmerged o/other:i01/e00/main)', out)
+
+
+class LongLivedNames(unittest.TestCase):
+    def names(self, root: Path, text: str, initiative: str = '01'):
+        refs = root / 'heads.txt'
+        refs.write_text(text)
+        return run('sync.py', '--names', '--project', str(root), '--initiative', initiative, '--refs', str(refs))
+
+    def test_project_folders_stay_authoritative(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            project(root, 'main')
+            done = self.names(root, 'i01/workflows\n')
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(done.stdout.strip(), 'main')
+
+    def test_integration_branches_name_the_long_lived_branches(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done = self.names(root, 'refs/heads/i01/workflows\nrefs/heads/i01/e00/workflows\n'
+                              'refs/heads/i01/e00/w01-work\ni02/main\n')
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(done.stdout.strip(), 'workflows')
+
+    def test_a_remote_line_names_the_branch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done = self.names(root, 'abc123\trefs/heads/i01/main\n')
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(done.stdout.strip(), 'main')
+
+    def test_neither_source_is_unevaluable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done = self.names(root, 'refs/heads/i01/e00/w01-work\n')
+            self.assertEqual(done.returncode, 1)
+            self.assertIn('unevaluable:', done.stderr)
+            self.assertIn('.project', done.stderr)
+            self.assertIn('integration branch', done.stderr)

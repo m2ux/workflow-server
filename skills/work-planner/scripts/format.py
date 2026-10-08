@@ -407,6 +407,8 @@ class Review:
         own_ref = re.compile(rf'\bI{self.number}(?:[: ]E\d\d(?:[: ]W\d\d)?)?\b|'
                              r'(?<![\w:])E\d\d(?:[: ]W\d\d)?\b|(?<![\w:])W\d\d\b')
         issue_or_pr = re.compile(r'github\.com/[^)\s]*/(?:issues|pull)/(\d+)|#(\d+)\b')
+        repository = (self.issue.get('repository_url') or '').split('/repos/', 1)
+        home = repository[1] if len(repository) == 2 else ''
 
         found: list[str] = []
         for line in lines:
@@ -417,9 +419,9 @@ class Review:
                 found.append(m.group(0))
             for m in LINK.finditer(line):
                 url = m.group(2)
-                pr_m = re.search(r'github\.com/[^)\s]*/pull/(\d+)', url)
-                if pr_m:
-                    found.append(f'#{pr_m.group(1)}')
+                pr_m = re.search(r'github\.com/([^)\s]+/[^)\s]+)/pull/(\d+)', url)
+                if pr_m and pr_m.group(1) == home:
+                    found.append(f'#{pr_m.group(2)}')
                 iss_m = re.search(r'github\.com/[^)\s]*/issues/(\d+)', url)
                 if iss_m and iss_m.group(1) in same_nums:
                     found.append(f'#{iss_m.group(1)}')

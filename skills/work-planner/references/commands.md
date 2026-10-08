@@ -21,7 +21,7 @@ Every command the skill runs, one spec per operation. The mode files name a spec
   - `1` the Initiative Template board, `13` a board copied from it;
   - `14` the Proposals Template, `15` the Proposals board;
   - `m2ux` the user.
-  - `<main>` the main working tree, the checkout that contains `.project`. A linked worktree passes that path.
+  - `<main>` the main working tree. A linked worktree passes that path.
 
 ## Issues
 
@@ -264,11 +264,24 @@ git fetch origin i07/main && git push origin origin/i07/main:refs/heads/i07/e00/
 
 Prints one epic's base branch names, one per line.
 
-- A base is `i07/e00/<name>` whose `<name>` is a subfolder of `.project`, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- A base is `i07/e00/<name>` whose `<name>` is a long-lived branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - [Find Available Work](#find-available-work) takes these names as `--bases`.
 
 ```bash
 git ls-remote --heads origin 'refs/heads/i07/e00/*' | cut -f2 | sed 's|refs/heads/||'
+```
+
+### List Long-Lived Branches
+
+Prints the long-lived branch names, one per line.
+
+- The names are as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- `--project` is the main working tree. Where it has a `.project` directory, that directory's subfolders are the names.
+- Where it does not, `--refs` is the repository's heads, one per line, as `git ls-remote --heads origin` prints them, and `--initiative` is the initiative number, as `07`. An integration branch `i07/workflows` names `workflows`.
+- Where neither yields a name, the command prints `unevaluable:` and names what is missing, and exits 1.
+
+```bash
+git ls-remote --heads origin > heads.txt && cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py --names --project <main> --initiative 07 --refs heads.txt
 ```
 
 ### Update Integration Branch

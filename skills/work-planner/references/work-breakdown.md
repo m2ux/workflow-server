@@ -76,7 +76,9 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
   - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which is how [Sync Mode](sync-mode.md) tells it from a task pull request.
 - **Long-lived branches.**
-  - A project's long-lived branches are the subfolder names of `.project` in the main working tree. A linked worktree uses that tree.
+  - Where the main working tree has a `.project` directory, its subfolder names are the long-lived branches. A linked worktree uses that tree.
+  - Where that directory is absent, the names are the ones the initiative's integration branches carry. An integration branch `i01/workflows` names `workflows`.
+  - Where neither yields a name, the names are unevaluable. The report names the missing `.project` directory and the absent integration branch.
   - **Example.**
     workflow-server's `.project` subfolders are `docker`, `main` and `workflows`.
 - **Integration branches.**

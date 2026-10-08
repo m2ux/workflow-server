@@ -4,6 +4,9 @@ Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
   python3 sync.py issue-943.json --prs prs.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
   python3 sync.py issue-936.json --epics issue-943.json issue-937.json ... --prs prs.json
+  python3 sync.py --names --project <main> --initiative 07 --refs heads.txt
+
+With --names it prints the long-lived branch names of --project, one per line. Where .project is absent, the names are the ones --initiative's integration branches in --refs carry. Where neither yields a name, it reports the names unevaluable.
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
@@ -49,6 +52,7 @@ TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+INTEGRATION = re.compile(r'^(?:refs/heads/)?i(\d\d)/([^/]+)$')
 LONG_LIVED: tuple[str, ...] = ()
 
 
@@ -343,15 +347,48 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
     return changed
 
 
-def long_lived_names(project: str) -> tuple[str, ...]:
-    """The long-lived branches: the subfolder names of .project in that checkout."""
+def integration_names(refs: list[str], initiative: str) -> tuple[str, ...]:
+    """Long-lived names an initiative's integration branches carry.
+
+    An integration branch is iNN/<name>. i01/workflows names workflows."""
+    found = set()
+    for line in refs:
+        ref = line.strip()
+        if '\t' in ref:
+            ref = ref.split('\t', 1)[1].strip()
+        matched = INTEGRATION.fullmatch(ref)
+        if matched and matched[1] == initiative:
+            found.add(matched[2])
+    return tuple(sorted(found))
+
+
+def long_lived_names(project: str, refs: list[str] | None = None, initiative: str = '') -> tuple[str, ...]:
+    """The long-lived branches of a checkout.
+
+    Where .project exists, its subfolder names. Where it does not, the names the initiative's
+    integration branches carry. The call exits when the directory exists and has no subfolders,
+    and when the directory is absent and no integration branch names one."""
     root = Path(project) / '.project'
-    if not root.is_dir():
-        sys.exit(f'no .project directory under {project}')
-    names = tuple(sorted(p.name for p in root.iterdir() if p.is_dir() and not p.name.startswith('.')))
-    if not names:
-        sys.exit(f'{root} has no subfolders')
-    return names
+    if root.is_dir():
+        names = tuple(sorted(p.name for p in root.iterdir() if p.is_dir() and not p.name.startswith('.')))
+        if not names:
+            sys.exit(f'{root} has no subfolders')
+        return names
+    derived = integration_names(refs or [], initiative)
+    if not derived:
+        sys.exit('unevaluable: no .project directory under '
+                 f'{project} and no integration branch names the long-lived branches')
+    return derived
+
+
+def list_long_lived(project: str, refs_path: str, initiative: str) -> int:
+    """Print the long-lived branch names, one per line."""
+    if not project:
+        sys.exit('--names needs --project')
+    refs = Path(refs_path).read_text().splitlines() if refs_path else []
+    for name in long_lived_names(project, refs, initiative):
+        print(name)
+    return 0
 
 
 def pull_requests(path: str) -> list[dict]:
@@ -378,16 +415,23 @@ def table(sections):
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument('issue')
+    parser.add_argument('issue', nargs='?')
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
     parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
     parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, e.g. W01=950,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
-    parser.add_argument('--project', default='', help='checkout whose .project subfolders are the long-lived branches')
+    parser.add_argument('--project', default='', help='checkout the long-lived branch names are read from')
+    parser.add_argument('--names', action='store_true', help='print the long-lived branch names, one per line')
+    parser.add_argument('--refs', default='', help='branch heads, one per line, read when .project is absent')
+    parser.add_argument('--initiative', default='', help='initiative number, as 07, whose integration branches name the long-lived branches')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
+    if args.names:
+        return list_long_lived(args.project, args.refs, args.initiative)
+    if not args.issue:
+        sys.exit('an issue file is required')
     global LONG_LIVED
     if args.project:
         LONG_LIVED = long_lived_names(args.project)

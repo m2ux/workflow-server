@@ -2,6 +2,7 @@
 
 Run from the skill directory: python3 -m unittest discover -s test
 """
+import re
 import sys
 import unittest
 
@@ -223,7 +224,7 @@ class References(unittest.TestCase):
         r.run()
         self.assertTrue(any('References: names' in item and 'same board' in item for item in r.decide))
 
-    def test_a_reference_naming_a_pull_request_is_a_finding(self):
+    def test_a_pull_request_on_the_issues_repository_is_a_finding(self):
         body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
                 '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
                 '| --- | --- | --- | --- | --- | --- |\n'
@@ -233,6 +234,34 @@ class References(unittest.TestCase):
         r = Review(issue(2, '[I01:E00] First: Epic', body=body, labels=('type:epic', 'theme:mechanical')))
         r.run()
         self.assertTrue(any('References: names' in item and 'same board' in item for item in r.decide))
+
+    def test_a_pull_request_in_another_repository_is_left(self):
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n'
+                '| W01 | Work | AC1 | | | |\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
+                '## References\n\n- **R1.** [Delivery](https://github.com/other/org/pull/1179) — the pull request.\n')
+        r = Review(issue(2, '[I01:E00] First: Epic', body=body, labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        self.assertFalse(any('References:' in item for item in r.decide))
+
+    def test_an_epic_written_from_the_template_has_no_references_finding(self):
+        template = (SCRIPTS.parent / 'templates' / 'epic.md').read_text()
+        filled = template
+        for key, value in (('PLANNING_RECORD_URL',
+                            'https://github.com/o/r/blob/workspace/.engineering/artifacts/planning/record'),
+                           ('OWNER', 'o'), ('REPO', 'r'), ('INITIATIVE_ISSUE', '10'), ('NN', '01')):
+            filled = filled.replace('{{' + key + '}}', value)
+        filled = re.sub(r'\{\{[^}]*\}\}', 'note', filled)
+        initiative = ('## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n'
+                      '| --- | --- | --- | --- | --- |\n'
+                      '| [E00](https://github.com/o/r/issues/2) | Queue Plan | AC1 | | |\n')
+        r = Review(issue(2, '[I01:E00] Queue Plan: Hold The Work', body=filled,
+                         labels=('type:epic', 'theme:mechanical')),
+                   initiative=issue(10, '[I01] Board Work: Track The Queue', body=initiative))
+        r.run()
+        self.assertFalse(any(item.startswith('References:') for item in r.decide))
 
     def test_a_reference_to_an_external_doc_is_left(self):
         body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'

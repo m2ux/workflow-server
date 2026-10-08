@@ -27,4 +27,3 @@
 ## References
 
 - **R1.** [Planning record]({{PLANNING_RECORD_URL}}) — {{What the reader finds there.}}
-- **R{{n}}.** [{{Initiative title}}](https://github.com/{{OWNER}}/{{REPO}}/issues/{{INITIATIVE_ISSUE}}) — I{{NN}}, the initiative this epic belongs to.
