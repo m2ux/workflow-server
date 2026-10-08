@@ -211,11 +211,6 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "substrate-node-security-audit/resources/target-profile.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "work-package/resources/architecture-summary.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
