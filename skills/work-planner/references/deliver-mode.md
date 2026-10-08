@@ -55,7 +55,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Implement.**
   Deliver the work in the worktree, with every test the work item names, as the [Work Breakdown Guide](work-breakdown.md#tables) states.
 - **Open the pull request.**
-  Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the epic base, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
+  Open it with [Open Task Pull Request](commands.md#open-task-pull-request), which titles it for the epic, targets the epic base, fills the Test Plan table as this mode's Tests rule states, and links each task issue the unit delivers. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Merge.**
   - Tick each passed check's Pass cell with [Patch Pull Request Body](commands.md#patch-pull-request-body). The mark is ✓, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. A row whose Test cell is empty keeps an empty Pass cell.
   - When every such Pass cell carries that tick, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).

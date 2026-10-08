@@ -75,6 +75,12 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
   - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which is how [Sync Mode](sync-mode.md) tells it from a task pull request.
+- **Issue links.**
+  - A pull request's body opens with a closing keyword naming the issue it delivers, which fills the pull request's Development field, where GitHub shows that issue.
+  - A task pull request names the task's issue, a review pull request its epic's issue, and the pull request that merges an integration branch its initiative's issue.
+  - An issue in another repository is named `owner/repo#number`.
+  - The issue is not listed under References, and a pull request whose work has no issue carries no keyword.
+  - The keyword closes the issue when the pull request merges into the default branch, which only the pull request that merges an integration branch targets.
 - **Long-lived branches.**
   - Where the main working tree has a `.project` directory, its subfolder names are the long-lived branches. A linked worktree uses that tree.
   - Where that directory is absent, the names are the ones the initiative's integration branches carry. An integration branch `i01/workflows` names `workflows`.
@@ -150,7 +156,7 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - A task issue belongs to one epic. Its title carries that epic's prefix.
   - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced, and the row is added as [Unplaced](#unplaced) states. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
-  - The pull request's body cites the issue with a closing keyword, not under References.
+  - The pull request's body links the issue as [Delivery](#delivery) states under Issue links.
   - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
 - **Issues backing several tasks.**
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.
