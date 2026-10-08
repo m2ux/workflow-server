@@ -11,8 +11,9 @@ from fixtures import issue, item, pr, run, url
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
-PLAN = ('## Test Plan\n\n- [x] **T1.** The check holds.\n\n'
-        '| Test | Criteria |\n| --- | --- |\n| T1 | AC1 |\n')
+PLAN = ('## Test Plan\n\n'
+        '| Test | Description | Coverage |\n| --- | --- | --- |\n'
+        '| - [x] T1 | The check holds. | AC1 |\n')
 
 
 def epic_body(*rows: tuple[str, str, str, str]) -> str:

@@ -116,7 +116,11 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - A unit's task branch is cut from the epic base [Find Available Work](commands.md#find-available-work) names for it, for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
   - Every pull request delivering the unit's work is opened from this branch.
 - **Test plan.**
-  - A task pull request carries its test plan as the checked list in its body. Each table row whose Test cell names a check has one box with the same id. A row whose Test cell is empty has no box.
+  - A task pull request carries its test plan as one table, with columns Test, Description and Coverage.
+    - The Test cell holds the box and the id.
+    - Description names the check.
+    - Coverage names the criteria the check observes, `AC1, AC3`, and is empty when the check observes none.
+    - A row whose Test cell is empty has no box.
   - An item has passed when it has been run and it held, and its box is ticked to record that.
   - The test plan has passed when every box is ticked.
   - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a box is unticked.

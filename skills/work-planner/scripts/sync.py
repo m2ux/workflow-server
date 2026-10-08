@@ -350,22 +350,32 @@ def cited(text: str) -> list[int]:
     return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
 
 
-def plan_claims(body: str) -> tuple[set[int], set[int]]:
-    """Criteria a test plan names, and those a row with a Test cell names. An empty Test cell names its criteria and observes none."""
-    named, observed = set(), set()
+def plan_rows(body: str) -> list[tuple[str, str]] | None:
+    """Rows of the Test Plan table as (Test, Coverage). None when that table is absent."""
     _, sections = split_sections((body or '').replace('\r\n', '\n'))
-    lines = next((item for heading, item in sections if heading == 'Test Plan'), [])
+    lines = next((item for heading, item in sections if heading == 'Test Plan'), None)
+    if lines is None:
+        return None
     table = [line for line in lines if line.startswith('|')]
     if len(table) < 2:
-        return named, observed
+        return None
     header = cells(table[0])
-    if 'Test' not in header or 'Criteria' not in header:
-        return named, observed
+    if 'Test' not in header or 'Coverage' not in header:
+        return None
+    found = []
     for line in table[2:]:
         parsed = cells(line)
-        acs = set(cited(cell(header, parsed, 'Criteria')))
+        found.append((cell(header, parsed, 'Test'), cell(header, parsed, 'Coverage')))
+    return found
+
+
+def plan_claims(body: str) -> tuple[set[int], set[int]]:
+    """Criteria a test plan's Coverage column names, and those a row with a Test cell names. An empty Test cell names its criteria and observes none."""
+    named, observed = set(), set()
+    for test, coverage in plan_rows(body) or []:
+        acs = set(cited(coverage))
         named |= acs
-        if cell(header, parsed, 'Test').strip():
+        if test.strip():
             observed |= acs
     return named, observed
 
