@@ -134,6 +134,7 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - The test plan has passed when every such Pass cell carries that tick.
   - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a check's Pass cell is empty.
   - After that merge, Deliver Mode syncs that epic and its task issues. It does not sync the initiative or the board.
+  - [Sync Epic](commands.md#sync-epic) reports a linked pull request whose table departs from this shape: columns other than these four, which hide the plan from every other check; a Test cell that is neither an id nor empty; a Pass cell marked with anything but the tick.
   - [Sync Epic](commands.md#sync-epic) compares each linked pull request's test plan with the Coverage of the rows that pull request delivers. Each disagreement names the pull request and the row, and the sync goes on to link, tick and mark Done.
     - A criterion the plan names that those rows do not cover.
     - A criterion a row covers that no test-plan row names.

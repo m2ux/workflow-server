@@ -784,3 +784,50 @@ class ReviewReferences(unittest.TestCase):
                  pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
                     base='i01/main', head='i01/e00/main')]
         self.assertNotIn('references:', self.run_sync(pulls, body=body))
+
+
+class TestPlanShape(unittest.TestCase):
+    def run_sync(self, body: str) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((f"[W01]({url('pull', 950)})", 'AC1', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=body)]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--project', project(root, 'docker', 'main', 'workflows'))
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_a_plan_whose_columns_are_the_four_is_silent(self):
+        self.assertNotIn('test plan:', self.run_sync(test_plan(('T1', 'AC1'))))
+
+    def test_a_test_cell_that_is_not_an_id_is_reported(self):
+        out = self.run_sync(test_plan(('`python3 -m unittest discover -s test`', 'AC1')))
+        self.assertIn('test plan: #950 W01: Test names `python3 -m unittest discover -s test`, '
+                      'where it carries an id, T1', out)
+
+    def test_a_backticked_id_is_an_id(self):
+        self.assertNotIn('test plan:', self.run_sync(test_plan(('`T1`', 'AC1'))))
+
+    def test_an_empty_test_cell_is_not_reported(self):
+        self.assertNotIn('test plan:', self.run_sync(test_plan(('T1', 'AC1'), ('', 'AC1'))))
+
+    def test_a_pass_mark_that_is_not_the_tick_is_reported(self):
+        out = self.run_sync(test_plan(('T1', 'AC1')).replace('| AC1 | |', '| AC1 | ✅ |'))
+        self.assertIn('test plan: #950 W01: Pass is marked ✅, where a passed check carries ✓', out)
+
+    def test_the_tick_is_not_reported(self):
+        self.assertNotIn('test plan:', self.run_sync(
+            test_plan(('T1', 'AC1')).replace('| AC1 | |', '| AC1 | ✓ |')))
+
+    def test_columns_that_hide_the_plan_are_reported(self):
+        body = '\n'.join(['## Test Plan', '', '| Test | Description | Pass |', '| --- | --- | --- |',
+                          '| T1 | The suite. | ✅ |', ''])
+        out = self.run_sync(body)
+        self.assertIn('test plan: #950 W01: columns are Test, Description, Pass, which hide the plan; '
+                      'they are Test, Description, Coverage, Pass', out)
+
+    def test_a_pull_request_with_no_test_plan_reports_no_shape(self):
+        self.assertNotIn('test plan:', self.run_sync(''))

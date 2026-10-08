@@ -50,6 +50,8 @@ Records work on an initiative, its epics and their task issues: links each task 
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
    - **Disagreement.**
      A linked pull request's test plan against the Coverage of the rows it delivers, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan.
+   - **Test plan.**
+     A linked pull request whose test plan table departs from its columns, its Test ids or its Pass mark, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. Rewrite the table with [Patch Pull Request Body](commands.md#patch-pull-request-body).
    Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited, note and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names. What counts as coverage is [Coverage Reports](work-breakdown.md#coverage-reports).
