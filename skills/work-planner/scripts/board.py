@@ -2,12 +2,14 @@
 
 Usage:
   python3 board.py issue-936.json --epics issue-943.json ... --tasks issue-637.json ... --prs prs.json
-      --board users/{owner}/projectsV2/9 --fields fields.json --items items.json --out board/
-      --assignee m2ux
+      --links links.json --board users/{owner}/projectsV2/9 --fields fields.json --items items.json
+      --out board/ --assignee m2ux
       [--others issue-750.json ...]
 
 Issue files are as `gh api repos/{owner}/{repo}/issues/943` returns them, and prs.json as sync.py
-reads it. A board's fields and items are as the REST API returns them, pages concatenated:
+reads it. links.json holds the closing issue references GitHub holds for those pull requests, as
+Fetch Pull Request Issue Links writes them, and is where the issue a pull request links is read.
+A board's fields and items are as the REST API returns them, pages concatenated:
   gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" > fields.json
   gh api --paginate "users/{owner}/projectsV2/9/items?per_page=100&fields=<Status field id>" > items.json
 An organization's board is under orgs/{owner} in place of users/{owner}.
@@ -20,10 +22,10 @@ bodies cite, closed other than as completed (an issue a task subsumed), is remov
 Status, first match wins:
   Done         closed as completed
   (removed)    closed any other way
-  In Review    a task issue an open pull request ready for review names: its title names the
-               epic by the initiative's row id, and its title or body cites the issue; an open
+  In Review    a task issue an open pull request ready for review delivers: its title names the
+               epic by the initiative's row id, and its Development field links the issue; an open
                epic or initiative whose criteria are all ticked
-  In Progress  an open draft pull request names a task issue; an epic with an open pull request
+  In Progress  an open draft pull request links a task issue; an epic with an open pull request
                and a criterion unticked
   Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
                and that has no Open Questions
@@ -35,7 +37,7 @@ has not started, an In Progress or In Review entry becomes Backlog. One not yet 
 In Progress when a row has been delivered or an epic is Done, and Backlog when work has not
 started. Advance mode moves Ready, Backlog and, when no pull request is open, In Progress.
 
-An open task issue is In Review when an open pull request ready for review names it. An open
+An open task issue is In Review when an open pull request ready for review links it. An open
 epic or initiative is In Review when every acceptance criterion is ticked. An initiative is In
 Progress when any epic is In Review or In Progress.
 
@@ -63,7 +65,7 @@ import sys
 from pathlib import Path
 
 from format import AC, LINK, cell, id_cell, row_id, split_sections
-from sync import PR_REF, TICKED, Unreadable, cites, pull_requests, table
+from sync import PR_REF, TICKED, Unreadable, attach_links, links_issue, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
@@ -249,13 +251,14 @@ def main() -> int:
     parser.add_argument('--tasks', nargs='*', default=[])
     parser.add_argument('--others', nargs='*', default=[], help='issues outside the initiative its rows depend on')
     parser.add_argument('--prs', help='pull requests as JSON lines')
+    parser.add_argument('--links', help='the closing issue references those pull requests hold')
     parser.add_argument('--board', help='the board path, e.g. users/m2ux/projectsV2/9')
     parser.add_argument('--fields', help="the board's fields")
     parser.add_argument('--items', help="the board's items, fetched with the Status field")
     parser.add_argument('--out', help='directory for the Status body files')
     parser.add_argument('--assignee', help='the user assigned to every issue from Ready on')
     args = parser.parse_args()
-    for name in ('prs', 'board', 'fields', 'items', 'out', 'assignee'):
+    for name in ('prs', 'links', 'board', 'fields', 'items', 'out', 'assignee'):
         if not getattr(args, name):
             sys.exit(f'--{name} is required')
 
@@ -269,6 +272,7 @@ def main() -> int:
     epics, tasks = load(args.epics), load(args.tasks)
     issues = {**load(args.others), **tasks, **epics, root: initiative}
     prs = pull_requests(args.prs)
+    attach_links(prs, args.links)
     unresolved: list[str] = []
     board = Board(issues, unresolved, home, prs)
 
@@ -278,14 +282,14 @@ def main() -> int:
     task_epic: dict[Key, Key] = {}
 
     def pr_status(epic_key: str, cite: Key | None = None) -> str | None:
-        """In Review for an open pull request ready for review naming the issue, In Progress for an
-        open draft, None for neither."""
+        """In Review for an open pull request ready for review linking the issue, In Progress for
+        an open draft, None for neither."""
         found = set()
         for p in prs:
             ref = PR_REF.match(p['title'])
             if p.get('state') != 'open' or not ref or ref.groups() != (tag, epic_key):
                 continue
-            if cite is None or cites(p, cite):
+            if cite is None or links_issue(p, cite):
                 found.add('In Progress' if p.get('draft') else 'In Review')
         return 'In Review' if 'In Review' in found else 'In Progress' if found else None
 

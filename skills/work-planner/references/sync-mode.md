@@ -75,7 +75,7 @@ Records work on an initiative, its epics and their task issues: links each task 
       - When no open board carries that theme, create it with [Create Board](commands.md#create-board), titled as [Themes and Boards](../SKILL.md#themes-and-boards) states, then sync it.
     - **Plan.**
       - Run [Fetch Board Fields](commands.md#fetch-board-fields) and [Find Status Field](commands.md#find-status-field), then [Fetch Board Items with Status](commands.md#fetch-board-items-with-status).
-      - Run [Plan Board Changes](commands.md#plan-board-changes) with the user from [Find User](commands.md#find-user), which prints the call for each board and assignee change.
+      - Run [Plan Board Changes](commands.md#plan-board-changes) with the user from [Find User](commands.md#find-user) and the issue links from [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links), which prints the call for each board and assignee change.
     - **Write.**
       - Run each call it prints.
       - Confirm each status write with [Fetch Board Item](commands.md#fetch-board-item). The item list lags a write, so a fresh list does not confirm it.

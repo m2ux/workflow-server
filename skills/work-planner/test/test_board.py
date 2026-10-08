@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, pr, run, url
+from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, links, pr, run, url
 
 sys.path.insert(0, str(SCRIPTS))
 from board import assignee_calls  # noqa: E402
@@ -46,6 +46,19 @@ class AssigneeCalls(unittest.TestCase):
         self.assertEqual(assignee_calls(KEY, 'Backlog', {}, 'me'), [])
 
 
+class RequiredLinks(unittest.TestCase):
+    def test_pull_requests_without_their_issue_links_are_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, prs = Path(tmp, 'initiative.json'), Path(tmp, 'prs.json')
+            root.write_text(json.dumps(issue(1, '[I01] First: Initiative', body=initiative_body())))
+            prs.write_text('')
+            done = run('board.py', str(root), '--prs', str(prs), '--board', 'users/o/projectsV2/9',
+                       '--fields', str(prs), '--items', str(prs), '--out', str(Path(tmp, 'out')),
+                       '--assignee', 'me')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertEqual(done.stderr.strip(), '--links is required')
+
+
 def board_fields(*names: str) -> list[dict]:
     return [{'id': 7, 'name': 'Status', 'options': [{'name': name, 'id': n} for n, name in enumerate(names, start=1)]}]
 
@@ -59,12 +72,15 @@ class InitiativeStatus(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root, epic_path = Path(tmp, 'initiative.json'), Path(tmp, 'epic.json')
             fields, items, pulls = Path(tmp, 'fields.json'), Path(tmp, 'items.json'), Path(tmp, 'prs.json')
+            held_links = Path(tmp, 'links.json')
             root.write_text(json.dumps(initiative))
             epic_path.write_text(json.dumps(epic))
             fields.write_text(json.dumps(board_fields(*statuses)))
             items.write_text(json.dumps(on_board))
             pulls.write_text('')
+            held_links.write_text('[]')
             done = run('board.py', str(root), '--epics', str(epic_path), '--prs', str(pulls),
+                       '--links', str(held_links),
                        '--board', 'users/o/projectsV2/9', '--fields', str(fields), '--items', str(items),
                        '--out', str(Path(tmp, 'out')), '--assignee', 'me')
             self.assertEqual(done.returncode, 0, done.stderr)
@@ -99,7 +115,7 @@ class InitiativeStatus(unittest.TestCase):
         self.assertNotIn('In Review', out)
 
     def open_pair(self, initiative_status: str, epic_status: str, epic: dict | None = None,
-                  pulls: str = '',
+                  pulls: str = '', held: tuple[dict, ...] = (), tasks: tuple[dict, ...] = (),
                   statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'Done')) -> str:
         epic = epic or issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
         initiative = issue(1, '[I01] First: Initiative',
@@ -111,15 +127,27 @@ class InitiativeStatus(unittest.TestCase):
             epic['assignees'] = [{'login': 'me'}]
         on_board = [item(initiative, initiative_status), item(epic, epic_status)]
         on_board[0]['id'], on_board[1]['id'] = 100, 101
+        for n, task in enumerate(tasks):
+            task['id'] = 20 + n
+            task['assignees'] = [{'login': 'me'}]
+            on_board.append({**item(task, 'Backlog'), 'id': 200 + n})
         with tempfile.TemporaryDirectory() as tmp:
             root, epic_path = Path(tmp, 'initiative.json'), Path(tmp, 'epic.json')
             fields, items, prs = Path(tmp, 'fields.json'), Path(tmp, 'items.json'), Path(tmp, 'prs.json')
+            held_links = Path(tmp, 'links.json')
             root.write_text(json.dumps(initiative))
             epic_path.write_text(json.dumps(epic))
             fields.write_text(json.dumps(board_fields(*statuses)))
             items.write_text(json.dumps(on_board))
             prs.write_text(pulls)
+            held_links.write_text(json.dumps(list(held)))
+            task_paths = []
+            for n, task in enumerate(tasks):
+                path = Path(tmp, f'task-{n}.json')
+                path.write_text(json.dumps(task))
+                task_paths.append(str(path))
             done = run('board.py', str(root), '--epics', str(epic_path), '--prs', str(prs),
+                       '--links', str(held_links), *(['--tasks', *task_paths] if task_paths else []),
                        '--board', 'users/o/projectsV2/9', '--fields', str(fields), '--items', str(items),
                        '--out', str(Path(tmp, 'out')), '--assignee', 'me')
             self.assertEqual(done.returncode, 0, done.stderr)
@@ -158,6 +186,22 @@ class InitiativeStatus(unittest.TestCase):
         out = self.open_pair('In Progress', 'In Progress', epic, merged,
                              statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
         self.assertIn('set #2 [I01:E00] First: Epic: In Progress → In Review', out)
+
+    def task_pair(self, held: tuple[dict, ...]) -> str:
+        """An epic whose W01 links a task issue, and an open pull request naming the epic."""
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Go', '')))
+        task = issue(3, '[I01:E00:W01] Go: Task')
+        return self.open_pair('In Progress', 'In Progress', epic,
+                              json.dumps(pr(9, '[I01:E00] Go')) + '\n', held=held, tasks=(task,),
+                              statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+
+    def test_a_pull_request_linking_the_task_issue_puts_it_in_review(self):
+        self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → In Review', self.task_pair((links(9, 3),)))
+
+    def test_a_pull_request_linking_nothing_leaves_the_task_issue_out_of_review(self):
+        out = self.task_pair(())
+        self.assertNotIn('→ In Review', out)
+        self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → Ready', out)
 
     def test_a_ready_epic_with_a_delivered_row_stays_ready(self):
         epic = issue(2, '[I01:E00] First: Epic',
