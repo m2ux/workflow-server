@@ -11,6 +11,8 @@ from fixtures import issue, item, pr, run, url
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
+PLAN = ('## Test Plan\n\n- [x] **T1.** The check holds.\n\n'
+        '| Test | Criteria |\n| --- | --- |\n| T1 | AC1 |\n')
 
 
 def epic_body(*rows: tuple[str, str, str, str]) -> str:
@@ -118,6 +120,54 @@ class Survey(unittest.TestCase):
         self.assertIn('unit I07:E00:W01+W02: coverage AC1, '
                       f'record {TODAY}-943-i07-e00-w01-queue-plan', output)
         self.assertIn('available: 1,', output)
+
+    def test_a_finished_pull_request_is_merged(self):
+        linked = f"[W01]({url('pull', 950)})"
+        record = epic(943, (linked, 'Queue plan', '', ''))
+        record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        output = survey(staged((record, 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main',
+                            head='i07/e00/w01-queue-plan')])
+        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+
+    def test_an_unticked_box_is_not_merged(self):
+        record = epic(943, ('W01', 'Queue plan', '', ''))
+        record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        output = survey(staged((record, 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('- [x]', '- [ ]'),
+                            base='i07/e00/main')])
+        self.assertNotIn('merge #', output)
+        self.assertIn('merge: 0', output)
+
+    def test_an_unticked_coverage_criterion_is_not_merged(self):
+        linked = f"[W01]({url('pull', 950)})"
+        record = epic(943, (linked, 'Queue plan', '', ''))
+        record['body'] = record['body'].replace('| AC1 |', '| AC1, AC2 |', 1)
+        record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.** Holds.\n- [ ] **AC2.** Holds.')
+        output = survey(staged((record, 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
+        self.assertNotIn('merge #', output)
+
+    def test_an_unticked_criterion_is_not_merged(self):
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
+        self.assertNotIn('merge #', output)
+
+    def test_a_merged_pull_request_is_not_merged_again(self):
+        record = epic(943, ('W01', 'Queue plan', '', ''))
+        record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        output = survey(staged((record, 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', merged='2026-09-01T00:00:00Z', body=PLAN,
+                            base='i07/e00/main')])
+        self.assertNotIn('merge #', output)
+
+    def test_a_pull_request_on_another_base_is_not_merged(self):
+        record = epic(943, ('W01', 'Queue plan', '', ''))
+        record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        output = survey(staged((record, 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/main')])
+        self.assertNotIn('merge #', output)
 
     def test_a_held_task_holds_the_unit_it_joins(self):
         held = f'[W02]({RECORDS}/{TODAY}-943-i07-e00-w02-dispatch/)'

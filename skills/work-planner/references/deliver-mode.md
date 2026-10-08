@@ -1,6 +1,6 @@
 # Deliver mode
 
-Starts the work a theme board makes available. It advances the board, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, and hoist arising issues.
+Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed and whose criteria are met, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, and hoist arising issues.
 
 ## Procedure
 
@@ -17,21 +17,26 @@ Starts the work a theme board makes available. It advances the board, holds each
      Put each `hold` line to the user as an [Interview](interview.md) before any unit is dispatched, with the record it links and whether a session is still running. The user releases it or leaves it. A released row goes through [Release Row](commands.md#release-row) and [Patch Body](commands.md#patch-body), and the command runs again.
    - **Blocked work.**
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
-5. **Confirm.**
+5. **Merge.**
+   Merge each `merge` line into the epic base it names, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. Do not ask.
+   - [Update Integration Branch](commands.md#update-integration-branch), then [Update Epic Base](commands.md#update-epic-base), then [Merge Pull Request](commands.md#merge-pull-request).
+   - When that merge is refused, [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
+   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each task the pull request delivers and [Sync Epic](commands.md#sync-epic). Do not sync the initiative or the board.
+6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
-6. **Hold.**
+7. **Hold.**
    For each confirmed unit, before its session starts:
    - Add its record with [Add Planning Record](commands.md#add-planning-record), named as the `unit` line gives it, and commit and push the engineering worktree.
    - Run [Reserve Row](commands.md#reserve-row) for the unit's tasks and [Patch Body](commands.md#patch-body) with the body it writes.
    - Set each task issue of the unit, where one exists, to In Progress with [Set Item Status](commands.md#set-item-status), and its epic with it.
-7. **Dispatch.**
+8. **Dispatch.**
    For each held unit:
    - [Create Task Worktree](commands.md#create-task-worktree), and write the [brief](#brief) to a file in that worktree.
    - Start the unit's session with the sub-agent dispatch of the session this mode was called from.
    - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
    - The session is left running.
-8. **Report.**
-   Each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
+9. **Report.**
+   Each pull request merged, and each left open by a conflict; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
 
 ## Brief
 
@@ -83,6 +88,8 @@ What the prompt tells one session, written from the facts the `unit` line and th
   A held row is released only on the user's word. This mode reads no clock and reclaims nothing on its own.
 - **Dispatch is confirmed.**
   No session starts until the user confirms the set of units.
+- **Ready pull requests.**
+  A run merges each open pull request [Find Available Work](commands.md#find-available-work) reports on a `merge` line. It does not ask.
 - **Merge.**
   The unit's pull request is merged as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, with [Merge Pull Request](commands.md#merge-pull-request).
 - **Status.**
