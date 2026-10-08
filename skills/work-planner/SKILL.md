@@ -8,6 +8,7 @@ description: >-
   renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
   order, or a Done column that disagrees with its delivery, or a merged task that still carries an unmet criterion; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
   to deliver the work on a board, start the work it makes available, or dispatch sessions for ready tasks;
+  to explain a pull request's changes, write an architecture overview of one, or diagram what a change does for its reviewer;
   to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
   or to revise or update the work-planner skill itself.
 ---
@@ -74,6 +75,12 @@ Read the file for the mode the request calls for:
   - A merge, on each run, of an open pull request whose test plan has passed
   - A merge of the unit's pull request into the epic base once its test plan has passed
   - Hoisting of issues arising from the delivery of a unit
+- **[Review](references/review-mode.md)**
+  - An architecture overview of one pull request, for the engineer who reviews it
+  - A structural and a functional diagram, drawn from the structure the graph measures over the change
+  - The order to read the diff in
+  - A planning record of its own, held by the pull request's number
+  - A References row on the pull request linking the overview
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task
@@ -192,6 +199,9 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - For the planning record: [Add Planning Record](references/commands.md#add-planning-record).
   - For delivery: each initiative's integration branches and each epic's base branches, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
   - For dispatch: a worktree per unit of work, as [Create Task Worktree](references/commands.md#create-task-worktree) cuts it.
+  - For review: a worktree at a pull request's head commit, as [Create Review Worktree](references/commands.md#create-review-worktree) cuts it.
+- **GitNexus.**
+  The `gitnexus` command, for the structure [Review Mode](references/review-mode.md) measures over a change. It indexes the repository under review itself, as [Index Repository](references/commands.md#index-repository) runs it, so an unindexed repository costs that run rather than blocking the mode.
 - **Sub-agents.**
   The dispatch of the session this skill runs in. [Deliver Mode](references/deliver-mode.md#rules) starts each unit's session with it, and [Plan Mode](references/plan-mode.md) delegates a broad evidence sweep to it.
 

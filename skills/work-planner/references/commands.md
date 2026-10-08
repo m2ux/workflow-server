@@ -215,6 +215,14 @@ Points a pull request at another base branch, such as its epic's base branch.
 gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/e00/main' --jq .base.ref
 ```
 
+### Fetch Pull Request Files
+
+Saves the paths a pull request changes, for the measurement [Review Mode](review-mode.md#procedure) bounds to them.
+
+```bash
+gh api --paginate repos/{owner}/{repo}/pulls/950/files --jq '.[].filename' > changed-files.txt
+```
+
 ### Patch Pull Request Body
 
 Replaces a pull request's body.
@@ -465,6 +473,67 @@ Cuts the worktree and branch one unit's session works in, from the epic's base b
 
 ```bash
 git fetch origin i07/e00/main && git worktree add .worktrees/i07-e00-w01 -b i07/e00/w01-queue-plan origin/i07/e00/main
+```
+
+### Create Review Worktree
+
+Cuts the worktree [Review Mode](review-mode.md#procedure) measures a pull request in, at its head commit.
+
+- Run it in the checkout of the repository the pull request changes.
+- The worktree is detached at the head commit, so the graph reads the change as the reviewer meets it.
+
+```bash
+git fetch origin pull/950/head && git worktree add --detach .worktrees/review-950 FETCH_HEAD
+```
+
+## Graph
+
+Every graph command runs in the worktree [Create Review Worktree](#create-review-worktree) cut, and prints JSON carrying a `staleness` block. A block reporting the index behind sends the run back to [Index Repository](#index-repository), as [Review Mode](review-mode.md#rules) states under Fresh index.
+
+### Index Status
+
+Reports whether the repository is indexed, and how far behind the index sits.
+
+```bash
+gitnexus status
+```
+
+### Index Repository
+
+Indexes the repository, which an unindexed or behind repository needs before any measurement.
+
+```bash
+gitnexus analyze
+```
+
+### Change Surface
+
+Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.
+
+- `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.
+
+```bash
+gitnexus detect-changes --scope compare --base-ref main
+```
+
+### Symbol Context
+
+Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.
+
+- Run it for each symbol [Change Surface](#change-surface) names. The files group into the areas the component diagram draws.
+
+```bash
+gitnexus context reserveRow
+```
+
+### Flow Trace
+
+Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.
+
+- The flow is one [Change Surface](#change-surface) names. `process_symbols` carries each symbol's `step_index`, its file and its lines.
+
+```bash
+gitnexus query --query "Queue Placement" --limit 1
 ```
 
 ## Scripts
