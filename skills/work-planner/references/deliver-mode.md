@@ -57,8 +57,8 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Open the pull request.**
   Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the epic base, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Merge.**
-  - Tick each test plan box that has passed with [Patch Pull Request Body](commands.md#patch-pull-request-body). A row whose Test cell is empty has no box, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-  - When every box is ticked, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
+  - Tick each passed check's Pass cell with [Patch Pull Request Body](commands.md#patch-pull-request-body). The mark is ✓, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. A row whose Test cell is empty keeps an empty Pass cell.
+  - When every such Pass cell carries that tick, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
   - When the pull request merge is refused, update the task branch from the epic base with [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. A draft line opens that epic base as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states. Do not sync the initiative or the board.
 - **Hoist arising issues.**
@@ -83,7 +83,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
   - A criterion whose instrument does not exist yet is work the task carries, as the [Verified](review-criteria.md#verified) rule defines.
   - A criterion no test can observe is named in the coverage report, as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
   - The project's own system test is the instrument where the criterion is something that test can exercise.
-  - The pull request's Test Plan table has one row for each test plan item, in that item's order. A row whose Test cell names a check has one box with the same id. A row whose Test cell is empty has no box. Criteria names the parent epic's acceptance criteria that item observes, by id, several as `AC1, AC3`, and is empty when the item observes none. Every criterion the unit's Coverage names appears in at least one row. A criterion that Coverage names and no item observes is a following row whose Test cell is empty. The plan has passed when every box is ticked, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+  - The pull request's Test Plan is one table, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. One row per check, in that check's order. Every criterion the unit's Coverage names appears in at least one row. A criterion that Coverage names and no check observes is a following row whose Test cell is empty. The plan has passed when every check's Pass cell carries a tick.
 - **Release is the user's call.**
   A held row is released only on the user's word. This mode reads no clock and reclaims nothing on its own.
 - **Dispatch is confirmed.**

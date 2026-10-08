@@ -63,14 +63,10 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
     - An open pull request whose head is an epic base keeps the integration branch as its base. One whose head is an integration branch keeps the long-lived branch as its base.
     - A merged pull request is left as merged.
     - A base that is none of these is put to the user as an [Interview](interview.md).
-11. **Test plans.**
-    For each open pull request that delivers an aligned epic's tasks, make the checked list match the table, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and write it with [Patch Pull Request Body](commands.md#patch-pull-request-body).
-    - A row whose Test cell names a check has one box with that id. A row whose Test cell is empty has no box.
-    - A box that is already ticked stays ticked. The alignment ticks no box.
-12. **Unplaced task issues.** Handle each one as [Unplaced](work-breakdown.md#unplaced) states.
-13. **Review pull requests.**
+11. **Unplaced task issues.** Handle each one as [Unplaced](work-breakdown.md#unplaced) states.
+12. **Review pull requests.**
     Run [Sync Epic](commands.md#sync-epic) for each open epic, and open a reported base as [Review pull request](work-breakdown.md#review-pull-request) states.
-14. **Re-run.**
+13. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
 
@@ -126,8 +122,6 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
   - A criterion the user confirms already holds is ticked in [Sync Mode](sync-mode.md), and it stays on the delivered task.
 - **Branches.**
   An initiative in progress has the integration branches and epic bases the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and an open pull request that delivers its tasks targets the epic base. A retarget that leaves the pull request unmergeable is followed by [Update Task Branch](commands.md#update-task-branch).
-- **Test plan.**
-  An open task pull request's checked list matches its table, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. The alignment ticks no box.
 - **Unplaced.**
   Apply [Unplaced](work-breakdown.md#unplaced).
 - **Review pull request.**

@@ -126,7 +126,8 @@ class TaskLinks(unittest.TestCase):
         pulls = [pr(950, '[I01:E00] Work'), pr(951, '[I01:E00] More')]
         done, _ = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertNotIn('#950', done.stdout)
+        self.assertNotIn('in flight: #950', done.stdout)
+        self.assertNotIn('unmatched: #950', done.stdout)
         self.assertIn('in flight: #951', done.stdout)
 
     def test_a_row_linking_its_task_issue_links_the_pull_request(self):
@@ -532,3 +533,163 @@ class LongLivedNames(unittest.TestCase):
             self.assertIn('unevaluable:', done.stderr)
             self.assertIn('.project', done.stderr)
             self.assertIn('integration branch', done.stderr)
+
+
+def epic_rows(*rows: tuple[str, str, str]) -> str:
+    """An epic body. Each row is the task id, its Coverage, and its Joins."""
+    lines = ['## Work Breakdown', '',
+             '| Task | Description | Coverage | Depends on | Joins | Done |',
+             '| --- | --- | --- | --- | --- | --- |']
+    named: list[str] = []
+    for task, coverage, joins in rows:
+        lines.append(f'| {task} | Work | {coverage} | | {joins} | |')
+        for token in (part.strip() for part in coverage.split(',')):
+            if len(token) > 2 and token.startswith('AC') and token[2:].isdigit() and token not in named:
+                named.append(token)
+    criteria = [f'- [ ] **{name}.** Holds.' for name in named]
+    return '\n'.join(lines + ['', '## Acceptance Criteria', ''] + criteria + [''])
+
+
+def test_plan(*rows: tuple[str, str], prose: str = '') -> str:
+    """A pull request body whose Test Plan table holds rows of (test, coverage)."""
+    lines = ['## Test Plan', '', '| Test | Description | Coverage | Pass |', '| --- | --- | --- | --- |']
+    lines += [f'| {test} | The check holds. | {coverage} | |' for test, coverage in rows]
+    if prose:
+        lines += ['', prose]
+    return '\n'.join(lines) + '\n'
+
+
+class TestPlanAgreement(unittest.TestCase):
+    def run_sync(self, epic: dict, pulls: list[dict], *args: str):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
+            body.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                       '--project', project(root, 'docker', 'main', 'workflows'), *args)
+            return done, fixed.read_text() if fixed.exists() else ''
+
+    def test_a_plan_that_names_an_uncovered_criterion_is_reported(self):
+        task = f"[W01]({url('pull', 950)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    body=test_plan(('T1', 'AC1'), ('T2', 'AC3')))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W01: AC3 named, which the row does not cover', done.stdout)
+
+    def test_a_covered_criterion_no_plan_row_names_is_reported(self):
+        task = f"[W01]({url('pull', 950)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1, AC2', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('T1', 'AC1')))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W01: AC2 covered and named by no test', done.stdout)
+        self.assertNotIn('no test observes it', done.stdout)
+
+    def test_a_pull_request_with_no_test_plan_names_nothing(self):
+        task = f"[W01]({url('pull', 950)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
+        done, _fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W01: AC1 covered and named by no test', done.stdout)
+
+    def test_an_empty_test_cell_is_unobserved(self):
+        task = f"[W01]({url('pull', 950)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('', 'AC1')))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W01: AC1 covered and no test observes it', done.stdout)
+        self.assertNotIn('named by no test', done.stdout)
+
+    def test_an_exact_plan_reports_nothing(self):
+        task = f"[W01]({url('pull', 950)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
+        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1')))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('disagreement:', done.stdout)
+
+    def test_joined_rows_agree_when_the_plan_names_their_coverage(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
+            (f"[W01]({url('pull', 950)})", 'AC1', 'W02'),
+            (f"[W02]({url('pull', 950)})", 'AC2', 'W01')))
+        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), ('T2', 'AC2')))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('disagreement:', done.stdout)
+
+    def test_a_joined_plan_that_misses_one_row_names_that_row(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
+            (f"[W01]({url('pull', 950)})", 'AC1', 'W02'),
+            (f"[W02]({url('pull', 950)})", 'AC2', 'W01')))
+        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1')))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W02: AC2 covered and named by no test', done.stdout)
+        self.assertNotIn('disagreement: #950 W01', done.stdout)
+
+    def test_a_disagreement_leaves_linking_and_ticks_unchanged(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(('W01', 'AC1', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    body=test_plan(('T1', 'AC1'), ('T2', 'AC3')))]
+        done, fixed = self.run_sync(epic, pulls, '--link', 'W01=950', '--tick', 'AC1')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W01: AC3 named, which the row does not cover', done.stdout)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | ✓ |", fixed)
+        self.assertIn('- [x] **AC1.**', fixed)
+
+    def test_a_statement_that_assigns_a_criterion_to_the_wrong_row_is_reported(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
+            (f"[W01]({url('pull', 950)})", 'AC1', ''),
+            ('W02', 'AC2', '')))
+        prose = 'AC2 is not delivered here; it belongs to W03.'
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('T1', 'AC1'), prose=prose))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W03: AC2 assigned to W03, which the table gives to W02', done.stdout)
+        self.assertNotIn('named, which', done.stdout)
+        self.assertNotIn('named by no test', done.stdout)
+
+    def test_left_to_and_owned_by_assign_the_same_way(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
+            (f"[W01]({url('pull', 950)})", 'AC1', ''),
+            ('W02', 'AC2', '')))
+        for prose in ('AC2 is left to W03.', 'AC2 is owned by W03.'):
+            pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+            done, _fixed = self.run_sync(epic, pulls)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertIn('disagreement: #950 W03: AC2 assigned to W03, which the table gives to W02', done.stdout)
+
+    def test_a_sentence_assigns_each_criterion_it_names(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
+            (f"[W01]({url('pull', 950)})", 'AC1', ''),
+            ('W02', 'AC2', '')))
+        prose = 'AC1 and AC2 belong to W03.'
+        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('disagreement: #950 W03: AC1 assigned to W03, which the table gives to W01', done.stdout)
+        self.assertIn('disagreement: #950 W03: AC2 assigned to W03, which the table gives to W02', done.stdout)
+
+    def test_a_statement_that_assigns_a_criterion_to_its_row_is_silent(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
+            (f"[W01]({url('pull', 950)})", 'AC1', ''),
+            ('W02', 'AC2', '')))
+        prose = 'AC2 is not delivered here; it belongs to W02.'
+        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('disagreement:', done.stdout)
+
+    def test_an_assignment_in_the_next_sentence_is_not_read(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
+            (f"[W01]({url('pull', 950)})", 'AC1', ''),
+            ('W02', 'AC2', '')))
+        prose = 'AC2 is not delivered here. It belongs to W03.'
+        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        done, _fixed = self.run_sync(epic, pulls)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('disagreement:', done.stdout)

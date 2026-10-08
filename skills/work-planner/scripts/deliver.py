@@ -38,12 +38,10 @@ from pathlib import Path
 
 from board import Board, key_of, label, pages, rows, status_of
 from format import LINK, TICK, cell, done_mark, id_cell, join_sections, row, row_id, split_sections
-from sync import Unreadable, long_lived_names, pull_requests, table
+from sync import Unreadable, long_lived_names, plan_rows, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
-BOX = re.compile(r'^- \[[ xX]\] ')
-TICKED_BOX = re.compile(r'^- \[[xX]\] ')
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 TASK = re.compile(r'W\d\d')
 CRITERION = re.compile(r'AC\d+')
@@ -167,18 +165,13 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
-def section(body: str, heading: str) -> list[str] | None:
-    """The lines of one H2 section, or None when the body has none."""
-    _, sections = split_sections((body or '').replace('\r\n', '\n'))
-    return next((lines for name, lines in sections if name == heading), None)
-
-
 def plan_passed(body: str) -> bool:
-    """Whether the body has a Test Plan and every box in it is ticked."""
-    lines = section(body, 'Test Plan')
-    if lines is None:
+    """Whether the body has a Test Plan table and every check's Pass cell carries a tick."""
+    rows = plan_rows(body)
+    if not rows:
         return False
-    return all(TICKED_BOX.match(line) for line in lines if BOX.match(line))
+    checks = [mark for test, _coverage, mark in rows if test.strip()]
+    return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 
 def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:

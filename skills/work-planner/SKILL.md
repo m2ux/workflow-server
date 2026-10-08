@@ -50,7 +50,6 @@ Read the file for the mode the request calls for:
   - A scan for an initiative criterion still unticked, or ticked early, against the epics that cite it
   - Repair of a work-breakdown cell that disagrees with its delivery
   - Epic bases for an initiative in progress, and open task pull requests pointed at them
-  - Checked lists on open task pull requests matched to their tables
   - A row for a task issue the epic table does not list
   - A review pull request for an epic whose tasks are delivered and whose criteria are ticked
 - **[Sync](references/sync-mode.md)**
