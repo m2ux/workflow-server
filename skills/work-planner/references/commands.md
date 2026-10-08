@@ -321,13 +321,14 @@ gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07] Name' -f head='i
 
 Opens the pull request that merges an epic base into its initiative integration branch.
 
-- Run it when [Sync Epic](#sync-epic) reports that branch unmerged and names no open pull request. The epic stays open until the pull request merges.
+- Run it when [Sync Epic](#sync-epic) reports a draft line, or reports that branch unmerged and names no pull request. The epic stays open until the pull request merges.
 - The title is the epic's prefix and name: `[I07:E00] Name`.
 - The head is the epic base and the base is the integration branch it was cut from, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - The body is drafted from the [pull request template](../templates/pull-request.md).
+- A draft line opens it as a draft, with `-F draft=true`. An unmerged base that names no pull request omits that field, so the pull request opens ready for review.
 
 ```bash
-gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07:E00] Name' -f head='i07/e00/main' -f base='i07/main' -F body=@body.md --jq .html_url
+gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07:E00] Name' -f head='i07/e00/main' -f base='i07/main' -F draft=true -F body=@body.md --jq .html_url
 ```
 
 ## Project Boards
@@ -544,7 +545,8 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - A pull request whose head is an epic base merges that base, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and is not matched to a task.
 - It takes the epic's task issues. A linked pull request that does not cite a task's issue is reported uncited.
 - A task issue whose id is not a row is reported unplaced, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-- When every row is delivered and every criterion is ticked, an epic base its pull requests target that has not merged is reported unmerged. The epic is closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- When a task has merged into an epic base and the epic is not yet complete, that base is reported draft, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- When every row is delivered and every criterion is ticked, an epic base its pull requests target that has not merged is reported unmerged. A draft pull request is named draft. The epic is closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - `--project` is `<main>`, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Without those subfolders, an epic or initiative that would otherwise be closable is not.
 
 ```bash

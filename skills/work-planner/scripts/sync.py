@@ -33,7 +33,8 @@ Tick a criterion only once it is confirmed to hold. A task is closable when ever
 and every row is delivered. An epic is closable when those hold and every epic base its pull requests
 target has merged into the initiative's integration branch. A pull request whose head is an epic base
 merges that base and is not a task delivery. Each such base still unmerged is reported unmerged, naming
-an open pull request that merges it when one is open.
+an open pull request that merges it when one is open. A draft is named draft. When a task has merged
+into an epic base and the epic is not yet complete, that base is reported draft.
 """
 import argparse
 import json
@@ -244,13 +245,18 @@ def pr_repo(pr: dict) -> str:
 
 
 def pending_refs(associated: set[tuple[str, str]], merged: set[tuple[str, str]],
-                 opened: dict[tuple[str, str], int], home: str) -> list[str]:
-    """Refs associated and not merged, naming an open pull request that would merge one."""
+                 opened: dict[tuple[str, str], tuple[int, bool]], home: str) -> list[str]:
+    """Refs associated and not merged, naming an open pull request that would merge one.
+
+    A draft pull request is named draft. Any other open pull request is named open."""
     pending = []
     for repo, ref in sorted(associated - merged):
         name = ref if not repo or repo.lower() == home.lower() else f'{repo}:{ref}'
-        number = opened.get((repo, ref))
-        pending.append(f'{name} (#{number} open)' if number else name)
+        number, is_draft = opened.get((repo, ref), (0, False))
+        if number:
+            pending.append(f'{name} (#{number} {"draft" if is_draft else "open"})')
+        else:
+            pending.append(name)
     return pending
 
 
@@ -262,7 +268,7 @@ def unmerged_bases(prs: list[dict], initiative: str, home: str) -> list[str]:
     branch as its base has merged. An open pull request that would merge it is named on the report line."""
     associated: set[tuple[str, str]] = set()
     merged: set[tuple[str, str]] = set()
-    opened: dict[tuple[str, str], int] = {}
+    opened: dict[tuple[str, str], tuple[int, bool]] = {}
     for pr in prs:
         repo = pr_repo(pr)
         base = (pr.get('base') or {}).get('ref') or ''
@@ -278,7 +284,7 @@ def unmerged_bases(prs: list[dict], initiative: str, home: str) -> list[str]:
             if pr.get('merged_at'):
                 merged.add(key)
             elif pr.get('state') == 'open':
-                opened.setdefault(key, pr['number'])
+                opened.setdefault(key, (pr['number'], bool(pr.get('draft'))))
     return pending_refs(associated, merged, opened, home)
 
 
@@ -290,7 +296,7 @@ def unmerged_epic_bases(prs: list[dict], initiative: str, epic: str, home: str) 
     open pull request that would merge it is named on the report line."""
     associated: set[tuple[str, str]] = set()
     merged: set[tuple[str, str]] = set()
-    opened: dict[tuple[str, str], int] = {}
+    opened: dict[tuple[str, str], tuple[int, bool]] = {}
     for pr in prs:
         repo = pr_repo(pr)
         base = (pr.get('base') or {}).get('ref') or ''
@@ -306,8 +312,32 @@ def unmerged_epic_bases(prs: list[dict], initiative: str, epic: str, home: str) 
             if pr.get('merged_at'):
                 merged.add(key)
             elif pr.get('state') == 'open':
-                opened.setdefault(key, pr['number'])
+                opened.setdefault(key, (pr['number'], bool(pr.get('draft'))))
     return pending_refs(associated, merged, opened, home)
+
+
+def draft_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[str]:
+    """Epic bases a merged task targets while no pull request merges that base.
+
+    The first task merged into a base is what opens the draft. A base that already has an open
+    pull request, draft or ready, or that has merged into the integration branch, is not listed."""
+    landed: set[tuple[str, str]] = set()
+    covered: set[tuple[str, str]] = set()
+    for pr in prs:
+        repo = pr_repo(pr)
+        base = (pr.get('base') or {}).get('ref') or ''
+        head = (pr.get('head') or {}).get('ref') or ''
+        title = PR_REF.match(pr.get('title') or '')
+        if not title or title.groups() != (initiative, epic):
+            continue
+        if pr.get('merged_at') and epic_base(base, initiative, epic):
+            landed.add((repo, base))
+        if epic_base(head, initiative, epic) and (pr.get('merged_at') or pr.get('state') == 'open'):
+            covered.add((repo, head))
+    pending = []
+    for repo, ref in sorted(landed - covered):
+        pending.append(ref if not repo or repo.lower() == home.lower() else f'{repo}:{ref}')
+    return pending
 
 
 def cited(text: str) -> list[int]:
@@ -410,7 +440,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged')}
+                              'unmet', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)
@@ -494,6 +524,9 @@ def main() -> int:
             report['unmerged'].extend(pending)
             if report['unmerged']:
                 branches = 'unmerged ' + ', '.join(report['unmerged'])
+    if kind == 'epic' and not epic_ready and args.prs and LONG_LIVED:
+        home = issue['repository_url'].split('/repos/', 1)[1]
+        report['draft'].extend(draft_bases(prs, initiative, epic, home))
     print(f"#{issue['number']} {kind} ({issue['state']})")
     for name, items in report.items():
         for item in items:
