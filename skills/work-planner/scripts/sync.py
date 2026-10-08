@@ -18,7 +18,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -53,6 +53,7 @@ TICKED = re.compile(r'^- \[[xX]\] ')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 PULL_URL = re.compile(r'/pull/(\d+)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
+BELONGS = re.compile(r'\b(?:belongs? to|left to|owned by)\s+(W\d\d)\b', re.IGNORECASE)
 INTEGRATION = re.compile(r'^(?:refs/heads/)?i(\d\d)/([^/]+)$')
 LONG_LIVED: tuple[str, ...] = ()
 
@@ -349,6 +350,102 @@ def cited(text: str) -> list[int]:
     return [int(n) for n in re.findall(r'\bAC(\d+)', text)]
 
 
+def plan_claims(body: str) -> tuple[set[int], set[int]]:
+    """Criteria a test plan names, and those a row with a Test cell names. An empty Test cell names its criteria and observes none."""
+    named, observed = set(), set()
+    _, sections = split_sections((body or '').replace('\r\n', '\n'))
+    lines = next((item for heading, item in sections if heading == 'Test Plan'), [])
+    table = [line for line in lines if line.startswith('|')]
+    if len(table) < 2:
+        return named, observed
+    header = cells(table[0])
+    if 'Test' not in header or 'Criteria' not in header:
+        return named, observed
+    for line in table[2:]:
+        parsed = cells(line)
+        acs = set(cited(cell(header, parsed, 'Criteria')))
+        named |= acs
+        if cell(header, parsed, 'Test').strip():
+            observed |= acs
+    return named, observed
+
+
+def prose_lines(body: str) -> str:
+    """The body with fenced blocks and table rows left out, so a sentence is read once."""
+    lines, fence = [], False
+    for line in (body or '').replace('\r\n', '\n').split('\n'):
+        if line.startswith('```'):
+            fence = not fence
+            continue
+        if fence or line.startswith('|'):
+            continue
+        lines.append(line)
+    return '\n'.join(lines)
+
+
+def assignments(body: str) -> list[tuple[int, str]]:
+    """Criteria a sentence assigns to a task when it says the criterion belongs to, is left to, or is owned by that task."""
+    found, seen = [], set()
+    for sentence in re.split(r'(?<=[.!?])\s+', prose_lines(body)):
+        previous = 0
+        for match in BELONGS.finditer(sentence):
+            task = 'W' + match.group(1)[1:]
+            for number in cited(sentence[previous:match.start()]):
+                key = (number, task)
+                if key not in seen:
+                    seen.add(key)
+                    found.append(key)
+            previous = match.end()
+    return found
+
+
+def test_plan_agreement(rows, header, by_number, report):
+    """A linked pull request's test plan against the Coverage of the rows it delivers."""
+    at = header.index('Task')
+    coverage: dict[str, set[int]] = {}
+    by_pr: dict[int, list[str]] = {}
+    for r in rows:
+        task = row_id(r[at])
+        coverage[task] = set(cited(cell(header, r, 'Coverage')))
+        for found in LINK.finditer(r[at]):
+            pull = PULL_URL.search(found[2])
+            if not pull:
+                continue
+            tasks = by_pr.setdefault(int(pull[1]), [])
+            if task not in tasks:
+                tasks.append(task)
+    owners: dict[int, list[str]] = {}
+    for task, acs in coverage.items():
+        for number in acs:
+            given = owners.setdefault(number, [])
+            if task not in given:
+                given.append(task)
+    for number, tasks in sorted(by_pr.items()):
+        pr = by_number.get(number)
+        if not pr:
+            continue
+        named, observed = plan_claims(pr.get('body') or '')
+        union = set().union(*(coverage[task] for task in tasks))
+        label = ', '.join(tasks)
+        verb = 'does' if len(tasks) == 1 else 'do'
+        noun = 'row' if len(tasks) == 1 else 'rows'
+        for ac in sorted(named - union):
+            report['disagreement'].append(
+                f'#{number} {label}: AC{ac} named, which the {noun} {verb} not cover')
+        for task in tasks:
+            for ac in sorted(coverage[task] - named):
+                report['disagreement'].append(f'#{number} {task}: AC{ac} covered and named by no test')
+            for ac in sorted((coverage[task] & named) - observed):
+                report['disagreement'].append(f'#{number} {task}: AC{ac} covered and no test observes it')
+        for ac, task in assignments(pr.get('body') or ''):
+            given = owners.get(ac, [])
+            if task in given:
+                continue
+            who = ', '.join(given) if given else 'no row'
+            report['disagreement'].append(
+                f'#{number} {task}: AC{ac} assigned to {task}, which the table gives to {who}')
+
+
 def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool], kind: str, report) -> bool:
     """Set a tick on each complete row, and clear it on each row that is not. Returns whether any changed."""
     if 'Done' not in header:
@@ -484,7 +581,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft')}
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)
@@ -546,7 +643,9 @@ def main() -> int:
             report['ticked'].append(f'{tag}{a[1]}')
 
     if kind == 'epic' and rows:
-        unmet_coverage(rows, header, {p['number']: p for p in prs}, ticked, report)
+        by_number = {p['number']: p for p in prs}
+        unmet_coverage(rows, header, by_number, ticked, report)
+        test_plan_agreement(rows, header, by_number, report)
 
     done_changed = False
     if kind != 'task' and rows:

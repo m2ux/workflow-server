@@ -46,6 +46,8 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Ready to verify.**  Criteria whose delivering rows are all delivered.
    - **Ticked early.**
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
+   - **Disagreement.**
+     A linked pull request's test plan against the Coverage of the rows it delivers, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan.
    Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited, note and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names. What counts as coverage is [Coverage Reports](work-breakdown.md#coverage-reports).
@@ -78,7 +80,7 @@ Records work on an initiative, its epics and their task issues: links each task 
       - Fetch the issues and items again and re-run [Plan Board Changes](commands.md#plan-board-changes) to find anything not yet written. The board is current when that plan reports nothing to do and each confirmed item shows the status written.
       - An issue added in one pass gets its Status in the next.
 13. **Report.**
-    Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, what was closed, and each board and assignee change. What the report names about criteria is [Coverage Reports](work-breakdown.md#coverage-reports).
+    Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, and each board and assignee change. What the report names about criteria is [Coverage Reports](work-breakdown.md#coverage-reports). A test plan disagreement is reported as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan.
 
 ## Rules
 

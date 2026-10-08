@@ -553,6 +553,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sy
 Links each named task's id to a pull request naming the epic, open or merged, and ticks Done on a row once it is complete.
 
 - It reports the same delivery state as [Match Pull Requests](#match-pull-requests).
+- It reports each disagreement between a linked pull request's test plan and the rows it delivers, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan.
 - A row whose id links its task issue links the pull request instead.
 - A task is delivered as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - A pull request whose head is an epic base merges that base, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and is not matched to a task.

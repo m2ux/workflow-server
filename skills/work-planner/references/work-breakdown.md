@@ -121,6 +121,11 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - The test plan has passed when every box is ticked.
   - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a box is unticked.
   - After that merge, Deliver Mode syncs that epic and its task issues. It does not sync the initiative or the board.
+  - [Sync Epic](commands.md#sync-epic) compares each linked pull request's test plan with the Coverage of the rows that pull request delivers. Each disagreement names the pull request and the row, and the sync goes on to link, tick and mark Done.
+    - A criterion the plan names that those rows do not cover.
+    - A criterion a row covers that no test-plan row names.
+    - A criterion a row covers that a test-plan row names with an empty Test cell, reported as unobserved.
+    - A sentence that names a criterion and says it belongs to, is left to, or is owned by a task the table gives to another row.
 - **Task ids.**
   - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - A session that holds the task adds its record folder's link, which is the hold: `[W01](…/w01.md), [W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. [Deliver Mode](deliver-mode.md) writes and reads it.
