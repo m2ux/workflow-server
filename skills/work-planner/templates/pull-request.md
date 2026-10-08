@@ -1,7 +1,3 @@
-Closes {{#637}}
-
-{{The issue this pull request delivers, as the [Work Breakdown Guide](../references/work-breakdown.md#delivery) states under Issue links. Delete the line when the work has no issue.}}
-
 ## Overview
 
 {{One paragraph: what this pull request delivers and why.}}
@@ -28,4 +24,4 @@ Closes {{#637}}
 
 ## References
 
-- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there. Delete the section when there is none.}}
+- **R1.** [{{Title}}]({{URL}}) — {{What the reader finds there. The issue this pull request delivers is cited here by its URL, as the [Work Breakdown Guide](../references/work-breakdown.md#delivery) states under Issue links. Delete the section when there is none.}}

@@ -76,11 +76,13 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
   - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which is how [Sync Mode](sync-mode.md) tells it from a task pull request.
 - **Issue links.**
-  - A pull request's body opens with a closing keyword naming the issue it delivers, which fills the pull request's Development field, where GitHub shows that issue.
-  - A task pull request names the task's issue, a review pull request its epic's issue, and the pull request that merges an integration branch its initiative's issue.
-  - An issue in another repository is named `owner/repo#number`.
-  - The issue is not listed under References, and a pull request whose work has no issue carries no keyword.
-  - The keyword closes the issue when the pull request merges into the default branch, which only the pull request that merges an integration branch targets.
+  - [Link Pull Request to Issue](commands.md#link-pull-request-to-issue) links a pull request to the issue it delivers, once that pull request is open. GitHub shows the link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads.
+  - A task pull request links the task's issue, a review pull request its epic's issue, and the pull request that merges an integration branch its initiative's issue.
+  - The link is addressed by issue, so a pull request whose work carries no issue links nothing. A task pull request delivering rows that have no issue of their own is the whole of what stays unlinked.
+  - The link is stored on the pull request. It holds on any base branch and on a pull request that has merged, and a later body edit leaves it standing.
+  - A linked pull request closes its issue when it merges into the default branch. On any other base the issue stays open, and [Sync Mode](sync-mode.md) closes it once its criteria hold.
+  - The issue is cited under References as any other reference is, by its URL.
+  - [Sync Epic](commands.md#sync-epic) and [Sync Initiative](commands.md#sync-initiative) report a pull request that links no issue as uncited, reading the links GitHub holds.
 - **Long-lived branches.**
   - Where the main working tree has a `.project` directory, its subfolder names are the long-lived branches. A linked worktree uses that tree.
   - Where that directory is absent, the names are the ones the initiative's integration branches carry. An integration branch `i01/workflows` names `workflows`.
