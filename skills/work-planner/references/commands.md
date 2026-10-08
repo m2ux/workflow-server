@@ -208,10 +208,10 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f title='[I07:E00] Purpose
 
 ### Retarget Pull Request
 
-Points a pull request at another base branch, such as its initiative's integration branch.
+Points a pull request at another base branch, such as its epic's base branch.
 
 ```bash
-gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/main' --jq .base.ref
+gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/e00/main' --jq .base.ref
 ```
 
 ### Patch Pull Request Body
@@ -235,6 +235,18 @@ Cuts an initiative's integration branch from the tip of a long-lived branch on t
 git fetch origin main && git push origin origin/main:refs/heads/i07/main
 ```
 
+### Create Epic Base
+
+Cuts an epic's base branch from the tip of the initiative's integration branch on the remote.
+
+- Run inside a checkout of the repository, with full host permissions.
+- The push refuses a branch that already exists.
+- The base is the one the [Work Breakdown Guide](work-breakdown.md#delivery) names for that long-lived branch.
+
+```bash
+git fetch origin i07/main && git push origin origin/i07/main:refs/heads/i07/e00/main
+```
+
 ### Open Integration Pull Request
 
 Opens the pull request that merges an integration branch into its long-lived branch.
@@ -245,6 +257,19 @@ Opens the pull request that merges an integration branch into its long-lived bra
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07] Name' -f head='i07/main' -f base='main' -F body=@body.md --jq .html_url
+```
+
+### Open Epic Pull Request
+
+Opens the pull request that merges an epic base into its initiative integration branch.
+
+- Run it when [Sync Epic](#sync-epic) reports that branch unmerged and names no open pull request. The epic stays open until the pull request merges.
+- The title is the epic's prefix and name: `[I07:E00] Name`.
+- The head is the epic base and the base is the integration branch it was cut from, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- The body is drafted from the [pull request template](../templates/pull-request.md).
+
+```bash
+gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07:E00] Name' -f head='i07/e00/main' -f base='i07/main' -F body=@body.md --jq .html_url
 ```
 
 ## Project Boards
@@ -352,13 +377,14 @@ mkdir -p artifacts/planning/<yyyy-mm-dd>[-<ref>]-<slug>
 
 ### Create Task Worktree
 
-Cuts the worktree and branch one unit's session works in, from the initiative's integration branch.
+Cuts the worktree and branch one unit's session works in, from the epic's base branch.
 
-- The worktree, the branch and the base are the ones [Find Available Work](#find-available-work) names, with the branch following the [Work Breakdown Guide](work-breakdown.md#delivery).
+- The worktree and the branch are the ones [Find Available Work](#find-available-work) names, with the branch following the [Work Breakdown Guide](work-breakdown.md#delivery).
+- The base is the epic base for the long-lived branch the unit changes.
 - Run it in the checkout of the repository the work changes.
 
 ```bash
-git fetch origin i07/main && git worktree add .worktrees/i07-e00-w01 -b i07/e00/w01-queue-plan origin/i07/main
+git fetch origin i07/e00/main && git worktree add .worktrees/i07-e00-w01 -b i07/e00/w01-queue-plan origin/i07/e00/main
 ```
 
 ## Scripts
@@ -448,7 +474,9 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - It reports the same delivery state as [Match Pull Requests](#match-pull-requests).
 - A row whose id links its task issue links the pull request instead.
 - A task is delivered as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+- A pull request whose head is an epic base merges that base, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and is not matched to a task.
 - It takes the epic's task issues. A linked pull request that does not cite a task's issue is reported uncited.
+- When every row is delivered and every criterion is ticked, an epic base its pull requests target that has not merged is reported unmerged. The epic is closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --tasks issue-637.json --link W01=950,W02=950 --fix fixed-943.md
@@ -468,7 +496,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sy
 Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed.
 
 - It takes the epic JSON fetched after closing, and the pull requests from [Fetch Initiative Pull Requests](#fetch-initiative-pull-requests).
-- It reads each pull request's base and head ref. A pull request naming an epic associates the integration branch it targets.
+- It reads each pull request's base and head ref. A pull request that targets an integration branch, or an epic base cut from one, associates that integration branch.
 - It reports closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. An integration branch with no merged pull request is reported unmerged.
 - Without the pull requests, an initiative whose criteria are all ticked is not closable.
 

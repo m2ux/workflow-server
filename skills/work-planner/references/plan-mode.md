@@ -52,7 +52,10 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    Ready each epic before it starts. No task of the epic starts until all hold:
    - **Integration branches exist.**
      - Each long-lived branch the epic's tasks change has the initiative's integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-     - Cut a missing one with [Create Integration Branch](commands.md#create-integration-branch), and point an open pull request of the epic at it with [Retarget Pull Request](commands.md#retarget-pull-request).
+     - Cut a missing one with [Create Integration Branch](commands.md#create-integration-branch).
+   - **Epic bases exist.**
+     - Each long-lived branch the epic's tasks change has the epic's base, cut from that integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+     - Cut a missing one with [Create Epic Base](commands.md#create-epic-base), and point an open pull request of the epic at it with [Retarget Pull Request](commands.md#retarget-pull-request).
    - **Open Questions resolved.**
      - An open question is unfinished planning.
      - Put each to the user with its recommendation, record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.

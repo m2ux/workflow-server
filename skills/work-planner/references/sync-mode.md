@@ -31,6 +31,9 @@ Records work on an initiative, its epics and their task issues: links each task 
      Tasks that share a pull request and do not name each other in Joins. Put that to the user. A row linked to a pull request whose title names another epic is reported, and the row is delivered once that pull request has merged.
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
    - **In flight.**  Open pull requests still linked from no row. Match them as in step 4.
+     - A pull request whose head is an epic base is not matched to a task, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+   - **Unmerged.**
+     An epic base its pull requests target that has not merged into the initiative integration branch, once every task is delivered and every criterion is ticked. The Close step opens its pull request.
    - **Uncited.**
      A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
    - **Note.**  A row links its task issue. Link the pull request as in step 4.
@@ -48,7 +51,8 @@ Records work on an initiative, its epics and their task issues: links each task 
 9. **Patch.**
    Patch each changed body from its `--fix` file with [Patch Body](commands.md#patch-body).
 10. **Close.**
-    [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
+    - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open that pull request with [Open Epic Pull Request](commands.md#open-epic-pull-request) and leave the epic open.
+    - [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
     - Run [Sync Initiative](commands.md#sync-initiative), with the epic JSON fetched after closing and the pull requests from [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
     - It lists each criterion whose citing epics are all delivered as ready to verify. Verify each as step 7 does, and tick those that pass with [Tick Criteria](commands.md#tick-criteria).

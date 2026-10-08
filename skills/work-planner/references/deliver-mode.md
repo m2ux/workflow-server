@@ -40,7 +40,7 @@ Starts the work a theme board makes available. It advances the board, holds each
 What the prompt tells one session, written from the facts the `unit` line and the epic carry.
 
 - **The work.**
-  The epic's issue URL, the unit's task ids, their Descriptions, the acceptance criteria its Coverage names, the branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and the integration branch its pull request targets.
+  The epic's issue URL, the unit's task ids, their Descriptions, the acceptance criteria its Coverage names, the branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and the epic base its pull request targets.
 - **The record.**
   The reserved folder, which is where its planning artifacts go.
 - **Plan.**
@@ -52,7 +52,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Implement.**
   Deliver the work in the worktree, with every test the work item names, as the [Work Breakdown Guide](work-breakdown.md#tables) states.
 - **Open the pull request.**
-  Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
+  Title it for the epic and body it from the [pull request template](../templates/pull-request.md), filling the Test Plan table as this mode's Tests rule states, targeting the epic base, as the [Work Breakdown Guide](work-breakdown.md#delivery) states. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Move task issue to review.**
   When every item in the pull request's test plan is closed out, set the unit's task issue, where one exists, to In Review on the board with [Set Item Status](commands.md#set-item-status).
 - **Hoist arising issues.**
@@ -72,7 +72,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **One unit, one session.**
   A unit is a task row, or the tasks that name each other in Joins, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. One unit is one pull request's work.
 - **Task branches.**
-  A unit works on the branch [Find Available Work](commands.md#find-available-work) names, cut from the integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+  A unit works on the branch [Find Available Work](commands.md#find-available-work) names, cut from the epic base, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - **Tests.**
   - Every criterion the unit's Coverage names has a test in the work item that observes it, and the pull request carries that test.
   - What the criterion observes picks the kind: a unit test for one component's behaviour, an integration test for the seam between components, an end-to-end or system test for behaviour only a running system shows. A criterion about a run is not met by a check on a file.

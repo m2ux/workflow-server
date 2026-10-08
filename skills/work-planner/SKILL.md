@@ -53,6 +53,7 @@ Read the file for the mode the request calls for:
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
   - Closure of complete task issues, epics and initiatives
+  - Pull requests merging a completed epic's bases into its initiative's integration branches
   - The theme board brought current with its issues
 - **[Advance](references/advance-mode.md)**
   - Sync of the board's open initiatives
@@ -185,7 +186,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   Standard library only, for the scripts in `scripts/` and their tests in `test/`.
 - **git.**
   - For the planning record: [Add Planning Record](references/commands.md#add-planning-record).
-  - For delivery: each initiative's integration branches, which its pull requests target, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
+  - For delivery: each initiative's integration branches and each epic's base branches, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
   - For dispatch: a worktree per unit of work, as [Create Task Worktree](references/commands.md#create-task-worktree) cuts it.
 - **Sub-agents.**
   The dispatch of the session this skill runs in. [Deliver Mode](references/deliver-mode.md#rules) starts each unit's session with it, and [Plan Mode](references/plan-mode.md) delegates a broad evidence sweep to it.

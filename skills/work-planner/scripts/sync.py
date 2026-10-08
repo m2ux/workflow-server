@@ -15,21 +15,25 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request that does not cite the task's issue as uncited, unmet coverage, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, and work started while Open Questions remain.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
-and every integration branch its pull requests target has merged into its long-lived branch. --prs
-supplies those pull requests, epic and integration alike; without it an initiative whose criteria are
-all ticked is not closable. Each integration branch still unmerged is reported unmerged, naming an
-open pull request that merges it when one is open.
+and every integration branch its pull requests target has merged into its long-lived branch. A pull
+request that targets an integration branch, or an epic base cut from one, associates that integration
+branch. --prs supplies those pull requests; without it an initiative whose criteria are all ticked is
+not closable. Each integration branch still unmerged is reported unmerged, naming an open pull request
+that merges it when one is open.
 
 Reported for each acceptance criterion of a task, epic or initiative:
   - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
   - ticked early: ticked while a row citing it is undelivered.
 --tick ticks the named criteria in the body written to --fix, and refuses one not ready to verify.
-Tick a criterion only once it is confirmed to hold. A task or epic is closable when every criterion
-is ticked and every row is delivered.
+Tick a criterion only once it is confirmed to hold. A task is closable when every criterion is ticked
+and every row is delivered. An epic is closable when those hold and every epic base its pull requests
+target has merged into the initiative's integration branch. A pull request whose head is an epic base
+merges that base and is not a task delivery. Each such base still unmerged is reported unmerged, naming
+an open pull request that merges it when one is open.
 """
 import argparse
 import json
@@ -76,8 +80,18 @@ def completed(paths: list[str]) -> dict[int, bool]:
 
 
 def for_epic(prs: list[dict], initiative: str, epic: str) -> dict[int, dict]:
-    """The pull requests whose titles name this epic, by number."""
-    return {p['number']: p for p in prs if (m := PR_REF.match(p['title'])) and m.groups() == (initiative, epic)}
+    """The pull requests whose titles name this epic, by number.
+
+    A pull request whose head is an epic base merges that base and is not a task delivery."""
+    named = {}
+    for p in prs:
+        matched = PR_REF.match(p['title'])
+        if not matched or matched.groups() != (initiative, epic):
+            continue
+        if epic_base((p.get('head') or {}).get('ref') or '', initiative, epic):
+            continue
+        named[p['number']] = p
+    return named
 
 
 def compose_id(task: str, text: str, url: str) -> str:
@@ -202,17 +216,46 @@ def integration_branch(ref: str, initiative: str) -> bool:
     return ref.startswith(prefix) and ref[len(prefix):] in LONG_LIVED
 
 
+def epic_base(ref: str, initiative: str, epic: str | None = None) -> str | None:
+    """The long-lived branch when ref is an epic base of this initiative, else None.
+
+    When epic is given, the base must be that epic's. An epic base is iNN/eYY/<branch>."""
+    prefix = f'i{initiative}/'
+    if not ref.startswith(prefix):
+        return None
+    parts = ref[len(prefix):].split('/')
+    if len(parts) != 2 or parts[1] not in LONG_LIVED:
+        return None
+    name = parts[0]
+    if len(name) != 3 or name[0] != 'e' or not name[1:].isdigit():
+        return None
+    if epic is not None and name[1:] != epic:
+        return None
+    return parts[1]
+
+
 def pr_repo(pr: dict) -> str:
     home = PULL_HOME.search(pr.get('html_url') or '')
     return home[1] if home else ''
 
 
+def pending_refs(associated: set[tuple[str, str]], merged: set[tuple[str, str]],
+                 opened: dict[tuple[str, str], int], home: str) -> list[str]:
+    """Refs associated and not merged, naming an open pull request that would merge one."""
+    pending = []
+    for repo, ref in sorted(associated - merged):
+        name = ref if not repo or repo.lower() == home.lower() else f'{repo}:{ref}'
+        number = opened.get((repo, ref))
+        pending.append(f'{name} (#{number} open)' if number else name)
+    return pending
+
+
 def unmerged_bases(prs: list[dict], initiative: str, home: str) -> list[str]:
     """Integration branches this initiative's pull requests target that have not merged.
 
-    A branch is associated when a pull request naming one of its epics targets it. It has merged
-    when a pull request with that head and the long-lived branch as its base has merged. An open
-    pull request that would merge it is named on the report line."""
+    A branch is associated when a pull request naming one of its epics targets it, or targets an
+    epic base cut from it. It has merged when a pull request with that head and the long-lived
+    branch as its base has merged. An open pull request that would merge it is named on the report line."""
     associated: set[tuple[str, str]] = set()
     merged: set[tuple[str, str]] = set()
     opened: dict[tuple[str, str], int] = {}
@@ -223,18 +266,44 @@ def unmerged_bases(prs: list[dict], initiative: str, home: str) -> list[str]:
         title = PR_REF.match(pr.get('title') or '')
         if title and title[1] == initiative and integration_branch(base, initiative):
             associated.add((repo, base))
+        long_lived = epic_base(base, initiative) if title and title[1] == initiative else None
+        if long_lived:
+            associated.add((repo, f'i{initiative}/{long_lived}'))
         if integration_branch(head, initiative) and head == f'i{initiative}/{base}':
             key = (repo, head)
             if pr.get('merged_at'):
                 merged.add(key)
             elif pr.get('state') == 'open':
                 opened.setdefault(key, pr['number'])
-    pending = []
-    for repo, ref in sorted(associated - merged):
-        name = ref if not repo or repo.lower() == home.lower() else f'{repo}:{ref}'
-        number = opened.get((repo, ref))
-        pending.append(f'{name} (#{number} open)' if number else name)
-    return pending
+    return pending_refs(associated, merged, opened, home)
+
+
+def unmerged_epic_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[str]:
+    """Epic bases this epic's task pull requests target that have not merged.
+
+    A base is associated when a pull request naming this epic targets it. It has merged when a
+    pull request with that head and the initiative integration branch as its base has merged. An
+    open pull request that would merge it is named on the report line."""
+    associated: set[tuple[str, str]] = set()
+    merged: set[tuple[str, str]] = set()
+    opened: dict[tuple[str, str], int] = {}
+    for pr in prs:
+        repo = pr_repo(pr)
+        base = (pr.get('base') or {}).get('ref') or ''
+        head = (pr.get('head') or {}).get('ref') or ''
+        title = PR_REF.match(pr.get('title') or '')
+        if not title or title.groups() != (initiative, epic):
+            continue
+        if epic_base(base, initiative, epic):
+            associated.add((repo, base))
+        long_lived = epic_base(head, initiative, epic)
+        if long_lived and base == f'i{initiative}/{long_lived}':
+            key = (repo, head)
+            if pr.get('merged_at'):
+                merged.add(key)
+            elif pr.get('state') == 'open':
+                opened.setdefault(key, pr['number'])
+    return pending_refs(associated, merged, opened, home)
 
 
 def cited(text: str) -> list[int]:
@@ -391,12 +460,15 @@ def main() -> int:
     open_rows = [t for t, d in delivered.items() if not d] if kind != 'initiative' else []
     open_criteria = [f'{tag}{n}' for n, t in ticked.items() if not t]
     branches = ''
-    if kind == 'initiative' and not open_criteria:
-        if not args.prs:
+    epic_ready = kind == 'epic' and not open_criteria and not open_rows
+    if (kind == 'initiative' and not open_criteria) or epic_ready:
+        if kind == 'initiative' and not args.prs:
             branches = 'integration branches not given'
-        else:
+        elif args.prs:
             home = issue['repository_url'].split('/repos/', 1)[1]
-            report['unmerged'].extend(unmerged_bases(prs, initiative, home))
+            pending = (unmerged_bases(prs, initiative, home) if kind == 'initiative'
+                       else unmerged_epic_bases(prs, initiative, epic, home))
+            report['unmerged'].extend(pending)
             if report['unmerged']:
                 branches = 'unmerged ' + ', '.join(report['unmerged'])
     print(f"#{issue['number']} {kind} ({issue['state']})")

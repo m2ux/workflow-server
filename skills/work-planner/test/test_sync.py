@@ -338,3 +338,97 @@ class InitiativeClose(unittest.TestCase):
         out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                                 base='i01/main', head='topic', repo='o/other')])
         self.assertIn('closable: no (unmerged o/other:i01/main)', out)
+
+    def test_an_epic_base_associates_its_integration_branch(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work')])
+        self.assertIn('unmerged: i01/main', out)
+        self.assertIn('closable: no (unmerged i01/main)', out)
+
+
+def ticked(body: str) -> str:
+    return body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
+
+
+class EpicClose(unittest.TestCase):
+    def run_sync(self, body: str, pulls: list[dict]) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            issue_path, pulls_path = Path(tmp, 'issue.json'), Path(tmp, 'prs.json')
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path))
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_ticked_criteria_stay_open_until_the_epic_base_merges(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('unmerged: i01/e00/main', out)
+        self.assertIn('closable: no (unmerged i01/e00/main)', out)
+        self.assertNotIn('in flight:', out)
+
+    def test_an_open_epic_pull_request_is_named(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('unmerged: i01/e00/main (#980 open)', out)
+        self.assertNotIn('in flight:', out)
+        self.assertNotIn('unmatched:', out)
+
+    def test_a_merged_epic_base_is_closable(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                    base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged:', out)
+        self.assertNotIn('unmatched:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_one_unmerged_epic_base_blocks_when_another_has_merged(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''),
+                                (f"[W02]({url('pull', 951)})", 'More', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/workflows', head='i01/e00/w02-more'),
+                 pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                    base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('closable: no (unmerged i01/e00/workflows)', out)
+        self.assertNotIn('i01/e00/main', out)
+
+    def test_an_unticked_criterion_does_not_report_an_unmerged_epic_base(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged', out)
+        self.assertIn('closable: no (unticked AC1)', out)
+
+    def test_an_undelivered_task_does_not_report_an_unmerged_epic_base(self):
+        body = ticked(epic_body(('W01', 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', base='i01/e00/main', head='i01/e00/w01-work')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged', out)
+        self.assertIn('in flight:', out)
+        self.assertIn('closable: no (undelivered W01)', out)
+
+    def test_a_delivered_epic_with_no_base_is_closable(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out = self.run_sync(body, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertNotIn('unmerged:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_an_epic_base_in_another_repository_is_named_with_it(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950, 'o/other')})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work', repo='o/other')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('closable: no (unmerged o/other:i01/e00/main)', out)

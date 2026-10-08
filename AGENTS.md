@@ -60,7 +60,7 @@
 - **Commit incrementally while building.** Distinct work lands as its own commit, so the branch records how it was built. That is about not collapsing unrelated changes into one commit; it is never a reason to leave a fix in the wrong place.
 - **Push with plain** `git push`**.** When a push will not fast-forward on a branch someone else may hold, stop and ask rather than rewriting.
 - **A pull request delivering initiative work starts its title with the epic reference:** `[I07:E00] Purpose`.
-- **A pull request delivering initiative work targets the initiative's integration branch:** `i07/main`, `i07/workflows` or `i07/workspace`. Each merges into its long-lived branch once the initiative closes.
+- **A pull request delivering a task targets the epic's base branch:** `i07/e00/main`, `i07/e00/workflows` or `i07/e00/workspace`. A completed epic's pull request targets the initiative integration branch, `i07/main`, `i07/workflows` or `i07/workspace`. Each integration branch merges into its long-lived branch once the initiative closes.
 - **Any other pull request lands on** `main`**,** `workflows` **or** `workspace`**.** One aimed anywhere else is a stack: it merges, reads as delivered, and reaches no long-lived branch until its base lands. Re-target a stacked request the moment its base merges.
 
 
