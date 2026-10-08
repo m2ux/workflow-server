@@ -617,6 +617,7 @@ Reports each unit of work a theme board makes available, each row a session hold
 - A `unit` line names the tasks of one session's work, their coverage, and the record folder, branch, base and worktree their ids and Description give them. One base is `base i07/e00/main`. Several are `bases i07/e00/main i07/e00/workflows`.
 - A `hold` line names a row a session holds, and the record it links.
 - A `blocked` line names a free row whose dependencies are undelivered, or whose joined task is unavailable.
+- A `merge` line names an open pull request whose test plan has passed and whose criteria are met, and the epic base it targets. [Deliver Mode](deliver-mode.md) merges it on the run.
 - `--date` opens the records on another day than today.
 
 ```bash
