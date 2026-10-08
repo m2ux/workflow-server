@@ -20,11 +20,14 @@ Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E
 
 Problems (exit status 1): unknown references, a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
-in the same cell already implies. A whole-epic dependency (E01) states intent, so its tasks are not
-reported as implied. Joins problems: a task joining one that does not join it back, and two joined
+in the same cell already implies. The tasks a whole-epic dependency expands to are not reported as
+implied or listed twice. Joins problems: a task joining one that does not join it back, and two joined
 tasks where one depends on the other, directly or through a task outside the pair.
 Also printed: each pair of tasks in an epic where neither depends on the other and the two do not
-name each other in Joins.
+name each other in Joins, and each whole-epic dependency, with that epic's row count, the binding
+row and its level, and the earliest row and its level. The binding row has the highest level in the
+epic, and the earliest row the lowest. Where several share that level, the section names the lowest
+task id.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
 epics its tasks depend on, less those another named epic already depends on, and names no task.
 Another initiative's epic (I05:E00) or an issue (#750) may also be named.
@@ -48,7 +51,7 @@ def cells(line: str) -> list[str]:
     return [c.strip() for c in LINK.sub(r'\1', line).strip().strip('|').split('|')]
 
 
-def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
+def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict, list[tuple[str, str]]]:
     rows = {}
     for epic, path in epics.items():
         header: list[str] = []
@@ -71,6 +74,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
     problems = []
     tasks = {}
     whole: dict[str, set[str]] = {}
+    edges: list[tuple[str, str]] = []
     for key, (description, deps, accompany) in rows.items():
         epic = key.split(':')[0]
         dep_list = []
@@ -87,8 +91,11 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
                 own = [k for k in rows if k.startswith(d + ':')]
                 if not own:
                     problems.append(f'{key}: depends on epic {d}, which was not given or has no tasks')
-                dep_list += own
-                whole[key] |= set(own)
+                else:
+                    dep_list += own
+                    whole[key] |= set(own)
+                    if (key, d) not in edges:
+                        edges.append((key, d))
             elif re.fullmatch(r'W\d\d', d):
                 dep_list.append(f'{epic}:{d}')
             else:
@@ -97,7 +104,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str]]:
         for a in (x.strip() for x in accompany.split(',') if x.strip()):
             acc.append(a if a.startswith('E') else f'{epic}:{a}')
         tasks[key] = (description, dep_list, acc)
-    return tasks, problems, whole
+    return tasks, problems, whole, edges
 
 
 def eligible_unjoined(tasks: dict, ancestors) -> list[str]:
@@ -113,6 +120,22 @@ def eligible_unjoined(tasks: dict, ancestors) -> list[str]:
             if right in tasks[left][2] and left in tasks[right][2]:
                 continue
             lines.append(f'{left} and {right} can share a pull request and do not name each other')
+    return lines
+
+
+def whole_epic_lines(tasks: dict, edges: list[tuple[str, str]], level) -> list[str]:
+    """Each whole-epic dependency, with the epic's row count, binding row and earliest row."""
+    lines = []
+    for dependent, epic in sorted(edges):
+        own = sorted(k for k in tasks if k.startswith(epic + ':'))
+        if not own:
+            continue
+        lo = min(level(k) for k in own)
+        hi = max(level(k) for k in own)
+        earliest = next(k for k in own if level(k) == lo)
+        binding = next(k for k in own if level(k) == hi)
+        lines.append(f'{dependent} depends on {epic} ({len(own)} rows), '
+                     f'binding {binding} level {hi}, earliest {earliest} level {lo}')
     return lines
 
 
@@ -165,7 +188,7 @@ def main(argv: list[str]) -> int:
             initiative = Path(path)
         else:
             epics[name] = Path(path)
-    tasks, problems, whole = parse(epics)
+    tasks, problems, whole, edges = parse(epics)
     advisory = []
 
     for key, (_, deps, acc) in tasks.items():
@@ -260,6 +283,8 @@ def main(argv: list[str]) -> int:
     print('\n--- levels (0 = can start now)')
     for n in sorted(tasks, key=lambda k: (lv(k), k)):
         print(lv(n), n, '-', tasks[n][0][:70])
+    print('\n--- whole epics')
+    print('\n'.join(whole_epic_lines(tasks, edges, lv)) or 'none')
 
     top = max(level.values(), default=0)
     ends = sorted(k for k, v in level.items() if v == top)
