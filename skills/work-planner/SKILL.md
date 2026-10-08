@@ -189,7 +189,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 
 - **GitHub CLI (`gh`).**
   - Logged in through its keyring, with the `repo` scope for issues and pull requests and the `project` scope for project boards.
-  - Issue and pull request calls go through REST (`gh api`), never GraphQL, and every call needs full host permissions.
+  - Issue and pull request calls go through REST (`gh api`), and every call needs full host permissions. What REST does not expose, such as a pull request's Development field, goes through `gh api graphql`.
   - A board is created with `gh project`, as [Create Board](references/commands.md#create-board) and [Create Proposals Board](references/commands.md#create-proposals-board) specify.
 - **Sandbox.**
   `scripts/sbx` in the workspace checkout, the one holding this skill, runs the skill's scripts under bubblewrap with no network. `<workspace>` in the mode files stands for that checkout.
