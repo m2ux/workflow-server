@@ -1,6 +1,6 @@
 # Deliver mode
 
-Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed and whose criteria are met, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, and hoist arising issues.
+Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, and hoist arising issues.
 
 ## Procedure
 
@@ -18,7 +18,7 @@ Starts the work a theme board makes available. It advances the board, merges eac
    - **Blocked work.**
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Merge.**
-   Merge each `merge` line into the epic base it names, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. Do not ask.
+   Merge each `merge` line, an open pull request whose test plan has passed, into the epic base it names, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. Do not ask.
    - [Update Integration Branch](commands.md#update-integration-branch), then [Update Epic Base](commands.md#update-epic-base), then [Merge Pull Request](commands.md#merge-pull-request).
    - When that merge is refused, [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
    - Then run [Sync Task Issue](commands.md#sync-task-issue) for each task the pull request delivers and [Sync Epic](commands.md#sync-epic). Do not sync the initiative or the board.
@@ -89,7 +89,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Dispatch is confirmed.**
   No session starts until the user confirms the set of units.
 - **Ready pull requests.**
-  A run merges each open pull request [Find Available Work](commands.md#find-available-work) reports on a `merge` line. It does not ask.
+  A run merges each open pull request whose test plan has passed. [Find Available Work](commands.md#find-available-work) reports each on a `merge` line, and the run does not ask.
 - **Merge.**
   The unit's pull request is merged as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, with [Merge Pull Request](commands.md#merge-pull-request).
 - **Status.**

@@ -19,8 +19,8 @@ a unit is one session's work.
 Printed: a unit line for each available unit, with the record folder, branch and worktree its ids and
 Description give it; a hold line for each reserved row; a blocked line for a free row whose
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
-request that targets the epic base when its test plan has passed and its criteria are met; and an
-unresolved line for an issue not given.
+request that targets the epic base when its test plan has passed; and an unresolved line for an
+issue not given.
 
 --reserve appends the record folder's link to each named row's id, which holds the work. --item adds
 the work item the session wrote in that record, ahead of the folder's link, so the hold stands until
@@ -37,14 +37,13 @@ from datetime import date as day
 from pathlib import Path
 
 from board import Board, key_of, label, pages, rows, status_of
-from format import LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
+from format import LINK, TICK, cell, done_mark, id_cell, join_sections, row, row_id, split_sections
 from sync import Unreadable, long_lived_names, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 BOX = re.compile(r'^- \[[ xX]\] ')
 TICKED_BOX = re.compile(r'^- \[[xX]\] ')
-TICKED_AC = re.compile(r'^- \[[xX]\] \*\*(AC\d+)\.\*\*')
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 TASK = re.compile(r'W\d\d')
 CRITERION = re.compile(r'AC\d+')
@@ -174,55 +173,16 @@ def section(body: str, heading: str) -> list[str] | None:
     return next((lines for name, lines in sections if name == heading), None)
 
 
-def plan_criteria(body: str) -> set[str] | None:
-    """The criteria a test plan names, when every box is ticked.
-
-    None when the plan is absent or a box is unticked."""
+def plan_passed(body: str) -> bool:
+    """Whether the body has a Test Plan and every box in it is ticked."""
     lines = section(body, 'Test Plan')
     if lines is None:
-        return None
-    boxes = [line for line in lines if BOX.match(line)]
-    if any(not TICKED_BOX.match(line) for line in boxes):
-        return None
-    named: set[str] = set()
-    table_lines = [line for line in lines if line.startswith('|')]
-    if len(table_lines) >= 2:
-        header = cells(table_lines[0])
-        if 'Criteria' in header:
-            at = header.index('Criteria')
-            for line in table_lines[2:]:
-                values = cells(line)
-                if at < len(values):
-                    named.update(CRITERION.findall(values[at]))
-    return named
-
-
-def ticked_criteria(body: str) -> set[str]:
-    """The acceptance criteria the body ticks."""
-    return {matched[1] for line in section(body, 'Acceptance Criteria') or []
-            if (matched := TICKED_AC.match(line))}
-
-
-def row_coverage(issue: dict, number: int) -> set[str]:
-    """The criteria of each row whose id links this pull request."""
-    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
-    try:
-        parsed = table(sections)
-    except Unreadable:
-        return set()
-    if not parsed[3]:
-        return set()
-    header, data = parsed[3][0], parsed[3][2:]
-    found: set[str] = set()
-    for record in data:
-        ident = id_cell(header, record)
-        if any(href.rstrip('/').endswith(f'/pull/{number}') for href in hrefs(ident)):
-            found.update(CRITERION.findall(cell(header, record, 'Coverage')))
-    return found
+        return False
+    return all(TICKED_BOX.match(line) for line in lines if BOX.match(line))
 
 
 def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
-    """Open pull requests that target the epic base, whose tests have passed and whose criteria are met."""
+    """Open pull requests that target the epic base and whose test plan has passed."""
     epics = {}
     for issue in issues.values():
         parsed = tags(issue.get('title') or '')
@@ -236,18 +196,13 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> lis
         if not matched:
             continue
         initiative, epic = matched[1], matched[2]
-        issue = epics.get((initiative, epic))
-        if issue is None:
+        if (initiative, epic) not in epics:
             continue
         base = (pull.get('base') or {}).get('ref') or ''
         segment = re.fullmatch(rf'i{initiative}/e{epic}/([^/]+)', base)
         if not segment or (names and segment[1] not in names):
             continue
-        named = plan_criteria(pull.get('body') or '')
-        if named is None:
-            continue
-        covered = named | row_coverage(issue, pull['number'])
-        if not covered or not covered <= ticked_criteria(issue.get('body') or ''):
+        if not plan_passed(pull.get('body') or ''):
             continue
         found.append((pull['number'], f"  merge #{pull['number']} I{initiative}:E{epic}: base {base}"))
     return [line for _, line in sorted(found)]

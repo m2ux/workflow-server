@@ -72,7 +72,7 @@ Read the file for the mode the request calls for:
   - A session per unit, in a worktree of its own
   - A test for each criterion a unit delivers, of the kind that criterion can be observed by
   - A test plan table mapping each test to the parent epic criteria it covers
-  - A merge, on each run, of an open pull request whose test plan has passed and whose criteria are ticked
+  - A merge, on each run, of an open pull request whose test plan has passed
   - A merge of the unit's pull request into the epic base once its test plan has passed
   - Hoisting of issues arising from the delivery of a unit
 - **[Hoist](references/hoist-mode.md)**
