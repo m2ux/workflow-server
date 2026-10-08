@@ -49,10 +49,15 @@ Read the file for the mode the request calls for:
   - A further task that adopts each criterion a merged pull request leaves unticked
   - A scan for an initiative criterion still unticked, or ticked early, against the epics that cite it
   - Repair of a work-breakdown cell that disagrees with its delivery
+  - Epic bases for an initiative in progress, and open task pull requests pointed at them
+  - Checked lists on open task pull requests matched to their tables
+  - A row for a task issue the epic table does not list
+  - A review pull request for an epic whose tasks are delivered and whose criteria are ticked
 - **[Sync](references/sync-mode.md)**
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
   - Closure of complete task issues, epics and initiatives
+  - Pull requests merging a completed epic's bases into its initiative's integration branches
   - The theme board brought current with its issues
 - **[Advance](references/advance-mode.md)**
   - Sync of the board's open initiatives
@@ -67,7 +72,7 @@ Read the file for the mode the request calls for:
   - A session per unit, in a worktree of its own
   - A test for each criterion a unit delivers, of the kind that criterion can be observed by
   - A test plan table mapping each test to the parent epic criteria it covers
-  - Placement of a completed task issue as In Review on the board
+  - A merge of the unit's pull request into the epic base once its test plan has passed
   - Hoisting of issues arising from the delivery of a unit
 - **[Hoist](references/hoist-mode.md)**
   - Discovery of orphan issues
@@ -185,7 +190,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   Standard library only, for the scripts in `scripts/` and their tests in `test/`.
 - **git.**
   - For the planning record: [Add Planning Record](references/commands.md#add-planning-record).
-  - For delivery: each initiative's integration branches, which its pull requests target, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
+  - For delivery: each initiative's integration branches and each epic's base branches, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
   - For dispatch: a worktree per unit of work, as [Create Task Worktree](references/commands.md#create-task-worktree) cuts it.
 - **Sub-agents.**
   The dispatch of the session this skill runs in. [Deliver Mode](references/deliver-mode.md#rules) starts each unit's session with it, and [Plan Mode](references/plan-mode.md) delegates a broad evidence sweep to it.
@@ -195,13 +200,15 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **Work Breakdown Guide.**
   Every mode reads the [Work Breakdown Guide](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables, and what a [Problem and a Proposal](references/work-breakdown.md#problem-and-proposal) hold.
 - **Decisions.**
-  - Ask them one at a time, each with a recommended option.
+  - Ask them one at a time, as an [Interview](references/interview.md).
   - Record each answer in the affected issues and, when there is one, the planning record.
 - **Measured claims.**  A count or a chain comes from a command's output, never from a hand count.
 - **Bodies state the plan as it is.**
   - No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything.
   - How the plan evolved goes in the planning record and in commit and pull request bodies.
 - **Other initiatives.**  Editing another initiative's issue needs the user's explicit approval.
+- **References.**
+  The References section does not link issues or pull requests on the same board. Relational logic is communicated by the GitHub project, not by bare links.
 - **Replies to feedback.**
   - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on Issue](references/commands.md#comment-on-issue).
   - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.

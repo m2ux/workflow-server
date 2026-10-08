@@ -16,10 +16,12 @@ from format import Review  # noqa: E402
 
 def synced(record: dict, pulls: list[dict], *args: str) -> str:
     with tempfile.TemporaryDirectory() as tmp:
-        body, pulls_path, fixed = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'fixed.md')
+        root = Path(tmp)
+        body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
         body.write_text(json.dumps(record))
         pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
-        done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *args)
+        done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                   '--project', project(root, 'docker', 'main', 'workflows'), *args)
         if done.returncode != 0:
             raise AssertionError(done.stderr.strip() or done.stdout)
         return fixed.read_text()
@@ -82,17 +84,26 @@ class Done(unittest.TestCase):
 class TaskLinks(unittest.TestCase):
     def run_sync(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = ()):
         with tempfile.TemporaryDirectory() as tmp:
-            body, pulls_path, fixed = Path(tmp, 'issue.json'), Path(tmp, 'prs.json'), Path(tmp, 'fixed.md')
+            root = Path(tmp)
+            body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
             body.write_text(json.dumps(epic))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             task_paths = []
             for n, task in enumerate(tasks):
-                path = Path(tmp, f'task-{n}.json')
+                path = root / f'task-{n}.json'
                 path.write_text(json.dumps(task))
                 task_paths.append(str(path))
             extra = ['--tasks', *task_paths] if task_paths else []
-            done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *extra, *args)
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
+                       '--project', project(root, 'docker', 'main', 'workflows'), *extra, *args)
             return done, fixed.read_text() if fixed.exists() else ''
+
+    def test_a_task_issue_with_no_row_is_unplaced(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        task = issue(3, '[I01:E00:W02] Other: Work')
+        done, _fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')], tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unplaced: W02 #3', done.stdout)
 
     def test_an_open_pull_request_is_linked_and_does_not_deliver(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
@@ -272,20 +283,28 @@ class DoneColumn(unittest.TestCase):
         self.assertIn('| W01 | Reads count ([#1053](https://github.com/o/r/pull/1053)) | AC1 | | | ✓ |', fixed)
 
 
+def project(root: Path, *names: str) -> str:
+    """A checkout whose .project subfolders are the long-lived branches."""
+    for name in names:
+        (root / '.project' / name).mkdir(parents=True)
+    return str(root)
+
+
 class InitiativeClose(unittest.TestCase):
-    def run_sync(self, pulls: list[dict] | None, ticked: bool = True) -> str:
+    def run_sync(self, pulls: list[dict] | None, ticked: bool = True, branches: tuple[str, ...] = ('docker', 'main', 'workflows', 'workspace')) -> str:
         epic = issue(2, '[I01:E00] First: Epic', 'closed')
         body = initiative_body((f"[E00]({url('issues', 2)})", ''))
         if ticked:
             body = body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
         initiative = issue(1, '[I01] First: Initiative', body=body)
         with tempfile.TemporaryDirectory() as tmp:
-            epic_path, issue_path = Path(tmp, 'epic.json'), Path(tmp, 'issue.json')
+            root = Path(tmp)
+            epic_path, issue_path = root / 'epic.json', root / 'issue.json'
             epic_path.write_text(json.dumps(epic))
             issue_path.write_text(json.dumps(initiative))
-            args = [str(issue_path), '--epics', str(epic_path)]
+            args = [str(issue_path), '--epics', str(epic_path), '--project', project(root, *branches)]
             if pulls is not None:
-                pulls_path = Path(tmp, 'prs.json')
+                pulls_path = root / 'prs.json'
                 pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
                 args.extend(['--prs', str(pulls_path)])
             done = run('sync.py', *args)
@@ -338,3 +357,112 @@ class InitiativeClose(unittest.TestCase):
         out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                                 base='i01/main', head='topic', repo='o/other')])
         self.assertIn('closable: no (unmerged o/other:i01/main)', out)
+
+    def test_an_epic_base_associates_its_integration_branch(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work')])
+        self.assertIn('unmerged: i01/main', out)
+        self.assertIn('closable: no (unmerged i01/main)', out)
+
+    def test_a_branch_outside_project_folders_is_not_long_lived(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/workspace', head='i01/e00/w01-work')],
+                            branches=('docker', 'main', 'workflows'))
+        self.assertNotIn('workspace', out)
+        self.assertIn('closable: yes', out)
+
+    def test_a_project_folder_is_a_long_lived_branch(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/docker', head='i01/e00/w01-work')],
+                            branches=('docker', 'main', 'workflows'))
+        self.assertIn('unmerged: i01/docker', out)
+
+
+def ticked(body: str) -> str:
+    return body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
+
+
+class EpicClose(unittest.TestCase):
+    def run_sync(self, body: str, pulls: list[dict]) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--project', project(root, 'docker', 'main', 'workflows'))
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_ticked_criteria_stay_open_until_the_epic_base_merges(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('unmerged: i01/e00/main', out)
+        self.assertIn('closable: no (unmerged i01/e00/main)', out)
+        self.assertNotIn('in flight:', out)
+
+    def test_an_open_epic_pull_request_is_named(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('unmerged: i01/e00/main (#980 open)', out)
+        self.assertNotIn('in flight:', out)
+        self.assertNotIn('unmatched:', out)
+
+    def test_a_merged_epic_base_is_closable(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                    base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged:', out)
+        self.assertNotIn('unmatched:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_one_unmerged_epic_base_blocks_when_another_has_merged(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''),
+                                (f"[W02]({url('pull', 951)})", 'More', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/workflows', head='i01/e00/w02-more'),
+                 pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                    base='i01/main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('closable: no (unmerged i01/e00/workflows)', out)
+        self.assertNotIn('i01/e00/main', out)
+
+    def test_an_unticked_criterion_does_not_report_an_unmerged_epic_base(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged', out)
+        self.assertIn('closable: no (unticked AC1)', out)
+
+    def test_an_undelivered_task_does_not_report_an_unmerged_epic_base(self):
+        body = ticked(epic_body(('W01', 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', base='i01/e00/main', head='i01/e00/w01-work')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged', out)
+        self.assertIn('in flight:', out)
+        self.assertIn('closable: no (undelivered W01)', out)
+
+    def test_a_delivered_epic_with_no_base_is_closable(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out = self.run_sync(body, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertNotIn('unmerged:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_an_epic_base_in_another_repository_is_named_with_it(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950, 'o/other')})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work', repo='o/other')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('closable: no (unmerged o/other:i01/e00/main)', out)

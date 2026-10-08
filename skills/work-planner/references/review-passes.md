@@ -7,9 +7,9 @@ The method for the goal pass, the consistency pass, and the ordering pass. The r
 Tests the drafts against the [review criteria](review-criteria.md) for the issue's kind. It runs on the drafts before any issue is created, and again whenever the goal, a criterion, a Problem, a Proposal, or an epic changes.
 
 1. **Clauses.**
-   Take the goal the user stated and confirmed in the interview, as clauses, each an outcome someone could observe.
+   Take the goal the user stated and confirmed in the [Interview](interview.md), as clauses, each an outcome someone could observe.
 2. **Trace.**
-   Build a trace table: goal clause, the initiative criteria that make it true, the epics whose Description cells cite those criteria, and the epic criteria that deliver them. Each gap is one the [trace](review-criteria.md#trace) criteria name. Remove a criterion that traces to no clause, or put it to the user. [Check Format](commands.md#check-format) finds an epic criterion no task row delivers.
+   Build a trace table: goal clause, the initiative criteria that make it true, the epics whose Description cells cite those criteria, and the epic criteria that deliver them. Each gap is one the [trace](review-criteria.md#trace) criteria name. Remove a criterion that traces to no clause, or put it to the user as an [Interview](interview.md). [Check Format](commands.md#check-format) finds an epic criterion no task row delivers.
 3. **Align.**
    Read each source the initiative's References mark, and extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a finding the [sources](review-criteria.md#sources) criteria name.
 4. **Criteria.**
@@ -66,7 +66,7 @@ A pass states each finding this way.
 1. **Split by area.**  Report findings split by area.
 2. **One pair.**  One problem/solution pair per finding, each with a severity.
 3. **Verify.**  Verify every finding against its source before stating it, and quote the file:line that establishes it.
-4. **Decide.**  Put findings that need a decision to the user.
+4. **Decide.**  Put findings that need a decision to the user as an [Interview](interview.md).
 
 ## Folding Findings
 

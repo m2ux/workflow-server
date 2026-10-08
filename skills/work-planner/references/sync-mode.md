@@ -19,7 +19,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Unmatched.**  A merged pull request it reports names the epic, and no row links it yet.
    - **In flight.**  An open pull request it reports names the epic, and no row links it yet.
    - Read its changes and description against the tasks' Descriptions, and name the tasks it works on: one task, or tasks that name each other in Joins.
-   - Put any match that is not clear to the user.
+   - Put any match that is not clear to the user as an [Interview](interview.md).
 5. **Sync each task issue.**
    - Run [Sync Task Issue](commands.md#sync-task-issue) when a merged pull request delivered it.
    - Verify and tick its criteria as in steps 7–8.
@@ -28,18 +28,23 @@ Records work on an initiative, its epics and their task issues: links each task 
 6. **Sync each epic.**
    Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. Linking a pull request replaces the planning-record link on that task, as [Task ids](work-breakdown.md#delivery) defines. It reports:
    - **Conflict.**
-     Tasks that share a pull request and do not name each other in Joins. Put that to the user. A row linked to a pull request whose title names another epic is reported, and the row is delivered once that pull request has merged.
+     Tasks that share a pull request and do not name each other in Joins. Put that to the user as an [Interview](interview.md). A row linked to a pull request whose title names another epic is reported, and the row is delivered once that pull request has merged.
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
    - **In flight.**  Open pull requests still linked from no row. Match them as in step 4.
+     - A pull request whose head is an epic base is not matched to a task, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
+   - **Unmerged.**
+     An epic base its pull requests target that has not merged into the initiative integration branch, once every task is delivered and every criterion is ticked. The Close step opens its pull request.
    - **Uncited.**
      A linked pull request whose task has its own issue, and whose body does not cite that issue. Cite the issue by its URL with [Patch Pull Request Body](commands.md#patch-pull-request-body), then [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) again.
    - **Note.**  A row links its task issue. Link the pull request as in step 4.
+   - **Unplaced.**
+     A task issue of this epic whose id is not a row. [Plan Mode](plan-mode.md) adds the row, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, then this sync is run again.
    - **Open questions.**
      The epic's Open Questions section remains. This mode's Open questions rule says what follows.
    - **Ready to verify.**  Criteria whose delivering rows are all delivered.
    - **Ticked early.**
      Criteria ticked while a delivering row is not delivered. Untick them, or link the missing delivery.
-   Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited and note are clear, apart from a pull request the user leaves unmatched.
+   Link what those lines name, then run it again. Sync of the epic is finished when unmatched, in flight, uncited, note and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    - Verify each criterion ready to verify on the branch the pull requests merged into, with the instrument the criterion names. What counts as coverage is [Coverage Reports](work-breakdown.md#coverage-reports).
    - A criterion that cannot be confirmed stays unticked, with what is missing. The further task that adopts it is [Align Mode](align-mode.md)'s Gap rule.
@@ -48,7 +53,8 @@ Records work on an initiative, its epics and their task issues: links each task 
 9. **Patch.**
    Patch each changed body from its `--fix` file with [Patch Body](commands.md#patch-body).
 10. **Close.**
-    [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
+    - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open it as [Review pull request](work-breakdown.md#review-pull-request) states.
+    - [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
     - Run [Sync Initiative](commands.md#sync-initiative), with the epic JSON fetched after closing and the pull requests from [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
     - It lists each criterion whose citing epics are all delivered as ready to verify. Verify each as step 7 does, and tick those that pass with [Tick Criteria](commands.md#tick-criteria).
@@ -65,7 +71,9 @@ Records work on an initiative, its epics and their task issues: links each task 
       - Run [Plan Board Changes](commands.md#plan-board-changes) with the user from [Find User](commands.md#find-user), which prints the call for each board and assignee change.
     - **Write.**
       - Run each call it prints.
-      - Fetch the issues and items again and re-run: that re-read confirms every write, and the board is current when it reports nothing to do.
+      - Confirm each status write with [Fetch Board Item](commands.md#fetch-board-item). The item list lags a write, so a fresh list does not confirm it.
+      - When the item still shows the previous status, run that write again and read the item again.
+      - Fetch the issues and items again and re-run [Plan Board Changes](commands.md#plan-board-changes) to find anything not yet written. The board is current when that plan reports nothing to do and each confirmed item shows the status written.
       - An issue added in one pass gets its Status in the next.
 13. **Report.**
     Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, what was closed, and each board and assignee change. What the report names about criteria is [Coverage Reports](work-breakdown.md#coverage-reports).

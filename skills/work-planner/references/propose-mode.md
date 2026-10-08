@@ -5,7 +5,7 @@ Scopes the problem: the friction, the evidence, and the boundary, and states the
 ## Procedure
 
 1. **Understand the problem.**
-   - Interview the user until the friction and the boundary are clear.
+   - Interview the user, as an [Interview](interview.md), until the friction and the boundary are clear.
    - State the goal back as clauses, each an outcome someone could observe, and have the user confirm them. A clause does not describe the change.
    - The proposal holds the goal, the evidence, and the decisions about that scope.
 2. **Gather evidence.**

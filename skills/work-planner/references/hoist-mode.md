@@ -59,7 +59,7 @@ A placement is the choice of where an orphan's work goes. The table states what 
 
    A candidate whose work an existing criterion already states follows this mode's Already stated rule.
 4. **Offer.**
-   - Offer each orphan to the user: a plain paragraph on what the orphan asks and where it fits, then the placements as options with the recommended one first, and Leave last.
+   - Offer each orphan as an [Interview](interview.md). The grounding paragraph says what the orphan asks and where it fits. Leave is last.
    - Placing an orphan in another initiative's issue needs that answer as its approval.
 5. **Apply.**  Apply each choice in turn:
    - **Existing task.**

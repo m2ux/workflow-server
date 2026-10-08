@@ -6,7 +6,7 @@ Changes the skill itself: SKILL.md, its references, templates and scripts.
 
 1. **Read the guidelines.**  Read both guidelines whole before the first edit.
 2. **Understand the request.**
-   - Interview the user until the change and its scope are clear.
+   - Interview the user, as an [Interview](interview.md), until the change and its scope are clear.
    - Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
 3. **Work in a worktree.**
    Branch a worktree for the change, and commit each distinct change as its own commit.

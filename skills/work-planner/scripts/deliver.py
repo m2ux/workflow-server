@@ -37,7 +37,7 @@ from pathlib import Path
 
 from board import Board, key_of, label, pages, rows, status_of
 from format import LINK, TICK, cell, done_mark, id_cell, join_sections, row, row_id, split_sections
-from sync import Unreadable, pull_requests, table
+from sync import Unreadable, long_lived_names, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
@@ -81,6 +81,16 @@ def slug(text: str, words: int = 4) -> str:
 
 def ident_tag(initiative: str, epic: str, task: str) -> str:
     return f'I{initiative}:E{epic}:{task}'
+
+
+def epic_bases(refs: list[str], initiative: str, epic: str, names: tuple[str, ...]) -> list[str]:
+    """The epic bases among refs whose long-lived segment is one of names, or any when names is empty."""
+    found = []
+    for ref in refs:
+        matched = re.fullmatch(rf'i{initiative}/e{epic}/([^/]+)', ref)
+        if matched and (not names or matched[1] in names):
+            found.append(ref)
+    return sorted(set(found))
 
 
 def names(tag: str, text: str, ref: int, when: str) -> dict[str, str]:
@@ -167,7 +177,10 @@ def survey(args: argparse.Namespace) -> int:
         issues[key] = content
         status[key] = status_of(item)
     home = Counter(key[0] for key in issues).most_common(1)[0][0] if issues else ''
-    board = Board(issues, [], home, pull_requests(args.prs) if args.prs else [])
+    prs = pull_requests(args.prs) if args.prs else []
+    lived = long_lived_names(args.project) if args.project else ()
+    given = [ref.strip() for ref in (args.bases or '').split(',') if ref.strip()]
+    board = Board(issues, [], home, prs)
     epics: dict[str, dict[str, tuple[str, int]]] = {}
     for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
@@ -209,8 +222,12 @@ def survey(args: argparse.Namespace) -> int:
             name = names(tag, detail[first]['description'], detail[first]['issue'] or key[1], when)
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
+            refs = [((p.get('base') or {}).get('ref') or '') for p in prs] + given
+            bases = epic_bases(refs, initiative, epic, lived)
+            base = (f', base {bases[0]}' if len(bases) == 1
+                    else ', bases ' + ' '.join(bases) if bases else '')
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
-                  f'record {name["folder"]}, branch {name["branch"]}, worktree {name["worktree"]}')
+                  f'record {name["folder"]}, branch {name["branch"]}{base}, worktree {name["worktree"]}')
             available += 1
     for note in dict.fromkeys(board.unresolved):
         print(f'  unresolved: {note}')
@@ -299,6 +316,8 @@ def main() -> int:
     parser.add_argument('--release', help='task ids to free, e.g. W01')
     parser.add_argument('--records', help='the URL of the planning records folder')
     parser.add_argument('--date', help='the day the record is opened, today by default')
+    parser.add_argument('--project', default='', help='checkout whose .project subfolders are the long-lived branches')
+    parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
     actions = [name for name in ('reserve', 'item', 'release') if getattr(args, name)]

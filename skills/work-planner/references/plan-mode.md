@@ -48,14 +48,14 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Description cells change when criteria are renumbered.
    - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
+   - A task issue [Sync Epic](commands.md#sync-epic) reports unplaced is handled as [Unplaced](work-breakdown.md#unplaced) states.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
-   - **Integration branches exist.**
-     - Each long-lived branch the epic's tasks change has the initiative's integration branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-     - Cut a missing one with [Create Integration Branch](commands.md#create-integration-branch), and point an open pull request of the epic at it with [Retarget Pull Request](commands.md#retarget-pull-request).
+   - **Integration branches and epic bases exist.**
+     Cut each missing one as [Missing branches](work-breakdown.md#missing-branches) states, before any task starts. Point an open pull request of the epic at its base with [Retarget Pull Request](commands.md#retarget-pull-request).
    - **Open Questions resolved.**
      - An open question is unfinished planning.
-     - Put each to the user with its recommendation, record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.
+     - Put each to the user as an [Interview](interview.md), record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.
      - Then delete the question; the section goes with the last one.
    - **One condition per criterion.**
      Read each criterion against the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria), [Requirement characteristics](requirement-characteristics.md) and [One row](review-criteria.md#one-row). Split one that joins several, adding the new ones at the end of the list, and cite each from the row that delivers it.
