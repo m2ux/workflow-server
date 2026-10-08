@@ -80,7 +80,7 @@ Records work on an initiative, its epics and their task issues: links each task 
       - Fetch the issues and items again and re-run [Plan Board Changes](commands.md#plan-board-changes) to find anything not yet written. The board is current when that plan reports nothing to do and each confirmed item shows the status written.
       - An issue added in one pass gets its Status in the next.
 13. **Explain each change entering review.**
-    Run [Review Mode](review-mode.md) for each task and epic whose confirmed status in step 12 is In Review and whose previous status was not, against the pull request this mode's Overviews rule names. A reviewer meets the overview on the pull request it explains.
+    Run [Understand Mode](understand-mode.md) for each task and epic whose confirmed status in step 12 is In Review and whose previous status was not, against the pull request this mode's Overviews rule names. A reviewer meets the overview on the pull request it explains.
 14. **Report.**
     Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](work-breakdown.md#coverage-reports). A test plan disagreement is reported as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan.
 
@@ -91,6 +91,6 @@ Records work on an initiative, its epics and their task issues: links each task 
 - **In Review.**
   An open initiative or epic whose criteria are all ticked is In Review.
 - **Overviews.**
-  - A task entering In Review takes the open pull request that names it, and an epic entering In Review takes its [review pull request](work-breakdown.md#review-pull-request). An initiative takes none, as [Review Mode](review-mode.md#rules) states under Grain.
+  - A task entering In Review takes the open pull request that names it, and an epic entering In Review takes its [review pull request](work-breakdown.md#review-pull-request). An initiative takes none, as [Understand Mode](understand-mode.md#rules) states under Grain.
   - An issue already In Review when the sync began keeps the overview it has: the pull request it explains is the one already reviewed.
 

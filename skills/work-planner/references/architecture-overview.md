@@ -1,6 +1,6 @@
 # Architecture Overview
 
-The architecture overview is the artifact [Review Mode](review-mode.md) writes into a planning record. It explains one pull request's changes to the engineer who reviews them: where the change sits in the system, how it behaves, and in what order to read the diff. Its reader knows software and does not know this codebase.
+The architecture overview is the artifact [Understand Mode](understand-mode.md) writes into a planning record. It explains one pull request's changes to the engineer who reviews them: where the change sits in the system, how it behaves, and in what order to read the diff. Its reader knows software and does not know this codebase.
 
 ## Diagram Selection
 
@@ -105,7 +105,7 @@ sequenceDiagram
 - **Code references.**
   A reference is a permalink pinned to the pull request's head commit with its line anchors, on the words it supports, as SKILL.md's [Code references](../SKILL.md#formatting-scheme) rule states. A link resolved against a branch moves under the reader.
 - **Measured structure.**
-  A component diagram's areas and edges, and a sequence's step order, are the ones [Review Mode](review-mode.md#procedure) measures over the graph. A boundary taken from the directory layout, and a call order traced by hand, are each a defect.
+  A component diagram's areas and edges, and a sequence's step order, are the ones [Understand Mode](understand-mode.md#procedure) measures over the graph. A boundary taken from the directory layout, and a call order traced by hand, are each a defect.
 - **One concept per diagram.**
   Five to ten elements. A diagram that needs more splits by concept, and relationships between areas carry it rather than the internals of one.
 - **Highlight.**

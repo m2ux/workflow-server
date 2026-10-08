@@ -217,7 +217,7 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/950 -f base='i07/e00/main' --jq
 
 ### Fetch Pull Request Files
 
-Saves the paths a pull request changes, for the measurement [Review Mode](review-mode.md#procedure) bounds to them.
+Saves the paths a pull request changes, for the measurement [Understand Mode](understand-mode.md#procedure) bounds to them.
 
 ```bash
 gh api --paginate repos/{owner}/{repo}/pulls/950/files --jq '.[].filename' > changed-files.txt
@@ -475,9 +475,9 @@ Cuts the worktree and branch one unit's session works in, from the epic's base b
 git fetch origin i07/e00/main && git worktree add .worktrees/i07-e00-w01 -b i07/e00/w01-queue-plan origin/i07/e00/main
 ```
 
-### Create Review Worktree
+### Create Pull Request Worktree
 
-Cuts the worktree [Review Mode](review-mode.md#procedure) measures a pull request in, at its head commit.
+Cuts the worktree [Understand Mode](understand-mode.md#procedure) measures a pull request in, at its head commit.
 
 - Run it in the checkout of the repository the pull request changes.
 - The worktree is detached at the head commit, so the graph reads the change as the reviewer meets it.
@@ -488,7 +488,7 @@ git fetch origin pull/950/head && git worktree add --detach .worktrees/review-95
 
 ## Graph
 
-Every graph command runs in the worktree [Create Review Worktree](#create-review-worktree) cut, and prints JSON carrying a `staleness` block. A block reporting the index behind sends the run back to [Index Repository](#index-repository), as [Review Mode](review-mode.md#rules) states under Fresh index.
+Every graph command runs in the worktree [Create Pull Request Worktree](#create-pull-request-worktree) cut, and prints JSON carrying a `staleness` block. A block reporting the index behind sends the run back to [Index Repository](#index-repository), as [Understand Mode](understand-mode.md#rules) states under Fresh index.
 
 ### Index Status
 

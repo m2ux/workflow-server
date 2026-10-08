@@ -1,4 +1,4 @@
-# Review Mode
+# Understand Mode
 
 Explains a pull request's changes to the engineer who reviews them. The mode measures the change over the repository's graph, writes an [architecture overview](architecture-overview.md) into a planning record of its own, and links that overview from the pull request's References. [Sync Mode](sync-mode.md) runs it for each task and epic it sets In Review, and the user runs it against a pull request they name.
 
@@ -8,7 +8,7 @@ Explains a pull request's changes to the engineer who reviews them. The mode mea
    - The request names the pull request, by number or by URL. Run from [Sync Mode](sync-mode.md), it is the one behind the issue moving to In Review, as this mode's Grain rule states.
    - [Fetch Pull Request](commands.md#fetch-pull-request) for its title, its base branch and its head commit. Every code reference the overview carries is pinned to that head commit.
 2. **Bound the change.**
-   - [Create Review Worktree](commands.md#create-review-worktree) cuts a worktree at the head commit, which is where the graph reads the change.
+   - [Create Pull Request Worktree](commands.md#create-pull-request-worktree) cuts a worktree at the head commit, which is where the graph reads the change.
    - [Fetch Pull Request Files](commands.md#fetch-pull-request-files) for the files it changes.
 3. **Ready the graph.**
    - [Index Status](commands.md#index-status) in that worktree. Where it reports the repository unindexed, or the index behind the head commit, [Index Repository](commands.md#index-repository) brings it current.
