@@ -1,0 +1,19 @@
+$schema: ../../../schemas/workflow.schema.json
+id: advisory-read-conformance
+version: 1.0.0
+title: Advisory Read Conformance
+description: Read a published advisory and an unreachable identifier through the shared GitHub operation, retaining endpoint evidence for both cases.
+author: m2ux
+tags:
+  - specimen
+  - github
+  - conformance
+variables:
+  - name: target_repo
+    type: string
+    description: Repository addressed by the advisory probes.
+    defaultValue: m2ux/workflow-server
+initialActivity: read-advisories
+graph:
+  read-advisories:
+    read: __terminal__

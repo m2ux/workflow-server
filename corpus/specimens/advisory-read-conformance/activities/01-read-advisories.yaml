@@ -1,0 +1,44 @@
+id: read-advisories
+version: 1.0.0
+name: Read Advisories
+description: Exercise published and unreachable advisory readings.
+variables:
+  reads:
+    - target_repo
+  writes:
+    - name: published_advisory_result
+      type: object
+      description: Metadata and endpoint evidence for the published advisory.
+    - name: unreachable_advisory_result
+      type: object
+      description: Endpoint evidence for the unreachable identifier.
+required: true
+steps:
+  - kind: technique
+    id: read-published-advisory
+    technique:
+      name: github::read-security-advisory
+      inputs:
+        target_repo: "{target_repo}"
+        ghsa_id: GHSA-jfh8-c2jp-5v3q
+      outputs:
+        advisory_read_result: published_advisory_result
+  - kind: technique
+    id: read-unreachable-advisory
+    technique:
+      name: github::read-security-advisory
+      inputs:
+        target_repo: "{target_repo}"
+        ghsa_id: GHSA-2222-2222-2222
+      outputs:
+        advisory_read_result: unreachable_advisory_result
+  - kind: action
+    id: show-readings
+    actions:
+      - action: message
+        message: "Published advisory: {published_advisory_result}. Unreachable advisory: {unreachable_advisory_result}."
+exits:
+  - id: read
+    isDefault: true
+outcome:
+  - Both readings carry bounded metadata or an explicit unreadable result with the observed endpoint statuses.

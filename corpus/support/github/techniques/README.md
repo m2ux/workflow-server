@@ -24,6 +24,7 @@ The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQ
 | [`project/find-project-item`](project/find-project-item.md) | Find the project item that represents one issue |
 | [`project/read-project-field`](project/read-project-field.md) | Read one project field, including single-select option ids, and the value on one item |
 | [`project/write-project-field`](project/write-project-field.md) | Set a single-select project field to an option id and confirm it by re-read |
+| [`read-security-advisory`](read-security-advisory.md) | Read bounded advisory metadata with repository and global endpoint provenance |
 | [`remove-label`](remove-label.md) | Remove one label from an issue or pull request via REST |
 | [`replace-label-family`](replace-label-family.md) | Leave an issue with one label in a named family and confirm it by re-read |
 | [`resolve-repo-coordinates`](resolve-repo-coordinates.md) | Owner and repository name for a GitHub REST path, derived from a named working tree's `origin` remote or from the session's repository binding |
