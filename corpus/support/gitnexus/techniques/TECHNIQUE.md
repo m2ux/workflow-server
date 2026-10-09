@@ -50,7 +50,7 @@ A stale index answers in the same shape as a fresh one, so an answer turning on 
 
 ### an-absent-staleness-mapping-is-the-verdict
 
-The mapping rides only an answer that trails its tree, so its absence is the freshness verdict and a reader waiting for a `current` status waits on a key that never comes. A direct read of the index omits the reading the same way. Three further answers carry no mapping whatever the graph's age: a raw query's rows, which arrive as a bare list; an error, which reports what failed rather than what answered; and an answer over a whole repository group, where the group's own status reports per member instead — including one failure more than age, a member carrying no graph at all, about which a group-wide answer says nothing.
+The mapping rides only an answer that trails its tree, so its absence is the freshness verdict and a reader waiting for a `current` status waits on a key that never comes. Three answers carry no mapping whatever the graph's age: an empty match, which arrives as a bare list carrying neither the mapping nor a row count; an error, which reports what failed rather than what answered; and an answer over a whole repository group, where the group's own status reports per member instead — including one failure more than age, a member carrying no graph at all, about which a group-wide answer says nothing.
 
 ### edges-the-parser-cannot-see
 
