@@ -13,7 +13,7 @@ These existing defects blocked corpus CI for advisory-reader PR #1290. The user 
 - [x] Merge #1290 and close #949.
 - [x] Register the artifact specimen and correct its activity contracts.
 - [x] Validate and audit the repair.
-- [ ] Push the repair, verify GitHub CI and merge. In progress.
+- [x] Push the repair, verify GitHub CI and merge.
 
 ## Local validation
 
@@ -30,6 +30,15 @@ These existing defects blocked corpus CI for advisory-reader PR #1290. The user 
 The first PR #1291 run passes the roster and every guard, then exposes three stale work-package snapshots. Commit 8762cb0b records the generated baselines. The PR body carries the final repair scope and test evidence; CI runs again on that commit.
 
 The completed coverage run on #1290 also identifies two obsolete exception keys for verdict-and-report's publish-decision. The checkpoint belonged to midnight-system-review, removed in 459eea8b. Commit 9c407d97 removes exactly those exceptions; the audit confirms no live coverage obligation is weakened. The final PR head runs both CI jobs again.
+
+## Delivery
+
+Both GitHub jobs pass on final head 9c407d97d661e1da16464728435019c71b54d092:
+
+- [Corpus verification](https://github.com/m2ux/workflow-server/actions/runs/37951601291): roster, protocol checks, guard sweep, snapshots and all-workflows drift.
+- [Full option coverage](https://github.com/m2ux/workflow-server/actions/runs/37951601033): every declared checkpoint option is reached or accounted for.
+
+PR #1291 merges into workflows as d5e2ace11c66e6b7742d5b2e591abd4af271bb55. The advisory delivery and its authorized CI follow-up are complete.
 
 ## Artifacts
 
