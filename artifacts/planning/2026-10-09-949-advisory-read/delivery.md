@@ -17,15 +17,15 @@
 ## Progress
 
 - [x] Convert and detach #949 from I08.
-- [ ] Implement and audit the operation and conformance specimen. In progress.
-- [ ] Execute checks and live advisory verification.
+- [x] Implement and audit the operation and conformance specimen.
+- [ ] Execute checks and live advisory verification. In progress; draft cleanup decision pending.
 - [ ] Commit, push, open the pull request, verify CI and merge.
 
 ## Test plan
 
 | Test | Description | Coverage | Pass |
 | --- | --- | --- | --- |
-| T1 | Definition guards and canon review over the operation and specimen | AC1, AC2, AC3 | |
+| T1 | Delta definition guards and canon review over the operation and specimen | AC1, AC2, AC3 | ✓ |
 | T2 | Real conformance run reads a published global advisory and rejects an unreachable advisory | AC1, AC2, AC3, AC4 | ✓ |
 | T3 | Private draft read through the repository endpoint, with cleanup recorded | AC1, AC2, AC5 | |
 
@@ -38,3 +38,6 @@
 - Corpus-only guard sweep: 53 pass, one fails on five pre-existing activity-variable findings in artifact-destination-conformance. Its bound_artifact_written and unbound_artifact_written writes are unproduced and unread, and artifact_destination is an unused read. Delta guard passes with no introduced finding.
 - Specimen graph test: one passes, 64 outside the selection skipped. Scoped option coverage: one passes.
 - Live MCP specimen BPC3CB completes. The published fixture returns repository 404 then global 200, with exactly the metadata allowlist. The unreachable fixture returns 404 from both endpoints and a null advisory/source. A status re-read confirms completed state and exact equality of the stored output objects with live-results.json.
+- Implementation commit 94580f8d08c87580f5bdd39d2101c8d0744ac845 is pushed; PR #1290 targets workflows. AC1–AC4 are ticked on #949 with linked evidence. AC5 stays unticked; the issue and PR stay open while draft verification and CI remain outstanding.
+
+- PR #1290 corpus verification job 113874771807 fails at the roster check: artifact-destination-conformance is absent from the base roster. This is pre-existing on origin/workflows. Coverage job 113874779042 is still running. No merge is attempted; private-draft cleanup approval remains pending.
