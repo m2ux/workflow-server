@@ -21,7 +21,7 @@ Every command the skill runs, one spec per operation. The mode files name a spec
   - `1` the Initiative Template board, `13` a board copied from it;
   - `14` the Proposals Template, `15` the Proposals board;
   - `m2ux` the user.
-  - `<main>` the main working tree. A linked worktree passes that path.
+  - `<checkout>` any checkout of the project, a linked worktree included.
 
 ## Issues
 
@@ -317,7 +317,7 @@ Prints the long-lived branch names, one per line.
 - Where neither yields a name, the command prints `unevaluable:` and names what is missing, and exits 1.
 
 ```bash
-git ls-remote --heads origin > heads.txt && cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py --names --project <main> --initiative 07 --refs heads.txt
+git ls-remote --heads origin > heads.txt && cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py --names --project <checkout> --initiative 07 --refs heads.txt
 ```
 
 ### Update Integration Branch
@@ -706,7 +706,7 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - `--project` is a checkout of the project, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Without those names, an epic or initiative that would otherwise be closable is not.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W02=950 --project <main> --fix fixed-943.md
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W02=950 --project <checkout> --fix fixed-943.md
 ```
 
 ### Tick Criteria
@@ -729,7 +729,7 @@ Reports an initiative's delivery state against its epics, and ticks Done on an e
 - Without the pull requests, an initiative whose criteria are all ticked is not closable.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --prs prs.json --links links.json --project <main>
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --prs prs.json --links links.json --project <checkout>
 ```
 
 ### Plan Board Changes
@@ -772,7 +772,7 @@ Reports each unit of work a theme board makes available, each row a session hold
 - The rules are [Deliver Mode](deliver-mode.md).
 - `--items` is [Fetch Board Items with Status](#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](#fetch-all-initiative-pull-requests).
 - Give an issue it reports unresolved with `--others`.
-- `--project` is `<main>`, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. A base whose last segment is not one of those subfolders is ignored.
+- `--project` is a checkout of the project, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. A base whose last segment is not one of those names is ignored.
 - `--bases` is the list [List Epic Bases](#list-epic-bases) prints for the board's epics, comma-separated.
 - A `unit` line names the tasks of one session's work, their coverage, and the record folder, branch, base and worktree their ids and Description give them. One base is `base i07/e00/main`. Several are `bases i07/e00/main i07/e00/workflows`.
 - A `hold` line names a row a session holds, and the record it links.
@@ -781,7 +781,7 @@ Reports each unit of work a theme board makes available, each row a session hold
 - `--date` opens the records on another day than today.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --project <main> --bases i07/e00/main,i07/e00/workflows
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --project <checkout> --bases i07/e00/main,i07/e00/workflows
 ```
 
 ### Reserve Row
