@@ -631,6 +631,16 @@ export const GUARDS: GuardSpec[] = [
     form: 'none',
   },
   {
+    id: 'gitnexus-tool-answers',
+    script: 'guards/check-gitnexus-tool-answers.ts',
+    npmScript: 'check:gitnexus-tool-answers',
+    scope: 'corpus',
+    gatesServing: false,
+    json: true,
+    proves: 'no technique of the GitNexus library settles its answer on an MCP resource, so a client holding its tools alone takes every reading',
+    form: 'none',
+  },
+  {
     id: 'routine-signature-prose',
     script: 'guards/check-routine-signature-prose.ts',
     npmScript: 'check:routine-prose',

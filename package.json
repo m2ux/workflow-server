@@ -71,6 +71,7 @@
     "check:inventory": "tsx guards/check-inventory-schema-agreement.ts",
     "check:fires-on": "tsx guards/check-fires-on-ids.ts",
     "check:guard-roster": "tsx guards/check-guard-roster.ts",
+    "check:gitnexus-tool-answers": "tsx guards/check-gitnexus-tool-answers.ts",
     "check:routine-prose": "tsx guards/check-routine-signature-prose.ts",
     "check:unserved-refs": "tsx guards/check-unserved-operation-refs.ts",
     "check:refs": "tsx guards/check-all-refs.ts",
