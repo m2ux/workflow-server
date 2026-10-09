@@ -14,6 +14,7 @@ import { requestId } from '../middleware/request-id.js';
 import { requestLogging } from '../middleware/logging.js';
 import { errorHandler } from '../middleware/error-handler.js';
 import { probeSessionKeyWritable } from '../utils/session/crypto.js';
+import { standingSessions } from '../utils/session/standing.js';
 
 /**
  * How long to wait for in-flight requests to drain on SIGTERM/SIGINT before
@@ -93,11 +94,15 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
   // found in it, and names the host tree behind it when a bind source was
   // passed in. Every container resolves definitions at the same mount point, so
   // `dir` alone says what a server reads and nothing about which corpus that
-  // is; `hostDir` is what distinguishes two instances.
+  // is; `hostDir` is what distinguishes two instances, and `pin` the commit
+  // behind it, which outlives the worktree the path names.
+  // `sessions` names the sessions standing on that bind. One instance serves
+  // every session walking its corpus, and the bind moves for all of them at
+  // once, so a bind about to move is read here for what the move displaces.
   app.get('/ready', async (_req, res) => {
     const engineeringDir = config.engineeringDir ?? config.workspaceDir;
     const sessionKeyWritable = await probeSessionKeyWritable();
-    const corpus = describeCorpus(config.workflowDir, config.hostWorkflowsDir);
+    const corpus = describeCorpus(config.workflowDir, config.hostWorkflowsDir, config.corpusPin);
     const checks: Record<string, boolean> = {
       schemasDir: existsSync(config.schemasDir),
       workspaceDir: existsSync(config.workspaceDir),
@@ -108,7 +113,12 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
       checks['engineeringDir'] = existsSync(engineeringDir);
     }
     const ready = Object.values(checks).every(Boolean);
-    res.status(ready ? 200 : 503).json({ status: ready ? 'ready' : 'not-ready', checks, corpus });
+    res.status(ready ? 200 : 503).json({
+      status: ready ? 'ready' : 'not-ready',
+      checks,
+      corpus,
+      sessions: standingSessions(),
+    });
   });
 }
 
@@ -118,6 +128,12 @@ interface CorpusReport {
   dir: string;
   /** The host tree behind `dir`, when a bind source was passed in. Absent outside Docker. */
   hostDir?: string;
+  /**
+   * The commit that tree stood at when the bind was made, with a `-dirty` marker for uncommitted
+   * edits. Absent when the bind was made without one. A host path names where a worktree stood on
+   * one machine; the commit stays resolvable once it is gone.
+   */
+  pin?: string;
   /** Workflows the walk found, by the server's own discovery rule. */
   workflows: number;
   /** Ids more than one directory claims. Each is unresolvable under either name. */
@@ -133,13 +149,15 @@ interface CorpusReport {
  * zero without walking, which keeps a probe loop from logging one unreadable-directory warning per
  * interval.
  */
-function describeCorpus(dir: string, hostDir?: string): CorpusReport {
+function describeCorpus(dir: string, hostDir?: string, pin?: string): CorpusReport {
   const host = hostDir !== undefined && hostDir !== dir ? { hostDir } : {};
-  if (!existsSync(dir)) return { dir, ...host, workflows: 0, ambiguous: [] };
+  const commit = pin !== undefined ? { pin } : {};
+  if (!existsSync(dir)) return { dir, ...host, ...commit, workflows: 0, ambiguous: [] };
   const index = indexCorpus(dir);
   return {
     dir,
     ...host,
+    ...commit,
     workflows: index.workflows.size,
     ambiguous: index.ambiguous.map((claim) => claim.id),
   };

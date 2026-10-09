@@ -182,7 +182,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'start_session',
     {
       description:
-        'Start or resume the top-level workflow session. Returns the session\'s `session_index`, `status`, `current` and `workflow` metadata, its canonical `planning_folder_path`, and the bindings the open derived. The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
+        'Start or resume the top-level workflow session. Returns the session\'s `session_index`, `status`, `current` and `workflow` metadata, its canonical `planning_folder_path`, and the bindings the open derived. Where the instance was told which corpus it binds, `serving.corpus_pin` is that commit, read from the instance that answered this call — a record of the run cites it from here and not from whatever bound the instance earlier.The `session_index` is minted by this call and cannot be predicted, so wait for this response before any call that takes it. ' +
         '`workflow.initialActivity` is the activity the first `next_activity` on this session should name, and `current` is what it already stands on — empty on a fresh open, and whatever an earlier walk left in flight on a resume, so the opening advance is owed where it is empty. `get_workflow` reports the same opening activity alongside the orchestrator technique bundle; both are reported here so a caller that only needs to open the session does not fetch that bundle to learn one id. ' +
         '`status` is `completed` for a session whose walk has ended: it takes no further advance, and a resume that lands on one has reopened a finished session rather than continuing work. ' +
         'Pass `working_directory` as the absolute path of the checkout under work; the server derives `owner/repo` from that checkout\'s origin remote. ' +
@@ -614,6 +614,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (state.repo) response['repo'] = state.repo;
       if (state.contextMode) response['context_mode'] = state.contextMode;
       response['execution_path'] = resolveExecutionPath(state);
+      // The corpus this instance is serving, as the instance that answered the call reports it. A
+      // run record pinned from here names the definitions the walk actually met; one pinned from
+      // the reload that preceded the walk names whatever was bound before, and a bind taken in
+      // between leaves that record unchanged.
+      if (config.corpusPin !== undefined) response['serving'] = { corpus_pin: config.corpusPin };
       if (derived?.repo_source) response['repo_source'] = derived.repo_source;
       if (derived?.host_repo) response['host_repo'] = derived.host_repo;
       if (derived?.component_path) response['component_path'] = derived.component_path;
