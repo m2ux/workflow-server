@@ -156,9 +156,7 @@
         "checkpoint:validate-and-commit:scope-verified=confirmed",
         "checkpoint:validate-and-commit:scope-verified=fix",
         "checkpoint:validate-and-commit:validation-passed=fix",
-        "checkpoint:validate-and-commit:validation-passed=proceed",
-        "checkpoint:verdict-and-report:publish-decision=publish",
-        "checkpoint:verdict-and-report:publish-decision=skip-publish"
+        "checkpoint:validate-and-commit:validation-passed=proceed"
       ]
     },
     {
