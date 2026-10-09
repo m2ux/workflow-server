@@ -14,7 +14,10 @@ name: Verify
 
 on:
   push:
-    branches: [main, 'i[0-9][0-9]/main']
+    # A pull request reaches every promotion step, so these cover what reaches a branch without
+    # one: an epic base takes the integration branch merged into it directly, with no pull request
+    # of its own. A glob does not cross `/`, so each depth is its own pattern.
+    branches: [main, 'i[0-9]+/main', 'i[0-9]+/e[0-9]+/main']
   pull_request:
   workflow_dispatch:
 
@@ -45,6 +48,11 @@ jobs:
       # An initiative's code and definitions land on its own integration branches, `iNN/main` and
       # `iNN/workflows`, so a change on one is measured against the initiative's other half where
       # that branch exists, and against `workflows` otherwise.
+      #
+      # The initiative is the first segment of the base, whatever follows it. Every task pull
+      # request targets an epic base, `iNN/eMM/main`, so a rule reading the whole name pairs the
+      # initiative's engine with the shared corpus and reports agreement between two trees that
+      # were never the pair under test.
       - name: Resolve the definitions branch this change pairs with
         id: pair
         env:
@@ -52,8 +60,8 @@ jobs:
         run: |
           ref=workflows
           case "$BASE" in
-            i[0-9][0-9]/main)
-              candidate="${BASE%/main}/workflows"
+            i[0-9]*/*)
+              candidate="${BASE%%/*}/workflows"
               if git ls-remote --exit-code --heads origin "$candidate" > /dev/null; then ref="$candidate"; fi
               ;;
           esac
