@@ -27,6 +27,7 @@ const REPO_ENV_KEYS = [
   // are the same case in a different order unless they are cleared between.
   'HOST_WORKFLOWS_DIR',
   'HOST_WORKFLOWS_ROOT',
+  'CORPUS_PIN',
 ] as const;
 
 function clearRepoEnv(): Record<string, string | undefined> {
@@ -372,6 +373,17 @@ describe('loadConfig — --repo binding', () => {
   it('leaves the corpus bind source unset outside Docker', () => {
     const config = loadConfig(['--workspace=/tmp/wf-install/projects']);
     expect(config.hostWorkflowsDir).toBeUndefined();
+  });
+
+  it('reads the commit the bound corpus stood at, so the instance can report which it serves', () => {
+    process.env['CORPUS_PIN'] = '9f3c1aa-dirty';
+    const config = loadConfig(['--workspace=/tmp/wf-install/projects']);
+    expect(config.corpusPin).toBe('9f3c1aa-dirty');
+  });
+
+  it('leaves the corpus pin unset when the bind was made without one', () => {
+    const config = loadConfig(['--workspace=/tmp/wf-install/projects']);
+    expect(config.corpusPin).toBeUndefined();
   });
 
   it('CLI --workspace at install multi-root with ENGINEERING_DIR stays multi-root', () => {

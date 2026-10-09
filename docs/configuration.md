@@ -23,6 +23,7 @@ Under Docker the server reads its trees at container paths. These name the host 
 | `HOST_PROJECTS_ROOT` / `HOST_PROJECTS_DIR` | — | Host directory bound as the projects root; returned paths under it are rewritten to the host path |
 | `HOST_WORKTREE_ROOT` / `HOST_WORKTREE_DIR` | — | Host directory bound as the worktree root, rewritten the same way |
 | `HOST_WORKFLOWS_DIR` / `HOST_WORKFLOWS_ROOT` | — | Host tree behind the corpus mount, reported as `corpus.hostDir` by `GET /ready` |
+| `CORPUS_PIN` | — | Commit that tree stood at when the bind was made, reported as `corpus.pin` by `GET /ready` and as `serving.corpus_pin` by `start_session` |
 
 ## Process
 
