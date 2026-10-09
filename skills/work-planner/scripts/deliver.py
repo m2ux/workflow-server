@@ -357,7 +357,7 @@ def main() -> int:
     parser.add_argument('--release', help='task ids to free, e.g. W01')
     parser.add_argument('--records', help='the URL of the planning records folder')
     parser.add_argument('--date', help='the day the record is opened, today by default')
-    parser.add_argument('--project', default='', help='checkout whose .project subfolders are the long-lived branches')
+    parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branches in config/branches')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()

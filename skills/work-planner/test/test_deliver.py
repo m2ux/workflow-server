@@ -51,6 +51,13 @@ def survey(items: list[dict], prs: list[dict] | None = None, *args: str) -> str:
         return done.stdout
 
 
+def states(root: Path, *names: str) -> None:
+    """A checkout stating the long-lived branches in config/branches."""
+    stated = root / 'config' / 'branches'
+    stated.parent.mkdir(parents=True, exist_ok=True)
+    stated.write_text(''.join(f'{name}\n' for name in names))
+
+
 def edit(body_issue: dict, *args: str) -> tuple[str, str, int]:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -71,7 +78,7 @@ class Survey(unittest.TestCase):
     def test_a_unit_names_its_epic_base(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / '.project' / 'main').mkdir(parents=True)
+            states(root, 'main')
             output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
                             None, '--project', str(root), '--bases', 'i07/e00/main,i07/e00/workspace')
         self.assertIn('base i07/e00/main', output)
@@ -80,8 +87,7 @@ class Survey(unittest.TestCase):
     def test_a_unit_names_each_of_its_epic_bases(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / '.project' / 'main').mkdir(parents=True)
-            (root / '.project' / 'workflows').mkdir()
+            states(root, 'main', 'workflows')
             output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
                             None, '--project', str(root), '--bases', 'i07/e00/workflows,i07/e00/main')
         self.assertIn('bases i07/e00/main i07/e00/workflows', output)
