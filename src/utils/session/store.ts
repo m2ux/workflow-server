@@ -17,6 +17,7 @@ import {
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getOrCreateServerKey } from './crypto.js';
+import { noteSessionWrite } from './standing.js';
 import type { SessionJsonPath } from './derivation.js';
 import { assertPathInsideRoot } from '../../worktree-validator.js';
 
@@ -409,6 +410,10 @@ async function persistSessionFile(
   swapIntoPlace(stagedSeal);
 
   await syncDirectory(folderAbsPath);
+  // The record has landed, so the session it describes is one this instance has advanced. The
+  // register of who stands on the corpus bind follows the write and not the tool call, there being
+  // no other point every session passes through.
+  noteSessionWrite(state);
   return { bytes, seal };
 }
 
