@@ -30,8 +30,12 @@ Thirty-seven merged pull requests across both initiatives carry their test plan 
 
 ## F6. The dependency checker misreads a multi-link row
 
-`deps.py` reported eight unknown dependencies and Joins across I04. Every one is a row whose id cell carries two pull-request links — `[W02](…/pull/1208), [W02](…/pull/1209)` — which the parser does not recognise as that task's id, so every dependency naming it reads as unknown. The plans are correct. I00, whose rows carry one link each, reports no problem.
+`deps.py` reported eight unknown dependencies and Joins across I04. Every one is a row whose id cell carries two pull-request links — `[W02](…/pull/1208), [W02](…/pull/1209)`. `cells` strips each link to its text, so the cell reads `W02, W02`; the row filter then tests `re.fullmatch(r'W\d\d', …)` against the whole cell and skips the row. A skipped row is absent from the graph entirely, so the levels, the longest chains and the whole-epic report are computed over a table with holes in it. The plans are correct. I00, whose rows carry one link each, reports no problem.
 
-## F7. I04 delivers without epic bases
+Carried by #1264 under decision D9.
 
-Thirty task branches merged straight into `i04/main` and `i04/workflows`; no `i04/eNN/<name>` branch exists. The Work Breakdown Guide expects a base per epic and one review pull request on it. Left as delivered by decision D3, with #1225 and #1226 carrying the review.
+## F7. I04's delivered work bypassed the epic bases
+
+Thirty task branches merged straight into `i04/main` and `i04/workflows`, which is where that work now sits. The Work Breakdown Guide expects a base per epic and one review pull request on it.
+
+Under decision D10 the twenty bases now exist, cut from the integration tips, so they carry what was already merged and every further I04 task targets one. The work delivered before them keeps its review on #1225 and #1226, which merge the integration branches. An epic closing with an empty base leaves no review pull request of its own, and the initiative's two carry that epic's share.
