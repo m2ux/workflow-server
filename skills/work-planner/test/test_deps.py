@@ -98,3 +98,43 @@ class WholeEpics(unittest.TestCase):
         self.assertIn('--- whole epics\nnone', text)
         self.assertNotIn('depends on E01 (', text)
         self.assertIn('1 E02:W01', text)
+
+
+class TaskCells(unittest.TestCase):
+    """A row is the task its Task cell opens with, however many deliveries that id links."""
+
+    SPELLINGS = (
+        '## Work Breakdown\n\n'
+        '| Task | Description | Coverage | Depends on | Joins | Done |\n'
+        '| --- | --- | --- | --- | --- | --- |\n'
+        '| [W01](https://example.test/pull/950), [W01](https://example.test/pull/960)'
+        ' | Server and corpus | AC1 | | | ✓ |\n'
+        '| [W02](https://example.test/pull/970) | One tree | AC2 | W01 | W03 | |\n'
+        '| W03 | Not yet open | AC3 | W01 | W02 | |\n'
+    )
+
+    def test_every_spelling_names_one_row(self):
+        code, text = run([('E06', self.SPELLINGS)])
+        self.assertEqual(code, 0)
+        self.assertIn('--- problems\nnone', text)
+        self.assertIn('0 E06:W01 - Server and corpus', text)
+        self.assertIn('1 E06:W02 - One tree', text)
+        self.assertIn('1 E06:W03 - Not yet open', text)
+
+    def test_a_dependency_and_a_joins_entry_resolve_to_a_doubly_linked_row(self):
+        code, text = run([('E06', self.SPELLINGS)])
+        self.assertEqual(code, 0)
+        self.assertNotIn('unknown', text)
+        self.assertIn('E06:W01 -> E06:W02', text)
+
+    def test_reports_a_cell_whose_links_disagree(self):
+        body = (
+            '## Work Breakdown\n\n'
+            '| Task | Description | Coverage | Depends on | Joins | Done |\n'
+            '| --- | --- | --- | --- | --- | --- |\n'
+            '| [W01](https://example.test/pull/950), [W02](https://example.test/pull/960)'
+            ' | Two ids | AC1 | | | |\n'
+        )
+        code, text = run([('E06', body)])
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01: Task cell also names W02', text)
