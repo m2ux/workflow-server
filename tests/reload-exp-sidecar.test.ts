@@ -334,6 +334,149 @@ exit 1
     }
   });
 
+  describe('displacement', () => {
+    /**
+     * A sidecar already serving a corpus, with two sessions standing on it: the bind and its pin
+     * on the container record, the sessions on the instance's own readiness endpoint. `stop.sh`
+     * announces itself, so the order of the run is readable in one stream.
+     */
+    function heldInstance(bin: string): NodeJS.ProcessEnv {
+      const docker = join(bin, 'docker');
+      writeFileSync(
+        docker,
+        [
+          '#!/usr/bin/env bash',
+          'if [[ "${1:-}" == inspect ]]; then',
+          '  for arg in "$@"; do',
+          '    case "$arg" in',
+          "      */app/workflows*) echo /host/corpora/held-by-another; exit 0 ;;",
+          '      *workflow-server.corpus.pin*) echo 9f3c1aa-dirty; exit 0 ;;',
+          '      *workflow-server.image*) echo workflow-server:exp-held; exit 0 ;;',
+          '    esac',
+          '  done',
+          'fi',
+          'exit 1',
+          '',
+        ].join('\n'),
+      );
+      chmodSync(docker, 0o755);
+
+      const curl = join(bin, 'curl');
+      writeFileSync(
+        curl,
+        [
+          '#!/usr/bin/env bash',
+          "cat <<'JSON'",
+          '{"status":"ready","checks":{},"corpus":{"dir":"/app/workflows","pin":"9f3c1aa-dirty"},'
+            + '"sessions":[{"session_index":"K4R7TQ","workflow_id":"mvw","since":"2026-10-09T10:00:00.000Z",'
+            + '"last_seen":"2026-10-09T10:04:00.000Z"},{"session_index":"P2XM9D","workflow_id":"specimen",'
+            + '"since":"2026-10-09T10:02:00.000Z","last_seen":"2026-10-09T10:05:00.000Z"}]}',
+          'JSON',
+          '',
+        ].join('\n'),
+      );
+      chmodSync(curl, 0o755);
+
+      const start = join(bin, 'start.sh');
+      const stop = join(bin, 'stop.sh');
+      writeNoop(start);
+      writeFileSync(stop, '#!/usr/bin/env bash\necho "stop.sh ran"\nexit 0\n');
+      chmodSync(stop, 0o755);
+      return {
+        PATH: `${bin}:${process.env.PATH ?? ''}`,
+        WORKFLOW_SERVER_START: start,
+        WORKFLOW_SERVER_STOP: stop,
+      };
+    }
+
+    function reloadOntoAnotherCorpus(bin: string, corpus: string): string {
+      const result = run(
+        [
+          '--name=reload-exp-sidecar-displace',
+          '--host-port=32774',
+          `--workflows-dir=${corpus}`,
+          '--no-build',
+          '--no-preflight',
+        ],
+        heldInstance(bin),
+      );
+      return `${result.stdout}${result.stderr}`;
+    }
+
+    it('names the corpus it displaces and the sessions standing on it, before the stop', () => {
+      const bin = mkdtempSync(join(tmpdir(), 'reload-displace-'));
+      const corpus = withCorpus();
+      try {
+        const out = reloadOntoAnotherCorpus(bin, corpus);
+        expect(out).toMatch(/Displacing on 127\.0\.0\.1:32774/);
+        expect(out).toMatch(/corpus\s+:\s+\/host\/corpora\/held-by-another @ 9f3c1aa-dirty/);
+        expect(out).toMatch(/standing\s+:\s+2 session\(s\): K4R7TQ P2XM9D/);
+        expect(out.indexOf('Displacing')).toBeGreaterThanOrEqual(0);
+        expect(out.indexOf('Displacing')).toBeLessThan(out.indexOf('stop.sh ran'));
+      } finally {
+        rmSync(bin, { recursive: true, force: true });
+        rmSync(corpus, { recursive: true, force: true });
+      }
+    });
+
+    it('reports the standing sessions as unknown when the instance does not answer', () => {
+      const bin = mkdtempSync(join(tmpdir(), 'reload-displace-silent-'));
+      const corpus = withCorpus();
+      try {
+        const env = heldInstance(bin);
+        // A container that is recorded but not serving: the labels answer, the endpoint does not.
+        writeFileSync(join(bin, 'curl'), '#!/usr/bin/env bash\nexit 7\n');
+        chmodSync(join(bin, 'curl'), 0o755);
+        const result = run(
+          [
+            '--name=reload-exp-sidecar-displace',
+            '--host-port=32774',
+            `--workflows-dir=${corpus}`,
+            '--no-build',
+            '--no-preflight',
+          ],
+          env,
+        );
+        const out = `${result.stdout}${result.stderr}`;
+        expect(out).toMatch(/corpus\s+:\s+\/host\/corpora\/held-by-another @ 9f3c1aa-dirty/);
+        expect(out).toMatch(/standing\s+:\s+unknown/);
+      } finally {
+        rmSync(bin, { recursive: true, force: true });
+        rmSync(corpus, { recursive: true, force: true });
+      }
+    });
+
+    it('says nothing about displacement when no container of that name is recorded', () => {
+      const bin = mkdtempSync(join(tmpdir(), 'reload-displace-none-'));
+      const corpus = withCorpus();
+      try {
+        // No container of that name: every lookup against the record comes back empty.
+        writeFileSync(join(bin, 'docker'), '#!/usr/bin/env bash\nexit 1\n');
+        chmodSync(join(bin, 'docker'), 0o755);
+        const out = run(
+          [
+            '--name=reload-exp-sidecar-absent',
+            '--host-port=32775',
+            `--workflows-dir=${corpus}`,
+            '--no-build',
+            '--no-preflight',
+            '--image=workflow-server:local',
+          ],
+          stubbedStart(bin),
+        );
+        expect(`${out.stdout}${out.stderr}`).not.toMatch(/Displacing/);
+      } finally {
+        rmSync(bin, { recursive: true, force: true });
+        rmSync(corpus, { recursive: true, force: true });
+      }
+    });
+
+    it('hands the corpus pin to the server it starts', () => {
+      const src = readFileSync(SCRIPT, 'utf8');
+      expect(src).toContain('--env "CORPUS_PIN=${CORPUS_PIN}"');
+    });
+  });
+
   it('accepts EXP_* environment fallbacks in place of flags', () => {
     const result = run([], {
       EXP_NAME: 'workflow-server-exp',

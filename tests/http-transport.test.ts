@@ -8,7 +8,12 @@ import { tmpdir } from 'node:os';
 import type { ServerConfig } from '../src/config.js';
 import { loadConfig } from '../src/config.js';
 import { createHttpApp, shutdownHandler, startHttpServer } from '../src/transports/http.js';
-import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from '../src/utils/session/store.js';
+import {
+  PLANNING_RELATIVE_DIR,
+  setPlanningRelativeDir,
+  writeSessionFile,
+} from '../src/utils/session/store.js';
+import { clearStandingSessions } from '../src/utils/session/standing.js';
 import { liveCorpusRoot } from './corpus-root.js';
 
 function buildConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
@@ -120,6 +125,59 @@ describe.skipIf(!liveCorpusRoot())('HTTP transport', () => {
         expect(res.body.corpus).not.toHaveProperty('hostDir');
       } finally {
         rmSync(config.workspaceDir, { recursive: true, force: true });
+      }
+    });
+
+    // A host path names where a worktree stood on one machine; the commit behind it stays
+    // resolvable once that worktree is gone, and is what a record of a run carries.
+    it('GET /ready names the commit behind the bind when the instance was told it', async () => {
+      const config = buildConfig({ corpusPin: '9f3c1aa-dirty' });
+      try {
+        const res = await get(createHttpApp(config), '/ready');
+        expect(res.body.corpus.pin).toBe('9f3c1aa-dirty');
+      } finally {
+        rmSync(config.workspaceDir, { recursive: true, force: true });
+      }
+    });
+
+    it('GET /ready omits the commit when the bind was made without one', async () => {
+      const res = await get(app, '/ready');
+      expect(res.body.corpus).not.toHaveProperty('pin');
+    });
+
+    it('GET /ready reports nobody standing on an instance no session has walked', async () => {
+      clearStandingSessions();
+      const res = await get(app, '/ready');
+      expect(res.body.sessions).toEqual([]);
+    });
+
+    // The bind moves for every session at once, so who is on it is part of what a reload is about
+    // to take away. A session the instance has finished is no longer standing on anything.
+    it('GET /ready names each session standing on the bind and drops one whose walk has ended', async () => {
+      clearStandingSessions();
+      const folder = mkdtempSync(join(tmpdir(), 'wf-standing-'));
+      try {
+        const record = {
+          schemaVersion: 1,
+          sessionIndex: 'K4R7TQ',
+          workflowId: 'mvw',
+          planningFolderPath: folder,
+          status: 'running',
+        };
+        await writeSessionFile(folder, record);
+        const walking = await get(app, '/ready');
+        expect(walking.body.sessions).toHaveLength(1);
+        expect(walking.body.sessions[0]).toMatchObject({
+          session_index: 'K4R7TQ',
+          workflow_id: 'mvw',
+          planning_folder: folder,
+        });
+
+        await writeSessionFile(folder, { ...record, status: 'completed' });
+        const finished = await get(app, '/ready');
+        expect(finished.body.sessions).toEqual([]);
+      } finally {
+        rmSync(folder, { recursive: true, force: true });
       }
     });
 

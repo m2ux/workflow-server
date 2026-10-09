@@ -78,6 +78,12 @@ export interface ServerConfig {
    */
   hostWorkflowsDir?: string;
   /**
+   * Commit the corpus tree stood at when this instance bound it, with a `-dirty`
+   * marker for uncommitted edits. Absent when the bind was made without one, in
+   * which case the instance reports no pin rather than a guessed one.
+   */
+  corpusPin?: string;
+  /**
    * Resolved prefix map for agent-facing path presentation. Built at config
    * load from server roots + host bind sources; undefined when presentation
    * is identity (stdio / same path namespace).
@@ -653,6 +659,17 @@ function resolveHostPathPresentation(
   return out;
 }
 
+/**
+ * The commit of the corpus this instance binds, as `CORPUS_PIN`.
+ *
+ * The bind is made from outside — a mount, a launcher flag — and the commit behind it is knowable
+ * only to whoever made it. Passed in, the instance can report which definitions it is serving
+ * rather than only where they are mounted, so a run record cites the instance that answered it.
+ */
+function resolveCorpusPin(env: NodeJS.ProcessEnv = process.env): string | undefined {
+  return env['CORPUS_PIN']?.trim() || undefined;
+}
+
 export function loadConfig(argv: readonly string[] = process.argv.slice(2)): ServerConfig {
   const roots = resolveRoots(argv);
   const planningRelativeDir = resolvePlanningRelativeDir(
@@ -663,6 +680,7 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
   // callers see the configured slug without a second argument.
   setPlanningRelativeDir(planningRelativeDir);
   const hostPaths = resolveHostPathPresentation(process.env);
+  const corpusPin = resolveCorpusPin(process.env);
   // Server-side projects root for the map: engineering multi-root when set,
   // else workspace (single-root / nested bind).
   const serverProjectsRoot = roots.engineeringDir;
@@ -689,6 +707,7 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     ...(hostPaths.hostWorkflowsDir !== undefined
       ? { hostWorkflowsDir: hostPaths.hostWorkflowsDir }
       : {}),
+    ...(corpusPin !== undefined ? { corpusPin } : {}),
     ...(pathPresentation !== undefined ? { pathPresentation } : {}),
     serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
