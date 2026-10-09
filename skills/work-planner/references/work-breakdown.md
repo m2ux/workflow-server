@@ -84,11 +84,11 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - The field is the whole of the relation: neither body links the other. The pull request's References carry its sources, and the issue it delivers is not among them.
   - [Sync Epic](commands.md#sync-epic), [Sync Initiative](commands.md#sync-initiative), [Plan Board Changes](commands.md#plan-board-changes) and [Summarise Progress](commands.md#summarise-progress) read the links GitHub holds, from [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links). Sync reports a pull request that links no issue as uncited.
 - **Long-lived branches.**
-  - Where the main working tree has a `.project` directory, its subfolder names are the long-lived branches. A linked worktree uses that tree.
-  - Where that directory is absent, the names are the ones the initiative's integration branches carry. An integration branch `i01/workflows` names `workflows`.
-  - Where neither yields a name, the names are unevaluable. The report names the missing `.project` directory and the absent integration branch.
+  - A project states its long-lived branches in `config/branches` at its root, one name per line. A run from a linked worktree reads the statement its main working tree holds.
+  - Where that file is absent, the names are the ones the initiative's integration branches carry. An integration branch `i01/workflows` names `workflows`.
+  - Where neither yields a name, the names are unevaluable. The report names the missing `config/branches` and the absent integration branch.
   - **Example.**
-    workflow-server's `.project` subfolders are `docker`, `main` and `workflows`.
+    workflow-server's `config/branches` names `docker`, `main`, `workflows` and `workspace`.
 - **Integration branches.**
   - Each long-lived branch an initiative changes has an integration branch, named for the initiative and that branch and cut from it.
   - **Example.**

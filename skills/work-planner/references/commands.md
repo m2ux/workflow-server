@@ -312,8 +312,8 @@ git ls-remote --heads origin 'refs/heads/i07/e00/*' | cut -f2 | sed 's|refs/head
 Prints the long-lived branch names, one per line.
 
 - The names are as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-- `--project` is the main working tree. Where it has a `.project` directory, that directory's subfolders are the names.
-- Where it does not, `--refs` is the repository's heads, one per line, as `git ls-remote --heads origin` prints them, and `--initiative` is the initiative number, as `07`. An integration branch `i07/workflows` names `workflows`.
+- `--project` is any checkout of the project. The names are the ones `config/branches` states in its main working tree, which a linked worktree resolves for itself.
+- Where that file is absent, `--refs` is the repository's heads, one per line, as `git ls-remote --heads origin` prints them, and `--initiative` is the initiative number, as `07`. An integration branch `i07/workflows` names `workflows`.
 - Where neither yields a name, the command prints `unevaluable:` and names what is missing, and exits 1.
 
 ```bash
@@ -703,7 +703,7 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - When a task has merged into an epic base and the epic is not yet complete, that base is reported draft, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - It reports a review pull request whose References differ from the task pull requests merged into its base, naming both sets, as the [Work Breakdown Guide](work-breakdown.md#review-pull-request) states.
 - When every row is delivered and every criterion is ticked, an epic base its pull requests target that has not merged is reported unmerged. A draft pull request is named draft. The epic is closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-- `--project` is `<main>`, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Without those subfolders, an epic or initiative that would otherwise be closable is not.
+- `--project` is a checkout of the project, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Without those names, an epic or initiative that would otherwise be closable is not.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W02=950 --project <main> --fix fixed-943.md
