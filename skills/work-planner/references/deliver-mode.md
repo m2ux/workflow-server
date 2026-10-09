@@ -12,7 +12,7 @@ Starts the work a theme board makes available. It advances the board, merges eac
    - [Fetch Board Fields](commands.md#fetch-board-fields).
    - [Find User](commands.md#find-user) for the assignee.
 4. **Survey.**
-   The long-lived branches are as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. List each epic's bases with [List Epic Bases](commands.md#list-epic-bases), then run [Find Available Work](commands.md#find-available-work) with those names and `--project` set to the main working tree. Give an issue it reports unresolved with `--others`, and run it again.
+   The long-lived branches are as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. List each epic's bases with [List Epic Bases](commands.md#list-epic-bases), then run [Find Available Work](commands.md#find-available-work) with those names and `--project` set to a checkout of the project. Give an issue it reports unresolved with `--others`, and run it again.
    - **Held work.**
      Put each `hold` line to the user as an [Interview](interview.md) before any unit is dispatched, with the record it links and whether a session is still running. The user releases it or leaves it. A released row goes through [Release Row](commands.md#release-row) and [Patch Body](commands.md#patch-body), and the command runs again.
    - **Blocked work.**

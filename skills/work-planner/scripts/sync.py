@@ -4,7 +4,7 @@ Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
   python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
   python3 sync.py issue-936.json --epics issue-943.json issue-937.json ... --prs prs.json --links links.json
-  python3 sync.py --names --project <main> --initiative 07 --refs heads.txt
+  python3 sync.py --names --project <checkout> --initiative 07 --refs heads.txt
   python3 sync.py --links-query --prs prs.json > links.graphql
 
 With --links-query it prints the GraphQL query for the issue links of the pull requests in --prs,
