@@ -16,6 +16,7 @@ The issue stands outside I08. Its original body is preserved in an issue comment
 | [Canon audit](canon-audit.md) | Definition review, closed findings and guard evidence |
 | [Corpus guards](canon-guards.log) | Complete corpus-only guard sweep output |
 | [Live results](live-results.json) | Projected advisory results and executable assertions recorded from the completed specimen |
+| [Draft results](draft-results.json) | Repository-only draft read and confirmed closed, unpublished cleanup |
 | [Live session client](live-session.mjs) | Stdio MCP client used to open, walk and read back the specimen session |
 
 ## Links

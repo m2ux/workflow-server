@@ -1,0 +1,44 @@
+{
+  "criterion": "AC5",
+  "implementation_commit": "94580f8d08c87580f5bdd39d2101c8d0744ac845",
+  "operation": "github::read-security-advisory",
+  "result": {
+    "status": "readable",
+    "advisory": {
+      "affected_packages": [
+        {
+          "ecosystem": "other",
+          "name": "advisory-reader-test-fixture",
+          "vulnerable_version_range": "= 0.0.0-test"
+        }
+      ],
+      "cwe_ids": [
+        "CWE-20"
+      ],
+      "ghsa_id": "GHSA-h97m-7cqh-7c8g",
+      "severity": "low",
+      "state": "draft",
+      "summary": "Neutral advisory reader verification fixture for issue 949"
+    },
+    "source_endpoint": "repos/m2ux/workflow-server/security-advisories/GHSA-h97m-7cqh-7c8g",
+    "attempts": [
+      {
+        "endpoint": "repos/m2ux/workflow-server/security-advisories/GHSA-h97m-7cqh-7c8g",
+        "http_status": 200
+      }
+    ]
+  },
+  "global_request_made": false,
+  "cleanup": {
+    "closed_at": "2026-10-09T14:57:40Z",
+    "ghsa_id": "GHSA-h97m-7cqh-7c8g",
+    "published_at": null,
+    "state": "closed"
+  },
+  "assertions": {
+    "draft_read": true,
+    "metadata_allowlist": true,
+    "repository_provenance": true,
+    "closed_and_unpublished": true
+  }
+}
