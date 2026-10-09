@@ -11,7 +11,7 @@ With --links-query it prints the GraphQL query for the issue links of the pull r
 which `gh api graphql -F query=@links.graphql` answers and Fetch Pull Request Issue Links reduces to
 links.json.
 
-With --names it prints the long-lived branch names of --project, one per line. Where .project is absent, the names are the ones --initiative's integration branches in --refs carry. Where neither yields a name, it reports the names unevaluable.
+With --names it prints the long-lived branch names of --project, one per line, as its main working tree states them in config/branches. Where that file is absent, the names are the ones --initiative's integration branches in --refs carry. Where neither yields a name, it reports the names unevaluable.
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
@@ -597,22 +597,44 @@ def integration_names(refs: list[str], initiative: str) -> tuple[str, ...]:
     return tuple(sorted(found))
 
 
+def main_working_tree(project: str) -> Path:
+    """The main working tree of a checkout.
+
+    A linked worktree's .git is a file naming its gitdir, whose commondir resolves to the main
+    .git directory, and the main working tree is that directory's parent. Any other checkout is
+    its own main working tree."""
+    root = Path(project)
+    marker = root / '.git'
+    if not marker.is_file():
+        return root
+    pointer = marker.read_text().strip()
+    if not pointer.startswith('gitdir:'):
+        return root
+    gitdir = Path(pointer.split(':', 1)[1].strip())
+    if not gitdir.is_absolute():
+        gitdir = root / gitdir
+    common = gitdir / 'commondir'
+    if not common.is_file():
+        return root
+    return (gitdir / common.read_text().strip()).resolve().parent
+
+
 def long_lived_names(project: str, refs: list[str] | None = None, initiative: str = '') -> tuple[str, ...]:
     """The long-lived branches of a checkout.
 
-    Where .project exists, its subfolder names. Where it does not, the names the initiative's
-    integration branches carry. The call exits when the directory exists and has no subfolders,
-    and when the directory is absent and no integration branch names one."""
-    root = Path(project) / '.project'
-    if root.is_dir():
-        names = tuple(sorted(p.name for p in root.iterdir() if p.is_dir() and not p.name.startswith('.')))
+    The names its main working tree states in config/branches, one per line. Where that file
+    states none, the names the initiative's integration branches carry. The call exits when the
+    file exists and names nothing, and when it is absent and no integration branch names one."""
+    stated = main_working_tree(project) / 'config' / 'branches'
+    if stated.is_file():
+        names = tuple(sorted({line.strip() for line in stated.read_text().splitlines() if line.strip()}))
         if not names:
-            sys.exit(f'{root} has no subfolders')
+            sys.exit(f'{stated} names no branch')
         return names
     derived = integration_names(refs or [], initiative)
     if not derived:
-        sys.exit('unevaluable: no .project directory under '
-                 f'{project} and no integration branch names the long-lived branches')
+        sys.exit(f'unevaluable: no config/branches under {project} '
+                 'and no integration branch names the long-lived branches')
     return derived
 
 
@@ -670,9 +692,9 @@ def main() -> int:
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
-    parser.add_argument('--project', default='', help='checkout the long-lived branch names are read from')
+    parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branch names in config/branches')
     parser.add_argument('--names', action='store_true', help='print the long-lived branch names, one per line')
-    parser.add_argument('--refs', default='', help='branch heads, one per line, read when .project is absent')
+    parser.add_argument('--refs', default='', help='branch heads, one per line, read when config/branches is absent')
     parser.add_argument('--initiative', default='', help='initiative number, as 07, whose integration branches name the long-lived branches')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
@@ -687,7 +709,7 @@ def main() -> int:
     global LONG_LIVED
     if args.project:
         LONG_LIVED = long_lived_names(args.project)
-    elif Path('.project').is_dir():
+    elif (main_working_tree('.') / 'config' / 'branches').is_file():
         LONG_LIVED = long_lived_names('.')
     if (args.tick or args.link) and not args.fix:
         sys.exit('--tick and --link need --fix, which holds the body')
