@@ -17,7 +17,7 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 | [`static-analysis-patterns.md`](static-analysis-patterns.md) | The §2 grep patterns and the mechanical checks that run against them |
 | [`toolkit-checklist.md`](toolkit-checklist.md) | The toolkit minimum checklist for Group D |
 | [`sub-agent-output-schema.md`](sub-agent-output-schema.md) | The structured output schema every dispatched sub-agent must conform to |
-| [`target-profile.md`](target-profile.md) | Target-specific crate assignments, file paths, node agent scope split, verification-agent spec, calibration benchmarks, and ensemble blind-spot items |
+| [`target-profile.md`](target-profile.md) | The sections a target profile fills: dispatch assignments, file coverage, node scope split, consensus-critical structs, cross-chain pallets, calibration benchmarks, and ensemble blind spots |
 | [`vulnerability-pattern-vocabulary.md`](vulnerability-pattern-vocabulary.md) | Known cross-project vulnerability patterns used as a recognition aid during architectural analysis |
 | [`gap-analysis-template.md`](gap-analysis-template.md) | The document skeleton for the gap-analysis report |
 | [`second-pass-findings.md`](second-pass-findings.md) | Creation guide: `second-pass-findings.md` — the blind-spot verdicts, the second-pass findings, and the sub-agent results that attest the pass ran |

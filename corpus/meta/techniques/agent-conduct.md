@@ -43,7 +43,7 @@ Workflow resources reach an agent from the server. Load them per `workflow-engin
 
 ### operational-discipline-artifact-location
 
-Write planning artifacts only under the server-returned `{planning_folder_path}` — never compose or reconstruct that path. Filename prefix and find-or-update discipline belong to whichever artifact-writing technique the workflow bundles, not here.
+Write planning artifacts only under the server-returned `{planning_folder_path}` — never compose or reconstruct that path. A product deliverable with a destination bound by the run is written to that bound destination. Filename prefix and find-or-update discipline belong to whichever artifact-writing technique the workflow bundles, not here.
 
 ### operational-discipline-repository-instructions
 

@@ -1,0 +1,21 @@
+id: write-bound
+version: 1.0.0
+name: Write Bound
+description: Write an artifact to an explicitly bound destination directory.
+variables:
+  reads:
+    - artifact_destination
+  writes:
+    - name: bound_artifact_written
+      type: boolean
+      description: True once the bound artifact is written.
+required: true
+steps:
+  - kind: technique
+    id: write-bound-artifact
+    technique: record-bound-artifact
+exits:
+  - id: bound_written
+    isDefault: true
+outcome:
+  - The product deliverable is written to the bound destination directory

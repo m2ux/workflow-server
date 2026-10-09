@@ -249,7 +249,7 @@ Resources contain detailed reference content loaded on demand by techniques.
 | [`static-analysis-patterns.md`](./resources/static-analysis-patterns.md) | Grep patterns, mechanical checks, storage lifecycle patterns |
 | [`toolkit-checklist.md`](./resources/toolkit-checklist.md) | Toolkit minimum checklist |
 | [`sub-agent-output-schema.md`](./resources/sub-agent-output-schema.md) | Structured output schema with per-group requirements |
-| [`target-profile.md`](./resources/target-profile.md) | Target-specific crate assignments, file paths, node agent scope split, verification agent spec, calibration data, ensemble blind-spots |
+| [`target-profile.md`](./resources/target-profile.md) | The sections a target profile fills: dispatch assignments, file coverage, node scope split, consensus-critical structs, cross-chain pallets, calibration benchmarks, ensemble blind spots |
 | [`vulnerability-pattern-vocabulary.md`](./resources/vulnerability-pattern-vocabulary.md) | Known cross-project vulnerability patterns for architectural analysis |
 | [`gap-analysis-template.md`](./resources/gap-analysis-template.md) | Document skeleton for the gap-analysis report |
 

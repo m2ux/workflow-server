@@ -47,7 +47,7 @@ Total number of identified packages
 
 - Assemble `{work_packages}` as a numbered table of the identified packages with name and description, and `{package_count}` as its row count
 - Split any package larger than 8 hours of agentic work along a natural boundary, and merge any smaller than 2 hours into its nearest sibling
-- Set `{initiative_name}` based on the overall theme of the packages, per the [planning-folder-template](../resources/planning-folder-template.md#folder-location)
+- Set `{initiative_name}` based on the overall theme of the packages, in kebab case
 
 ## Rules
 
