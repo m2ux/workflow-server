@@ -110,7 +110,7 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
 - **Work Breakdown prose.**
   Prose in the Work Breakdown outside its table fails the [Work Breakdown Guide](work-breakdown.md#rules) Order rule. Move any design content into the Proposal.
 - **Depends on.**
-  Apply the [Epic](review-criteria.md#epic) or [Initiative](review-criteria.md#initiative) Work Breakdown criteria for Depends on. For an initiative, the cell takes the epics [Check Dependencies](commands.md#check-dependencies) derives with `I=`.
+  Apply the [Epic](review-criteria.md#epic) or [Initiative](review-criteria.md#initiative) Work Breakdown criteria for Depends on. Use [Check Dependencies](commands.md#check-dependencies) to identify initiative edges that fail the [whole-epic prerequisite rule](work-breakdown.md#tables); keep their narrower task dependencies when correcting the initiative table.
 - **Title.**
   Apply the [Any issue](review-criteria.md#any-issue) Title criteria, and the [Epic](review-criteria.md#epic) Title criteria for an epic. The initiative row takes the epic's new name.
 - **Several tasks.**

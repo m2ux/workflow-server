@@ -613,6 +613,8 @@ gitnexus query --query "Queue Placement" --limit 1
 
 Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
 
+- Initiative edges follow the [whole-epic prerequisite rule](work-breakdown.md#tables); narrower dependencies stay in the task graph.
+
 - It also reports dependencies listed twice or already implied, and Joins pairs.
 - It prints each pair of tasks in an epic where neither depends on the other and the two do not name each other in Joins.
 - It prints each whole-epic dependency with that epic's row count, the binding row and its level, and the earliest row and its level.

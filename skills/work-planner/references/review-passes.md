@@ -51,7 +51,7 @@ Checks dependencies as a graph, then renumbers. A failure is one the [initiative
    - Use [Renumber Epics](commands.md#renumber-epics) for epic numbers and [Renumber Tasks](commands.md#renumber-tasks) for one epic's tasks, with other initiatives' bodies after `--outside`.
    - Then re-sort each table, check every range the script prints, and grep the prose for references it cannot see.
 7. **Depends on.**
-   Update each initiative Depends on cell to the list [Check Dependencies](commands.md#check-dependencies) gives, and re-run it until it reports no problems.
+   Check each initiative edge against the [whole-epic prerequisite rule](work-breakdown.md#tables), keeping narrower dependencies in task rows. Apply the corrections [Check Dependencies](commands.md#check-dependencies) reports, and re-run it until it reports no problems.
 8. **Chains.**
    Record the longest chains from its output in the planning record. Name each whole-epic edge whose binding row is on a chain: that edge sets the chain's length. Issue bodies do not narrate order or its reasons.
 
