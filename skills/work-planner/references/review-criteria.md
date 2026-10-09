@@ -57,8 +57,8 @@ A marked source in References is a document the initiative's criteria answer to.
 #### Work Breakdown
 
 - An epic row's Description is the epic's title name, and its Coverage names the initiative criteria the epic serves.
-- Depends on names epics only, never tasks, and only the epics this epic's tasks depend on that another named epic does not already cover.
-- An initiative Depends on cell that names a task, or that differs from the epics the epics' tasks depend on, is unsound.
+- Depends on satisfies the whole-epic prerequisite test in the [Work Breakdown Guide](work-breakdown.md#tables).
+- An initiative dependency that only some tasks need, or that requires only part of its prerequisite epic, is overbroad. The output and its producing tasks must justify the edge; [Check Dependencies](commands.md#check-dependencies) reports graph disagreements.
 - An epic depending on a later epic is a backward reference.
 - Numbering that does not follow start order is advisory.
 

@@ -7,12 +7,13 @@ import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
+from copy import deepcopy
 from pathlib import Path
 
-from fixtures import SCRIPTS, epic_body
+from fixtures import SCRIPTS, epic_body, initiative_body
 
 sys.path.insert(0, str(SCRIPTS))
-from deps import eligible_unjoined, main  # noqa: E402
+from deps import check_initiative, eligible_unjoined, epic_dependencies, main  # noqa: E402
 
 
 def run(bodies: list[tuple[str, str]]) -> tuple[int, str]:
@@ -138,3 +139,76 @@ class TaskCells(unittest.TestCase):
         code, text = run([('E06', body)])
         self.assertEqual(code, 1)
         self.assertIn('E06:W01: Task cell also names W02', text)
+
+
+class InitiativeDependencies(unittest.TestCase):
+    def check(self, producer, consumer, gate):
+        return run([('I', initiative_body(('E00', ''), ('E01', gate))),
+                    ('E00', producer), ('E01', consumer)])
+
+    def test_partial_output_does_not_gate_the_whole_epic(self):
+        producer = epic_body(('W01', 'Shared output', ''), ('W02', 'Independent output', ''))
+        consumer = epic_body(('W01', 'Consume shared output', 'E00:W01'), ('W02', 'Continue', 'W01'))
+        code, text = self.check(producer, consumer, '')
+        self.assertEqual(code, 0, text)
+        self.assertIn('E00:W01 -> E01:W01 -> E01:W02', text)
+        code, text = self.check(producer, consumer, 'E00')
+        self.assertEqual(code, 1)
+        self.assertIn('overbroad whole-epic dependency E00', text)
+        self.assertIn('Depends on should be empty', text)
+
+    def test_every_consumer_requires_every_producer_transitively(self):
+        producer = epic_body(('W01', 'Prepare', ''), ('W02', 'Complete output', 'W01'))
+        consumer = epic_body(('W01', 'Consume complete output', 'E00:W02'), ('W02', 'Continue', 'W01'))
+        code, text = self.check(producer, consumer, 'E00')
+        self.assertEqual(code, 0, text)
+        code, text = self.check(producer, consumer, '')
+        self.assertEqual(code, 1)
+        self.assertIn('Depends on should be E00', text)
+
+    def test_only_a_later_task_needs_even_a_single_task_epic(self):
+        producer = epic_body(('W01', 'Output', ''))
+        consumer = epic_body(('W01', 'Independent start', ''), ('W02', 'Consume', 'E00:W01'))
+        code, text = self.check(producer, consumer, '')
+        self.assertEqual(code, 0, text)
+
+    def test_whole_epic_task_edge_does_not_gate_an_independent_start(self):
+        producer = epic_body(('W01', 'Output', ''), ('W02', 'Other output', ''))
+        consumer = epic_body(('W01', 'Independent start', ''), ('W02', 'Consume all', 'E00'))
+        code, text = self.check(producer, consumer, '')
+        self.assertEqual(code, 0, text)
+
+    def test_reciprocal_join_requires_the_combined_prerequisites(self):
+        tasks = {'E00:W01': ('Output', [], []), 'E00:W02': ('Other output', [], []),
+                 'E01:W01': ('First half', ['E00:W01'], ['E01:W02']),
+                 'E01:W02': ('Second half', ['E00:W02'], ['E01:W01'])}
+        self.assertEqual(epic_dependencies(tasks), {'E00': set(), 'E01': {'E00'}})
+        tasks['E01:W02'] = ('Separate task', ['E00:W02'], [])
+        self.assertEqual(epic_dependencies(tasks), {'E00': set(), 'E01': set()})
+
+    def test_redundant_transitive_whole_epic_gate_is_reported(self):
+        bodies = [('I', initiative_body(('E00', ''), ('E01', 'E00'), ('E02', 'E00, E01'))),
+                  ('E00', epic_body(('W01', 'Output', ''))),
+                  ('E01', epic_body(('W01', 'Consume', 'E00'))),
+                  ('E02', epic_body(('W01', 'Finish', 'E01')))]
+        code, text = run(bodies)
+        self.assertEqual(code, 1)
+        self.assertIn('initiative E02: Depends on should be E01', text)
+        self.assertNotIn('overbroad', text)
+
+    def test_repeated_checks_preserve_corrected_gates_and_task_edges(self):
+        tasks = {'E00:W01': ('Shared output', [], []),
+                 'E00:W02': ('Independent output', [], []),
+                 'E01:W01': ('Consume shared output', ['E00:W01'], ['E01:W02']),
+                 'E01:W02': ('Joined work', [], ['E01:W01'])}
+        original = deepcopy(tasks)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'initiative.md'
+            body = initiative_body(('E00', ''), ('E01', ''))
+            path.write_text(body)
+            first = (epic_dependencies(tasks), check_initiative(path, tasks))
+            second = (epic_dependencies(tasks), check_initiative(path, tasks))
+            self.assertEqual(first, ({'E00': set(), 'E01': set()}, []))
+            self.assertEqual(second, first)
+            self.assertEqual(tasks, original)
+            self.assertEqual(path.read_text(), body)

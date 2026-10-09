@@ -31,7 +31,7 @@ row and its level, and the earliest row and its level. The binding row has the h
 epic, and the earliest row the lowest. Where several share that level, the section names the lowest
 task id.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
-epics its tasks depend on, less those another named epic already depends on, and names no task.
+epics required in full by every task or joined unit, less transitive epic dependencies, and names no task.
 Another initiative's epic (I05:E00) or an issue (#750) may also be named.
 Advisory: task numbers that do not follow the order tasks can start.
 Also printed: each task's level (0 = can start now) and the longest chains.
@@ -147,12 +147,33 @@ def whole_epic_lines(tasks: dict, edges: list[tuple[str, str]], level) -> list[s
     return lines
 
 
+def epic_dependencies(tasks: dict) -> dict[str, set[str]]:
+    """Whole-epic prerequisites shared by every consuming task and reciprocal joined unit."""
+    own: dict[str, set[str]] = {}
+    for task in tasks:
+        own.setdefault(task.split(':')[0], set()).add(task)
+
+    def prerequisites(task: str) -> set[str]:
+        seen, pending = set(), [task]
+        while pending:
+            current = pending.pop()
+            if current in seen or current not in tasks:
+                continue
+            seen.add(current)
+            _, depends, joins = tasks[current]
+            pending.extend(depends)
+            pending.extend(other for other in joins if other in tasks and current in tasks[other][2])
+        return seen - {task}
+
+    reach = {task: prerequisites(task) for task in tasks}
+    return {epic: {other for other, producers in own.items() if other != epic
+                   and all(producers <= reach[task] for task in consumers)}
+            for epic, consumers in own.items()}
+
+
 def check_initiative(path: Path, tasks: dict) -> list[str]:
-    """Compare each epic's Depends on cell with the other epics its tasks depend on."""
-    needs: dict[str, set[str]] = {}
-    for k, (_, deps, _) in tasks.items():
-        epic = k.split(':')[0]
-        needs.setdefault(epic, set()).update(d.split(':')[0] for d in deps if d.split(':')[0] != epic)
+    """Compare initiative gates with prerequisites of whole epics."""
+    needs = epic_dependencies(tasks)
 
     def reaches(epic: str, seen=None) -> set[str]:
         seen = set() if seen is None else seen
@@ -183,6 +204,10 @@ def check_initiative(path: Path, tasks: dict) -> list[str]:
             problems.append(f'initiative {epic}: Depends on names more than epics ({", ".join(other)}); '
                             f'it should be {", ".join(sorted(needed)) or "empty"}')
         elif {x for x in written if EPIC.fullmatch(x)} != needed:
+            overbroad = {x for x in written if EPIC.fullmatch(x)} - direct
+            if overbroad:
+                problems.append(f'initiative {epic}: overbroad whole-epic dependency '
+                                f'{", ".join(sorted(overbroad))}; retain specific task dependencies')
             problems.append(f'initiative {epic}: Depends on should be {", ".join(sorted(needed)) or "empty"}, '
                             f'not {", ".join(written) or "empty"}')
     return problems
