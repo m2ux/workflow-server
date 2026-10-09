@@ -23,7 +23,9 @@ internals:
   - id: change_report
     description: What the diff moved, which the verdict weighs against the target's blast radius.
   - id: process_inventory
-    description: The twenty longest flows the graph traced, which say which of the flows reached are the long ones. The share of the whole comes from the graph's flow total instead.
+    description: The twenty longest flows the graph traced, which say which of the flows reached are the long ones.
+  - id: process_total
+    description: How many flows the graph traced in all, which the share of the whole is taken against.
 
 steps:
   - kind: technique
@@ -41,6 +43,7 @@ steps:
       name: gitnexus::read-processes
       outputs:
         process_inventory: process_inventory
+        process_total: process_total
   - kind: technique
     id: measure-diff
     technique:
@@ -57,5 +60,6 @@ steps:
         impact_report: impact_report
         change_report: change_report
         process_inventory: process_inventory
+        process_total: process_total
       outputs:
         change_risk_verdict: change_risk_verdict
