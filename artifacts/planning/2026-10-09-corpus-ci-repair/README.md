@@ -35,3 +35,4 @@ These existing defects blocked corpus CI for advisory-reader PR #1290. The user 
 | Resource | Link |
 | --- | --- |
 | Advisory delivery | https://github.com/m2ux/workflow-server/pull/1290 |
+| Corpus repair | https://github.com/m2ux/workflow-server/pull/1291 |

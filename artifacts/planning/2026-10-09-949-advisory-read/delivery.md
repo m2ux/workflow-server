@@ -19,7 +19,8 @@
 - [x] Convert and detach #949 from I08.
 - [x] Implement and audit the operation and conformance specimen.
 - [x] Execute checks and live advisory verification.
-- [ ] Commit, push, open the pull request, verify CI and merge. In progress; unrelated CI repair authorization pending.
+- [x] Commit, push, open the pull request and verify CI state.
+- [x] Merge on the user's explicit instruction to repair existing CI failures next.
 
 ## Test plan
 
@@ -38,8 +39,8 @@
 - Corpus-only guard sweep: 53 pass, one fails on five pre-existing activity-variable findings in artifact-destination-conformance. Its bound_artifact_written and unbound_artifact_written writes are unproduced and unread, and artifact_destination is an unused read. Delta guard passes with no introduced finding.
 - Specimen graph test: one passes, 64 outside the selection skipped. Scoped option coverage: one passes.
 - Live MCP specimen BPC3CB completes. The published fixture returns repository 404 then global 200, with exactly the metadata allowlist. The unreachable fixture returns 404 from both endpoints and a null advisory/source. A status re-read confirms completed state and exact equality of the stored output objects with live-results.json.
-- Implementation commit 94580f8d08c87580f5bdd39d2101c8d0744ac845 is pushed; PR #1290 targets workflows. AC1–AC5 are verified with linked evidence. The issue and PR stay open while CI remains outstanding.
+- Implementation commit 94580f8d08c87580f5bdd39d2101c8d0744ac845 is pushed; PR #1290 targets workflows. AC1–AC5 are verified with linked evidence. The user subsequently directed merge before the separate CI repair; PR #1290 is merged and issue #949 closed.
 
-- PR #1290 corpus verification job 113874771807 fails at the roster check: artifact-destination-conformance is absent from the base roster. This is pre-existing on origin/workflows. Coverage job 113874779042 is still running. No merge is attempted; authorization to repair the unrelated CI blockers remains pending.
+- PR #1290 corpus verification job 113874771807 fails at the roster check: artifact-destination-conformance is absent from the base roster. This is pre-existing on origin/workflows. Coverage job 113874779042 is still running. The user authorized merge first and corpus CI repair next. PR #1290 merged as 032597956b37a81602a0f19b17342a53c3391a95; follow-up repair PR #1291 carries the CI fixes.
 
 - AC5: authorized neutral draft GHSA-h97m-7cqh-7c8g read through the shared operation at repository HTTP 200, exact metadata allowlist checked, no global request. PATCH closes it; a separate GET confirms closed_at 2026-10-09T14:57:40Z and published_at null. Evidence: draft-results.json.
