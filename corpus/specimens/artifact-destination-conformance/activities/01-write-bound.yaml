@@ -5,15 +5,14 @@ description: Write an artifact to an explicitly bound destination directory.
 variables:
   reads:
     - artifact_destination
-  writes:
-    - name: bound_artifact_written
-      type: boolean
-      description: True once the bound artifact is written.
 required: true
 steps:
   - kind: technique
     id: write-bound-artifact
-    technique: record-bound-artifact
+    technique:
+      name: record-bound-artifact
+      inputs:
+        artifact_destination: "{artifact_destination}"
 exits:
   - id: bound_written
     isDefault: true

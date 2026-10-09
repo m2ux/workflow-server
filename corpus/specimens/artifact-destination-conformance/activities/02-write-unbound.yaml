@@ -5,10 +5,6 @@ description: Write an artifact without a bound destination, defaulting to the pl
 variables:
   reads:
     - planning_folder_path
-  writes:
-    - name: unbound_artifact_written
-      type: boolean
-      description: True once the unbound artifact is written.
 required: true
 steps:
   - kind: technique
