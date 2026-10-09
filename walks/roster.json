@@ -18,6 +18,10 @@
   ],
   "notWalked": [
     {
+      "id": "artifact-destination-conformance",
+      "reason": "Declares no checkpoint, so a coverage walk covers nothing. The all-workflows drift walk enters both artifact-writing activities."
+    },
+    {
       "id": "advisory-read-conformance",
       "reason": "Declares no checkpoint, so a coverage walk covers nothing. A live conformance run measures published and unreachable advisory reads with bounded metadata and endpoint provenance."
     },
