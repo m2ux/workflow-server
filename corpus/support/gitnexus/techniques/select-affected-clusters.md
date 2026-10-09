@@ -27,7 +27,7 @@ The functional areas this change reaches.
 
 ##### name
 
-What the area is called, and the identifier `gitnexus://repo/{repo_name}/cluster/{name}` takes.
+What the area is called, and the identifier one area's membership is addressed by.
 
 ##### symbols
 

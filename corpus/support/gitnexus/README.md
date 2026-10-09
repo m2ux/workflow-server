@@ -10,7 +10,7 @@ This is a **library namespace**, not a workflow. It declares no `workflow.yaml` 
 
 | Folder | Holds | Grain |
 |--------|-------|-------|
-| [`techniques/`](techniques/README.md) | One technique per GitNexus endpoint, the query compositions a run executes, and the judgements the runs end on | One answer: a tool call, a resource read, a composed query, or a reading of what those returned |
+| [`techniques/`](techniques/README.md) | One technique per GitNexus endpoint, the query compositions a run executes, and the judgements the runs end on | One answer: a tool call, a composed query, or a reading of what those returned |
 | [`routines/`](routines/README.md) | Named runs of those techniques | A sequence, an iteration, a branch, a gate |
 
 **The split is what the construct can hold.** A technique is a short produce path over one endpoint with the prose that reads its answer; it carries no loop, no branch and no user decision. A run that walks a collection, selects between two paths, or stops for a person is a routine, where the schema holds each of those as structure the step manifest and the coverage walk can see.
