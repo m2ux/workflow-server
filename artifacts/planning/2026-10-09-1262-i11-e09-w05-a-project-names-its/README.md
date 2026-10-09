@@ -12,7 +12,7 @@ This work moves the set to a statement the project owns, `config/branches`, reso
 
 | Artifact | What it holds |
 | --- | --- |
-| [Work Item](work-item.md) | The task, its criteria, the design and the tests that observe each criterion |
+| [W05](w05.md) | The task, its criteria, the design and the tests that observe each criterion |
 
 ## Links
 
