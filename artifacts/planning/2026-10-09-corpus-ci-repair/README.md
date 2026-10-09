@@ -22,6 +22,12 @@ These existing defects blocked corpus CI for advisory-reader PR #1290. The user 
 - Artifact destination graph test passes: one selected test, 64 outside the selection skipped.
 - Walk-protocol check and its self-test pass.
 - Canon audit has zero introduced findings; whitespace check is clean.
+- Full all-workflows drift: all 65 tests pass.
+- Snapshot suite: all 23 tests pass, three baselines regenerated and independently reviewed. The diff matches the already-merged source persistence routine change b78277f6; executed steps remain 215, declared steps become 456.
+
+## CI findings
+
+The first PR #1291 run passes the roster and every guard, then exposes three stale work-package snapshots. Commit 8762cb0b records the generated baselines. The PR body carries the final repair scope and test evidence; CI runs again on that commit.
 
 ## Artifacts
 
