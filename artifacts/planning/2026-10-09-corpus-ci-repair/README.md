@@ -29,6 +29,8 @@ These existing defects blocked corpus CI for advisory-reader PR #1290. The user 
 
 The first PR #1291 run passes the roster and every guard, then exposes three stale work-package snapshots. Commit 8762cb0b records the generated baselines. The PR body carries the final repair scope and test evidence; CI runs again on that commit.
 
+The completed coverage run on #1290 also identifies two obsolete exception keys for verdict-and-report's publish-decision. The checkpoint belonged to midnight-system-review, removed in 459eea8b. Commit 9c407d97 removes exactly those exceptions; the audit confirms no live coverage obligation is weakened. The final PR head runs both CI jobs again.
+
 ## Artifacts
 
 | Artifact | What it holds |
