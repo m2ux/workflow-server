@@ -13,6 +13,9 @@ The issue stands outside I08. Its original body is preserved in an issue comment
 | Artifact | What it holds |
 | --- | --- |
 | [Delivery plan](delivery.md) | Implementation scope, decisions, checks and progress |
+| [Canon audit](canon-audit.md) | Definition review, closed findings and guard evidence |
+| [Live results](live-results.json) | Projected advisory results and executable assertions recorded from the completed specimen |
+| [Live session client](live-session.mjs) | Stdio MCP client used to open, walk and read back the specimen session |
 
 ## Links
 

@@ -1,0 +1,1656 @@
+
+> @m2ux/workflow-server@0.2.0 check:all
+> tsx guards/check-all.ts --corpus-only --json --verbose --root /home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read
+
+
+  [PASS] binding-fidelity            1.4s  }
+  [FAIL] activity-variables          9.9s  }
+  [PASS] artifact-status-once        1.0s  }
+  [PASS] canonical-home-map          1.4s  }
+  [PASS] nested-output-home          0.6s  }
+  [PASS] identity-binds              1.3s  }
+  [PASS] inherited-inputs            1.4s  }
+  [PASS] corpus-links                0.8s  }
+  [PASS] protocol-shape              0.9s  }
+  [PASS] section-framing             1.0s  section-framing: OK — no resource strands prose above its first section from an anchored citer
+  [PASS] citation-grain              0.8s  }
+  [PASS] identifier-qualification    0.7s  }
+  [PASS] review-mode-gating          0.9s  }
+  [PASS] audience                    2.1s  }
+  [PASS] artifact-guides             1.6s  }
+  [PASS] repeated-runs               1.5s  }
+  [PASS] description-hygiene         1.6s  }
+  [PASS] checkpoint-entry            4.9s  }
+  [PASS] workflow-identity           1.2s  }
+  [PASS] namespace-collision         1.1s  }
+  [PASS] checkpoint-presentation     1.3s  }
+  [PASS] message-binding             7.8s  }
+  [PASS] decision-order              2.0s  }
+  [PASS] bootstrap-self-contained    1.0s  }
+  [PASS] tool-call-shape             1.3s  }
+  [PASS] declared-values             2.0s  }
+  [PASS] rule-citation-form          1.5s  }
+  [PASS] set-action-values           1.8s  }
+  [PASS] harness-adapter-set         0.8s  }
+  [PASS] launched-workflows          1.6s  launched workflows: OK — every declared launch is performed, every launch is declared, and both name a workflow the corpus holds
+  [PASS] self-provisioned-input      1.2s  self-provisioned input: OK — no step interpolates its own set target into its technique inputs
+  [PASS] self-composed-set           1.2s  self-composed set: OK — no set action builds its value out of the variable it writes
+  [PASS] branch-as-step              1.2s  }
+  [PASS] activity-technique-overlap  1.4s  activity/step technique overlap: OK — no activity-level technique duplicates a step binding
+  [PASS] prism-lens-reachability     0.9s  prism lens reachability: OK — every lens is goal-routable or pipeline-internal, and every named lens resolves
+  [PASS] resource-anchors            0.9s  resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading, and every fence closes
+  [PASS] technique-template          1.3s  technique-template: OK — every technique file follows the normative template
+  [PASS] variable-model              1.8s  variable-model: OK — defaults, gates and setVariable effects are coherent with the seeded variable model
+  [PASS] duplicate-bodies            1.3s  duplicate-bodies: OK — no rule text and no checkpoint body is authored twice
+  [PASS] resource-statement-home     1.6s  }
+  [PASS] stealth-isolation           2.5s  stealth-isolation: OK — no leakage path found for 'remediate-vuln' (static)
+  [PASS] when-expression             1.3s  when-expression: OK — all when: gates parse and honor mixed-ops parentheses
+  [PASS] loop-shape                  1.5s  }
+  [PASS] refs                        3.6s  }
+  [PASS] activities                  1.2s  Total: 278 passed, 0 failed
+  [PASS] workflow-yaml               3.6s  workflow-yaml: OK — 64 workflow(s) valid.
+  [PASS] pinned-corpus-paths         0.9s  }
+  [PASS] routines                    2.7s  }
+  [PASS] inventory-schema-agreement  1.4s  }
+  [PASS] fires-on-ids                1.1s  }
+  [PASS] guard-roster                0.8s  }
+  [PASS] gitnexus-tool-answers       0.8s  }
+  [PASS] routine-signature-prose     0.9s  }
+  [PASS] unserved-operation-refs     0.9s  }
+
+54 guard(s) in 9.9s — 53 pass, 1 fail, 0 unmeasured
+
+──── binding-fidelity (guards/check-binding-fidelity.ts) ────
+{
+  "guard": "binding-fidelity",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── activity-variables (guards/check-activity-variables.ts) ────
+{
+  "guard": "activity-variables",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": [
+    {
+      "check": "unread-write",
+      "site": "artifact-destination-conformance :: write-bound",
+      "detail": "writes 'bound_artifact_written', which nothing in this workflow reads"
+    },
+    {
+      "check": "unread-write",
+      "site": "artifact-destination-conformance :: write-unbound",
+      "detail": "writes 'unbound_artifact_written', which nothing in this workflow reads"
+    },
+    {
+      "check": "unused-declaration",
+      "site": "artifact-destination-conformance :: write-bound",
+      "detail": "declares a read of 'artifact_destination' that no step, gate, loop or transition consults"
+    },
+    {
+      "check": "unused-declaration",
+      "site": "artifact-destination-conformance :: write-bound",
+      "detail": "declares a write of 'bound_artifact_written' that no step produces"
+    },
+    {
+      "check": "unused-declaration",
+      "site": "artifact-destination-conformance :: write-unbound",
+      "detail": "declares a write of 'unbound_artifact_written' that no step produces"
+    }
+  ]
+}
+
+──── artifact-status-once (guards/check-artifact-status-once.ts) ────
+{
+  "guard": "artifact-status-once",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── canonical-home-map (guards/check-canonical-home-map.ts) ────
+{
+  "guard": "canonical-home-map",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── nested-output-home (guards/check-nested-output-home.ts) ────
+{
+  "guard": "nested-output-home",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── identity-binds (guards/check-identity-binds.ts) ────
+{
+  "guard": "identity-binds",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── inherited-inputs (guards/check-inherited-inputs.ts) ────
+{
+  "guard": "inherited-inputs",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── corpus-links (guards/check-corpus-links.ts) ────
+{
+  "guard": "corpus-links",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── protocol-shape (guards/check-protocol-shape.ts) ────
+{
+  "guard": "protocol-shape",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── section-framing (guards/check-section-framing.ts) ────
+section-framing: OK — no resource strands prose above its first section from an anchored citer
+
+──── citation-grain (guards/check-citation-grain.ts) ────
+{
+  "guard": "citation-grain",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── identifier-qualification (guards/check-identifier-qualification.ts) ────
+{
+  "guard": "identifier-qualification",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── review-mode-gating (guards/check-review-mode-gating.ts) ────
+{
+  "guard": "review-mode-gating",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── audience (guards/check-audience.ts) ────
+{
+  "guard": "audience",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── artifact-guides (guards/check-artifact-guides.ts) ────
+{
+  "guard": "artifact-guides",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── repeated-runs (guards/check-repeated-runs.ts) ────
+{
+  "guard": "repeated-runs",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── description-hygiene (guards/check-description-hygiene.ts) ────
+{
+  "guard": "description-hygiene",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── checkpoint-entry (guards/check-checkpoint-entry.ts) ────
+{
+  "guard": "checkpoint-entry",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── workflow-identity (guards/check-workflow-identity.ts) ────
+{
+  "guard": "workflow-identity",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── namespace-collision (guards/check-namespace-collision.ts) ────
+{
+  "guard": "namespace-collision",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── checkpoint-presentation (guards/check-checkpoint-presentation.ts) ────
+{
+  "guard": "checkpoint-presentation",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── message-binding (guards/check-message-binding.ts) ────
+{
+  "guard": "message-binding",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── decision-order (guards/check-decision-order.ts) ────
+{
+  "guard": "decision-order",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── bootstrap-self-contained (guards/check-bootstrap-self-contained.ts) ────
+{
+  "guard": "bootstrap-self-contained",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── tool-call-shape (guards/check-tool-call-shape.ts) ────
+{
+  "guard": "tool-call-shape",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── declared-values (guards/check-declared-values.ts) ────
+{
+  "guard": "declared-values",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── rule-citation-form (guards/check-rule-citation-form.ts) ────
+{
+  "guard": "rule-citation-form",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── set-action-values (guards/check-set-action-values.ts) ────
+{
+  "guard": "set-action-values",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── harness-adapter-set (guards/check-harness-adapter-set.ts) ────
+{
+  "guard": "harness-adapter-set",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── launched-workflows (guards/check-launched-workflows.ts) ────
+launched workflows: OK — every declared launch is performed, every launch is declared, and both name a workflow the corpus holds
+
+──── self-provisioned-input (guards/check-self-provisioned-input.ts) ────
+self-provisioned input: OK — no step interpolates its own set target into its technique inputs
+
+──── self-composed-set (guards/check-self-composed-set.ts) ────
+self-composed set: OK — no set action builds its value out of the variable it writes
+
+──── branch-as-step (guards/check-branch-as-step.ts) ────
+{
+  "guard": "branch-as-step",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── activity-technique-overlap (guards/check-activity-technique-overlap.ts) ────
+activity/step technique overlap: OK — no activity-level technique duplicates a step binding
+
+──── prism-lens-reachability (guards/check-prism-lens-reachability.ts) ────
+prism lens reachability: OK — every lens is goal-routable or pipeline-internal, and every named lens resolves
+
+──── resource-anchors (guards/check-resource-anchors.ts) ────
+resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading, and every fence closes
+
+──── technique-template (guards/check-technique-template.ts) ────
+technique-template: OK — every technique file follows the normative template
+
+──── variable-model (guards/check-variable-model.ts) ────
+variable-model: OK — defaults, gates and setVariable effects are coherent with the seeded variable model
+
+──── duplicate-bodies (guards/check-duplicate-bodies.ts) ────
+duplicate-bodies: OK — no rule text and no checkpoint body is authored twice
+
+──── resource-statement-home (guards/check-resource-statement-home.ts) ────
+{
+  "guard": "resource-statement-home",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── stealth-isolation (guards/check-stealth-isolation.ts) ────
+stealth-isolation: OK — no leakage path found for 'remediate-vuln' (static)
+
+──── when-expression (guards/check-when-expression.ts) ────
+when-expression: OK — all when: gates parse and honor mixed-ops parentheses
+
+──── loop-shape (guards/check-loop-shape.ts) ────
+{
+  "guard": "loop-shape",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── refs (guards/check-all-refs.ts) ────
+{
+  "guard": "refs",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── activities (guards/validate-activities.ts) ────
+
+[INFO] advisory-read-conformance (1 activities)
+   [PASS] 01-read-advisories.yaml
+
+[INFO] artifact-destination-conformance (2 activities)
+   [PASS] 01-write-bound.yaml
+   [PASS] 02-write-unbound.yaml
+
+[INFO] audit-specimen (1 activities)
+   [PASS] 01-score.yaml
+
+[INFO] cicd-pipeline-security-audit (7 activities)
+   [PASS] 01-scope-setup.yaml
+   [PASS] 02-reconnaissance.yaml
+   [PASS] 03-primary-scan.yaml
+   [PASS] 04-report-generation.yaml
+   [PASS] 05-sub-workflow-scan.yaml
+   [PASS] 06-sub-verification.yaml
+   [PASS] 07-sub-merge.yaml
+
+[INFO] codebase-wiki (4 activities)
+   [PASS] 01-confirm-scope.yaml
+   [PASS] 02-build-wiki.yaml
+   [PASS] 03-lint-wiki.yaml
+   [PASS] 04-publish.yaml
+
+[INFO] contract-composition (1 activities)
+   [PASS] 01-pair.yaml
+
+[INFO] exitless-end (2 activities)
+   [PASS] 01-open.yaml
+   [PASS] 02-close.yaml
+
+[INFO] fan-conformance (10 activities)
+   [PASS] 01-plan-conformance.yaml
+   [PASS] 02-survey-files.yaml
+   [PASS] 03-survey-history.yaml
+   [PASS] 04-choose-probes.yaml
+   [PASS] 05-probe-directory.yaml
+   [PASS] 06-survey-tree.yaml
+   [PASS] 07-open-notes.yaml
+   [PASS] 08-note-probe.yaml
+   [PASS] 09-merge-notes.yaml
+   [PASS] 10-report-conformance.yaml
+
+[INFO] git-pin-conformance (4 activities)
+   [PASS] 01-materialise-checkouts.yaml
+   [PASS] 02-plan-pins.yaml
+   [PASS] 03-pin-checkouts.yaml
+   [PASS] 04-report-conformance.yaml
+
+[INFO] github-library-conformance (5 activities)
+   [PASS] 01-list-labels.yaml
+   [PASS] 02-replace-label-family.yaml
+   [PASS] 03-find-project.yaml
+   [PASS] 04-read-project-field.yaml
+   [PASS] 05-write-project-field.yaml
+
+[INFO] gitnexus-api-change-gate-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-multi-verb-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-api-surface-review-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-area-comprehension-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-stale-graph-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-change-risk-assessment-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-empty-diff-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-diff-coverage-map-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-diff-taint-pass-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-absent-layer-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-doc-heading-lookup-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-doc-reference-surface-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-graph-for-tree-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-group-concept-search-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-unknown-group-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-group-refresh-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-guarded-rename-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-ambiguous-name-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-index-refresh-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-unindexed-tree-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-layer-conformance (4 activities)
+   [PASS] 01-trace-and-check.yaml
+   [PASS] 02-read-the-layer.yaml
+   [PASS] 03-read-the-absent-layer.yaml
+   [PASS] 04-report-conformance.yaml
+
+[INFO] gitnexus-narrow-to-changed-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-union-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-orphan-scan-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-package-diagram-source-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-pre-edit-impact-gate-conformance (4 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-low-rating-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] gitnexus-public-api-enum-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-radius-conformance (2 activities)
+   [PASS] 01-measure-reach.yaml
+   [PASS] 02-report-conformance.yaml
+
+[INFO] gitnexus-restructure-surface-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-scope-discipline-check-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-sequence-diagram-source-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-symptom-trace-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] gitnexus-tool-surface-conformance (3 activities)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] meta (5 activities)
+   [PASS] 03-dispatch-client-workflow.yaml
+   [PASS] 04-end-workflow.yaml
+   [PASS] patterns/02-supervisor.yaml
+   [PASS] patterns/03-plan-and-execute.yaml
+   [PASS] patterns/05-lead-researcher.yaml
+
+[INFO] mvw (1 activities)
+   [PASS] 01-dispatch.yaml
+
+[INFO] namespace-conformance (2 activities)
+   [PASS] 01-reach-by-name.yaml
+   [PASS] 02-reach-by-path.yaml
+
+[INFO] plain-language (5 activities)
+   [PASS] 01-intake-and-profile.yaml
+   [PASS] 02-source-analysis.yaml
+   [PASS] 03-draft.yaml
+   [PASS] 04-evaluate.yaml
+   [PASS] 05-deliver.yaml
+
+[INFO] ponytail (5 activities)
+   [PASS] 01-intake-and-scope.yaml
+   [PASS] 02-apply-ladder.yaml
+   [PASS] 03-over-engineering-review.yaml
+   [PASS] 04-repo-audit.yaml
+   [PASS] 05-harvest-debt-and-report.yaml
+
+[INFO] prism (13 activities)
+   [PASS] 00-select-mode.yaml
+   [PASS] 01-structural-pass.yaml
+   [PASS] 02-adversarial-pass.yaml
+   [PASS] 03-synthesis-pass.yaml
+   [PASS] 04-deliver-result.yaml
+   [PASS] 05-behavioral-synthesis-pass.yaml
+   [PASS] 06-generate-report.yaml
+   [PASS] 07-dispute-pass.yaml
+   [PASS] 08-subsystem-pass.yaml
+   [PASS] 09-verified-pass.yaml
+   [PASS] 10-reflect-pass.yaml
+   [PASS] 11-smart-pass.yaml
+   [PASS] 12-adaptive-pass.yaml
+
+[INFO] prism-audit (5 activities)
+   [PASS] 00-scope-definition.yaml
+   [PASS] 01-prompt-generation.yaml
+   [PASS] 02-execute-analysis.yaml
+   [PASS] 03-audit-finalize.yaml
+   [PASS] 04-deliver-audit.yaml
+
+[INFO] prism-evaluate (7 activities)
+   [PASS] 00-scope-definition.yaml
+   [PASS] 01-dimension-planning.yaml
+   [PASS] 02-execute-analysis.yaml
+   [PASS] 03-consolidate-report.yaml
+   [PASS] 04-deliver-results.yaml
+   [PASS] 05-resolution-dialogue.yaml
+   [PASS] 06-apply-mitigations.yaml
+
+[INFO] prism-update (5 activities)
+   [PASS] 00-discover-changes.yaml
+   [PASS] 01-review-changes.yaml
+   [PASS] 02-apply-updates.yaml
+   [PASS] 03-verify.yaml
+   [PASS] 04-commit-and-submit.yaml
+
+[INFO] readme-links-conformance (1 activities)
+   [PASS] 01-seed-links.yaml
+
+[INFO] remediate-vuln (1 activities)
+   [PASS] 01-start.yaml
+
+[INFO] reply-correction (1 activities)
+   [PASS] 01-draft.yaml
+
+[INFO] requirements-refinement (6 activities)
+   [PASS] 01-intake.yaml
+   [PASS] 02-analyze-sources.yaml
+   [PASS] 03-update-specification.yaml
+   [PASS] 04-validate-specification.yaml
+   [PASS] 05-finalize-specification.yaml
+   [PASS] 06-report-failure.yaml
+
+[INFO] routine-conformance (4 activities)
+   [PASS] 01-plan-probes.yaml
+   [PASS] 02-count-pass.yaml
+   [PASS] 03-size-pass.yaml
+   [PASS] 04-report-conformance.yaml
+
+[INFO] schema-hygiene-conformance (2 activities)
+   [PASS] 01-probe.yaml
+   [PASS] 02-gate-exit.yaml
+
+[INFO] substrate-node-security-audit (14 activities)
+   [PASS] 01-scope-setup.yaml
+   [PASS] 02-reconnaissance.yaml
+   [PASS] 03-primary-audit.yaml
+   [PASS] 04-adversarial-verification.yaml
+   [PASS] 05-report-generation.yaml
+   [PASS] 06-ensemble-pass.yaml
+   [PASS] 07-gap-analysis.yaml
+   [PASS] 10-sub-crate-review.yaml
+   [PASS] 11-sub-static-analysis.yaml
+   [PASS] 12-sub-toolkit-review.yaml
+   [PASS] 13-sub-architectural-analysis.yaml
+   [PASS] 14-sub-output-verification.yaml
+   [PASS] 15-sub-structured-merge.yaml
+   [PASS] 16-sub-reconnaissance.yaml
+
+[INFO] work-package (21 activities)
+   [PASS] 01-start-work-package.yaml
+   [PASS] 02-design-philosophy.yaml
+   [PASS] 03-requirements-elicitation.yaml
+   [PASS] 04-research.yaml
+   [PASS] 05-implementation-analysis.yaml
+   [PASS] 06-plan-prepare.yaml
+   [PASS] 07-assumptions-review.yaml
+   [PASS] 08-implement.yaml
+   [PASS] 09-lean-coding-audit.yaml
+   [PASS] 10-post-impl-review.yaml
+   [PASS] 11-validate.yaml
+   [PASS] 12-strategic-review.yaml
+   [PASS] 13-submit-for-review.yaml
+   [PASS] 14-complete.yaml
+   [PASS] 15-codebase-comprehension.yaml
+   [PASS] 16-prism-decision.yaml
+   [PASS] 17-code-review.yaml
+   [PASS] 18-structural-analysis.yaml
+   [PASS] 19-test-suite-review.yaml
+   [PASS] 20-contract-tests.yaml
+   [PASS] 21-implementation-join.yaml
+
+[INFO] work-package-assumptions-review-conformance (3 activities)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-record-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] work-package-contract-join-conformance (5 activities)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-prepare-join.yaml
+   [PASS] 03-implementation-join.yaml
+   [PASS] 04-record-case.yaml
+   [PASS] 05-report-cases.yaml
+
+[INFO] work-package-contract-tests-fan-conformance (6 activities)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-contract-tests.yaml
+   [PASS] 03-stub-implement.yaml
+   [PASS] 04-record-case.yaml
+   [PASS] 05-report-cases.yaml
+   [PASS] 06-implementation-join.yaml
+
+[INFO] work-package-discovery-fan-conformance (4 activities)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-gather-discovery.yaml
+   [PASS] 03-record-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] work-package-prism-decision-conformance (3 activities)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-record-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] work-package-registers-conformance (4 activities)
+   [PASS] 01-negative-case.yaml
+   [PASS] 02-record-deferrals.yaml
+   [PASS] 03-positive-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] work-package-review-fan-conformance (4 activities)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-gather-reviews.yaml
+   [PASS] 03-record-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] work-package-task-contract-conformance (5 activities)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-write-plan.yaml
+   [PASS] 03-check-contracts.yaml
+   [PASS] 04-record-case.yaml
+   [PASS] 05-report-cases.yaml
+
+[INFO] work-packages (7 activities)
+   [PASS] 01-scope-assessment.yaml
+   [PASS] 02-folder-setup.yaml
+   [PASS] 03-analysis.yaml
+   [PASS] 04-package-planning.yaml
+   [PASS] 05-prioritization.yaml
+   [PASS] 06-finalize-roadmap.yaml
+   [PASS] 07-implementation.yaml
+
+[INFO] worker-entry-conformance (5 activities)
+   [PASS] 01-record-entry.yaml
+   [PASS] 02-carry-batch.yaml
+   [PASS] 03-note-left.yaml
+   [PASS] 04-note-right.yaml
+   [PASS] 05-converge-entries.yaml
+
+[INFO] workflow-authoring (4 activities)
+   [PASS] 01-intake-and-context.yaml
+   [PASS] 06-scope-and-draft.yaml
+   [PASS] 08-quality-review.yaml
+   [PASS] 09-validate-and-commit.yaml
+
+[INFO] workflow-design (9 activities)
+   [PASS] 01-intake-and-context.yaml
+   [PASS] 03-requirements-refinement.yaml
+   [PASS] 04-pattern-analysis.yaml
+   [PASS] 05-impact-analysis.yaml
+   [PASS] 06-scope-and-draft.yaml
+   [PASS] 08-quality-review.yaml
+   [PASS] 09-validate-and-commit.yaml
+   [PASS] 10-post-update-review.yaml
+   [PASS] 11-retrospective.yaml
+
+──────────────────────────────────────────────────
+Total: 278 passed, 0 failed
+
+──── workflow-yaml (guards/validate-workflow-yaml.ts) ────
+
+═══ advisory-read-conformance ═══
+[PASS] workflow.yaml valid
+   ID: advisory-read-conformance, Version: 1.0.0, Activities: 1
+
+[INFO] activities/ (1 files)
+   [PASS] 01-read-advisories.yaml
+
+═══ artifact-destination-conformance ═══
+[PASS] workflow.yaml valid
+   ID: artifact-destination-conformance, Version: 1.0.0, Activities: 2
+
+[INFO] activities/ (2 files)
+   [PASS] 01-write-bound.yaml
+   [PASS] 02-write-unbound.yaml
+
+[INFO] techniques/ (4 files)
+   [PASS] no unanchored protocol references
+
+═══ audit-specimen ═══
+[PASS] workflow.yaml valid
+   ID: audit-specimen, Version: 1.1.0, Activities: 1
+
+[INFO] activities/ (1 files)
+   [PASS] 01-score.yaml
+
+[INFO] techniques/ (5 files)
+   [PASS] no unanchored protocol references
+
+═══ cicd-pipeline-security-audit ═══
+[PASS] workflow.yaml valid
+   ID: cicd-pipeline-security-audit, Version: 3.1.0, Activities: 7
+
+[INFO] activities/ (7 files)
+   [PASS] 01-scope-setup.yaml
+   [PASS] 02-reconnaissance.yaml
+   [PASS] 03-primary-scan.yaml
+   [PASS] 04-report-generation.yaml
+   [PASS] 05-sub-workflow-scan.yaml
+   [PASS] 06-sub-verification.yaml
+   [PASS] 07-sub-merge.yaml
+
+[INFO] techniques/ (57 files)
+   [PASS] no unanchored protocol references
+
+═══ codebase-wiki ═══
+[PASS] workflow.yaml valid
+   ID: codebase-wiki, Version: 1.2.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-confirm-scope.yaml
+   [PASS] 02-build-wiki.yaml
+   [PASS] 03-lint-wiki.yaml
+   [PASS] 04-publish.yaml
+
+[INFO] techniques/ (9 files)
+   [PASS] no unanchored protocol references
+
+═══ contract-composition ═══
+[PASS] workflow.yaml valid
+   ID: contract-composition, Version: 1.1.0, Activities: 1
+
+[INFO] activities/ (1 files)
+   [PASS] 01-pair.yaml
+
+[INFO] techniques/ (4 files)
+   [PASS] no unanchored protocol references
+
+═══ exitless-end ═══
+[PASS] workflow.yaml valid
+   ID: exitless-end, Version: 1.0.0, Activities: 2
+
+[INFO] activities/ (2 files)
+   [PASS] 01-open.yaml
+   [PASS] 02-close.yaml
+
+═══ fan-conformance ═══
+[PASS] workflow.yaml valid
+   ID: fan-conformance, Version: 3.1.0, Activities: 10
+
+[INFO] activities/ (10 files)
+   [PASS] 01-plan-conformance.yaml
+   [PASS] 02-survey-files.yaml
+   [PASS] 03-survey-history.yaml
+   [PASS] 04-choose-probes.yaml
+   [PASS] 05-probe-directory.yaml
+   [PASS] 06-survey-tree.yaml
+   [PASS] 07-open-notes.yaml
+   [PASS] 08-note-probe.yaml
+   [PASS] 09-merge-notes.yaml
+   [PASS] 10-report-conformance.yaml
+
+[INFO] techniques/ (11 files)
+   [PASS] no unanchored protocol references
+
+═══ git-pin-conformance ═══
+[PASS] workflow.yaml valid
+   ID: git-pin-conformance, Version: 1.1.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-materialise-checkouts.yaml
+   [PASS] 02-plan-pins.yaml
+   [PASS] 03-pin-checkouts.yaml
+   [PASS] 04-report-conformance.yaml
+
+[INFO] techniques/ (3 files)
+   [PASS] no unanchored protocol references
+
+═══ github-library-conformance ═══
+[PASS] workflow.yaml valid
+   ID: github-library-conformance, Version: 1.1.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 01-list-labels.yaml
+   [PASS] 02-replace-label-family.yaml
+   [PASS] 03-find-project.yaml
+   [PASS] 04-read-project-field.yaml
+   [PASS] 05-write-project-field.yaml
+
+═══ gitnexus-api-change-gate-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-api-change-gate-conformance, Version: 1.2.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-multi-verb-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-api-surface-review-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-api-surface-review-conformance, Version: 1.5.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-area-comprehension-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-area-comprehension-conformance, Version: 1.4.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-stale-graph-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-change-risk-assessment-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-change-risk-assessment-conformance, Version: 1.2.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-empty-diff-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-diff-coverage-map-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-diff-coverage-map-conformance, Version: 1.2.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-diff-taint-pass-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-diff-taint-pass-conformance, Version: 1.4.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-absent-layer-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-doc-heading-lookup-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-doc-heading-lookup-conformance, Version: 1.2.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-doc-reference-surface-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-doc-reference-surface-conformance, Version: 1.3.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-graph-for-tree-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-graph-for-tree-conformance, Version: 1.4.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-group-concept-search-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-group-concept-search-conformance, Version: 1.2.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-unknown-group-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-group-refresh-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-group-refresh-conformance, Version: 1.3.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-guarded-rename-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-guarded-rename-conformance, Version: 1.2.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-ambiguous-name-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-index-refresh-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-index-refresh-conformance, Version: 1.6.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-unindexed-tree-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-layer-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-layer-conformance, Version: 1.2.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-trace-and-check.yaml
+   [PASS] 02-read-the-layer.yaml
+   [PASS] 03-read-the-absent-layer.yaml
+   [PASS] 04-report-conformance.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-narrow-to-changed-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-narrow-to-changed-conformance, Version: 1.2.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-union-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-orphan-scan-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-orphan-scan-conformance, Version: 1.2.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-package-diagram-source-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-package-diagram-source-conformance, Version: 1.2.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-pre-edit-impact-gate-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-pre-edit-impact-gate-conformance, Version: 1.1.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-low-rating-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-public-api-enum-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-public-api-enum-conformance, Version: 1.3.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-radius-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-radius-conformance, Version: 1.1.0, Activities: 2
+
+[INFO] activities/ (2 files)
+   [PASS] 01-measure-reach.yaml
+   [PASS] 02-report-conformance.yaml
+
+[INFO] techniques/ (2 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-restructure-surface-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-restructure-surface-conformance, Version: 1.1.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-scope-discipline-check-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-scope-discipline-check-conformance, Version: 1.2.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-sequence-diagram-source-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-sequence-diagram-source-conformance, Version: 1.2.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-symptom-trace-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-symptom-trace-conformance, Version: 1.1.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ gitnexus-tool-surface-conformance ═══
+[PASS] workflow.yaml valid
+   ID: gitnexus-tool-surface-conformance, Version: 1.3.0, Activities: 3
+
+[INFO] activities/ (3 files)
+   [PASS] 01-positive-case.yaml
+   [PASS] 02-negative-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ meta ═══
+[PASS] workflow.yaml valid
+   ID: meta, Version: 7.4.0, Activities: 2
+
+[INFO] activities/ (2 files)
+   [PASS] 03-dispatch-client-workflow.yaml
+   [PASS] 04-end-workflow.yaml
+
+[INFO] techniques/ (69 files)
+   [PASS] no unanchored protocol references
+
+═══ mvw ═══
+[PASS] workflow.yaml valid
+   ID: mvw, Version: 1.1.0, Activities: 1
+
+[INFO] activities/ (1 files)
+   [PASS] 01-dispatch.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ namespace-conformance ═══
+[PASS] workflow.yaml valid
+   ID: namespace-conformance, Version: 1.1.0, Activities: 2
+
+[INFO] activities/ (2 files)
+   [PASS] 01-reach-by-name.yaml
+   [PASS] 02-reach-by-path.yaml
+
+═══ plain-language ═══
+[PASS] workflow.yaml valid
+   ID: plain-language, Version: 1.7.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 01-intake-and-profile.yaml
+   [PASS] 02-source-analysis.yaml
+   [PASS] 03-draft.yaml
+   [PASS] 04-evaluate.yaml
+   [PASS] 05-deliver.yaml
+
+[INFO] techniques/ (7 files)
+   [PASS] no unanchored protocol references
+
+═══ ponytail ═══
+[PASS] workflow.yaml valid
+   ID: ponytail, Version: 2.2.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 01-intake-and-scope.yaml
+   [PASS] 02-apply-ladder.yaml
+   [PASS] 03-over-engineering-review.yaml
+   [PASS] 04-repo-audit.yaml
+   [PASS] 05-harvest-debt-and-report.yaml
+
+[INFO] techniques/ (8 files)
+   [PASS] no unanchored protocol references
+
+═══ prism ═══
+[PASS] workflow.yaml valid
+   ID: prism, Version: 3.3.0, Activities: 13
+
+[INFO] activities/ (13 files)
+   [PASS] 00-select-mode.yaml
+   [PASS] 01-structural-pass.yaml
+   [PASS] 02-adversarial-pass.yaml
+   [PASS] 03-synthesis-pass.yaml
+   [PASS] 04-deliver-result.yaml
+   [PASS] 05-behavioral-synthesis-pass.yaml
+   [PASS] 06-generate-report.yaml
+   [PASS] 07-dispute-pass.yaml
+   [PASS] 08-subsystem-pass.yaml
+   [PASS] 09-verified-pass.yaml
+   [PASS] 10-reflect-pass.yaml
+   [PASS] 11-smart-pass.yaml
+   [PASS] 12-adaptive-pass.yaml
+
+[INFO] techniques/ (46 files)
+   [PASS] no unanchored protocol references
+
+═══ prism-audit ═══
+[PASS] workflow.yaml valid
+   ID: prism-audit, Version: 3.1.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 00-scope-definition.yaml
+   [PASS] 01-prompt-generation.yaml
+   [PASS] 02-execute-analysis.yaml
+   [PASS] 03-audit-finalize.yaml
+   [PASS] 04-deliver-audit.yaml
+
+[INFO] techniques/ (28 files)
+   [PASS] no unanchored protocol references
+
+═══ prism-evaluate ═══
+[PASS] workflow.yaml valid
+   ID: prism-evaluate, Version: 3.2.0, Activities: 7
+
+[INFO] activities/ (7 files)
+   [PASS] 00-scope-definition.yaml
+   [PASS] 01-dimension-planning.yaml
+   [PASS] 02-execute-analysis.yaml
+   [PASS] 03-consolidate-report.yaml
+   [PASS] 04-deliver-results.yaml
+   [PASS] 05-resolution-dialogue.yaml
+   [PASS] 06-apply-mitigations.yaml
+
+[INFO] techniques/ (30 files)
+   [PASS] no unanchored protocol references
+
+═══ prism-update ═══
+[PASS] workflow.yaml valid
+   ID: prism-update, Version: 1.5.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 00-discover-changes.yaml
+   [PASS] 01-review-changes.yaml
+   [PASS] 02-apply-updates.yaml
+   [PASS] 03-verify.yaml
+   [PASS] 04-commit-and-submit.yaml
+
+[INFO] techniques/ (12 files)
+   [PASS] no unanchored protocol references
+
+═══ readme-links-conformance ═══
+[PASS] workflow.yaml valid
+   ID: readme-links-conformance, Version: 1.1.0, Activities: 1
+
+[INFO] activities/ (1 files)
+   [PASS] 01-seed-links.yaml
+
+═══ remediate-vuln ═══
+[PASS] workflow.yaml valid
+   ID: remediate-vuln, Version: 3.5.0, Activities: 19
+
+[INFO] activities/ (1 files)
+   [PASS] 01-start.yaml
+
+[INFO] techniques/ (9 files)
+   [PASS] no unanchored protocol references
+
+═══ reply-correction ═══
+[PASS] workflow.yaml valid
+   ID: reply-correction, Version: 1.0.0, Activities: 1
+
+[INFO] activities/ (1 files)
+   [PASS] 01-draft.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ requirements-refinement ═══
+[PASS] workflow.yaml valid
+   ID: requirements-refinement, Version: 2.3.0, Activities: 6
+
+[INFO] activities/ (6 files)
+   [PASS] 01-intake.yaml
+   [PASS] 02-analyze-sources.yaml
+   [PASS] 03-update-specification.yaml
+   [PASS] 04-validate-specification.yaml
+   [PASS] 05-finalize-specification.yaml
+   [PASS] 06-report-failure.yaml
+
+[INFO] techniques/ (12 files)
+   [PASS] no unanchored protocol references
+
+═══ routine-conformance ═══
+[PASS] workflow.yaml valid
+   ID: routine-conformance, Version: 1.1.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-plan-probes.yaml
+   [PASS] 02-count-pass.yaml
+   [PASS] 03-size-pass.yaml
+   [PASS] 04-report-conformance.yaml
+
+[INFO] techniques/ (6 files)
+   [PASS] no unanchored protocol references
+
+═══ schema-hygiene-conformance ═══
+[PASS] workflow.yaml valid
+   ID: schema-hygiene-conformance, Version: 1.2.0, Activities: 3
+
+[INFO] activities/ (2 files)
+   [PASS] 01-probe.yaml
+   [PASS] 02-gate-exit.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ substrate-node-security-audit ═══
+[PASS] workflow.yaml valid
+   ID: substrate-node-security-audit, Version: 7.1.0, Activities: 14
+
+[INFO] activities/ (14 files)
+   [PASS] 01-scope-setup.yaml
+   [PASS] 02-reconnaissance.yaml
+   [PASS] 03-primary-audit.yaml
+   [PASS] 04-adversarial-verification.yaml
+   [PASS] 05-report-generation.yaml
+   [PASS] 06-ensemble-pass.yaml
+   [PASS] 07-gap-analysis.yaml
+   [PASS] 10-sub-crate-review.yaml
+   [PASS] 11-sub-static-analysis.yaml
+   [PASS] 12-sub-toolkit-review.yaml
+   [PASS] 13-sub-architectural-analysis.yaml
+   [PASS] 14-sub-output-verification.yaml
+   [PASS] 15-sub-structured-merge.yaml
+   [PASS] 16-sub-reconnaissance.yaml
+
+[INFO] techniques/ (26 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package ═══
+[PASS] workflow.yaml valid
+   ID: work-package, Version: 4.11.0, Activities: 21
+
+[INFO] activities/ (21 files)
+   [PASS] 01-start-work-package.yaml
+   [PASS] 02-design-philosophy.yaml
+   [PASS] 03-requirements-elicitation.yaml
+   [PASS] 04-research.yaml
+   [PASS] 05-implementation-analysis.yaml
+   [PASS] 06-plan-prepare.yaml
+   [PASS] 07-assumptions-review.yaml
+   [PASS] 08-implement.yaml
+   [PASS] 09-lean-coding-audit.yaml
+   [PASS] 10-post-impl-review.yaml
+   [PASS] 11-validate.yaml
+   [PASS] 12-strategic-review.yaml
+   [PASS] 13-submit-for-review.yaml
+   [PASS] 14-complete.yaml
+   [PASS] 15-codebase-comprehension.yaml
+   [PASS] 16-prism-decision.yaml
+   [PASS] 17-code-review.yaml
+   [PASS] 18-structural-analysis.yaml
+   [PASS] 19-test-suite-review.yaml
+   [PASS] 20-contract-tests.yaml
+   [PASS] 21-implementation-join.yaml
+
+[INFO] techniques/ (148 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-assumptions-review-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-assumptions-review-conformance, Version: 1.1.0, Activities: 4
+
+[INFO] activities/ (3 files)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-record-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (2 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-contract-join-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-contract-join-conformance, Version: 1.1.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-prepare-join.yaml
+   [PASS] 03-implementation-join.yaml
+   [PASS] 04-record-case.yaml
+   [PASS] 05-report-cases.yaml
+
+[INFO] techniques/ (4 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-contract-tests-fan-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-contract-tests-fan-conformance, Version: 1.1.0, Activities: 6
+
+[INFO] activities/ (6 files)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-contract-tests.yaml
+   [PASS] 03-stub-implement.yaml
+   [PASS] 04-record-case.yaml
+   [PASS] 05-report-cases.yaml
+   [PASS] 06-implementation-join.yaml
+
+[INFO] techniques/ (3 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-discovery-fan-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-discovery-fan-conformance, Version: 1.1.0, Activities: 6
+
+[INFO] activities/ (4 files)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-gather-discovery.yaml
+   [PASS] 03-record-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (2 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-prism-decision-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-prism-decision-conformance, Version: 1.1.0, Activities: 4
+
+[INFO] activities/ (3 files)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-record-case.yaml
+   [PASS] 03-report-cases.yaml
+
+[INFO] techniques/ (2 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-registers-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-registers-conformance, Version: 1.1.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-negative-case.yaml
+   [PASS] 02-record-deferrals.yaml
+   [PASS] 03-positive-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (1 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-review-fan-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-review-fan-conformance, Version: 1.1.0, Activities: 7
+
+[INFO] activities/ (4 files)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-gather-reviews.yaml
+   [PASS] 03-record-case.yaml
+   [PASS] 04-report-cases.yaml
+
+[INFO] techniques/ (2 files)
+   [PASS] no unanchored protocol references
+
+═══ work-package-task-contract-conformance ═══
+[PASS] workflow.yaml valid
+   ID: work-package-task-contract-conformance, Version: 1.1.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 01-take-case.yaml
+   [PASS] 02-write-plan.yaml
+   [PASS] 03-check-contracts.yaml
+   [PASS] 04-record-case.yaml
+   [PASS] 05-report-cases.yaml
+
+[INFO] techniques/ (4 files)
+   [PASS] no unanchored protocol references
+
+═══ work-packages ═══
+[PASS] workflow.yaml valid
+   ID: work-packages, Version: 4.2.0, Activities: 7
+
+[INFO] activities/ (7 files)
+   [PASS] 01-scope-assessment.yaml
+   [PASS] 02-folder-setup.yaml
+   [PASS] 03-analysis.yaml
+   [PASS] 04-package-planning.yaml
+   [PASS] 05-prioritization.yaml
+   [PASS] 06-finalize-roadmap.yaml
+   [PASS] 07-implementation.yaml
+
+[INFO] techniques/ (19 files)
+   [PASS] no unanchored protocol references
+
+═══ worker-entry-conformance ═══
+[PASS] workflow.yaml valid
+   ID: worker-entry-conformance, Version: 1.5.0, Activities: 5
+
+[INFO] activities/ (5 files)
+   [PASS] 01-record-entry.yaml
+   [PASS] 02-carry-batch.yaml
+   [PASS] 03-note-left.yaml
+   [PASS] 04-note-right.yaml
+   [PASS] 05-converge-entries.yaml
+
+[INFO] techniques/ (4 files)
+   [PASS] no unanchored protocol references
+
+═══ workflow-authoring ═══
+[PASS] workflow.yaml valid
+   ID: workflow-authoring, Version: 1.11.0, Activities: 4
+
+[INFO] activities/ (4 files)
+   [PASS] 01-intake-and-context.yaml
+   [PASS] 06-scope-and-draft.yaml
+   [PASS] 08-quality-review.yaml
+   [PASS] 09-validate-and-commit.yaml
+
+[INFO] techniques/ (25 files)
+   [PASS] no unanchored protocol references
+
+═══ workflow-design ═══
+[PASS] workflow.yaml valid
+   ID: workflow-design, Version: 1.42.0, Activities: 9
+
+[INFO] activities/ (9 files)
+   [PASS] 01-intake-and-context.yaml
+   [PASS] 03-requirements-refinement.yaml
+   [PASS] 04-pattern-analysis.yaml
+   [PASS] 05-impact-analysis.yaml
+   [PASS] 06-scope-and-draft.yaml
+   [PASS] 08-quality-review.yaml
+   [PASS] 09-validate-and-commit.yaml
+   [PASS] 10-post-update-review.yaml
+   [PASS] 11-retrospective.yaml
+
+[INFO] techniques/ (37 files)
+   [PASS] no unanchored protocol references
+
+──────────────────────────────────────────────────
+workflow-yaml: OK — 64 workflow(s) valid.
+
+──── pinned-corpus-paths (guards/check-pinned-corpus-paths.ts) ────
+{
+  "guard": "pinned-corpus-paths",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── routines (guards/check-routines.ts) ────
+{
+  "guard": "routines",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── inventory-schema-agreement (guards/check-inventory-schema-agreement.ts) ────
+{
+  "guard": "inventory-schema-agreement",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── fires-on-ids (guards/check-fires-on-ids.ts) ────
+{
+  "guard": "fires-on-ids",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── guard-roster (guards/check-guard-roster.ts) ────
+{
+  "guard": "guard-roster",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── gitnexus-tool-answers (guards/check-gitnexus-tool-answers.ts) ────
+{
+  "guard": "gitnexus-tool-answers",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── routine-signature-prose (guards/check-routine-signature-prose.ts) ────
+{
+  "guard": "routine-signature-prose",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+
+──── unserved-operation-refs (guards/check-unserved-operation-refs.ts) ────
+{
+  "guard": "unserved-operation-refs",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/949-advisory-read",
+  "findings": []
+}
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/verify/949-main (name more with SBX_EXTRA_ROOTS=dir1:dir2)

@@ -1,0 +1,110 @@
+{
+  "session_index": "BPC3CB",
+  "server_commit": "c1a97f236e20db64c8d36ba919ef0e7a4c1b671e",
+  "results": {
+    "published_advisory_result": {
+      "status": "readable",
+      "advisory": {
+        "affected_packages": [
+          {
+            "ecosystem": "maven",
+            "name": "org.apache.logging.log4j:log4j-core",
+            "vulnerable_version_range": ">= 2.13.0, < 2.15.0"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "org.apache.logging.log4j:log4j-core",
+            "vulnerable_version_range": ">= 2.4, < 2.12.2"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "com.guicedee.services:log4j-core",
+            "vulnerable_version_range": "<= 1.2.1.2-jre17"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "org.xbib.elasticsearch:log4j",
+            "vulnerable_version_range": "= 6.3.2.1"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "uk.co.nichesolutions.logging.log4j:log4j-core",
+            "vulnerable_version_range": "= 2.6.3-CUSTOM"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "org.apache.logging.log4j:log4j-core",
+            "vulnerable_version_range": ">= 2.0-beta9, < 2.3.1"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "org.ops4j.pax.logging:pax-logging-log4j2",
+            "vulnerable_version_range": ">= 1.8.0, < 1.9.2"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "org.ops4j.pax.logging:pax-logging-log4j2",
+            "vulnerable_version_range": ">= 1.10.0, < 1.10.8"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "org.ops4j.pax.logging:pax-logging-log4j2",
+            "vulnerable_version_range": ">= 1.11.0, < 1.11.10"
+          },
+          {
+            "ecosystem": "maven",
+            "name": "org.ops4j.pax.logging:pax-logging-log4j2",
+            "vulnerable_version_range": ">= 2.0.0, < 2.0.11"
+          }
+        ],
+        "cwe_ids": [
+          "CWE-20",
+          "CWE-400",
+          "CWE-502",
+          "CWE-917"
+        ],
+        "ghsa_id": "GHSA-jfh8-c2jp-5v3q",
+        "severity": "critical",
+        "state": "published",
+        "summary": "Remote code injection in Log4j"
+      },
+      "source_endpoint": "advisories/GHSA-jfh8-c2jp-5v3q",
+      "attempts": [
+        {
+          "endpoint": "repos/m2ux/workflow-server/security-advisories/GHSA-jfh8-c2jp-5v3q",
+          "http_status": 404
+        },
+        {
+          "endpoint": "advisories/GHSA-jfh8-c2jp-5v3q",
+          "http_status": 200
+        }
+      ]
+    },
+    "unreachable_advisory_result": {
+      "status": "unreadable",
+      "advisory": null,
+      "source_endpoint": null,
+      "attempts": [
+        {
+          "endpoint": "repos/m2ux/workflow-server/security-advisories/GHSA-2222-2222-2222",
+          "http_status": 404
+        },
+        {
+          "endpoint": "advisories/GHSA-2222-2222-2222",
+          "http_status": 404
+        }
+      ]
+    }
+  },
+  "assertions": {
+    "summary_allowlist": true,
+    "published_global": true,
+    "unreachable_null_summary": true,
+    "endpoint_statuses": true,
+    "session_values_match_results": true
+  },
+  "session_status": "completed",
+  "completed_activities": [
+    "read-advisories"
+  ]
+}
