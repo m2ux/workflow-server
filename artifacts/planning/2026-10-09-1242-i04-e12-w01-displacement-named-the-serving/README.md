@@ -12,7 +12,7 @@ This work makes the taken bind visible. A reload that would rebind an instance s
 
 | Artifact | What it holds |
 | --- | --- |
-| | |
+| [w01.md](w01.md) | The work item: the friction, the design and the parts of the work. |
 
 ## Links
 
