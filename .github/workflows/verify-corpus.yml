@@ -42,6 +42,11 @@ jobs:
       # An initiative's definitions and code land on its own integration branches, `iNN/workflows`
       # and `iNN/main`, so a change on one is graded by the initiative's other half where that
       # branch exists, and by `main` otherwise.
+      #
+      # The initiative is the first segment of the base, whatever follows it. Every task pull
+      # request targets an epic base, `iNN/eMM/workflows`, so a rule reading the whole name grades
+      # the initiative's corpus with the shared engine and reports agreement between two trees that
+      # were never the pair under test.
       - name: Resolve the engine branch this change pairs with
         id: pair
         env:
@@ -51,8 +56,8 @@ jobs:
         run: |
           ref=main
           case "$BASE" in
-            i[0-9][0-9]/workflows)
-              candidate="${BASE%/workflows}/main"
+            i[0-9]*/*)
+              candidate="${BASE%%/*}/main"
               if git ls-remote --exit-code --heads "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "$candidate" > /dev/null; then ref="$candidate"; fi
               ;;
           esac
