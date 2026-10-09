@@ -345,9 +345,20 @@ class DoneColumn(unittest.TestCase):
 
 
 def project(root: Path, *names: str) -> str:
-    """A checkout whose .project subfolders are the long-lived branches."""
-    for name in names:
-        (root / '.project' / name).mkdir(parents=True)
+    """A checkout stating the long-lived branches in config/branches."""
+    stated = root / 'config' / 'branches'
+    stated.parent.mkdir(parents=True, exist_ok=True)
+    stated.write_text(''.join(f'{name}\n' for name in names))
+    return str(root)
+
+
+def worktree(root: Path, main: Path, name: str = 'unit') -> str:
+    """A linked worktree of main, as git lays one out."""
+    gitdir = main / '.git' / 'worktrees' / name
+    gitdir.mkdir(parents=True)
+    (gitdir / 'commondir').write_text('../..\n')
+    root.mkdir(parents=True, exist_ok=True)
+    (root / '.git').write_text(f'gitdir: {gitdir}\n')
     return str(root)
 
 
@@ -595,13 +606,33 @@ class LongLivedNames(unittest.TestCase):
         refs.write_text(text)
         return run('sync.py', '--names', '--project', str(root), '--initiative', initiative, '--refs', str(refs))
 
-    def test_project_folders_stay_authoritative(self):
+    def test_the_statement_names_the_branches(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             project(root, 'main')
             done = self.names(root, 'i01/workflows\n')
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertEqual(done.stdout.strip(), 'main')
+
+    def test_a_directory_beside_the_statement_names_nothing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            project(root, 'main')
+            (root / '.project' / 'docker').mkdir(parents=True)
+            (root / 'config' / 'components').mkdir()
+            done = self.names(root, '')
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(done.stdout.split(), ['main'])
+
+    def test_a_linked_worktree_reads_its_main_working_tree(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            main, linked = Path(tmp) / 'checkout', Path(tmp) / 'worktrees' / 'unit'
+            main.mkdir()
+            project(main, 'docker', 'main')
+            worktree(linked, main)
+            done = self.names(linked, '')
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(done.stdout.split(), ['docker', 'main'])
 
     def test_integration_branches_name_the_long_lived_branches(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -624,7 +655,7 @@ class LongLivedNames(unittest.TestCase):
             done = self.names(root, 'refs/heads/i01/e00/w01-work\n')
             self.assertEqual(done.returncode, 1)
             self.assertIn('unevaluable:', done.stderr)
-            self.assertIn('.project', done.stderr)
+            self.assertIn('config/branches', done.stderr)
             self.assertIn('integration branch', done.stderr)
 
 
