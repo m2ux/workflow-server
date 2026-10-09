@@ -138,3 +138,50 @@ class TaskCells(unittest.TestCase):
         code, text = run([('E06', body)])
         self.assertEqual(code, 1)
         self.assertIn('E06:W01: Task cell also names W02', text)
+
+
+class MalformedTaskIds(unittest.TestCase):
+    """A task id is a W and two digits, and one that departs from it is named."""
+
+    @staticmethod
+    def table(*rows: str) -> str:
+        return (
+            '## Work Breakdown\n\n'
+            '| Task | Description | Coverage | Depends on | Joins | Done |\n'
+            '| --- | --- | --- | --- | --- | --- |\n'
+            + ''.join(rows)
+        )
+
+    def test_a_malformed_head_is_named_and_yields_no_row(self):
+        code, text = run([('E06', self.table(
+            '| W010 | Too many digits | AC1 | | | |\n',
+            '| W02 | Sound | AC2 | | | |\n',
+        ))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06: Task cell names malformed task id W010', text)
+        self.assertNotIn('E06:W01 ', text)
+        self.assertIn('0 E06:W02 - Sound', text)
+
+    def test_a_short_head_is_named_rather_than_skipped(self):
+        code, text = run([('E06', self.table('| W1 | Too few digits | AC1 | | | |\n'))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06: Task cell names malformed task id W1', text)
+
+    def test_a_malformed_later_id_is_named_and_keeps_its_row(self):
+        code, text = run([('E06', self.table(
+            '| [W01](https://example.test/pull/950), [W012](https://example.test/pull/960)'
+            ' | Mistyped second link | AC1 | | | |\n',
+        ))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06: Task cell names malformed task id W012', text)
+        self.assertNotIn('also names', text)
+        self.assertIn('0 E06:W01 - Mistyped second link', text)
+
+    def test_a_prose_cell_is_skipped_in_silence(self):
+        code, text = run([('E06', self.table(
+            '| Notes | A prose row | | | | |\n',
+            '| W01 | Sound | AC1 | | | |\n',
+        ))])
+        self.assertEqual(code, 0)
+        self.assertIn('--- problems\nnone', text)
+        self.assertIn('0 E06:W01 - Sound', text)
