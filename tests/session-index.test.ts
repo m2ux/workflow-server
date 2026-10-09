@@ -6,6 +6,7 @@ import { randomBytes } from 'node:crypto';
 import {
   computeSessionIndex,
   computeSessionIndexSync,
+  mintUnnamedPlanningSlug,
   isSessionIndex,
   SESSION_INDEX_BASE32_ALPHABET,
   SESSION_INDEX_CHAR_LENGTH,
@@ -134,5 +135,24 @@ describe('computeSessionIndex', () => {
       const idx = await computeSessionIndex(file);
       expect(SESSION_INDEX_REGEX.test(idx)).toBe(true);
     });
+  });
+});
+
+describe('mintUnnamedPlanningSlug', () => {
+  it('is the date and a session-index token', () => {
+    const slug = mintUnnamedPlanningSlug(new Date('2026-10-07T05:08:48.148Z'));
+    expect(slug.slice(0, 11)).toBe('2026-10-07-');
+    expect(SESSION_INDEX_REGEX.test(slug.slice(11))).toBe(true);
+  });
+
+  it('is one path segment, so it names a planning folder directly', () => {
+    const slug = mintUnnamedPlanningSlug();
+    expect(slug).not.toContain('/');
+    expect(slug).not.toContain('\\');
+  });
+
+  it('differs per call, so concurrent unnamed sessions take folders of their own', () => {
+    const slugs = new Set(Array.from({ length: 200 }, () => mintUnnamedPlanningSlug()));
+    expect(slugs.size).toBe(200);
   });
 });

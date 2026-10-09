@@ -79,6 +79,41 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
     }
   });
 
+  it('refuses an empty or relative working directory', async () => {
+    const emptyResult = await deriveWorkingDirectory({ workingDirectory: '' });
+    expect(emptyResult).toMatchObject({ kind: 'refuse', message: /empty/ });
+
+    const relResult = await deriveWorkingDirectory({ workingDirectory: 'relative/path' });
+    expect(relResult).toMatchObject({ kind: 'refuse', message: /absolute path/ });
+  });
+
+  it('refuses a path inside mapped roots that does not exist', async () => {
+    const nonexistent = join(root, 'does-not-exist');
+    const result = await deriveWorkingDirectory({
+      workingDirectory: nonexistent,
+      mappedRoots: [root],
+    });
+    expect(result).toMatchObject({
+      kind: 'refuse',
+      message: `working_directory '${nonexistent}' does not exist. Pass the absolute path of a repository working tree.`,
+    });
+  });
+
+  it('refuses with is not a git checkout when path inside mapped roots exists without a repository', async () => {
+    const nonRepo = join(root, 'empty-dir');
+    await mkdir(nonRepo);
+    const result = await deriveWorkingDirectory({
+      workingDirectory: nonRepo,
+      mappedRoots: [root],
+    });
+    expect(result).toMatchObject({
+      kind: 'refuse',
+    });
+    if (result.kind === 'refuse') {
+      expect(result.message).toMatch(/is not a git checkout/);
+    }
+  });
+
   it('returns unbound-repo when origin is missing', async () => {
     const checkout = join(root, 'workflow-server');
     await initRepo(checkout);
@@ -142,7 +177,44 @@ describe('deriveWorkingDirectory (PR528-TC-13)', () => {
       workingDirectory: checkout,
       mappedRoots: [join(root, 'elsewhere')],
     });
-    expect(result).toMatchObject({ kind: 'decision', decision: 'unmapped-root' });
+    expect(result).toMatchObject({
+      kind: 'decision',
+      decision: 'unmapped-root',
+      candidates: [{ search_roots: [join(root, 'elsewhere')] }],
+    });
+  });
+
+  it('returns unmapped-root when a non-git directory sits outside served roots', async () => {
+    const outside = join(root, 'outside');
+    await mkdir(outside);
+    const result = await deriveWorkingDirectory({
+      workingDirectory: outside,
+      mappedRoots: [join(root, 'served')],
+    });
+    expect(result).toMatchObject({
+      kind: 'decision',
+      decision: 'unmapped-root',
+      candidates: [{ search_roots: [join(root, 'served')] }],
+    });
+  });
+
+  it('returns unmapped-root presenting host roots when path sits outside host projects root', async () => {
+    const hostProjects = join(root, 'host-projects');
+    const serverProjects = join(root, 'server-projects');
+    const unmappedHostPath = join(root, 'dev', 'other-repo');
+    const result = await deriveWorkingDirectory({
+      workingDirectory: unmappedHostPath,
+      mappedRoots: [serverProjects],
+      pathPresentation: {
+        hostProjectsRoot: hostProjects,
+        serverProjectsRoot: serverProjects,
+      },
+    });
+    expect(result).toMatchObject({
+      kind: 'decision',
+      decision: 'unmapped-root',
+      candidates: [{ search_roots: [hostProjects] }],
+    });
   });
 
   it('ascends an engineering worktree to the parent checkout', async () => {

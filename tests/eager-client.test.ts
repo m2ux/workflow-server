@@ -178,6 +178,39 @@ describe.skipIf(!liveCorpusRoot())('eager client dispatch', () => {
     expect(Array.isArray(body.candidates)).toBe(true);
   });
 
+  // The bootstrap retries a resume-session decision by slug, and step 3 puts the
+  // recommendation to the user before it does. A recommendation naming a different
+  // designator tells the user one thing while the agent passes another.
+  it('recommends the designator the retry passes, and names a candidate by it', async () => {
+    harness = await createHarness();
+    const slug = '2026-09-14-saved-wp';
+    await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'work-package',
+        agent_id: 'orchestrator',
+        planning_folder: planningFolderPath(harness.workspaceDir, slug),
+        user_request: QUERY,
+      },
+    });
+    const checkout = await originCheckout(harness.workspaceDir);
+    const result = await harness.client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'meta',
+        agent_id: 'orchestrator',
+        working_directory: checkout,
+        user_request: 'resume the work package where we left off',
+      },
+    });
+    const body = parseToolResponse(result);
+    expect(body.decision).toBe('resume-session');
+    expect(body.recommendation).toContain('planning_slug');
+    expect(body.recommendation).not.toContain('planning_folder');
+    const candidates = body.candidates as Array<{ planning_slug?: string }>;
+    expect(candidates.map((c) => c.planning_slug)).toContain(slug);
+  });
+
   it('returns workflow-selection when target_workflow_id is unknown', async () => {
     harness = await createHarness();
     const checkout = await originCheckout(harness.workspaceDir);

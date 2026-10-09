@@ -48,6 +48,7 @@ import { contentHash, deliveredHash, deliveryScope, recordDeliveries, stageNote,
 import { dispatchKind, fanIdentityRefusal, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchReading, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
+import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
@@ -815,7 +816,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
-        'repo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work; a transient meta bootstrap may start unbound and binds when dispatch_child promotes it; the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. When both working_directory and planning_folder are omitted, pass repo: "owner/repo". The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
+        'repo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work, and the server derives owner/repo from that checkout\'s origin. repo is optional and must equal the derived origin when present. A call naming no working_directory passes repo: "owner/repo", which resolves the root its planning folder sits in. The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.',
       ];
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);
@@ -1575,14 +1576,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (planningFolder) {
         const declared = next.declaredArtifacts ?? [];
         const declaredIds = new Set(declared.map(a => a.id));
-        // Outside-folder declared paths → unknown (not missing).
+        // Outside-folder declared paths: verify presence at destination.
         for (const a of declared) {
           if (!a.path) continue;
           const abs = a.path.startsWith('/') ? a.path : pathJoin(planningFolder, a.path);
           if (!abs.startsWith(planningFolder + '/') && abs !== planningFolder) {
-            artifactWarnings.push(
-              `Declared artifact id '${a.id}' (name '${a.name}') writes outside the planning folder — status unknown (not missing).`,
-            );
+            if (!existsSync(abs)) {
+              artifactWarnings.push(
+                `Declared artifact id '${a.id}' (name '${a.name}') missing at bound destination '${abs}'.`,
+              );
+            }
           }
         }
         try {
