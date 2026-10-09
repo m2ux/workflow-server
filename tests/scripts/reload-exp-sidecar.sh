@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Reload an experiment HTTP sidecar on a stable host port.
 #
-# Stops one named container, compiles the engine checkout on the host when that
+# Names the corpus it would displace and the sessions standing on it before
+# anything stops. Stops one named container, compiles the engine checkout on the host when that
 # install matches the lockfile, rebuilds the image only when package.json,
 # package-lock.json, or the Dockerfile on the docker branch (or
 # --docker-branch) drifted (or --rebuild-image), and starts
@@ -25,8 +26,10 @@ usage() {
   cat <<EOF
 Reload an experiment HTTP sidecar on a stable host port.
 
-Stops the named container, compiles the engine checkout on the host when that
-install matches the lockfile, and starts it again on the same host port and
+Names the corpus it would displace and the sessions standing on it, read from
+the outgoing container's labels and its readiness endpoint, before anything
+stops. Then stops the named container, compiles the engine checkout on the
+host when that install matches the lockfile, and starts it again on the same host port and
 corpus with a dist bind of that compile and a schemas bind of the engine
 checkout. The image definition and the launcher come from the docker branch.
 --docker-branch names another branch when the instance is a custom one. The
@@ -393,6 +396,39 @@ container_label() {
   printf '%s\n' "$value"
 }
 
+# What this reload takes away from whoever is already on the instance.
+#
+# One sidecar serves every session walking its corpus, and the bind moves for all of them at once.
+# The container records the corpus it binds; the instance itself is the only party that knows which
+# sessions are standing on that bind, so the pairing is read from the labels and the sessions from
+# the instance's own readiness endpoint. An instance that does not answer reports unknown, which is
+# a different statement from none. It runs before the preflight, the compile and the stop, so the
+# displacement is named while the instance that would be displaced is still serving.
+announce_displacement() {
+  local dir pin payload held count
+  dir="$(container_bind_source "$NAME" "$CONTAINER_WORKFLOW_DIR")"
+  pin="$(container_label "$NAME" "workflow-server.corpus.pin")"
+  [[ -n "$dir" || -n "$pin" ]] || return 0
+  echo "Displacing on 127.0.0.1:${PORT}"
+  echo "  corpus   : ${dir:-unknown} @ ${pin:-unknown}"
+  payload="$(curl -fsS --max-time 2 "http://127.0.0.1:${PORT}/ready" 2>/dev/null || true)"
+  if [[ -z "$payload" ]]; then
+    echo "  standing : unknown (${NAME} did not answer /ready)"
+    return 0
+  fi
+  # The indices readiness reports, read out of the payload rather than parsed from it: the one
+  # field this line names is the one a session is addressed by, and no JSON reader is on the
+  # dependency list of a script whose other two are docker and curl.
+  held="$(printf '%s' "$payload" | grep -o '"session_index":[[:space:]]*"[^"]*"' | cut -d'"' -f4 | tr '\n' ' ')"
+  held="${held% }"
+  if [[ -z "$held" ]]; then
+    echo "  standing : none"
+    return 0
+  fi
+  count="$(printf '%s\n' $held | wc -l)"
+  echo "  standing : ${count} session(s): ${held}"
+}
+
 [[ -n "$NAME" ]] || die "pass --name (see --help)"
 [[ "$NAME" != "workflow-server" ]] || die "refusing to operate on the install container name"
 
@@ -457,6 +493,8 @@ STOP="$(choose_runner "${WORKFLOW_SERVER_STOP:-}" stop.sh)"
 
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 command -v curl >/dev/null 2>&1 || die "curl not found on PATH"
+
+announce_displacement
 
 # Hold the corpus to the guards that decide whether a server can serve it — the definitions load,
 # resolve and parse — and to nothing else. Both refusals then mean one thing: this corpus will not
@@ -624,10 +662,13 @@ if [[ -n "$BIND_SCHEMAS" ]]; then
   START_ARGS+=(--schemas-dir="$BIND_SCHEMAS")
 fi
 
-# Provenance the container carries itself, so a walk record cites one `docker inspect` rather than
-# a pin typed from memory. Engine dir is recorded on every reload so a later cycle, including one
-# that skipped compile, still knows which checkout to compile.
-LABEL_ARGS=(
+# Provenance the container carries itself, and the corpus pin handed to the server inside it.
+# Labels answer a `docker inspect` from the host; the server answers for itself, on `/ready` and on
+# the response that opens a walk, so a record cites the instance that served the call rather than a
+# pin read before it. Engine dir is recorded on every reload so a later cycle, including one that
+# skipped compile, still knows which checkout to compile.
+RUN_ARGS=(
+  --env "CORPUS_PIN=${CORPUS_PIN}"
   --label "workflow-server.image=${IMAGE}"
   --label "workflow-server.corpus.dir=${CORPUS}"
   --label "workflow-server.corpus.pin=${CORPUS_PIN}"
@@ -635,10 +676,10 @@ LABEL_ARGS=(
   --label "workflow-server.engine.pin=${ENGINE_PIN}"
 )
 if [[ -n "$PROJECTS" ]]; then
-  LABEL_ARGS+=(--label "workflow-server.projects.dir=${PROJECTS}")
+  RUN_ARGS+=(--label "workflow-server.projects.dir=${PROJECTS}")
 fi
 
-"$START" "${START_ARGS[@]}" -- "${LABEL_ARGS[@]}"
+"$START" "${START_ARGS[@]}" -- "${RUN_ARGS[@]}"
 
 for _ in $(seq 1 80); do
   if curl -fsS "http://127.0.0.1:${PORT}/ready" >/dev/null 2>&1; then
