@@ -1,0 +1,2550 @@
+{
+  "scope": "Workflow Canon consolidation in PR 1295",
+  "structure": {
+    "markdown_files": 49,
+    "local_links": 823,
+    "unchanged_runtime_files": 6,
+    "unchanged_hook": true,
+    "modes": [
+      "Author",
+      "Audit",
+      "Review",
+      "Revise"
+    ],
+    "errors": []
+  },
+  "metadata": {
+    "repository_frontmatter": "pass",
+    "description_characters": 441,
+    "hook_script_resolves": true,
+    "generic_validator": "unsupported existing hooks key; unchanged host extension validated against repository skill guidelines"
+  },
+  "source_snapshot": {
+    "base": "02ed1bc909b21fdb6d80484f8dc6afabc2cb38c8",
+    "files": {
+      "skills/workflow-canon/SKILL.md": "6b095c7d3c62bb3ae87e1fb85a880b96dcd50cf82d1736a73689e6a865cc2206",
+      "skills/workflow-canon/references/audit-mode.md": "da40c9dcd01854d3cc6caad845fb0506798a648fd22417ff5ce0fca66e4655a3",
+      "skills/workflow-canon/references/author-mode.md": "f705c0465cc98d2ff54b2f3d3915402416795c2e9d83f1e124e31971c0680de1",
+      "skills/workflow-canon/references/canon-context.md": "5340647f160e73f44a9e555ffc1ad83b057d7e337fc316d5ec9fbc4e3b05a5a5",
+      "skills/workflow-canon/references/commands.md": "35aecd9514799df3b3f6fe6313a5fe8029a834f27631699ddfbdd5c10c011324",
+      "skills/workflow-canon/references/coverage.md": "60b77a4ff9e5f2ee08655867e24e133c733e19fe18ef7aa3ebc8ca992f1c31ce",
+      "skills/workflow-canon/references/design-flow.md": "9ae8afc051fcf49a239e075a58a7a6278aa94768767e88354cae2d0cb82d02a6",
+      "skills/workflow-canon/references/guidelines.md": "43d931609bb7c3fd2ac1fef7386ebee342de021cf768c8421f1861f705c76a7a",
+      "skills/workflow-canon/references/planning.md": "f4e0f2d6641c6d0023a05bd98928b4fbf73558b4a441448bb90eb0bda4281dc5",
+      "skills/workflow-canon/references/reporting.md": "c8cf63ce7495cb70e306551571a40c09412c4a34cd1fd603eb0032f8c7964454",
+      "skills/workflow-canon/references/review-mode.md": "cde561297995ffaa0c42d1082369253ca4456b56a54c8306641f75add27361f0",
+      "skills/workflow-canon/references/revise-mode.md": "a183ba47f987a58fabd13ea48600cb02d3d7651fc5a5e11e9c2f21fef22263c5",
+      "skills/workflow-canon/references/variants.md": "c479677c9d6738db54d9a2498d5f43d00e27d4918043fee4cab1fed7e03fe7ed",
+      "skills/workflow-canon/references/walk-rules.md": "251b6f3cd380e357a90ef3a8daca2d641d1e27b9c75d9c1e8e7e4f5d5f4c04b3",
+      "skills/workflow-canon/templates/integration-review.md": "33290ae7f5b4183fb68cfa0124ac5f8509d6c9bfc7544bc4d481e12f3a8bce5f",
+      "skills/workflow-canon/variants/workflow-server/VARIANT.md": "41680f050e9a30a6ebd444861fab733325ed244443e06109c7cd553a76c2497c",
+      "skills/workflow-canon/variants/workflow-server/canon-map.md": "d810aa34607af851903bc0ba5421505cff117dd9c438d0054798fb6e351d77c7",
+      "skills/workflow-canon/variants/workflow-server/commands.md": "00c6a0eb616586bf292505d46f2d25e9c6450207bc5a09b21d17a922b4cab7c9",
+      "skills/workflow-canon/variants/workflow-server/definition-scope.md": "3d61be44293d4a831761b84d9649fa0fa4c6f2b749a5e4d8129e0c91df9117a9",
+      "skills/workflow-canon/variants/workflow-server/reporting.md": "33855589408b8c9402263805a702a356a7af61836f0d68dba55c9771e34450d2",
+      "skills/work-planner/SKILL.md": "ad54c7dd0fb394d0eb2ffe29e7733222b8652be9c91a0f841a409fd3d96d056c",
+      "skills/work-planner/references/advance-mode.md": "b85b1e0b8f628472078dd57494f3967f6706406be91be7a2fd48b48e9c2e7471",
+      "skills/work-planner/references/align-mode.md": "2be30ffaa1cf1419b6387267065733ca22d3464b7a4a9a0af2c53cb41b227530",
+      "skills/work-planner/references/architecture-overview.md": "dc2988c928470650c02c5fc2df5334b6265f6df40689c7c3abec1ff684c13a89",
+      "skills/work-planner/references/board.md": "6422df7edec84e929ad30264456e82fc418bf7536ff00d7fe8428a3772668691",
+      "skills/work-planner/references/commands.md": "13f3bf56f8a87523f947aa1c14fb8778bb3169e17598db7e9d3b17ef0fcd792d",
+      "skills/work-planner/references/deliver-mode.md": "73afc620da1ebcccf2368f5695ddb368a9e2ddaaa4f7a5b02fba0d1cd98c30c7",
+      "skills/work-planner/references/guidelines.md": "939d7024f367b0954b82424f65044b876507f8ae907348597b37dee61cb94e37",
+      "skills/work-planner/references/hoist-mode.md": "befab9d430eccfec99b525bd9cf7178aad40e6770c6aeff38f83f276839e26be",
+      "skills/work-planner/references/interview.md": "66e60eaf3e17a96afe26e179f72ea8a826798767c95377d389d31e285fbf5379",
+      "skills/work-planner/references/plan-mode.md": "c66f4fca0478dd57489a57fff2138c4f3a1ed98797f7c740955533cd46b86e02",
+      "skills/work-planner/references/planning-layout.md": "3a0f690a5f8865d1d14e4370106ee62908e3103b100260ce317314d96009a72e",
+      "skills/work-planner/references/planning-readme.md": "43ee7f01f5dc6293edfc7f7a5459756f210764d4268ffdbe705950f4af7b21ab",
+      "skills/work-planner/references/propose-mode.md": "4f63b95d4a09ce5c637fcd0aade45e268e1ec875c749aa215a106ecdc02b1695",
+      "skills/work-planner/references/requirement-characteristics.md": "f28bbe173292f29b12baf2ed8cefb8cfdfb5f8c6ba60b77b89f331ce3b8b6ce0",
+      "skills/work-planner/references/review-criteria.md": "9f447064c2839d87ceba5bf38b7c91969bdad6efeea7e88217b74dd19304e4ac",
+      "skills/work-planner/references/review-passes.md": "b92cf73f457a9d220ebabf13726793dd93c386c01cc9b0f34974f448eb1276db",
+      "skills/work-planner/references/revise-mode.md": "e361577f80c7158859dc8facd421cd3b6ba5076ae44550b76f2ff98868f071f2",
+      "skills/work-planner/references/standup-mode.md": "fa10a69c3c62d98f182f38fa912ae065a8b29cfa407fba80711aa793c311437a",
+      "skills/work-planner/references/sync-mode.md": "6f6b8a10bec38f39286708d863ae3fd76e46726c1751d037f2bbf5617e460532",
+      "skills/work-planner/references/understand-mode.md": "59d4d0181f29a09380992b7ea8a5b84e290dc6ff834b3f85406722f7abe989a6",
+      "skills/work-planner/references/work-breakdown.md": "41be002671aaa33059981e6a53003fd66657ec53b1377d4165b09a273db73e16",
+      "skills/work-planner/templates/epic.md": "33a34b7f1341053fb7cc179ab882b0f089096cbb03dabe61b59f7cd6c13d5944",
+      "skills/work-planner/templates/initiative.md": "b980a416af7fd1f0b74470a124482f3625ccef4404382828d86b4b3f537eec3f",
+      "skills/work-planner/templates/issue.md": "ae1449c3b7dd91883575be5b8c0b392ffca6f465dc9cf9d84f5a5ac1a94eaf68",
+      "skills/work-planner/templates/proposal.md": "8b506b20f4a57cb446cb6781476491c293db4df321aeba84ebf14c0a24e74cd8",
+      "skills/work-planner/templates/pull-request.md": "5e42ae3b03835a54482764a7b9b9c917073c750d6a030824be3b55c349964be0",
+      "skills/work-planner/templates/task.md": "99c4702dde88f0edfa335b408b426dc2c07a0dd0579d8f76d01e41519e84c022",
+      "skills/guidelines.md": "9054ca5caf2895f3d768485f1ff8f93868a48ea48b69a338bb87be2607729669",
+      "skills/workflow-canon/scripts/branch_point.py": "0b0fab288471af79bfee45d33dd40f63f65a71a331fc413a6a22163f4b7f9314",
+      "skills/workflow-canon/scripts/edit_guard.py": "f247eb2e28d1f196161f0693e8524ea0eb4d9b722a8b8e1734c5a46eeb3f9f04",
+      "skills/workflow-canon/scripts/guard_report.py": "2ad3b1994dec454881c78b28b7a707a3965d2b525b7ab5ce5b4592e5252b5a82",
+      "skills/workflow-canon/test/fixtures.py": "dd7d2dc57f5479df2f6b630b4aecdd9fcbcae79a8cf37e93b8db564ee72f877a",
+      "skills/workflow-canon/test/stub_check_all.py": "17da846d506eccc510d8a38e2bf717b2c08e6e6ffec1dea713b7319b0f2b4b10",
+      "skills/workflow-canon/test/test_edit_guard.py": "a2dca16be038c4688108157161a5968fb52d10547fdd785289f181eec4d371f0"
+    }
+  },
+  "initial_snapshot": {
+    "base": "02ed1bc909b21fdb6d80484f8dc6afabc2cb38c8",
+    "files": {
+      "skills/workflow-canon/SKILL.md": "acc187a755cbd7338123f69322ff918157dc04cb815281ae79d98e749acd6234",
+      "skills/workflow-canon/references/audit-mode.md": "da40c9dcd01854d3cc6caad845fb0506798a648fd22417ff5ce0fca66e4655a3",
+      "skills/workflow-canon/references/author-mode.md": "f705c0465cc98d2ff54b2f3d3915402416795c2e9d83f1e124e31971c0680de1",
+      "skills/workflow-canon/references/canon-context.md": "5340647f160e73f44a9e555ffc1ad83b057d7e337fc316d5ec9fbc4e3b05a5a5",
+      "skills/workflow-canon/references/commands.md": "35aecd9514799df3b3f6fe6313a5fe8029a834f27631699ddfbdd5c10c011324",
+      "skills/workflow-canon/references/coverage.md": "60b77a4ff9e5f2ee08655867e24e133c733e19fe18ef7aa3ebc8ca992f1c31ce",
+      "skills/workflow-canon/references/design-flow.md": "9ae8afc051fcf49a239e075a58a7a6278aa94768767e88354cae2d0cb82d02a6",
+      "skills/workflow-canon/references/guidelines.md": "43d931609bb7c3fd2ac1fef7386ebee342de021cf768c8421f1861f705c76a7a",
+      "skills/workflow-canon/references/planning.md": "f4e0f2d6641c6d0023a05bd98928b4fbf73558b4a441448bb90eb0bda4281dc5",
+      "skills/workflow-canon/references/reporting.md": "080630fcf60174b0a0b8f48800d04cd1294ec635da82ed5a68974688da94558a",
+      "skills/workflow-canon/references/review-mode.md": "cde561297995ffaa0c42d1082369253ca4456b56a54c8306641f75add27361f0",
+      "skills/workflow-canon/references/revise-mode.md": "a183ba47f987a58fabd13ea48600cb02d3d7651fc5a5e11e9c2f21fef22263c5",
+      "skills/workflow-canon/references/variants.md": "c479677c9d6738db54d9a2498d5f43d00e27d4918043fee4cab1fed7e03fe7ed",
+      "skills/workflow-canon/references/walk-rules.md": "251b6f3cd380e357a90ef3a8daca2d641d1e27b9c75d9c1e8e7e4f5d5f4c04b3",
+      "skills/workflow-canon/templates/integration-review.md": "33290ae7f5b4183fb68cfa0124ac5f8509d6c9bfc7544bc4d481e12f3a8bce5f",
+      "skills/workflow-canon/variants/workflow-server/VARIANT.md": "2603e4ffc80c3af2aecfd91a2d9cc4517866bc27eb4b80beeff59b18ec26483b",
+      "skills/workflow-canon/variants/workflow-server/canon-map.md": "d810aa34607af851903bc0ba5421505cff117dd9c438d0054798fb6e351d77c7",
+      "skills/workflow-canon/variants/workflow-server/commands.md": "e048ef2cef066f08c908af7a877dc8b4b1893b4751e4aa1697f4d91384e75d55",
+      "skills/workflow-canon/variants/workflow-server/definition-scope.md": "e4af051fedd016776672d525d9e61fb7811c64e3dc1448c669de8d57777dae47",
+      "skills/workflow-canon/variants/workflow-server/reporting.md": "35082984424d1dc1c20455c612ff1f99398524a780bded1d0e182cc016ce1e93",
+      "skills/work-planner/SKILL.md": "ad54c7dd0fb394d0eb2ffe29e7733222b8652be9c91a0f841a409fd3d96d056c",
+      "skills/work-planner/references/advance-mode.md": "b85b1e0b8f628472078dd57494f3967f6706406be91be7a2fd48b48e9c2e7471",
+      "skills/work-planner/references/align-mode.md": "2be30ffaa1cf1419b6387267065733ca22d3464b7a4a9a0af2c53cb41b227530",
+      "skills/work-planner/references/architecture-overview.md": "dc2988c928470650c02c5fc2df5334b6265f6df40689c7c3abec1ff684c13a89",
+      "skills/work-planner/references/board.md": "6422df7edec84e929ad30264456e82fc418bf7536ff00d7fe8428a3772668691",
+      "skills/work-planner/references/commands.md": "13f3bf56f8a87523f947aa1c14fb8778bb3169e17598db7e9d3b17ef0fcd792d",
+      "skills/work-planner/references/deliver-mode.md": "73afc620da1ebcccf2368f5695ddb368a9e2ddaaa4f7a5b02fba0d1cd98c30c7",
+      "skills/work-planner/references/guidelines.md": "939d7024f367b0954b82424f65044b876507f8ae907348597b37dee61cb94e37",
+      "skills/work-planner/references/hoist-mode.md": "befab9d430eccfec99b525bd9cf7178aad40e6770c6aeff38f83f276839e26be",
+      "skills/work-planner/references/interview.md": "66e60eaf3e17a96afe26e179f72ea8a826798767c95377d389d31e285fbf5379",
+      "skills/work-planner/references/plan-mode.md": "c66f4fca0478dd57489a57fff2138c4f3a1ed98797f7c740955533cd46b86e02",
+      "skills/work-planner/references/planning-layout.md": "3a0f690a5f8865d1d14e4370106ee62908e3103b100260ce317314d96009a72e",
+      "skills/work-planner/references/planning-readme.md": "43ee7f01f5dc6293edfc7f7a5459756f210764d4268ffdbe705950f4af7b21ab",
+      "skills/work-planner/references/propose-mode.md": "4f63b95d4a09ce5c637fcd0aade45e268e1ec875c749aa215a106ecdc02b1695",
+      "skills/work-planner/references/requirement-characteristics.md": "f28bbe173292f29b12baf2ed8cefb8cfdfb5f8c6ba60b77b89f331ce3b8b6ce0",
+      "skills/work-planner/references/review-criteria.md": "9f447064c2839d87ceba5bf38b7c91969bdad6efeea7e88217b74dd19304e4ac",
+      "skills/work-planner/references/review-passes.md": "b92cf73f457a9d220ebabf13726793dd93c386c01cc9b0f34974f448eb1276db",
+      "skills/work-planner/references/revise-mode.md": "e361577f80c7158859dc8facd421cd3b6ba5076ae44550b76f2ff98868f071f2",
+      "skills/work-planner/references/standup-mode.md": "fa10a69c3c62d98f182f38fa912ae065a8b29cfa407fba80711aa793c311437a",
+      "skills/work-planner/references/sync-mode.md": "6f6b8a10bec38f39286708d863ae3fd76e46726c1751d037f2bbf5617e460532",
+      "skills/work-planner/references/understand-mode.md": "59d4d0181f29a09380992b7ea8a5b84e290dc6ff834b3f85406722f7abe989a6",
+      "skills/work-planner/references/work-breakdown.md": "41be002671aaa33059981e6a53003fd66657ec53b1377d4165b09a273db73e16",
+      "skills/work-planner/templates/epic.md": "33a34b7f1341053fb7cc179ab882b0f089096cbb03dabe61b59f7cd6c13d5944",
+      "skills/work-planner/templates/initiative.md": "b980a416af7fd1f0b74470a124482f3625ccef4404382828d86b4b3f537eec3f",
+      "skills/work-planner/templates/issue.md": "ae1449c3b7dd91883575be5b8c0b392ffca6f465dc9cf9d84f5a5ac1a94eaf68",
+      "skills/work-planner/templates/proposal.md": "8b506b20f4a57cb446cb6781476491c293db4df321aeba84ebf14c0a24e74cd8",
+      "skills/work-planner/templates/pull-request.md": "5e42ae3b03835a54482764a7b9b9c917073c750d6a030824be3b55c349964be0",
+      "skills/work-planner/templates/task.md": "99c4702dde88f0edfa335b408b426dc2c07a0dd0579d8f76d01e41519e84c022",
+      "skills/guidelines.md": "9054ca5caf2895f3d768485f1ff8f93868a48ea48b69a338bb87be2607729669",
+      "skills/workflow-canon/scripts/branch_point.py": "0b0fab288471af79bfee45d33dd40f63f65a71a331fc413a6a22163f4b7f9314",
+      "skills/workflow-canon/scripts/edit_guard.py": "f247eb2e28d1f196161f0693e8524ea0eb4d9b722a8b8e1734c5a46eeb3f9f04",
+      "skills/workflow-canon/scripts/guard_report.py": "2ad3b1994dec454881c78b28b7a707a3965d2b525b7ab5ce5b4592e5252b5a82",
+      "skills/workflow-canon/test/fixtures.py": "dd7d2dc57f5479df2f6b630b4aecdd9fcbcae79a8cf37e93b8db564ee72f877a",
+      "skills/workflow-canon/test/stub_check_all.py": "17da846d506eccc510d8a38e2bf717b2c08e6e6ffec1dea713b7319b0f2b4b10",
+      "skills/workflow-canon/test/test_edit_guard.py": "a2dca16be038c4688108157161a5968fb52d10547fdd785289f181eec4d371f0"
+    }
+  },
+  "repeat_fixture_snapshot": {
+    "path": "/tmp/canon-consolidation/revise-repeat",
+    "files": {
+      "skills/guidelines.md": "9054ca5caf2895f3d768485f1ff8f93868a48ea48b69a338bb87be2607729669",
+      "skills/workflow-canon/SKILL.md": "6b095c7d3c62bb3ae87e1fb85a880b96dcd50cf82d1736a73689e6a865cc2206",
+      "skills/work-planner/SKILL.md": "ad54c7dd0fb394d0eb2ffe29e7733222b8652be9c91a0f841a409fd3d96d056c",
+      "skills/server-in-the-loop/SKILL.md": "14f183a104bda306d7afc6313300facbd5cf6393ff38b686995955c88f38a9f0",
+      "skills/gitnexus/gitnexus-refactoring/SKILL.md": "6aab994ee0266063245245483ee3280645aca66c0c5e56730ffad3f32ecbbc5c",
+      "skills/gitnexus/gitnexus-impact-analysis/SKILL.md": "a4d6e8003c4a822c380b0e81b2fa0d642612236c734a9d51834e362c4be52f33",
+      "skills/gitnexus/gitnexus-guide/SKILL.md": "40b047beeb9a7c5d47f17426b4061d2c2562c85c11288fa7f8da376d910e4f91",
+      "skills/gitnexus/gitnexus-exploring/SKILL.md": "ffafeaa0ce52be079e4d4b3a48c0a166728c009380a243c394c4e08f728527bb",
+      "skills/gitnexus/gitnexus-debugging/SKILL.md": "4a1e82aa835c52e38227d853c20ef05ea33be1dfb6aa6511474d15357f1d3f2e",
+      "skills/gitnexus/gitnexus-cli/SKILL.md": "e28f79d4ea2473efa0f197611a75bc25428fb4296aeeb54d1e31de2e39ccd8ad",
+      "skills/work-planner/test/test_sync.py": "4acd8812e37a22ab4dfe28fe58030382137fdc5e57df361cddda53c11ba440a1",
+      "skills/work-planner/test/test_shared.py": "0f0e55a132e3e07adb5b13d1919dadbdc027de7c2c879fc6e19f8717e8a7b567",
+      "skills/work-planner/test/test_progress.py": "bf5e7075a3c1977d0649146b920821e1252c22041fbdfc7e134c54de61beb770",
+      "skills/work-planner/test/test_orphans.py": "81337973a69fd79764035156d28cf7baea70d19530bf4014128831012da4d1a8",
+      "skills/work-planner/test/test_modes.py": "f1298ab451eeb6cc18bf3d5d36a632e9a815c83514e4bb4080dc926ebf05538b",
+      "skills/work-planner/test/test_format.py": "dcca441a8057fa391080f312061c23c329c18cb7e2e414bc94475151124fdf34",
+      "skills/work-planner/test/test_deps.py": "1766228057260a270ade2ed516b8aecf8f51842358e7d29064f4c493134e84f7",
+      "skills/work-planner/test/test_deliver.py": "b8db6e6b2a04129b78dd6607397a762f22c9d91030a7b42df63d1e02cd4cd060",
+      "skills/work-planner/test/test_closure.py": "fa27c18a0374aa33e447e737689c213d8cc0880e80ca4cd5f3593866fd1e8e39",
+      "skills/work-planner/test/test_board.py": "6f02293837af48e9d31f568839c4371ec0b2219d4a7dcb7fd46ee40040dffb7b",
+      "skills/work-planner/test/test_advance.py": "572d4deb13f426c7903e2e6a7cadc1917b24db067492214f7f2f14b1c491b3e2",
+      "skills/work-planner/test/fixtures.py": "d957b7545de2ae272ecea674d62de959d045e839df090f4f7689f6061061055a",
+      "skills/work-planner/templates/task.md": "99c4702dde88f0edfa335b408b426dc2c07a0dd0579d8f76d01e41519e84c022",
+      "skills/work-planner/templates/pull-request.md": "5e42ae3b03835a54482764a7b9b9c917073c750d6a030824be3b55c349964be0",
+      "skills/work-planner/templates/proposal.md": "8b506b20f4a57cb446cb6781476491c293db4df321aeba84ebf14c0a24e74cd8",
+      "skills/work-planner/templates/issue.md": "ae1449c3b7dd91883575be5b8c0b392ffca6f465dc9cf9d84f5a5ac1a94eaf68",
+      "skills/work-planner/templates/initiative.md": "b980a416af7fd1f0b74470a124482f3625ccef4404382828d86b4b3f537eec3f",
+      "skills/work-planner/templates/epic.md": "33a34b7f1341053fb7cc179ab882b0f089096cbb03dabe61b59f7cd6c13d5944",
+      "skills/work-planner/scripts/sync.py": "129ed80c3077d821e7b55117b8a697f37f6f3ad4c21ab3bb43f1f92b01251320",
+      "skills/work-planner/scripts/renumber.py": "54baea22c3a47d6111fc8ba416da6ad55cf0dacb73116c6345642050db5e378c",
+      "skills/work-planner/scripts/progress.py": "d04e1fa8b26d04b0808d8d14fafcdb49a33dd26d5576581a6eadeaf3ce5a5b6d",
+      "skills/work-planner/scripts/orphans.py": "db80de62121aa0b280e0c48b85a6eee799ea894bce63b3b0549eca727ffff73b",
+      "skills/work-planner/scripts/format.py": "bb1f4919356e260ac5c27d1b26e760d0694f5099ef528c453685dd4a870932a2",
+      "skills/work-planner/scripts/deps.py": "a03081cae3f950eef96e6fc14a1934aac8398b7bd10a4dda00ee43a961c9db81",
+      "skills/work-planner/scripts/deliver.py": "412de7381e82fd13b2170b5cc83189627876372b83571f6ac7cb6e692b791655",
+      "skills/work-planner/scripts/closure.py": "c62a6b9fa6a094b2e51b092c816334eddd48e0a814271d24e7c8a19b8e644e57",
+      "skills/work-planner/scripts/board.py": "966c98fc3fcfb5f88afb40b4c7d3f579ca521b340b02620449d40967299d1246",
+      "skills/work-planner/scripts/advance.py": "6a7489289baaf3aa38a3fbb37484a6708547d4b97794aa94c7d4bbc78b78bdda",
+      "skills/work-planner/references/work-breakdown.md": "41be002671aaa33059981e6a53003fd66657ec53b1377d4165b09a273db73e16",
+      "skills/work-planner/references/understand-mode.md": "59d4d0181f29a09380992b7ea8a5b84e290dc6ff834b3f85406722f7abe989a6",
+      "skills/work-planner/references/sync-mode.md": "6f6b8a10bec38f39286708d863ae3fd76e46726c1751d037f2bbf5617e460532",
+      "skills/work-planner/references/standup-mode.md": "fa10a69c3c62d98f182f38fa912ae065a8b29cfa407fba80711aa793c311437a",
+      "skills/work-planner/references/revise-mode.md": "e361577f80c7158859dc8facd421cd3b6ba5076ae44550b76f2ff98868f071f2",
+      "skills/work-planner/references/review-passes.md": "b92cf73f457a9d220ebabf13726793dd93c386c01cc9b0f34974f448eb1276db",
+      "skills/work-planner/references/review-criteria.md": "9f447064c2839d87ceba5bf38b7c91969bdad6efeea7e88217b74dd19304e4ac",
+      "skills/work-planner/references/requirement-characteristics.md": "f28bbe173292f29b12baf2ed8cefb8cfdfb5f8c6ba60b77b89f331ce3b8b6ce0",
+      "skills/work-planner/references/propose-mode.md": "4f63b95d4a09ce5c637fcd0aade45e268e1ec875c749aa215a106ecdc02b1695",
+      "skills/work-planner/references/planning-readme.md": "43ee7f01f5dc6293edfc7f7a5459756f210764d4268ffdbe705950f4af7b21ab",
+      "skills/work-planner/references/planning-layout.md": "3a0f690a5f8865d1d14e4370106ee62908e3103b100260ce317314d96009a72e",
+      "skills/work-planner/references/plan-mode.md": "c66f4fca0478dd57489a57fff2138c4f3a1ed98797f7c740955533cd46b86e02",
+      "skills/work-planner/references/interview.md": "66e60eaf3e17a96afe26e179f72ea8a826798767c95377d389d31e285fbf5379",
+      "skills/work-planner/references/hoist-mode.md": "befab9d430eccfec99b525bd9cf7178aad40e6770c6aeff38f83f276839e26be",
+      "skills/work-planner/references/guidelines.md": "939d7024f367b0954b82424f65044b876507f8ae907348597b37dee61cb94e37",
+      "skills/work-planner/references/deliver-mode.md": "73afc620da1ebcccf2368f5695ddb368a9e2ddaaa4f7a5b02fba0d1cd98c30c7",
+      "skills/work-planner/references/commands.md": "13f3bf56f8a87523f947aa1c14fb8778bb3169e17598db7e9d3b17ef0fcd792d",
+      "skills/work-planner/references/board.md": "6422df7edec84e929ad30264456e82fc418bf7536ff00d7fe8428a3772668691",
+      "skills/work-planner/references/architecture-overview.md": "dc2988c928470650c02c5fc2df5334b6265f6df40689c7c3abec1ff684c13a89",
+      "skills/work-planner/references/align-mode.md": "2be30ffaa1cf1419b6387267065733ca22d3464b7a4a9a0af2c53cb41b227530",
+      "skills/work-planner/references/advance-mode.md": "b85b1e0b8f628472078dd57494f3967f6706406be91be7a2fd48b48e9c2e7471",
+      "skills/workflow-canon/test/test_edit_guard.py": "a2dca16be038c4688108157161a5968fb52d10547fdd785289f181eec4d371f0",
+      "skills/workflow-canon/test/stub_check_all.py": "17da846d506eccc510d8a38e2bf717b2c08e6e6ffec1dea713b7319b0f2b4b10",
+      "skills/workflow-canon/test/fixtures.py": "dd7d2dc57f5479df2f6b630b4aecdd9fcbcae79a8cf37e93b8db564ee72f877a",
+      "skills/workflow-canon/scripts/guard_report.py": "2ad3b1994dec454881c78b28b7a707a3965d2b525b7ab5ce5b4592e5252b5a82",
+      "skills/workflow-canon/scripts/edit_guard.py": "f247eb2e28d1f196161f0693e8524ea0eb4d9b722a8b8e1734c5a46eeb3f9f04",
+      "skills/workflow-canon/scripts/branch_point.py": "0b0fab288471af79bfee45d33dd40f63f65a71a331fc413a6a22163f4b7f9314",
+      "skills/workflow-canon/templates/integration-review.md": "33290ae7f5b4183fb68cfa0124ac5f8509d6c9bfc7544bc4d481e12f3a8bce5f",
+      "skills/workflow-canon/references/author-mode.md": "f705c0465cc98d2ff54b2f3d3915402416795c2e9d83f1e124e31971c0680de1",
+      "skills/workflow-canon/references/reporting.md": "080630fcf60174b0a0b8f48800d04cd1294ec635da82ed5a68974688da94558a",
+      "skills/workflow-canon/references/walk-rules.md": "251b6f3cd380e357a90ef3a8daca2d641d1e27b9c75d9c1e8e7e4f5d5f4c04b3",
+      "skills/workflow-canon/references/planning.md": "f4e0f2d6641c6d0023a05bd98928b4fbf73558b4a441448bb90eb0bda4281dc5",
+      "skills/workflow-canon/references/revise-mode.md": "a183ba47f987a58fabd13ea48600cb02d3d7651fc5a5e11e9c2f21fef22263c5",
+      "skills/workflow-canon/references/design-flow.md": "9ae8afc051fcf49a239e075a58a7a6278aa94768767e88354cae2d0cb82d02a6",
+      "skills/workflow-canon/references/audit-mode.md": "da40c9dcd01854d3cc6caad845fb0506798a648fd22417ff5ce0fca66e4655a3",
+      "skills/workflow-canon/references/commands.md": "35aecd9514799df3b3f6fe6313a5fe8029a834f27631699ddfbdd5c10c011324",
+      "skills/workflow-canon/references/guidelines.md": "43d931609bb7c3fd2ac1fef7386ebee342de021cf768c8421f1861f705c76a7a",
+      "skills/workflow-canon/references/coverage.md": "60b77a4ff9e5f2ee08655867e24e133c733e19fe18ef7aa3ebc8ca992f1c31ce",
+      "skills/workflow-canon/references/canon-context.md": "5340647f160e73f44a9e555ffc1ad83b057d7e337fc316d5ec9fbc4e3b05a5a5",
+      "skills/workflow-canon/references/variants.md": "c479677c9d6738db54d9a2498d5f43d00e27d4918043fee4cab1fed7e03fe7ed",
+      "skills/workflow-canon/references/review-mode.md": "cde561297995ffaa0c42d1082369253ca4456b56a54c8306641f75add27361f0",
+      "skills/workflow-canon/variants/workflow-server/reporting.md": "33855589408b8c9402263805a702a356a7af61836f0d68dba55c9771e34450d2",
+      "skills/workflow-canon/variants/workflow-server/VARIANT.md": "41680f050e9a30a6ebd444861fab733325ed244443e06109c7cd553a76c2497c",
+      "skills/workflow-canon/variants/workflow-server/commands.md": "0e785e70be2c49e38d0573c1abd775433ab84869ed4d83e8bbf0305fd5468355",
+      "skills/workflow-canon/variants/workflow-server/canon-map.md": "d810aa34607af851903bc0ba5421505cff117dd9c438d0054798fb6e351d77c7",
+      "skills/workflow-canon/variants/workflow-server/definition-scope.md": "3d61be44293d4a831761b84d9649fa0fa4c6f2b749a5e4d8129e0c91df9117a9"
+    }
+  },
+  "regression": {
+    "edit_guard": {
+      "tests": 36,
+      "seconds": 4.732,
+      "exit": 0
+    },
+    "work_planner_initial": {
+      "tests": 294,
+      "failures": 1,
+      "cause": "two mode-summary phrases"
+    },
+    "work_planner_final": {
+      "tests": 294,
+      "seconds": 6.635,
+      "exit": 0
+    }
+  },
+  "trials": [
+    {
+      "scenario": "canon_ambiguous_live",
+      "session_id": "01a12694-c573-7560-a003-47e4c1596bd5",
+      "complete": true,
+      "truncated_output_count": 0,
+      "observed_text": [
+        {
+          "path": "skills/workflow-canon/SKILL.md",
+          "whole_file_events": [
+            1
+          ],
+          "sections": [
+            {
+              "heading": "Workflow Canon",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Modes",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Dependencies",
+              "events": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/audit-mode.md",
+          "whole_file_events": [
+            5
+          ],
+          "sections": [
+            {
+              "heading": "Audit Mode",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Canon Question",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Walk",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Attribution",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/canon-context.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Prerequisites",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Terms",
+              "events": [
+                9
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "events": [
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/variants.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Selection",
+              "events": [
+                10
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/VARIANT.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Identity",
+              "events": [
+                22
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "canon_audit_live",
+      "session_id": "01a1268e-7687-7bc0-9faa-ae29c815d3c3",
+      "complete": true,
+      "truncated_output_count": 0,
+      "observed_text": [
+        {
+          "path": "skills/workflow-canon/SKILL.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Rules",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Dependencies",
+              "events": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/audit-mode.md",
+          "whole_file_events": [
+            5
+          ],
+          "sections": [
+            {
+              "heading": "Audit Mode",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Canon Question",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Walk",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Attribution",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/canon-context.md",
+          "whole_file_events": [
+            16
+          ],
+          "sections": [
+            {
+              "heading": "Canon Context",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Terms",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Criteria",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Scope",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Checks",
+              "events": [
+                16
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Configuration",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Resolve Ref",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Compare Revisions",
+              "events": [
+                21
+              ]
+            },
+            {
+              "heading": "Read Captured File",
+              "events": [
+                40
+              ]
+            },
+            {
+              "heading": "Read Captured Section",
+              "events": [
+                40
+              ]
+            },
+            {
+              "heading": "Run Project Check",
+              "events": [
+                19
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/planning.md",
+          "whole_file_events": [
+            6
+          ],
+          "sections": [
+            {
+              "heading": "Planning",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Location",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Records",
+              "events": [
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/reporting.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Bands",
+              "events": [
+                27
+              ]
+            },
+            {
+              "heading": "Finding Rows",
+              "events": [
+                27
+              ]
+            },
+            {
+              "heading": "Coverage Ledger",
+              "events": [
+                27
+              ]
+            },
+            {
+              "heading": "File Coverage",
+              "events": [
+                27
+              ]
+            },
+            {
+              "heading": "Coverage Header",
+              "events": [
+                27
+              ]
+            },
+            {
+              "heading": "Which Report",
+              "events": [
+                27
+              ]
+            },
+            {
+              "heading": "Standalone",
+              "events": [
+                40
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/variants.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Selection",
+              "events": [
+                10
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/walk-rules.md",
+          "whole_file_events": [
+            21
+          ],
+          "sections": [
+            {
+              "heading": "Walk Rules",
+              "events": [
+                21
+              ]
+            },
+            {
+              "heading": "Order",
+              "events": [
+                21
+              ]
+            },
+            {
+              "heading": "Evidence",
+              "events": [
+                21
+              ]
+            },
+            {
+              "heading": "Candidates and Fixes",
+              "events": [
+                21
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/VARIANT.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Identity",
+              "events": [
+                25
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "canon_author_live",
+      "session_id": "01a1268e-6294-7563-b174-838d4e8de1ab",
+      "complete": true,
+      "truncated_output_count": 0,
+      "observed_text": [
+        {
+          "path": "skills/workflow-canon/SKILL.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Rules",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Dependencies",
+              "events": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/author-mode.md",
+          "whole_file_events": [
+            5
+          ],
+          "sections": [
+            {
+              "heading": "Author Mode",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                5
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/canon-context.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Prerequisites",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Terms",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Criteria",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Scope",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Checks",
+              "events": [
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Resolve Ref",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Project Checks",
+              "events": [
+                18
+              ]
+            },
+            {
+              "heading": "Run Project Check",
+              "events": [
+                18
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/design-flow.md",
+          "whole_file_events": [
+            10
+          ],
+          "sections": [
+            {
+              "heading": "Design Flow",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Two Cycles",
+              "events": [
+                10
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/planning.md",
+          "whole_file_events": [
+            7
+          ],
+          "sections": [
+            {
+              "heading": "Planning",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Location",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Records",
+              "events": [
+                7
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/variants.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Selection",
+              "events": [
+                9
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/walk-rules.md",
+          "whole_file_events": [
+            16
+          ],
+          "sections": [
+            {
+              "heading": "Walk Rules",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Order",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Evidence",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Candidates and Fixes",
+              "events": [
+                16
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/VARIANT.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Identity",
+              "events": [
+                18
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "canon_question_live",
+      "session_id": "01a12693-b0e4-7ab3-80c8-563bc1c817a9",
+      "complete": true,
+      "truncated_output_count": 0,
+      "observed_text": [
+        {
+          "path": "skills/workflow-canon/SKILL.md",
+          "whole_file_events": [
+            1
+          ],
+          "sections": [
+            {
+              "heading": "Workflow Canon",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Modes",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Dependencies",
+              "events": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/audit-mode.md",
+          "whole_file_events": [
+            4
+          ],
+          "sections": [
+            {
+              "heading": "Audit Mode",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Canon Question",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Walk",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Attribution",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                4
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/canon-context.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Prerequisites",
+              "events": [
+                8
+              ]
+            },
+            {
+              "heading": "Terms",
+              "events": [
+                8
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "events": [
+                17
+              ]
+            },
+            {
+              "heading": "Resolve Ref",
+              "events": [
+                23
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/variants.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Selection",
+              "events": [
+                9
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/VARIANT.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Identity",
+              "events": [
+                21
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "canon_review_live",
+      "session_id": "01a12691-21d7-7110-94c5-0966128692b3",
+      "complete": true,
+      "truncated_output_count": 2,
+      "observed_text": [
+        {
+          "path": "skills/workflow-canon/SKILL.md",
+          "whole_file_events": [
+            1
+          ],
+          "sections": [
+            {
+              "heading": "Workflow Canon",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Modes",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Dependencies",
+              "events": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                8
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Resolve Ref",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Compare Revisions",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Read Captured File",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Read Captured Section",
+              "events": [
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/coverage.md",
+          "whole_file_events": [
+            9
+          ],
+          "sections": [
+            {
+              "heading": "Integration Coverage",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Establish the Project Map",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Select Observations",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Determine the Required Set",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Configuration Example",
+              "events": [
+                9
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/guidelines.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "SKILL.md Structure",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Titles",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Project Variants",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Shared Planning",
+              "events": [
+                20
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/planning.md",
+          "whole_file_events": [
+            20
+          ],
+          "sections": [
+            {
+              "heading": "Planning",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Location",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Records",
+              "events": [
+                20
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/review-mode.md",
+          "whole_file_events": [
+            6
+          ],
+          "sections": [
+            {
+              "heading": "Review Mode",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                6,
+                26
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Coverage",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Findings",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Verdicts",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/revise-mode.md",
+          "whole_file_events": [
+            26
+          ],
+          "sections": [
+            {
+              "heading": "Revise Mode",
+              "events": [
+                26
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                6,
+                26
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                26
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                26
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/variants.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Selection",
+              "events": [
+                8
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/templates/integration-review.md",
+          "whole_file_events": [
+            9
+          ],
+          "sections": [
+            {
+              "heading": "Integration Review",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Verdict",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Reviewed Scope",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Findings",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "{{Area of Concern}}",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Coverage",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Gaps and Residual Risk",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Documentation and PR Accuracy",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Required Actions",
+              "events": [
+                9
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/VARIANT.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Identity",
+              "events": [
+                13
+              ]
+            },
+            {
+              "heading": "Planning",
+              "events": [
+                13,
+                20
+              ]
+            },
+            {
+              "heading": "Author Configuration",
+              "events": [
+                13
+              ]
+            },
+            {
+              "heading": "Review Configuration",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Branches and Sources",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Workspace Coverage",
+              "events": [
+                20,
+                32
+              ]
+            },
+            {
+              "heading": "Boundary Review",
+              "events": [
+                20,
+                32
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Locations",
+              "events": [
+                20
+              ]
+            },
+            {
+              "heading": "Invocation Sources",
+              "events": [
+                20
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "canon_revise_live",
+      "session_id": "01a1268e-8d1e-7290-ac70-f1b80c9aa00a",
+      "complete": true,
+      "truncated_output_count": 1,
+      "observed_text": [
+        {
+          "path": "skills/guidelines.md",
+          "whole_file_events": [
+            7
+          ],
+          "sections": [
+            {
+              "heading": "Skill Guidelines",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Frontmatter",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Files",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "SKILL.md structure",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Mode files",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Layout",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Prose",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Links",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Commands",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Progressive Disclosure",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Disclosure Verification",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Changes",
+              "events": [
+                7
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/SKILL.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Rules",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Dependencies",
+              "events": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "events": [
+                13
+              ]
+            },
+            {
+              "heading": "Run Project Check",
+              "events": [
+                19
+              ]
+            },
+            {
+              "heading": "Create Skill Worktree",
+              "events": [
+                13
+              ]
+            },
+            {
+              "heading": "Run Skill Checks",
+              "events": [
+                17
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/coverage.md",
+          "whole_file_events": [
+            48
+          ],
+          "sections": [
+            {
+              "heading": "Integration Coverage",
+              "events": [
+                48
+              ]
+            },
+            {
+              "heading": "Establish the Project Map",
+              "events": [
+                48
+              ]
+            },
+            {
+              "heading": "Select Observations",
+              "events": [
+                48
+              ]
+            },
+            {
+              "heading": "Determine the Required Set",
+              "events": [
+                48
+              ]
+            },
+            {
+              "heading": "Configuration Example",
+              "events": [
+                48
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/guidelines.md",
+          "whole_file_events": [
+            7
+          ],
+          "sections": [
+            {
+              "heading": "Guidelines",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Identity",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "SKILL.md Structure",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Progressive Disclosure",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Titles",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Project Variants",
+              "events": [
+                7
+              ]
+            },
+            {
+              "heading": "Shared Planning",
+              "events": [
+                7
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/planning.md",
+          "whole_file_events": [
+            41
+          ],
+          "sections": [
+            {
+              "heading": "Planning",
+              "events": [
+                41
+              ]
+            },
+            {
+              "heading": "Location",
+              "events": [
+                41
+              ]
+            },
+            {
+              "heading": "Records",
+              "events": [
+                41
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/review-mode.md",
+          "whole_file_events": [
+            11
+          ],
+          "sections": [
+            {
+              "heading": "Review Mode",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                4,
+                11
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Coverage",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Findings",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Verdicts",
+              "events": [
+                11
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/revise-mode.md",
+          "whole_file_events": [
+            4
+          ],
+          "sections": [
+            {
+              "heading": "Revise Mode",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                4,
+                11
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                4
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                4
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/variants.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Selection",
+              "events": [
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/templates/integration-review.md",
+          "whole_file_events": [
+            9
+          ],
+          "sections": [
+            {
+              "heading": "Integration Review",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Verdict",
+              "events": [
+                9,
+                49
+              ]
+            },
+            {
+              "heading": "Reviewed Scope",
+              "events": [
+                9
+              ]
+            },
+            {
+              "heading": "Findings",
+              "events": [
+                9,
+                49
+              ]
+            },
+            {
+              "heading": "{{Area of Concern}}",
+              "events": [
+                9,
+                49
+              ]
+            },
+            {
+              "heading": "Coverage",
+              "events": [
+                9,
+                49
+              ]
+            },
+            {
+              "heading": "Gaps and Residual Risk",
+              "events": [
+                9,
+                49
+              ]
+            },
+            {
+              "heading": "Documentation and PR Accuracy",
+              "events": [
+                9,
+                49
+              ]
+            },
+            {
+              "heading": "Required Actions",
+              "events": [
+                9,
+                49
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/VARIANT.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Identity",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Planning",
+              "events": [
+                52
+              ]
+            },
+            {
+              "heading": "Review Configuration",
+              "events": [
+                48
+              ]
+            },
+            {
+              "heading": "Revise Configuration",
+              "events": [
+                17
+              ]
+            },
+            {
+              "heading": "Branches and Sources",
+              "events": [
+                48
+              ]
+            },
+            {
+              "heading": "Workspace Coverage",
+              "events": [
+                48
+              ]
+            },
+            {
+              "heading": "Boundary Review",
+              "events": [
+                48
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                22
+              ]
+            },
+            {
+              "heading": "Locations",
+              "events": [
+                22
+              ]
+            },
+            {
+              "heading": "Invocation Sources",
+              "events": [
+                22
+              ]
+            },
+            {
+              "heading": "Check Skill Summaries",
+              "events": [
+                25
+              ]
+            },
+            {
+              "heading": "Run the Edit Guard Tests",
+              "events": [
+                25
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "canon_revise_repeat",
+      "session_id": "01a12693-9f9d-7da1-a7cb-5e93b90208b0",
+      "complete": true,
+      "truncated_output_count": 1,
+      "observed_text": [
+        {
+          "path": "skills/guidelines.md",
+          "whole_file_events": [
+            10
+          ],
+          "sections": [
+            {
+              "heading": "Skill Guidelines",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Frontmatter",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Files",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "SKILL.md structure",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Mode files",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Layout",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Prose",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Links",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Commands",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Progressive Disclosure",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Disclosure Verification",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Changes",
+              "events": [
+                10
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/SKILL.md",
+          "whole_file_events": [
+            1
+          ],
+          "sections": [
+            {
+              "heading": "Workflow Canon",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Modes",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                1
+              ]
+            },
+            {
+              "heading": "Dependencies",
+              "events": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                15
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "events": [
+                15
+              ]
+            },
+            {
+              "heading": "Run Project Check",
+              "events": [
+                21
+              ]
+            },
+            {
+              "heading": "Create Skill Worktree",
+              "events": [
+                19
+              ]
+            },
+            {
+              "heading": "Run Skill Checks",
+              "events": [
+                19
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/coverage.md",
+          "whole_file_events": [
+            25
+          ],
+          "sections": [
+            {
+              "heading": "Integration Coverage",
+              "events": [
+                25
+              ]
+            },
+            {
+              "heading": "Establish the Project Map",
+              "events": [
+                25
+              ]
+            },
+            {
+              "heading": "Select Observations",
+              "events": [
+                25
+              ]
+            },
+            {
+              "heading": "Determine the Required Set",
+              "events": [
+                25
+              ]
+            },
+            {
+              "heading": "Configuration Example",
+              "events": [
+                25
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/guidelines.md",
+          "whole_file_events": [
+            10
+          ],
+          "sections": [
+            {
+              "heading": "Guidelines",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Identity",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "SKILL.md Structure",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Progressive Disclosure",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Titles",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Project Variants",
+              "events": [
+                10
+              ]
+            },
+            {
+              "heading": "Shared Planning",
+              "events": [
+                10
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/planning.md",
+          "whole_file_events": [
+            6
+          ],
+          "sections": [
+            {
+              "heading": "Planning",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Location",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Records",
+              "events": [
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/review-mode.md",
+          "whole_file_events": [
+            16
+          ],
+          "sections": [
+            {
+              "heading": "Review Mode",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                6,
+                16
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Coverage",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Findings",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Verdicts",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                16
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/revise-mode.md",
+          "whole_file_events": [
+            6
+          ],
+          "sections": [
+            {
+              "heading": "Revise Mode",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Prerequisites",
+              "events": [
+                6,
+                16
+              ]
+            },
+            {
+              "heading": "Procedure",
+              "events": [
+                6
+              ]
+            },
+            {
+              "heading": "Rules",
+              "events": [
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/references/variants.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Selection",
+              "events": [
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/templates/integration-review.md",
+          "whole_file_events": [
+            12
+          ],
+          "sections": [
+            {
+              "heading": "Integration Review",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Verdict",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Reviewed Scope",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Findings",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "{{Area of Concern}}",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Coverage",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Gaps and Residual Risk",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Documentation and PR Accuracy",
+              "events": [
+                12
+              ]
+            },
+            {
+              "heading": "Required Actions",
+              "events": [
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/VARIANT.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Identity",
+              "events": [
+                16
+              ]
+            },
+            {
+              "heading": "Planning",
+              "events": [
+                43
+              ]
+            },
+            {
+              "heading": "Review Configuration",
+              "events": [
+                25
+              ]
+            },
+            {
+              "heading": "Revise Configuration",
+              "events": [
+                18
+              ]
+            },
+            {
+              "heading": "Branches and Sources",
+              "events": [
+                43
+              ]
+            },
+            {
+              "heading": "Workspace Coverage",
+              "events": [
+                25
+              ]
+            },
+            {
+              "heading": "Boundary Review",
+              "events": [
+                43
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/workflow-canon/variants/workflow-server/commands.md",
+          "whole_file_events": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "events": [
+                19
+              ]
+            },
+            {
+              "heading": "Locations",
+              "events": [
+                19
+              ]
+            },
+            {
+              "heading": "Invocation Sources",
+              "events": [
+                19
+              ]
+            },
+            {
+              "heading": "Check Skill Summaries",
+              "events": [
+                21
+              ]
+            },
+            {
+              "heading": "Run the Edit Guard Tests",
+              "events": [
+                21
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fixture_isolation": {
+    "revise_first": {
+      "changed_files": [
+        "skills/workflow-canon/templates/integration-review.md"
+      ],
+      "exact_requested_edit": true,
+      "head": "02ed1bc909b21fdb6d80484f8dc6afabc2cb38c8"
+    },
+    "revise_repeat": {
+      "changed_files": [
+        "skills/workflow-canon/templates/integration-review.md"
+      ],
+      "exact_requested_edit": true,
+      "head": "02ed1bc909b21fdb6d80484f8dc6afabc2cb38c8"
+    },
+    "author": {
+      "clean": true,
+      "head": "e6558aac5a136bee2456e0341f612b111487b0fc"
+    },
+    "audit": {
+      "clean": true,
+      "head": "fcbcb645ccab8ff846c89ea1f28bb6c0e88bf1a8"
+    }
+  },
+  "method": "Fresh contexts, raw tasks and authority limits. Only tool results and final task reports inspected. Exact source matching identifies delivered text; output event order determines prerequisite order. Historical reviewed files can contain the same text as active instructions, so tool calls were inspected before classifying unrelated reads. Initial mode-summary text and later guard-status wording differ between snapshots. No private reasoning or memory contents are included.",
+  "limitations": [
+    "Live disclosure remains Partial; Review and both Revise trials include truncation or unrelated content.",
+    "Audit finding and attribution reproduce, but its clean manual Responsibility check lacks recorded positive calibration required by the walk guide.",
+    "No token baseline or savings claim.",
+    "Whole workflow-server Author/Audit execution and live host hook registration were not exercised.",
+    "Generic validator does not support the retained hooks extension."
+  ]
+}
