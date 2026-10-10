@@ -647,7 +647,7 @@ export function validateExitBindings(workflow: Workflow, knownActivityIds: Reado
     const defaults = exits.filter(e => e.isDefault);
     if (exits.length > 1 && defaults.length !== 1) {
       errors.push(
-        `Activity '${activity.id}' declares ${exits.length} exits and ${defaults.length} defaults; exactly one must be isDefault, so a dismissed checkpoint and an unmatched predicate both resolve to a named exit.`,
+        `Activity '${activity.id}' declares ${exits.length} exits and ${defaults.length} defaults; exactly one must be isDefault, so an unmatched predicate resolves to a named exit.`,
       );
     }
 

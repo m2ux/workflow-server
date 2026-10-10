@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { writeLoadableWorkflowFixture } from './corpus-fixture.js';
 import { collectFindings } from '../guards/check-operation-contract.js';
+import { liveCorpusRoot } from './corpus-root.js';
 
 /**
  * operation-contract guard: what an activity's variable contract says about a value, held against
@@ -182,5 +183,17 @@ describe('operation-contract guard', () => {
       handOn: 'written_report',
     });
     expect(findings.filter((f) => f.check === 'underived-operation-write')).toEqual([]);
+  });
+
+  /**
+   * The run over the corpus, which is what the family's zero is a claim about. The fixtures above
+   * prove the guard still fires; only a run says the corpus carries none of what it fires on.
+   *
+   * Definitions and code sit on different branches, so this reads whichever workflows checkout is
+   * present and `WORKFLOWS_DIR` points it at a corpus worktree. It skips where no checkout is
+   * present. The sweep runs the same program wherever corpus CI points it.
+   */
+  it.skipIf(!liveCorpusRoot())('holds the corpus clean of a contract disagreeing with the technique filling the value', async () => {
+    expect(await collectFindings(liveCorpusRoot()!)).toEqual([]);
   });
 });

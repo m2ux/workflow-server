@@ -45,20 +45,107 @@ function rootOf(path: string): string {
 }
 
 /**
- * Variables a gate needs a *value* for. `exists` / `notExists` answer on a missing variable, so a
- * presence read is not waiting on anything and is left out.
+ * Variables a gate needs a *value* for. A presence test answers on a missing variable, so it is
+ * not waiting on a later decision and is left out: `exists` / `notExists`, and the inline form
+ * that holds for every present non-null value,
+ * `x != null && (x == false || x == 0 || x == "" || x)`.
  */
 function valueReads(step: Step): Set<string> {
   const out = new Set<string>();
   if (typeof step.when === 'string') {
     const parsed = parseWhen(step.when);
-    if (parsed.ok) collectWhenReads(parsed.ast, out);
+    if (parsed.ok) collectWhenReads(parsed.ast, out, presenceRoots(parsed.ast));
   }
   collectConditionReads(step.condition, out);
   return out;
 }
 
-function collectWhenReads(ast: WhenAst, out: Set<string>): void {
+function flattenAnd(ast: WhenAst): WhenAst[] {
+  return ast.kind === 'and' ? [...flattenAnd(ast.left), ...flattenAnd(ast.right)] : [ast];
+}
+
+function flattenOr(ast: WhenAst): WhenAst[] {
+  return ast.kind === 'or' ? [...flattenOr(ast.left), ...flattenOr(ast.right)] : [ast];
+}
+
+/** The variable whose falsy-or-truthy disjunction is the present half of an inline presence test. */
+function falsyDisjunction(ast: WhenAst): string | null {
+  const leaves = flattenOr(ast);
+  if (leaves.length !== 4) return null;
+  let name: string | null = null;
+  const values = new Set<unknown>();
+  let sawTruthy = false;
+  for (const leaf of leaves) {
+    if (leaf.kind === 'truthy') {
+      if (sawTruthy) return null;
+      sawTruthy = true;
+      name = rootOf(leaf.path);
+      continue;
+    }
+    if (leaf.kind !== 'cmp' || leaf.op !== '==') return null;
+    values.add(leaf.value);
+    const root = rootOf(leaf.path);
+    if (name === null) name = root;
+    else if (name !== root) return null;
+  }
+  if (!sawTruthy || name === null) return null;
+  if (values.size !== 3 || !values.has(false) || !values.has(0) || !values.has('')) return null;
+  return name;
+}
+
+/** `x != null && (x == false || x == 0 || x == "" || x)`, and nothing else. */
+function existsConjunction(ast: WhenAst): string | null {
+  const parts = flattenAnd(ast);
+  if (parts.length !== 2) return null;
+  let nullCheck: string | null = null;
+  let idiom: string | null = null;
+  for (const part of parts) {
+    if (part.kind === 'cmp' && part.op === '!=' && part.value === null) nullCheck = rootOf(part.path);
+    else {
+      const found = falsyDisjunction(part);
+      if (found) idiom = found;
+    }
+  }
+  return nullCheck !== null && nullCheck === idiom ? nullCheck : null;
+}
+
+/** Variables an expression only tests for presence, in either inline shape. */
+function presenceRoots(ast: WhenAst): Set<string> {
+  const roots = new Set<string>();
+  if (ast.kind === 'not') {
+    const name = existsConjunction(ast.expr);
+    if (name) roots.add(name);
+    return roots;
+  }
+  const nullChecks = new Set<string>();
+  const idioms = new Set<string>();
+  for (const part of flattenAnd(ast)) {
+    if (part.kind === 'not') {
+      const name = existsConjunction(part.expr);
+      if (name) roots.add(name);
+    } else if (part.kind === 'cmp' && part.op === '!=' && part.value === null) {
+      nullChecks.add(rootOf(part.path));
+    } else {
+      const name = falsyDisjunction(part);
+      if (name) idioms.add(name);
+    }
+  }
+  for (const name of idioms) if (nullChecks.has(name)) roots.add(name);
+  return roots;
+}
+
+function isPresenceNode(ast: WhenAst, presence: Set<string>): boolean {
+  if (ast.kind === 'not') {
+    const name = existsConjunction(ast.expr);
+    return name !== null && presence.has(name);
+  }
+  if (ast.kind === 'cmp' && ast.op === '!=' && ast.value === null && presence.has(rootOf(ast.path))) return true;
+  const idiom = falsyDisjunction(ast);
+  return idiom !== null && presence.has(idiom);
+}
+
+function collectWhenReads(ast: WhenAst, out: Set<string>, presence: Set<string>): void {
+  if (isPresenceNode(ast, presence)) return;
   switch (ast.kind) {
     case 'literal':
       return;
@@ -67,11 +154,11 @@ function collectWhenReads(ast: WhenAst, out: Set<string>): void {
       out.add(rootOf(ast.path));
       return;
     case 'not':
-      collectWhenReads(ast.expr, out);
+      collectWhenReads(ast.expr, out, presence);
       return;
     default:
-      collectWhenReads(ast.left, out);
-      collectWhenReads(ast.right, out);
+      collectWhenReads(ast.left, out, presence);
+      collectWhenReads(ast.right, out, presence);
   }
 }
 
@@ -90,16 +177,17 @@ function requirements(step: Step): Requirement[] {
   const out: Requirement[] = [];
   if (typeof step.when === 'string') {
     const parsed = parseWhen(step.when);
-    if (parsed.ok) collectWhenRequirements(parsed.ast, out);
+    if (parsed.ok) collectWhenRequirements(parsed.ast, out, presenceRoots(parsed.ast));
   }
   collectConditionRequirements(step.condition, out);
   return out;
 }
 
-function collectWhenRequirements(ast: WhenAst, out: Requirement[]): void {
+function collectWhenRequirements(ast: WhenAst, out: Requirement[], presence: Set<string>): void {
+  if (isPresenceNode(ast, presence)) return;
   if (ast.kind === 'and') {
-    collectWhenRequirements(ast.left, out);
-    collectWhenRequirements(ast.right, out);
+    collectWhenRequirements(ast.left, out, presence);
+    collectWhenRequirements(ast.right, out, presence);
     return;
   }
   if (ast.kind !== 'cmp' || (ast.op !== '==' && ast.op !== '!=')) return;

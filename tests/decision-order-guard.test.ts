@@ -72,6 +72,27 @@ describe('decision-order guard', () => {
     expect(findingsFor(`${presenceReader}${DECIDER}`)).toEqual([]);
   });
 
+  it('exempts the inline presence test, and still flags a value comparison beside it', () => {
+    const inline = `  - kind: technique
+    id: use-platform
+    technique: some::op
+    when: platform != null && (platform == false || platform == 0 || platform == "" || platform)
+`;
+    expect(findingsFor(`${inline}${DECIDER}`)).toEqual([]);
+    const absent = `  - kind: technique
+    id: use-platform
+    technique: some::op
+    when: '!(platform != null && (platform == false || platform == 0 || platform == "" || platform))'
+`;
+    expect(findingsFor(`${absent}${DECIDER}`)).toEqual([]);
+    const compared = `  - kind: technique
+    id: use-platform
+    technique: some::op
+    when: platform != null && platform == "jira"
+`;
+    expect(findingsFor(`${compared}${DECIDER}`)).toHaveLength(1);
+  });
+
   it('exempts an announcement, which loses nothing by not firing', () => {
     const announce = `  - kind: action
     id: announce-platform
