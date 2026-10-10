@@ -1,6 +1,10 @@
 # Commands
 
+## Conventions
+
 Every command the skill runs, one spec per operation. The mode files name a spec by linking to it.
+
+### Execution
 
 - **Session.**
   Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login. Where shell state does not persist between commands, confirm instead that neither is set in the shell profile.
@@ -585,6 +589,8 @@ git fetch origin pull/950/head && git worktree add --detach .worktrees/review-95
 
 ## Graph
 
+### Graph Conventions
+
 Every graph command runs in the worktree [Create Pull Request Worktree](#create-pull-request-worktree) cut, and prints JSON carrying a `staleness` block. A block reporting the index behind sends the run back to [Index Repository](#index-repository), as [Understand Mode](understand-mode.md#rules) states under Fresh index.
 
 ### Index Status
@@ -695,15 +701,21 @@ Lists the hoist candidates, and the open initiatives and epics they could join.
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/orphans.py issues.json
 ```
 
-### Match Pull Requests
+### Delivery State
 
-Reports an epic's delivery state against the pull requests that name it.
+Shared report meanings and inputs for matching pull requests and syncing epics.
 
 - A merged pull request no row links is unmatched, and an open one no row links is in flight.
 - A row that links a merged pull request while a criterion its Coverage names is unticked is unmet.
 - A linked pull request whose title names another epic is a conflict, and it delivers the task once it has merged.
 - A linked pull request absent from the given pull requests is reported and does not deliver the task. [Fetch Pull Request](#fetch-pull-request) appends it, and the command is run again.
 - `--links` is the file [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links) writes for those pull requests, which every call given `--prs` carries.
+
+### Match Pull Requests
+
+Reports an epic's delivery state against the pull requests that name it.
+
+- Interpret results using [Delivery State](#delivery-state).
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json
@@ -721,7 +733,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sy
 
 Links each named task's id to a pull request naming the epic, open or merged, and ticks Done on a row once it is complete.
 
-- It reports the same delivery state as [Match Pull Requests](#match-pull-requests).
+- It reports [Delivery State](#delivery-state).
 - It reports each disagreement between a linked pull request's test plan and the rows it delivers, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan.
 - A row whose id links its task issue links the pull request instead.
 - A task is delivered as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.

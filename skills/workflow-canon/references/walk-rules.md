@@ -15,7 +15,7 @@ These govern every walk of the canon's units, in each mode. The criterion applie
 - **The construct.**
   A finding quotes or names the construct the entry's Detect keys on. Where that construct is the harness tool surface or a bootstrap resource, read that surface.
 - **Identifiers.**
-  Take an identifier at full length from its authority: [Resolve ref](commands.md#resolve-ref), the registry, the resolved path.
+  Take an identifier at full length from its authority: [Resolve Ref](commands.md#resolve-ref), the registry, the resolved path. The calling mode supplies command prerequisites through its canon context.
 - **Search hits.**
   - A search hit is a site. Read the construct around it, and cite that construct.
   - An empty search leaves open a construct the pattern did not name.
@@ -29,10 +29,10 @@ These govern every walk of the canon's units, in each mode. The criterion applie
   - An empty hand-check is `blocked` until it has reported a case already in the corpus.
   - Take a set the entry names from that entry's wording.
 
-## Candidates and fixes
+## Candidates and Fixes
 
 - **Falling candidates.**
-  A candidate that falls is an edit, in the same pass, to the entry's Do not flag or the guard's exemption surface.
+  A candidate that falls identifies a correction to the entry's Do not flag or the guard's exemption surface. Apply that correction within authorized remediation; a review-only audit records it for Author.
 - **Unread paths.**
   `unread` paths are outside the remediation scope.
   - An audit walks them under [Rules](audit-mode.md#rules).

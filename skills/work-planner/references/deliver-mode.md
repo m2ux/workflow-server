@@ -2,6 +2,12 @@
 
 Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, and hoist arising issues.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
+Before matching pull requests or syncing epics, read [Delivery State](commands.md#delivery-state).
+
 ## Procedure
 
 1. **Select.** Select the board as [Select](board.md#select) states.
@@ -54,7 +60,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Open the pull request.**
   Open it with [Open Task Pull Request](commands.md#open-task-pull-request), which titles it for the epic, targets the epic base, fills the Test Plan table as [Test Coverage](work-breakdown.md#test-coverage) states, and links each task issue the unit delivers. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Merge.**
-  Record passed checks with [Patch Pull Request Body](commands.md#patch-pull-request-body), following [Test plan](work-breakdown.md#task-delivery), then follow [Task Merge](work-breakdown.md#task-merge).
+  Record check results with [Patch Pull Request Body](commands.md#patch-pull-request-body), following [Test Plan](work-breakdown.md#test-plan), then follow [Task Merge](work-breakdown.md#task-merge).
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
 

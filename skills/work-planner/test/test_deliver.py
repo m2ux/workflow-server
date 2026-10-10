@@ -171,6 +171,24 @@ class Survey(unittest.TestCase):
         self.assertNotIn('merge #', output)
         self.assertIn('merge: 0', output)
 
+    def test_a_linked_pass_result_allows_the_merge(self):
+        evidence = f'{RECORDS}/2026-10-06-943-checks/results.md#t1'
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('✓', f'[✓]({evidence})'),
+                            base='i07/e00/main')])
+        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+
+    def test_an_incomplete_linked_result_withholds_the_merge(self):
+        evidence = f'{RECORDS}/2026-10-06-943-checks/results.md#t2'
+        for result in ('Partial', 'Fail', 'Not run', '✓ Partial'):
+            with self.subTest(result=result):
+                body = PLAN + f'| T2 | Another check. | AC1 | [{result}]({evidence}) |\n'
+                output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+                                [pr(950, '[I07:E00] Queue plan', body=body, base='i07/e00/main')])
+                self.assertNotIn('merge #', output)
+                self.assertIn('merge: 0', output)
+
     def test_an_unticked_coverage_criterion_does_not_withhold_the_merge(self):
         linked = f"[W01]({url('pull', 950)})"
         record = epic(943, (linked, 'Queue plan', '', ''))

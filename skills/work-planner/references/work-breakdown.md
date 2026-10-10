@@ -2,6 +2,12 @@
 
 How the Work Breakdown tables are written, read and kept current, what a plan or coverage report names, and what a Problem and a Proposal hold. Issue bodies carry the tables and nothing about them: the conventions live here.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
+Before matching pull requests or syncing epics, read [Delivery State](commands.md#delivery-state).
+
 ## Tables
 
 | Level | Columns |
@@ -159,19 +165,7 @@ A draft, conflict, failed or pending check, unmet criterion, or repository revie
   - A unit's task branch is cut from the epic base [Find Available Work](commands.md#find-available-work) names for it, for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
   - Every pull request delivering the unit's work is opened from this branch.
 - **Test plan.**
-  - A task pull request carries its test plan as one table, with columns Test, Description, Coverage and Pass. Pass is last.
-    - Test names the id.
-    - Description names the check.
-    - Coverage names the criteria the check observes, `AC1, AC3`, and is empty when the check observes none.
-    - A row whose Test cell is empty names a criterion no check observes, and its Pass cell is empty.
-    - Pass is empty while the check is open, and a tick, ✓, when the check has passed.
-  - An item has passed when it has been run and it held, and its Pass cell carries that tick.
-  - The test plan has passed when every such Pass cell carries that tick.
-  - [Sync Epic](commands.md#sync-epic) compares each linked pull request's test plan with the Coverage of the rows that pull request delivers. Each disagreement names the pull request and the row, and the sync goes on to link, tick and mark Done.
-    - A criterion the plan names that those rows do not cover.
-    - A criterion a row covers that no test-plan row names.
-    - A criterion a row covers that a test-plan row names with an empty Test cell, reported as unobserved.
-    - A sentence that names a criterion and says it belongs to, is left to, or is owned by a task the table gives to another row.
+  A task pull request carries a [Test Plan](#test-plan).
 - **Task ids.**
   - An unreserved task awaiting its pull request links its file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
   - Each task row has one link. A reserved task links only its planning folder: `[W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. The folder's README links the work-item file. Releasing the reservation points the row to that file.
@@ -190,16 +184,39 @@ A draft, conflict, failed or pending check, unmet criterion, or repository revie
 - **Work another issue takes.**
   It leaves the table. Its criteria go with it, or to another row that delivers them.
 
+### Test Plan
+
+- **Table.**
+  The pull request's Test Plan section contains only one table, with columns Test, Description, Coverage and Pass, in that order.
+- **Columns.**
+  - Test names the id.
+  - Description briefly names the check.
+  - Coverage names the criteria the check observes, `AC1, AC3`, and is empty when the check observes none.
+  - A row whose Test cell is empty names a criterion no check observes, and its Pass cell is empty.
+  - Pass is empty while a check awaits a result. A recorded result uses ✓ when the check ran and held, or an accurate label such as Partial, Fail or Not run.
+- **Evidence.**
+  - Test procedures, tested revisions, observations, limitations and supporting evidence belong in the work's published planning document.
+  - Each recorded result in Pass links to its relevant section in that document, using the result as link text: `[✓](URL#check)` or `[Partial](URL#check)`.
+  - Verify that each evidence link is accessible to the pull request's readers and resolves to the intended section before publishing the body.
+- **Completion.**
+  The test plan has passed when every row with a Test id carries ✓ as its result. Partial, failed and unexecuted checks remain incomplete.
+- **Coverage agreement.**
+  [Sync Epic](commands.md#sync-epic) compares each linked pull request's test plan with the Coverage of the rows that pull request delivers. Each disagreement names the pull request and the row, and the sync goes on to link, tick and mark Done.
+  - A criterion the plan names that those rows do not cover.
+  - A criterion a row covers that no test-plan row names.
+  - A criterion a row covers that a test-plan row names with an empty Test cell, reported as unobserved.
+  - A sentence that names a criterion and says it belongs to, is left to, or is owned by a task the table gives to another row.
+
 ### Test Coverage
 
 - Every criterion a unit's Coverage names has an observing test in its work item and pull request. A criterion no test can observe remains in the [Coverage Report](#coverage-reports) and in a test-plan row with an empty Test cell.
 - The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. Apply [Coverage Reports](#coverage-reports) when evaluating that evidence.
 - An instrument that does not exist yet is work the task carries, as [Verified](review-criteria.md#verified) defines. Use the project's own system test where it can observe the criterion.
-- Write one [Test plan](#task-delivery) row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
+- Write one [Test Plan](#test-plan) row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
 
 ### Task Merge
 
-Merge each open task pull request whose [Test plan](#task-delivery) has passed, both on a delivery run that finds it and in the session that opened it, without further confirmation.
+Merge each open task pull request whose [Test Plan](#test-plan) has passed, both on a delivery run that finds it and in the session that opened it, without further confirmation.
 
 1. **Check.**
    Confirm the repository prerequisite in [Issue Closure](#issue-closure) and the task pull request's epic base.

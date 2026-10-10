@@ -1,6 +1,7 @@
 ---
 name: workflow-canon
-description: "Applies the workflow-server design canon (principles, anti-patterns, conventions, guards) to workflow definitions: workflows, activities, techniques and resources. Use to author a definition or a change to one (\"write a new activity\", \"apply this finding\", \"fix this defect in workflow X\"), audit (\"audit workflow X\", \"does this technique comply\", \"check for anti-patterns\"), or revise this skill (\"update the workflow-canon skill\"). Also for one canon question (\"why is this an anti-pattern?\") and before committing definition changes."
+description: >-
+  A work-design assistant for workflow-server goals, requirements, architecture, contracts and design decisions. Use to author workflow definitions ("write a new activity", "apply this finding"), audit them against the design canon ("audit workflow X", "why is this an anti-pattern?"), review integrations ("check these branches together", "assess integration readiness"), or revise this skill ("update the workflow-canon skill").
 hooks:
   PostToolUse:
     - matcher: "Edit|Write|MultiEdit"
@@ -11,93 +12,64 @@ hooks:
 
 # Workflow Canon
 
-Workflow Canon locates the canon's homes, enumerates their units, walks them over workflow definitions, and reports. The canon has five homes:
+Workflow Canon is a work-design assistant for shaping workflow-server work around its goals, requirements, architecture and constraints.
 
-- **[Design Principles][principles]**  The principles a definition is designed to.
-- **[Anti-Patterns][anti-patterns]**  The catalog of defects, grouped in families of entries.
-- **[Convention Conformance][conventions]**  How a definition compares with its sibling workflows.
-- **[Guard suite][guards]**  The registry of mechanical checks.
-- **[Schema fields][schemas]**  The fields each definition file kind takes.
-
-[principles]: https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md
-[anti-patterns]: https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md
-[conventions]: https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md
-[guards]: https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts
-[schemas]: https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md
-
-## Terms
-
-- **Unit**
-  One heading of a home, at the level the [unit inventory](references/canon-map.md#unit-inventory) names.
-- **Entry**
-  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.
-- **Walk**  Applying each unit to every file on the surface, and recording its status.
-- **Change surface**
-  The touched files and their closure, as Audit's [Scope](references/audit-mode.md#scope) defines them.
+- **Work**  Intended outcomes, requirements and constraints.
+- **Design**  Architecture, responsibilities, definitions and contracts.
+- **Canon**  The project's authoritative design criteria and conventions.
+- **Evidence**  Observations supporting design decisions, with their limits stated.
 
 ## Modes
 
-Read the file for the mode the request calls for:
+Read the selected mode's file in full, then follow its links as each step needs them:
 
 - **[Author](references/author-mode.md)**
-  - New definitions, and specified changes: a work item, a finding, or a defect with a location
-  - Closing a confirmed finding with the Fix its entry states
-  - A walk of each draft before it is written, and a check of what the pass wrote
-  - The [design flow](references/design-flow.md): function, expected behaviour, structure, and the behaviour the structure exposes
-  - Fix findings closed within the pass, and a stop when two entries undo each other
+  - Authoring definitions and specified changes
+  - Closing confirmed findings with their prescribed fixes
+  - Draft walks and verification of written changes
 - **[Audit](references/audit-mode.md)**
-  - Reviews of existing definitions, entry by entry across the change surface
-  - Attribution of each finding to the diff, to the base ref, or to a prior pass
-  - Re-derivation of each High before it drives a fix
-  - A report, standalone or in the layout a workflow run's guide owns
-  - Sub-agent slices for a change surface one pass cannot read, continued until the ledger closes or the user stops
-  - Guard candidates for each Detect applied by pattern
+  - Canon questions and conformance of existing definitions
+  - Attribution and verification of findings
+  - Reports with coverage ledgers
+- **[Review](references/review-mode.md)**
+  - Scope and revision pairings for integrations
+  - Tracing design and architecture through declarations and consumers
+  - Coverage matched to affected branches and languages
+  - Evidence for findings and readiness
 - **[Revise](references/revise-mode.md)**
-  - To make changes to this skill's own files
-  - Conformance with the [skill guidelines](../guidelines.md)
-
-## Homes
-
-- **Links and roots.**
-  - Each home's link names its path from its root: the corpus tree for the `workflows` branch, the server checkout for `main`.
-  - Read a home on disk, at the commit audited, never from the link.
-- **Server checkout.**
-  The guards and the schema fields, found with [Find the server checkout](references/commands.md#find-the-server-checkout).
-- **Corpus tree.**
-  The canon, ledgers, and walk artifacts, a `workflows` worktree found with [Check the corpus tree](references/commands.md#check-the-corpus-tree).
-
-## Dependencies
-
-- **git.**  For the base ref, the diff, and the merge-base a delta run or the edit guard measures against.
-- **Node and npm.**  In the server checkout, for the guard suite and the option-coverage walk.
-- **Python 3.10+.**  For the [edit guard](references/commands.md#run-the-edit-guard) and its tests.
-- **Workspace server checkout.**
-  The edit guard runs the corpus guards in `.project/main` of the workspace holding this skill, with the `tsx` installed there.
-- **Integration refs.**
-  The corpus tree's `origin/workflows` and each `origin/iNN/workflows`, as last fetched. The edit guard measures against the nearest merge-base with them.
-- **Claude Code hooks.**
-  - Claude Code registers the edit guard when the skill is invoked, and runs it after each edit for the rest of the session. Cursor runs no hook.
-  - The hook finds its script under `CLAUDE_PROJECT_DIR`, so the session starts at the workspace root.
-- **Corpus worktree.**  For the prose homes, as [Homes](#homes) locates it.
-- **The server's AGENTS.md.**
-  It owns the check commands, the worktree a run measures, and binding-fidelity triage.
-- **workflow-server MCP.**  For fetching a canon section inside a workflow session.
-- **Sub-agents.**
-  Where the harness has them, for the unread slices of an audit one pass cannot read.
+  - Changes to this skill's own files
+  - Conformance with shared and local skill guidelines
 
 ## Rules
 
-- **Homes own the criteria.**
-  - Follow each home as its own overview and entries are written. This skill does not restate them.
-  - Fetch the section and follow it. Notes taken from a section are not the section.
-- **Canon map.**
-  Read the [canon map](references/canon-map.md) before the first fetch: how each home is enumerated, and where a judgement already made is recorded.
-- **One question.**
-  A single question about the canon takes no mode: fetch that entry, answer, and stop.
-- **Walks.**  Every walk of the canon's units follows the [walk rules](references/walk-rules.md).
+- **Measured claims.**
+  Counts, revision identities and check outcomes come from command output or preserved run evidence.
+- **One home.**
+  Project documents own their design criteria. Fetch the authoritative section and apply it as written, including its exclusions; notes taken from it do not replace it.
+- **Linked sections.**
+  Retrieve a heading-linked section and its subsections only, stopping before the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.
+- **Planning.**
+  When creating or using artifacts, all modes follow [Planning](references/planning.md).
 - **Commands.**
-  Every spec runs under the shared conventions at the top of [Commands](references/commands.md).
-- **Edit guard.**
-  A failure the [edit guard](references/commands.md#run-the-edit-guard) returns after an edit is closed, or stated as unmeasured, before the next edit.
-- **Commit gate.**
-  A definition change commits only once audited, as [Author](references/author-mode.md#procedure)'s last step states.
+  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.
+
+## Dependencies
+
+- **Git and repository search**
+  Revision capture, comparisons, isolated worktrees and locating criteria and consumers.
+- **GitHub CLI**
+  PR metadata, requirements, check evidence and authorized publication through REST on GitHub.
+- **Project instructions, documentation and runtimes**
+  Branch ownership, canon homes, schemas and validation tools for the affected product.
+- **Node and npm**
+  Engine and corpus checks use the paired engine's runtime, lockfile and installed tools, including TypeScript and `tsx`.
+- **Docker and Compose**
+  Packaging checks build and exercise disposable images and containers when deployment behavior is affected.
+- **Python 3.10+**
+  The definition edit hook and its tests.
+- **Agent host and sandbox**
+  Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.
+- **Claude Code hooks**
+  Registers the definition edit hook for the session; its script resolves beneath the workspace root named by `CLAUDE_PROJECT_DIR`. Hosts without skill-hook support run the applicable explicit checks.
+- **Workflow resource access**
+  A running workflow's resource tool can supply canon sections and report guides when available.

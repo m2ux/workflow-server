@@ -2,7 +2,11 @@
 
 Severity, row shapes, and which report the run owes.
 
-## Bands
+## Report Context
+
+Read this section before selecting a report layout.
+
+### Bands
 
 | Band | Holds | Target |
 |---|---|---|
@@ -12,7 +16,7 @@ Severity, row shapes, and which report the run owes.
 
 State each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.
 
-## Severity
+### Severity
 
 Severity ranks urgency inside a band. The band says whether the finding gates.
 
@@ -23,9 +27,9 @@ Severity ranks urgency inside a band. The band says whether the finding gates.
 | `Medium` | An entry fires and the defect stays in that construct. Spot-confirm |
 | `Low` | Hygiene with no consumer consequence |
 
-A guard that exits 2 has not measured: `blocked`, not a pass.
+An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.
 
-## Finding rows
+### Finding Rows
 
 | Column | Carries |
 |--------|---------|
@@ -41,7 +45,7 @@ A guard that exits 2 has not measured: `blocked`, not a pass.
 
 A row whose Evidence cannot name a construct is not a finding. Evidence and Location cite any construct in a change-surface file.
 
-## Coverage ledger
+### Coverage Ledger
 
 Divergences only. A unit walked cleanly has no row.
 
@@ -51,9 +55,9 @@ Divergences only. A unit walked cleanly has no row.
 | Unit | The section title or anchor, as the home spells it |
 | Status | `not-applicable` with the unit's own reason, or `blocked` with what prevented the walk |
 
-Total the `blocked` rows. That figure is the unit residual. A family `blocked` over most of the surface counts once, however many entries it holds. One row per unwalked unit of every home, accounted from the headings at the commit audited ([canon-map](./canon-map.md#unit-inventory)). A ledger that cannot account for every unit is a partial walk. Its status is the [coverage header](#coverage-header).
+Total the `blocked` rows. That figure is the unit residual. A family `blocked` over most of the surface counts once, however many entries it holds. One row per unwalked unit of every home, accounted from the headings at the commit audited ([canon-map](canon-context.md#criteria)). A ledger that cannot account for every unit is a partial walk. Its status is the [coverage header](#coverage-header).
 
-## File coverage
+### File Coverage
 
 Independent of the unit ledger: every unit can be `walked` while the surface stays unopened.
 
@@ -66,7 +70,7 @@ A scan hit is `read` only when the file was then inspected whole. A scan is evid
 
 List the `unread` paths. While any remain, the header's status is the [coverage header](#coverage-header). An existence claim over a list that still has `unread` paths says so on the finding.
 
-## Coverage header
+### Coverage Header
 
 Whether the audit is finished.
 
@@ -76,21 +80,11 @@ Whether the audit is finished.
 - **Finished.**
   Every change-surface path is `read`, and every criterion is `walked` or `not-applicable`.
 
-## Which report
+## Which Report
 
-### Inside workflow-authoring or workflow-design
+Inside workflow-authoring or workflow-design, use [Workflow Reports](#workflow-reports). Otherwise use the [Standalone](#standalone) layout. Stored artifacts follow the shared [planning guide](planning.md).
 
-That run's guide owns the layout:
-
-| Artifact | Guide, on the corpus tree |
-|----------|---------------------------|
-| `findings-register.md` | `corpus/workflow-authoring/resources/findings-register.md` |
-| `compliance-review.md` / `post-update-review.md` | `corpus/workflow-design/resources/compliance-report.md` |
-| per-pass `*-findings.md` | `corpus/workflow-design/resources/findings-satellite.md` |
-
-Fetch the guide's `## Template` and fill it. Persist through the activity's `manage-artifacts::write-artifact` step.
-
-### Standalone
+## Standalone
 
 In the chat, or in a file the user named:
 
@@ -122,7 +116,7 @@ In the chat, or in a file the user named:
 
 ## Coverage
 
-## File coverage
+## File Coverage
 
 read N · unread N.
 
@@ -134,3 +128,15 @@ read N · unread N.
 ~~~
 
 Omit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. The header's units × paths bound every figure under it, and each header figure reconciles against a list in the body. Status is the [coverage header](#coverage-header). Live or Contract at zero over a partial grid is a statement about that part. A Live or Contract count that rose says a fix moved a defect.
+
+## Workflow Reports
+
+That run's guide owns the layout:
+
+| Artifact | Guide, on the corpus tree |
+|----------|---------------------------|
+| `findings-register.md` | `corpus/workflow-authoring/resources/findings-register.md` |
+| `compliance-review.md` / `post-update-review.md` | `corpus/workflow-design/resources/compliance-report.md` |
+| per-pass `*-findings.md` | `corpus/workflow-design/resources/findings-satellite.md` |
+
+Fetch the guide's `## Template` and fill it. Persist through the activity's `manage-artifacts::write-artifact` step.

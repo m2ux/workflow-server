@@ -2,6 +2,12 @@
 
 Explains a pull request's changes to the engineer who reviews them. The mode measures the change over the repository's graph, writes an [architecture overview](architecture-overview.md) into a planning record of its own, and links that overview from the pull request's References. [Sync Mode](sync-mode.md) runs it for each task and epic it sets In Review, and the user runs it against a pull request they name.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
+Before graph operations, also read [Graph Conventions](commands.md#graph-conventions).
+
 ## Procedure
 
 1. **Take the pull request.**

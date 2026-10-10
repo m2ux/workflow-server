@@ -2,7 +2,7 @@
 
 How each home is enumerated, and where a judgement already made is recorded.
 
-## Unit inventory
+## Unit Inventory
 
 Read the enumeration from the home at the commit audited, with [List units](commands.md#list-units).
 
@@ -16,7 +16,7 @@ Read the enumeration from the home at the commit audited, with [List units](comm
 - Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
 - The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.
 
-## Prior judgements
+## Prior Judgments
 
 An entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.
 
@@ -28,10 +28,6 @@ An entry can fire against an instance a surface has already judged. Read that su
 
 `EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.
 
-## File kinds
+## File Kinds
 
 A unit binds the constructs its Fires-on line names. Author runs [List units for a construct](commands.md#list-units-for-a-construct) once for each construct a draft writes, and loads the units it prints. Audit walks every unit the [unit inventory](#unit-inventory) names, whatever the lines say. On an Audit, `not-applicable` records a unit's own wording that excludes the file in hand.
-
-## Covering entries
-
-Where a principle names a covering entry, follow that entry for the spellings its Detect reaches, and follow the principle where it reaches a spelling the Detect does not.

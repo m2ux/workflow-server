@@ -2,6 +2,10 @@
 
 The method for the goal pass, the consistency pass, and the ordering pass. The requirements they share are the [review criteria](review-criteria.md).
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
 ## Goal Pass
 
 Tests the drafts against the [review criteria](review-criteria.md) for the issue's kind. It runs on the drafts before any issue is created, and again whenever the goal, a criterion, a Problem, a Proposal, or an epic changes.

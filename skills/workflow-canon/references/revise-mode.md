@@ -1,29 +1,36 @@
-# Revise mode
+# Revise Mode
 
-Changes the skill itself: SKILL.md and its references. Every revision follows the [skill guidelines](../../guidelines.md); a change that departs from them is not complete.
+Changes the skill itself: its entry point, mode files, shared guides, commands and templates.
+
+## Prerequisites
+
+Before the first command spec, read the [command conventions](commands.md#conventions).
 
 ## Procedure
 
 1. **Read the guidelines.**
-   Read the [skill guidelines](../../guidelines.md) whole before the first edit.
+   Read the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md) whole before the first edit.
 2. **Understand the request.**
-   - Interview the user until the change and its scope are clear.
-   - Find every file the change touches: the rule's home and each file that cites it.
+   Resolve missing decisions with the user until the change and its scope are clear. Find the rule's home, its consumers, and any script, template or test that states it. The workspace branch owns the skill and shared guidelines. Locate a shared [planning record](planning.md) when the revision needs planning artifacts.
 3. **Work in a worktree.**
-   Branch a worktree for the change, and commit each distinct change as its own commit.
+   [Create Skill Worktree](commands.md#create-skill-worktree) for the change.
 4. **Revise.**
-   - Make the change in the rule's one home, and link to it from every other file that needs it.
-   - Keep criteria in their homes, per SKILL.md's [Rules](../SKILL.md#rules).
-   - Write it to the guidelines' layout, prose, link and command rules as it is written, not in a later pass.
-5. **Check against the guidelines.**
-   Read every changed file against each section of the [skill guidelines](../../guidelines.md), and fix what departs:
-   - the description, when the skill's reach changed;
-   - one line per item, bold leads on their own line, and sub-bullets for discrete points;
-   - each rule stated once, and no description of replaced behaviour left anywhere;
-   - every command named by link to its spec in [Commands](commands.md);
-   - every link and anchor resolving.
+   Make the change in its authoritative home and update every consumer. Apply the guidelines' layout, prose, link and command rules while writing.
+5. **Check the guidelines.**
+   Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](../../guidelines.md#progressive-disclosure).
 6. **Verify.**
-   Confirm SKILL.md's frontmatter still opens and closes with `---` and holds `name` and `description`.
-7. **Deliver.**  Commit, push, and report what changed in each file.
+   - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
+   - [Run Skill Checks](commands.md#run-skill-checks), [Check Skill Summaries](commands.md#check-skill-summaries) and [Run the Edit Guard Tests](commands.md#run-the-edit-guard-tests). Changes to shared rules or templates also run their affected consumer suites.
+   - Walk a representative request through each changed decision.
+   - For every affected mode, apply [disclosure verification](../../guidelines.md#disclosure-verification) using the skill's [representative scenarios](guidelines.md#progressive-disclosure).
+7. **Deliver.**
+   [Commit Skill Changes](commands.md#commit-skill-changes) for each distinct change, then [Push Skill Branch](commands.md#push-skill-branch). When requested, [Open Skill Pull Request](commands.md#open-skill-pull-request). Report the files, validation and delivery link.
 8. **Revise the guidelines.**
-   When the user states a new rule for how the skill is written, add it in the same change: to the [skill guidelines](../../guidelines.md) when it binds every skill, or to a `references/guidelines.md` of this skill's own when it binds this skill alone.
+   When the user states an authoring rule, put it in the [skill guidelines](../../guidelines.md) if it binds every skill, or this skill's [guidelines](guidelines.md) if it binds only this one.
+
+## Rules
+
+- **Complete.**
+  A revision is complete only when it conforms to both guidelines, its links resolve, applicable checks pass and [disclosure verification](../../guidelines.md#disclosure-verification) succeeds for every affected mode.
+- **Scope.**
+  This mode changes the skill; an example integration is reviewed only as far as needed to validate the requested revision.

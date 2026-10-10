@@ -2,9 +2,14 @@
 
 Changes the skill itself: SKILL.md, its references, templates and scripts.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
 ## Procedure
 
-1. **Read the guidelines.**  Read both guidelines whole before the first edit.
+1. **Read the guidelines.**
+   Read the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md) whole before the first edit.
 2. **Understand the request.**
    - Interview the user, as an [Interview](interview.md), until the change and its scope are clear.
    - Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
@@ -18,11 +23,13 @@ Changes the skill itself: SKILL.md, its references, templates and scripts.
    - The description, when the skill's reach changed;
    - One line per item, bold leads on their own line, and sub-bullets for discrete points;
    - Each rule stated once, and no description of replaced behaviour left anywhere;
-   - Every command named by link to its spec in [Commands](commands.md);
-   - Every link and anchor resolving.
+   - Every command linked to its operation section;
+   - Every link and anchor resolving;
+   - [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
 6. **Verify.**
    - [Run Tests](commands.md#run-tests) when a script, template or test changed.
    - Confirm SKILL.md's frontmatter still opens and closes with `---` and holds `name` and `description`.
+   - Apply [disclosure verification](../../guidelines.md#disclosure-verification) to every affected mode, using this skill's [representative scenarios](guidelines.md#progressive-disclosure).
 7. **Deliver.**  Commit, push, and report what changed in each file.
 8. **Revise the guidelines.**
    When the user states a new rule for how the skill is written, add it in the same change: to the [skill guidelines](../../guidelines.md) when it binds every skill, or to this skill's [guidelines](guidelines.md) when it binds this skill alone.

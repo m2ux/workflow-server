@@ -1,20 +1,28 @@
-# Audit mode
+# Audit Mode
 
-Reviews existing definitions: enumerates the units, walks them over the surface, attributes each finding, verifies the Highs, and reports. Each confirmed finding goes to [Author](author-mode.md) to be fixed.
+Reviews existing definitions: enumerates the units, walks them over the surface, attributes each finding, verifies the Highs, and reports. A single canon question uses the bounded procedure below.
+
+## Prerequisites
+
+Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms).
+
+## Canon Question
+
+For a single question about an entry, locate its [canon home](canon-context.md#homes), [fetch the entry](commands.md#fetch-unit) with its required context, answer and stop. The full audit procedure applies when the request calls for a conformance judgment over definitions.
 
 ## Procedure
 
 1. **Scope the surface.**
-   - Write each list in [Scope](#scope) before the first unit. The walk consumes the lists.
+   - Read the [criteria context](canon-context.md#criteria).
+   - Write each list in [scope](canon-context.md#scope) before the first unit. The walk consumes the lists.
    - A count is a summary of one. An existence claim holds over the list it was resolved against.
 2. **Run the checks first.**
-   - Prefer [Run guards on the delta](commands.md#run-guards-on-the-delta): it attributes this step by diffing a merge-base run against this tree.
-   - Run the other [checks](commands.md#checks) the change calls for.
+   - Select the project's [checks](canon-context.md#checks), preferring a delta run when it can compare the base and candidate under equivalent conditions.
 3. **Enumerate units.**
-   - Every unit [File kinds](canon-map.md#file-kinds) gives an Audit, from each home's headings at the commit audited.
+   - Enumerate every unit the [canon inventory](canon-map.md#unit-inventory) gives an Audit, using [List Units](commands.md#list-units) on each home at the commit audited.
    - Apply each entry as written.
 4. **Walk.**
-   - Walk the units per [Walk](#walk) and the [walk rules](walk-rules.md).
+   - Walk the units per [Walk](#walk) and the required walk rules.
    - An audit that cannot read the change surface in one pass splits the unread change-surface paths across sub-agents, in disjoint slices.
    - The parent keeps the ledger in [Walk](#walk).
    - Every sub-agent return follows [Rules](#rules).
@@ -24,43 +32,11 @@ Reviews existing definitions: enumerates the units, walks them over the surface,
    - Spot-confirm Mediums: the construct exists and the class is right.
    - Only confirmed findings drive fixes.
 7. **Report.**
-   - Report in the layout [Which report](reporting.md#which-report) names.
-   - Give the header the status [Coverage header](reporting.md#coverage-header) defines.
+   - Read [Report Context](reporting.md#report-context) for bands, severity, row fields and coverage.
+   - Report in the layout [Which Report](reporting.md#which-report) names.
 8. **File a mechanised Detect.**
-   - A Detect applied by pattern is a guard candidate. Name what it keys on and file it against the registry.
+   - A Detect applied by pattern is a guard candidate. Name what it keys on and record it against the registry in the report; external filing follows existing user authority.
    - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.
-
-## Scope
-
-- **Base ref.**  The ref the change is measured against.
-- **Surface files.**
-  `workflow.yaml`, `activities/`, `techniques/`, `resources/`, READMEs of the target.
-- **Touched.**
-  Definition paths whose bytes differ from the base ref, each the whole file. Hunks discover membership.
-- **I/O contract.**
-  - Technique `## Inputs` / `## Outputs`, including nested component and artifact declarations.
-  - Activity inputs, outputs, and step binds that name those ids.
-  - Renames, additions, removals, optionality flips, and type or shape changes.
-- **Reference.**
-  - `techniques[]`, step `technique` / `technique.name`, Protocol `Apply` / `::` / a markdown link to an op, or a resource or README cite that resolves to the op file.
-  - Sweep the workflows tree. Resolve each to a file path.
-- **Closure.**
-  Every activity or technique that references a touched file whose I/O contract changed, in this workflow and others.
-- **Change surface.**  Touched ∪ closure. The header reports the two subsets separately.
-- **Consumers.**
-  - References other workflows hold into the target. Always computed.
-  - A consumer joins the change surface when the file it names is on it.
-  - Start from [Find consumers](commands.md#find-consumers), then resolve binds and Apply links.
-- **Reference workflows.**  Siblings of similar type, as convention conformance requires.
-- **Prior residual.**
-  - `unread` paths in the latest findings register under `.engineering/artifacts/planning/`.
-  - Re-derive the enumeration at this commit and inherit dispositions by path. A path absent from the tree leaves the worklist.
-  - Reading starts at the residual. The walk follows [Rules](#rules). Paths a stop leaves unread are the next residual.
-- **Second entry.**
-  - Where a graph gives one activity two entry points, both are on the surface.
-  - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.
-
-Hunk lines are not the surface. A unit read from a hunk is not `walked`. A referencer stays on the surface when its bind site was not edited.
 
 ## Walk
 
@@ -73,7 +49,7 @@ Hunk lines are not the surface. A unit read from a hunk is not `walked`. A refer
 - **Paths.**
   - Each worklist path is `read` (whole file) or `unread`.
   - A search names files; it does not dispose a directory.
-  - Reconcile per [File coverage](reporting.md#file-coverage).
+  - Reconcile per [File Coverage](reporting.md#file-coverage).
 
 ## Attribution
 
@@ -87,6 +63,8 @@ Hunk lines are not the surface. A unit read from a hunk is not `walked`. A refer
 
 ## Rules
 
+- **Remediation.**
+  Confirmed findings go to [Author](author-mode.md) when fixing them is within the user's request. A review-only request reports the finding and any criterion correction without editing definitions, canon entries or exemption surfaces.
 - **Continue.**
   When unread paths remain, a sub-agent return, including one with no new finding, is followed by the next unread slice in the same turn.
   - Record what that slice read, and fold any finding, before the next slice starts.
