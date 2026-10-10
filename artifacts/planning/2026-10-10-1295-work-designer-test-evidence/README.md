@@ -22,6 +22,8 @@ The evidence distinguishes structural checks, live agent behavior and remaining 
 | [Work Planner Evidence](planner-disclosure-evidence.json) | Tested file hashes, mode routes, section reads and fixture checks |
 | [Workflow Canon Consolidation](canon-consolidation.md) | Combined modes, project configuration, regression checks and fresh-agent results |
 | [Workflow Canon Evidence](canon-consolidation-evidence.json) | Source snapshots, observed section reads and fixture isolation |
+| [Workflow Canon Project Context](canon-project-context.md) | Direct project guidance, preserved commands, regression checks and fresh-agent reading paths |
+| [Project Context Evidence](canon-project-context-evidence.json) | Tested source hashes, command preservation, observed section deliveries and fixture isolation |
 
 ## Links
 
