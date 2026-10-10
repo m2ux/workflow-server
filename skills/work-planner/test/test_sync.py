@@ -363,107 +363,50 @@ def worktree(root: Path, main: Path, name: str = 'unit') -> str:
 
 
 class InitiativeClose(unittest.TestCase):
-    def run_sync(self, pulls: list[dict] | None, ticked: bool = True, branches: tuple[str, ...] = ('docker', 'main', 'workflows', 'workspace'), held: list[dict] = ()) -> str:
-        epic = issue(2, '[I01:E00] First: Epic', 'closed')
-        body = initiative_body((f"[E00]({url('issues', 2)})", ''))
+    def run_sync(self, epics: list[dict], ticked: bool = True, missing: bool = False) -> str:
+        body = initiative_body(*[(f"[E{n:02d}]({url('issues', e['number'])})", '')
+                                 for n, e in enumerate(epics)])
         if ticked:
             body = body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
         initiative = issue(1, '[I01] First: Initiative', body=body)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            epic_path, issue_path = root / 'epic.json', root / 'issue.json'
-            epic_path.write_text(json.dumps(epic))
+            issue_path = root / 'issue.json'
             issue_path.write_text(json.dumps(initiative))
-            args = [str(issue_path), '--epics', str(epic_path), '--project', project(root, *branches)]
-            if pulls is not None:
-                pulls_path = root / 'prs.json'
-                pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
-                args.extend(['--prs', str(pulls_path), '--links', links_file(root, list(held))])
-            done = run('sync.py', *args)
+            paths = []
+            for epic in epics:
+                path = root / f"epic-{epic['number']}.json"
+                path.write_text(json.dumps(epic))
+                paths.append(str(path))
+            done = run('sync.py', str(issue_path), '--epics', *(paths[:-1] if missing else paths))
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout
 
-    def test_ticked_criteria_stay_open_until_the_integration_branch_merges(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic')])
-        self.assertIn('unmerged: i01/main', out)
-        self.assertIn('closable: no (unmerged i01/main)', out)
-
-    def test_an_open_integration_pull_request_is_named(self):
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
-                 pr(980, '[I01] First', base='main', head='i01/main')]
-        out = self.run_sync(pulls)
-        self.assertIn('unmerged: i01/main (#980 open)', out)
-        self.assertIn('closable: no (unmerged i01/main (#980 open))', out)
-
-    def test_an_integration_pull_request_that_links_no_issue_is_uncited(self):
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
-                 pr(980, '[I01] First', base='main', head='i01/main')]
-        out = self.run_sync(pulls)
-        self.assertIn('uncited: #980 does not link I01 #1', out)
-
-    def test_an_integration_pull_request_linking_the_initiative_issue_is_not_uncited(self):
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
-                 pr(980, '[I01] First', base='main', head='i01/main')]
-        out = self.run_sync(pulls, held=[links(980, 1)])
-        self.assertNotIn('uncited:', out)
-
-    def test_a_task_pull_request_is_not_reported_as_an_integration_pull_request(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic')])
-        self.assertNotIn('uncited:', out)
-
-    def test_a_merged_integration_branch_is_closable(self):
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
-                 pr(980, '[I01] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/main')]
-        out = self.run_sync(pulls)
-        self.assertNotIn('unmerged:', out)
+    def test_completed_epics_and_ticked_criteria_close_without_branch_inputs(self):
+        out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed'),
+                             issue(3, '[I01:E01] Second: Epic', 'closed')])
         self.assertIn('closable: yes', out)
-
-    def test_one_unmerged_branch_blocks_when_another_has_merged(self):
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main', head='topic'),
-                 pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z', base='i01/workflows', head='topic-w'),
-                 pr(980, '[I01] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/main')]
-        out = self.run_sync(pulls)
-        self.assertIn('closable: no (unmerged i01/workflows)', out)
-        self.assertNotIn('i01/main', out)
-
-    def test_ticked_criteria_without_pull_requests_are_not_closable(self):
-        out = self.run_sync(None)
         self.assertNotIn('unmerged:', out)
-        self.assertIn('closable: no (integration branches not given)', out)
 
-    def test_an_unticked_criterion_does_not_report_an_unmerged_branch(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/main')], ticked=False)
-        self.assertNotIn('unmerged', out)
+    def test_an_open_epic_blocks_even_with_ticked_initiative_criteria(self):
+        out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed'),
+                             issue(3, '[I01:E01] Second: Epic')])
+        self.assertIn('closable: no (undelivered E01)', out)
+
+    def test_a_cancelled_epic_does_not_deliver_the_initiative(self):
+        epic = issue(2, '[I01:E00] First: Epic', 'closed')
+        epic['state_reason'] = 'not_planned'
+        self.assertIn('closable: no (undelivered E00)', self.run_sync([epic]))
+
+    def test_a_missing_epic_blocks_closure(self):
+        out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed')], missing=True)
+        self.assertIn('closable: no (undelivered E00)', out)
+        self.assertIn('its id links no issue given by --epics', out)
+
+    def test_completed_epics_still_require_verified_initiative_criteria(self):
+        out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed')], ticked=False)
         self.assertIn('closable: no (unticked AC1)', out)
-
-    def test_a_pull_request_on_a_long_lived_branch_adds_no_integration_branch(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='main', head='topic')])
-        self.assertNotIn('unmerged:', out)
-        self.assertIn('closable: yes', out)
-
-    def test_an_integration_branch_in_another_repository_is_named_with_it(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                                base='i01/main', head='topic', repo='o/other')])
-        self.assertIn('closable: no (unmerged o/other:i01/main)', out)
-
-    def test_an_epic_base_associates_its_integration_branch(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                                base='i01/e00/main', head='i01/e00/w01-work')])
-        self.assertIn('unmerged: i01/main', out)
-        self.assertIn('closable: no (unmerged i01/main)', out)
-
-    def test_a_branch_outside_project_folders_is_not_long_lived(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                                base='i01/e00/workspace', head='i01/e00/w01-work')],
-                            branches=('docker', 'main', 'workflows'))
-        self.assertNotIn('workspace', out)
-        self.assertIn('closable: yes', out)
-
-    def test_a_project_folder_is_a_long_lived_branch(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                                base='i01/e00/docker', head='i01/e00/w01-work')],
-                            branches=('docker', 'main', 'workflows'))
-        self.assertIn('unmerged: i01/docker', out)
+        self.assertIn('ready to verify: AC1 (E00)', out)
 
 
 def ticked(body: str) -> str:
@@ -471,8 +414,8 @@ def ticked(body: str) -> str:
 
 
 class EpicClose(unittest.TestCase):
-    def run_sync(self, body: str, pulls: list[dict], held: list[dict] = ()) -> str:
-        epic = issue(2, '[I01:E00] First: Epic', body=body)
+    def run_sync(self, body: str, pulls: list[dict], held: list[dict] = (), state: str = 'open') -> str:
+        epic = issue(2, '[I01:E00] First: Epic', state, body=body)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
@@ -498,7 +441,7 @@ class EpicClose(unittest.TestCase):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main')]
+                 pr(980, '[I01:E00] First', base='main', head='i01/e00/main')]
         out = self.run_sync(body, pulls)
         self.assertIn('unmerged: i01/e00/main (#980 open)', out)
         self.assertNotIn('in flight:', out)
@@ -508,7 +451,7 @@ class EpicClose(unittest.TestCase):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main')]
+                 pr(980, '[I01:E00] First', base='main', head='i01/e00/main')]
         out = self.run_sync(body, pulls)
         self.assertIn('uncited: #980 does not link E00 #2', out)
 
@@ -516,7 +459,7 @@ class EpicClose(unittest.TestCase):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main')]
+                 pr(980, '[I01:E00] First', base='main', head='i01/e00/main')]
         out = self.run_sync(body, pulls, held=[links(980, 2)])
         self.assertNotIn('uncited:', out)
 
@@ -525,11 +468,24 @@ class EpicClose(unittest.TestCase):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
                  pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
-                    base='i01/main', head='i01/e00/main')]
+                    base='main', head='i01/e00/main')]
         out = self.run_sync(body, pulls)
         self.assertNotIn('unmerged:', out)
         self.assertNotIn('unmatched:', out)
         self.assertIn('closable: yes', out)
+
+    def test_a_merge_into_another_epic_does_not_complete_delivery(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                    base='i01/e01/main', head='i01/e00/main')]
+        self.assertIn('closable: no (unmerged i01/e00/main)', self.run_sync(body, pulls))
+
+    def test_an_epic_head_alone_establishes_an_unmerged_base(self):
+        body = ticked(epic_body(("[W01](https://github.com/o/r/commit/abc)", 'Work', '')))
+        pulls = [pr(980, '[I01:E00] First', base='main', head='i01/e00/main')]
+        self.assertIn('closable: no (unmerged i01/e00/main (#980 open))', self.run_sync(body, pulls))
 
     def test_one_unmerged_epic_base_blocks_when_another_has_merged(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''),
@@ -539,10 +495,21 @@ class EpicClose(unittest.TestCase):
                  pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/workflows', head='i01/e00/w02-more'),
                  pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
-                    base='i01/main', head='i01/e00/main')]
+                    base='main', head='i01/e00/main')]
         out = self.run_sync(body, pulls)
         self.assertIn('closable: no (unmerged i01/e00/workflows)', out)
         self.assertNotIn('i01/e00/main', out)
+
+    def test_automatic_issue_closure_does_not_hide_an_unmerged_base(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''),
+                                (f"[W02]({url('pull', 951)})", 'More', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/e00/main'),
+                 pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z', base='i01/e00/workflows'),
+                 pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                    base='main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls, state='closed')
+        self.assertIn('#2 epic (closed)', out)
+        self.assertIn('closable: no (unmerged i01/e00/workflows)', out)
 
     def test_an_unticked_criterion_does_not_report_an_unmerged_epic_base(self):
         body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''))
@@ -565,7 +532,7 @@ class EpicClose(unittest.TestCase):
         body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', ''))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main')]
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')]
         out = self.run_sync(body, pulls)
         self.assertNotIn('draft:', out)
 
@@ -573,7 +540,7 @@ class EpicClose(unittest.TestCase):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main')]
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')]
         out = self.run_sync(body, pulls)
         self.assertIn('unmerged: i01/e00/main (#980 draft)', out)
         self.assertNotIn('draft:', out)
@@ -601,18 +568,16 @@ class EpicClose(unittest.TestCase):
 
 
 class LongLivedNames(unittest.TestCase):
-    def names(self, root: Path, text: str, initiative: str = '01'):
-        refs = root / 'heads.txt'
-        refs.write_text(text)
-        return run('sync.py', '--names', '--project', str(root), '--initiative', initiative, '--refs', str(refs))
+    def names(self, root: Path):
+        return run('sync.py', '--names', '--project', str(root))
 
     def test_the_statement_names_the_branches(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            project(root, 'main')
-            done = self.names(root, 'i01/workflows\n')
+            project(root, 'main', 'workflows', 'main')
+            done = self.names(root)
             self.assertEqual(done.returncode, 0, done.stderr)
-            self.assertEqual(done.stdout.strip(), 'main')
+            self.assertEqual(done.stdout.split(), ['main', 'workflows'])
 
     def test_a_directory_beside_the_statement_names_nothing(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -620,7 +585,7 @@ class LongLivedNames(unittest.TestCase):
             project(root, 'main')
             (root / '.project' / 'docker').mkdir(parents=True)
             (root / 'config' / 'components').mkdir()
-            done = self.names(root, '')
+            done = self.names(root)
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertEqual(done.stdout.split(), ['main'])
 
@@ -630,33 +595,25 @@ class LongLivedNames(unittest.TestCase):
             main.mkdir()
             project(main, 'docker', 'main')
             worktree(linked, main)
-            done = self.names(linked, '')
+            done = self.names(linked)
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertEqual(done.stdout.split(), ['docker', 'main'])
 
-    def test_integration_branches_name_the_long_lived_branches(self):
+    def test_a_missing_statement_is_unevaluable(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            done = self.names(root, 'refs/heads/i01/workflows\nrefs/heads/i01/e00/workflows\n'
-                              'refs/heads/i01/e00/w01-work\ni02/main\n')
-            self.assertEqual(done.returncode, 0, done.stderr)
-            self.assertEqual(done.stdout.strip(), 'workflows')
-
-    def test_a_remote_line_names_the_branch(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            done = self.names(root, 'abc123\trefs/heads/i01/main\n')
-            self.assertEqual(done.returncode, 0, done.stderr)
-            self.assertEqual(done.stdout.strip(), 'main')
-
-    def test_neither_source_is_unevaluable(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            done = self.names(root, 'refs/heads/i01/e00/w01-work\n')
+            done = self.names(Path(tmp))
             self.assertEqual(done.returncode, 1)
             self.assertIn('unevaluable:', done.stderr)
             self.assertIn('config/branches', done.stderr)
-            self.assertIn('integration branch', done.stderr)
+
+    def test_an_empty_statement_is_unevaluable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            project(root)
+            done = self.names(root)
+            self.assertEqual(done.returncode, 1)
+            self.assertIn('unevaluable:', done.stderr)
+            self.assertIn('names no branch', done.stderr)
 
 
 def epic_rows(*rows: tuple[str, str, str]) -> str:
@@ -845,7 +802,7 @@ class ReviewReferences(unittest.TestCase):
     def test_a_review_body_that_cites_every_merge_is_silent(self):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main',
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main',
                     body=review_body(950))]
         self.assertNotIn('references:', self.run_sync(pulls))
 
@@ -854,7 +811,7 @@ class ReviewReferences(unittest.TestCase):
                     base='i01/e00/main', head='i01/e00/w01-work'),
                  pr(951, '[I01:E00] More', merged='2026-09-02T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w02-more'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main',
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main',
                     body=review_body(950))]
         out = self.run_sync(pulls)
         self.assertIn('references: i01/e00/main (#980) cites #950; merged #950, #951', out)
@@ -862,14 +819,14 @@ class ReviewReferences(unittest.TestCase):
     def test_a_review_body_with_no_references_names_the_merges(self):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main')]
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')]
         out = self.run_sync(pulls)
         self.assertIn('references: i01/e00/main (#980) cites none; merged #950', out)
 
     def test_a_cited_pull_request_that_did_not_merge_into_the_base_is_named(self):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main',
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main',
                     body=review_body(950, 44))]
         out = self.run_sync(pulls)
         self.assertIn('references: i01/e00/main (#980) cites #44, #950; merged #950', out)
@@ -878,14 +835,14 @@ class ReviewReferences(unittest.TestCase):
         body = '\n'.join(['## References', '', '- **R1.** #950 — a task delivery.', ''])
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main', body=body)]
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main', body=body)]
         self.assertNotIn('references:', self.run_sync(pulls))
 
     def test_a_citation_outside_references_is_not_read(self):
         body = '\n'.join(['## Overview', '', 'Opened on #950.', '', '## References', ''])
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
-                 pr(980, '[I01:E00] First', draft=True, base='i01/main', head='i01/e00/main', body=body)]
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main', body=body)]
         out = self.run_sync(pulls)
         self.assertIn('references: i01/e00/main (#980) cites none; merged #950', out)
 
@@ -896,8 +853,8 @@ class ReviewReferences(unittest.TestCase):
                     base='i01/e00/main', head='i01/e00/w01-work'),
                  pr(951, '[I01:E00] More', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/workflows', head='i01/e00/w02-more'),
-                 pr(980, '[I01:E00] First', base='i01/main', head='i01/e00/main', body=review_body(950)),
-                 pr(981, '[I01:E00] First', base='i01/workflows', head='i01/e00/workflows',
+                 pr(980, '[I01:E00] First', base='main', head='i01/e00/main', body=review_body(950)),
+                 pr(981, '[I01:E00] First', base='workflows', head='i01/e00/workflows',
                     body=review_body(950))]
         out = self.run_sync(pulls, body=body)
         self.assertIn('references: i01/e00/workflows (#981) cites #950; merged #951', out)
@@ -908,5 +865,5 @@ class ReviewReferences(unittest.TestCase):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work'),
                  pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
-                    base='i01/main', head='i01/e00/main')]
+                    base='main', head='i01/e00/main')]
         self.assertNotIn('references:', self.run_sync(pulls, body=body))

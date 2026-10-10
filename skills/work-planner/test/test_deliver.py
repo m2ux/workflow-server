@@ -97,6 +97,30 @@ class Survey(unittest.TestCase):
         self.assertNotIn('unit', output)
         self.assertIn('available: 0', output)
 
+    def test_ready_epic_waits_for_its_task_prerequisites_to_reach_the_long_lived_branch(self):
+        prerequisite = epic(943, (f"[W01]({url('pull', 9)})", 'Produce', '', ''))
+        dependent = epic(944, ('W01', 'Independent work', '', ''),
+                         ('W02', 'Consume', f"[E00:W01]({url('issues', 943)})", ''), which='07:E01')
+        pulls = [pr(9, '[I07:E00] Produce', merged='2026-01-01T00:00:00Z', base='i07/e00/main')]
+        output = survey(staged((prerequisite, 'In Review'), (dependent, 'Ready')), pulls)
+        self.assertNotIn('  unit ', output)
+        self.assertIn('available: 0, held: 0, blocked: 2', output)
+        self.assertIn('prerequisite epic not completed', output)
+        prerequisite['state'], prerequisite['state_reason'] = 'closed', 'completed'
+        output = survey(staged((prerequisite, 'Done'), (dependent, 'Ready')), pulls)
+        self.assertIn('available: 2, held: 0, blocked: 0', output)
+
+    def test_initiative_prerequisite_blocks_dispatch_despite_ready_status(self):
+        from fixtures import initiative_body
+        parent = issue(1, '[I07] Delivery: Work', body=initiative_body(
+            (f"[E00]({url('issues', 943)})", ''),
+            (f"[E01]({url('issues', 944)})", f"[E00]({url('issues', 943)})")))
+        prerequisite = epic(943, ('W01', 'Produce', '', ''))
+        dependent = epic(944, ('W01', 'Consume', '', ''), which='07:E01')
+        output = survey(staged((parent, 'In Progress'), (prerequisite, 'In Review'), (dependent, 'Ready')))
+        self.assertNotIn('  unit ', output)
+        self.assertIn('prerequisite epic not completed', output)
+
     def test_row_linking_a_planning_folder_is_held(self):
         held = f'[W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/)'
         output = survey(staged((epic(943, (held, 'Queue plan', '', '')), 'In Progress')))
@@ -174,7 +198,7 @@ class Survey(unittest.TestCase):
         record = epic(943, ('W01', 'Queue plan', '', ''))
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
         output = survey(staged((record, 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/main')])
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='main')])
         self.assertNotIn('merge #', output)
 
     def test_a_held_task_holds_the_unit_it_joins(self):

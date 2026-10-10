@@ -12,7 +12,7 @@ requests as sync.py reads them. An issue a row depends on that is not on the boa
 
 A task row's id says where its work stands: a link to a pull request or a commit is work in flight or
 delivered, a link to a planning folder is work a session holds, and anything else is free. A row is
-available when its epic is Ready or In Progress, its Done cell carries no tick, its id is free, and
+available when its epic is Ready or In Progress and its prerequisite epics are completed, its Done cell carries no tick, its id is free, and
 every entry in its Depends on cell is delivered. Tasks that name each other in Joins are one unit, and
 a unit is one session's work.
 
@@ -141,6 +141,7 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     if not header:
         raise Unreadable(f'{label(key, board.home)} has no Work Breakdown table')
     state, detail = {}, {}
+    prerequisites = board.epic_dependencies_met(key, epics, label(key, board.home))
     for r in body:
         ident = id_cell(header, r)
         task = row_id(ident)
@@ -153,6 +154,8 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
             state[task] = 'running'
         elif held:
             state[task] = 'held'
+        elif not prerequisites:
+            state[task] = 'prerequisite'
         elif not board.met(cell(header, r, 'Depends on'), key, epics, f'{label(key, board.home)} {task}'):
             state[task] = 'blocked'
         else:
@@ -252,7 +255,8 @@ def survey(args: argparse.Namespace) -> int:
                         held += 1
                 continue
             if states != {'free'}:
-                reason = (f'depends on {detail[first]["depends"]}' if state[first] == 'blocked'
+                reason = ('prerequisite epic not completed' if 'prerequisite' in states
+                          else f'depends on {detail[first]["depends"]}' if state[first] == 'blocked'
                           else 'joined task ' + ', '.join(f'{t} {state[t]}' for t in unit if state[t] != 'free'))
                 print(f'  blocked I{initiative}:E{epic}:{ids}: {reason}')
                 waiting += 1

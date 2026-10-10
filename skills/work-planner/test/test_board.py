@@ -12,7 +12,7 @@ from pathlib import Path
 from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, links, pr, run, url
 
 sys.path.insert(0, str(SCRIPTS))
-from board import assignee_calls  # noqa: E402
+from board import Board, assignee_calls  # noqa: E402
 
 KEY = ('o/r', 12)
 PATH = 'repos/o/r/issues/12/assignees'
@@ -57,6 +57,36 @@ class RequiredLinks(unittest.TestCase):
                        '--assignee', 'me')
         self.assertNotEqual(done.returncode, 0)
         self.assertEqual(done.stderr.strip(), '--links is required')
+
+
+class EpicPrerequisites(unittest.TestCase):
+    def test_cross_repository_task_waits_for_its_epic(self):
+        upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other',
+                         body=epic_body((f"[W01]({url('pull', 9, 'o/other')})", 'Produce', '')))
+        key = ('o/r', 3)
+        dependency = f"[I02:E00:W01]({url('issues', 2, 'o/other')})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
+        pulls = [pr(9, '[I02:E00] Produce', merged='2026-01-01T00:00:00Z', repo='o/other')]
+        board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r', pulls)
+        self.assertFalse(board.epic_dependencies_met(key, {}, 'consumer'))
+        upstream['state'], upstream['state_reason'] = 'closed', 'completed'
+        self.assertTrue(board.epic_dependencies_met(key, {}, 'consumer'))
+
+    def test_missing_prerequisite_is_reported_and_blocks(self):
+        key = ('o/r', 3)
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(
+            ('W01', 'Consume', f"[E00:W01]({url('issues', 2)})")))
+        board = Board({key: consumer}, [], 'o/r')
+        self.assertFalse(board.epic_dependencies_met(key, {}, 'consumer'))
+        self.assertEqual(board.unresolved, ['consumer: #2 not given'])
+
+    def test_local_task_dependency_uses_the_task_merge(self):
+        key = ('o/r', 2)
+        epic = issue(2, '[I01:E00] Local: Work', body=epic_body(
+            (f"[W01]({url('pull', 9)})", 'Produce', ''), ('W02', 'Consume', 'W01')))
+        board = Board({key: epic}, [], 'o/r', [pr(9, '[I01:E00] Produce', merged='2026-01-01T00:00:00Z')])
+        self.assertTrue(board.epic_dependencies_met(key, {}, 'local'))
+        self.assertTrue(board.met('W01', key, {}, 'local'))
 
 
 def board_fields(*names: str) -> list[dict]:
