@@ -96,7 +96,7 @@ def is_next(board: Board, initiative: tuple[str, int], epic: tuple[str, int] | N
     issue = board.issues.get(epic) if epic else None
     if issue is None or issue['state'] != 'open' or open_questions(issue):
         return False
-    return board.met(depends, initiative, epics, why)
+    return board.met(depends, initiative, epics, why) and board.epic_dependencies_met(epic, epics, why)
 
 
 class Queue:

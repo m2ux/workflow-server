@@ -554,6 +554,11 @@ class Review:
         if unknown:
             self.decide.append(f'Work Breakdown column not in the template: {", ".join(unknown)}')
             return lines
+        if 'Task' in header:
+            for r in rows:
+                ident = id_cell(header, r)
+                if len(LINK.findall(ident)) > 1:
+                    self.decide.append(f'{row_id(ident)}: a task row has one link; resolve the extra links')
         if 'Done' in header:
             at = header.index('Done')
             for r in rows:

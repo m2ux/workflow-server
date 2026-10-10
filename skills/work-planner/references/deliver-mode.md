@@ -18,10 +18,7 @@ Starts the work a theme board makes available. It advances the board, merges eac
    - **Blocked work.**
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Merge.**
-   Merge each `merge` line, an open pull request whose test plan has passed, into the epic base it names, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. Do not ask.
-   - [Update Integration Branch](commands.md#update-integration-branch), then [Update Epic Base](commands.md#update-epic-base), then [Merge Pull Request](commands.md#merge-pull-request).
-   - When that merge is refused, [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
-   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each task the pull request delivers and [Sync Epic](commands.md#sync-epic), then [Update Review Pull Request](commands.md#update-review-pull-request) for the base the merge landed in. Do not sync the initiative or the board.
+   Follow [Task Merge](work-breakdown.md#task-merge) for each `merge` line.
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 7. **Hold.**
@@ -48,20 +45,16 @@ What the prompt tells one session, written from the facts the `unit` line and th
   The reserved folder, which is where its planning artifacts go.
 - **Plan.**
   Invoke the work-planner skill, and write one [work item](work-breakdown.md#work-item) per task into the record, with any further file the work needs, as the [planning layout](planning-layout.md) describes. Commit and push the engineering worktree.
-- **Point the row at the artifacts.**
-  Run [Record Work Item](commands.md#record-work-item) for each task and [Patch Body](commands.md#patch-body) with the body it writes.
+- **Link the work items.**
+  Link each work-item file from the record's README under [Planning README](planning-readme.md). The row retains its folder link while reserved.
 - **Match the tests to the criteria.**
-  The work item's test row names a test for each criterion the unit's Coverage carries, of the kind that criterion can be observed by, as this mode's Tests rule states.
+  The work item's test row names a test for each criterion the unit's Coverage carries, of the kind that criterion can be observed by, as [Test Coverage](work-breakdown.md#test-coverage) states.
 - **Implement.**
   Deliver the work in the worktree, with every test the work item names, as the [Work Breakdown Guide](work-breakdown.md#tables) states.
 - **Open the pull request.**
-  Open it with [Open Task Pull Request](commands.md#open-task-pull-request), which titles it for the epic, targets the epic base, fills the Test Plan table as this mode's Tests rule states, and links each task issue the unit delivers. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
+  Open it with [Open Task Pull Request](commands.md#open-task-pull-request), which titles it for the epic, targets the epic base, fills the Test Plan table as [Test Coverage](work-breakdown.md#test-coverage) states, and links each task issue the unit delivers. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Merge.**
-  - Tick each passed check's Pass cell with [Patch Pull Request Body](commands.md#patch-pull-request-body). The mark is ✓, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. A row whose Test cell is empty keeps an empty Pass cell.
-  - When every such Pass cell carries that tick, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
-  - When the pull request merge is refused, update the task branch from the epic base with [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
-  - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. A draft line opens that epic base as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states.
-  - Then run [Update Review Pull Request](commands.md#update-review-pull-request) for the epic base, adding the unit's change under Changes and its pull request under References. Do not sync the initiative or the board.
+  Record passed checks with [Patch Pull Request Body](commands.md#patch-pull-request-body), following [Test plan](work-breakdown.md#task-delivery), then follow [Task Merge](work-breakdown.md#task-merge).
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
 
@@ -78,23 +71,10 @@ What the prompt tells one session, written from the facts the `unit` line and th
   A unit is a task row, or the tasks that name each other in Joins, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. One unit is one pull request's work.
 - **Task branches.**
   A unit works on the branch [Find Available Work](commands.md#find-available-work) names, cut from the epic base, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-- **Tests.**
-  - Every criterion the unit's Coverage names has a test in the work item that observes it, and the pull request carries that test.
-  - What the criterion observes picks the kind: a unit test for one component's behaviour, an integration test for the seam between components, an end-to-end or system test for behaviour only a running system shows. A criterion about a run is not met by a check on a file.
-  - A criterion whose instrument does not exist yet is work the task carries, as the [Verified](review-criteria.md#verified) rule defines.
-  - A criterion no test can observe is named in the coverage report, as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
-  - The project's own system test is the instrument where the criterion is something that test can exercise.
-  - The pull request's Test Plan is one table, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. One row per check, in that check's order. Every criterion the unit's Coverage names appears in at least one row. A criterion that Coverage names and no check observes is a following row whose Test cell is empty. The plan has passed when every check's Pass cell carries a tick.
 - **Release is the user's call.**
   A held row is released only on the user's word. This mode reads no clock and reclaims nothing on its own.
 - **Dispatch is confirmed.**
   No session starts until the user confirms the set of units.
-- **Ready pull requests.**
-  A run merges each open pull request whose test plan has passed. [Find Available Work](commands.md#find-available-work) reports each on a `merge` line, and the run does not ask.
-- **Merge.**
-  The unit's pull request is merged as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, with [Merge Pull Request](commands.md#merge-pull-request).
-- **Review body.**
-  A merge the session makes reaches the review pull request of the base it landed in, as [Review pull request](work-breakdown.md#review-pull-request) states, so that body names every change the base carries.
 - **Status.**
   This mode sets a dispatched unit's task issue and its epic to In Progress. The queue stays [Advance Mode](advance-mode.md)'s.
 - **Arising issues.**

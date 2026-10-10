@@ -44,7 +44,7 @@ Progress when any epic is In Review or In Progress.
 The board's Status field offers Backlog, Ready, In Progress and Done. In Review is optional: on a
 board whose Status lacks it, an issue In Review is set In Progress.
 
-A dependency is delivered when its task row is, or its issue is closed as completed. A task row is
+A dependency within an epic is delivered when its task row is, or its issue is closed as completed. A dependency on another epic's task also requires that epic closed as completed. An epic starts only after every prerequisite epic named by its tasks or its initiative row is completed. A task row is
 delivered when a linked pull request has merged, or its id links a commit. A row that links a task
 issue and no pull request is delivered when that issue is closed as completed. An open pull request
 does not deliver the task. A bare #750 names an issue in the repository of the issue whose row cites it. A dependency on an issue not
@@ -197,6 +197,32 @@ class Board:
             return False
         return completed(self.issues[key])
 
+    def epic_dependencies_met(self, key: Key, epics: dict[str, Key], why: str) -> bool:
+        """Whether this epic's external prerequisites have reached their long-lived branches.
+
+        Task rows identify the outputs consumed. The initiative row can also name whole epics.
+        Closed as completed is the delivery evidence sync records after an epic's bases merge."""
+        header, tasks = self.table(key)
+        for task in tasks.values():
+            entries = []
+            for entry in cell(header, task, 'Depends on').split(','):
+                entry = entry.strip()
+                link = LINK.fullmatch(entry)
+                text = link[1] if link else entry
+                if text and not re.fullmatch(r'W\d\d', text) and not RANGE.fullmatch(text):
+                    entries.append(entry)
+            if not self.met(', '.join(entries), key, epics, why):
+                return False
+        for parent, issue in self.issues.items():
+            if not re.match(r'^\[I\d\d\]', issue.get('title') or ''):
+                continue
+            header, body = rows(issue)
+            for item in body:
+                if linked_issue(id_cell(header, item)) == key:
+                    if not self.met(cell(header, item, 'Depends on'), parent, epics, why):
+                        return False
+        return True
+
     def met(self, cell: str, home: Key, epics: dict[str, Key], why: str) -> bool:
         """Whether every dependency in a Depends on cell is delivered. home is the issue whose table
         holds the row, and the repository a bare #750 is read against; epics maps the initiative's
@@ -223,7 +249,7 @@ class Board:
                     self.unresolved.append(f'{why}: {label(key, self.home)} not given')
                     ok = False
                 elif task:
-                    ok = self.row_delivered(key, task[1], why)
+                    ok = (key == home or self.issue_delivered(key, why)) and self.row_delivered(key, task[1], why)
                 else:
                     ok = self.issue_delivered(key, why)
             if not ok:
@@ -323,7 +349,9 @@ def main() -> int:
                 status[task_issue] = 'Done' if completed(t) else None
             elif found := pr_status(epic_key, task_issue):
                 status[task_issue] = found
-            elif not open_questions(t) and board.met(cell(task_header, tr, 'Depends on'), number, epic_ids, f'E{epic_key}:{tid}'):
+            elif (not open_questions(t)
+                  and board.epic_dependencies_met(number, epic_ids, f'E{epic_key}:{tid}')
+                  and board.met(cell(task_header, tr, 'Depends on'), number, epic_ids, f'E{epic_key}:{tid}')):
                 status[task_issue] = 'Ready'
             else:
                 status[task_issue] = 'Backlog'

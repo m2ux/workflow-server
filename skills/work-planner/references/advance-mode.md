@@ -1,6 +1,6 @@
 # Advance mode
 
-Decides which initiatives and epics on a theme board are Ready or In Progress, after [Sync Mode](sync-mode.md) has recorded delivery. Initiatives with the same priority number run together. A larger number is higher, and there is no maximum.
+Decides which initiatives and epics on a theme board are Ready or In Progress, after [Sync Mode](sync-mode.md) has recorded delivery. Its Priorities rule defines the queue.
 
 ## Procedure
 
@@ -39,7 +39,6 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
   - An initiative in Ready with no priority label moves to Backlog, and its epics move to Backlog with it.
   - When no open initiative has a priority label, the `order` line asks for the parallel work map, including an initiative already In Progress.
 - **Initiatives.**
-  - Each initiative in the highest set moves to In Progress. Each initiative in the next set moves to Ready.
   - An initiative In Review or Done is left as it stands.
   - An initiative stays In Progress while an open pull request names one of its epics, `[Ixx:Eyy]`, even when a higher set has started. It then moves to Ready if it is the next number, or to Backlog with its epics if a number sits between it and the highest. An initiative the user leaves unplanned follows that same wait, and then moves to Backlog with its epics.
 - **Epics.**
@@ -48,7 +47,7 @@ Decides which initiatives and epics on a theme board are Ready or In Progress, a
     - An epic that is next, and has not started, moves to Ready.
     - Any other Ready epic of it moves to Backlog.
     - An epic In Review or Done is left as it stands.
-  - An epic is next when every dependency in its Depends on cell is delivered and its Open Questions section is empty. Delivered is the reading [Plan Board Changes](commands.md#plan-board-changes) uses.
+  - An epic is next when [Epic prerequisites](work-breakdown.md#epic-prerequisites) hold and its Open Questions section is empty. Delivered is the reading [Plan Board Changes](commands.md#plan-board-changes) uses.
   - Partly completed means a delivered task row on an epic that is not closed as completed.
   - On an initiative that moves to Backlog, its epics move to Backlog.
   - A Ready epic of an initiative that is not In Progress moves to Backlog.

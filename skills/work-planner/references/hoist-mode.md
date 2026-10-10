@@ -22,7 +22,7 @@ A placement is the choice of where an orphan's work goes. The table states what 
 - **Kept.**
   - The orphan becomes the new task, epic or initiative issue.
   - It takes every formatting rule of that kind: the title form, the labels, its template, and the scheme's rules for bodies, code references and succinct items.
-  - The issue that lists it links it: a task's row id, or an epic's row in its initiative.
+  - An initiative row links its epic issue. Task rows follow [Task ids](work-breakdown.md#task-delivery); a task issue's Development field links its delivery pull request.
 - **Original body.**
   - A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first.
   - The comment opens with a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan.

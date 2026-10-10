@@ -212,6 +212,19 @@ class Queue(unittest.TestCase):
         self.assertNotIn('→ Ready', out)
         self.assertIn('to do: 0', out)
 
+    def test_a_task_dependency_waits_for_the_prerequisite_epic_to_complete(self):
+        current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''),
+                             (f"[E01]({url('issues', 3)})", ''))
+        prerequisite = epic(2, '01:E00', (f"[W01]({url('pull', 9)})", 'Produce', ''))
+        dependent = epic(3, '01:E01', ('W01', 'Independent work', ''),
+                         ('W02', 'Consume', f"[E00:W01]({url('issues', 2)})"))
+        pulls = [pr(9, '[I01:E00] Produce', merged='2026-01-01T00:00:00Z', base='i01/e00/main')]
+        out = queue(staged((current, 'In Progress'), (prerequisite, 'In Review'), (dependent, 'Ready')), pulls)
+        self.assertIn('[I01:E01] Epic 3: Work: Ready → Backlog', out)
+        prerequisite['state'], prerequisite['state_reason'] = 'closed', 'completed'
+        out = queue(staged((current, 'In Progress'), (prerequisite, 'Done'), (dependent, 'Backlog')), pulls)
+        self.assertIn('[I01:E01] Epic 3: Work: Backlog → Ready', out)
+
     def test_a_partly_completed_epic_of_the_in_progress_initiative_is_in_progress(self):
         current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''))
         started = epic(2, '01:E00', ('[W01](https://github.com/o/r/pull/9)', 'Go', ''))

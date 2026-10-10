@@ -15,7 +15,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 3. **Draft bodies.**
    - Draft each body from its template into a local file. Those files are the source for every later edit.
    - A Problem and a Proposal follow the [Work Breakdown Guide](work-breakdown.md#problem-and-proposal). The initiative's Problem and Non-Goals are the proposal's, when a proposal was taken.
-   - Write the acceptance criteria before the Work Breakdown, so each row's Description can cite them. Each criterion comes from a confirmed clause.
+   - Write the acceptance criteria before the Work Breakdown, so each row's Coverage can cite them. Each criterion comes from a confirmed clause.
    - The initiative's criteria are drawn from the goal's clauses, and the epics' criteria carry the detail that makes them true, as the [review criteria](review-criteria.md) for an initiative define.
    - Each acceptance criterion meets [Requirement characteristics](requirement-characteristics.md), and is written to this mode's Criteria at creation rule. It ends by naming its instrument as the [Verified](review-criteria.md#verified) rule defines. A test it names that does not exist yet is planned as work.
    - An item a test cannot observe is named as [Coverage Reports](work-breakdown.md#coverage-reports) defines.
@@ -23,9 +23,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
    - Complete cross-epic dependencies to rows, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, before any issue of the epic is created.
    - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines.
-   - Every test the work calls for accompanies that task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines. The content steers which kinds, including the project's system test when the work calls for it.
-   - Spec, create, and test reusable routines, techniques, and resources before an activity binds them, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
-   - When wired behaviour and expected behaviour differ, that task changes the routine, technique, or resource, and the tests that cover the change, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
+   - Apply [Task grain](work-breakdown.md#tables) and [Test Coverage](work-breakdown.md#test-coverage) to each task.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
    - Run the [Goal Pass](review-passes.md#goal-pass), including its [trace](review-criteria.md#trace) and its [Whole](review-criteria.md#whole) rule, and [Check Dependencies](commands.md#check-dependencies) over the drafts. The trace and the Whole rule run because the plan has epics.
@@ -47,13 +45,15 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    State each finding as [Report](review-passes.md#report) states. Fold each finding in and record it in the planning record.
 7. **Keep in step.**
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
-   - Titles change with renumbering, and Description cells change when criteria are renumbered.
+   - Titles change with renumbering, and Coverage cells change when criteria are renumbered.
    - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
    - A task issue [Sync Epic](commands.md#sync-epic) reports unplaced is handled as [Unplaced](work-breakdown.md#unplaced) states.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
-   - **Integration branches and epic bases exist.**
-     Cut each missing one as [Missing branches](work-breakdown.md#missing-branches) states, before any task starts. Point an open pull request of the epic at its base with [Retarget Pull Request](commands.md#retarget-pull-request).
+   - **Epic prerequisites hold.**
+     Confirm [Epic prerequisites](work-breakdown.md#epic-prerequisites) before creating its bases or starting a task. An unmet prerequisite leaves implementation pending.
+   - **Epic bases exist.**
+     Cut each missing one as [Missing branches](work-breakdown.md#missing-branches) states. Point an open task pull request of the epic at its base with [Retarget Pull Request](commands.md#retarget-pull-request).
    - **Open Questions resolved.**
      - An open question is unfinished planning.
      - Put each to the user as an [Interview](interview.md), record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.

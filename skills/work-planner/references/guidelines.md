@@ -26,6 +26,8 @@ The rules this skill's own files follow beyond the [skill guidelines](../../guid
 ## Prose
 
 - **One home per rule.**  A rule's home can also be the Work Breakdown Guide or the goal pass.
+- **Branch strategy.**
+  Delivery branch strategy lives in the [Work Breakdown Guide](work-breakdown.md#delivery).
 - **Terms.**  The scheme is agent-engineering: an agent-engineering prefix, title, issue or table.
 - **Examples.**
   A name, label, branch, path or board that belongs to one project is an example. The rule states what holds for every project.

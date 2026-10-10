@@ -11,11 +11,11 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
 
 - **Done.**
   The last column. Its cell is empty while the row is open, and a tick, ✓, when the row is complete.
-  - A task row is complete when it is delivered, as [Task ids](#delivery) defines, and every criterion its Coverage names is ticked.
-  - An epic row is complete when its issue is closed as completed, which is when every one of its criteria is ticked, every one of its tasks is delivered, and each of its base branches has merged into the initiative's integration branch.
+  - A task row is complete when it is delivered, as [Task ids](#task-delivery) defines, and every criterion its Coverage names is ticked.
+  - An epic row is complete when its issue is closed as completed under [Issue Closure](#issue-closure).
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
-  - An epic's row id is the task, `W01`. What it links is [Task ids](#delivery). `W00` holds preparatory work that must land before the first real task.
+  - An epic's row id is the task, `W01`. What it links is [Task ids](#task-delivery). `W00` holds preparatory work that must land before the first real task.
   - A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion or evidence of its own.
 - **Description.**
   A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail.
@@ -31,7 +31,7 @@ How the Work Breakdown tables are written, read and kept current, what a plan or
   - A task row names a whole epic (`[E01](…)`) only when every row of that epic must hold before the task starts, which is when the task consumes an output every row of the epic produces. The dependency is the row that produces the output the task consumes.
   - Planning completes cross-epic dependencies to rows before any issue of the epic is created. Both tables exist, and each edge names the row that produces what the dependent row consumes.
   - In an initiative: epics only, never tasks. Name a prerequisite epic only when every task or joined unit in the dependent epic requires every task in that prerequisite epic, directly or through its dependencies. The consumed output and the work producing it establish that requirement. Dependencies on selected tasks remain in the task tables; omit initiative edges another named whole-epic prerequisite already implies. [Check Dependencies](commands.md#check-dependencies) checks this against the task graph.
-  - An unfinished prerequisite epic can supply a completed task to another epic. Its remaining tasks hold back only the tasks that need their outputs.
+  - Dependencies identify the outputs a task consumes. When implementation can start also follows [Epic prerequisites](#epic-prerequisites).
 - **Task grain.**
   - A task is one pull request's worth of work.
   - A criterion a merged pull request left unticked belongs to a further task. The further task depends on the delivered task, and its Coverage is that criterion. Criteria one pull request can deliver share one further task. The delivered task's Coverage omits each criterion a further task adopts.
@@ -71,51 +71,64 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
 ## Delivery
 
 - **Pull request scope.**
-  A pull request delivers one task, or a set of tasks that name each other in Joins.
+  A task pull request delivers one task, or a set of tasks that name each other in Joins.
+- **Other pull requests.**
+  A pull request outside epic delivery targets a long-lived branch. An open stacked pull request is retargeted to its long-lived branch when its base merges.
 - **Pull request titles.**
   - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
   - [Sync Mode](sync-mode.md) finds an epic's pull requests by this prefix, and matches each one, open or merged, to the tasks it works on from its changes and the tasks' Descriptions.
   - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which is how [Sync Mode](sync-mode.md) tells it from a task pull request.
 - **Issue links.**
   - [Link Pull Request to Issue](commands.md#link-pull-request-to-issue) links a pull request to the issue it delivers, once that pull request is open. GitHub shows the link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads.
-  - A task pull request links the task's issue, a review pull request its epic's issue, and the pull request that merges an integration branch its initiative's issue.
+  - A task pull request links the task's issue, and a review pull request links its epic's issue.
   - The link is addressed by issue, so a pull request whose work carries no issue links nothing. A task pull request delivering rows that have no issue of their own is the whole of what stays unlinked.
   - The link is stored on the pull request. It holds on any base branch and on a pull request that has merged, and a later body edit leaves it standing.
-  - A linked pull request closes its issue when it merges into the default branch. On any other base the issue stays open, and [Sync Mode](sync-mode.md) closes it once its criteria hold.
+  - [Issue closure](#issue-closure) governs when a linked issue closes.
   - The field is the whole of the relation: neither body links the other. The pull request's References carry its sources, and the issue it delivers is not among them.
-  - [Sync Epic](commands.md#sync-epic), [Sync Initiative](commands.md#sync-initiative), [Plan Board Changes](commands.md#plan-board-changes) and [Summarise Progress](commands.md#summarise-progress) read the links GitHub holds, from [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links). Sync reports a pull request that links no issue as uncited.
+  - [Sync Epic](commands.md#sync-epic), [Plan Board Changes](commands.md#plan-board-changes) and [Summarise Progress](commands.md#summarise-progress) read the links GitHub holds, from [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links). Sync reports a pull request that links no issue as uncited.
 - **Long-lived branches.**
   - A project states its long-lived branches in `config/branches` at its root, one name per line. A run from a linked worktree reads the statement its main working tree holds.
-  - Where that file is absent, the names are the ones the initiative's integration branches carry. An integration branch `i01/workflows` names `workflows`.
-  - Where neither yields a name, the names are unevaluable. The report names the missing `config/branches` and the absent integration branch.
+  - A missing or empty `config/branches` leaves the names unevaluable. Report it and obtain the project's branch names before creating delivery branches.
   - **Example.**
     workflow-server's `config/branches` names `docker`, `main`, `workflows` and `workspace`.
-- **Integration branches.**
-  - Each long-lived branch an initiative changes has an integration branch, named for the initiative and that branch and cut from it.
-  - **Example.**
-    An integration branch cut from `main` is `i07/main`.
-  - An epic base is cut from the integration branch, and the pull request that merges that base targets it.
-  - [Deliver Mode](deliver-mode.md) merges the long-lived branch into the integration branch before it merges that branch into an epic base, so the epic base takes the long-lived branch's later changes.
-  - Once every criterion is ticked, the pull request that merges an integration branch into its long-lived branch opens, and the initiative stays open until each such pull request has merged. Merging it is the user's call, so no part of an initiative with an unticked criterion reaches a long-lived branch.
+- **Initiatives.**
+  An initiative groups and tracks its epics, with no branch or delivery pull request. Its delivery checks require every epic to be closed as completed; completion follows [Issue Closure](#issue-closure).
 - **Epic bases.**
-  - Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and cut from the initiative's integration branch for it.
+  - Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and cut from that long-lived branch once [Epic prerequisites](#epic-prerequisites) hold.
   - **Example.**
-    An epic base cut from `i07/main` is `i07/e00/main`.
-  - Every pull request delivering the epic's tasks targets that base, never the integration branch or the long-lived branch.
-  - [Deliver Mode](deliver-mode.md) merges the integration branch into the epic base after that, then merges the task pull request. When that merge is refused, it updates the task branch from the epic base and merges again. A conflict in that update leaves the pull request open.
-  - When the first task merges into an epic base, the pull request that merges that base into the integration branch opens as a draft. [Sync Epic](commands.md#sync-epic) reports that base on a draft line. A draft cannot merge, so no part of an epic with an unticked criterion or an undelivered task reaches an integration branch.
-  - Once every task is delivered and every criterion is ticked, that pull request is the review pull request. Where none is open, moving the epic to In Review opens it. Where it is a draft, the reviewer marks it ready. Merging it is the reviewer's call, and the epic stays open until each such pull request has merged.
+    An epic base cut from `main` is `i07/e00/main`.
+  - Every pull request delivering the epic's tasks targets that epic base.
+  - When the first task merges into an epic base, the pull request that merges that base into its long-lived branch opens as a draft, as [Review pull request](#review-pull-request) states.
+  - [Epic merge](#epic-merge) delivers each completed epic. The epic stays open until every base has merged into its long-lived branch.
 
-### Missing branches
+### Epic Prerequisites
+
+An epic starts implementation only when every prerequisite epic named by its task rows or its initiative row is closed as completed, after all of that prerequisite's bases have merged into their long-lived branches. A dependency on one task of another epic waits for that entire epic's delivery. Task-level references retain which output is consumed; initiative rows follow the dependency rule in [Tables](#tables).
+
+Check these prerequisites before marking an unstarted epic Ready, cutting its bases, or dispatching a task, including when the board already says Ready or In Progress.
+
+### Issue Closure
+
+Work Planner closes an issue as completed only after its normal delivery checks pass, all its criteria are verified and ticked, and every pull request currently linked in its Development field has merged. This applies to tasks, epics, initiatives and standalone issues.
+
+- **Repository prerequisite.**
+  GitHub's **Auto-close issues with merged linked pull requests** setting is disabled in repositories participating in delivery. Confirm this with [Capture Issue Development](commands.md#capture-issue-development) before linking or merging a delivery pull request. An enabled or unknown setting leaves those actions blocked until configuration is confirmed; changing repository settings requires explicit authorization.
+- **Complete link set.**
+  Capture every Development-linked pull request, across repositories and all states. The issue's Development field supplies membership; titles, branch names, body mentions and a list filtered to one initiative do not establish completeness. An explicitly empty field adds no pull request requirement.
+- **Every merge.**
+  An open, draft, closed without merge, or unreadable linked pull request keeps the issue open. An abandoned or incorrectly linked pull request needs the user's decision before its Development link is removed. A replacement pull request does not remove the requirement on a link still present.
+- **Final check.**
+  [Check Issue Closure](commands.md#check-issue-closure) checks a fresh Development snapshot, the confirmed setting, the issue's criteria and fresh REST records for every linked pull request. [Close as Completed](commands.md#close-as-completed) runs that gate before writing the issue state. A changed link set requires another check.
+
+### Missing Branches
 
 For each long-lived branch the epic's tasks change:
 
-- The initiative has that integration branch. Cut a missing one with [Create Integration Branch](commands.md#create-integration-branch).
-- The epic has a base cut from that integration branch. Cut a missing one with [Create Epic Base](commands.md#create-epic-base).
+- Once [Epic prerequisites](#epic-prerequisites) hold, cut a missing epic base from the long-lived branch with [Create Epic Base](commands.md#create-epic-base).
 
-### Review pull request
+### Review Pull Request
 
-When [Sync Epic](commands.md#sync-epic) reports a draft line, open that base with [Open Epic Pull Request](commands.md#open-epic-pull-request) as a draft and leave the epic open. When it reports an epic base unmerged and names no pull request, open it ready for review and leave the epic open. When the pull request it names is a draft, the reviewer marks it ready.
+When [Sync Epic](commands.md#sync-epic) reports a draft line, or an unmerged base with no open pull request, open that base with [Open Epic Pull Request](commands.md#open-epic-pull-request) as a draft and leave the epic open. The user marks the draft ready when the epic is complete. An agent leaves a draft pending that action.
 
 - **The body states the branch.**
   - Overview is one paragraph on what the base carries. Changes holds one heading per area, with a bullet per functional change. References cites each task pull request merged into that base.
@@ -125,9 +138,22 @@ When [Sync Epic](commands.md#sync-epic) reports a draft line, open that base wit
 - **References are measured against the merges.**
   [Sync Epic](commands.md#sync-epic) compares the pull requests a review body cites with the task pull requests merged into that base, and reports a difference naming both sets.
 
-### Unplaced
+### Epic Merge
 
-When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the row, then run [Sync Epic](commands.md#sync-epic) again.
+[Sync Mode](sync-mode.md) and [Deliver Mode](deliver-mode.md) merge a ready epic pull request with [Merge Epic Pull Request](commands.md#merge-epic-pull-request), without asking for further confirmation, once all these conditions hold:
+
+- The repository prerequisite in [Issue closure](#issue-closure) is confirmed.
+- Every task is delivered, every epic criterion is verified and ticked, and the epic has no open questions or unresolved delivery discrepancies.
+- The user has marked the draft ready, and its head and target are the epic base and corresponding long-lived branch.
+- [Update Epic Base](commands.md#update-epic-base) has brought in the current target, the criteria still hold on that result, and [Fetch Merge Readiness](commands.md#fetch-merge-readiness) confirms required checks and repository review requirements pass for the current head.
+- The review body describes the complete branch and cites its task merges. [Understand Mode](understand-mode.md) supplies its architecture overview before the merge.
+
+A draft, conflict, failed or pending check, unmet criterion, or repository review requirement leaves the pull request open with the blocker reported. A changed head requires fresh verification. A merge refusal returns to the readiness checks; a repeated refusal is reported without retrying.
+
+- After each successful merge, fetch the pull request again to confirm its merged state and commit, then re-run [Sync Epic](commands.md#sync-epic) with fresh pull requests and the issue.
+- Close the epic only after every base has merged and [Issue closure](#issue-closure) passes, then sync its initiative. Initiative completion does not gate an epic's merge.
+
+### Task Delivery
 
 - **Task branches.**
   - A unit's task branch is cut from the epic base [Find Available Work](commands.md#find-available-work) names for it, for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`.
@@ -141,17 +167,15 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
     - Pass is empty while the check is open, and a tick, ✓, when the check has passed.
   - An item has passed when it has been run and it held, and its Pass cell carries that tick.
   - The test plan has passed when every such Pass cell carries that tick.
-  - [Deliver Mode](deliver-mode.md) merges an open pull request that targets the epic base when the test plan has passed, on the run that finds it and in the session that opened it. The merge follows the order Epic bases states. The pull request stays open while a check's Pass cell is empty.
-  - After that merge, Deliver Mode syncs that epic and its task issues. It does not sync the initiative or the board.
   - [Sync Epic](commands.md#sync-epic) compares each linked pull request's test plan with the Coverage of the rows that pull request delivers. Each disagreement names the pull request and the row, and the sync goes on to link, tick and mark Done.
     - A criterion the plan names that those rows do not cover.
     - A criterion a row covers that no test-plan row names.
     - A criterion a row covers that a test-plan row names with an empty Test cell, reported as unobserved.
     - A sentence that names a criterion and says it belongs to, is left to, or is owned by a task the table gives to another row.
 - **Task ids.**
-  - Until a pull request is open, the id links that task's file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
-  - A session that holds the task adds its record folder's link, which is the hold: `[W01](…/w01.md), [W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. [Deliver Mode](deliver-mode.md) writes and reads it.
-  - Once a pull request is open, the id links that pull request and the planning-record links are gone: `[W01](…/pull/950)`. A further pull request is linked after the ones already there: `[W01](…/pull/950), [W01](…/pull/960)`.
+  - An unreserved task awaiting its pull request links its file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
+  - Each task row has one link. A reserved task links only its planning folder: `[W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. The folder's README links the work-item file. Releasing the reservation points the row to that file.
+  - Once a pull request is open, its link replaces the planning link: `[W01](…/pull/950)`. Further delivery work gets another task row under [Task grain](#tables). Joined rows each link their shared pull request.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
@@ -160,15 +184,41 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, add the r
   - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced, and the row is added as [Unplaced](#unplaced) states. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
   - The pull request's Development field links the issue as [Delivery](#delivery) states under Issue links.
-  - The issue is closed as completed when the task is delivered and every criterion it cites is ticked.
+  - A delivered task issue completes through [Issue Closure](#issue-closure).
 - **Issues backing several tasks.**
   An issue backing several tasks, such as an investigation, is a reference: the epic cites it under References, no row id links it, and its title carries no agent-engineering prefix.
 - **Work another issue takes.**
   It leaves the table. Its criteria go with it, or to another row that delivers them.
 
-## Work item
+### Test Coverage
 
-One file per task, named for the task id in lower case, `w01.md`. The record's README links each file. The epic table's task id links that file until a pull request is open.
+- Every criterion a unit's Coverage names has an observing test in its work item and pull request. A criterion no test can observe remains in the [Coverage Report](#coverage-reports) and in a test-plan row with an empty Test cell.
+- The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. Apply [Coverage Reports](#coverage-reports) when evaluating that evidence.
+- An instrument that does not exist yet is work the task carries, as [Verified](review-criteria.md#verified) defines. Use the project's own system test where it can observe the criterion.
+- Write one [Test plan](#task-delivery) row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
+
+### Task Merge
+
+Merge each open task pull request whose [Test plan](#task-delivery) has passed, both on a delivery run that finds it and in the session that opened it, without further confirmation.
+
+1. **Check.**
+   Confirm the repository prerequisite in [Issue Closure](#issue-closure) and the task pull request's epic base.
+2. **Update and merge.**
+   Run [Update Epic Base](commands.md#update-epic-base), then [Merge Pull Request](commands.md#merge-pull-request). If refused, run [Update Task Branch](commands.md#update-task-branch) and retry the merge. A conflict or repeated refusal leaves the pull request open with the blocker reported.
+3. **Record delivery.**
+   Fetch the merged pull request, then run [Sync Task Issue](commands.md#sync-task-issue) for its task issues and [Sync Epic](commands.md#sync-epic). Verify criteria before ticking them, patch changed issue bodies, and complete eligible issues through [Close as Completed](commands.md#close-as-completed).
+4. **Update the review.**
+   Follow [Review pull request](#review-pull-request), opening a reported draft and updating its body for the merge.
+5. **Complete the epic.**
+   Follow [Epic Merge](#epic-merge) when the epic is complete. A task merge alone does not sync the initiative or the board.
+
+### Unplaced
+
+When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, [Plan Mode](plan-mode.md) adds its row, then the sync runs again.
+
+## Work Item
+
+One file per task, named for the task id in lower case, `w01.md`. The record's README links each file. The epic table follows [Task ids](#task-delivery).
 
 The file uses the epic template's Overview, Problem, Proposal, and Work Breakdown. It carries no acceptance criteria and no joins.
 
