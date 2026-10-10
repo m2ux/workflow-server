@@ -11,7 +11,7 @@ Implementation: [c1f580fd21737fd3fba26c7c0d14ce47686eb0ba](https://github.com/m2
 - [x] Inspect both skills, shared guidelines, callers and existing checks.
 - [x] Consolidate modes, project configuration and command prerequisites.
 - [x] Verify links, metadata, existing tests and fresh-agent reading paths; record limitations.
-- [ ] In progress: commit, publish the evidence and update the PR body.
+- [x] Commit, publish the evidence and update the PR body.
 
 ## Validation Plan
 
@@ -70,3 +70,7 @@ The initial Author/Audit and first Revise runs started before the two summary-on
 The live evidence is Partial. Correct task results do not establish strict reading-boundary compliance: Review and both Revise trials still expose unrelated or repeated content and truncation. The Audit result also calls both criteria walked; its clean manual Responsibility check has no recorded positive calibration, despite the walk guide's hand-check requirement. That coverage claim is not accepted as proof of complete behavioral conformance.
 
 No comparable token baseline was run, and these observations support no token-savings claim. The complete workflow-server Author/Audit canon and live host-hook registration were not exercised end to end; their routes were inspected and the existing hook regression suite ran. Review planning uses captured metadata and preserved evidence, so its verdict applies to that historical head rather than the final consolidation commit. Remote CI and live services are outside these fixtures.
+
+## Delivery
+
+The source branch is clean and pushed at `c1f580fd21737fd3fba26c7c0d14ce47686eb0ba`. [PR 1295](https://github.com/m2ux/workflow-server/pull/1295) is open with the title “Workflow Canon: Design Modes and Shared Skill Guidance” and a representative body covering the final combined scope. Its seven Test Plan rows contain linked result cells and no prose outside the table. The published body, head revision, evidence document and section anchors were read back and verified. GitHub returned no check runs for this head at verification time; local regression results remain identified as local evidence.
