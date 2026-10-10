@@ -18,6 +18,8 @@ The evidence distinguishes structural checks, live agent behavior and remaining 
 | [Review Evidence](review-evidence.json) | Regression results, link checks and disposable reproductions |
 | [Common Context](common-context.md) | Shared prerequisite sections, caller routing and fresh-agent evidence |
 | [Common Context Evidence](common-context-evidence.json) | Tested file hashes, section reads, structural checks and fixture isolation |
+| [Work Planner Disclosure](planner-disclosure.md) | Work Planner prerequisite routes, regression checks and fresh-agent findings |
+| [Work Planner Evidence](planner-disclosure-evidence.json) | Tested file hashes, mode routes, section reads and fixture checks |
 
 ## Links
 

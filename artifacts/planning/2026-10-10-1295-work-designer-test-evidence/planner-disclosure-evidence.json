@@ -1,0 +1,1198 @@
+{
+  "snapshot": {
+    "base": "015b225272e6e8bfc0b87874dae878940b4e1213",
+    "files": {
+      "skills/work-planner/SKILL.md": "ad54c7dd0fb394d0eb2ffe29e7733222b8652be9c91a0f841a409fd3d96d056c",
+      "skills/work-planner/references/advance-mode.md": "b85b1e0b8f628472078dd57494f3967f6706406be91be7a2fd48b48e9c2e7471",
+      "skills/work-planner/references/align-mode.md": "2be30ffaa1cf1419b6387267065733ca22d3464b7a4a9a0af2c53cb41b227530",
+      "skills/work-planner/references/board.md": "6422df7edec84e929ad30264456e82fc418bf7536ff00d7fe8428a3772668691",
+      "skills/work-planner/references/commands.md": "13f3bf56f8a87523f947aa1c14fb8778bb3169e17598db7e9d3b17ef0fcd792d",
+      "skills/work-planner/references/deliver-mode.md": "73afc620da1ebcccf2368f5695ddb368a9e2ddaaa4f7a5b02fba0d1cd98c30c7",
+      "skills/work-planner/references/guidelines.md": "939d7024f367b0954b82424f65044b876507f8ae907348597b37dee61cb94e37",
+      "skills/work-planner/references/hoist-mode.md": "befab9d430eccfec99b525bd9cf7178aad40e6770c6aeff38f83f276839e26be",
+      "skills/work-planner/references/plan-mode.md": "c66f4fca0478dd57489a57fff2138c4f3a1ed98797f7c740955533cd46b86e02",
+      "skills/work-planner/references/planning-layout.md": "3a0f690a5f8865d1d14e4370106ee62908e3103b100260ce317314d96009a72e",
+      "skills/work-planner/references/propose-mode.md": "4f63b95d4a09ce5c637fcd0aade45e268e1ec875c749aa215a106ecdc02b1695",
+      "skills/work-planner/references/review-criteria.md": "9f447064c2839d87ceba5bf38b7c91969bdad6efeea7e88217b74dd19304e4ac",
+      "skills/work-planner/references/review-passes.md": "b92cf73f457a9d220ebabf13726793dd93c386c01cc9b0f34974f448eb1276db",
+      "skills/work-planner/references/revise-mode.md": "e361577f80c7158859dc8facd421cd3b6ba5076ae44550b76f2ff98868f071f2",
+      "skills/work-planner/references/standup-mode.md": "fa10a69c3c62d98f182f38fa912ae065a8b29cfa407fba80711aa793c311437a",
+      "skills/work-planner/references/sync-mode.md": "6f6b8a10bec38f39286708d863ae3fd76e46726c1751d037f2bbf5617e460532",
+      "skills/work-planner/references/understand-mode.md": "59d4d0181f29a09380992b7ea8a5b84e290dc6ff834b3f85406722f7abe989a6",
+      "skills/work-planner/references/work-breakdown.md": "41be002671aaa33059981e6a53003fd66657ec53b1377d4165b09a273db73e16"
+    }
+  },
+  "structure": {
+    "markdown_files": 28,
+    "local_links": 647,
+    "mode_routes": [
+      {
+        "mode": "advance-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": false
+      },
+      {
+        "mode": "align-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": true
+      },
+      {
+        "mode": "deliver-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": true
+      },
+      {
+        "mode": "hoist-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": false
+      },
+      {
+        "mode": "plan-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": true
+      },
+      {
+        "mode": "propose-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": false
+      },
+      {
+        "mode": "revise-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": false
+      },
+      {
+        "mode": "standup-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": false
+      },
+      {
+        "mode": "sync-mode",
+        "common_links": 1,
+        "graph_context": false,
+        "delivery_state": true
+      },
+      {
+        "mode": "understand-mode",
+        "common_links": 1,
+        "graph_context": true,
+        "delivery_state": false
+      }
+    ],
+    "common_sections": [
+      {
+        "heading": "## Conventions",
+        "start": 3,
+        "end": 29,
+        "next": "## Issues"
+      },
+      {
+        "heading": "### Graph Conventions",
+        "start": 592,
+        "end": 595,
+        "next": "### Index Status"
+      },
+      {
+        "heading": "### Delivery State",
+        "start": 704,
+        "end": 713,
+        "next": "### Match Pull Requests"
+      }
+    ],
+    "unchanged_command_blocks": 72,
+    "errors": []
+  },
+  "live": {
+    "planner_understand_live": {
+      "session": "01a12674-f1f4-7ad3-95d8-6e65845dc65c",
+      "complete": true,
+      "truncated_calls": [
+        "call_7712762c514043899d96b7c1e2487609"
+      ],
+      "whole_files": [
+        "skills/work-planner/SKILL.md",
+        "skills/work-planner/references/architecture-overview.md",
+        "skills/work-planner/references/planning-layout.md",
+        "skills/work-planner/references/planning-readme.md",
+        "skills/work-planner/references/understand-mode.md",
+        "skills/work-planner/references/work-breakdown.md",
+        "skills/work-planner/templates/pull-request.md"
+      ],
+      "catalogs": [
+        {
+          "path": "skills/work-planner/references/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 29,
+              "hits": [
+                {
+                  "event": 6,
+                  "call_id": "call_c31665e9327a4e4ebc8e5f6fee228e9f"
+                }
+              ]
+            },
+            {
+              "heading": "Execution",
+              "start": 7,
+              "end": 29,
+              "hits": [
+                {
+                  "event": 6,
+                  "call_id": "call_c31665e9327a4e4ebc8e5f6fee228e9f"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Pull Request",
+              "start": 226,
+              "end": 233,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Pull Request Files",
+              "start": 284,
+              "end": 291,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Patch Pull Request Body",
+              "start": 292,
+              "end": 301,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Add Planning Record",
+              "start": 551,
+              "end": 564,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Sessions",
+              "start": 565,
+              "end": 589,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Create Task Worktree",
+              "start": 567,
+              "end": 578,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Create Pull Request Worktree",
+              "start": 579,
+              "end": 589,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Graph",
+              "start": 590,
+              "end": 641,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Graph Conventions",
+              "start": 592,
+              "end": 595,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Index Status",
+              "start": 596,
+              "end": 603,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Index Repository",
+              "start": 604,
+              "end": 611,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Change Surface",
+              "start": 612,
+              "end": 621,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Symbol Context",
+              "start": 622,
+              "end": 631,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            },
+            {
+              "heading": "Flow Trace",
+              "start": 632,
+              "end": 641,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_5a8385498d0e40b4a30e85d239e4b908"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "planner_sync_live": {
+      "session": "01a12675-0ab6-73d3-9ea1-f9c9ed95bcbe",
+      "complete": true,
+      "truncated_calls": [
+        "call_3e80ff22c9b44852bdc9a0b70aebd2c1",
+        "call_fa134f3dba9d446688d84b45a33949b2"
+      ],
+      "whole_files": [
+        "skills/work-planner/SKILL.md",
+        "skills/work-planner/references/sync-mode.md"
+      ],
+      "catalogs": [
+        {
+          "path": "skills/work-planner/references/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 29,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Execution",
+              "start": 7,
+              "end": 29,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Issues",
+              "start": 30,
+              "end": 213,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Issue",
+              "start": 32,
+              "end": 39,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Body",
+              "start": 40,
+              "end": 47,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch All Issues",
+              "start": 48,
+              "end": 55,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "List Initiative Titles",
+              "start": 56,
+              "end": 63,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Find Initiative Issue",
+              "start": 64,
+              "end": 71,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Find User",
+              "start": 72,
+              "end": 79,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Comments",
+              "start": 80,
+              "end": 87,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Create Issue",
+              "start": 88,
+              "end": 95,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Patch Body",
+              "start": 96,
+              "end": 103,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Retitle Issue",
+              "start": 104,
+              "end": 111,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "List Labels",
+              "start": 112,
+              "end": 119,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Create Label",
+              "start": 120,
+              "end": 127,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Add Labels",
+              "start": 128,
+              "end": 135,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Remove Label",
+              "start": 136,
+              "end": 143,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Comment on Issue",
+              "start": 144,
+              "end": 152,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Close as Completed",
+              "start": 153,
+              "end": 163,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Development Access",
+              "start": 164,
+              "end": 172,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Capture Issue Development",
+              "start": 173,
+              "end": 194,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Check Issue Closure",
+              "start": 195,
+              "end": 205,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Close as Not Planned",
+              "start": 206,
+              "end": 213,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Sources",
+              "start": 214,
+              "end": 223,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Source",
+              "start": 216,
+              "end": 223,
+              "hits": [
+                {
+                  "event": 5,
+                  "call_id": "call_0e9b8d67cf41471ab9cb5f924c7dcfb1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Initiative Pull Requests",
+              "start": 234,
+              "end": 241,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch All Initiative Pull Requests",
+              "start": 242,
+              "end": 250,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Pull Request Issue Links",
+              "start": 251,
+              "end": 267,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Retitle Pull Request",
+              "start": 268,
+              "end": 275,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Retarget Pull Request",
+              "start": 276,
+              "end": 283,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Pull Request Files",
+              "start": 284,
+              "end": 291,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Patch Pull Request Body",
+              "start": 292,
+              "end": 301,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Update Review Pull Request",
+              "start": 302,
+              "end": 316,
+              "hits": [
+                {
+                  "event": 8,
+                  "call_id": "call_9fb98668d3cd43b6bdc297a541688c16"
+                }
+              ]
+            },
+            {
+              "heading": "Find Proposals Board",
+              "start": 493,
+              "end": 500,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Board Fields",
+              "start": 501,
+              "end": 508,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Find Status Field",
+              "start": 509,
+              "end": 516,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Board Items with Status",
+              "start": 517,
+              "end": 524,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Board Item",
+              "start": 525,
+              "end": 532,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Add Issue to Board",
+              "start": 533,
+              "end": 540,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Set Item Status",
+              "start": 541,
+              "end": 548,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Planning records",
+              "start": 549,
+              "end": 564,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Add Planning Record",
+              "start": 551,
+              "end": 564,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Sessions",
+              "start": 565,
+              "end": 589,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Create Task Worktree",
+              "start": 567,
+              "end": 578,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Create Pull Request Worktree",
+              "start": 579,
+              "end": 589,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Graph",
+              "start": 590,
+              "end": 641,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Graph Conventions",
+              "start": 592,
+              "end": 595,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Index Status",
+              "start": 596,
+              "end": 603,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Index Repository",
+              "start": 604,
+              "end": 611,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Change Surface",
+              "start": 612,
+              "end": 621,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Symbol Context",
+              "start": 622,
+              "end": 631,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Flow Trace",
+              "start": 632,
+              "end": 641,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Scripts",
+              "start": 642,
+              "end": 870,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Check Dependencies",
+              "start": 644,
+              "end": 658,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Renumber Epics",
+              "start": 659,
+              "end": 669,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Renumber Tasks",
+              "start": 670,
+              "end": 680,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Check Format",
+              "start": 681,
+              "end": 693,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "List Orphans",
+              "start": 694,
+              "end": 703,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Delivery State",
+              "start": 704,
+              "end": 713,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Match Pull Requests",
+              "start": 714,
+              "end": 723,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Sync Task Issue",
+              "start": 724,
+              "end": 731,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Sync Epic",
+              "start": 732,
+              "end": 751,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Tick Criteria",
+              "start": 752,
+              "end": 760,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Sync Initiative",
+              "start": 761,
+              "end": 771,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Plan Board Changes",
+              "start": 772,
+              "end": 785,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Plan Queue",
+              "start": 786,
+              "end": 804,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Find Available Work",
+              "start": 805,
+              "end": 823,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Reserve Row",
+              "start": 824,
+              "end": 835,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Release Row",
+              "start": 836,
+              "end": 846,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Summarise Progress",
+              "start": 847,
+              "end": 863,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            },
+            {
+              "heading": "Run Tests",
+              "start": 864,
+              "end": 870,
+              "hits": [
+                {
+                  "event": 3,
+                  "call_id": "call_3e80ff22c9b44852bdc9a0b70aebd2c1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "planner_revise_live": {
+      "session": "01a12675-235d-7480-a3f9-06602179b718",
+      "complete": true,
+      "truncated_calls": [
+        "call_0b58b3277e9a4ac5ba5410a0b45b5375",
+        "call_71b3028161814b488fedd5b75a4b3ec2"
+      ],
+      "whole_files": [
+        "skills/work-planner/SKILL.md",
+        "skills/work-planner/references/deliver-mode.md",
+        "skills/work-planner/references/guidelines.md",
+        "skills/work-planner/references/interview.md",
+        "skills/work-planner/references/plan-mode.md",
+        "skills/work-planner/references/planning-layout.md",
+        "skills/work-planner/references/planning-readme.md",
+        "skills/work-planner/references/revise-mode.md",
+        "skills/work-planner/references/understand-mode.md",
+        "skills/guidelines.md"
+      ],
+      "catalogs": [
+        {
+          "path": "skills/work-planner/references/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 29,
+              "hits": [
+                {
+                  "event": 7,
+                  "call_id": "call_ebd585d6dd854223bb14bdf19dcb5ae6"
+                }
+              ]
+            },
+            {
+              "heading": "Execution",
+              "start": 7,
+              "end": 29,
+              "hits": [
+                {
+                  "event": 7,
+                  "call_id": "call_ebd585d6dd854223bb14bdf19dcb5ae6"
+                }
+              ]
+            },
+            {
+              "heading": "Run Tests",
+              "start": 864,
+              "end": 870,
+              "hits": [
+                {
+                  "event": 7,
+                  "call_id": "call_ebd585d6dd854223bb14bdf19dcb5ae6"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "fixture": {
+    "baseline_preserved": true,
+    "template_exact": true,
+    "additional_changed_files": [
+      "skills/work-planner/references/planning-readme.md"
+    ],
+    "untracked": []
+  },
+  "regression": {
+    "tests": 294,
+    "seconds": 6.635,
+    "exit_code": 0
+  },
+  "metadata_exit_code": 0,
+  "whitespace_exit_code": 0,
+  "limits": [
+    "Understand and Sync were local planning tasks, not live integrations or GitHub mutations.",
+    "Live disclosure remains partial; no repeated-run reliability or token-savings claim.",
+    "All ten mode routes were inspected structurally; three scenarios were exercised by fresh agents."
+  ],
+  "skill_revision": "02ed1bc909b21fdb6d80484f8dc6afabc2cb38c8"
+}
