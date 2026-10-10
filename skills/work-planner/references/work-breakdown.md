@@ -83,7 +83,7 @@ Tables write references with colons (`E01:W03`, `I05:E00:W02`), the form the scr
   - A task pull request links the task's issue, and a review pull request links its epic's issue.
   - The link is addressed by issue, so a pull request whose work carries no issue links nothing. A task pull request delivering rows that have no issue of their own is the whole of what stays unlinked.
   - The link is stored on the pull request. It holds on any base branch and on a pull request that has merged, and a later body edit leaves it standing.
-  - A linked pull request closes its issue when it merges into the default branch. On any other base the issue stays open, and [Sync Mode](sync-mode.md) closes it once its criteria hold.
+  - [Issue closure](#issue-closure) governs when a linked issue closes.
   - The field is the whole of the relation: neither body links the other. The pull request's References carry its sources, and the issue it delivers is not among them.
   - [Sync Epic](commands.md#sync-epic), [Plan Board Changes](commands.md#plan-board-changes) and [Summarise Progress](commands.md#summarise-progress) read the links GitHub holds, from [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links). Sync reports a pull request that links no issue as uncited.
 - **Long-lived branches.**
@@ -110,6 +110,19 @@ An epic starts implementation only when every prerequisite epic named by its tas
 - [Plan Mode](plan-mode.md) checks them before cutting its bases from the current long-lived branches.
 - [Deliver Mode](deliver-mode.md) checks them again before dispatch, including when the board already says Ready or In Progress.
 
+### Issue Closure
+
+Work Planner closes an issue as completed only after its normal delivery checks pass, all its criteria are verified and ticked, and every pull request currently linked in its Development field has merged. This applies to tasks, epics, initiatives and standalone issues.
+
+- **Repository prerequisite.**
+  GitHub's **Auto-close issues with merged linked pull requests** setting is disabled in repositories participating in delivery. Confirm this with [Capture Issue Development](commands.md#capture-issue-development) before linking or merging a delivery pull request. An enabled or unknown setting leaves those actions blocked until configuration is confirmed; changing repository settings requires explicit authorization.
+- **Complete link set.**
+  Capture every Development-linked pull request, across repositories and all states. The issue's Development field supplies membership; titles, branch names, body mentions and a list filtered to one initiative do not establish completeness. An explicitly empty field adds no pull request requirement.
+- **Every merge.**
+  An open, draft, closed without merge, or unreadable linked pull request keeps the issue open. An abandoned or incorrectly linked pull request needs the user's decision before its Development link is removed. A replacement pull request does not remove the requirement on a link still present.
+- **Final check.**
+  [Check Issue Closure](commands.md#check-issue-closure) checks a fresh Development snapshot, the confirmed setting, the issue's criteria and fresh REST records for every linked pull request. [Close as Completed](commands.md#close-as-completed) runs that gate before writing the issue state. A changed link set requires another check.
+
 ### Missing branches
 
 For each long-lived branch the epic's tasks change:
@@ -132,6 +145,7 @@ When [Sync Epic](commands.md#sync-epic) reports a draft line, or an unmerged bas
 
 [Sync Mode](sync-mode.md) and [Deliver Mode](deliver-mode.md) merge a ready epic pull request with [Merge Epic Pull Request](commands.md#merge-epic-pull-request), without asking for further confirmation, once all these conditions hold:
 
+- The repository prerequisite in [Issue closure](#issue-closure) is confirmed.
 - Every task is delivered, every epic criterion is verified and ticked, and the epic has no open questions or unresolved delivery discrepancies.
 - The user has marked the draft ready, and its head and target are the epic base and corresponding long-lived branch.
 - [Update Epic Base](commands.md#update-epic-base) has brought in the current target, the criteria still hold on that result, and [Fetch Merge Readiness](commands.md#fetch-merge-readiness) confirms required checks and repository review requirements pass for the current head.
@@ -140,8 +154,7 @@ When [Sync Epic](commands.md#sync-epic) reports a draft line, or an unmerged bas
 A draft, conflict, failed or pending check, unmet criterion, or repository review requirement leaves the pull request open with the blocker reported. A changed head requires fresh verification. A merge refusal returns to the readiness checks; a repeated refusal is reported without retrying.
 
 - After each successful merge, fetch the pull request again to confirm its merged state and commit, then re-run [Sync Epic](commands.md#sync-epic) with fresh pull requests and the issue.
-- GitHub can close the linked epic when one base reaches the default branch. If the issue is closed as completed while Sync Epic reports it not closable, [Reopen Issue](commands.md#reopen-issue) before syncing its initiative or advancing dependent work.
-- Close the epic only after every base has merged, then sync its initiative. Initiative completion does not gate an epic's merge.
+- Close the epic only after every base has merged and [Issue closure](#issue-closure) passes, then sync its initiative. Initiative completion does not gate an epic's merge.
 
 ### Unplaced
 

@@ -5,11 +5,12 @@ Records work on an initiative, its epics and their task issues: links each task 
 ## Procedure
 
 1. **Select.**
-   - Select an initiative with all its epics, or the epics the user names. Include epics closed as completed so [Epic merge](work-breakdown.md#epic-merge) can reconcile an automatic issue closure.
+   - Select an initiative with its open epics, or the epics the user names.
    - Run [Align Mode](align-mode.md) first on any issue whose format [Check Format](commands.md#check-format) rejects, since sync mode reads the agent-engineering table.
 2. **Fetch.**
    - [Fetch Issue](commands.md#fetch-issue) for each issue, including each task issue titled `[I07:E00:Wzz]` under an epic being synced.
    - [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) for the pull requests that name the initiative, then [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links) for the issue each one links.
+   - Confirm the repository prerequisite in [Issue closure](work-breakdown.md#issue-closure). Capture each issue's Development links and fetch linked pull requests absent from the initiative list before evaluating closure.
 3. **Unnamed deliveries.**
    - When the user says work has landed but no pull request names its epic, find the pull request and confirm it with the user.
    - Give it the epic's reference, `[I07:E00] Purpose`, with [Retitle Pull Request](commands.md#retitle-pull-request).
@@ -62,7 +63,6 @@ Records work on an initiative, its epics and their task issues: links each task 
     - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open it as [Review pull request](work-breakdown.md#review-pull-request) states.
     - For each open epic pull request, follow [Epic merge](work-breakdown.md#epic-merge). Report a draft waiting for the user; merge a ready pull request once its conditions hold.
     - Fetch the pull requests again after merging and re-run [Sync Epic](commands.md#sync-epic).
-    - Reconcile any early issue closure as [Epic merge](work-breakdown.md#epic-merge) states before syncing the initiative.
     - [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
     - Run [Sync Initiative](commands.md#sync-initiative), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
@@ -92,6 +92,8 @@ Records work on an initiative, its epics and their task issues: links each task 
 
 - **Open questions.**
   An epic is not synced while its Open Questions section remains. Ready it in [Plan Mode](plan-mode.md) first.
+- **Closure.**
+  A sync report of closable establishes delivery readiness. Every completion also passes [Issue closure](work-breakdown.md#issue-closure) through [Close as Completed](commands.md#close-as-completed).
 - **In Review.**
   An open initiative or epic whose criteria are all ticked is In Review.
 - **Overviews.**

@@ -500,7 +500,7 @@ class EpicClose(unittest.TestCase):
         self.assertIn('closable: no (unmerged i01/e00/workflows)', out)
         self.assertNotIn('i01/e00/main', out)
 
-    def test_automatic_issue_closure_does_not_hide_an_unmerged_base(self):
+    def test_a_closed_issue_does_not_hide_an_unmerged_base(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''),
                                 (f"[W02]({url('pull', 951)})", 'More', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/e00/main'),

@@ -148,10 +148,47 @@ gh api --method POST repos/{owner}/{repo}/issues/874/comments -F body=@comment-8
 
 ### Close as Completed
 
-Closes an issue whose work is done.
+Closes an issue whose normal delivery checks and [Issue Closure](work-breakdown.md#issue-closure) pass.
+
+- Refresh the evidence with [Capture Issue Development](#capture-issue-development) immediately before this call. Use absolute evidence paths when changing directory, and the issue's repository and number in the REST path.
+- The closure gate must exit 0 before the PATCH executes. A sync report of closable supplies the normal delivery check, not permission to skip this gate.
 
 ```bash
-gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/closure.py --issue /tmp/issue-943.json --development /tmp/development-943.json --prs /tmp/development-prs-943.json && gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
+```
+
+### Capture Issue Development
+
+Records the issue's complete Development pull request list and its repository's verified auto-closing setting.
+
+- Read every pull request in the issue's Development field through authenticated GitHub or an available supported tool, including links in other repositories and additional pages. Record the exact URLs in `pull_requests` and set `complete` to true only once that list is complete.
+- Verify **Settings → General → Issues → Auto-close issues with merged linked pull requests** is unchecked, as [GitHub's configuration guide](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/managing-auto-closing-issues) describes. Set `auto_close_issues` to false only after observing that setting or receiving the user's explicit confirmation for this repository. An absent API field is unknown. Apply the prerequisite to every repository participating in delivery before linking or merging.
+- Record `repo` and `number` for the issue being closed. Save the snapshot as `development-943.json`; `pull_requests: []` means the field was checked and is empty. Missing access or incomplete evidence leaves closure blocked.
+- Use [Fetch Issue](#fetch-issue) for the current criteria and [Fetch Pull Request](#fetch-pull-request) for every recorded URL. Save those REST records as JSON lines in `development-prs-943.json`, including merged and closed pull requests regardless of their titles or branches. Identify a pull request by repository and number.
+- Before closing, refresh the Development list and pull request records. If the list changes while checking, repeat the check with the current list.
+
+```json
+{
+  "repo": "owner/repo",
+  "number": 943,
+  "complete": true,
+  "auto_close_issues": false,
+  "pull_requests": [
+    "https://github.com/owner/repo/pull/980",
+    "https://github.com/owner/other/pull/981"
+  ]
+}
+```
+
+### Check Issue Closure
+
+Checks the final closure conditions in [Issue Closure](work-breakdown.md#issue-closure).
+
+- Inputs are the fresh records from [Capture Issue Development](#capture-issue-development). No network calls or writes occur.
+- Exit 0 means this gate passed; normal delivery checks must also pass. Exit 1 reports each blocker, including missing evidence, an unmerged linked pull request or unticked criteria.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/closure.py --issue issue-943.json --development development-943.json --prs development-prs-943.json
 ```
 
 ### Close as Not Planned
@@ -265,6 +302,7 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/980 -F body=@review-980.md --jq
 
 Merges a task pull request into its epic base.
 
+- Confirm the repository prerequisite in [Issue Closure](work-breakdown.md#issue-closure) before merging.
 - Run it when every check's Pass cell in the pull request's test plan carries a tick, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. [Update Epic Base](#update-epic-base) has run first.
 - A refusal is followed by [Update Task Branch](#update-task-branch), then this command again. A conflict in that update leaves the pull request open. Report it.
 - The merge method is a merge commit.
@@ -393,18 +431,11 @@ gh api --method PUT repos/{owner}/{repo}/pulls/980/merge -f merge_method='merge'
 gh api repos/{owner}/{repo}/pulls/980 --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
 ```
 
-### Reopen Issue
-
-Reopens an epic that GitHub closed before [Epic merge](work-breakdown.md#epic-merge) reports its delivery complete.
-
-```bash
-gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state='open' --jq .state
-```
-
 ### Link Pull Request to Issue
 
 Links a pull request to the issue it delivers. GitHub shows that link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads.
 
+- Confirm the repository prerequisite in [Issue Closure](work-breakdown.md#issue-closure) before linking.
 - Run it once the pull request is open, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
 - The first two calls print the node ids REST holds for the issue and the pull request.
 - `link.graphql` carries the mutation with those ids written into it. The query sits in a file because a GraphQL variable needs a `$`, which the [Bash rules](../../../rules/bash-composition.md#github-cli) deny on the command line.
@@ -710,7 +741,7 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - When a task has merged into an epic base and the epic is not yet complete, that base is reported draft, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - It reports a review pull request whose References differ from the task pull requests merged into its base, naming both sets, as the [Work Breakdown Guide](work-breakdown.md#review-pull-request) states.
 - When every row is delivered and every criterion is ticked, an epic base its pull requests target that has not merged is reported unmerged. A draft pull request is named draft. The epic is closable as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-- `--project` is a checkout of the project, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Without those names, an epic or initiative that would otherwise be closable is not.
+- `--project` is a checkout of the project, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. Without those names, an epic that would otherwise be closable is not.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W02=950 --project <checkout> --fix fixed-943.md
