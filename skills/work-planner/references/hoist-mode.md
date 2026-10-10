@@ -7,6 +7,10 @@ Brings the tracker's standalone issues into the agent-engineering structure: eac
   - Open agent-engineering issues link them, as a reference or in prose, yet they sit outside the structure. An investigation an epic cites is one.
   - When the citing epic's criteria already carry its work, the investigation is subsumed into that epic.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
 ## Placements
 
 A placement is the choice of where an orphan's work goes. The table states what that work becomes and whether the orphan issue is kept, subsumed, or left open.

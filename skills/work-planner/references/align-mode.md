@@ -2,6 +2,12 @@
 
 Aligns existing proposal, initiative, epic, task and standalone issues with their templates and with the rules that bind them, and fixes them. It also brings each epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
+Before matching pull requests or syncing epics, read [Delivery State](commands.md#delivery-state).
+
 ## Procedure
 
 1. **Select.**  Align the issues the user names, or an initiative with its open epics.

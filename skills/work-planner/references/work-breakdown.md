@@ -2,6 +2,12 @@
 
 How the Work Breakdown tables are written, read and kept current, what a plan or coverage report names, and what a Problem and a Proposal hold. Issue bodies carry the tables and nothing about them: the conventions live here.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
+Before matching pull requests or syncing epics, read [Delivery State](commands.md#delivery-state).
+
 ## Tables
 
 | Level | Columns |

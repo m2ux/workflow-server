@@ -18,7 +18,7 @@ Each theme's project board shows where its items stand. The Proposals board hold
 
 ## Modes
 
-Read the file for the mode the request calls for:
+Read the selected mode's file in full, then follow its links as each step needs them:
 
 - **[Propose](references/propose-mode.md)**
   - Scoping the problem: the friction, the evidence, and the boundary
@@ -175,6 +175,30 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - It needs its label and its board before an initiative takes it.
   - [Create Board](references/commands.md#create-board) copies the Initiative Template, titles the copy as above, and links it to the repository.
 
+## Rules
+
+- **Linked sections.**
+  Read a heading-linked section and its subsections, stopping before the next heading of equal or higher level. Follow required prerequisites; preserve each boundary in batched reads and recover truncated output. Explicit whole-document requirements still apply.
+- **Work Breakdown Guide.**
+  Every mode reads the [Work Breakdown Guide](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables, and what a [Problem and a Proposal](references/work-breakdown.md#problem-and-proposal) hold.
+- **Issue closure.**
+  Every completion follows [Issue Closure](references/work-breakdown.md#issue-closure), including its repository prerequisite before linking or merging delivery pull requests.
+- **Decisions.**
+  - Ask them one at a time, as an [Interview](references/interview.md).
+  - Record each answer in the affected issues and, when there is one, the planning record.
+- **Measured claims.**  A count or a chain comes from a command's output, never from a hand count.
+- **Bodies state the plan as it is.**
+  - No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything.
+  - How the plan evolved goes in the planning record and in commit and pull request bodies.
+- **Other initiatives.**  Editing another initiative's issue needs the user's explicit approval.
+- **References.**
+  An issue's References section does not link issues or pull requests on the same board. The GitHub project holds those relationships. Pull request References follow [Review pull request](references/work-breakdown.md#review-pull-request) and [Understand Mode](references/understand-mode.md#rules).
+- **Replies to feedback.**
+  - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on Issue](references/commands.md#comment-on-issue).
+  - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.
+- **Commands**
+  Before the first command spec, read the [command conventions](references/commands.md#conventions). Reuse complete prerequisites already read at the same revision; retrieve specific operations where needed.
+
 ## Dependencies
 
 - **GitHub CLI (`gh`).**
@@ -194,25 +218,3 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   The `gitnexus` command, for the structure [Understand Mode](references/understand-mode.md) measures over a change. It indexes the repository under review itself, as [Index Repository](references/commands.md#index-repository) runs it, so an unindexed repository costs that run rather than blocking the mode.
 - **Sub-agents.**
   The dispatch of the session this skill runs in. [Deliver Mode](references/deliver-mode.md#rules) starts each unit's session with it, and [Propose Mode](references/propose-mode.md) delegates a broad evidence sweep to it.
-
-## Rules
-
-- **Work Breakdown Guide.**
-  Every mode reads the [Work Breakdown Guide](references/work-breakdown.md): the columns, numbering, references and delivery of the Work Breakdown tables, and what a [Problem and a Proposal](references/work-breakdown.md#problem-and-proposal) hold.
-- **Issue closure.**
-  Every completion follows [Issue Closure](references/work-breakdown.md#issue-closure), including its repository prerequisite before linking or merging delivery pull requests.
-- **Decisions.**
-  - Ask them one at a time, as an [Interview](references/interview.md).
-  - Record each answer in the affected issues and, when there is one, the planning record.
-- **Measured claims.**  A count or a chain comes from a command's output, never from a hand count.
-- **Bodies state the plan as it is.**
-  - No body carries change narrative: nothing moved, renumbered, replaced, discharged or formerly anything.
-  - How the plan evolved goes in the planning record and in commit and pull request bodies.
-- **Other initiatives.**  Editing another initiative's issue needs the user's explicit approval.
-- **References.**
-  An issue's References section does not link issues or pull requests on the same board. The GitHub project holds those relationships. Pull request References follow [Review pull request](references/work-breakdown.md#review-pull-request) and [Understand Mode](references/understand-mode.md#rules).
-- **Replies to feedback.**
-  - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on Issue](references/commands.md#comment-on-issue).
-  - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.
-- **Commands**
-  Every command one spec in [Commands](references/commands.md), with the conventions they share.

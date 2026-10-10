@@ -2,6 +2,12 @@
 
 Records work on an initiative, its epics and their task issues: links each task that has a pull request to that pull request, open or merged, ticks the criteria that now hold, ticks Done on each complete row, closes what is complete, and brings the initiative's project board up to date.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
+Before matching pull requests or syncing epics, read [Delivery State](commands.md#delivery-state).
+
 ## Procedure
 
 1. **Select.**

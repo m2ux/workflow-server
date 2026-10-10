@@ -2,6 +2,12 @@
 
 Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, and hoist arising issues.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
+Before matching pull requests or syncing epics, read [Delivery State](commands.md#delivery-state).
+
 ## Procedure
 
 1. **Select.** Select the board as [Select](board.md#select) states.

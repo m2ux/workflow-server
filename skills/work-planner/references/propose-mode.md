@@ -2,6 +2,10 @@
 
 Scopes the problem: the friction, the evidence, and the boundary, and states the goal as clauses someone could observe. It raises one proposal on the board titled `Proposals`.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
 ## Procedure
 
 1. **Understand the problem.**

@@ -2,6 +2,10 @@
 
 How a mode chooses a theme board and reads it.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
 ## Select
 
 - The board is a theme's board, per [Themes and Boards](../SKILL.md#themes-and-boards). Run [Find Theme Board](commands.md#find-theme-board) for the theme the user names.

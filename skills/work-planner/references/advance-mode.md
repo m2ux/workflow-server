@@ -2,6 +2,10 @@
 
 Decides which initiatives and epics on a theme board are Ready or In Progress, after [Sync Mode](sync-mode.md) has recorded delivery. Its Priorities rule defines the queue.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
 ## Procedure
 
 1. **Select.** Select the board as [Select](board.md#select) states.

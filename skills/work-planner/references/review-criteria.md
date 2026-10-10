@@ -2,6 +2,10 @@
 
 The requirements every review uses, scoped to the kind of issue and to the section under review. A pass or a mode checks the section against its criteria here, and does not restate them.
 
+## Prerequisites
+
+Command operations use the [command conventions](commands.md#conventions), read before the first spec.
+
 ## Local
 
 Criteria that apply to one kind of issue. A review of that kind uses its section, and the sections under it.

@@ -5,6 +5,7 @@ The rules this skill's own files follow beyond the [skill guidelines](../../guid
 ## SKILL.md Structure
 
 - **Opening.**  The bulleted list has one item for each issue type.
+- **Section order.**  Rules precedes Dependencies.
 
 ## Layout
 
@@ -44,4 +45,17 @@ The rules this skill's own files follow beyond the [skill guidelines](../../guid
 ## Commands
 
 - **Shared conventions.**
-  The top of [Commands](commands.md) also holds how bodies go through files and where boards sit.
+  The [command conventions](commands.md#conventions) also hold how bodies go through files and where boards sit. Graph-only setup belongs in [Graph Conventions](commands.md#graph-conventions).
+
+## Progressive Disclosure
+
+Apply the shared [progressive disclosure](../../guidelines.md#progressive-disclosure) and [disclosure verification](../../guidelines.md#disclosure-verification) rules to affected callers. Modes are read whole; supporting section reads inherit the mode's command prerequisites.
+
+- **Mode routes.**
+  Trace each affected mode through its common conventions, selected operations and supporting guides. Include cross-mode calls and explicit whole-file requirements.
+- **Board operations.**
+  Exercise a Standup request with captured board inputs, selecting multiple command specs and reusing conventions. Preserve the generator's format and unresolved evidence.
+- **Graph operations.**
+  Exercise an Understand request with a named pull request, verifying graph-specific setup before selected graph commands and exclusion of unrelated command bodies.
+- **Revision.**
+  Exercise a bounded skill edit with its consumer guidance, required whole-file guidelines, local checks and reused common prerequisites.
