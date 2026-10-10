@@ -19,9 +19,10 @@ Starts the work a theme board makes available. It advances the board, merges eac
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Merge.**
    Merge each `merge` line, an open pull request whose test plan has passed, into the epic base it names, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. Do not ask.
-   - [Update Integration Branch](commands.md#update-integration-branch), then [Update Epic Base](commands.md#update-epic-base), then [Merge Pull Request](commands.md#merge-pull-request).
+   - [Update Epic Base](commands.md#update-epic-base), then [Merge Pull Request](commands.md#merge-pull-request).
    - When that merge is refused, [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
-   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each task the pull request delivers and [Sync Epic](commands.md#sync-epic), then [Update Review Pull Request](commands.md#update-review-pull-request) for the base the merge landed in. Do not sync the initiative or the board.
+   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each task the pull request delivers and [Sync Epic](commands.md#sync-epic), opening the draft as [Review pull request](work-breakdown.md#review-pull-request) states, then [Update Review Pull Request](commands.md#update-review-pull-request) for that base.
+   - Follow [Epic merge](work-breakdown.md#epic-merge) for each epic completed by those merges. A pending draft waits for the user.
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 7. **Hold.**
@@ -58,10 +59,10 @@ What the prompt tells one session, written from the facts the `unit` line and th
   Open it with [Open Task Pull Request](commands.md#open-task-pull-request), which titles it for the epic, targets the epic base, fills the Test Plan table as this mode's Tests rule states, and links each task issue the unit delivers. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
 - **Merge.**
   - Tick each passed check's Pass cell with [Patch Pull Request Body](commands.md#patch-pull-request-body). The mark is ✓, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Test plan. A row whose Test cell is empty keeps an empty Pass cell.
-  - When every such Pass cell carries that tick, merge the long-lived branch into the integration branch with [Update Integration Branch](commands.md#update-integration-branch), that branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
+  - When every such Pass cell carries that tick, merge the long-lived branch into the epic base with [Update Epic Base](commands.md#update-epic-base), then the pull request with [Merge Pull Request](commands.md#merge-pull-request).
   - When the pull request merge is refused, update the task branch from the epic base with [Update Task Branch](commands.md#update-task-branch) and merge the pull request again. A conflict in that update leaves the pull request open and is reported.
   - Then run [Sync Task Issue](commands.md#sync-task-issue) for each of the unit's task issues and [Sync Epic](commands.md#sync-epic) again. A draft line opens that epic base as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states.
-  - Then run [Update Review Pull Request](commands.md#update-review-pull-request) for the epic base, adding the unit's change under Changes and its pull request under References. Do not sync the initiative or the board.
+  - Then run [Update Review Pull Request](commands.md#update-review-pull-request) for the epic base, adding the unit's change under Changes and its pull request under References, and follow [Epic merge](work-breakdown.md#epic-merge) when the epic is complete.
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
 

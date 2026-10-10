@@ -5,7 +5,7 @@ Records work on an initiative, its epics and their task issues: links each task 
 ## Procedure
 
 1. **Select.**
-   - Select an initiative with its open epics, or the epics the user names.
+   - Select an initiative with all its epics, or the epics the user names. Include epics closed as completed so [Epic merge](work-breakdown.md#epic-merge) can reconcile an automatic issue closure.
    - Run [Align Mode](align-mode.md) first on any issue whose format [Check Format](commands.md#check-format) rejects, since sync mode reads the agent-engineering table.
 2. **Fetch.**
    - [Fetch Issue](commands.md#fetch-issue) for each issue, including each task issue titled `[I07:E00:Wzz]` under an epic being synced.
@@ -35,7 +35,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - **Draft.**
      An epic base a merged task targets that has no pull request merging it, while a task is undelivered or a criterion is unticked. Open it as a draft, as [Review pull request](work-breakdown.md#review-pull-request) states.
    - **Unmerged.**
-     An epic base its pull requests target that has not merged into the initiative integration branch, once every task is delivered and every criterion is ticked. The Close step opens its pull request, or leaves a draft for the reviewer to mark ready, as [Review pull request](work-breakdown.md#review-pull-request) states.
+     An epic base its pull requests target that has not merged into its long-lived branch, once every task is delivered and every criterion is ticked. The Close step follows [Review pull request](work-breakdown.md#review-pull-request) and [Epic merge](work-breakdown.md#epic-merge).
    - **References.**
      A review pull request citing a set of pull requests that differs from the task pull requests merged into its base. Bring the body up to the merges with [Update Review Pull Request](commands.md#update-review-pull-request), as [Review pull request](work-breakdown.md#review-pull-request) states.
    - **Uncited.**
@@ -60,13 +60,14 @@ Records work on an initiative, its epics and their task issues: links each task 
    Patch each changed body from its `--fix` file with [Patch Body](commands.md#patch-body).
 10. **Close.**
     - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open it as [Review pull request](work-breakdown.md#review-pull-request) states.
+    - For each open epic pull request, follow [Epic merge](work-breakdown.md#epic-merge). Report a draft waiting for the user; merge a ready pull request once its conditions hold.
+    - Fetch the pull requests again after merging and re-run [Sync Epic](commands.md#sync-epic).
+    - Reconcile any early issue closure as [Epic merge](work-breakdown.md#epic-merge) states before syncing the initiative.
     - [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
-    - Run [Sync Initiative](commands.md#sync-initiative), with the epic JSON fetched after closing, the pull requests from [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests) and their issue links. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
+    - Run [Sync Initiative](commands.md#sync-initiative), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
     - It lists each criterion whose citing epics are all delivered as ready to verify. Verify each as step 7 does, and tick those that pass with [Tick Criteria](commands.md#tick-criteria).
     - [Patch Body](commands.md#patch-body) the initiative from its `--fix` file when a tick changed it, so the board sync reads every criterion ticked.
-    - When it reports an integration branch unmerged, open that pull request with [Open Integration Pull Request](commands.md#open-integration-pull-request) and leave the initiative open.
-    - When it reports an integration pull request uncited, set its link with [Link Pull Request to Issue](commands.md#link-pull-request-to-issue).
     - [Close as Completed](commands.md#close-as-completed) the initiative when it reports closable, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 12. **Sync the board.**
     Sync it after the issues are patched and any closable issue is closed, fetching the issues again first. An open initiative or epic is set In Review as this mode's In Review rule states.
@@ -95,5 +96,5 @@ Records work on an initiative, its epics and their task issues: links each task 
   An open initiative or epic whose criteria are all ticked is In Review.
 - **Overviews.**
   - A task entering In Review takes the open pull request that names it, and an epic entering In Review takes its [review pull request](work-breakdown.md#review-pull-request). An initiative takes none, as [Understand Mode](understand-mode.md#rules) states under Grain.
+  - An epic merging in the Close step gets its overview through [Epic merge](work-breakdown.md#epic-merge), before the board sync.
   - An issue already In Review when the sync began keeps the overview it has: the pull request it explains is the one already reviewed.
-

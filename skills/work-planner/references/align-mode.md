@@ -1,6 +1,6 @@
 # Align Mode
 
-Aligns existing proposal, initiative, epic, task and standalone issues with their templates and with the rules that bind them, and fixes them. For an initiative in progress, it also brings that initiative's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states.
+Aligns existing proposal, initiative, epic, task and standalone issues with their templates and with the rules that bind them, and fixes them. It also brings each epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states.
 
 ## Procedure
 
@@ -46,21 +46,21 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
      A row that links a pull request the fetch did not return is fetched with [Fetch Pull Request](commands.md#fetch-pull-request), and the sync is run again.
    - **Unlinked.**
      A criterion ticked while its row links no pull request and no commit: link the one delivery [Fetch Comments](commands.md#fetch-comments) names, a path taken as the commit that holds it, then run the sync again. Several candidates, or none, go to the user as an [Interview](interview.md).
-   For an initiative being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests), [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links), and run [Sync Initiative](commands.md#sync-initiative) with `--fix` and every epic its table links.
+   For an initiative being aligned, run [Sync Initiative](commands.md#sync-initiative) with `--fix` and every epic its table links.
    - **Ready to verify.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ready to verify: every epic that cites it is delivered, and the criterion is unticked.
    - **Ticked early.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
    Put each of those to the user as an [Interview](interview.md). Verifying and ticking it is [Sync Mode](sync-mode.md). A Done change the fix file writes is applied with [Patch Body](commands.md#patch-body), without asking. The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
 10. **Branches.**
-    For an initiative being aligned, bring each open epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states. Cut each missing branch as [Missing branches](work-breakdown.md#missing-branches) states.
+    For an initiative being aligned, bring each open epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states. Check [Epic prerequisites](work-breakdown.md#epic-prerequisites) before cutting a missing branch as [Missing branches](work-breakdown.md#missing-branches) states.
     - [List Long-Lived Branches](commands.md#list-long-lived-branches) prints the names, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. When it reports them unevaluable, the branch step stops and that report is the finding.
     - [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). [List Epic Bases](commands.md#list-epic-bases) for each open epic.
-    - The long-lived branch a pull request base names is the last segment of that base when the segment is a long-lived branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. `i07/main`, `main`, and `i07/e00/main` all name `main`.
-    - An epic base is cut from the integration branch's tip, so it carries what that branch already holds.
-    - An open pull request that delivers the epic's tasks, and whose base is the integration branch or the long-lived branch, is pointed at that epic base with [Retarget Pull Request](commands.md#retarget-pull-request).
+    - Identify the long-lived branch with [List Long-Lived Branches](commands.md#list-long-lived-branches). A base of `main` or `i07/e00/main` names `main`.
+    - An epic base is cut from the long-lived branch's current tip.
+    - Point an open task pull request at its epic base with [Retarget Pull Request](commands.md#retarget-pull-request).
     - When that pull request is not mergeable, [Update Task Branch](commands.md#update-task-branch) merges the epic base into the task branch. A conflict is reported and the pull request stays open.
-    - An open pull request whose head is an epic base keeps the integration branch as its base. One whose head is an integration branch keeps the long-lived branch as its base.
+    - An open pull request whose head is an epic base targets its corresponding long-lived branch.
     - A merged pull request is left as merged.
     - A base that is none of these is put to the user as an [Interview](interview.md).
 11. **Unplaced task issues.** Handle each one as [Unplaced](work-breakdown.md#unplaced) states.
@@ -121,11 +121,10 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
   - Run [Sync Epic](commands.md#sync-epic) again. It ticks Done on the delivered task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
   - A criterion the user confirms already holds is ticked in [Sync Mode](sync-mode.md), and it stays on the delivered task.
 - **Branches.**
-  An initiative in progress has the integration branches and epic bases the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and an open pull request that delivers its tasks targets the epic base. A retarget that leaves the pull request unmergeable is followed by [Update Task Branch](commands.md#update-task-branch).
+  An epic in progress has the bases the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and an open pull request that delivers its tasks targets its epic base. A retarget that leaves the pull request unmergeable is followed by [Update Task Branch](commands.md#update-task-branch).
 - **Unplaced.**
   Apply [Unplaced](work-breakdown.md#unplaced).
 - **Review pull request.**
   Apply [Review pull request](work-breakdown.md#review-pull-request).
 - **Table.**
   A Done cell that disagrees with whether its row is complete, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, is repaired. A ticked criterion whose row links no delivery is linked when the comments name one delivery, a path taken as the commit that holds it. Several candidates, or none, are decided with the user.
-

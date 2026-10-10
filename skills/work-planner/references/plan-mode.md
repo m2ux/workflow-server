@@ -52,8 +52,10 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
    - A task issue [Sync Epic](commands.md#sync-epic) reports unplaced is handled as [Unplaced](work-breakdown.md#unplaced) states.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
-   - **Integration branches and epic bases exist.**
-     Cut each missing one as [Missing branches](work-breakdown.md#missing-branches) states, before any task starts. Point an open pull request of the epic at its base with [Retarget Pull Request](commands.md#retarget-pull-request).
+   - **Epic prerequisites hold.**
+     Confirm [Epic prerequisites](work-breakdown.md#epic-prerequisites) before creating its bases or starting a task. An unmet prerequisite leaves implementation pending.
+   - **Epic bases exist.**
+     Cut each missing one as [Missing branches](work-breakdown.md#missing-branches) states. Point an open task pull request of the epic at its base with [Retarget Pull Request](commands.md#retarget-pull-request).
    - **Open Questions resolved.**
      - An open question is unfinished planning.
      - Put each to the user as an [Interview](interview.md), record the answer in the planning record, and fold it into the epic: its Proposal, tasks, criteria and dependencies may all change.

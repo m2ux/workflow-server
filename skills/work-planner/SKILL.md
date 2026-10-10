@@ -1,16 +1,7 @@
 ---
 name: work-planner
 description: >-
-  Plans and maintains agent-engineering work on GitHub: proposal issues, [Ixx] initiative
-  issues, their [Ixx:Eyy] epics and [Ixx:Eyy:Wzz] tasks, each theme's project board, and the
-  Proposals board. Use to propose work, scope the problem, or raise a proposal; to plan the work,
-  scope the solution, or break down work, or write a work plan or work breakdown; to raise, plan, restructure, align or
-  renumber an initiative or epic; to check an issue's format, its compliance with the rules, its criteria or its dependency
-  order, or a Done column that disagrees with its delivery, or a merged task that still carries an unmet criterion; to fold review findings into issues; to sync an initiative or epic with completed work; to advance a board or decide what moves to ready;
-  to deliver the work on a board, start the work it makes available, or dispatch sessions for ready tasks;
-  to understand or explain a pull request's changes, write an architecture overview of one, or diagram what a change does for its reviewer;
-  to hoist or triage orphan issues into an initiative; for a standup or a status update in Slack;
-  or to revise or update the work-planner skill itself.
+  Plans and maintains agent-engineering work on GitHub: proposals, initiatives, epics, tasks and theme boards. Use to propose work or scope a problem; plan or break down work; raise, restructure, align or renumber an initiative or epic; check issue format, criteria, dependencies or delivery; fold review findings into issues; sync completed work; advance a board or decide what moves to ready; deliver board work or dispatch ready tasks; explain a pull request, write its architecture overview or diagram its changes; hoist or triage orphan issues; produce a standup or Slack status update; or revise the work-planner skill itself.
 ---
 
 # Work Planner
@@ -57,7 +48,7 @@ Read the file for the mode the request calls for:
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
   - Closure of complete task issues, epics and initiatives
-  - Pull requests merging a completed epic's bases into its initiative's integration branches
+  - Automatic merges of completed epics into their long-lived branches once their drafts are marked ready
   - The theme board brought current with its issues
 - **[Advance](references/advance-mode.md)**
   - Sync of the board's open initiatives
@@ -197,7 +188,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   Standard library only, for the scripts in `scripts/` and their tests in `test/`.
 - **git.**
   - For the planning record: [Add Planning Record](references/commands.md#add-planning-record).
-  - For delivery: each initiative's integration branches and each epic's base branches, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
+  - For delivery: each epic's base branches, per the [Work Breakdown Guide](references/work-breakdown.md#delivery).
   - For dispatch: a worktree per unit of work, as [Create Task Worktree](references/commands.md#create-task-worktree) cuts it.
   - For understanding a change: a worktree at a pull request's head commit, as [Create Pull Request Worktree](references/commands.md#create-pull-request-worktree) cuts it.
 - **GitNexus.**
