@@ -16,6 +16,8 @@ The evidence distinguishes structural checks, live agent behavior and remaining 
 | [Format Revision](format-revision.md) | Scope, tasks and validation for linked test results |
 | [Integration Review](review.md) | Findings across the full PR, coverage and remaining evidence gaps |
 | [Review Evidence](review-evidence.json) | Regression results, link checks and disposable reproductions |
+| [Common Context](common-context.md) | Shared prerequisite sections, caller routing and fresh-agent evidence |
+| [Common Context Evidence](common-context-evidence.json) | Tested file hashes, section reads, structural checks and fixture isolation |
 
 ## Links
 

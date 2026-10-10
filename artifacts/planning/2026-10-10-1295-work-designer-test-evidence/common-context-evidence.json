@@ -1,0 +1,866 @@
+{
+  "snapshot": {
+    "base": "3f73e1fe3dd1a04f2ffffd515c72345ba5a4f22a",
+    "files": {
+      "skills/guidelines.md": "9054ca5caf2895f3d768485f1ff8f93868a48ea48b69a338bb87be2607729669",
+      "skills/work-designer/SKILL.md": "92fe88f72dcfa05c205b3baf16662616f22725f7fcf66c8f1f5e5575666406e1",
+      "skills/work-designer/references/commands.md": "551480c7bf6523b9bf21bb4949925f001c9411983942dab2c46ccbfbcc04a4bc",
+      "skills/work-designer/references/guidelines.md": "6634001038294cc2912d396dc4028385209c3e650f85b809eb288e692960d8b6",
+      "skills/work-designer/references/review-mode.md": "cde561297995ffaa0c42d1082369253ca4456b56a54c8306641f75add27361f0",
+      "skills/work-designer/references/revise-mode.md": "a183ba47f987a58fabd13ea48600cb02d3d7651fc5a5e11e9c2f21fef22263c5",
+      "skills/work-designer/references/variants.md": "212d17dd3d202e179fd2293f522f979da79028359f00b0cb112814f82b3214f2",
+      "skills/work-designer/variants/workflow-server/VARIANT.md": "445af631c3b81540095d81442094860d5c0f9aac0daf14d4edd19c3bdb4c0ab3",
+      "skills/work-designer/variants/workflow-server/commands.md": "b1d273d8702129d229cc9d70147ecbbd11465b94cac6ed0a0180bda012d3a6dd"
+    }
+  },
+  "structure": {
+    "markdown_files": 16,
+    "local_links": 216,
+    "routes": [
+      {
+        "caller": "skills/work-designer/SKILL.md",
+        "catalog": "skills/work-designer/references/commands.md",
+        "common_links": 1,
+        "operation_links": 0,
+        "shared_via_project_conventions": false
+      },
+      {
+        "caller": "skills/work-designer/references/review-mode.md",
+        "catalog": "skills/work-designer/references/commands.md",
+        "common_links": 1,
+        "operation_links": 12,
+        "shared_via_project_conventions": false
+      },
+      {
+        "caller": "skills/work-designer/references/revise-mode.md",
+        "catalog": "skills/work-designer/references/commands.md",
+        "common_links": 1,
+        "operation_links": 5,
+        "shared_via_project_conventions": false
+      },
+      {
+        "caller": "skills/work-designer/references/variants.md",
+        "catalog": "skills/work-designer/references/commands.md",
+        "common_links": 1,
+        "operation_links": 1,
+        "shared_via_project_conventions": false
+      },
+      {
+        "caller": "skills/work-designer/variants/workflow-server/VARIANT.md",
+        "catalog": "skills/work-designer/variants/workflow-server/commands.md",
+        "common_links": 1,
+        "operation_links": 16,
+        "shared_via_project_conventions": false
+      },
+      {
+        "caller": "skills/work-designer/variants/workflow-server/VARIANT.md",
+        "catalog": "skills/work-designer/references/commands.md",
+        "common_links": 0,
+        "operation_links": 1,
+        "shared_via_project_conventions": true
+      },
+      {
+        "caller": "skills/work-designer/variants/workflow-server/commands.md",
+        "catalog": "skills/work-designer/references/commands.md",
+        "common_links": 1,
+        "operation_links": 0,
+        "shared_via_project_conventions": false
+      }
+    ],
+    "common_sections": [
+      {
+        "path": "skills/work-designer/references/commands.md",
+        "start": 3,
+        "end": 19,
+        "subsections": [],
+        "next_heading": "## Configuration"
+      },
+      {
+        "path": "skills/work-designer/variants/workflow-server/commands.md",
+        "start": 3,
+        "end": 14,
+        "subsections": [
+          "Locations",
+          "Invocation Sources"
+        ],
+        "next_heading": "## Install Engine Dependencies"
+      }
+    ],
+    "errors": []
+  },
+  "fixtures": {
+    "a": {
+      "baseline_preserved": true,
+      "template_exact": true,
+      "additional_changed_files": [
+        "skills/work-designer/templates/integration-review.md"
+      ],
+      "untracked": []
+    },
+    "b": {
+      "baseline_preserved": true,
+      "template_exact": true,
+      "additional_changed_files": [
+        "skills/work-designer/templates/integration-review.md"
+      ],
+      "untracked": []
+    }
+  },
+  "live": {
+    "common_review_a": {
+      "session": "01a12589-b7e4-7af2-b9e6-42872b652c36",
+      "complete": true,
+      "truncated_calls": [
+        "call_Rc5bI49ouTaMtUIeavrP5Hov",
+        "call_mCRsVoOQ8GMFnOTH4QzrUvQx"
+      ],
+      "whole_files": [
+        "skills/work-designer/SKILL.md",
+        "skills/work-designer/references/coverage.md",
+        "skills/work-designer/references/planning.md",
+        "skills/work-designer/references/review-mode.md",
+        "skills/work-designer/templates/integration-review.md"
+      ],
+      "catalogs": [
+        {
+          "path": "skills/work-designer/references/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 19,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_QRN3qkGLFSHA9AgBHwnMphoo"
+                }
+              ]
+            },
+            {
+              "heading": "Configuration",
+              "start": 20,
+              "end": 32,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_QRN3qkGLFSHA9AgBHwnMphoo"
+                }
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "start": 22,
+              "end": 32,
+              "hits": [
+                {
+                  "event": 11,
+                  "call_id": "call_QRN3qkGLFSHA9AgBHwnMphoo"
+                }
+              ]
+            },
+            {
+              "heading": "Compare Revisions",
+              "start": 62,
+              "end": 75,
+              "hits": [
+                {
+                  "event": 24,
+                  "call_id": "call_uC7J3tOamSYzJiTOZ4lm0C6z"
+                }
+              ]
+            },
+            {
+              "heading": "Create Review Worktree",
+              "start": 76,
+              "end": 83,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Prepare Integration Result",
+              "start": 84,
+              "end": 96,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Abort Review Merge",
+              "start": 97,
+              "end": 104,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Read Captured File",
+              "start": 105,
+              "end": 112,
+              "hits": [
+                {
+                  "event": 24,
+                  "call_id": "call_uC7J3tOamSYzJiTOZ4lm0C6z"
+                }
+              ]
+            },
+            {
+              "heading": "Read Captured Section",
+              "start": 113,
+              "end": 123,
+              "hits": [
+                {
+                  "event": 24,
+                  "call_id": "call_uC7J3tOamSYzJiTOZ4lm0C6z"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Check Evidence",
+              "start": 124,
+              "end": 137,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Refresh Revisions",
+              "start": 138,
+              "end": 146,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Project Checks",
+              "start": 147,
+              "end": 160,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Run Project Check",
+              "start": 149,
+              "end": 160,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/work-designer/variants/workflow-server/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 23,
+                  "call_id": "call_uC7J3tOamSYzJiTOZ4lm0C6z"
+                }
+              ]
+            },
+            {
+              "heading": "Locations",
+              "start": 7,
+              "end": 10,
+              "hits": [
+                {
+                  "event": 23,
+                  "call_id": "call_uC7J3tOamSYzJiTOZ4lm0C6z"
+                }
+              ]
+            },
+            {
+              "heading": "Invocation Sources",
+              "start": 11,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 23,
+                  "call_id": "call_uC7J3tOamSYzJiTOZ4lm0C6z"
+                }
+              ]
+            },
+            {
+              "heading": "Check Shell Syntax",
+              "start": 93,
+              "end": 100,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Validate Compose",
+              "start": 101,
+              "end": 110,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Build Review Image",
+              "start": 111,
+              "end": 123,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Exercise Review Container",
+              "start": 124,
+              "end": 138,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Restart Review Container",
+              "start": 139,
+              "end": 146,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            },
+            {
+              "heading": "Stop Review Container",
+              "start": 147,
+              "end": 154,
+              "hits": [
+                {
+                  "event": 33,
+                  "call_id": "call_Rc5bI49ouTaMtUIeavrP5Hov"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "common_review_b": {
+      "session": "01a12589-d2c7-77a2-9402-fe937628120f",
+      "complete": true,
+      "truncated_calls": [
+        "call_8faa0c7753124c8aba7c7ded9b0be99d"
+      ],
+      "whole_files": [
+        "skills/work-designer/SKILL.md",
+        "skills/work-designer/references/coverage.md",
+        "skills/work-designer/references/planning.md",
+        "skills/work-designer/references/review-mode.md",
+        "skills/work-designer/templates/integration-review.md"
+      ],
+      "catalogs": [
+        {
+          "path": "skills/work-designer/references/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 19,
+              "hits": [
+                {
+                  "event": 7,
+                  "call_id": "call_4073b1d7b56d4417b73ced4cf82f8997"
+                }
+              ]
+            },
+            {
+              "heading": "Configuration",
+              "start": 20,
+              "end": 32,
+              "hits": [
+                {
+                  "event": 7,
+                  "call_id": "call_4073b1d7b56d4417b73ced4cf82f8997"
+                }
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "start": 22,
+              "end": 32,
+              "hits": [
+                {
+                  "event": 7,
+                  "call_id": "call_4073b1d7b56d4417b73ced4cf82f8997"
+                }
+              ]
+            },
+            {
+              "heading": "Compare Revisions",
+              "start": 62,
+              "end": 75,
+              "hits": [
+                {
+                  "event": 14,
+                  "call_id": "call_d684eb1a99f243f7b5ecfcf599728d69"
+                }
+              ]
+            },
+            {
+              "heading": "Create Review Worktree",
+              "start": 76,
+              "end": 83,
+              "hits": [
+                {
+                  "event": 54,
+                  "call_id": "call_9d55e464af484f8aba892d53a9e73a41"
+                }
+              ]
+            },
+            {
+              "heading": "Prepare Integration Result",
+              "start": 84,
+              "end": 96,
+              "hits": [
+                {
+                  "event": 54,
+                  "call_id": "call_9d55e464af484f8aba892d53a9e73a41"
+                }
+              ]
+            },
+            {
+              "heading": "Abort Review Merge",
+              "start": 97,
+              "end": 104,
+              "hits": [
+                {
+                  "event": 54,
+                  "call_id": "call_9d55e464af484f8aba892d53a9e73a41"
+                }
+              ]
+            },
+            {
+              "heading": "Read Captured File",
+              "start": 105,
+              "end": 112,
+              "hits": [
+                {
+                  "event": 15,
+                  "call_id": "call_d684eb1a99f243f7b5ecfcf599728d69"
+                }
+              ]
+            },
+            {
+              "heading": "Read Captured Section",
+              "start": 113,
+              "end": 123,
+              "hits": [
+                {
+                  "event": 15,
+                  "call_id": "call_d684eb1a99f243f7b5ecfcf599728d69"
+                }
+              ]
+            },
+            {
+              "heading": "Fetch Check Evidence",
+              "start": 124,
+              "end": 137,
+              "hits": [
+                {
+                  "event": 56,
+                  "call_id": "call_9d55e464af484f8aba892d53a9e73a41"
+                }
+              ]
+            },
+            {
+              "heading": "Refresh Revisions",
+              "start": 138,
+              "end": 146,
+              "hits": [
+                {
+                  "event": 56,
+                  "call_id": "call_9d55e464af484f8aba892d53a9e73a41"
+                }
+              ]
+            },
+            {
+              "heading": "Run Project Check",
+              "start": 149,
+              "end": 160,
+              "hits": [
+                {
+                  "event": 55,
+                  "call_id": "call_9d55e464af484f8aba892d53a9e73a41"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/work-designer/variants/workflow-server/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 22,
+                  "call_id": "call_498166bacc6041d88ab46335d5038e63"
+                }
+              ]
+            },
+            {
+              "heading": "Locations",
+              "start": 7,
+              "end": 10,
+              "hits": [
+                {
+                  "event": 22,
+                  "call_id": "call_498166bacc6041d88ab46335d5038e63"
+                }
+              ]
+            },
+            {
+              "heading": "Invocation Sources",
+              "start": 11,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 22,
+                  "call_id": "call_498166bacc6041d88ab46335d5038e63"
+                }
+              ]
+            },
+            {
+              "heading": "Install Engine Dependencies",
+              "start": 15,
+              "end": 24,
+              "hits": [
+                {
+                  "event": 22,
+                  "call_id": "call_498166bacc6041d88ab46335d5038e63"
+                }
+              ]
+            },
+            {
+              "heading": "Validate Compose",
+              "start": 101,
+              "end": 110,
+              "hits": [
+                {
+                  "event": 34,
+                  "call_id": "call_206b8fde335f4865be6da598ad7db921"
+                }
+              ]
+            },
+            {
+              "heading": "Build Review Image",
+              "start": 111,
+              "end": 123,
+              "hits": [
+                {
+                  "event": 34,
+                  "call_id": "call_206b8fde335f4865be6da598ad7db921"
+                }
+              ]
+            },
+            {
+              "heading": "Exercise Review Container",
+              "start": 124,
+              "end": 138,
+              "hits": [
+                {
+                  "event": 34,
+                  "call_id": "call_206b8fde335f4865be6da598ad7db921"
+                }
+              ]
+            },
+            {
+              "heading": "Stop Review Container",
+              "start": 147,
+              "end": 154,
+              "hits": [
+                {
+                  "event": 35,
+                  "call_id": "call_206b8fde335f4865be6da598ad7db921"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "common_revise_a": {
+      "session": "01a12589-e76a-7a63-a8db-23653b961696",
+      "complete": true,
+      "truncated_calls": [],
+      "whole_files": [
+        "skills/work-designer/SKILL.md",
+        "skills/work-designer/references/guidelines.md",
+        "skills/work-designer/references/revise-mode.md",
+        "skills/work-designer/templates/integration-review.md",
+        "skills/guidelines.md"
+      ],
+      "catalogs": [
+        {
+          "path": "skills/work-designer/references/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 19,
+              "hits": [
+                {
+                  "event": 14,
+                  "call_id": "call_b87a04925d7e484f87fe9412256569e3"
+                }
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "start": 22,
+              "end": 32,
+              "hits": [
+                {
+                  "event": 20,
+                  "call_id": "call_a0e4b6ac44da4b39a4c60150e7877ce0"
+                }
+              ]
+            },
+            {
+              "heading": "Run Skill Checks",
+              "start": 172,
+              "end": 183,
+              "hits": [
+                {
+                  "event": 32,
+                  "call_id": "call_321a9c80c6c646bb9aa7d30d56080ea5"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/work-designer/variants/workflow-server/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 39,
+                  "call_id": "call_11ba169c4fca4aa185bc0e627237c55c"
+                }
+              ]
+            },
+            {
+              "heading": "Locations",
+              "start": 7,
+              "end": 10,
+              "hits": [
+                {
+                  "event": 39,
+                  "call_id": "call_11ba169c4fca4aa185bc0e627237c55c"
+                }
+              ]
+            },
+            {
+              "heading": "Invocation Sources",
+              "start": 11,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 39,
+                  "call_id": "call_11ba169c4fca4aa185bc0e627237c55c"
+                }
+              ]
+            },
+            {
+              "heading": "Check Skill Summaries",
+              "start": 155,
+              "end": 161,
+              "hits": [
+                {
+                  "event": 40,
+                  "call_id": "call_11ba169c4fca4aa185bc0e627237c55c"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "common_revise_b": {
+      "session": "01a1258d-97d9-7f61-ada8-d7c52c6667aa",
+      "complete": true,
+      "truncated_calls": [],
+      "whole_files": [
+        "skills/work-designer/SKILL.md",
+        "skills/work-designer/references/guidelines.md",
+        "skills/work-designer/references/review-mode.md",
+        "skills/work-designer/references/revise-mode.md",
+        "skills/work-designer/templates/integration-review.md",
+        "skills/guidelines.md"
+      ],
+      "catalogs": [
+        {
+          "path": "skills/work-designer/references/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 19,
+              "hits": [
+                {
+                  "event": 15,
+                  "call_id": "call_a82f8315cab44c8fbcdbea260d6587b9"
+                }
+              ]
+            },
+            {
+              "heading": "Inspect Project Identity",
+              "start": 22,
+              "end": 32,
+              "hits": [
+                {
+                  "event": 19,
+                  "call_id": "call_edd104c87fbf484bb6959c92d6086840"
+                }
+              ]
+            },
+            {
+              "heading": "Run Project Check",
+              "start": 149,
+              "end": 160,
+              "hits": [
+                {
+                  "event": 26,
+                  "call_id": "call_80d8d5d7abdc4b978391bf687ec9142d"
+                }
+              ]
+            },
+            {
+              "heading": "Run Skill Checks",
+              "start": 172,
+              "end": 183,
+              "hits": [
+                {
+                  "event": 19,
+                  "call_id": "call_edd104c87fbf484bb6959c92d6086840"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "path": "skills/work-designer/variants/workflow-server/commands.md",
+          "whole_file_hits": [],
+          "sections": [
+            {
+              "heading": "Conventions",
+              "start": 3,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 20,
+                  "call_id": "call_edd104c87fbf484bb6959c92d6086840"
+                }
+              ]
+            },
+            {
+              "heading": "Locations",
+              "start": 7,
+              "end": 10,
+              "hits": [
+                {
+                  "event": 20,
+                  "call_id": "call_edd104c87fbf484bb6959c92d6086840"
+                }
+              ]
+            },
+            {
+              "heading": "Invocation Sources",
+              "start": 11,
+              "end": 14,
+              "hits": [
+                {
+                  "event": 20,
+                  "call_id": "call_edd104c87fbf484bb6959c92d6086840"
+                }
+              ]
+            },
+            {
+              "heading": "Check Skill Summaries",
+              "start": 155,
+              "end": 161,
+              "hits": [
+                {
+                  "event": 23,
+                  "call_id": "call_6322034d15df4b2f8d7f209d96ecebd4"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "checks": {
+    "mode_summary_tests": {
+      "tests": 3,
+      "exit_code": 0
+    },
+    "skill_validator": {
+      "exit_code": 0
+    },
+    "whitespace": {
+      "exit_code": 0
+    }
+  },
+  "limits": [
+    "Live Review tasks are read-only coverage plans, not executed integrations.",
+    "Common-section reads pass the observed count and completeness checks; strict disclosure remains partial.",
+    "No comparable baseline supports token-savings claims."
+  ],
+  "skill_revision": "015b225272e6e8bfc0b87874dae878940b4e1213"
+}
