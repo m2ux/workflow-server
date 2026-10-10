@@ -1,6 +1,6 @@
 # Project Variants
 
-A variant configures Work Designer for one project: its identity, planning location, document homes, branch responsibilities and mode-specific checks. It lives at `variants/<project>/VARIANT.md` beside any command reference it needs.
+A variant configures Workflow Canon for one project: its identity, planning location, document homes, branch responsibilities and mode-specific checks. It lives at `variants/<project>/VARIANT.md` beside any command reference it needs.
 
 ## Selection
 
@@ -31,4 +31,4 @@ Only the selected variant supplies project settings; no variant is a global defa
 
 Create a folder named for the project with its variant document and, where concrete commands are useful, a `commands.md`. Follow the [variant contract](#variant-contract) and link commands at their point of use. Selection reads the variant's identity, so a separate project registry is unnecessary.
 
-For example, the [workflow-server variant](../variants/workflow-server/VARIANT.md) configures a project with separate source, definition, packaging and workspace branches. A new project's variant carries its own structure and settings.
+For example, the [workflow-server variant](../variants/workflow-server/VARIANT.md#identity) configures a project with separate source, definition, packaging and workspace branches. A new project's variant carries its own structure and settings.

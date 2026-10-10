@@ -1,12 +1,12 @@
 # Workflow-Server
 
-This variant configures Work Designer for m2ux/workflow-server under the shared [variant contract](../../references/variants.md#variant-contract).
+This variant configures Workflow Canon for m2ux/workflow-server under the shared [variant contract](../../references/variants.md#variant-contract).
 
 ## Identity
 
 Select this variant for the `m2ux/workflow-server` repository, including its linked worktrees and component branches. Match the repository identity from its SSH or HTTPS remote, or an explicit selection in project instructions.
 
-Mode configuration: [Review](#review-configuration) and [Revise](#revise-configuration).
+Mode configuration: [Author](#author-configuration), [Audit](#audit-configuration), [Review](#review-configuration) and [Revise](#revise-configuration).
 
 When this variant is selected, read its [command conventions](commands.md#conventions) before the first project command spec.
 
@@ -18,6 +18,38 @@ When this variant is selected, read its [command conventions](commands.md#conven
   Follow the established `YYYY-MM-DD-<ref>-<slug>/` convention, omitting the work reference when none exists. The slug describes the work shared across modes.
 
 Use the shared [planning guide](../../references/planning.md) to resolve, reuse and write the record.
+
+## Author Configuration
+
+Use [Canon Homes](#canon-homes) for criteria, the complete [canon map](canon-map.md) before the first unit, and [Definition Scope](definition-scope.md#scope) for files and contract closure. Select units through [List Units for a Construct](commands.md#list-units-for-a-construct), then [Fetch Unit](commands.md#fetch-unit) when authoring each construct. Select [Definition Checks](#definition-checks) for the draft and post-write passes.
+
+## Audit Configuration
+
+Use [Canon Homes](#canon-homes) to locate criteria. A single canon question uses [Fetch Unit](commands.md#fetch-unit) and stops after the answer.
+
+For a full audit, read the complete [canon map](canon-map.md), use [Definition Scope](definition-scope.md#scope), and select [Definition Checks](#definition-checks) for the surface. Enumerate units using [List Units](commands.md#list-units) and retrieve their criteria through [Fetch Unit](commands.md#fetch-unit). Inside a workflow-authoring or workflow-design run, select [Workflow Reports](reporting.md#workflow-reports) when reporting; standalone audits use the shared reporting guide.
+
+## Canon Homes
+
+Read homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.
+
+| Home | Authority |
+| --- | --- |
+| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |
+| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |
+| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |
+| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |
+| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |
+
+Locate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.
+
+## Definition Checks
+
+Read [Canon Check Conventions](commands.md#canon-check-conventions) before a selected canon check. A full audit prefers [Run Guards on the Delta](commands.md#run-guards-on-the-delta); draft and post-write checks use [Run Guard Suite](commands.md#run-guard-suite). A step-list, exit, gate or graph change also requires [Run Option Coverage](commands.md#run-option-coverage), baselined before editing. Select broader consumer coverage from [Workflows Coverage](#workflows-coverage) when shared constructs are affected.
+
+### Edit Hook
+
+The registered hook uses Python 3.10+ and the workspace's `.project/main` checkout with installed `tsx`. Its integration refs are the corpus tree's latest fetched `origin/workflows` and `origin/iNN/workflows`; it measures against their nearest merge-base. Read [Run the Edit Guard](commands.md#run-the-edit-guard) when handling its result or invoking it explicitly. The hook's operational contract also applies to a host without automatic registration.
 
 ## Review Configuration
 
@@ -36,7 +68,7 @@ When engine or corpus behavior is involved, read [Design Reading](#design-readin
 
 ## Revise Configuration
 
-The `workspace` branch owns skill files and their shared guidelines. When planning artifacts are needed, use [Planning](#planning). Run [Check Skill Summaries](commands.md#check-skill-summaries) alongside the shared [skill checks](../../references/commands.md#run-skill-checks).
+The `workspace` branch owns skill files and their shared guidelines. When planning artifacts are needed, use [Planning](#planning). Run [Check Skill Summaries](commands.md#check-skill-summaries) and [Run the Edit Guard Tests](commands.md#run-the-edit-guard-tests) alongside the shared [skill checks](../../references/commands.md#run-skill-checks). Changes to shared rules or templates also run their affected consumer suites.
 
 ## Branches and Sources
 
@@ -95,7 +127,7 @@ For changed documentation or site content, [Check Engine Documentation](commands
 
 ## Workflows Coverage
 
-[Run Corpus Checks](commands.md#run-corpus-checks) from the intended engine checkout: roster and walk-protocol validation, the registered guard sweep, snapshots and all-workflows drift. The corpus supplies definitions and baselines; its tooling comes from the paired engine.
+Read [Canon Check Conventions](commands.md#canon-check-conventions), then [Run Guard Suite](commands.md#run-guard-suite) and [Run Corpus Checks](commands.md#run-corpus-checks) from the intended engine checkout for the registered guard sweep, roster and walk-protocol validation, snapshots and all-workflows drift. The corpus supplies definitions and baselines; its tooling comes from the paired engine.
 
 - **Definition contracts.**
   Inspect schema agreement; steps, gates, actions, loops, checkpoints, exits and fans; value provenance and absence/null/falsy behavior; routine expansion; technique anatomy and inherited contracts; defaults, executable references and artifact persistence.

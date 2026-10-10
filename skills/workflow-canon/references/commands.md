@@ -1,180 +1,223 @@
 # Commands
 
-Every command the skill runs, one spec per operation. The mode files name a spec by linking to it.
+## Conventions
 
-- **Where they run.**
-  - `git` and `npm` commands run in the server checkout.
-  - Searches of `corpus/` run in the corpus tree.
-  - Edit guard commands run in the workspace root.
-- **Branch point.**  Take the verdict at the branch point, and hold that checkout still for the run.
-- **Exit codes.**
-  - Read the check's own exit code. A pipe reports the filter's.
-  - Write the output to a file, or read the code before filtering.
-- **What a clean run leaves.**
-  A clean structural run leaves what the canon requires of a change, and option coverage, still to show.
-- **Example values.**
-  Substitute the real ones: `origin/main` a base ref, `work-package` a target workflow id, `anti-patterns.md` a home's file.
+Each operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.
 
-## Checkouts
+- **Locations.**
+  `<skill-checkout>` holds this skill; `<tool-checkout>` holds the selected project tooling; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.
+- **Execution.**
+  Follow the current host's shell, sandbox and permission instructions. Run a check from the checkout owning its tools and explicitly identify any separately versioned inputs.
+- **Remote access.**
+  Use the authentication and execution permissions required by the host. The GitHub specs use its REST API through the GitHub CLI; another forge supplies its corresponding metadata and check APIs.
+- **Evidence.**
+  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.
+- **Substitution.**
+  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.
+- **Authored text.**
+  Commit messages and PR bodies go through files.
 
-### Find the server checkout
+## Configuration
 
-Prints the root of the server checkout.
+### Inspect Project Identity
 
-- From a cursor workspace (`.mcp.json`, `*.code-workspace`, no `package.json`), the checkout is the `project` folder that workspace names.
+Read repository identifiers and discover available [project variants](variants.md#selection).
+
+- Compare the repository with each variant's identity and applicable project instructions. Resolve the skill path before listing its variants.
 
 ```bash
-git rev-parse --show-toplevel
+git remote -v
+rg --files <skill-path>/variants
 ```
 
-### Resolve ref
+### Resolve Ref
 
-Prints a ref's full commit id, for citing it at full length.
+Read the full commit identity for a captured ref.
 
 ```bash
-git rev-parse origin/main
+git rev-parse <ref>
 ```
 
-### Check the corpus tree
+## Review Inputs
 
-Lists the canon's prose homes, confirming the corpus tree holds them.
+### Fetch Pull Request
 
-- The corpus tree is at `.worktrees/workflows` unless `WORKFLOWS_DIR` or `--root` names another.
-- When the listing fails, say so, or run [Provision the corpus](#provision-the-corpus).
+Save a PR, its changed files and its commits through REST.
 
 ```bash
-ls .worktrees/workflows/corpus/canon/resources/
+gh api repos/{owner}/{repo}/pulls/950 > <record>/pr-950.json
+gh api --paginate repos/{owner}/{repo}/pulls/950/files > <record>/pr-950-files.json
+gh api --paginate repos/{owner}/{repo}/pulls/950/commits > <record>/pr-950-commits.json
 ```
 
-### Provision the corpus
+### Fetch Requirements
 
-Adds the corpus worktree to a fresh clone, with `corpus/canon/resources/`.
+Save an issue whose requirements the integration claims to deliver.
 
 ```bash
-npm run worktree:provision
+gh api repos/{owner}/{repo}/issues/950 > <record>/issue-950.json
 ```
 
-## Corpus
+### Fetch Branches
 
-### List units
-
-Lists a home's `##` units, then its `###` entries, with their line numbers.
-
-- The [unit inventory](canon-map.md#unit-inventory) names the level each home's unit sits at.
+Refresh each named remote branch for revision capture.
 
 ```bash
-grep -n "^## " corpus/canon/resources/anti-patterns.md
-grep -n "^### " corpus/canon/resources/anti-patterns.md
+git fetch <remote> <branch>
+git rev-parse <remote>/<branch>
 ```
 
-### List units for a construct
+### Compare Revisions
 
-Prints every canon unit that fires on one construct id, with its file and line.
+Inspect the incoming change and the relationship to its current target.
 
-- The id is a construct a draft writes: a bare kind, a field path, `resource`, `readme`, or `*`.
-- A unit is listed when it declares that id, a prefix of it, its bare kind, or `*`.
-- Runs in the server checkout. `--root` names the corpus tree. The listing is printed and not stored.
+- Use full captured SHAs after resolving branch names.
+- A three-dot diff describes the incoming change; the proposed integration result supplies the combined behavior.
 
 ```bash
-npx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>
+git merge-base <target-sha> <head-sha>
+git diff --stat <target-sha>...<head-sha>
+git diff <target-sha>...<head-sha>
+git log --oneline <target-sha>..<head-sha>
 ```
 
-### Fetch unit
+### Create Review Worktree
 
-Reads one section or entry of a home.
-
-- **On disk.**
-  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
-- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.
-
-### Find consumers
-
-Lists the references other workflows hold into the target.
-
-- Resolve each hit's binds and Apply links from there.
+Create a detached tree at a captured revision without moving an existing checkout.
 
 ```bash
-grep -rn "work-package/" corpus/ --include=*.md --include=*.yaml
+git worktree add --detach <review-worktree> <sha>
 ```
 
-## Checks
+### Prepare Integration Result
 
-### Run guard suite
+Combine a head with its current target inside a disposable review worktree.
 
-Runs the guard registry, or a named subset.
-
-- **Failures.**
-  - Every failure is `Critical`. Exit 2 is `blocked`.
-  - A schema-reading guard failing on the corpus branch may be reading a field the code branch has not merged. That clears on the code merge. Establish which before recording a corpus defect.
-- **Binding fidelity.**
-  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.
-  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.
-- **Suppressions.**
-  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.
-  - Count the findings at the site before calling an entry redundant.
-- **New guards.**
-  - Prove a new guard against the corpus at the commit before the fix it was written for.
-  - A carve-out that follows from the entry belongs in the guard's condition.
-  - Take a file's kind from its declaration, and name in the check the kinds it admits.
-- **Definition changes.**
-  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.
-  - The suppression of a binding finding it closed is the entry that goes stale on that commit.
+- Start the worktree at the target SHA, using [Create Review Worktree](#create-review-worktree).
+- A clean merge's tree SHA identifies the candidate alongside both parent SHAs. A conflict is evidence; preserve its details and abort without resolving it.
+- Use a separate worktree per proposed result. Independently versioned products retain their own histories.
 
 ```bash
-npm run check:all
-npm run check:all -- --only <id>,<id>
+git -C <review-worktree> merge --no-commit --no-ff <head-sha>
+git -C <review-worktree> write-tree
 ```
 
-### Run guards on the delta
+### Abort Review Merge
 
-Runs the guard suite at the merge-base and on this tree, and attributes each failure by the difference.
-
-- Failures and exits read as in [Run guard suite](#run-guard-suite).
+Return a disposable candidate to its captured target after recording a merge conflict.
 
 ```bash
-npm run check:delta -- --base origin/main
+git -C <review-worktree> merge --abort
 ```
 
-### Run option coverage
+### Read Captured File
 
-Checks whether a walk still reaches every option and exit.
-
-- **When.**
-  - `npm run test:ci` skips the coverage walk. Run it when the change touches a step list, exit, gate, or graph.
-  - Baseline it once per branch, before editing.
-- **Exemptions.**
-  `walks/option-coverage.json` groups unreachable options under a stated reason. Match the reason, or record a finding.
+Read a complete document, manifest or CI definition from a captured branch revision.
 
 ```bash
-npm run test:coverage-walk
+git show <sha>:<repo-relative-path>
 ```
 
-## Edit guard
+### Read Captured Section
 
-### Run the edit guard
+Read an anchored section from a captured branch revision.
 
-Runs the corpus guards over an edited definition's corpus tree, and reports the failures its branch introduced, as the hook does after each edit.
-
-- **Input.**
-  - The hook's JSON on stdin. `tool_input.file_path` names the edited file, and a relative path resolves against `cwd`.
-  - Only a corpus definition file runs a guard: a `workflow.yaml`, a README, or a file under `activities/`, `routines/`, `techniques/` or `resources/`, beneath `corpus/` of a corpus tree.
-- **Measure.**
-  - The guards run in `.project/main`, with `--root` naming the file's corpus tree.
-  - A failing run is compared with a run at the branch point: the nearest merge-base with `origin/workflows` and each `origin/iNN/workflows`.
-  - The branch point's run is cached in `.project/main/.guard-cache`, by branch point and server HEAD. A server checkout with uncommitted changes caches nothing.
-- **Exits.**
-  - 0 when no guard runs, every guard is clean, or every failure is present at the branch point.
-  - 2 with the introduced failures on stderr, or with the reason the run cannot measure.
-- **Flags.**  `--server`, `--guards` and `--cache` replace the server checkout, guard runner and cache folder.
+- Locate the heading in the outline, then substitute the start and end lines required by the [linked-section rule](../SKILL.md#rules). Markdown code fences do not create document headings.
 
 ```bash
-echo '{"tool_input": {"file_path": ".project/workflows/corpus/work-package/workflow.yaml"}}' | python3 skills/workflow-canon/scripts/edit_guard.py
+git show <sha>:<repo-relative-path> | rg -n '^#{1,6} '
+git show <sha>:<repo-relative-path> | sed -n '<start-line>,<end-line>p'
 ```
 
-### Run the edit guard tests
+### Fetch Check Evidence
 
-Drives the edit guard over seeded edits in temporary git repositories, with a stub guard runner in place of the server.
+Read checks and commit statuses, then the relevant Actions run and jobs.
+
+- Run and job metadata identify the reported SHA; logs and artifacts establish separately checked-out dependency SHAs.
+- Use the latest relevant attempts and retain their URLs. A success on another pairing leaves the candidate unmeasured.
 
 ```bash
-cd skills/workflow-canon && python3 -m unittest discover -s test
+gh api --paginate repos/{owner}/{repo}/commits/<sha>/check-runs
+gh api repos/{owner}/{repo}/commits/<sha>/status
+gh api repos/{owner}/{repo}/actions/runs/<run-id>
+gh api --paginate repos/{owner}/{repo}/actions/runs/<run-id>/jobs
+```
+
+### Refresh Revisions
+
+Compare current remote heads and PR metadata with the captured review subject.
+
+```bash
+git ls-remote <remote> refs/heads/<head> refs/heads/<target> refs/heads/<paired-branch>
+gh api repos/{owner}/{repo}/pulls/950
+```
+
+## Project Checks
+
+### Run Project Check
+
+Run the check selected from the reviewed project's manifest, test configuration or CI job.
+
+- Replace the command placeholder with that project's actual invocation, including its runtime, check arguments and explicit dependency paths.
+- Capture the working directory, input revisions, measured cases, skips, exit status and output. Assess the result against the active mode's requirements.
+
+```bash
+cd <tool-checkout>
+<project-check-command>
+```
+
+## Skill Revision
+
+### Create Skill Worktree
+
+Create the skill's branch in its own worktree from its repository's current target.
+
+```bash
+git fetch <remote> <target-branch>
+git worktree add <skill-worktree> -b <revision-branch> <remote>/<target-branch>
+```
+
+### Run Skill Checks
+
+Validate the skill's structure and run the checks its repository and changed resources require.
+
+- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](#run-project-check) for their actual commands; a prose-only skill need not invent a test suite.
+- Inspect every local Markdown link and heading anchor, frontmatter and unfinished scaffold text. If an installed skill validator is available, run it too.
+- A behavioral walkthrough follows [Revise](revise-mode.md#procedure); mechanical checks alone do not establish instruction quality.
+
+```bash
+git diff --check
+```
+
+### Commit Skill Changes
+
+Commit the intended change set with a message describing the resulting behavior.
+
+- Stage every changed rule home and consumer, including shared guidelines, moved or removed paths, templates and tests. Inspect the staged diff against the request before committing; leave unrelated work unstaged.
+
+```bash
+git add -- <changed-path> <other-changed-path>
+git diff --cached --stat
+git commit -F <message-file>
+```
+
+### Push Skill Branch
+
+Publish the skill branch with a plain push to its matching remote branch.
+
+- Check the current branch before setting its tracking configuration. A non-fast-forward rejection needs the repository's branch-rewrite decision.
+
+```bash
+git branch --show-current
+git config branch.<revision-branch>.remote <remote>
+git config branch.<revision-branch>.merge refs/heads/<revision-branch>
+git push
+```
+
+### Open Skill Pull Request
+
+Open the requested PR against the repository's chosen target with a reviewed body file.
+
+```bash
+gh api --method POST repos/{owner}/{repo}/pulls -f title='<title>' -f head='<revision-branch>' -f base='<target-branch>' -F body=@<body-file>
 ```
