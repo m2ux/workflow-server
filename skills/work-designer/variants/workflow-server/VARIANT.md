@@ -8,6 +8,8 @@ Select this variant for the `m2ux/workflow-server` repository, including its lin
 
 Mode configuration: [Review](#review-configuration) and [Revise](#revise-configuration).
 
+When this variant is selected, read its [command conventions](commands.md#conventions) before the first project command spec.
+
 ## Planning
 
 - **Base.**  The workspace checkout that owns the project's engineering history.

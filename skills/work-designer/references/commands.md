@@ -1,8 +1,8 @@
 # Commands
 
-Each operation has one spec. Commands below use example values that the caller replaces with the reviewed repository, revisions and paths.
-
 ## Conventions
+
+Each operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.
 
 - **Locations.**
   `<skill-checkout>` holds this skill; `<tool-checkout>` holds the selected project tooling; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.

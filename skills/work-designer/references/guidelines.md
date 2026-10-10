@@ -19,6 +19,8 @@ Apply the shared [progressive disclosure](../../guidelines.md#progressive-disclo
   Select one affected branch product with a conditional check that does not apply. Confirm the report preserves missing evidence and the reads follow the selected coverage.
 - **Revise.**
   Change a template with a consumer in another mode. Include its required consumer guidance, a command section with conventions, a parent section with subsections and the required whole-file guidelines.
+- **Command catalogs.**
+  Select multiple operations from the shared and project catalogs. Confirm their common sections, including subsections, arrive before the first operation and are reused; unrelated operations stay outside the retrieved sections.
 - **Variants.**
   When variant routing changes, cover a matching project, an unconfigured project and an ambiguous match. Follow the active mode's configuration and the settings its task needs.
 

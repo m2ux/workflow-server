@@ -82,7 +82,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 
 - **One spec per operation.**
   - Every command lives in `commands.md`, under a sub-section named for what it does: Fetch issue, Run guard suite.
-  - A script used several ways has a spec for each use. Its shared behaviour is described once, in the first, and the others cite it.
+  - A script used several ways has a spec for each use. Shared behaviour belongs in a common section linked by the callers that need it.
 - **Spec layout.**
   - Each spec opens with a one-line, succinct description of what the command does.
   - Detail a caller needs, such as flags, inputs or refusals, follows as bullets, then the command block.
@@ -90,7 +90,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Prose names a spec by linking to its sub-section, mid-sentence: "run [Check format](work-planner/references/commands.md#check-format) on each epic".
   - No file outside `commands.md` inlines a command body or keeps a Commands section of its own.
 - **Shared conventions.**
-  The session setup, where commands run, and the example values live once, at the top of `commands.md`.
+  Session setup, execution location, example values and other catalog-wide prerequisites live in one named Conventions section of `commands.md`, following [progressive disclosure](#progressive-disclosure).
 
 ## Progressive Disclosure
 
@@ -102,6 +102,10 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   Link the smallest complete section the caller needs. The skill's reading rules define a heading link as that section and its subsections, stopping before the next heading of equal or higher level. Whole-file links identify required complete documents.
 - **Prerequisites.**
   Provide or explicitly link the context needed to use each section, including conventions and mode authority. Split files when section routing still brings unrelated guidance into context.
+- **Common context.**
+  Group prerequisites shared by all specific sections into one named common section, with any common subsections nested beneath it. Specific sections sit outside that heading's boundary. Keep prerequisites used by only some sections with those sections or in a separately linked section.
+- **Caller routing.**
+  A calling document links the common section once on a required path before its first specific section, then links specific sections at their points of use. Every supported entry path reaches that prerequisite link; an unlinked preamble or sibling section supplies no context. Reuse complete prerequisite content already read at the same revision.
 - **Batched reads.**
   Preserve each link's boundary when batching retrieval. Batch selected whole files or separate section ranges; each range excludes unrelated intervening content. Inspect headings to locate boundaries.
 - **Complete output.**
@@ -110,7 +114,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 ## Disclosure Verification
 
 - **Required context.**
-  Every revision traces a representative request through each affected mode's required reads, including prerequisites, subsections and explicit whole-file requirements. Necessity follows the task and affected consumers; another mode's guidance can be required.
+  Every revision traces a representative request through each affected mode's required reads, including prerequisites, subsections and explicit whole-file requirements. Check every supported entry path for common context before specific sections, reuse across multiple operations and exclusion of unrelated sections. Necessity follows the task and affected consumers; another mode's guidance can be required.
 - **Live checks.**
   When a revision changes reading paths, test representative requests with independent sub-agents in fresh contexts. Give them the skill, realistic tasks, necessary inputs and authority limits, without expected reading choices or prior findings. Repeat affected scenarios before claiming consistent behavior. Record unavailable live validation as an evidence gap.
 - **Observed behavior.**

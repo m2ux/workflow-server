@@ -39,7 +39,7 @@ Read the selected mode's file in full, then follow its links as each step needs 
 - **Planning.**
   When creating or using artifacts, all modes follow [Planning](references/planning.md) for locations and records.
 - **Commands.**
-  Before execution, read the command's linked spec and its file's Conventions section. Apply the [shared command conventions](references/commands.md#conventions).
+  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.
 
 ## Dependencies
 
@@ -54,6 +54,6 @@ Read the selected mode's file in full, then follow its links as each step needs 
 - **Project runtimes and tools**
   For the builds, checks and execution evidence selected from the project's manifests and CI.
 - **Workspace sandbox**
-  The host's execution boundary and permissions, as the [command conventions](references/commands.md#conventions) require.
+  The host's execution boundary and permissions for running commands.
 - **Agent host**
   Repository access, local execution and artifact writing, within the selected mode's authority. Independent sub-agents and observable tool results support validation of changed reading paths. External fixtures and shared services need the authorization their host requires.

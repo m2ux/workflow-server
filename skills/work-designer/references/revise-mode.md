@@ -2,12 +2,16 @@
 
 Changes the skill itself: its entry point, mode files, shared guides, project variants, commands and templates.
 
+## Prerequisites
+
+Before the first command spec, read the [command conventions](commands.md#conventions).
+
 ## Procedure
 
 1. **Read the guidelines.**
    Read the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md) whole before the first edit.
 2. **Understand the request.**
-   Resolve missing decisions with the user until the change and its scope are clear. Find the rule's home, its consumers, and any variant, script, template or test that states it. Locate a shared [planning record](planning.md) when the revision needs planning artifacts.
+   Resolve missing decisions with the user until the change and its scope are clear. Find the rule's home, its consumers, and any variant, script, template or test that states it. Resolve the active mode's [project configuration](variants.md#selection) for repository ownership and applicable checks. Locate a shared [planning record](planning.md) when the revision needs planning artifacts.
 3. **Work in a worktree.**
    [Create Skill Worktree](commands.md#create-skill-worktree) for the change.
 4. **Revise.**

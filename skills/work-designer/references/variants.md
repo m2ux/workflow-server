@@ -4,6 +4,8 @@ A variant configures Work Designer for one project: its identity, planning locat
 
 ## Selection
 
+Project inspection uses the [command conventions](commands.md#conventions) before its first command spec.
+
 1. **Read the request.**
    Use the variant the user or project instructions explicitly select.
 2. **Match the project.**
@@ -19,11 +21,11 @@ Only the selected variant supplies project settings; no variant is a global defa
 
 | Section | Contents |
 | --- | --- |
-| Identity | An Identity section with project name, repository or workspace identifiers, and links to its mode configuration sections |
+| Identity | An Identity section with project name, repository or workspace identifiers, links to any common prerequisites for the selected variant, and links to its mode configuration sections |
 | Planning | A Planning section with the root, its base and the project's folder naming convention or authoritative source |
 | Sources | Instruction and documentation homes, linked from the modes and concerns that need them |
 | Mode configuration | A named configuration section for each mode needing project settings, linking its common prerequisites and relevant details |
-| Command references | Links to operation sections and their required conventions in the variant's commands file |
+| Command references | One common-conventions link on the selected variant's required path, with operation links at their points of use |
 
 ## Adding a Variant
 

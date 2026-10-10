@@ -2,6 +2,10 @@
 
 Reviews the combined result of the requested integration and produces a report of findings, coverage and readiness.
 
+## Prerequisites
+
+Before the first command spec, read the [command conventions](commands.md#conventions).
+
 ## Procedure
 
 1. **Establish the subject.**

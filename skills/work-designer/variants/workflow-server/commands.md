@@ -2,7 +2,15 @@
 
 ## Conventions
 
-These operations follow the [shared command conventions](../../references/commands.md#conventions). Here `<engine>` is the engine checkout, `<corpus>` the definition-branch root, and `<docker-tree>` the packaging checkout. Commands run from the engine checkout unless a spec says otherwise. Check invocations against the captured sources before execution.
+These operations follow the [shared command conventions](../../references/commands.md#conventions).
+
+### Locations
+
+`<engine>` is the engine checkout, `<corpus>` the definition-branch root, and `<docker-tree>` the packaging checkout. Commands run from the engine checkout unless a spec says otherwise.
+
+### Invocation Sources
+
+Check invocations against the captured sources before execution.
 
 ## Install Engine Dependencies
 
