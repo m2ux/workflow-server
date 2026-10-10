@@ -3,7 +3,6 @@
 Usage:
   python3 deliver.py --items items.json --prs prs.json [--others issue-750.json ...] [--date 2026-10-06]
   python3 deliver.py --epic issue-943.json --reserve W01 [--records URL] [--date 2026-10-06] --fix fixed-943.md
-  python3 deliver.py --epic issue-943.json --item W01 --fix fixed-943.md
   python3 deliver.py --epic issue-943.json --release W01 --fix fixed-943.md
 
 items.json is the board's items with the Status field, as board.py reads them, and prs.json the pull
@@ -22,11 +21,10 @@ dependencies are not delivered or whose joined task is unavailable; a merge line
 request that targets the epic base when its test plan has passed; and an unresolved line for an
 issue not given.
 
---reserve appends the record folder's link to each named row's id, which holds the work. --item adds
-the work item the session wrote in that record, ahead of the folder's link, so the hold stands until
-the row links its pull request. --release drops the folder's link. Each writes the body to --fix, and
-refuses a row whose id links a pull request or a commit. The folder's URL is --records, or the
-planning record an id in the epic already links.
+--reserve sets the record folder as each row's single link. The record README links its work item.
+--release frees the row by replacing that folder link with its work-item file link. Both write the
+body to --fix and refuse a row linking a pull request or commit. The planning URL comes from
+--records or an existing planning link in the epic.
 """
 import argparse
 import json
@@ -306,7 +304,7 @@ def edit(args: argparse.Namespace) -> int:
     header, data = grid[0], grid[2:]
     when = args.date or day.today().isoformat()
     at = header.index('Task') if 'Task' in header else 0
-    wanted = [t.strip() for t in (args.reserve or args.item or args.release).split(',') if t.strip()]
+    wanted = [t.strip() for t in (args.reserve or args.release).split(',') if t.strip()]
     records = base_url(header, data, args.records) if args.reserve else ''
     changed = []
     for task in wanted:
@@ -325,25 +323,16 @@ def edit(args: argparse.Namespace) -> int:
             name = names(ident_tag(initiative, epic, task),
                          cell(header, r, 'Description').split(' →', 1)[0].strip(), ref, when)
             url = f'{records}/{name["folder"]}/'
-            r[at] = (f'{ident}, ' if ident.strip() and LINK.search(ident) else '') + f'[{task}]({url})'
-            changed.append(f'{task} → {url}')
-        elif args.item:
-            if not held:
-                sys.exit(f'{task}: its id links no planning folder')
-            url = f'{held.rstrip("/")}/{task.lower()}.md'
-            if url in hrefs(ident):
-                sys.exit(f'{task}: its id already links {url}')
-            r[at] = f'[{task}]({url}), ' + ident.strip()
+            r[at] = f'[{task}]({url})'
             changed.append(f'{task} → {url}')
         else:
             if not held:
                 sys.exit(f'{task}: its id links no planning folder')
-            kept = [f'[{text}]({href})' for text, href in LINK.findall(ident) if href != held]
-            r[at] = ', '.join(kept) if kept else task
+            r[at] = f'[{task}]({held.rstrip("/")}/{task.lower()}.md)'
             changed.append(f'{task} released from {held}')
     lines[start + 2:end] = [row(r) for r in data]
     Path(args.fix).write_text(join_sections(preamble, sections))
-    action = 'reserved' if args.reserve else 'planned' if args.item else 'released'
+    action = 'reserved' if args.reserve else 'released'
     print(f"#{issue['number']} [I{initiative}:E{epic}]")
     for note in changed:
         print(f'  {action}: {note}')
@@ -357,7 +346,6 @@ def main() -> int:
     parser.add_argument('--others', nargs='*', default=[], help='issues the rows depend on that are off the board')
     parser.add_argument('--epic', help='the epic whose row is reserved or released')
     parser.add_argument('--reserve', help='task ids to hold, e.g. W01,W02')
-    parser.add_argument('--item', help='task ids whose work item the record now holds, e.g. W01')
     parser.add_argument('--release', help='task ids to free, e.g. W01')
     parser.add_argument('--records', help='the URL of the planning records folder')
     parser.add_argument('--date', help='the day the record is opened, today by default')
@@ -365,12 +353,12 @@ def main() -> int:
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
-    actions = [name for name in ('reserve', 'item', 'release') if getattr(args, name)]
+    actions = [name for name in ('reserve', 'release') if getattr(args, name)]
     if len(actions) > 1:
-        sys.exit('--reserve, --item and --release are one at a time')
+        sys.exit('--reserve and --release are one at a time')
     if args.epic or actions:
         if not (args.epic and actions and args.fix):
-            sys.exit('--epic, one of --reserve, --item or --release, and --fix go together')
+            sys.exit('--epic, one of --reserve or --release, and --fix go together')
         return edit(args)
     if not args.items:
         sys.exit('--items is required')

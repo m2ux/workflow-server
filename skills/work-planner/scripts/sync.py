@@ -5,11 +5,6 @@ Usage:
   python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
   python3 sync.py issue-936.json --epics issue-943.json issue-937.json ...
   python3 sync.py --names --project <checkout>
-  python3 sync.py --links-query --prs prs.json > links.graphql
-
-With --links-query it prints the GraphQL query for the issue links of the pull requests in --prs,
-which `gh api graphql -F query=@links.graphql` answers and Fetch Pull Request Issue Links reduces to
-links.json.
 
 With --names it prints the long-lived branch names of --project, one per line, as its main working tree states them in config/branches. A missing or empty statement reports the names unevaluable.
 
@@ -28,7 +23,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and a further pull request is linked after the ones already there. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -123,19 +118,11 @@ def for_epic(prs: list[dict], initiative: str, epic: str) -> dict[int, dict]:
 
 
 def compose_id(task: str, text: str, url: str) -> str:
-    """The task's id linking url. A pull request replaces the planning-record link. Pull requests and commits already linked stay. An issue link is dropped."""
-    kept, seen = [], set()
-    for found in LINK.finditer(text):
-        href = found[2]
-        if ISSUE_URL.search(href) or href in seen:
-            continue
-        if '/pull/' not in href and '/commit/' not in href:
-            continue
-        seen.add(href)
-        kept.append(f'[{task}]({href})')
-    if url not in seen:
-        kept.append(f'[{task}]({url})')
-    return ', '.join(kept)
+    """Link one delivery, preserving an existing delivery reference."""
+    for _, href in LINK.findall(text):
+        if ('/pull/' in href or '/commit/' in href) and href != url:
+            sys.exit(f'{task}: already links a delivery; further work needs another task')
+    return f'[{task}]({url})'
 
 
 def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report, prs):
@@ -566,17 +553,6 @@ def long_lived_names(project: str) -> tuple[str, ...]:
     return names
 
 
-def links_query(path: str) -> int:
-    """Print the GraphQL query for the issue links of the pull requests in --prs.
-
-    The pull requests are named by the node ids their REST records carry, so the query covers what
-    was fetched and no number is typed out."""
-    ids = json.dumps([pr['node_id'] for pr in pull_requests(path)])
-    print('{nodes(ids:' + ids + '){... on PullRequest{number repository{nameWithOwner}'
-          ' closingIssuesReferences(first:10){nodes{number repository{nameWithOwner}}}}}}')
-    return 0
-
-
 def list_long_lived(project: str) -> int:
     """Print the long-lived branch names, one per line."""
     if not project:
@@ -605,7 +581,13 @@ def table(sections):
     end = start
     while end < len(lines) and lines[end].startswith('|'):
         end += 1
-    return lines, start, end, [cells(l) for l in lines[start:end]]
+    grid = [cells(l) for l in lines[start:end]]
+    if 'Task' in grid[0]:
+        for r in grid[2:]:
+            ident = id_cell(grid[0], r)
+            if len(LINK.findall(ident)) > 1:
+                raise Unreadable(f'{row_id(ident)}: a task row has one link; resolve the extra links')
+    return lines, start, end, grid
 
 
 def main() -> int:
@@ -613,7 +595,6 @@ def main() -> int:
     parser.add_argument('issue', nargs='?')
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
     parser.add_argument('--links', help='epic: the closing issue references its pull requests hold')
-    parser.add_argument('--links-query', action='store_true', help='print the GraphQL query for the issue links of --prs')
     parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
     parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, e.g. W01=950,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
@@ -625,10 +606,6 @@ def main() -> int:
     args = parser.parse_args()
     if args.names:
         return list_long_lived(args.project)
-    if args.links_query:
-        if not args.prs:
-            sys.exit('--links-query needs --prs')
-        return links_query(args.prs)
     if not args.issue:
         sys.exit('an issue file is required')
     global LONG_LIVED

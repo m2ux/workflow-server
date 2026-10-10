@@ -9,7 +9,7 @@ Tests the drafts against the [review criteria](review-criteria.md) for the issue
 1. **Clauses.**
    Take the goal the user stated and confirmed in the [Interview](interview.md), as clauses, each an outcome someone could observe.
 2. **Trace.**
-   Build a trace table: goal clause, the initiative criteria that make it true, the epics whose Description cells cite those criteria, and the epic criteria that deliver them. Each gap is one the [trace](review-criteria.md#trace) criteria name. Remove a criterion that traces to no clause, or put it to the user as an [Interview](interview.md). [Check Format](commands.md#check-format) finds an epic criterion no task row delivers.
+   Build a trace table: goal clause, the initiative criteria that make it true, the epics whose Coverage cells cite those criteria, and the epic criteria that deliver them. Each gap is one the [trace](review-criteria.md#trace) criteria name. Remove a criterion that traces to no clause, or put it to the user as an [Interview](interview.md). [Check Format](commands.md#check-format) finds an epic criterion no task row delivers.
 3. **Align.**
    Read each source the initiative's References mark, and extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a finding the [sources](review-criteria.md#sources) criteria name.
 4. **Criteria.**
@@ -47,7 +47,7 @@ Checks dependencies as a graph, then renumbers. A failure is one the [initiative
 5. **Fix.**
    Fix a backward reference by moving the task to the epic that owns its inputs. When the task duplicates work the later epic already does, remove it instead.
 6. **Renumber.**
-   Renumber so that epics run in number order and tasks are numbered in the order they can start, touching only work not yet delivered.
+   Renumber under [Numbering](work-breakdown.md#numbering), preserving the numbers of work already named by a pull request.
    - Use [Renumber Epics](commands.md#renumber-epics) for epic numbers and [Renumber Tasks](commands.md#renumber-tasks) for one epic's tasks, with other initiatives' bodies after `--outside`.
    - Then re-sort each table, check every range the script prints, and grep the prose for references it cannot see.
 7. **Depends on.**
@@ -76,7 +76,7 @@ A pass states each finding this way.
 ## Folding Findings
 
 - **Small finding:**
-  Edit the owning epic's Proposal, Work Breakdown and acceptance criteria, and cite any new or renumbered criterion in the Description of the row that delivers it.
+  Edit the owning epic's Proposal, Work Breakdown and acceptance criteria, and cite any new or renumbered criterion in the Coverage of the row that delivers it.
 - **Distinct concern:**
   A new epic. Create it, link it from the initiative table, and renumber if run order requires.
 - **Record:**

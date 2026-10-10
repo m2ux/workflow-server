@@ -38,7 +38,7 @@ Explains a pull request's changes to the engineer who reviews them. The mode mea
   The request names it, or the mode asks for it and runs no further. A pull request taken from the branch in hand is a guess, and an overview of the wrong change reads as an overview of the right one.
 - **Grain.**
   - A task In Review takes the open pull request that names it.
-  - An epic In Review takes its [review pull request](work-breakdown.md#review-pull-request), and its overview is drawn over the epic base at the altitude the epic delivered, rather than over its tasks one by one.
+  - An epic In Review takes each open [review pull request](work-breakdown.md#review-pull-request), one run per base. Its overview covers the change that base delivers.
   - An initiative takes none. Its epics' review pull requests each carry their own overview.
 - **Fresh index.**
   Every measurement is read at the head commit, from an index current with it. A response reporting the index behind sends the run back to [Index Repository](commands.md#index-repository), and its numbers are discarded.

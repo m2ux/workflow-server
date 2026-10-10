@@ -6,6 +6,7 @@ Records work on an initiative, its epics and their task issues: links each task 
 
 1. **Select.**
    - Select an initiative with its open epics, or the epics the user names.
+   - Resolve an epic's Open Questions through [Plan Mode](plan-mode.md) before syncing it.
    - Run [Align Mode](align-mode.md) first on any issue whose format [Check Format](commands.md#check-format) rejects, since sync mode reads the agent-engineering table.
 2. **Fetch.**
    - [Fetch Issue](commands.md#fetch-issue) for each issue, including each task issue titled `[I07:E00:Wzz]` under an epic being synced.
@@ -27,7 +28,7 @@ Records work on an initiative, its epics and their task issues: links each task 
    - Record the pull request on it with [Comment on Issue](commands.md#comment-on-issue): `Delivered by #950.`
    - [Close as Completed](commands.md#close-as-completed) when it reports closable.
 6. **Sync each epic.**
-   Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. Linking a pull request replaces the planning-record link on that task, as [Task ids](work-breakdown.md#delivery) defines. It reports:
+   Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. Linking a pull request replaces the planning-record link on that task, as [Task ids](work-breakdown.md#task-delivery) defines. It reports:
    - **Conflict.**
      Tasks that share a pull request and do not name each other in Joins. Put that to the user as an [Interview](interview.md). A row linked to a pull request whose title names another epic is reported, and the row is delivered once that pull request has merged.
    - **Unmatched.**  Merged pull requests still linked from no row. Match them as in step 4.
@@ -92,11 +93,9 @@ Records work on an initiative, its epics and their task issues: links each task 
 
 - **Open questions.**
   An epic is not synced while its Open Questions section remains. Ready it in [Plan Mode](plan-mode.md) first.
-- **Closure.**
-  A sync report of closable establishes delivery readiness. Every completion also passes [Issue closure](work-breakdown.md#issue-closure) through [Close as Completed](commands.md#close-as-completed).
 - **In Review.**
   An open initiative or epic whose criteria are all ticked is In Review.
 - **Overviews.**
-  - A task entering In Review takes the open pull request that names it, and an epic entering In Review takes its [review pull request](work-breakdown.md#review-pull-request). An initiative takes none, as [Understand Mode](understand-mode.md#rules) states under Grain.
+  - Select pull requests under [Understand Mode](understand-mode.md#rules)'s Grain rule.
   - An epic merging in the Close step gets its overview through [Epic merge](work-breakdown.md#epic-merge), before the board sync.
   - An issue already In Review when the sync began keeps the overview it has: the pull request it explains is the one already reviewed.

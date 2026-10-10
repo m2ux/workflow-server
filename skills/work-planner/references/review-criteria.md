@@ -71,7 +71,7 @@ An initiative criterion meets the [shared acceptance criteria](#shared-acceptanc
 - **SMART.**
   Each initiative criterion is **specific** about what holds; **measurable** by a named check or baseline; **achievable** by the epics that cite it; **relevant**, tracing to a clause and to the Problem; and **time-bound** by a release tag or another named milestone outside the initiative's own work, where one exists, and otherwise by the epics that cite it.
 - **Local.**
-  An initiative criterion names no initiative, epic, task or issue, and is solution-agnostic: Description cells link epics to criteria, never the reverse. One that holds only through another initiative's work is not local: restate what this initiative achieves, or drop it.
+  An initiative criterion names no initiative, epic, task or issue, and is solution-agnostic: Coverage cells link epics to criteria, never the reverse. One that holds only through another initiative's work is not local: restate what this initiative achieves, or drop it.
 #### Whole
 
 An initiative criterion states what the initiative achieves as a whole. One that restates a single epic's criterion is a duplicate: raise it to what the epics achieve together, or leave it to the epic.
@@ -192,7 +192,7 @@ These criteria bind every issue, whatever its kind.
 
 #### References
 
-- References does not link issues or pull requests on the same board; relational logic is communicated by the GitHub project.
+- References follows the skill's [References rule](../SKILL.md#rules).
 - A cross-initiative overlap is recorded in References. An approved edit to another initiative's issue stays minimal.
 
 #### Body
@@ -208,7 +208,7 @@ An initiative criterion, an epic criterion, and a task criterion each meet these
 - Names or implies the instrument that observes it: a test, a guard, a command or a measure.
 - Is unambiguous, so two readers agree on whether it holds.
 - **One invariant.**
-  Each criterion states a single condition that holds or does not. One joining several is split, and the Description cells cite the new ones. A condition over a list of subjects is one condition.
+  Each criterion states a single condition that holds or does not. One joining several is split, and the Coverage cells cite the new ones. A condition over a list of subjects is one condition.
 
 #### Verifiable
 

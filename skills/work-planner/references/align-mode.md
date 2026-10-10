@@ -57,7 +57,6 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
     - [List Long-Lived Branches](commands.md#list-long-lived-branches) prints the names, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. When it reports them unevaluable, the branch step stops and that report is the finding.
     - [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). [List Epic Bases](commands.md#list-epic-bases) for each open epic.
     - Identify the long-lived branch with [List Long-Lived Branches](commands.md#list-long-lived-branches). A base of `main` or `i07/e00/main` names `main`.
-    - An epic base is cut from the long-lived branch's current tip.
     - Point an open task pull request at its epic base with [Retarget Pull Request](commands.md#retarget-pull-request).
     - When that pull request is not mergeable, [Update Task Branch](commands.md#update-task-branch) merges the epic base into the task branch. A conflict is reported and the pull request stays open.
     - An open pull request whose head is an epic base targets its corresponding long-lived branch.
@@ -120,11 +119,9 @@ Aligns existing proposal, initiative, epic, task and standalone issues with thei
   - On acceptance, add the row and take those criteria off the delivered task's Coverage.
   - Run [Sync Epic](commands.md#sync-epic) again. It ticks Done on the delivered task, as the [Work Breakdown Guide](work-breakdown.md#tables) defines.
   - A criterion the user confirms already holds is ticked in [Sync Mode](sync-mode.md), and it stays on the delivered task.
-- **Branches.**
-  An epic in progress has the bases the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and an open pull request that delivers its tasks targets its epic base. A retarget that leaves the pull request unmergeable is followed by [Update Task Branch](commands.md#update-task-branch).
 - **Unplaced.**
   Apply [Unplaced](work-breakdown.md#unplaced).
 - **Review pull request.**
   Apply [Review pull request](work-breakdown.md#review-pull-request).
 - **Table.**
-  A Done cell that disagrees with whether its row is complete, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, is repaired. A ticked criterion whose row links no delivery is linked when the comments name one delivery, a path taken as the commit that holds it. Several candidates, or none, are decided with the user.
+  Repair Done cells under [Tables](work-breakdown.md#tables); resolve missing delivery evidence through the Coverage step.

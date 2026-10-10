@@ -210,18 +210,18 @@ class Survey(unittest.TestCase):
 
 
 class Reserve(unittest.TestCase):
-    def test_reserve_appends_the_record_link(self):
+    def test_reserve_sets_the_record_link(self):
         report, body, code = edit(epic(943, ('W01', 'Queue plan', '', '')),
                                   '--reserve', 'W01', '--records', RECORDS)
         self.assertEqual(code, 0, report)
         self.assertIn(f'| [W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/) |', body)
         self.assertIn('reserved: W01 →', report)
 
-    def test_reserve_keeps_the_work_item_link(self):
+    def test_reserve_replaces_the_work_item_link(self):
         planned = f'[W01]({RECORDS}/2026-09-01-936-queue/w01.md)'
         report, body, code = edit(epic(943, (planned, 'Queue plan', '', '')), '--reserve', 'W01')
         self.assertEqual(code, 0, report)
-        self.assertIn(f'| {planned}, [W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/) |', body)
+        self.assertIn(f'| [W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/) |', body)
 
     def test_reserve_refuses_a_row_already_held(self):
         held = f'[W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/)'
@@ -236,37 +236,18 @@ class Reserve(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn('links a pull request', report)
 
-    def test_item_links_the_work_item_ahead_of_the_record(self):
+    def test_a_reserved_row_is_held_with_one_link(self):
         record = f'{RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/'
-        report, body, code = edit(epic(943, (f'[W01]({record})', 'Queue plan', '', '')), '--item', 'W01')
-        self.assertEqual(code, 0, report)
-        self.assertIn(f'| [W01]({record}w01.md), [W01]({record}) |', body)
-
-    def test_a_row_with_its_work_item_is_still_held(self):
-        record = f'{RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/'
-        ident = f'[W01]({record}w01.md), [W01]({record})'
-        output = survey(staged((epic(943, (ident, 'Queue plan', '', '')), 'In Progress')))
+        output = survey(staged((epic(943, (f'[W01]({record})', 'Queue plan', '', '')), 'In Progress')))
         self.assertIn('hold I07:E00:W01', output)
         self.assertIn('available: 0, held: 1', output)
 
-    def test_item_refuses_a_row_that_is_not_held(self):
-        report, _, code = edit(epic(943, ('W01', 'Queue plan', '', '')), '--item', 'W01')
-        self.assertEqual(code, 1)
-        self.assertIn('links no planning folder', report)
-
-    def test_release_drops_the_record_link(self):
-        planned = f'[W01]({RECORDS}/2026-09-01-936-queue/w01.md)'
-        held = f'{planned}, [W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/)'
-        report, body, code = edit(epic(943, (held, 'Queue plan', '', '')), '--release', 'W01')
+    def test_release_points_to_the_work_item(self):
+        record = f'{RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/'
+        report, body, code = edit(epic(943, (f'[W01]({record})', 'Queue plan', '', '')), '--release', 'W01')
         self.assertEqual(code, 0, report)
-        self.assertIn(f'| {planned} |', body)
-        self.assertNotIn('i07-e00-w01-queue-plan/)', body)
-
-    def test_release_leaves_the_bare_id_when_no_link_remains(self):
-        held = f'[W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/)'
-        report, body, code = edit(epic(943, (held, 'Queue plan', '', '')), '--release', 'W01')
-        self.assertEqual(code, 0, report)
-        self.assertIn('| W01 |', body)
+        self.assertIn(f'| [W01]({record}w01.md) |', body)
+        self.assertNotIn(f']({record})', body)
 
     def test_release_refuses_a_free_row(self):
         report, _, code = edit(epic(943, ('W01', 'Queue plan', '', '')), '--release', 'W01')

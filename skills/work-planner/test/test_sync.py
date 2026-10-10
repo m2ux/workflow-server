@@ -56,13 +56,19 @@ class Done(unittest.TestCase):
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | ✓ |", fixed)
         self.assertIn('- [x] **AC1.**', fixed)
 
-    def test_a_further_pull_request_is_linked_while_a_criterion_is_unmet(self):
+    def test_a_further_pull_request_requires_another_task(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z'),
                  pr(951, '[I01:E00] Rest', merged='2026-09-02T00:00:00Z')]
-        fixed = synced(epic, pulls, '--link', 'W01=951')
-        self.assertIn(f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})", fixed)
-        self.assertNotIn('| ✓ |', fixed)
+        with self.assertRaisesRegex(AssertionError, 'further work needs another task'):
+            synced(epic, pulls, '--link', 'W01=951')
+
+    def test_multiple_row_links_are_rejected_before_delivery(self):
+        ident = f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((ident, 'Work', '')))
+        with self.assertRaisesRegex(AssertionError, 'a task row has one link'):
+            synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z'),
+                          pr(951, '[I01:E00] Rest')])
 
     def test_an_epic_row_ticks_when_its_issue_is_closed_as_completed(self):
         epic = issue(2, '[I01:E00] First: Epic', 'closed')
@@ -267,21 +273,6 @@ class TaskLinks(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('cleared: W01', done.stdout)
         self.assertNotIn('| ✓ |', fixed)
-
-    def test_the_links_query_names_every_fetched_pull_request(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            pulls_path = Path(tmp, 'prs.json')
-            pulls_path.write_text('\n'.join(json.dumps(p) for p in
-                                            [pr(950, '[I01:E00] Work'), pr(951, '[I01:E00] More')]))
-            done = run('sync.py', '--links-query', '--prs', str(pulls_path))
-        self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertIn('{nodes(ids:["PR_node950", "PR_node951"])', done.stdout)
-        self.assertIn('closingIssuesReferences(first:10)', done.stdout)
-
-    def test_the_links_query_needs_the_pull_requests(self):
-        done = run('sync.py', '--links-query')
-        self.assertNotEqual(done.returncode, 0)
-        self.assertIn('--links-query needs --prs', done.stderr)
 
     def test_pull_requests_without_their_issue_links_are_refused(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))

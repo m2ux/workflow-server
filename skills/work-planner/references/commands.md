@@ -157,12 +157,20 @@ Closes an issue whose normal delivery checks and [Issue Closure](work-breakdown.
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/closure.py --issue /tmp/issue-943.json --development /tmp/development-943.json --prs /tmp/development-prs-943.json && gh api --method PATCH repos/{owner}/{repo}/issues/943 -f state=closed -f state_reason=completed --jq .state
 ```
 
+### Development Access
+
+Reads and edits GitHub Development links through authenticated GitHub or an available supported tool.
+
+- Follow [GitHub's sidebar linking procedure](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue). The issue's Development sidebar supports selecting pull requests across repositories.
+- Read the actual field, including every page and state; record repository and number for each link. A missing tool or inaccessible field is a blocker, not an empty link set.
+- Confirm the [Issue Closure](work-breakdown.md#issue-closure) repository prerequisite before linking or merging. Observe the repository setting, or obtain the user's explicit confirmation; an absent API field is unknown.
+- After a link edit, re-read the field to verify it. Removing a link follows [Issue Closure](work-breakdown.md#issue-closure).
+
 ### Capture Issue Development
 
 Records the issue's complete Development pull request list and its repository's verified auto-closing setting.
 
-- Read every pull request in the issue's Development field through authenticated GitHub or an available supported tool, including links in other repositories and additional pages. Record the exact URLs in `pull_requests` and set `complete` to true only once that list is complete.
-- Verify **Settings → General → Issues → Auto-close issues with merged linked pull requests** is unchecked, as [GitHub's configuration guide](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/managing-auto-closing-issues) describes. Set `auto_close_issues` to false only after observing that setting or receiving the user's explicit confirmation for this repository. An absent API field is unknown. Apply the prerequisite to every repository participating in delivery before linking or merging.
+- Use [Development Access](#development-access) for the complete issue link set and confirmed repository setting. Record the exact URLs in `pull_requests`; set `complete` to true only after the full read, and `auto_close_issues` to false only after confirmation.
 - Record `repo` and `number` for the issue being closed. Save the snapshot as `development-943.json`; `pull_requests: []` means the field was checked and is empty. Missing access or incomplete evidence leaves closure blocked.
 - Use [Fetch Issue](#fetch-issue) for the current criteria and [Fetch Pull Request](#fetch-pull-request) for every recorded URL. Save those REST records as JSON lines in `development-prs-943.json`, including merged and closed pull requests regardless of their titles or branches. Identify a pull request by repository and number.
 - Before closing, refresh the Development list and pull request records. If the list changes while checking, repeat the check with the current list.
@@ -238,15 +246,19 @@ gh api --paginate "repos/{owner}/{other}/pulls?state=all&per_page=100" --jq '.[]
 
 ### Fetch Pull Request Issue Links
 
-Saves the issue each pull request links, which [Sync Epic](#sync-epic), [Plan Board Changes](#plan-board-changes) and [Summarise Progress](#summarise-progress) read as `--links`.
+Saves each pull request's Development-linked issues as a JSON array for the scripts' `--links` input.
 
-- Run it on the `prs.json` a fetch above wrote, and again after [Link Pull Request to Issue](#link-pull-request-to-issue) sets a link.
-- The first call writes the query from the node ids `prs.json` carries, so the query names the pull requests already fetched and no number is typed out.
-- Each entry is a pull request and the issues GitHub holds as its closing references, which is what its Development field shows.
+- Read every pull request in `prs.json` through [Development Access](#development-access), and repeat after a link changes.
+- Save one entry per pull request in `links.json`, with every linked issue's repository and number. An observed empty field uses an empty array. An unreadable field leaves the fetch incomplete.
 
-```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py --links-query --prs prs.json > links.graphql
-gh api graphql -F query=@links.graphql --jq '[.data.nodes[] | {repo: .repository.nameWithOwner, number, closingIssuesReferences: [.closingIssuesReferences.nodes[] | {repo: .repository.nameWithOwner, number}]}]' > links.json
+```json
+[
+  {
+    "repo": "owner/repo",
+    "number": 950,
+    "closingIssuesReferences": [{"repo": "owner/repo", "number": 637}]
+  }
+]
 ```
 
 ### Retitle Pull Request
@@ -303,8 +315,7 @@ gh api --method PATCH repos/{owner}/{repo}/pulls/980 -F body=@review-980.md --jq
 Merges a task pull request into its epic base.
 
 - Confirm the repository prerequisite in [Issue Closure](work-breakdown.md#issue-closure) before merging.
-- Run it when every check's Pass cell in the pull request's test plan carries a tick, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. [Update Epic Base](#update-epic-base) has run first.
-- A refusal is followed by [Update Task Branch](#update-task-branch), then this command again. A conflict in that update leaves the pull request open. Report it.
+- Run it as [Task Merge](work-breakdown.md#task-merge) specifies.
 - The merge method is a merge commit.
 
 ```bash
@@ -377,7 +388,7 @@ Opens the pull request that delivers a unit's work into its epic base.
 - Run it in the unit's worktree once the work is pushed, as [Deliver Mode](deliver-mode.md#brief) states.
 - The title is the epic's prefix and the unit's purpose: `[I07:E00] Purpose`.
 - The head is the unit's task branch and the base is the epic base it was cut from, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
-- The body is drafted from the [pull request template](../templates/pull-request.md), with its Test Plan filled as [Deliver Mode](deliver-mode.md#rules) states under Tests.
+- The body is drafted from the [pull request template](../templates/pull-request.md), with its Test Plan filled as [Test Coverage](work-breakdown.md#test-coverage) specifies.
 - [Link Pull Request to Issue](#link-pull-request-to-issue) links each task issue the unit delivers once it is open, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links. A unit whose tasks carry no issue of their own links nothing.
 
 ```bash
@@ -433,31 +444,10 @@ gh api repos/{owner}/{repo}/pulls/980 --jq '{merged, merge_commit_sha, head: .he
 
 ### Link Pull Request to Issue
 
-Links a pull request to the issue it delivers. GitHub shows that link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads.
+Sets the [Issue links](work-breakdown.md#delivery) relation through [Development Access](#development-access).
 
-- Confirm the repository prerequisite in [Issue Closure](work-breakdown.md#issue-closure) before linking.
-- Run it once the pull request is open, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
-- The first two calls print the node ids REST holds for the issue and the pull request.
-- `link.graphql` carries the mutation with those ids written into it. The query sits in a file because a GraphQL variable needs a `$`, which the [Bash rules](../../../rules/bash-composition.md#github-cli) deny on the command line.
-- One call takes one issue and up to ten pull requests, and sets both views of the link.
-- The link is stored on the pull request, so [Patch Pull Request Body](#patch-pull-request-body) and [Update Review Pull Request](#update-review-pull-request) leave it standing. It holds on any base branch and on a pull request that has merged.
-- A link set in error is unset by `removeCloseIssueReferences`, which takes the same input.
-
-```bash
-gh api repos/{owner}/{repo}/issues/637 --jq .node_id
-gh api repos/{owner}/{repo}/pulls/950 --jq .node_id
-gh api graphql -F query=@link.graphql --jq '.data.addCloseIssueReferences.issue.number'
-```
-
-`link.graphql`:
-
-```graphql
-mutation {
-  addCloseIssueReferences(input: {issueId: "I_kwDOABCD12", pullRequestIds: ["PR_kwDOABCD34"]}) {
-    issue { number }
-  }
-}
-```
+- Open the issue's Development selector, select the pull request's repository and pull request, and verify the saved link.
+- Refresh [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links) after the edit.
 
 ## Project Boards
 
@@ -821,7 +811,7 @@ cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/de
 
 ### Reserve Row
 
-Holds each named task row for one session, by appending its record folder's link to the row id.
+Holds each named task row for one session, by setting its record folder as the row's single link.
 
 - It refuses a row already held, and one whose id links a pull request or a commit.
 - `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.
@@ -831,23 +821,12 @@ Holds each named task row for one session, by appending its record folder's link
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --records https://github.com/{owner}/{repo}/tree/engineering/artifacts/planning --fix fixed-943.md
 ```
 
-### Record Work Item
-
-Points a held task row at the work item its session wrote, ahead of the record folder's link.
-
-- It refuses a row that no session holds, and one whose id already links that file.
-- The hold stands until the row links its pull request, which [Sync Epic](#sync-epic) writes.
-
-```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --item W01 --fix fixed-943.md
-```
-
 ### Release Row
 
-Frees each named task row, by dropping the record folder's link from the row id.
+Frees each named task row, by replacing the planning-folder link with its work-item file link.
 
 - It refuses a row that no session holds.
-- A row whose id then links nothing carries the bare task id.
+- The file is the task id in lowercase within that folder, as [Task ids](work-breakdown.md#task-delivery) defines.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --release W01 --fix fixed-943.md

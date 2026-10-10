@@ -43,7 +43,7 @@ Read the file for the mode the request calls for:
   - Repair of a work-breakdown cell that disagrees with its delivery
   - Epic bases for an initiative in progress, and open task pull requests pointed at them
   - A row for a task issue the epic table does not list
-  - A review pull request for an epic whose tasks are delivered and whose criteria are ticked
+  - Draft review pull requests for epic bases with merged tasks
 - **[Sync](references/sync-mode.md)**
   - Links from each task that has a pull request to that pull request, open or merged
   - Ticks for the criteria that hold, and for each Work Breakdown row once it is complete
@@ -63,8 +63,7 @@ Read the file for the mode the request calls for:
   - A session per unit, in a worktree of its own
   - A test for each criterion a unit delivers, of the kind that criterion can be observed by
   - A test plan table mapping each test to the parent epic criteria it covers
-  - A merge, on each run, of an open pull request whose test plan has passed
-  - A merge of the unit's pull request into the epic base once its test plan has passed
+  - Merging task pull requests through the shared delivery procedure
   - Hoisting of issues arising from the delivery of a unit
 - **[Understand](references/understand-mode.md)**
   - An architecture overview of one pull request, for the engineer who reviews it
@@ -132,7 +131,7 @@ Every issue the skill writes follows this scheme: its title, labels and body.
 - **Next number.**
   Find the next initiative number with [List Initiative Titles](references/commands.md#list-initiative-titles).
 - **Labels.**
-  - Besides the type and theme, add `enhancement`, `bug`, `tech-debt` and `priority:` with a positive integer as they apply. A larger number is higher. There is no maximum.
+  - Besides the type and theme, add `enhancement`, `bug` and `tech-debt` as they apply. Priority labels follow [Advance Mode](references/advance-mode.md#rules).
   - **Example.**  workflow-server adds `workflows`.
   - Only labels that exist, as [List Labels](references/commands.md#list-labels) shows.
 
@@ -180,7 +179,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 
 - **GitHub CLI (`gh`).**
   - Logged in through its keyring, with the `repo` scope for issues and pull requests and the `project` scope for project boards.
-  - Issue and pull request calls go through REST (`gh api`), and every call needs full host permissions. What REST does not expose, such as a pull request's Development field, goes through `gh api graphql`: [Link Pull Request to Issue](references/commands.md#link-pull-request-to-issue) sets that link and [Fetch Pull Request Issue Links](references/commands.md#fetch-pull-request-issue-links) reads it.
+  - Issue and pull request API calls use REST (`gh api`), with full host permissions. Development links use [Development Access](references/commands.md#development-access).
   - A board is created with `gh project`, as [Create Board](references/commands.md#create-board) and [Create Proposals Board](references/commands.md#create-proposals-board) specify.
 - **Sandbox.**
   `scripts/sbx` in the workspace checkout, the one holding this skill, runs the skill's scripts under bubblewrap with no network. `<workspace>` in the mode files stands for that checkout.
@@ -194,7 +193,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **GitNexus.**
   The `gitnexus` command, for the structure [Understand Mode](references/understand-mode.md) measures over a change. It indexes the repository under review itself, as [Index Repository](references/commands.md#index-repository) runs it, so an unindexed repository costs that run rather than blocking the mode.
 - **Sub-agents.**
-  The dispatch of the session this skill runs in. [Deliver Mode](references/deliver-mode.md#rules) starts each unit's session with it, and [Plan Mode](references/plan-mode.md) delegates a broad evidence sweep to it.
+  The dispatch of the session this skill runs in. [Deliver Mode](references/deliver-mode.md#rules) starts each unit's session with it, and [Propose Mode](references/propose-mode.md) delegates a broad evidence sweep to it.
 
 ## Rules
 
@@ -211,7 +210,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - How the plan evolved goes in the planning record and in commit and pull request bodies.
 - **Other initiatives.**  Editing another initiative's issue needs the user's explicit approval.
 - **References.**
-  The References section does not link issues or pull requests on the same board. Relational logic is communicated by the GitHub project, not by bare links.
+  An issue's References section does not link issues or pull requests on the same board. The GitHub project holds those relationships. Pull request References follow [Review pull request](references/work-breakdown.md#review-pull-request) and [Understand Mode](references/understand-mode.md#rules).
 - **Replies to feedback.**
   - Once feedback on an issue is folded into its body, a comment mentions the reviewer and answers each of their points in turn, precisely and factually, with no thanks or filler. It is posted with [Comment on Issue](references/commands.md#comment-on-issue).
   - Each answer names what the body now says, by criterion id where one carries it, or the issue that takes the point.
