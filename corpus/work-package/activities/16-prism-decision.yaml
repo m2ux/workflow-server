@@ -5,15 +5,10 @@ description: Settle whether the change takes the full prism pipeline or the sing
 variables:
   reads:
     - base_remote
-    - branch_name
-    - component_git_dir
     - default_branch
     - is_review_mode
     - planning_folder_path
-    - pr_number
     - problem_complexity
-    - problem_statement
-    - requirements
     - target_path
     - target_repo
   writes:
@@ -56,17 +51,7 @@ steps:
     technique: assess-prism-value
   - kind: checkpoint
     id: full-prism-decision
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: problem_complexity
-          operator: ==
-          value: complex
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
+    when: problem_complexity == "complex" && is_review_mode != true
     message: "Full prism pipeline for this change: {prism_value_assessment}"
     options:
       - id: run-full-prism

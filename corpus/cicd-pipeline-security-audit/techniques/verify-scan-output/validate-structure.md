@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
 Load and structurally validate every scanner output against the output schema, counting malformed or missing-field outputs as gaps.
+
+## Inputs
+
+### scanner_outputs
+
+The per-submodule scanner [output files](../../resources/sub-agent-output-schema.md#schema), one per scanner agent.
 
 ## Protocol
 

@@ -5,7 +5,6 @@ description: The validated workflow change committed on the session feature bran
 variables:
   reads:
     - compliance_report
-    - component_git_dir
     - draft_attestation_path
     - has_open_assumptions
     - host_repo_path
@@ -13,7 +12,6 @@ variables:
     - manifest_entries
     - operation_type
     - planning_folder_path
-    - pr_number
     - scope_manifest_path
     - seed_profile
     - specification_path
@@ -99,17 +97,7 @@ steps:
         message: "Schema validation passed — {pass_count} file(s), 0 failed."
   - kind: checkpoint
     id: validation-passed
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: fail_count
-          operator: ">"
-          value: 0
+    when: operation_type != "review" && fail_count > 0
     message: "Schema validation results: {pass_count} passed, {fail_count} failed."
     defaultOption: proceed
     autoAdvanceMs: 30000
@@ -134,17 +122,7 @@ steps:
         message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed ([scope manifest]({scope_manifest_path}))."
   - kind: checkpoint
     id: scope-verified
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: unaddressed_count
-          operator: ">"
-          value: 0
+    when: operation_type != "review" && unaddressed_count > 0
     message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining) ([scope manifest]({scope_manifest_path}))."
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -169,11 +147,7 @@ steps:
     when: operation_type != 'review'
   - kind: checkpoint
     id: approve-to-commit
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != "review"
     message: "Workflow '{workflow_id}' ready to commit ([design specification]({specification_path}), open judgements when has_open_assumptions={has_open_assumptions}, [impact analysis]({impact_analysis_path}), [draft attestation]({draft_attestation_path}), [planning README]({planning_folder_path}/README.md))."
     options:
       - id: approved

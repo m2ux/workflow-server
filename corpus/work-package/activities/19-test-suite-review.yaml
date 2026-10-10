@@ -4,14 +4,8 @@ name: Test Suite Review
 description: Map diff coverage and review the test suite for gaps, assertion quality and anti-patterns.
 variables:
   reads:
-    - branch_name
     - changed_files
-    - component_git_dir
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: coverage_gaps

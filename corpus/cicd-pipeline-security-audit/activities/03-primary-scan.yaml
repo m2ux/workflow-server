@@ -1,5 +1,5 @@
 id: primary-scan
-version: 2.0.0
+version: 2.1.0
 name: Primary Scan
 description: Gather the per-submodule scanner branches and merge their findings.
 variables:
@@ -7,8 +7,13 @@ variables:
     - merge_complete
     - planning_folder_path
     - scanner_assignments
+    - user_request
     - sub_workflow_scan_outputs
     - verification_complete
+  writes:
+    - name: scanner_outputs
+      type: array
+      description: The per-submodule scanner output files, one per scanner, in roster order.
 techniques:
   - scatter-gather
   - execute-cicd-audit
@@ -37,7 +42,10 @@ steps:
     technique: dispatch-scanners::list-output-files
   - kind: technique
     id: verify-scanner-output-files
-    technique: orchestration-patterns::verify-output-files
+    technique:
+      name: orchestration-patterns::verify-output-files
+      inputs:
+        work_goal: user_request
   - kind: technique
     id: compose-verification-agent
     technique: dispatch-scanners::compose-verification-brief

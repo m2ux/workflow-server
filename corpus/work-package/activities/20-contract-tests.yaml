@@ -7,15 +7,10 @@ description: >-
   implementation lands.
 variables:
   reads:
-    - branch_name
     - component_git_dir
     - implementation_plan
     - host_repo_path
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: contract_tests_branch

@@ -33,11 +33,7 @@ steps:
     technique: intake-and-profile
   - kind: checkpoint
     id: intent-and-profile-batch
-    condition:
-      type: simple
-      variable: intent_needs_confirmation
-      operator: ==
-      value: true
+    when: intent_needs_confirmation == true
     message: "Plain-language intent needs confirmation — classified `{operation_type}` for `{document_title}` (controlled language: {controlled_language})."
     options:
       - id: confirm

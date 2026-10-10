@@ -4,12 +4,9 @@ name: Quality Review
 description: Quality review of drafted workflow content.
 variables:
   reads:
-    - component_git_dir
     - operation_type
     - planning_folder_path
-    - pr_number
     - scope_manifest_confirmed
-    - target_path
     - target_workflow_ids
   writes:
     - name: anti_pattern_finding_count
@@ -182,11 +179,7 @@ steps:
     when: operation_type == 'review'
   - kind: checkpoint
     id: review-disposition
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: review
+    when: operation_type == "review"
     message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}))."
     options:
       - id: fix-issues

@@ -11,7 +11,7 @@ Git techniques for planning folders and artifacts — parent repos, submodules, 
 
 ### planning_folder_path
 
-Path to the session's planning folder, as the server returned it. Techniques that derive a path from where the session keeps its artifacts take it from here; not every technique needs one.
+*(optional)* Path to the session's planning folder, as the server returned it. Techniques that derive a path from where the session keeps its artifacts take it from here; not every technique needs one.
 
 ### is_signed
 

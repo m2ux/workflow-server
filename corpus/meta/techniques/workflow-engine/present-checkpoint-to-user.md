@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -49,7 +49,7 @@ Load the active checkpoint's details and present them to the user.
 
 ### 7. Capture Selection
 
-- Record the resolved `{user_selection}` — the `option_id`, its reply where the option records one, and its `effects` (or `auto_advance` / `condition_not_met`).
+- Record the resolved `{user_selection}` — the `option_id`, its reply where the option records one, and its `effects`, or `auto_advance` where the gate resolved that way.
 
 ### 8. Relay Selection
 
@@ -58,11 +58,11 @@ Load the active checkpoint's details and present them to the user.
 
 ### softness-is-declared
 
-A gate is **soft** when it declares an answer the run may take where no person is reached, and **hard** when it does not: a hard gate resolves only on an explicit selection. Which fields carry that declaration, and the refusal of a gate that declares half of it, are the definition schema's — `verify-auto-advance-capability` is how a presenter reads them off the gate in front of it.
+A gate is **soft** when it declares an answer the run may take where no person is reached, and **hard** when it does not: a hard gate resolves only on an explicit selection. Which fields carry that declaration, and the refusal of a gate that declares half of it, are the definition schema's — `verify-auto-advance-capability` is how a presenter reads them off the gate in front of it. The declared interval is spent by the resolving call, per `respond-checkpoint.auto-advance-spends-the-declared-interval`; the headless path below makes no such call and spends none, so there the declaration only marks the gate soft.
 
 ### present-before-any-resolution
 
-`present_checkpoint` returning data is not presentation. A hard gate's every resolution path — `option_id` or `condition_not_met` — is preceded by the host's question primitive displaying the checkpoint's message and options, whatever mode the run is in. A soft gate is presented the same way on an interactive run. `{headless_mode}` is the one exception, and it reaches only a soft mid-flow gate: that gate resolves to its declared answer with nothing put to the user, and spends no declared interval. This rule is the single home for when a checkpoint is presented — a workflow states which gates it has and what opens them, and says nothing about presentation.
+`present_checkpoint` returning data is not presentation. A hard gate resolves by an `option_id`, and that resolution is preceded by the host's question primitive displaying the checkpoint's message and options, whatever mode the run is in. A soft gate is presented the same way on an interactive run. `{headless_mode}` is the one exception, and it reaches only a soft mid-flow gate: that gate resolves to its declared answer with nothing put to the user. This rule is the single home for when a checkpoint is presented — a workflow states which gates it has and what opens them, and says nothing about presentation.
 
 ### a-correction-lands-in-the-bag
 

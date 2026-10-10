@@ -5,8 +5,6 @@ description: Design the approach and prepare the plan and the test plan.
 variables:
   reads:
     - assumptions_log
-    - branch_name
-    - component_git_dir
     - default_branch
     - host_repo_path
     - implementation_analysis_outputs
@@ -14,7 +12,6 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_statement
-    - requirements
     - research_outputs
     - research_direction
     - review_summary
@@ -173,11 +170,7 @@ steps:
         when: has_reconcilable_research == true
       - kind: checkpoint
         id: research-convergence
-        condition:
-          type: simple
-          variable: has_reconcilable_research
-          operator: ==
-          value: false
+        when: has_reconcilable_research == false
         message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}."
         defaultOption: accept-research
         autoAdvanceMs: 30000
@@ -194,11 +187,7 @@ steps:
                 has_reconcilable_research: true
   - kind: checkpoint
     id: context-scope-declaration
-    condition:
-      type: simple
-      variable: needs_context_scope
-      operator: ==
-      value: true
+    when: needs_context_scope == true
     message: The research run's evidence settles no single provenance scope for the sources that informed the design.
     defaultOption: repo-only
     autoAdvanceMs: 15000
@@ -272,11 +261,7 @@ steps:
     when: is_review_mode != true && stealth_mode != true
   - kind: checkpoint
     id: approach-confirmed
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
     message: "The approach the [plan]({plan_document}) is built on, summarised above."
     defaultOption: confirmed
     autoAdvanceMs: 30000

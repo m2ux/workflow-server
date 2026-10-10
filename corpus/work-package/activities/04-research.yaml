@@ -4,14 +4,8 @@ name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 variables:
   reads:
-    - branch_name
-    - component_git_dir
     - needs_research
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: context_scope

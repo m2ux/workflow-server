@@ -1,5 +1,5 @@
 id: prompt-generation
-version: 1.2.0
+version: 1.3.0
 name: Generate Audit Prompt
 description: Compose a detailed audit prompt tailored to the codebase.
 variables:
@@ -9,8 +9,8 @@ variables:
     - target_path
   writes:
     - name: audit_prompt
-      type: string
-      description: Generated audit prompt text produced by the prompt-generation activity
+      type: object
+      description: "The composed audit prompt, carrying the parts the activity's steps fill and its later steps read back: { codebase_overview, domains, cross_cutting, output_requirements }."
     - name: audit_prompt_path
       type: string
       description: File path to the written audit-prompt.md artifact
@@ -31,11 +31,7 @@ steps:
   - kind: checkpoint
     id: no-security-characteristics
     message: No security-relevant patterns were found in {target_path}, which is the shape a purely presentational or data-only codebase takes.
-    condition:
-      type: simple
-      variable: security_characteristics_count
-      operator: ==
-      value: 0
+    when: security_characteristics_count == 0
     options:
       - id: proceed
         label: Continue the audit

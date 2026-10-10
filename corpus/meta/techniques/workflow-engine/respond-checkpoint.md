@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -11,13 +11,13 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 ### checkpoint_resolution
 
-`{ option_id, reply }` | `{ auto_advance: true }` | `{ condition_not_met: true }`. `reply` is the text the user typed with an option whose effect declares `recordReply`, and is absent for any other option.
+`{ option_id, reply }` | `{ auto_advance: true }`. `reply` is the text the user typed with an option whose effect declares `recordReply`, and is absent for any other option.
 
 ## Outputs
 
 ### checkpoint_reply
 
-The reply the server returns on clearing the active checkpoint: `resolved_option`, the option taken; `effect`, its `setVariable` assignments, the variable `recordReply` stored the reply in, and `exit`; `exit`, the selected exit with its `next_activity`, carrying `ends_activity` where selecting it ends the activity at this gate; and `dismissed`, set on a `condition_not_met` resolution, which selects no option.
+The reply the server returns on clearing the active checkpoint: `resolved_option`, the option taken; `effect`, its `setVariable` assignments, the variable `recordReply` stored the reply in, and `exit`; `exit`, the selected exit with its `next_activity`, carrying `ends_activity` where selecting it ends the activity at this gate.
 
 ## Protocol
 
@@ -37,8 +37,4 @@ The reply the server returns on clearing the active checkpoint: `resolved_option
 
 ### auto-advance-spends-the-declared-interval
 
-The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded.
-
-### dismiss-only-a-gate-whose-condition-is-false
-
-`condition_not_met: true` is the resolution for a checkpoint whose declared `condition` evaluates false against the run's variable bag, and clears the gate without a decision. The server refuses it on a checkpoint carrying no `condition`. Never use it to clear a gate whose condition holds.
+The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded. A resolution that must not wait takes the headless path of `present-checkpoint-to-user.present-before-any-resolution`, which makes no call.

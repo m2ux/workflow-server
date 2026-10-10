@@ -35,22 +35,26 @@ steps:
     id: review-over-engineering
     technique:
       name: ponytail/review-over-engineering
+      inputs:
+        task_description: ""
       outputs:
         review_findings: lean_audit_findings
   - kind: technique
     id: harvest-debt
-    technique: ponytail/harvest-debt
+    technique:
+      name: ponytail/harvest-debt
+      inputs:
+        task_description: ""
   - kind: technique
     id: report-gain
-    technique: ponytail/report-gain
+    technique:
+      name: ponytail/report-gain
+      inputs:
+        task_description: ""
     when: has_debt_markers == true
   - kind: checkpoint
     id: audit-findings-confirmed
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
     message: "Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {lean_audit_findings}"
     options:
       - id: audit-accepted
@@ -88,11 +92,16 @@ steps:
     steps:
       - kind: technique
         id: apply-simplifications
-        technique: ponytail/apply-ladder
+        technique:
+          name: ponytail/apply-ladder
+          inputs:
+            task_description: ""
       - kind: technique
         id: re-review-over-engineering
         technique:
           name: ponytail/review-over-engineering
+          inputs:
+            task_description: ""
           outputs:
             review_findings: lean_audit_findings
       - kind: checkpoint

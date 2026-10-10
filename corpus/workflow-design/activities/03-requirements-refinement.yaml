@@ -6,11 +6,8 @@ variables:
   reads:
     - assumption_outcome
     - change_category
-    - component_git_dir
     - operation_type
     - planning_folder_path
-    - pr_number
-    - target_path
   writes:
     - name: accumulated_design
       type: string
@@ -49,11 +46,7 @@ steps:
     technique: derive-design-dimensions
   - kind: checkpoint
     id: design-context
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: update
+    when: operation_type != "update"
     message: "Optional design context — reference workflows, integration points, or operators and triggers."
     defaultOption: skip-context
     autoAdvanceMs: 30000

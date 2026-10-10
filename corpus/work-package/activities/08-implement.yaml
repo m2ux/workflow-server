@@ -7,16 +7,10 @@ description: >-
   implementation-join.
 variables:
   reads:
-    - branch_name
-    - component_git_dir
     - host_repo_path
     - implementation_plan
     - planning_folder_path
-    - pr_number
-    - problem_statement
     - project_type
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: assumptions_log
