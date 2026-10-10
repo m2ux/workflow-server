@@ -7,6 +7,10 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
 - **Purpose and modes.**
   The entry point describes Work Designer's general work-design purpose. Each mode owns the scope and authority of its capability.
 
+## SKILL.md Structure
+
+- **Section order.**  Rules precedes Dependencies.
+
 ## Titles
 
 - **Title case.**

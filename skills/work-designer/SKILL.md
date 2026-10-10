@@ -26,6 +26,15 @@ Read the file for the mode the request calls for:
   - Changes to this skill's own files
   - Conformance with the [skill guidelines](../guidelines.md) and this skill's [guidelines](references/guidelines.md)
 
+## Rules
+
+- **Measured claims.**
+  Counts, revision identities and check outcomes come from command output or preserved run evidence.
+- **One home.**
+  Project documents own their design criteria. The skill locates and applies those criteria.
+- **Commands.**
+  Every operation follows its spec and the shared conventions in [Commands](references/commands.md).
+
 ## Dependencies
 
 - **Git**
@@ -40,12 +49,3 @@ Read the file for the mode the request calls for:
   Use the execution boundary the workspace provides; the [command conventions](references/commands.md#conventions) describe the workflow-server workspace.
 - **Agent host**
   Repository access, local execution and artifact writing, within the selected mode's authority. External fixtures and shared services need the authorization their host requires.
-
-## Rules
-
-- **Measured claims.**
-  Counts, revision identities and check outcomes come from command output or preserved run evidence.
-- **One home.**
-  Project documents own their design criteria. The skill locates and applies those criteria.
-- **Commands.**
-  Every operation follows its spec and the shared conventions in [Commands](references/commands.md).
