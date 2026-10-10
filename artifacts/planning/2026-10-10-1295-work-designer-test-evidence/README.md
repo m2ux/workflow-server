@@ -14,6 +14,8 @@ The evidence distinguishes structural checks, live agent behavior and remaining 
 | --- | --- |
 | [Test Evidence](test-evidence.md) | Check procedures, revisions, results and limitations |
 | [Format Revision](format-revision.md) | Scope, tasks and validation for linked test results |
+| [Integration Review](review.md) | Findings across the full PR, coverage and remaining evidence gaps |
+| [Review Evidence](review-evidence.json) | Regression results, link checks and disposable reproductions |
 
 ## Links
 

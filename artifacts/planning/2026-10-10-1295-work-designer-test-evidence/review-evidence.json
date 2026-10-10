@@ -1,0 +1,55 @@
+{
+  "head": "3f73e1fe3dd1a04f2ffffd515c72345ba5a4f22a",
+  "base": "bf5f48cf83427f6c1949236e1836cc8d422862af",
+  "regression_suite": {
+    "command": "python3 -B -m unittest discover -s test",
+    "cwd": ".worktrees/review/work-designer-1295/skills/work-planner",
+    "tests": 294,
+    "seconds": 9.362,
+    "exit_code": 0
+  },
+  "link_check": {
+    "changed_files": 18,
+    "local_links": 211,
+    "external_links": 33,
+    "published_test_anchors": 10,
+    "errors": []
+  },
+  "shared_guideline_staging": {
+    "command": "git add skills/work-designer",
+    "staged": [
+      "skills/work-designer/SKILL.md"
+    ],
+    "unstaged": [
+      "skills/guidelines.md"
+    ]
+  },
+  "session_census": {
+    "engine_revision": "c1a97f236e20db64c8d36ba919ef0e7a4c1b671e",
+    "fixture_running_sessions": 1,
+    "documented_arguments": {
+      "exit_code": 0,
+      "stdout": "review-fixture (running): 0\n",
+      "stderr": ""
+    },
+    "explicit_root": {
+      "exit_code": 0,
+      "stdout": "review-fixture (running): 1\n  <fixture>/workspace/.engineering/artifacts/planning/active-session  [top-level]  v1  running  @ work\n",
+      "stderr": ""
+    }
+  },
+  "live_disclosure": {
+    "source_snapshot_matches_current_files": true,
+    "run_a": "01a12562-1783-7641-aa65-e1458545dab7",
+    "run_b": "01a12562-2cb8-7e03-8e43-e2fdb73c7194",
+    "run_a_loaded_variant_revise_configuration": true,
+    "run_b_loaded_variant_revise_configuration": false,
+    "runs_repeated_for_this_review": false
+  },
+  "ci": {
+    "check_runs": 0,
+    "status_contexts": 0,
+    "aggregate_status": "pending",
+    "interpretation": "No registered check or status evidence on the reviewed commit."
+  }
+}
