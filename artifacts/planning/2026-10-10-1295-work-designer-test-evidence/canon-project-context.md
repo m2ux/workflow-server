@@ -9,7 +9,7 @@ Workflow Canon is tailored to workflow-server. Its modes reach canon homes, bran
 - [x] Inspect project routing, callers and shared skill guidelines.
 - [x] Flatten project context into its authoritative mode and reference homes.
 - [x] Validate links, command preservation, regression checks and fresh-agent reading paths; record their limits.
-- [ ] In progress: commit, push and update PR 1295 with linked evidence.
+- [x] Commit, push and update PR 1295 with linked evidence.
 
 ## Validation Plan
 
@@ -58,3 +58,5 @@ Author and Review were instructed to conclude from their collected evidence with
 ## Delivery
 
 Source commit [d264a101077c7d255a6767e160161c30b4cb44bc](https://github.com/m2ux/workflow-server/commit/d264a101077c7d255a6767e160161c30b4cb44bc) is pushed to `skill/work-designer` for [PR 1295](https://github.com/m2ux/workflow-server/pull/1295). The existing branch name and planning-record path retain the work's history; the skill itself has one Workflow Canon identity.
+
+The PR body describes the tailored project context and its Test Plan contains only a table, with each result linked to a published evidence section. Readback confirmed the expected body and head; the source worktree is clean and matches its upstream. The PR remains open. GitHub reports no check runs on this head; the passing results above are local observations.
