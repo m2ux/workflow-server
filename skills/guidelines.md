@@ -92,10 +92,37 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Shared conventions.**
   The session setup, where commands run, and the example values live once, at the top of `commands.md`.
 
+## Progressive Disclosure
+
+- **Placement.**
+  Keep shared purpose, mode selection and essential constraints in the entry point. Link conditional detail where the active mode needs it.
+- **Applicability.**
+  State the condition beside a conditional link and require the reader to resolve it before loading the instructions. Select checks before retrieving their command specs.
+- **Reading boundaries.**
+  Link the smallest complete section the caller needs. The skill's reading rules define a heading link as that section and its subsections, stopping before the next heading of equal or higher level. Whole-file links identify required complete documents.
+- **Prerequisites.**
+  Provide or explicitly link the context needed to use each section, including conventions and mode authority. Split files when section routing still brings unrelated guidance into context.
+- **Batched reads.**
+  Preserve each link's boundary when batching retrieval. Batch selected whole files or separate section ranges; each range excludes unrelated intervening content. Inspect headings to locate boundaries.
+- **Complete output.**
+  Bound reads and output volume so required content is returned completely. Retrieve missing sections when output is truncated; a request for content is not evidence of receipt.
+
+## Disclosure Verification
+
+- **Required context.**
+  Every revision traces a representative request through each affected mode's required reads, including prerequisites, subsections and explicit whole-file requirements. Necessity follows the task and affected consumers; another mode's guidance can be required.
+- **Live checks.**
+  When a revision changes reading paths, test representative requests with independent sub-agents in fresh contexts. Give them the skill, realistic tasks, necessary inputs and authority limits, without expected reading choices or prior findings. Repeat affected scenarios before claiming consistent behavior. Record unavailable live validation as an evidence gap.
+- **Observed behavior.**
+  Inspect actual tool calls, returned content and task results. Missing necessary context or loading unrelated content fails the disclosure check. Report structural validation and live behavior separately, preserving observed failures.
+- **Performance.**
+  Record unnecessary content, repeated reads, truncation and task correctness. Claims of context-token savings require a comparable baseline with the same tasks, inputs and execution conditions; file or word counts establish only their stated measurements.
+
 ## Changes
 
 - **Everything that names it.**
   A rename or a move updates every reference: folder, `name`, heading, script paths, links and anchors.
 - **Stale claims.**
   After a behaviour change, search the skill for any description of the old behaviour and restate it.
-- **Verified.**  The skill's tests pass, and every link resolves, before the change is committed.
+- **Verified.**
+  The skill's tests pass, every link resolves and [disclosure verification](#disclosure-verification) is recorded before the change is committed.

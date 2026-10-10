@@ -56,4 +56,4 @@ Read the selected mode's file in full, then follow its links as each step needs 
 - **Workspace sandbox**
   The host's execution boundary and permissions, as the [command conventions](references/commands.md#conventions) require.
 - **Agent host**
-  Repository access, local execution and artifact writing, within the selected mode's authority. External fixtures and shared services need the authorization their host requires.
+  Repository access, local execution and artifact writing, within the selected mode's authority. Independent sub-agents and observable tool results support validation of changed reading paths. External fixtures and shared services need the authorization their host requires.

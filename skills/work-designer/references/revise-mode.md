@@ -13,12 +13,12 @@ Changes the skill itself: its entry point, mode files, shared guides, project va
 4. **Revise.**
    Make the change in its authoritative home and update every consumer. Apply the guidelines' layout, prose, link and command rules while writing. Variant changes follow the [variant contract](variants.md#variant-contract); new variants follow [Adding a Variant](variants.md#adding-a-variant).
 5. **Check the guidelines.**
-   Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](guidelines.md#progressive-disclosure).
+   Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](../../guidelines.md#progressive-disclosure).
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
    - [Run Skill Checks](commands.md#run-skill-checks), including applicable existing tests and link checks.
-   - Walk a representative request through each changed decision. For variant changes, check selection for a matching project, another project and an ambiguous match. For Review changes, include a missing-evidence case and confirm the report preserves the gap.
-   - For every affected mode, verify [progressive disclosure](guidelines.md#progressive-disclosure). Check a command section, a parent section with subsections and required whole-file reads, including their prerequisites.
+   - Walk a representative request through each changed decision.
+   - For every affected mode, apply [disclosure verification](../../guidelines.md#disclosure-verification) using the skill's [representative scenarios](guidelines.md#progressive-disclosure).
 7. **Deliver.**
    [Commit Skill Changes](commands.md#commit-skill-changes) for each distinct change, then [Push Skill Branch](commands.md#push-skill-branch). When requested, [Open Skill Pull Request](commands.md#open-skill-pull-request). Report the files, validation and delivery link.
 8. **Revise the guidelines.**
@@ -27,6 +27,6 @@ Changes the skill itself: its entry point, mode files, shared guides, project va
 ## Rules
 
 - **Complete.**
-  A revision is complete only when it conforms to both guidelines, its links resolve, applicable checks pass and [progressive disclosure](guidelines.md#progressive-disclosure) is verified for every affected mode.
+  A revision is complete only when it conforms to both guidelines, its links resolve, applicable checks pass and [disclosure verification](../../guidelines.md#disclosure-verification) succeeds for every affected mode.
 - **Scope.**
   This mode changes the skill; an example integration is reviewed only as far as needed to validate the requested revision.

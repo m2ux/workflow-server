@@ -13,14 +13,14 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
 
 ## Progressive Disclosure
 
-- **Placement.**
-  Keep shared purpose, mode selection and essential constraints in the entry point. Link conditional detail where the active mode needs it.
-- **Reading boundaries.**
-  Link the smallest complete section the caller needs, following the entry point's [linked-section rule](../SKILL.md#rules). Use whole-file links when the complete document is required, including the selected mode and revision guidelines.
-- **Prerequisites.**
-  The section or its calling guidance provides or explicitly links the context needed to use it, including conventions and mode authority. Split files when section routing still brings unrelated guidance into context.
-- **Verification.**
-  Every revision must trace a representative request through each affected mode's required file and section reads. Missing necessary context or loading unrelated modes, variants or commands fails this check. Assess the actual retrieval boundaries, including any explicit whole-document requirements.
+Apply the shared [progressive disclosure](../../guidelines.md#progressive-disclosure) and [disclosure verification](../../guidelines.md#disclosure-verification) rules using the scenarios affected by the revision:
+
+- **Review.**
+  Select one affected branch product with a conditional check that does not apply. Confirm the report preserves missing evidence and the reads follow the selected coverage.
+- **Revise.**
+  Change a template with a consumer in another mode. Include its required consumer guidance, a command section with conventions, a parent section with subsections and the required whole-file guidelines.
+- **Variants.**
+  When variant routing changes, cover a matching project, an unconfigured project and an ambiguous match. Follow the active mode's configuration and the settings its task needs.
 
 ## Titles
 
