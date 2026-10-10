@@ -6,7 +6,7 @@
 
 ## Reviewed Scope
 
-{{Project, selected variant or derived configuration, authoritative sources and resolved planning record.}}
+{{Workflow-server branches, authoritative sources and resolved planning record.}}
 
 | Product or Branch | PR or Head | Target | Merge Base | Reviewed Result | Role in Integration |
 | --- | --- | --- | --- | --- | --- |

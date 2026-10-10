@@ -27,7 +27,7 @@ Severity ranks urgency inside a band. The band says whether the finding gates.
 | `Medium` | An entry fires and the defect stays in that construct. Spot-confirm |
 | `Low` | Hygiene with no consumer consequence |
 
-An unmeasured guard records `blocked` coverage; the selected project configuration defines its exit statuses.
+An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.
 
 ### Finding Rows
 
@@ -82,7 +82,7 @@ Whether the audit is finished.
 
 ## Which Report
 
-For an active workflow run, use the selected project configuration's report guide and persistence step. Otherwise use the [Standalone](#standalone) layout. Stored artifacts follow the shared [planning guide](planning.md).
+Inside workflow-authoring or workflow-design, use [Workflow Reports](#workflow-reports). Otherwise use the [Standalone](#standalone) layout. Stored artifacts follow the shared [planning guide](planning.md).
 
 ## Standalone
 
@@ -128,3 +128,15 @@ read N · unread N.
 ~~~
 
 Omit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. The header's units × paths bound every figure under it, and each header figure reconciles against a list in the body. Status is the [coverage header](#coverage-header). Live or Contract at zero over a partial grid is a statement about that part. A Live or Contract count that rose says a fix moved a defect.
+
+## Workflow Reports
+
+That run's guide owns the layout:
+
+| Artifact | Guide, on the corpus tree |
+|----------|---------------------------|
+| `findings-register.md` | `corpus/workflow-authoring/resources/findings-register.md` |
+| `compliance-review.md` / `post-update-review.md` | `corpus/workflow-design/resources/compliance-report.md` |
+| per-pass `*-findings.md` | `corpus/workflow-design/resources/findings-satellite.md` |
+
+Fetch the guide's `## Template` and fill it. Persist through the activity's `manage-artifacts::write-artifact` step.

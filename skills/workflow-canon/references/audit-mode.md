@@ -4,11 +4,11 @@ Reviews existing definitions: enumerates the units, walks them over the surface,
 
 ## Prerequisites
 
-Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms). The selected Audit configuration supplies the definition scope, criterion inventory, checks and any workflow report guide.
+Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms).
 
 ## Canon Question
 
-For a single question about an entry, locate its authoritative home through the selected configuration, fetch that section with its required context, answer and stop. The full audit procedure applies when the request calls for a conformance judgment over definitions.
+For a single question about an entry, locate its [canon home](canon-context.md#homes), [fetch the entry](commands.md#fetch-unit) with its required context, answer and stop. The full audit procedure applies when the request calls for a conformance judgment over definitions.
 
 ## Procedure
 
@@ -19,7 +19,7 @@ For a single question about an entry, locate its authoritative home through the 
 2. **Run the checks first.**
    - Select the project's [checks](canon-context.md#checks), preferring a delta run when it can compare the base and candidate under equivalent conditions.
 3. **Enumerate units.**
-   - Enumerate every unit the selected configuration's inventory gives an Audit, from each home's headings at the commit audited.
+   - Enumerate every unit the [canon inventory](canon-map.md#unit-inventory) gives an Audit, using [List Units](commands.md#list-units) on each home at the commit audited.
    - Apply each entry as written.
 4. **Walk.**
    - Walk the units per [Walk](#walk) and the required walk rules.

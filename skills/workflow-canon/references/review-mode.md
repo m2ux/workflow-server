@@ -10,25 +10,27 @@ Before the first command spec, read the [command conventions](commands.md#conven
 
 1. **Establish the subject.**
    - Read applicable project instructions and take the repository, integration PRs or branches, intended targets and merge order from the request and repository metadata.
-   - Identify the long-lived branches and what each owns from the resolved [project configuration](variants.md#selection) and the project's documentation, manifests and CI. Resolve the shared [planning record](planning.md) before saving evidence.
+   - Identify the long-lived branches and what each owns from [Branches and Sources](coverage.md#branches-and-sources) and the project's documentation, manifests and CI. Resolve the shared [planning record](planning.md) before saving evidence.
    - [Fetch Pull Request](commands.md#fetch-pull-request) and [Fetch Requirements](commands.md#fetch-requirements) where applicable. Resolve only missing decisions with the user, one question at a time.
 2. **Capture the revisions.**
    - [Fetch Branches](commands.md#fetch-branches), then [Compare Revisions](commands.md#compare-revisions) for each head and target. Record the merge base, full SHAs, constituent PRs and delivered requirements.
    - [Create Review Worktree](commands.md#create-review-worktree) for each distinct reviewed tree. [Prepare Integration Result](commands.md#prepare-integration-result) where the head does not already contain its current target.
+   - When engine or corpus behavior is involved, resolve [Engine and Corpus Pairing](coverage.md#engine-and-corpus-pairing).
    - Record the final combination and any intermediate combination the proposed merge or deployment order exposes. Keep separate branch products in their own trees.
 3. **Read the design.**
    - Use [Read Captured File](commands.md#read-captured-file) for whole-document links and [Read Captured Section](commands.md#read-captured-section) for heading links. Start with the documentation index, then the architecture, affected component contracts, schemas, configuration and test guidance at the captured revisions.
+   - When engine or corpus behavior is involved, use [Design Reading](coverage.md#design-reading) to select the authoritative architecture and component documents.
    - Trace each affected requirement from its authoritative source through declaration, loading, execution, delivered content and observable output. Follow unchanged consumers of changed shared components.
    - Record disagreements between design, schema and implementation as review evidence.
 4. **Plan coverage.**
-   - Fill the coverage table in the [report template](../templates/integration-review.md) before broad validation. Use [Coverage](#coverage), the [coverage guide](coverage.md) and the project's resolved configuration to select observations from its contracts and implementation.
+   - Fill the coverage table in the [report template](../templates/integration-review.md) before broad validation. Use [Coverage](#coverage), [Coverage Planning](coverage.md#coverage-planning) and [Branch Coverage](#branch-coverage) to select observations from its contracts and implementation.
    - Associate each check with its exact revision combination, relevant failure scenario and requirement. Include missing checks as evidence gaps.
 5. **Examine and exercise the result.**
    - Inspect the combined diff, shared consumers and the proposed integration result against the documented design.
    - [Run Project Check](commands.md#run-project-check) for each selected observation, inspect its output and preserve evidence in the review record. Read CI definitions for the branches and artifacts each job actually uses.
    - Reproduce uncertain findings in disposable fixtures. Where attribution is unclear, compare target and candidate under equivalent conditions and explain any pairing differences.
 6. **Check the integration boundaries.**
-   - Compare producers and consumers across branches: schema and tool callers, generated and served surfaces, packaging, paths, configuration and host instructions.
+   - Compare producers and consumers across branches: schema and tool callers, generated and served surfaces, packaging, paths, configuration and host instructions. Inspect CI selection for wrong trees, stale revisions and incomplete coverage scope, and identify assumptions from one constituent PR that another invalidates.
    - Assess the proposed deployment order against session and runtime behavior. Distinguish an existing defect from a regression and from an unavailable measurement.
    - Check whether the PR bodies describe the complete current result and identify the constituent PRs accurately.
 7. **Refresh evidence.**
@@ -53,6 +55,17 @@ Before the first command spec, read the [command conventions](commands.md#conven
   Broaden coverage to the affected dependency closure. A narrow check is sufficient only when the closure excludes the other consumers; explain every not-applicable decision.
 - **Results.**
   Record executed, inspected and inferred evidence separately. A skipped test, unavailable dependency, cancelled run or pending check leaves its requirement unobserved.
+
+## Branch Coverage
+
+Select the section for every affected product and consumer before reading its check specifications:
+
+| Product | Coverage |
+| --- | --- |
+| Engine | [Main Coverage](coverage.md#main-coverage) |
+| Definitions | [Workflows Coverage](coverage.md#workflows-coverage) |
+| Packaging | [Docker Coverage](coverage.md#docker-coverage) |
+| Workspace tooling | [Workspace Coverage](coverage.md#workspace-coverage) |
 
 ## Findings
 

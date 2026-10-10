@@ -1,6 +1,6 @@
 # Revise Mode
 
-Changes the skill itself: its entry point, mode files, shared guides, project variants, commands and templates.
+Changes the skill itself: its entry point, mode files, shared guides, commands and templates.
 
 ## Prerequisites
 
@@ -11,16 +11,16 @@ Before the first command spec, read the [command conventions](commands.md#conven
 1. **Read the guidelines.**
    Read the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md) whole before the first edit.
 2. **Understand the request.**
-   Resolve missing decisions with the user until the change and its scope are clear. Find the rule's home, its consumers, and any variant, script, template or test that states it. Resolve the active mode's [project configuration](variants.md#selection) for repository ownership and applicable checks. Locate a shared [planning record](planning.md) when the revision needs planning artifacts.
+   Resolve missing decisions with the user until the change and its scope are clear. Find the rule's home, its consumers, and any script, template or test that states it. The workspace branch owns the skill and shared guidelines. Locate a shared [planning record](planning.md) when the revision needs planning artifacts.
 3. **Work in a worktree.**
    [Create Skill Worktree](commands.md#create-skill-worktree) for the change.
 4. **Revise.**
-   Make the change in its authoritative home and update every consumer. Apply the guidelines' layout, prose, link and command rules while writing. Variant changes follow the [variant contract](variants.md#variant-contract); new variants follow [Adding a Variant](variants.md#adding-a-variant).
+   Make the change in its authoritative home and update every consumer. Apply the guidelines' layout, prose, link and command rules while writing.
 5. **Check the guidelines.**
    Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](../../guidelines.md#progressive-disclosure).
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
-   - [Run Skill Checks](commands.md#run-skill-checks), including applicable existing tests and link checks.
+   - [Run Skill Checks](commands.md#run-skill-checks), [Check Skill Summaries](commands.md#check-skill-summaries) and [Run the Edit Guard Tests](commands.md#run-the-edit-guard-tests). Changes to shared rules or templates also run their affected consumer suites.
    - Walk a representative request through each changed decision.
    - For every affected mode, apply [disclosure verification](../../guidelines.md#disclosure-verification) using the skill's [representative scenarios](guidelines.md#progressive-disclosure).
 7. **Deliver.**

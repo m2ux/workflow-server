@@ -5,16 +5,14 @@ A planning record holds the artifacts for one piece of work: requirements, desig
 ## Location
 
 - **Instructions.**
-  Use the location specified by the user and applicable project instructions. The selected [variant](variants.md#selection) supplies the project's configured planning root through its Planning section when those instructions leave it implicit.
+  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.
 - **Resolution.**
-  Resolve the root against the base its configuration names, such as the workspace or repository root. Record the resolved location before writing artifacts.
-- **Missing configuration.**
-  When the work requires stored artifacts and no source establishes their location, ask for it while continuing independent investigation.
+  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.
 
 ## Records
 
 - **Naming.**
-  Follow the project's folder naming convention. Derive the work reference and descriptive slug from the task; the mode does not impose a folder suffix.
+  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.
 - **Continuity.**
   Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.
 - **Authority.**

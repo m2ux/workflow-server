@@ -25,9 +25,9 @@ The definition files, contracts and references that authoring and canon audits r
   - Start from [Find consumers](commands.md#find-consumers), then resolve binds and Apply links.
 - **Reference workflows.**  Siblings of similar type, as convention conformance requires.
 - **Prior residual.**
-  - `unread` paths in the latest findings register in the shared [planning record](../../references/planning.md).
+  - `unread` paths in the latest findings register in the shared [planning record](planning.md).
   - Re-derive the enumeration at this commit and inherit dispositions by path. A path absent from the tree leaves the worklist.
-  - Reading starts at the residual. The walk follows [audit rules](../../references/audit-mode.md#rules). Paths a stop leaves unread are the next residual.
+  - Reading starts at the residual. The walk follows [audit rules](audit-mode.md#rules). Paths a stop leaves unread are the next residual.
 - **Second entry.**
   - Where a graph gives one activity two entry points, both are on the surface.
   - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.
