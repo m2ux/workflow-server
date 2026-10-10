@@ -2,6 +2,11 @@
 
 The rules this skill's files follow beyond the [skill guidelines](../../guidelines.md). Every revision follows both.
 
+## Identity
+
+- **Purpose and modes.**
+  The entry point describes Work Designer's general work-design purpose. Each mode owns the scope and authority of its capability.
+
 ## Titles
 
 - **Title case.**

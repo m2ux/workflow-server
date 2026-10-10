@@ -315,5 +315,5 @@ git push
 Open the requested PR against the workspace target with a reviewed body file.
 
 ```bash
-gh api --method POST repos/{owner}/{repo}/pulls -f title='Work Designer: Integration Review and Skill Revision' -f head='skill/work-designer' -f base='workspace' -F body=@<body-file>
+gh api --method POST repos/{owner}/{repo}/pulls -f title='Work Designer: Work Design with Integration Review' -f head='skill/work-designer' -f base='workspace' -F body=@<body-file>
 ```

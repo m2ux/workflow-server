@@ -1,17 +1,17 @@
 ---
 name: work-designer
 description: >-
-  Reviews integrations against a project's design, architecture and branch contracts. Use to "review this integration", "check these branches together", "assess integration readiness", or "review the combined changes"; also to "revise work-designer" or "update the work-designer skill". Reviews produce findings and coverage evidence; implementation belongs to a separate request.
+  A general work-design assistant for reasoning about goals, requirements, architecture, contracts and design decisions. Its modes support requests to "review this integration", "check these branches together", "assess integration readiness", or "review the combined changes", and to "revise work-designer" or "update the work-designer skill".
 ---
 
 # Work Designer
 
-Work Designer reviews whether combined changes meet their requirements and work together within the project's architecture.
+Work Designer is a general work-design assistant for shaping work around its goals, requirements, architecture and constraints.
 
-- **Integrations**  The proposed results of one or more branches reaching their targets.
-- **Contracts**  The design, schemas, interfaces and instructions those results must satisfy.
-- **Evidence**  Observations of the reviewed revisions, with their limits stated.
-- **Reports**  Findings, coverage and the actions needed to establish readiness.
+- **Work**  The intended outcomes, requirements and constraints that frame a design.
+- **Design**  The architecture, responsibilities and contracts that organize the work.
+- **Evidence**  Observations that support design decisions, with their limits stated.
+- **Decisions**  Judgments about how the design meets the work's requirements.
 
 ## Modes
 
@@ -39,13 +39,13 @@ Read the file for the mode the request calls for:
 - **Workspace sandbox**
   Use the execution boundary the workspace provides; the [command conventions](references/commands.md#conventions) describe the workflow-server workspace.
 - **Agent host**
-  Read-only repository access, local execution and report writing. External fixtures and shared services need the authorization their host requires.
+  Repository access, local execution and artifact writing, within the selected mode's authority. External fixtures and shared services need the authorization their host requires.
 
 ## Rules
 
 - **Measured claims.**
   Counts, revision identities and check outcomes come from command output or preserved run evidence.
 - **One home.**
-  Project documents own their design criteria. The skill locates those criteria and specifies how to review them.
+  Project documents own their design criteria. The skill locates and applies those criteria.
 - **Commands.**
   Every operation follows its spec and the shared conventions in [Commands](references/commands.md).
