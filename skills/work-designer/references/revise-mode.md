@@ -1,13 +1,13 @@
 # Revise Mode
 
-Changes the skill itself: its entry point, mode files, project profiles, commands and templates.
+Changes the skill itself: its entry point, mode files, shared guides, project variants, commands and templates.
 
 ## Procedure
 
 1. **Read the guidelines.**
    Read the [skill guidelines](../../guidelines.md) and this skill's [guidelines](guidelines.md) whole before the first edit.
 2. **Understand the request.**
-   Resolve missing decisions with the user until the change and its scope are clear. Find the rule's home, its consumers, and any script, template or test that states it.
+   Resolve missing decisions with the user until the change and its scope are clear. Find the rule's home, its consumers, and any variant, script, template or test that states it. Locate a shared [planning record](planning.md) when the revision needs planning artifacts.
 3. **Work in a worktree.**
    [Create Skill Worktree](commands.md#create-skill-worktree) for the change.
 4. **Revise.**
@@ -17,7 +17,7 @@ Changes the skill itself: its entry point, mode files, project profiles, command
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
    - [Run Skill Checks](commands.md#run-skill-checks), including applicable existing tests and link checks.
-   - Walk a representative review request through each changed decision. Include a missing-evidence case and confirm the report preserves the gap.
+   - Walk a representative request through each changed decision. For variant changes, check selection for a matching project, another project and an ambiguous match. For Review changes, include a missing-evidence case and confirm the report preserves the gap.
 7. **Deliver.**
    [Commit Skill Changes](commands.md#commit-skill-changes) for each distinct change, then [Push Skill Branch](commands.md#push-skill-branch). When requested, [Open Skill Pull Request](commands.md#open-skill-pull-request). Report the files, validation and delivery link.
 8. **Revise the guidelines.**

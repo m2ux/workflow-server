@@ -6,6 +6,8 @@
 
 ## Reviewed Scope
 
+{{Project, selected variant or derived configuration, authoritative sources and resolved planning record.}}
+
 | Product or Branch | PR or Head | Target | Merge Base | Reviewed Result | Role in Integration |
 | --- | --- | --- | --- | --- | --- |
 | {{Branch}} | {{PR and full SHA}} | {{Branch and full SHA}} | {{Full SHA}} | {{Commit or tree SHA}} | {{Responsibility}} |

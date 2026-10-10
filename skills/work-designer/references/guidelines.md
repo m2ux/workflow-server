@@ -16,11 +16,16 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
 - **Title case.**
   Headings and template section headings use title case. Short words stay lowercase unless first or last: a, an, the, and, but, or, nor, for, as, at, by, in, of, on, to, up, with.
 
-## Project Profiles
+## Project Variants
 
 - **Ownership.**
-  A profile names the project it describes, its authoritative documents, branch responsibilities and the evidence its integration requires. Design criteria remain in their project homes.
+  The skill's purpose, procedures and dependencies are general. A selected variant owns its project's concrete settings; core guidance names individual projects only as examples.
 - **Currency.**
-  A profile's file names and commands are starting points to verify at the reviewed revisions. Counts, runtime versions, thresholds and branch pairings come from that revision's configuration and CI.
+  A variant's settings are checked against the project's current instructions and captured revisions. Counts, runtime versions, thresholds and branch pairings come from the sources that own them.
 - **Separation.**
-  The Review procedure is project-independent. Project-specific coverage belongs in the relevant profile; executable commands belong in their command specs.
+  General coverage criteria belong in the coverage guide. Concrete document homes, branch roles and validation selections belong in variants; each variant's executable commands live in its own commands file.
+
+## Shared Planning
+
+- **Location.**
+  The planning guide owns location and naming rules for all modes. A variant supplies its project's root and naming convention; mode files reference the guide.

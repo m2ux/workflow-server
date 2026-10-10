@@ -5,9 +5,9 @@ Reviews the combined result of the requested integration and produces a report o
 ## Procedure
 
 1. **Establish the subject.**
-   - Read applicable project instructions and take the repository, integration PRs or branches, intended targets, merge order and report destination from the request and repository metadata.
+   - Read applicable project instructions and take the repository, integration PRs or branches, intended targets and merge order from the request and repository metadata.
+   - Identify the long-lived branches and what each owns from the resolved [project configuration](variants.md) and the project's documentation, manifests and CI. Resolve the shared [planning record](planning.md) before saving evidence.
    - [Fetch Pull Request](commands.md#fetch-pull-request) and [Fetch Requirements](commands.md#fetch-requirements) where applicable. Resolve only missing decisions with the user, one question at a time.
-   - Identify the long-lived branches and what each owns. For workflow-server, read the [project profile](workflow-server.md); for another project, derive that map from its documentation, manifests and CI.
 2. **Capture the revisions.**
    - [Fetch Branches](commands.md#fetch-branches), then [Compare Revisions](commands.md#compare-revisions) for each head and target. Record the merge base, full SHAs, constituent PRs and delivered requirements.
    - [Create Review Worktree](commands.md#create-review-worktree) for each distinct reviewed tree. [Prepare Integration Result](commands.md#prepare-integration-result) where the head does not already contain its current target.
@@ -17,11 +17,11 @@ Reviews the combined result of the requested integration and produces a report o
    - Trace each affected requirement from its authoritative source through declaration, loading, execution, delivered content and observable output. Follow unchanged consumers of changed shared components.
    - Record disagreements between design, schema and implementation as review evidence.
 4. **Plan coverage.**
-   - Fill the coverage table in the [report template](../templates/integration-review.md) before broad validation. Use [Coverage](#coverage) and the applicable project profile to select observations.
+   - Fill the coverage table in the [report template](../templates/integration-review.md) before broad validation. Use [Coverage](#coverage), the [coverage guide](coverage.md) and the project's resolved configuration to select observations from its contracts and implementation.
    - Associate each check with its exact revision combination, relevant failure scenario and requirement. Include missing checks as evidence gaps.
 5. **Examine and exercise the result.**
    - Inspect the combined diff, shared consumers and the proposed integration result against the documented design.
-   - Run the selected checks, inspect their output and preserve evidence in the review record. Read CI definitions for the branches and artifacts each job actually uses.
+   - [Run Project Check](commands.md#run-project-check) for each selected observation, inspect its output and preserve evidence in the review record. Read CI definitions for the branches and artifacts each job actually uses.
    - Reproduce uncertain findings in disposable fixtures. Where attribution is unclear, compare target and candidate under equivalent conditions and explain any pairing differences.
 6. **Check the integration boundaries.**
    - Compare producers and consumers across branches: schema and tool callers, generated and served surfaces, packaging, paths, configuration and host instructions.
@@ -31,7 +31,7 @@ Reviews the combined result of the requested integration and produces a report o
    - [Fetch Check Evidence](commands.md#fetch-check-evidence) for each reviewed PR and its relevant CI runs. Inspect recorded checkout revisions as well as the reported check SHA.
    - [Refresh Revisions](commands.md#refresh-revisions) before concluding. A moved head, target or paired dependency sends the affected conclusions back through examination and validation.
 8. **Report.**
-   Write the [integration review](../templates/integration-review.md) under the destination established in [Report Location](#report-location), using [Verdicts](#verdicts) and [Findings](#findings). End with the smallest concrete actions that close the findings or evidence gaps.
+   Write the [integration review](../templates/integration-review.md) in the shared [planning record](planning.md), using [Verdicts](#verdicts) and [Findings](#findings). End with the smallest concrete actions that close the findings or evidence gaps.
 
 ## Coverage
 
@@ -48,11 +48,7 @@ Reviews the combined result of the requested integration and produces a report o
 - **Scope.**
   Broaden coverage to the affected dependency closure. A narrow check is sufficient only when the closure excludes the other consumers; explain every not-applicable decision.
 - **Results.**
-  Record executed, inspected and inferred evidence separately. A skipped test, unreachable corpus, cancelled run or pending check leaves its requirement unobserved.
-
-## Report Location
-
-Use the supplied destination or the project's planning-artifact convention. In the workflow-server workspace, use `.engineering/artifacts/planning/YYYY-MM-DD-<ref>-integration-review/`, omitting the ref segment when the review carries none. The record holds the report, coverage evidence and revision manifest.
+  Record executed, inspected and inferred evidence separately. A skipped test, unavailable dependency, cancelled run or pending check leaves its requirement unobserved.
 
 ## Findings
 

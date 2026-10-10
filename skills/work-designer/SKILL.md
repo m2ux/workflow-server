@@ -32,6 +32,10 @@ Read the file for the mode the request calls for:
   Counts, revision identities and check outcomes come from command output or preserved run evidence.
 - **One home.**
   Project documents own their design criteria. The skill locates and applies those criteria.
+- **Project context.**
+  Select the project's configuration through [Project Variants](references/variants.md).
+- **Planning.**
+  All modes use [Planning](references/planning.md) for artifact locations and records.
 - **Commands.**
   Every operation follows its spec and the shared conventions in [Commands](references/commands.md).
 
@@ -39,13 +43,15 @@ Read the file for the mode the request calls for:
 
 - **Git**
   For revision capture, branch comparisons, isolated worktrees and delivery of skill revisions.
+- **Repository search**
+  Ripgrep or the host's equivalent, for locating project variants, instructions and affected consumers.
 - **GitHub CLI**
   For PR metadata, requirements and check evidence through REST when the integration is on GitHub.
 - **Project instructions and documentation**
   For branch ownership, architecture, requirements, runtime versions and authoritative validation commands.
 - **Project runtimes and tools**
-  The affected branch supplies them. The [workflow-server profile](references/workflow-server.md) uses Node/npm, Python, Bash and, for container validation, Docker and Compose.
+  For the builds, checks and execution evidence selected from the project's manifests and CI.
 - **Workspace sandbox**
-  Use the execution boundary the workspace provides; the [command conventions](references/commands.md#conventions) describe the workflow-server workspace.
+  The host's execution boundary and permissions, as the [command conventions](references/commands.md#conventions) require.
 - **Agent host**
   Repository access, local execution and artifact writing, within the selected mode's authority. External fixtures and shared services need the authorization their host requires.
