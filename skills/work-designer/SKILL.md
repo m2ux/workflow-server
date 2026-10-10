@@ -32,12 +32,14 @@ Read the file for the mode the request calls for:
   Counts, revision identities and check outcomes come from command output or preserved run evidence.
 - **One home.**
   Project documents own their design criteria. The skill locates and applies those criteria.
+- **Linked sections.**
+  Retrieve a heading-linked section and its subsections only, stopping at the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.
 - **Project context.**
   Select the project's configuration through [Project Variants](references/variants.md).
 - **Planning.**
   All modes use [Planning](references/planning.md) for artifact locations and records.
 - **Commands.**
-  Every operation follows its spec and the shared conventions in [Commands](references/commands.md).
+  Before execution, read the command's linked spec and its file's Conventions section. Apply the [shared command conventions](references/commands.md#conventions).
 
 ## Dependencies
 

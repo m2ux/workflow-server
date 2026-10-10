@@ -13,11 +13,12 @@ Changes the skill itself: its entry point, mode files, shared guides, project va
 4. **Revise.**
    Make the change in its authoritative home and update every consumer. Apply the guidelines' layout, prose, link and command rules while writing.
 5. **Check the guidelines.**
-   Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links and resolved file links and anchors.
+   Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](guidelines.md#progressive-disclosure).
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
    - [Run Skill Checks](commands.md#run-skill-checks), including applicable existing tests and link checks.
    - Walk a representative request through each changed decision. For variant changes, check selection for a matching project, another project and an ambiguous match. For Review changes, include a missing-evidence case and confirm the report preserves the gap.
+   - For disclosure changes, check a command section and a parent section with subsections; confirm their reading boundaries and required conventions remain available.
 7. **Deliver.**
    [Commit Skill Changes](commands.md#commit-skill-changes) for each distinct change, then [Push Skill Branch](commands.md#push-skill-branch). When requested, [Open Skill Pull Request](commands.md#open-skill-pull-request). Report the files, validation and delivery link.
 8. **Revise the guidelines.**

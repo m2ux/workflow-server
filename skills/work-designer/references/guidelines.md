@@ -11,6 +11,15 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
 
 - **Section order.**  Rules precedes Dependencies.
 
+## Progressive Disclosure
+
+- **Placement.**
+  Keep shared purpose, mode selection and essential constraints in the entry point. Link conditional detail where the active mode needs it.
+- **Reading boundaries.**
+  Design independently usable sections for the entry point's [linked-section rule](../SKILL.md#rules). Make required conventions and other prerequisites explicit. Split files when section routing still brings unrelated guidance into context.
+- **Verification.**
+  Trace a representative request through each affected mode's required file and section reads. Preserve necessary context while avoiding unrelated modes, variants and commands; assess the actual retrieval boundaries, not an assumed whole-file load.
+
 ## Titles
 
 - **Title case.**
