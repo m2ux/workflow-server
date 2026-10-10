@@ -167,11 +167,15 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
 
 
 def plan_passed(body: str) -> bool:
-    """Whether the body has a Test Plan table and every check's Pass cell carries a tick."""
+    """Whether every check's Pass result is a tick, plain or linked to its evidence."""
     rows = plan_rows(body)
     if not rows:
         return False
-    checks = [mark for test, _coverage, mark in rows if test.strip()]
+    checks = []
+    for test, _coverage, mark in rows:
+        if test.strip():
+            link = LINK.fullmatch(mark)
+            checks.append(link[1] if link else mark)
     return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 

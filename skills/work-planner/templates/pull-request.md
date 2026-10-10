@@ -14,9 +14,7 @@
 
 | Test | Description | Coverage | Pass |
 | --- | --- | --- | --- |
-| T1 | {{A check that the change holds.}} | AC1 | |
-
-{{The table is filled as [Deliver mode](../references/deliver-mode.md#rules) states under Tests. Delete the section when the pull request delivers no task.}}
+| T1 | {{Check name, per [Test Plan](../references/work-breakdown.md#test-plan).}} | {{Observed criteria, if any.}} | [{{Result}}]({{Planning document URL#test-section}}) |
 
 ## Open Questions
 

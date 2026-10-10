@@ -10,6 +10,8 @@ The rules this skill's own files follow beyond the [skill guidelines](../../guid
 
 - **Issue bodies.**
   The layout rules are for the skill's own files. Issue bodies follow the scheme's Bold leads rule in SKILL.md.
+- **Pull request test plans.**
+  Templates and body updates follow [Test Plan](work-breakdown.md#test-plan).
 
 ## Titles
 
