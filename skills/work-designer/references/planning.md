@@ -5,7 +5,7 @@ A planning record holds the artifacts for one piece of work: requirements, desig
 ## Location
 
 - **Instructions.**
-  Use the location specified by the user and applicable project instructions. The selected [variant](variants.md) supplies the project's configured planning root when those instructions leave it implicit.
+  Use the location specified by the user and applicable project instructions. The selected [variant](variants.md#selection) supplies the project's configured planning root through its Planning section when those instructions leave it implicit.
 - **Resolution.**
   Resolve the root against the base its configuration names, such as the workspace or repository root. Record the resolved location before writing artifacts.
 - **Missing configuration.**

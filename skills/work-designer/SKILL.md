@@ -15,7 +15,7 @@ Work Designer is a general work-design assistant for shaping work around its goa
 
 ## Modes
 
-Read the file for the mode the request calls for:
+Read the selected mode's file in full, then follow its links as each step needs them:
 
 - **[Review](references/review-mode.md)**
   - Scope and revision pairings for integrations
@@ -35,9 +35,9 @@ Read the file for the mode the request calls for:
 - **Linked sections.**
   Retrieve a heading-linked section and its subsections only, stopping at the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.
 - **Project context.**
-  Select the project's configuration through [Project Variants](references/variants.md).
+  When a mode needs project settings, follow [variant selection](references/variants.md#selection).
 - **Planning.**
-  All modes use [Planning](references/planning.md) for artifact locations and records.
+  When creating or using artifacts, all modes follow [Planning](references/planning.md) for locations and records.
 - **Commands.**
   Before execution, read the command's linked spec and its file's Conventions section. Apply the [shared command conventions](references/commands.md#conventions).
 

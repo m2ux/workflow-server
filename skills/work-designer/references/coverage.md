@@ -42,4 +42,4 @@ Each applicable row contributes checks to the report's coverage matrix. A row ca
 
 ## Configuration Example
 
-For example, the [workflow-server variant](../variants/workflow-server/VARIANT.md) applies this method to separate engine, definition, container and workspace branches. Its configuration supplies that project's document homes and check selection.
+For example, the [workflow-server variant](../variants/workflow-server/VARIANT.md#review-configuration) applies this method to separate engine, definition, container and workspace branches. Its configuration supplies that project's document homes and check selection.

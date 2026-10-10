@@ -6,6 +6,8 @@ This variant configures Work Designer for m2ux/workflow-server under the shared 
 
 Select this variant for the `m2ux/workflow-server` repository, including its linked worktrees and component branches. Match the repository identity from its SSH or HTTPS remote, or an explicit selection in project instructions.
 
+Mode configuration: [Review](#review-configuration) and [Revise](#revise-configuration).
+
 ## Planning
 
 - **Base.**  The workspace checkout that owns the project's engineering history.
@@ -17,7 +19,24 @@ Use the shared [planning guide](../../references/planning.md) to resolve, reuse 
 
 ## Review Configuration
 
-### Branches and Sources
+Use [Planning](#planning) for artifact settings. Establish affected products from [Branches and Sources](#branches-and-sources), and apply [Boundary Review](#boundary-review) to their consumers.
+
+Select coverage for every affected branch and consumer:
+
+| Product | Coverage |
+| --- | --- |
+| Engine | [Main Coverage](#main-coverage) |
+| Definitions | [Workflows Coverage](#workflows-coverage) |
+| Packaging | [Docker Coverage](#docker-coverage) |
+| Workspace tooling | [Workspace Coverage](#workspace-coverage) |
+
+When engine or corpus behavior is involved, read [Design Reading](#design-reading) and [Engine and Corpus Pairing](#engine-and-corpus-pairing). Follow project-source links only for the concerns selected by this review.
+
+## Revise Configuration
+
+The `workspace` branch owns skill files and their shared guidelines. When planning artifacts are needed, use [Planning](#planning). Run [Check Skill Summaries](commands.md#check-skill-summaries) alongside the shared [skill checks](../../references/commands.md#run-skill-checks).
+
+## Branches and Sources
 
 `config/branches` in the workspace checkout declares branches that own separate products:
 
@@ -30,7 +49,7 @@ Use the shared [planning guide](../../references/planning.md) to resolve, reuse 
 
 The URLs identify document homes to read from captured trees. Read applicable project instructions alongside these sources.
 
-### Design Reading
+## Design Reading
 
 Start with the engine's [architecture](https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md), then follow the model and artifact documents relevant to the diff.
 
@@ -43,7 +62,7 @@ Start with the engine's [architecture](https://github.com/m2ux/workflow-server/b
 | Definition design | [Principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md), [anti-patterns](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) and [construct inventory](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/schema-construct-inventory.md) | The relevant criteria, their exclusions, and the schema constructs carrying each obligation |
 | Serving and deployment | [Configuration](https://github.com/m2ux/workflow-server/blob/main/docs/configuration.md), [API](https://github.com/m2ux/workflow-server/blob/main/docs/api.md) and transport documents in the index | Paths, startup, health, readiness, tool surfaces and deployment settings |
 
-### Engine and Corpus Pairing
+## Engine and Corpus Pairing
 
 - **CI inputs.**
   Inspect [engine verification](https://github.com/m2ux/workflow-server/blob/main/.github/workflows/verify.yml), [corpus verification](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/verify-corpus.yml) and [coverage](https://github.com/m2ux/workflow-server/blob/workflows/.github/workflows/coverage.yml). Initiative and epic bases can select an initiative counterpart; final integration PRs can select the long-lived counterpart. Resolve the actual behavior at the reviewed revisions.
@@ -52,7 +71,7 @@ Start with the engine's [architecture](https://github.com/m2ux/workflow-server/b
 - **Measurement.**
   Confirm corpus tests ran. [Guard exit codes](https://github.com/m2ux/workflow-server/blob/main/guards/README.md#one-sweep-one-registry) distinguish findings from inability to measure; both differ from a clean result.
 
-### Main Coverage
+## Main Coverage
 
 For behavioral engine integration, [Install Engine Dependencies](commands.md#install-engine-dependencies), [Run Engine Checks](commands.md#run-engine-checks) and [Run Delivery Gate](commands.md#run-delivery-gate) establish the baseline. Use the locked runtime and dependency configuration. The checks include both TypeScript compilations, production build, generated schemas, corpus tool-call shapes and the full test suite.
 
@@ -72,7 +91,7 @@ Select additional observations for the affected behavior:
 
 For changed documentation or site content, [Check Engine Documentation](commands.md#check-engine-documentation) and compare examples and generated surfaces with their owners. Pure prose changes can use narrower runtime coverage under Review's [Coverage](../../references/review-mode.md#coverage).
 
-### Workflows Coverage
+## Workflows Coverage
 
 [Run Corpus Checks](commands.md#run-corpus-checks) from the intended engine checkout: roster and walk-protocol validation, the registered guard sweep, snapshots and all-workflows drift. The corpus supplies definitions and baselines; its tooling comes from the paired engine.
 
@@ -87,7 +106,7 @@ For changed documentation or site content, [Check Engine Documentation](commands
 - **Running sessions.**
   Assess definition versions and the documented resume/seeding behavior. [Count Running Sessions](commands.md#count-running-sessions) where the relevant state is available; a local census establishes nothing about another deployment.
 
-### Docker Coverage
+## Docker Coverage
 
 [Check Shell Syntax](commands.md#check-shell-syntax) for changed helpers and [Validate Compose](commands.md#validate-compose) with disposable paths. For image/runtime changes, [Build Review Image](commands.md#build-review-image) with the reviewed Docker files and intended engine build context, then [Exercise Review Container](commands.md#exercise-review-container).
 
@@ -100,7 +119,7 @@ For changed documentation or site content, [Check Engine Documentation](commands
 - **Publishing.**
   Inspect the engine's [image workflow](https://github.com/m2ux/workflow-server/blob/main/.github/workflows/docker-publish.yml) for the Docker revision it fetches, build context, publication conditions and scan conditions. Host Node smoke checks establish host behavior; container evidence must come from the reviewed image.
 
-### Workspace Coverage
+## Workspace Coverage
 
 [Check Skill Summaries](commands.md#check-skill-summaries) exercises a shared check alongside applicable Python suites, and [Check Shell Syntax](commands.md#check-shell-syntax) covers Bash syntax. Configuration is parsed with its actual consumer or format validator.
 
@@ -113,10 +132,6 @@ For changed documentation or site content, [Check Engine Documentation](commands
 - **Shared configuration.**
   Trace changed workspace paths and settings into engine configuration and container mounts. Engine tests alone do not cover this branch.
 
-### Boundary Review
+## Boundary Review
 
 Compare each changed producer with its consumers: engine tools and corpus calls, schemas and definitions, shared contracts and their distant users, generated and served documents, packaging and workspace settings. Inspect CI selection for wrong trees, stale revisions and incomplete coverage scope. Assess any assumption from one constituent PR that another invalidates.
-
-## Revise Configuration
-
-The `workspace` branch owns the skill files and their shared guidelines. Derive the revision branch name from the requested work and use the shared [skill revision commands](../../references/commands.md#skill-revision) in a local worktree. Validate skill summaries with [Check Skill Summaries](commands.md#check-skill-summaries), plus the structure and walkthrough checks required by [Revise](../../references/revise-mode.md).

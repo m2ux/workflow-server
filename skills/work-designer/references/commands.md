@@ -15,13 +15,13 @@ Each operation has one spec. Commands below use example values that the caller r
 - **Substitution.**
   Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.
 - **Authored text.**
-  Commit messages and PR bodies go through files. A review report remains local under Review's [authority](review-mode.md#rules); publication commands serve Revise only.
+  Commit messages and PR bodies go through files.
 
 ## Configuration
 
 ### Inspect Project Identity
 
-Read repository identifiers and discover available [project variants](variants.md).
+Read repository identifiers and discover available [project variants](variants.md#selection).
 
 - Compare the repository with each variant's identity and applicable project instructions. Resolve the skill path before listing its variants.
 
@@ -104,10 +104,21 @@ git -C <review-worktree> merge --abort
 
 ### Read Captured File
 
-Read a document, manifest or CI definition from a captured branch revision.
+Read a complete document, manifest or CI definition from a captured branch revision.
 
 ```bash
 git show <sha>:<repo-relative-path>
+```
+
+### Read Captured Section
+
+Read an anchored section from a captured branch revision.
+
+- Locate the heading in the outline, then substitute the start and end lines required by the [linked-section rule](../SKILL.md#rules). Markdown code fences do not create document headings.
+
+```bash
+git show <sha>:<repo-relative-path> | rg -n '^#{1,6} '
+git show <sha>:<repo-relative-path> | sed -n '<start-line>,<end-line>p'
 ```
 
 ### Fetch Check Evidence
@@ -140,7 +151,7 @@ gh api repos/{owner}/{repo}/pulls/950
 Run the check selected from the reviewed project's manifest, test configuration or CI job.
 
 - Replace the command placeholder with that project's actual invocation, including its runtime, check arguments and explicit dependency paths.
-- Capture the working directory, input revisions, measured cases, skips, exit status and output. Use the [coverage guide](coverage.md) to assess what the result establishes.
+- Capture the working directory, input revisions, measured cases, skips, exit status and output. Assess the result against the active mode's requirements.
 
 ```bash
 cd <tool-checkout>

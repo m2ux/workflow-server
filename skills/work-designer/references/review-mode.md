@@ -6,14 +6,14 @@ Reviews the combined result of the requested integration and produces a report o
 
 1. **Establish the subject.**
    - Read applicable project instructions and take the repository, integration PRs or branches, intended targets and merge order from the request and repository metadata.
-   - Identify the long-lived branches and what each owns from the resolved [project configuration](variants.md) and the project's documentation, manifests and CI. Resolve the shared [planning record](planning.md) before saving evidence.
+   - Identify the long-lived branches and what each owns from the resolved [project configuration](variants.md#selection) and the project's documentation, manifests and CI. Resolve the shared [planning record](planning.md) before saving evidence.
    - [Fetch Pull Request](commands.md#fetch-pull-request) and [Fetch Requirements](commands.md#fetch-requirements) where applicable. Resolve only missing decisions with the user, one question at a time.
 2. **Capture the revisions.**
    - [Fetch Branches](commands.md#fetch-branches), then [Compare Revisions](commands.md#compare-revisions) for each head and target. Record the merge base, full SHAs, constituent PRs and delivered requirements.
    - [Create Review Worktree](commands.md#create-review-worktree) for each distinct reviewed tree. [Prepare Integration Result](commands.md#prepare-integration-result) where the head does not already contain its current target.
    - Record the final combination and any intermediate combination the proposed merge or deployment order exposes. Keep separate branch products in their own trees.
 3. **Read the design.**
-   - [Read Captured File](commands.md#read-captured-file) for the documentation index, then the architecture, affected component contracts, schemas, configuration and test guidance at the captured revisions.
+   - Use [Read Captured File](commands.md#read-captured-file) for whole-document links and [Read Captured Section](commands.md#read-captured-section) for heading links. Start with the documentation index, then the architecture, affected component contracts, schemas, configuration and test guidance at the captured revisions.
    - Trace each affected requirement from its authoritative source through declaration, loading, execution, delivered content and observable output. Follow unchanged consumers of changed shared components.
    - Record disagreements between design, schema and implementation as review evidence.
 4. **Plan coverage.**
