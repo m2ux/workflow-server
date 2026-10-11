@@ -80,9 +80,9 @@ Content is embedded in a parent file instead of living in its own file.
 
 **Fires on:** `activity`, `technique`, `resource`
 
-**Detect:** An activity, technique, or resource body is inlined into a parent YAML/markdown file (or a new construct is authored inline rather than as a sibling file).
+**Detect:** An activity, technique, or resource definition is embedded as a body in a parent where the schema represents that definition by a file reference.
 
-**Do not flag:** Short inline literals that the schema requires on the parent (e.g. a one-line `description:` field); hyperlinks to separate files.
+**Do not flag:** Schema-owned inline forms, including checkpoint and loop steps, conditions, effects, and literal fields; references to separate definitions.
 
 **Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#22-modular-over-inline).
 
@@ -96,23 +96,23 @@ The schema is bent to fit content instead of content being fixed to the schema.
 
 **Detect:** A change proposes altering workflow/activity/technique schema (or inventing fields) so existing content validates.
 
-**Do not flag:** Legitimate schema evolution requested explicitly by the user as a separate task.
+**Do not flag:** Schema evolution explicitly included in the approved change scope, with the schema contract and its affected consumers reviewed together.
 
-**Fix:** Rewrite the content to conform to the current schema.
+**Fix:** Rewrite the content to conform to the current schema. When current structure cannot express the authorized requirement, identify the missing capability and resolve its scope before changing the schema.
 
 ### AP-03. no-partial-implementation
 
 "I'll fix the rest later"
 
-Scope is left partially implemented before commit or close-out.
+Scope is left partially implemented under a completion claim.
 
 **Fires on:** `*`
 
-**Detect:** A commit, handoff, or "done" claim leaves items in the scope manifest unaddressed or explicitly deferred without user approval.
+**Detect:** A deliverable is handed off or represented as complete while approved scope items remain unaddressed or are deferred without approval.
 
-**Do not flag:** An explicitly scoped partial deliverable the user approved (remaining items stay open in the manifest).
+**Do not flag:** An explicitly partial deliverable, or an interim commit that keeps remaining scope open and makes no completion claim.
 
-**Fix:** Complete every scope-manifest item, or get approval to shrink scope and update the manifest before committing.
+**Fix:** Complete the agreed deliverable or obtain and record a scope change before its completion claim.
 
 ### AP-04. no-invented-naming
 
@@ -122,9 +122,9 @@ A new naming convention is invented without search and user approval.
 
 **Fires on:** `*`
 
-**Detect:** A new id, filename pattern, rule slug, or vocabulary term is introduced without checking existing conventions and without user approval.
+**Detect:** A naming convention is adopted without checking whether an existing convention fits; or, after no existing convention fits, a new convention is adopted without the required approval.
 
-**Do not flag:** Reuse of an already-established convention found in-repo or in this catalogue.
+**Do not flag:** New identifiers that follow an established convention; a genuinely new convention with its search and approval recorded.
 
 **Fix:** Search for an existing name/pattern; if none fits, propose the new convention and get approval before adopting it.
 
@@ -168,7 +168,7 @@ Completion is claimed without re-checking every item in the scope manifest.
 
 **Fires on:** `*`
 
-**Detect:** A done/complete claim, commit, or close-out proceeds without verifying each scope-manifest item is addressed.
+**Detect:** A completion claim or final handoff lacks item-by-item verification against the current scope manifest.
 
 **Do not flag:** An interim status update that does not claim completion.
 
@@ -200,9 +200,9 @@ A user decision is written as prose instead of a `kind: checkpoint` step.
 
 **Fires on:** `activity.description`, `activity.steps`, `technique.protocol`
 
-**Detect:** Step/activity description (or protocol prose) tells the agent to ask/confirm/choose without a `kind: checkpoint` at that `steps[]` position.
+**Detect:** Definition prose requires a person to decide, authorize, or confirm progress, with no `kind: checkpoint` at that decision point.
 
-**Do not flag:** Non-blocking informational messages (`action: message`) with no decision; decisions already modeled as checkpoints.
+**Do not flag:** Non-blocking informational messages (`action: message`) with no decision; decisions already modeled as checkpoints; a technique's local evidence interpretation or output selection that neither asks a person nor selects an activity or step.
 
 **Fix:** Add a `kind: checkpoint` with `message`, `options`, and `effects` at the decision point in `steps[]`.
 
@@ -230,7 +230,7 @@ Cross-activity routing is written as prose instead of as exits the workflow grap
 
 **Detect:** Prose describes branching to different activities/paths that the activity's `exits` do not declare — no exit selected by a `when` or a checkpoint option, bound in the `graph` to that path.
 
-**Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared exit predicates.
+**Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared exit predicates; a technique's local evidence interpretation or output selection that neither asks a person nor selects an activity or step.
 
 **Fix:** Declare each outcome as an exit — a `when` on each non-default exit, or a checkpoint option that names it — bind every exit in the workflow `graph`, and remove the prose branch recipe.
 
@@ -280,29 +280,29 @@ Mode behaviour is written as rule/description text instead of ordinary state.
 
 "First load the workflow, then get the activity"
 
-HOW lives in the step description instead of the technique protocol.
+HOW lives in the step description instead of the construct that owns it.
 
 **Fires on:** `activity.steps`
 
-**Detect:** A step `description` holds the procedure — numbered audit criteria, a sequenced procedure, or per-item iteration logic (`numbered-protocol-phases`).
+**Detect:** A step `description` carries work instructions or reusable criteria whose owning construct is elsewhere.
 
-**Do not flag:** Once a step BINDS a technique, absence of description is correct — `bound-step-no-description` requires removing `description` entirely (not merely de-proceduralizing) and homing content in the bound op.
+**Do not flag:** Once a step binds a technique, absence of `description` is correct (`bound-step-no-description`).
 
-**Fix:** Move imperative bullets into the technique protocol; leave a one-line WHAT in unbound `description`, or delete `description` entirely when the step is bound (`bound-step-no-description`).
+**Fix:** Classify the content first: encode session sequencing, iteration, and gates in steps (`loop-not-prose`); place one technique's procedure in its Protocol; place reusable criteria in their resource and cite that section from Protocol (`operative-criteria-need-a-home`). Leave only an unbound step's one-line purpose, or remove `description` from a bound step (`bound-step-no-description`).
 
 ### AP-16. technique-inputs-declared
 
 "This technique needs a file path"
 
-Required inputs are named in description instead of `inputs[]`.
+A technique consumes an externally supplied value with no effective declaration.
 
 **Fires on:** `technique.capability`, `technique.inputs`, `technique.protocol`
 
-**Detect:** Technique prose names a needed value (path, id, artifact) that is not declared in `inputs[]` with `id`/`description`.
+**Detect:** Technique prose consumes an externally supplied value that is absent from both its effective input signature and an explicitly documented delivery contract applicable to that technique. The effective signature includes its own `## Inputs` and the ancestor contracts the loader composes.
 
-**Do not flag:** Inputs already declared; pure outputs or locals. Produced values missing from Outputs are `technique-outputs-declared`.
+**Do not flag:** An input already declared by the technique or an applicable ancestor; a context value covered by a documented runtime delivery contract; pure outputs or protocol locals. A declaration or static provenance label does not by itself prove that a value is available in a particular run. Produced values missing from Outputs are `technique-outputs-declared`.
 
-**Fix:** Declare the input on `inputs[]` and reference `{id}` in Protocol.
+**Fix:** Declare `### <id>` under the owning `## Inputs` — the parsed representation of which is `inputs[]` — or cite the existing applicable delivery contract, and reference `{id}` in Protocol. Reuse inherited declarations; apply the established exception for a leaf that changes its bind contract (`inherited-input-re-declared`).
 
 ### AP-17. bound-step-no-description
 
@@ -880,15 +880,15 @@ Invocation argument names or lists use the wrong typographic namespace.
 
 "costs \$0.05 per call" / "the \$schema field"
 
-A literal \$ is unescaped in rendered prose.
+A literal \$ is unescaped in corpus prose.
 
 **Fires on:** `*`
 
-**Detect:** Unescaped `$` in rendered prose, outside a fenced block or an inline code span — a price (`$0.05`), `$schema`, or a shell `${VAR}` shown in text. GFM treats `$…$` as inline math, so an unescaped `$` can mis-render. A protocol variable is already inside a code span (`backtick-code-tokens`).
+**Detect:** A literal dollar sign in corpus Markdown prose is unescaped outside an inline code span or fenced code block — a price (`$0.05`), `$schema`, or a shell `${VAR}` shown in text. A protocol variable is already inside a code span (`backtick-code-tokens`).
 
-**Do not flag:** `$` inside a fence or inline code span (`` `${{ github.event… }}` ``, `` `git -C {$component_git_dir}` ``) — escaping would corrupt the code.
+**Do not flag:** `$` inside a fence or inline code span (`` `${{ github.event… }}` ``, `` `git -C {$component_git_dir}` ``) — escaping changes the code text.
 
-**Fix:** Backslash-escape every literal `$` in rendered prose (`\$0.05`); leave code spans/fences untouched. Displayed output stays `$`.
+**Fix:** Write a literal prose dollar as `\$`; leave code contents unchanged. The server delivers Markdown text, and display belongs to the consuming renderer.
 
 ### AP-58. snake-case-symbols
 
@@ -954,11 +954,11 @@ A `{$local}` is dead or unbound at the consumer.
 
 **Fires on:** `technique.protocol`, `technique.inputs`, `technique.outputs`
 
-**Detect:** (a) An unbound local: a bare `{name}` that is not a declared I/O or an ambient activity input (`{target_path}`, `{branch_name}`) and has no `{$name}` bind in the protocol. (b) A dead binding: `{$name}` is never read as `{name}`. `{$name}` appears only at the producing step; reads are bare `{name}`, and the bind is textually before every read (`backtick-code-tokens`).
+**Detect:** A protocol-local read `{name}` has no preceding producer marked `{$name}`, or a marked local producer has no later read. `{$name}` appears only at the producing step and textually before every read (`backtick-code-tokens`). First distinguish local values from effective declared I/O and values supplied through an applicable documented runtime contract. A familiar name alone does not establish an ambient input.
 
-**Do not flag:** `{$name}` in each mutually exclusive producing branch. A `{name}` that is a declared I/O or an ambient activity input. If that one wore `$`, strip `$`.
+**Do not flag:** Effective declared I/O, evidenced runtime context, or a local produced in each mutually exclusive branch before a later read. Use bare `{name}` for reads of those values.
 
-**Fix:** (a) Name the value at the producer as `` `{$name}` ``. (b) Make the consumer read `{name}`, or drop a vestigial bind.
+**Fix:** Mark an actual local producer with `` `{$name}` `` and keep its reads bare; connect or remove a dead local bind. For an externally supplied value whose contract is missing, apply `technique-inputs-declared` rather than inventing a local producer.
 
 ### AP-63. backtick-code-tokens
 
