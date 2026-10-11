@@ -11,6 +11,7 @@ import {
   reviewModePolicy,
 } from './policies.js';
 import { declaredSteps, stepCoverage } from './coverage.js';
+import { assumptionRecordSteps, recordHostsEntered, recordedAssumptionOutcomes } from './records.js';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { liveCorpusRoot } from '../corpus-root.js';
@@ -147,6 +148,33 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
     for (const cp of forbidden) expect([...fired]).not.toContain(cp);
     // The review path IS exercised — not excluding everything by dying early.
     expect([...fired]).toContain('review-summary-approval');
+  });
+
+  /**
+   * And nothing was recorded from a gate the mode skipped.
+   *
+   * The test above says the create-mode gates are not PRESENTED. What follows a gate is a separate
+   * question: the assumption run's record step writes the batch answer into the log, and in review
+   * mode there is no answer behind it — the gate that would have set one is itself gated on the
+   * mode. Each recording step carries the mode on its own gate for that reason, and nothing failed
+   * when one of them did not.
+   *
+   * The roster comes from the definitions, so the two hosts of the run and the ids the routine
+   * composes are read rather than restated. The entered-host assertion is the counterpart of the
+   * `review-summary-approval` line above: a walk that reached no host of a recording step records
+   * nothing for a reason that has nothing to do with the gate.
+   */
+  it('[review-mode] records no assumption outcome', async () => {
+    const recorders = await assumptionRecordSteps(['work-package']);
+    const result = walks.get(reviewModePolicy.name)!;
+    expect(
+      recordHostsEntered(result, recorders),
+      'the walk entered no activity holding an assumption-record step, so it says nothing about the gate',
+    ).not.toEqual([]);
+    expect(
+      recordedAssumptionOutcomes(result, recorders),
+      'a review-mode run wrote an assumption outcome into the log, with no gate having asked for one',
+    ).toEqual([]);
   });
 
   /**

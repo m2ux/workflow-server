@@ -1,0 +1,15 @@
+id: guards-the-record
+version: 1.0.0
+name: Guards The Record
+description: Hosts the assumption run whose record step names review mode, so a review run leaves no outcome behind.
+
+steps:
+  - kind: routine
+    id: settle
+    routine: guarded-assumption-run
+    outputs:
+      assumptions_log: assumptions_log
+
+exits:
+  - id: done
+    isDefault: true

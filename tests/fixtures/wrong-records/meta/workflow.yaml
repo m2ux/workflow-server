@@ -1,0 +1,7 @@
+id: meta
+version: 1.0.0
+title: Meta
+description: The shared home a bare technique name falls back to, so this fixture root loads the way the live one does.
+initialActivity: bootstrap
+graph:
+  bootstrap: {}
