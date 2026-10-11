@@ -1,0 +1,93 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AC-01",
+      "kind": "repair-conflict",
+      "priority": "medium",
+      "entries": [
+        "AP-124"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-124",
+          "source": "sources/anti-patterns.md",
+          "start": 1584,
+          "end": 1588,
+          "quote": "**Detect:** A technique `## Protocol` lists alternate modes of the same technique that a caller selects exactly one of (spawn versus resume versus concurrent; create versus update) and never walks in order. Also flag a Protocol bullet whose only job is standing host policy (blocking-equivalent wait, depth-1, index-in-prompt, prefer or omit flags) with no produce, transform, or persist outcome for that step. Test: renumbering the phases would not change runtime behaviour, because only one phase applies per call.\n\n**Do not flag:** Sequential phases ([Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome), `numbered-protocol-phases`). One Protocol phase whose bullets are mode branches of one invoke. A Rules catalogue for a host or compat file. A generic technique whose Protocol is resolve, then dispatch, then await ([spawn-agent](/meta/techniques/harness-compat/spawn-agent.md)).\n\n**Fix:** Move alternate slices and standing host policy into `## Rules`, naming slices by `operation_kind` when a resolver selects them. Keep `## Protocol` for ordered outcomes. A caller Applies the selected rule section. See also `rule-as-protocol-step`, `no-one-step-rules`."
+        },
+        {
+          "entry": "AP-19",
+          "source": "sources/anti-patterns.md",
+          "start": 296,
+          "end": 300,
+          "quote": "**Detect:** A technique, activity, or workflow rule restates a protocol bullet or phase without an invariant the steps do not already convey, or instructs work rather than constraining it. Test: the sentence could stand as a numbered Protocol phase unaltered. A prohibition is a constraint, and so is an invariant on a result. An imperative that names a step's work is not, including when no phase states that work yet.\n\n**Do not flag:** A cross-cutting constraint the protocol does not encode, including a positively framed invariant on an outcome (`every finding carries evidence`). A prohibition citing the home that owns the behaviour it forbids.\n\n**Fix:** Delete the rule where a phase already carries the work. Where the work is genuinely unstated, move it into `## Protocol` as a phase rather than leaving it in Rules — protocol is the procedural source either way. Keep any residual invariant the phases cannot express."
+        },
+        {
+          "entry": "AP-25",
+          "source": "sources/anti-patterns.md",
+          "start": 368,
+          "end": 372,
+          "quote": "**Detect:** A `## Rules` entry constrains a single protocol step/phase rather than a cross-cutting invariant.\n\n**Do not flag:** Cross-cutting rules that span multiple phases; step-local caveats already filed as `>` notes (`constraint-as-blockquote`).\n\n**Fix:** Move the guidance into that step's protocol prose (or a `>` caveat) and delete the rule."
+        }
+      ],
+      "problem": "The Fix combines executable alternate procedures with standing host policy and sends both to Rules. AP-19 requires work instructions in Protocol and AP-25 rejects a rule local to one step. The alternate-operation defect and the standing-policy defect also have different repairs.",
+      "witness": "A technique has mutually exclusive Spawn and Resume phases, each containing calls and response handling. Moving those whole slices into operation_kind Rules follows AP-124 but leaves work instructions that AP-19 moves back to Protocol. A standing depth limit is legitimately a Rule; the spawn procedure is not. This is a repair conflict, not a claim that all alternate operations are impossible to represent.",
+      "proposed_fix": "Replace Fix with: \"Keep standing host policy in Rules. Express alternate work inside one outcome phase with conditional notes when it is one operation; give distinct operations separate techniques and select them at the binding site. Keep ordered outcomes in Protocol.\" Remove the standing-policy branch from Detect and cross-reference rule-as-protocol-step for that separate defect. Remove \"A caller Applies the selected rule section.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag Spawn and Resume as consecutive phases when exactly one runs; repair them as separate bound operations or branches of one invocation.",
+        "negative": "Do not flag a cross-cutting maximum-depth Rule or one Dispatch phase with alternate argument choices and shared response handling."
+      }
+    },
+    {
+      "id": "AC-02",
+      "kind": "repair-conflict",
+      "priority": "medium",
+      "entries": [
+        "AP-125",
+        "AP-140",
+        "AP-141"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-125",
+          "source": "sources/anti-patterns.md",
+          "start": 1598,
+          "end": 1600,
+          "quote": "**Do not flag:** Resource hyperlinks (templates, guides, policy sections under `**/resources/**`) that clarify value shape or vocabulary — e.g. \"one question is posed from it per [requirements-elicitation](…/resources/requirements-elicitation.md)\"; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) without a navigable technique hyperlink; Protocol/Rules that correctly Apply or cite techniques; I/O HOW without a technique association (`procedure-in-io-contract`).\n\n**Fix:** Rewrite the I/O description as bind-contract meaning/shape only (no technique hyperlink). Move producer/consumer/Apply relationships into Protocol (or activity `steps[]` binds). See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `io-agnostic-contract`, `canonical-technique-reference` (Protocol-side)."
+        },
+        {
+          "entry": "AP-140",
+          "source": "sources/anti-patterns.md",
+          "start": 1830,
+          "end": 1832,
+          "quote": "**Do not flag:** An input on a container `TECHNIQUE.md` that a descendant references after the merge. An input handed whole to an applied op as a substitution map or pass-through, where a phase references the map. An agent-entry technique's identity bindings — ids a spawn or continuation stub emits and the entry tools consume. An output no consumer reads (`output-without-destination`).\n\n**Fix:** Reference `{id}` from the phase that spends it, or delete the declaration. Where the value belongs to an op this technique applies, pass it at the Apply site (`apply-omits-declared-input`)."
+        },
+        {
+          "entry": "AP-141",
+          "source": "sources/anti-patterns.md",
+          "start": 1840,
+          "end": 1844,
+          "quote": "**Detect:** For each Protocol `Apply` or `::` invocation, resolve the target's `## Inputs`, including any merged from its container. Flag a required input the Apply site neither passes nor covers by a declared `default`, and that no same-name slot on the applying technique makes ambient. Test: a required slot of the target is absent from the Apply line and from the applying technique's own contract.\n\n**Do not flag:** An input the target marks optional or backs with a `#### default`. An input the applying technique declares under the same id. A container-merged input the whole group shares. An activity `steps[]` bind. An agent-entry technique naming the techniques of a loop whose activity YAML is the bind site (`prompt-restates-owned-mechanics`).\n\n**Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. A slot declared and never passed on is `declared-input-never-read`."
+        },
+        {
+          "entry": "AP-114",
+          "source": "sources/anti-patterns.md",
+          "start": 1464,
+          "end": 1468,
+          "quote": "**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique for work, by `Apply [technique]` or a `::` invocation, one or many. Signals: numbered phases that are each \"Apply […]\"; Capability that names a multi-pass pipeline or a façade over shared ops; Outputs that only re-export children. Test: moving each invoked op to its own `steps[]` entry at the binding site, with any local value-assembly technique kept separate, preserves behaviour.\n\n**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`). Citing resources, including creation-guide Templates. Container I/O and rule merge. Activity `steps[]` and routine technique binds. Activity borrow, bind, or include of a reusable orchestration pattern. Tools. One produce path over tools and resources (load, derive, persist one product) with no Apply or `::` work invoke. Stage or gate locus without an op inventory (`technique-stage-agnostic`).\n\n**Fix:** Delete the façade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared technique as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`."
+        }
+      ],
+      "problem": "These entries endorse, preserve, or repair Protocol Apply sites, while AP-114 removes work-invoking technique references and places them at activity or routine binds. An author can close the local finding while preserving a different catalog violation.",
+      "witness": "Technique A has an I/O entry \"via [B]\" and B requires project_id. AP-125 offers moving the Apply relationship into A Protocol; AP-141 then directs adding project_id to that Apply line. AP-114 flags exactly that invocation and moves B into steps[]. A separate binding-site solution exists, so this is an inconsistent repair path rather than an unsatisfiable canon.",
+      "proposed_fix": "AP-125 Fix: \"Keep I/O descriptions about meaning and shape. Put producer/consumer sequencing at activity or routine binds; put any technique-owned value assembly in its own Protocol.\" Remove its Protocol/Rules Apply carve-out. AP-140: remove the applied-op exemption and the final Apply-site repair sentence. Retire AP-141 as a Protocol-Apply repair, or replace its scope with: \"For each supported activity or routine technique bind, prove that every required effective input is supplied by an explicit bind, a same-name available value, or its declared default.\" Route Protocol Apply sites directly to pass-orchestration-in-technique.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag a required project_id missing from an actual technique bind; supply the value at that bind with a reachable producer.",
+        "negative": "Do not flag an optional/defaulted input or a same-name value proved available at the bind. Do not repair a prohibited Protocol Apply by adding more arguments to it."
+      }
+    }
+  ]
+}

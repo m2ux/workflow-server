@@ -1,0 +1,180 @@
+{
+  "result": "PASS",
+  "scope": "record integrity, exact source evidence and primary coverage; not automated semantic judgment",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "sources_match_current_corpus": true,
+  "entries": 89,
+  "candidates": 43,
+  "slices": [
+    {
+      "slice": "principles",
+      "entries": 47,
+      "candidates": 20,
+      "dispositions": {
+        "clear": 21,
+        "finding": 11,
+        "improvement": 15
+      },
+      "exact_quotes": 39,
+      "files": [
+        {
+          "path": "reviews/principles/entries-01.json",
+          "bytes": 6993,
+          "sha256": "a4ee831a843ac81c06d2ff527af1ec389ac629c9526e6f5cfa2144e148cf3141",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-02.json",
+          "bytes": 7135,
+          "sha256": "858404413697498d3cb205617e259525c8301ad00d15fe1a7aaa6868cb2dec87",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-03.json",
+          "bytes": 6841,
+          "sha256": "57a67f4e4499aa0540318d8402206ad47ba77ac3c64b4bd6c676d84b32d8b581",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-04.json",
+          "bytes": 7274,
+          "sha256": "6f65d6cf7e6a03b71f010689c192cd9dcaa736587933a5599e518594bf6ee9b9",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-05.json",
+          "bytes": 6986,
+          "sha256": "d7b4eacd474f4ced6ff483397c207b1b7c4dd42fee79c7ccf16c376661b8910e",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-06.json",
+          "bytes": 6322,
+          "sha256": "37480ff4c982d5d9ddff33cde0b33469fafe7074e8f53f9fc27e97e263ad581f",
+          "count": 7
+        },
+        {
+          "path": "reviews/principles/findings-01.json",
+          "bytes": 7060,
+          "sha256": "91b7386b9d292ae98e8210654e24fe35bbb7d53fb4b1631e0cf21147c7ce5e74",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-02.json",
+          "bytes": 12051,
+          "sha256": "b033738cfd9a599b0795495603bc6bd34f362f23d61c7dd4f329f6b655bb910f",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-03.json",
+          "bytes": 9705,
+          "sha256": "8a241720c27cd8d9be37f6860371a097410f553b7105b9d48fc7157cc57a810b",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-04.json",
+          "bytes": 9194,
+          "sha256": "e445208527d0ef3b7b8147858edc2e2371f40ecb53f1aa4082b7e8c85acc3089",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-05.json",
+          "bytes": 7858,
+          "sha256": "e5c33ab22697230692115046b419594bae195238b4be7c784cc514eff0860b80",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "slice": "ap_contracts",
+      "entries": 42,
+      "candidates": 23,
+      "dispositions": {
+        "finding": 17,
+        "improvement": 9,
+        "clear": 16
+      },
+      "exact_quotes": 49,
+      "files": [
+        {
+          "path": "reviews/ap_contracts/findings-01.json",
+          "bytes": 11656,
+          "sha256": "79f21320d79ae30430036fdcb37faaf20f6b7d5e44fa2cb4b892d234cb20ffe2",
+          "count": 2
+        },
+        {
+          "path": "reviews/ap_contracts/findings-02.json",
+          "bytes": 15679,
+          "sha256": "fe0e7bf42099b9ec1e52a4797f7ed4380687ea8ac83469c42fb8d04a1e18cf90",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-03.json",
+          "bytes": 14755,
+          "sha256": "3e44ea16b13f3db90c2f86f216fedcb2942f28c1eb3a5557020503e318caafe8",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-04.json",
+          "bytes": 15477,
+          "sha256": "faf25337780c98af06f27313912329605a4a4fd6a5fb51c832c36725f9902d4b",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-05.json",
+          "bytes": 13435,
+          "sha256": "8bfe040ba33067235b684713c97fe6e80fdeaba843bb838913c2e1b8a03d90f8",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-06.json",
+          "bytes": 12494,
+          "sha256": "fd5607fff0b219d0a2f3a89ddbd7f523f9b5409f8b7ea92fef44bff9c99a3c6d",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-07.json",
+          "bytes": 4038,
+          "sha256": "2861396790ed692553c90ef5019e77a4ed680cd77269203703aecea72c58f63e",
+          "count": 1
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-01.json",
+          "bytes": 6793,
+          "sha256": "4afa96ee45ca755e87272b2e107ab5c78f05f6af8d62bf4b1d8afc2f99bd2511",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-02.json",
+          "bytes": 6859,
+          "sha256": "6a7c1e978cdf03c97292bd0dbfa9363d6fab6a0e4ab19a9eac34b0b957a4f773",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-03.json",
+          "bytes": 7027,
+          "sha256": "67b67d683dbc935f93099d0f9079539177f6734b39b29a6a61d054cdcee51549",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-04.json",
+          "bytes": 7165,
+          "sha256": "4091a509a03da6a7d4206e483846aeed32e783ce9b49a347b6b966ba50fed7fa",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-05.json",
+          "bytes": 7130,
+          "sha256": "38355e7062b5cba4bed25602460c21988f6f1880017830a03ce4ae1c35d6a6ad",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-06.json",
+          "bytes": 1978,
+          "sha256": "1a186e90f4057ce4bfbd5738fc8d7eaaac2a4ef495b984282e0b495efd5d6764",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

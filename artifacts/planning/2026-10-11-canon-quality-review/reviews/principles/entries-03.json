@@ -1,0 +1,152 @@
+{
+  "reviewer": "/root",
+  "entries": [
+    {
+      "id": "DP-17",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Enumerated definition prose and README orientation.",
+        "observable": "Read whether it states the present design rather than a change history.",
+        "consistency": "The scope excludes issue and PR narratives.",
+        "exceptions": "Examples quoted for analysis are not definition assertions.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The tense and subject are inspectable."
+      },
+      "rationale": "Read whether it states the present design rather than a change history. The scope excludes issue and PR narratives.",
+      "finding_ids": [],
+      "related_ids": []
+    },
+    {
+      "id": "DP-18",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Shared capability and caller-specific divergence.",
+        "observable": "Compare the needed behavior with the shared contract and supported bindings.",
+        "consistency": "AP-110 and DP-47 need a documented extension boundary.",
+        "exceptions": "Cannot absorb diversity lacks a recorded contract-gap test.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The preference is sound; its local-recipe exception needs evidence."
+      },
+      "rationale": "Compare the needed behavior with the shared contract and supported bindings. AP-110 and DP-47 need a documented extension boundary.",
+      "finding_ids": [
+        "PD-08"
+      ],
+      "related_ids": [
+        "AP-110",
+        "DP-47"
+      ]
+    },
+    {
+      "id": "DP-19",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Semantic naming plus several spelling and type conventions.",
+        "observable": "Individual naming tests are observable.",
+        "consistency": "AP-58/64/65/66/67 already own specific spelling defects.",
+        "exceptions": "The rule-slug clause expressly prefers clarity over forced negation removal.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Independent policies occupy one supposedly single-invariant heading."
+      },
+      "rationale": "Individual naming tests are observable. AP-58/64/65/66/67 already own specific spelling defects.",
+      "finding_ids": [
+        "PD-09"
+      ],
+      "related_ids": [
+        "AP-58",
+        "AP-64",
+        "AP-65",
+        "AP-66",
+        "AP-67",
+        "DP-45"
+      ]
+    },
+    {
+      "id": "DP-20",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Activity flow versus technique work.",
+        "observable": "Find stage/checkpoint/transition references and identify the owning execution layer.",
+        "consistency": "DP-24/25 further constrain interaction and composition.",
+        "exceptions": "Producing a value later used by a gate does not itself own the gate.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The owner distinction is concrete."
+      },
+      "rationale": "Find stage/checkpoint/transition references and identify the owning execution layer. DP-24/25 further constrain interaction and composition.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-24",
+        "DP-25"
+      ]
+    },
+    {
+      "id": "DP-21",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Tool names, response shapes, bootstrap and documentation.",
+        "observable": "Compare against the pinned harness contract and measured responses.",
+        "consistency": "DP-41 addresses response-derived interpretation.",
+        "exceptions": "One authoritative behavior home can be cited from consumers.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Explicit subjects and comparison sources make this observable."
+      },
+      "rationale": "Compare against the pinned harness contract and measured responses. DP-41 addresses response-derived interpretation.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-41"
+      ]
+    },
+    {
+      "id": "DP-22",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Separately authored definition constructs.",
+        "observable": "Compare file ownership with the construct model.",
+        "consistency": "AP-01 explicitly permits schema-required inline literals.",
+        "exceptions": "The unqualified word construct can also describe required inline actions.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The principle needs the same inline boundary as its covering AP."
+      },
+      "rationale": "Compare file ownership with the construct model. AP-01 explicitly permits schema-required inline literals.",
+      "finding_ids": [
+        "PD-10"
+      ],
+      "related_ids": [
+        "AP-01"
+      ]
+    },
+    {
+      "id": "DP-23",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Requests whose scope includes implementation.",
+        "observable": "A recommendation has an executed action or an explicit stop.",
+        "consistency": "It does not grant authority beyond the request.",
+        "exceptions": "Implementation outside scope is already excluded.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The follow-through condition is directly observable."
+      },
+      "rationale": "A recommendation has an executed action or an explicit stop. It does not grant authority beyond the request.",
+      "finding_ids": [],
+      "related_ids": []
+    },
+    {
+      "id": "DP-24",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Session/operator interaction versus domain tool work.",
+        "observable": "Identify who receives the product and which construct owns delivery.",
+        "consistency": "AP-113 permits delivery operations whose domain owns the channel.",
+        "exceptions": "External domain delivery needs an explicit distinction from operator chat.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Person and session are not interchangeable scopes."
+      },
+      "rationale": "Identify who receives the product and which construct owns delivery. AP-113 permits delivery operations whose domain owns the channel.",
+      "finding_ids": [
+        "PD-11"
+      ],
+      "related_ids": [
+        "AP-113"
+      ]
+    }
+  ]
+}

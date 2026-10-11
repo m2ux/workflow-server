@@ -1,0 +1,106 @@
+{
+  "reviewer": "/root",
+  "findings": [
+    {
+      "id": "PD-01",
+      "kind": "ambiguous-scope",
+      "priority": "P2",
+      "entries": [
+        "DP-03"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-03",
+          "start": 27,
+          "end": 30,
+          "quote": "## 3. Define Complete Scope Before Execution\n\nList every file to create, modify, or remove, including the session edit root at `{target_path}`, before starting, and check that list again before claiming the work done."
+        }
+      ],
+      "problem": "The initial/final manifest checks leave newly discovered dependencies during execution unspecified.",
+      "witness": "An output-contract edit reveals an unchanged consumer after the initial list. The text neither authorizes scope expansion nor defines when that consumer enters the manifest.",
+      "proposed_fix": "List the intended files and edit root before dependent edits. Add discovered contract dependencies to the manifest before changing them; resolve any material scope or authority change before proceeding. Reconcile the final changed and affected files before claiming completion.",
+      "observing_check": "A discovered consumer added before its edit passes; silently editing an unlisted consumer fails. Discovery itself remains allowed."
+    },
+    {
+      "id": "PD-02",
+      "kind": "missing-decision-gate",
+      "priority": "P1",
+      "entries": [
+        "DP-04"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-04",
+          "start": 31,
+          "end": 34,
+          "quote": "## 4. Clarify Before Assuming\n\nWhen the request admits materially different interpretations, ask one question before acting."
+        }
+      ],
+      "problem": "The literal body requires asking but does not require receiving the answer before dependent action.",
+      "witness": "Ask which materially different behavior is intended, then implement a default before the user replies. Asking occurred before acting, but clarification did not.",
+      "proposed_fix": "When unresolved interpretations change the outcome, scope, authority or acceptance test, ask one question and wait for the answer before work that depends on it. Use already explicit instructions as answers; independent investigation may continue.",
+      "observing_check": "An unanswered choice cannot authorize the dependent edit. An earlier explicit answer and independent source inspection do not trigger another interview."
+    },
+    {
+      "id": "PD-03",
+      "kind": "delivery-boundary",
+      "priority": "P2",
+      "entries": [
+        "DP-06",
+        "DP-29",
+        "DP-36"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-06",
+          "start": 39,
+          "end": 42,
+          "quote": "## 6. One Authoritative Home\n\nEach operative fact has one statement. Resources hold fill and consult: templates, vocabularies, criteria, policy. Protocol holds cadence and how. Other layers cite that statement. A repeated copy exists only where delivery would not carry the statement, and that copy is not a second text to edit."
+        },
+        {
+          "entry": "DP-29",
+          "start": 131,
+          "end": 134,
+          "quote": "## 29. Cite Resource Policy; Do Not Restate It\n\nA resource owns vocabulary, criteria, and how fields are represented or matched. Protocol operates on the semantic fields and cites the section: link text is the section title, and the URL includes the `#` anchor. Representation of a consult surface can change without a Protocol change when the fields are unchanged."
+        },
+        {
+          "entry": "DP-36",
+          "start": 159,
+          "end": 162,
+          "quote": "## 36. A Technique Names Only What Its Reader Holds\n\nA technique arrives as its own text and its inherited rules. A name in that text \u2014 a technique, or a rule slug \u2014 is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address. A fact the technique needs is in its own text, or stated plainly. A choice between two techniques belongs to the container that holds both, phrased so it needs no reference."
+        }
+      ],
+      "problem": "One editable home, resource policy citations and reader-held facts lack a shared definition of delivered context and copy provenance.",
+      "witness": "A technique needs policy in an automatically delivered resource section. DP-29 directs citation; a literal own-text reading of DP-36 demands inline policy. Separately, a full other-library rule address names content without demonstrating delivery.",
+      "proposed_fix": "Define reader-held context as the technique, merged contracts and explicitly delivered or prerequisite-fetched resource sections. A symbol must resolve within that context. Qualified spelling identifies an owner and does not establish delivery. Any necessary delivery projection names its single editable source and regeneration/update mechanism.",
+      "observing_check": "An anchored delivered policy passes without inline duplication. A qualified but unavailable rule fails. Two independently editable copies fail ownership even if their current strings match."
+    },
+    {
+      "id": "PD-04",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-08",
+        "DP-10"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-08",
+          "start": 47,
+          "end": 50,
+          "quote": "## 8. Confirm Before Irreversible Changes\n\nA semi-reversible or irreversible change waits for explicit confirmation that includes the impact."
+        },
+        {
+          "entry": "DP-10",
+          "start": 55,
+          "end": 58,
+          "quote": "## 10. Non-Destructive Updates\n\nCompare new content with what is there. A change that removes material names the removal and waits for explicit approval. A move that must keep an outcome is [A Relocation Records the Outcome It Keeps](#38-a-relocation-records-the-outcome-it-keeps)."
+        }
+      ],
+      "problem": "Semi-reversible is undefined, and the text does not say whether informed approval already covering the exact removal/effect remains effective.",
+      "witness": "The user explicitly requests removal of a named obsolete file. A reader may demand a second identical approval; another may treat a costly external effect as reversible because some compensation exists.",
+      "proposed_fix": "Require explicit authority describing the target and material impact when reversal cannot restore the prior state, requires another party, or incurs material loss. Existing explicit approval covering that effect remains valid; a changed effect needs a new decision. For removals, identify the material removed and its approved scope.",
+      "observing_check": "Previously approved named removal proceeds; a newly discovered removal or different external effect waits. Record the reversal assumption and impact used."
+    }
+  ]
+}

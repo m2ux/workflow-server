@@ -1,0 +1,49 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "entries": [
+    {
+      "id": "AP-160",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Relocations whose preserved outcome needs before/after evidence.",
+        "observable": "Compare paths/options/consumers/audiences, not only declaration names.",
+        "consistency": "The same-declaration exemption is weaker than DP-38 confirming-check requirement.",
+        "exceptions": "Intentional removals are valid; matching text alone is not preservation.",
+        "fix": "Record change evidence in planning/review; keep current runtime contracts at their owners.",
+        "expression": "Receiving-site and old-site narration blur live design with change evidence."
+      },
+      "rationale": "A move can preserve a gate name while making the gate skippable.",
+      "finding_ids": [
+        "AC-19"
+      ],
+      "related_ids": [
+        "AP-129",
+        "DP-38",
+        "DP-17"
+      ]
+    },
+    {
+      "id": "AP-161",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Enumerated output values and terminal assignments over feasible paths.",
+        "observable": "A last-writer path trace can distinguish unreachable values from untested values.",
+        "consistency": "A promised value may need implementation rather than deletion.",
+        "exceptions": "Unevidenced but feasible values are correctly protected.",
+        "fix": "Repair required production paths; remove only unintended distinctions with consumers accounted for.",
+        "expression": "Last phase followed by later phase is an unclear description of terminal overwrite."
+      },
+      "rationale": "The value-reachability detector is useful; its missing-path repair must preserve intended semantics.",
+      "finding_ids": [
+        "AC-20"
+      ],
+      "related_ids": [
+        "AP-128",
+        "AP-151",
+        "DP-13",
+        "DP-38"
+      ]
+    }
+  ]
+}

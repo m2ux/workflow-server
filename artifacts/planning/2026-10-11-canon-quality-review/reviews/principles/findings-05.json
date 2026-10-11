@@ -1,0 +1,106 @@
+{
+  "reviewer": "/root",
+  "findings": [
+    {
+      "id": "PD-17",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-41",
+        "AP-161"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-41",
+          "start": 179,
+          "end": 182,
+          "quote": "## 41. A Phase States Answers the Tool Has Returned\n\nA schema settles the call. What a Protocol does with a response \u2014 the branch it takes, the emptiness it reads as absence, the name it expects to resolve \u2014 states answers the tool has returned on a real subject."
+        },
+        {
+          "entry": "AP-161",
+          "start": 2074,
+          "end": 2084,
+          "quote": "### AP-161. unproducible-declared-value\n\n\"`unanswerable` where the member has neither instrument to ask\" on an output, under a phase setting that same field to `none` wherever neither instrument found anything\n\nAn output's contract admits a value no Protocol path leaves standing, so the vocabulary promises a reading the technique cannot give.\n\n**Detect:** For each value a technique's `## Outputs` enumerates \u2014 on an entry, a component, or a nested field \u2014 name the phase that leaves it standing when the run ends. Flag a value whose assigning phase is followed by a phase that reassigns the same field over a population that includes those subjects, and a value no phase assigns. Test: as the last phase completes, a later phase's own criteria settle that subject's field. Each phase can be correct alone; only their order is wrong.\n\n**Do not flag:** A value a later phase's criteria exclude, by a condition naming the subjects the earlier phase settled. A value the tool supplies in its own response. A value the contract admits and no available fixture exercises \u2014 record it unevidenced and leave the declaration. A value set whose only home is prose (`value-set-in-prose`).\n\n**Fix:** Scope the settling phase to the subjects it judges, so a value an earlier phase recorded survives. Where no path can produce the value, delete it and fold what it distinguished into a value that has a path. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); a whole output with no home is `output-without-destination`."
+        }
+      ],
+      "problem": "Real-subject observations and declared-but-unevidenced values need explicit evidence classes for rare or unsafe-to-trigger branches.",
+      "witness": "A documented error response has a controlled fixture but has never appeared in a live subject. Erasing its recovery path to satisfy observed-only wording would reduce correctness.",
+      "proposed_fix": "Bind response interpretations to a captured live observation or an authoritative response contract with a representative fixture. Mark live-unobserved branches as such; neither a fixture nor absence of an observed value proves its live frequency or impossibility.",
+      "observing_check": "A fabricated empty-result meaning fails. A contract-backed rare error fixture can validate recovery while its live-evidence status remains unmeasured."
+    },
+    {
+      "id": "PD-18",
+      "kind": "non-discriminating-principle",
+      "priority": "P2",
+      "entries": [
+        "DP-43",
+        "DP-18"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-43",
+          "start": 187,
+          "end": 190,
+          "quote": "## 43. An Activity Reuses Activities\n\nAn activity may borrow, bind, or include another activity, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher)."
+        },
+        {
+          "entry": "DP-18",
+          "start": 87,
+          "end": 90,
+          "quote": "## 18. Prefer Shared Capability\n\nWhen a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. A local recipe exists when the shared surface cannot absorb the caller's diversity. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work)."
+        }
+      ],
+      "problem": "May borrow/bind/include states an available feature and has no violating alternative.",
+      "witness": "Both a needless duplicate activity and reuse of its existing equivalent satisfy the permissive sentence.",
+      "proposed_fix": "Either place the permitted composition forms in the construct reference and let DP-18 own reuse, or state: Reuse an existing activity when its inputs, outputs and phase boundary satisfy the consumer; a local activity records the unmet requirement. Keep one authoritative reuse rule.",
+      "observing_check": "Duplicating an activity with a matching required contract needs a recorded reason; an incompatible phase boundary supplies an inspectable exception."
+    },
+    {
+      "id": "PD-19",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-46"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-46",
+          "start": 199,
+          "end": 202,
+          "quote": "## 46. A Consumer Binds the Contract\n\nA definition that declares a shared contract is usable wherever that contract is expected. The consumer binds the contract."
+        }
+      ],
+      "problem": "Declaring a shared contract is conflated with satisfying it; usable wherever has no stated substitutability test.",
+      "witness": "Two definitions declare the same output name, but one requires stronger inputs or omits promised failure behavior. Nominal identity alone does not make the substitution valid.",
+      "proposed_fix": "A definition bound through a shared contract accepts the contract inputs without stronger preconditions and meets its output, failure and relevant-effect guarantees. Consumers rely on that contract; contract conformance is demonstrated on representative valid and invalid inputs.",
+      "observing_check": "Substitute two implementations against the same contract tests, including missing input, invalid input, error result and relevant side effects."
+    },
+    {
+      "id": "PD-20",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-47",
+        "DP-34"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-47",
+          "start": 203,
+          "end": 205,
+          "quote": "## 47. A Calibrated Surface Extends by Wrapping\n\nA surface other work is calibrated or validated against \u2014 a schema, a measured prompt \u2014 gains a consumer's need through the construct that wraps it."
+        },
+        {
+          "entry": "DP-34",
+          "start": 151,
+          "end": 154,
+          "quote": "## 34. Edit the Owner\n\nName every file a later extension of a contract would force an edit to. A file that must change only to keep agreeing \u2014 a restated count, a duplicated field list, a copied criteria set \u2014 is coupled to content it does not own. The citation is what remains when the copy is removed."
+        }
+      ],
+      "problem": "Wrapping a consumer extension needs a boundary from correcting or intentionally evolving the shared owner.",
+      "witness": "A calibrated schema contains an incorrect shared requirement. A wrapper cannot make the authoritative schema correct; retaining its identity also preserves stale validation assumptions.",
+      "proposed_fix": "Put consumer-specific adaptation around a calibrated contract when that contract remains valid. A defect or intentional shared contract change is corrected at its owner and renews dependent calibration/validation before acceptance.",
+      "observing_check": "A caller-only formatting preference wraps without changing the owner. A shared schema correction changes the owner and invalidates old dependent evidence."
+    }
+  ]
+}

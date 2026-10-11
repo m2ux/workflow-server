@@ -1,0 +1,134 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AC-11",
+      "kind": "improvement",
+      "priority": "medium",
+      "entries": [
+        "AP-138"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-138",
+          "source": "sources/anti-patterns.md",
+          "start": 1804,
+          "end": 1808,
+          "quote": "**Detect:** For each `### <id>` under `## Outputs`, name where it lands: an `#### artifact` on the entry; a binding, remap, gate, `validate` target, or same-named input in a workflow that can bind the op; or `{id}` in the binding activity's message or checkpoint. Flag an entry with none, including one mentioned only as \"return `{id}`\", and one whose `variables[]` slot nothing reads. Test: the only reader is the worker's own report.\n\n**Do not flag:** A library op, or one bound cross-workflow, whose callers sit outside the tree. An output consumed by a sibling `#### artifact` template on the same technique. A terminal product the binding activity actually surfaces.\n\n**Fix:** A file takes `#### artifact` (`artifact-not-buried`, `artifact-name-is-filename`). A field of a sibling document is a `####` of that output. A later step binds it and declares the input. A human sees `{id}` from the binding activity (`session-interaction-in-technique`). Otherwise delete the declaration and the variable that shadowed it. The inverse is `technique-outputs-declared`."
+        },
+        {
+          "entry": "AP-109",
+          "source": "sources/anti-patterns.md",
+          "start": 1404,
+          "end": 1406,
+          "quote": "**Detect:** Technique Capability or Protocol assembles, derives, or returns a durable or gateable value — a plan, findings, a summary, a classification, a path, a count, a structured assessment — with no matching `### <id>` under `## Outputs`. Test: a later step, checkpoint, or consumer could bind or cite the value. A file also needs `#### artifact` (`artifact-not-buried`).\n\n**Do not flag:** A pure side-effect with no bindable product (push, open a PR, mark ready) when no path or number is captured. A value already declared on Outputs. An input-only gap (`technique-inputs-declared`). Protocol that only presents a value to a user (`session-interaction-in-technique`); still declare the output when it is gateable."
+        }
+      ],
+      "problem": "The destination list mixes actual readers with possible same-name matches and artifact declarations. A name in a workflow that could bind an operation does not prove that it consumes this output. Conversely, a closed-tree no-reader claim needs an explicit consumer boundary.",
+      "witness": "A local output selected_item is remapped to unused_item, while an unrelated unbound technique declares selected_item. A name-only search can count the unrelated input as a destination even though the producing output has no reader.",
+      "proposed_fix": "Add: \"Trace each output through actual reachable binds, remaps, artifact construction, and messages to a consumer in the declared review boundary. A same-name declaration without that route is not a reader. Record unknown external consumption separately from a proved unused local output.\" Align technique-outputs-declared with this distinction: internal locals stay locals; externally consumable products have declared Outputs.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag a local output whose only remap leads to a never-read variable, despite an unrelated matching input name.",
+        "negative": "Do not flag an output consumed through a reachable remap or a sibling artifact template, or a public library contract whose external consumers are outside the review boundary."
+      }
+    },
+    {
+      "id": "AC-12",
+      "kind": "detection-gap",
+      "priority": "medium",
+      "entries": [
+        "AP-140"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-140",
+          "source": "sources/anti-patterns.md",
+          "start": 1828,
+          "end": 1832,
+          "quote": "**Detect:** For each `### <id>` under a technique's `## Inputs`, search that technique's `## Protocol` and `## Rules` for the id — braced as `{id}`, as `{id}.field`, or named bare inside a tool-call signature a phase passes. Flag an entry with no occurrence. Test: the only phase that spends the value is the declaration itself.\n\n**Do not flag:** An input on a container `TECHNIQUE.md` that a descendant references after the merge. An input handed whole to an applied op as a substitution map or pass-through, where a phase references the map. An agent-entry technique's identity bindings — ids a spawn or continuation stub emits and the entry tools consume. An output no consumer reads (`output-without-destination`).\n\n**Fix:** Reference `{id}` from the phase that spends it, or delete the declaration. Where the value belongs to an op this technique applies, pass it at the Apply site (`apply-omits-declared-input`)."
+        },
+        {
+          "entry": "AP-111",
+          "source": "sources/anti-patterns.md",
+          "start": 1428,
+          "end": 1432,
+          "quote": "**Detect:** A technique `## Protocol` (a) restates derivation, recognition, or decision-tree criteria for a declared Output, or (b) has a numbered phase whose sole job is to assign a pure projection of another output already produced (boolean flags that are `true` iff `{operation_type}` is a given enum). Test: deleting the Protocol copy leaves the Output description as the sole complete definition, or the phase only types derived fields.\n\n**Do not flag:** Protocol that emits `{id}` by reference to Output criteria without restating the tree. A count or path emitted in the same phase that produced the bag or artifact. A mode branch that uses an already-bound value. Missing Outputs (`technique-outputs-declared`).\n\n**Fix:** Move identity criteria onto the owning Output. Collapse a pure projection to a one-line Output description. Keep Protocol as work phases that emit `{id}`. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure). A workflow-variable shadow is `no-derived-state-shadow`."
+        },
+        {
+          "entry": "AP-130",
+          "source": "sources/anti-patterns.md",
+          "start": 1710,
+          "end": 1710,
+          "quote": "**Do not flag:** One literal (`01-audit-report.md`). A `{placeholder}` template (`{package_name}-plan.md`)."
+        }
+      ],
+      "problem": "Searching only Protocol and Rules mistakes declarative consumers for unused inputs. Output recognition criteria and artifact filename templates are valid readers elsewhere in the canon. Adding a redundant Protocol mention satisfies the lexical test without changing the design.",
+      "witness": "package_name is consumed only by artifact template {package_name}-plan.md, and the Protocol persists {plan}. Or confidence_floor is used by a declared Output recognition criterion while Protocol emits that Output by reference. Both inputs affect the result but AP-140 finds no occurrence in Protocol/Rules.",
+      "proposed_fix": "Detect: \"Resolve the effective contract and identify semantic reads in Protocol, Rules, Output recognition or construction, artifact templates, and supported binding/default expressions. Flag an input with no such use. A bare mention without consumption is not evidence of use.\" Fix: \"Delete a proved unused input, or wire it to the actual consumer; do not add prose solely to satisfy a text search.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag an input that appears only in its own description, or is named in a comment without affecting an operation or output.",
+        "negative": "Do not flag package_name used by a declared filename template or confidence_floor used in Output recognition criteria referenced by the producing phase."
+      }
+    },
+    {
+      "id": "AC-13",
+      "kind": "improvement",
+      "priority": "low",
+      "entries": [
+        "AP-143"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-143",
+          "source": "sources/anti-patterns.md",
+          "start": 1864,
+          "end": 1868,
+          "quote": "**Detect:** A `## Rules` entry (or `rules.*` string) whose body is a citation, or a list of citations, to rules declared elsewhere, and the reader already receives those rules — by container merge, by the techniques bundle, or by a sibling entry that commands following that set. Compare the list with the cited home's roster. Flag when the home holds a rule the list omits; when the entry states nothing the cited rule does not; when the entry is a subset of an obligation a sibling already states; or when the entry reuses the cited rule's name or a near-variant, so the shortened dotted address is ambiguous. Test: adding a rule to the cited home leaves this entry incomplete, or removing the entry changes no behaviour.\n\n**Do not flag:** A pointer that narrows or qualifies the cited rule — a scope restriction, a threshold, an exception the cited rule does not state. Container `TECHNIQUE.md` Rules the loader merges into descendants. A prohibition citing the home that owns the behaviour it forbids (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`). Capability op inventories (`capability-as-op-inventory`).\n\n**Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it. Carry over any clause the deleted entry held that no other surface states. The Inputs-side fault is `inherited-input-re-declared`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+        }
+      ],
+      "problem": "The container Rules exemption is broader than the behavior it protects. A container can itself repeat a roster from another already-delivered container, so inheritance of the repeating entry does not make that roster authoritative.",
+      "witness": "A root contract declares alpha and beta, and a nested group Rules entry says \"Honor alpha, beta\". Both root and group rules reach each leaf. The Detect finds a behavior-free repeated roster, but the blanket container exemption can excuse it.",
+      "proposed_fix": "Replace the container exemption with: \"A container entry that owns an invariant the loader delivers to descendants; being a container does not exempt a redundant enumeration of already-delivered rules.\" Require the evidence to name the actual delivery route; an uncertain bundle is not proof that the rule already arrives.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag the nested honor-alpha-and-beta roster after confirming both original invariants arrive at its readers.",
+        "negative": "Do not flag the root definitions of alpha and beta, or a group-specific scope qualification that changes what its readers must do."
+      }
+    },
+    {
+      "id": "AC-14",
+      "kind": "improvement",
+      "priority": "medium",
+      "entries": [
+        "AP-146"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-146",
+          "source": "sources/anti-patterns.md",
+          "start": 1900,
+          "end": 1904,
+          "quote": "**Detect:** For each rule, Protocol step, I/O description, Capability sentence, README orientation line, and option or action text, name the actor the surface is delivered to. Where a surface reaches more than one — a container `TECHNIQUE.md` merged into its descendants, or `rules.universal` — flag a clause only some of those actors can act on. Flag a clause that narrates a second actor's behaviour, state, techniques, or limitations, which the reader can neither observe nor act on, and a clause that states the reader's own duty in the third person. Test: strike the clause. Where it named a second actor, flag it if the instruction is still complete. Where it named the reader in the third person, flag it if what remains no longer tells the reader to do the thing. A clause already addressed to the reader that repeats an imperative is not this fault.\n\n**Do not flag:** A duty stated as outside the reader's, with no account of who holds it. A value the reader takes from its own tool responses. A precondition the reader can check. The contract the reader itself applies, on the surface that owns it. An actor role carried as data a stub or manifest binds. Prose restating a contract owned elsewhere (`prompt-restates-owned-mechanics`). A rule whose only defect is its bucket (`rule-audience-bucket`). One that is mis-filed and narrating is both.\n\n**Fix:** Address the reader. Where the clause carried a duty of the reader's, restate it as an imperative. Where it described another actor, restate the reason from the reader's own position or delete it. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+        },
+        {
+          "entry": "DP-17",
+          "source": "sources/design-principles.md",
+          "start": 85,
+          "end": 85,
+          "quote": "Definition prose — `description`, `outcome`, option text, and README orientation for the defined workflow — states what the system is or does, in declarative present tense."
+        }
+      ],
+      "problem": "The entry applies an imperative-duty test to Capability and README orientation as well as runtime instructions. Those surfaces legitimately describe behavior in declarative present tense under DP-17. \"Third person\" needs a normative-duty boundary or an author can be told to convert orientation into commands.",
+      "witness": "README orientation says \"The worker produces the review report.\" As orientation this describes the system; if the third-person reader-duty test is applied literally after identifying workers among the audience, the suggested rewrite is \"Produce the review report.\" The latter changes the purpose of the passage.",
+      "proposed_fix": "Scope Detect: \"On an instruction surface, flag a required duty attributed to the reader only through third-person narration, or an account of another actor that supplies neither an actionable obligation nor checkable evidence.\" Add to Do not flag: \"Declarative purpose and behavior orientation on descriptions, Capability, and README surfaces, where it is not prescribing an extra duty.\" Keep the actor-reach and observability test for actual instructions.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag a worker instruction that narrates an orchestrator-only internal step and leaves the worker unable to act or verify a precondition.",
+        "negative": "Do not flag a present-tense README explanation of who produces a report, or a checkable precondition drawn from the reader own tool response."
+      }
+    }
+  ]
+}

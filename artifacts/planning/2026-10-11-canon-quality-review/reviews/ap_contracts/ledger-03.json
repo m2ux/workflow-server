@@ -1,0 +1,174 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "entries": [
+    {
+      "id": "AP-136",
+      "disposition": "finding",
+      "checks": {
+        "scope": "References to numbered phases from other surfaces.",
+        "observable": "Inserting a phase demonstrates ordinal instability.",
+        "consistency": "A recommended cross-technique phase link conflicts with AP-157.",
+        "exceptions": "Local references and orientation links need separate treatment.",
+        "fix": "Name a supplied outcome/precondition; keep cross-technique sequencing at binds.",
+        "expression": "The heading-link repair silently assumes access to the target text."
+      },
+      "rationale": "Stable naming alone does not provide the referenced instruction or value.",
+      "finding_ids": [
+        "AC-03"
+      ],
+      "related_ids": [
+        "AP-144",
+        "AP-157",
+        "DP-36"
+      ]
+    },
+    {
+      "id": "AP-137",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Repeated shared capability, not necessarily repeated raw tool use.",
+        "observable": "Duplicate interpretation/policy is evidence of shared work; two call sites alone are insufficient.",
+        "consistency": "Required extraction can produce the wrapper AP-158 retires.",
+        "exceptions": "Add primitive-use exemption when caller readings differ.",
+        "fix": "Extract the shared reading only when one exists.",
+        "expression": "Capability needs a semantic contribution beyond the same tool name."
+      },
+      "rationale": "A call-and-return wrapper is not justified by occurrence count alone.",
+      "finding_ids": [
+        "AC-10"
+      ],
+      "related_ids": [
+        "AP-158",
+        "AP-110",
+        "DP-26"
+      ]
+    },
+    {
+      "id": "AP-138",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Local output liveness over a declared consumer boundary.",
+        "observable": "Trace actual binds/remaps to readers; name matches alone are weak evidence.",
+        "consistency": "Reconcile actual consumers with AP-109 potentially bindable products.",
+        "exceptions": "External library consumers are appropriately recognized but evidence limits should be explicit.",
+        "fix": "Remove proved dead outputs, not merely unsearched public contracts.",
+        "expression": "Can bind the op is weaker than does consume this output."
+      },
+      "rationale": "A consumer inventory and dataflow check would make no-reader claims reproducible.",
+      "finding_ids": [
+        "AC-11"
+      ],
+      "related_ids": [
+        "AP-109",
+        "AP-140",
+        "AP-161"
+      ]
+    },
+    {
+      "id": "AP-139",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Operative framing absent from section delivery.",
+        "observable": "The delivered span and required obligations can be compared directly.",
+        "consistency": "DP-44 requires framing reach; a character-count heuristic does not establish it.",
+        "exceptions": "Orientation-only prose is correctly exempt regardless of length.",
+        "fix": "Update dependent citations as well as introducing the addressable section.",
+        "expression": "Roughly 100 characters is a poor proxy for operative importance."
+      },
+      "rationale": "A short rule can be decisive; an unrequested new section remains undelivered.",
+      "finding_ids": [
+        "AC-23"
+      ],
+      "related_ids": [
+        "AP-134",
+        "DP-44",
+        "DP-32"
+      ]
+    },
+    {
+      "id": "AP-140",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Semantic consumers of effective inputs.",
+        "observable": "Protocol/Rules text search misses templates and Output recognition criteria.",
+        "consistency": "Output-owned recognition is allowed by AP-111; Apply repairs conflict with AP-114.",
+        "exceptions": "Container reach is valid; applied-op exemption preserves a prohibited path.",
+        "fix": "Wire the real consumer or delete a proved unused slot.",
+        "expression": "Never read is a semantic claim stronger than absent in two sections."
+      },
+      "rationale": "The current detector can flag a live input and reward a redundant mention.",
+      "finding_ids": [
+        "AC-02",
+        "AC-12"
+      ],
+      "related_ids": [
+        "AP-111",
+        "AP-114",
+        "AP-130",
+        "AP-141"
+      ]
+    },
+    {
+      "id": "AP-141",
+      "disposition": "finding",
+      "checks": {
+        "scope": "The subject is a Protocol Apply form AP-114 removes.",
+        "observable": "Required-input comparison is inspectable but belongs at supported bind sites.",
+        "consistency": "Adding arguments preserves the separately prohibited invocation.",
+        "exceptions": "Activity binds are excluded even though they are the canonical invocation surface.",
+        "fix": "Retire the Protocol-Apply repair or restate binding completeness at actual binds.",
+        "expression": "The detailed contract resolution is useful at the correct layer."
+      },
+      "rationale": "Move the valuable completeness test to a form the canon endorses.",
+      "finding_ids": [
+        "AC-02"
+      ],
+      "related_ids": [
+        "AP-114",
+        "AP-140",
+        "AP-153",
+        "DP-25"
+      ]
+    },
+    {
+      "id": "AP-142",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Magnitude-based branches lacking an available comparison value.",
+        "observable": "A declared threshold, policy row, or returned budget supplies evidence.",
+        "consistency": "Observable qualitative conditions are expressly allowed.",
+        "exceptions": "Harness-owned thresholds and counts derivable from existing definitions are protected.",
+        "fix": "Declare a real owner or use an observable condition.",
+        "expression": "The example list illustrates missing operands without requiring all principles to be numeric."
+      },
+      "rationale": "This is a useful model of an observable criterion with qualitative carve-outs.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-09"
+      ]
+    },
+    {
+      "id": "AP-143",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Already-delivered inherited or bundled rule rosters.",
+        "observable": "Compare actual delivery with the repeating citation list.",
+        "consistency": "Container ownership is valid but does not excuse a container copying another roster.",
+        "exceptions": "Narrow the blanket container exemption.",
+        "fix": "Delete redundant rosters while retaining unique qualifications.",
+        "expression": "Already receives is a meaningful prerequisite that must be proved."
+      },
+      "rationale": "A small exception clarification handles duplicate container rosters.",
+      "finding_ids": [
+        "AC-13"
+      ],
+      "related_ids": [
+        "AP-22",
+        "AP-53",
+        "AP-148",
+        "DP-06"
+      ]
+    }
+  ]
+}

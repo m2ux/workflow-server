@@ -1,0 +1,100 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_entries": 42,
+  "dispositions": {
+    "clear": 16,
+    "finding": 17,
+    "improvement": 9
+  },
+  "findings": 23,
+  "finding_kinds": [
+    "detection-gap",
+    "improvement",
+    "missing-exception",
+    "repair-conflict",
+    "repair-gap",
+    "unsound-exemption"
+  ],
+  "files": [
+    {
+      "path": "ledger-01.json",
+      "entries": 8,
+      "bytes": 6793,
+      "sha256": "4afa96ee45ca755e87272b2e107ab5c78f05f6af8d62bf4b1d8afc2f99bd2511"
+    },
+    {
+      "path": "ledger-02.json",
+      "entries": 8,
+      "bytes": 6859,
+      "sha256": "6a7c1e978cdf03c97292bd0dbfa9363d6fab6a0e4ab19a9eac34b0b957a4f773"
+    },
+    {
+      "path": "ledger-03.json",
+      "entries": 8,
+      "bytes": 7027,
+      "sha256": "67b67d683dbc935f93099d0f9079539177f6734b39b29a6a61d054cdcee51549"
+    },
+    {
+      "path": "ledger-04.json",
+      "entries": 8,
+      "bytes": 7165,
+      "sha256": "4091a509a03da6a7d4206e483846aeed32e783ce9b49a347b6b966ba50fed7fa"
+    },
+    {
+      "path": "ledger-05.json",
+      "entries": 8,
+      "bytes": 7130,
+      "sha256": "38355e7062b5cba4bed25602460c21988f6f1880017830a03ce4ae1c35d6a6ad"
+    },
+    {
+      "path": "ledger-06.json",
+      "entries": 2,
+      "bytes": 1978,
+      "sha256": "1a186e90f4057ce4bfbd5738fc8d7eaaac2a4ef495b984282e0b495efd5d6764"
+    },
+    {
+      "path": "findings-01.json",
+      "entries": 2,
+      "bytes": 11656,
+      "sha256": "79f21320d79ae30430036fdcb37faaf20f6b7d5e44fa2cb4b892d234cb20ffe2"
+    },
+    {
+      "path": "findings-02.json",
+      "entries": 4,
+      "bytes": 15679,
+      "sha256": "fe0e7bf42099b9ec1e52a4797f7ed4380687ea8ac83469c42fb8d04a1e18cf90"
+    },
+    {
+      "path": "findings-03.json",
+      "entries": 4,
+      "bytes": 14755,
+      "sha256": "3e44ea16b13f3db90c2f86f216fedcb2942f28c1eb3a5557020503e318caafe8"
+    },
+    {
+      "path": "findings-04.json",
+      "entries": 4,
+      "bytes": 15477,
+      "sha256": "faf25337780c98af06f27313912329605a4a4fd6a5fb51c832c36725f9902d4b"
+    },
+    {
+      "path": "findings-05.json",
+      "entries": 4,
+      "bytes": 13435,
+      "sha256": "8bfe040ba33067235b684713c97fe6e80fdeaba843bb838913c2e1b8a03d90f8"
+    },
+    {
+      "path": "findings-06.json",
+      "entries": 4,
+      "bytes": 12494,
+      "sha256": "fd5607fff0b219d0a2f3a89ddbd7f523f9b5409f8b7ea92fef44bff9c99a3c6d"
+    },
+    {
+      "path": "findings-07.json",
+      "entries": 1,
+      "bytes": 4038,
+      "sha256": "2861396790ed692553c90ef5019e77a4ed680cd77269203703aecea72c58f63e"
+    }
+  ],
+  "write_elapsed_seconds": 0.013586995017249137,
+  "finished_utc": "2026-10-11T12:31:26.577400+00:00"
+}

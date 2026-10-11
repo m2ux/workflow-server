@@ -1,0 +1,127 @@
+{
+  "reviewer": "/root",
+  "findings": [
+    {
+      "id": "PD-05",
+      "kind": "unobservable-enforcement",
+      "priority": "P1",
+      "entries": [
+        "DP-09"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-09",
+          "start": 51,
+          "end": 54,
+          "quote": "## 9. Encode Constraints as Structure\n\nA critical constraint is a checkpoint, a condition, or a validate action. Rule text does not enforce it."
+        }
+      ],
+      "problem": "Critical is not bounded, and presence of a checkpoint/condition/validate field does not establish that it enforces the constraint.",
+      "witness": "A validate action computes false but the next transition still reaches the forbidden operation. A literal construct-presence check passes.",
+      "proposed_fix": "A constraint that determines whether work may start, commit an effect, or complete is represented by a condition, validate result or recorded checkpoint decision whose failure prevents the prohibited path. State the tested predicate and failure route; retain the semantic rule in its owner.",
+      "observing_check": "Exercise pass, reject and missing-decision cases. Rejection and missing evidence must not reach the gated operation."
+    },
+    {
+      "id": "PD-06",
+      "kind": "ambiguous-grain",
+      "priority": "P2",
+      "entries": [
+        "DP-12",
+        "AP-84"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-12",
+          "start": 63,
+          "end": 66,
+          "quote": "## 12. Output Economy\n\nAn artifact or a checkpoint states one fact for one declared audience, and links the home of every other fact."
+        },
+        {
+          "entry": "AP-84",
+          "start": 1090,
+          "end": 1101,
+          "quote": "### AP-84. single-closeout-artifact\n\n`COMPLETE.md` + `workflow-retrospective.md` + `close-out-summary.md` + a README footer narrative\n\nMultiple close-out documents re-narrate the same session.\n\n**Detect:** More than one terminal artifact (or README footer) re-states delivered items, decisions, validation, follow-ups, or lessons.\n\n**Do not flag:** A single close-out artifact with retrospective as a section; engine session summary presented but not persisted as a second artifact.\n\n**Fix:** Collapse to one close-out document; retarget retrospective writes to it; keep README as an index line only."
+        }
+      ],
+      "problem": "One fact is too narrow or too elastic to distinguish a coherent report from duplication. The catalog permits one closeout document with several kinds of facts.",
+      "witness": "One closeout artifact owns delivered items, decisions and newly observed lessons for one audience. Counting scalar facts violates DP-12; treating the whole session as one fact makes the test arbitrary.",
+      "proposed_fix": "Each artifact has one declared audience and one coherent purpose. It owns the facts produced for that purpose and links facts owned elsewhere. A checkpoint asks for one decision and supplies the context required for it.",
+      "observing_check": "A report with distinct newly produced findings passes; copied facts with another owner fail. Two independent decisions at one checkpoint fail regardless of report length."
+    },
+    {
+      "id": "PD-07",
+      "kind": "composition-scope",
+      "priority": "P1",
+      "entries": [
+        "DP-16",
+        "DP-25",
+        "DP-42",
+        "AP-51",
+        "AP-114"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-16",
+          "start": 79,
+          "end": 82,
+          "quote": "## 16. Distinguish Designators from Parameters\n\nIn Protocol, a declared value is `{id}`, a technique argument name is italic, and the argument list sits in parentheses on the technique reference. Argument names stay out of braces and backticks."
+        },
+        {
+          "entry": "DP-25",
+          "start": 115,
+          "end": 118,
+          "quote": "## 25. Bind Sibling Techniques as Steps\n\nMulti-technique work lives in activity `steps[]`, checkpoints, and loops. Each sibling or shared technique is its own step. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs."
+        },
+        {
+          "entry": "DP-42",
+          "start": 183,
+          "end": 186,
+          "quote": "## 42. A Routine Holds the Codified Path\n\nWhere an application is still free-form, it is a technique. Where the path is accepted and consistent, it is a routine: a named run of those produce paths, spliced into the activity that binds it, and the home for a sequence, an iteration, a branch, or a gate that several sites share. Its sources are the two in [Workflows Ossify Patterns](#1-workflows-ossify-patterns). The Protocol that remains is the reading that routine cannot hold ([A Technique Is a Reading](#26-a-technique-is-a-reading))."
+        },
+        {
+          "entry": "AP-51",
+          "start": 682,
+          "end": 693,
+          "quote": "### AP-51. canonical-technique-reference\n\n\"Use `gitnexus_context` on the symbol\"\n\nA raw harness tool name is used where a wrapping op exists.\n\n**Detect:** Protocol names a raw harness or MCP tool for a capability that another technique wraps. The canonical form is `[op](path)` or `[group](path)::[op](path)`, which the server resolves to `::`. A stale or inconsistent name is `consistent-tool-names`.\n\n**Do not flag:** The technique that wraps the primitive \u2014 naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it, which the step must perform unaided (`unreachable-operation-reference`).\n\n**Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments."
+        },
+        {
+          "entry": "AP-114",
+          "start": 1458,
+          "end": 1469,
+          "quote": "### AP-114. pass-orchestration-in-technique\n\n\"`run-audit-passes`: Apply audit-expressiveness\u2026\" / \"`publish-workflow-pr`: Apply push-branch, then create-pr\u2026\"\n\nA technique's Protocol invokes other techniques to do work \u2014 sequencing sibling or shared techniques the binding site should carry as consecutive steps.\n\n**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique for work, by `Apply [technique]` or a `::` invocation, one or many. Signals: numbered phases that are each \"Apply [\u2026]\"; Capability that names a multi-pass pipeline or a fa\u00e7ade over shared ops; Outputs that only re-export children. Test: moving each invoked op to its own `steps[]` entry at the binding site, with any local value-assembly technique kept separate, preserves behaviour.\n\n**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`). Citing resources, including creation-guide Templates. Container I/O and rule merge. Activity `steps[]` and routine technique binds. Activity borrow, bind, or include of a reusable orchestration pattern. Tools. One produce path over tools and resources (load, derive, persist one product) with no Apply or `::` work invoke. Stage or gate locus without an op inventory (`technique-stage-agnostic`).\n\n**Fix:** Delete the fa\u00e7ade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared technique as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`."
+        }
+      ],
+      "problem": "Protocol invocation notation and activity-only composition wording do not align with the current routine/binding-site composition policy.",
+      "witness": "AP-51 repairs a raw tool mention by invoking another technique in Protocol, which AP-114 then flags. A reusable two-technique routine is explicitly allowed by DP-42, while DP-25 only names activity steps; runtime splicing does not settle authoring ownership.",
+      "proposed_fix": "State that sibling/shared work is bound as steps in the activity or routine that owns the sequence. Retain Protocol designators for values, but move technique-invocation spelling to the supported binding/reference surface. Update AP-51/56 and affected Apply remedies together so fixes place work at that binding site.",
+      "observing_check": "A routine containing two properly bound sibling techniques passes. A Protocol Apply invocation fails. Repairing AP-51 must pass AP-114 without undoing the repair."
+    },
+    {
+      "id": "PD-08",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-18",
+        "AP-110"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-18",
+          "start": 87,
+          "end": 90,
+          "quote": "## 18. Prefer Shared Capability\n\nWhen a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. A local recipe exists when the shared surface cannot absorb the caller's diversity. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work)."
+        },
+        {
+          "entry": "AP-110",
+          "start": 1410,
+          "end": 1421,
+          "quote": "### AP-110. duplicate-shared-capability\n\n\"`publish-workflow-pr` re-teaches `gh pr create` / `gh pr ready` / `git push` already covered by the `github` and `git` namespaces\"\n\nA workflow-local technique re-implements a capability a shared namespace already offers.\n\n**Detect:** A workflow-local technique embeds a harness recipe in its Protocol for a capability a shared namespace already holds a technique for. Also flag a local re-teaching of a concurrent fan-out \u2014 `Task`, spawn-concurrent, or dispatch-then-merge \u2014 when [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) or a borrowable [`meta/activities/patterns/`](/meta/activities/patterns/README.md) activity already covers the shape. Test: the local novelty is only parameters or caller-specific composition; the verb is already owned elsewhere. A shared op that almost fits, missing an input, optional flag, or output, still owns the capability.\n\n**Do not flag:** A change to the shared op itself that keeps existing callers working \u2014 a new optional input, default, output, or small protocol branch. A new shared op when no shared capability exists yet. A local technique that only assembles caller-specific values while the activity binds the shared op. Session-level `dispatch-activity`.\n\n**Fix:** Delete the local harness recipe. Bind the shared op from the activity, or borrow an activity that already binds it. Keep caller-specific value assembly in a local technique when the activity needs it (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). See [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps)."
+        }
+      ],
+      "problem": "Cannot absorb the caller diversity is not tied to an explicit capability or contract gap.",
+      "witness": "Two authors disagree whether one missing optional input requires a local recipe, even though AP-110 says the shared operation still owns the capability.",
+      "proposed_fix": "Before a local recipe, record the behavior or contract requirement the shared capability cannot provide through its supported parameters, composition or justified shared extension. Reuse the shared owner where those mechanisms satisfy the requirement.",
+      "observing_check": "A changed constant or missing optional flag alone does not justify duplication. A recorded incompatible semantic requirement is independently reviewable."
+    }
+  ]
+}

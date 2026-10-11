@@ -1,0 +1,106 @@
+{
+  "reviewer": "/root",
+  "findings": [
+    {
+      "id": "PD-13",
+      "kind": "improvement",
+      "priority": "P3",
+      "entries": [
+        "DP-28",
+        "AP-116"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-28",
+          "start": 127,
+          "end": 130,
+          "quote": "## 28. Creation Guide for Generated Documents\n\nEvery planning artifact a workflow persists has a creation-guide resource with a `## Template` section and operative `## Rules` for filling it. The persisting technique cites that template. A shared shape may share one guide. Every bare filename still maps to a guide."
+        },
+        {
+          "entry": "AP-116",
+          "start": 1482,
+          "end": 1493,
+          "quote": "### AP-116. no-template-creation-guide\n\n\"Persist a decision-facing report: classification summary\u2026 integrity verdicts\u2026 removals inventory \u2014 via write-artifact \u2026 bare filename `impact-analysis.md`\" (full layout recipe in Protocol; no creation-guide Template)\n\nA planning artifact is persisted without a creation-guide Template, or the technique invents the layout in Protocol instead of citing one.\n\n**Detect:** A technique persists a session planning artifact by bare filename and either no workflow resource owns that filename with a `## Template` (or named template anchor), or Protocol embeds a competing section or table recipe rather than citing the guide. Shared satellites may share one guide.\n\n**Do not flag:** A non-planning output (a variable, a PR, a commit). A cite of an existing Template with short when/which bullets. Wrapper ceremony around a template (`no-guide-wrapper-ceremony`). Fill content that lives in the resource Template while Protocol only orders persist.\n\n**Fix:** Author or extend a creation-guide resource with `## Template` and `## Rules`. Map the bare filename in the resources index. Replace the Protocol layout with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#28-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`."
+        }
+      ],
+      "problem": "Planning artifact and generated document do not distinguish authored decision documents from raw captures or machine-validated evidence.",
+      "witness": "A workflow stores a byte-exact tool log or JSON capture in its planning record. A fill-template requirement risks altering the evidence or duplicating its schema.",
+      "proposed_fix": "Require a creation guide for planning documents whose sections a technique authors or fills. A byte-exact capture or machine-generated artifact names its producer and schema/format contract; it does not require a competing prose template. Keep the destination and identity explicit for both.",
+      "observing_check": "A hand-authored decision report needs Template and Rules. An immutable source capture with recorded hash and producer uses its actual byte/format contract."
+    },
+    {
+      "id": "PD-14",
+      "kind": "missing-context-closure",
+      "priority": "P1",
+      "entries": [
+        "DP-32",
+        "DP-44",
+        "AP-134"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-32",
+          "start": 143,
+          "end": 146,
+          "quote": "## 32. Cite Resources at Section Grain\n\nA citation names the narrowest section that carries what the prose needs. The path after `resources/`, with `.md` stripped and any `#anchor` kept, is the unit loaded. The bare resource is the citation when the consumer reads the whole body. Every distinct citation is delivered, so a bare citation beside anchored ones sends the file and the sections. Where several sections are needed, cite each anchor. Where the set is most of the body, cite the resource once."
+        },
+        {
+          "entry": "DP-44",
+          "start": 191,
+          "end": 194,
+          "quote": "## 44. A Resource Splits for Section Delivery\n\nA multi-part resource splits into per-category sections, each holding the fragment for one category, with the whole-document skeleton in its own section. Shared fragments \u2014 scales, mappings, reference tables \u2014 sit in one shared section. Operative framing, shared keys, and obligations a section reader needs live under a `##` heading an anchor can deliver. The consumer fetches the section it renders."
+        },
+        {
+          "entry": "AP-134",
+          "start": 1750,
+          "end": 1761,
+          "quote": "### AP-134. whole-resource-for-one-section\n\n\"per the [Review Comment Template](../resources/review-mode.md)\"\n\nA citation delivers a whole resource where the prose reads one section.\n\n**Detect:** A technique cites a multi-section resource with no `#anchor` while the link text, or the phrase beside it, matches one heading. Also flag a bare citation beside an anchored citation of the same resource: both are delivered.\n\n**Do not flag:** A consumer that reads the body: a filler using `## Template` with its `## Rules`, an audit of every entry, or a technique whose sections are most of the file. A single-section resource. A bare citation that introduces the resource.\n\n**Fix:** Cite `../resources/example.md#section-title`, link text the section title, one citation per section. A bare citation beside anchored ones is anchored or dropped. A large resource no section covers is a split under [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain)."
+        }
+      ],
+      "problem": "Most of the body is not a defined selection rule, and placing shared obligations in a heading does not ensure a section reader receives them.",
+      "witness": "A consumer loads only Template. Shared Rules are under another deliverable heading but no path requires them. Both headings exist, yet the consumer lacks required constraints.",
+      "proposed_fix": "A delivered section declares or links every required shared context unit before its instructions. Every supported entry path receives those prerequisites once. Cite the minimal complete set; a whole-body citation means the consumer needs the whole body. If a broader delivery optimization remains, define its measured criterion and budget explicitly.",
+      "observing_check": "Start a fresh reader at each supported anchor and verify prerequisite receipt. A heading that is merely available but never required fails. Record actual extra bytes separately from required context."
+    },
+    {
+      "id": "PD-15",
+      "kind": "improvement",
+      "priority": "P3",
+      "entries": [
+        "DP-35"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-35",
+          "start": 155,
+          "end": 158,
+          "quote": "## 35. Prefer Removing the Thing That Needs a Prohibition\n\nA warning against a second path means two constructs do one job. Retire one, and the warning, the validation, and the carve-outs that policed the overlap go with it. Where both paths remain, the prohibition names the home that owns the surviving behaviour."
+        }
+      ],
+      "problem": "A warning does not establish that two paths are semantically redundant.",
+      "witness": "Preview and effectful execution share a verb but have different authority and side effects. Removing either solely because a warning distinguishes them loses behavior.",
+      "proposed_fix": "When paths have the same capability, preconditions, authority and lifecycle, select one owner and retire duplicate implementations. Where differences are intentional, keep the boundary explicit and cite the owner of each behavior.",
+      "observing_check": "Equivalent competing implementations have one owner. A documented preview/effect distinction remains valid and testable."
+    },
+    {
+      "id": "PD-16",
+      "kind": "inconsistent-boundary",
+      "priority": "P2",
+      "entries": [
+        "DP-39"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-39",
+          "start": 171,
+          "end": 174,
+          "quote": "## 39. A Phase Heading Names the Outcome\n\nA phase heading is two or three words in Title Case, with the articles dropped. It names the outcome. Past four words it carries the bullet's detail. A heading that only repeats its bullet is a phase with no outcome of its own."
+        }
+      ],
+      "problem": "The first sentence permits two or three words; past four only criticizes five or more, leaving the four-word audit boundary unclear.",
+      "witness": "A four-word heading names one outcome. One reviewer rejects its count; another treats it as below the stated detail threshold.",
+      "proposed_fix": "Choose one count policy in the owning convention. The minimal textual repair to the existing two-or-three rule is to replace Past four words with More than three words, then state any necessary proper-name exception. Keep outcome clarity as the principle and reference that convention.",
+      "observing_check": "Exercise one-, two-, three-, four- and five-word headings plus a necessary domain name. Each has one documented disposition."
+    }
+  ]
+}

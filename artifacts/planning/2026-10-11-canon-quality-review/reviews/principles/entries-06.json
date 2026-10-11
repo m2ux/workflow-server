@@ -1,0 +1,137 @@
+{
+  "reviewer": "/root",
+  "entries": [
+    {
+      "id": "DP-41",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Protocol interpretation of tool responses.",
+        "observable": "Tie a response assumption to a captured observation and scope its evidence.",
+        "consistency": "AP-161 preserves declared but unevidenced values.",
+        "exceptions": "Rare or unsafe-to-trigger branches need a stated contract/fixture evidence class.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Real-subject observation does not cover every legitimate error branch."
+      },
+      "rationale": "Tie a response assumption to a captured observation and scope its evidence. AP-161 preserves declared but unevidenced values.",
+      "finding_ids": [
+        "PD-17"
+      ],
+      "related_ids": [
+        "DP-21",
+        "AP-161"
+      ]
+    },
+    {
+      "id": "DP-42",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Codified reusable paths versus local technique judgments.",
+        "observable": "Identify fixed structural sequence and the residual interpretation.",
+        "consistency": "DP-01 gives sources; DP-26 gives the technique boundary.",
+        "exceptions": "Accepted and consistent need recorded evidence rather than an arbitrary repetition count.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Free-form and reading benefit from observable examples."
+      },
+      "rationale": "Identify fixed structural sequence and the residual interpretation. DP-01 gives sources; DP-26 gives the technique boundary.",
+      "finding_ids": [
+        "PD-12"
+      ],
+      "related_ids": [
+        "DP-01",
+        "DP-26"
+      ]
+    },
+    {
+      "id": "DP-43",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Reuse of activities and pattern library capabilities.",
+        "observable": "May borrow describes permission; no conforming/nonconforming design distinction follows.",
+        "consistency": "DP-18 already expresses a shared-capability preference.",
+        "exceptions": "Permitted borrow/bind/include mechanics belong in the construct reference.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The body is a feature statement rather than an invariant."
+      },
+      "rationale": "May borrow describes permission; no conforming/nonconforming design distinction follows. DP-18 already expresses a shared-capability preference.",
+      "finding_ids": [
+        "PD-18"
+      ],
+      "related_ids": [
+        "DP-18"
+      ]
+    },
+    {
+      "id": "DP-44",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Independent delivery of sections and shared framing.",
+        "observable": "For each entry section, enumerate prerequisites and prove they reach its reader.",
+        "consistency": "DP-32 selects units; heading placement alone supplies no delivery edge.",
+        "exceptions": "Whole-document readers already receive the shared section.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Can deliver is weaker than requires and actually delivers."
+      },
+      "rationale": "For each entry section, enumerate prerequisites and prove they reach its reader. DP-32 selects units; heading placement alone supplies no delivery edge.",
+      "finding_ids": [
+        "PD-14"
+      ],
+      "related_ids": [
+        "DP-32"
+      ]
+    },
+    {
+      "id": "DP-45",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Atomic Rules entries.",
+        "observable": "Split parts that can be independently cited and edited.",
+        "consistency": "It exposes the naming bundle in DP-19 only through the principles overview as well.",
+        "exceptions": "A genuinely dependent conditional consequence can remain one invariant.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The independent-edit/citation test is concrete."
+      },
+      "rationale": "Split parts that can be independently cited and edited. It exposes the naming bundle in DP-19 only through the principles overview as well.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-19"
+      ]
+    },
+    {
+      "id": "DP-46",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Substitutability behind a shared contract.",
+        "observable": "Compare accepted inputs, promised results, relevant effects and failure behavior.",
+        "consistency": "Merely declaring a contract does not demonstrate satisfying it.",
+        "exceptions": "Contract-specific preconditions and guarantees need explicit treatment.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Usable wherever is broader than the evidence rule provided."
+      },
+      "rationale": "Compare accepted inputs, promised results, relevant effects and failure behavior. Merely declaring a contract does not demonstrate satisfying it.",
+      "finding_ids": [
+        "PD-19"
+      ],
+      "related_ids": []
+    },
+    {
+      "id": "DP-47",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Extending a calibrated surface for a consumer.",
+        "observable": "Separate caller-specific adaptation from changing the shared contract itself.",
+        "consistency": "DP-34 keeps corrections in the owning home.",
+        "exceptions": "Owner defects and intentional shared redesign require renewed validation.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The wrapping preference needs a boundary for owner changes."
+      },
+      "rationale": "Separate caller-specific adaptation from changing the shared contract itself. DP-34 keeps corrections in the owning home.",
+      "finding_ids": [
+        "PD-20"
+      ],
+      "related_ids": [
+        "DP-18",
+        "DP-34"
+      ]
+    }
+  ]
+}

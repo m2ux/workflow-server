@@ -1,0 +1,152 @@
+{
+  "reviewer": "/root",
+  "entries": [
+    {
+      "id": "DP-01",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Repeated or externally established procedures.",
+        "observable": "Show the accepted procedure and its graph; portability is visible in references.",
+        "consistency": "DP-42 locates a reusable application in a routine.",
+        "exceptions": "Novel work is explicitly outside the graph or a design update.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The metaphor is followed by a concrete source and construct distinction."
+      },
+      "rationale": "Show the accepted procedure and its graph; portability is visible in references. DP-42 locates a reusable application in a routine.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-42"
+      ]
+    },
+    {
+      "id": "DP-02",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Preparation before authoring.",
+        "observable": "Receipt of construct, schema and local convention context is observable.",
+        "consistency": "Supports DP-05 and DP-07 without replacing their checks.",
+        "exceptions": "No extra exception is needed for this preparation duty.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The body says read; it does not require proving an internal mental state."
+      },
+      "rationale": "Receipt of construct, schema and local convention context is observable. Supports DP-05 and DP-07 without replacing their checks.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-05",
+        "DP-07"
+      ]
+    },
+    {
+      "id": "DP-03",
+      "disposition": "finding",
+      "checks": {
+        "scope": "File scope before execution and at closeout.",
+        "observable": "A manifest is observable; discovery between those two checks lacks a transition rule.",
+        "consistency": "Contract closure can reveal files after the initial list.",
+        "exceptions": "No treatment of newly discovered dependencies is stated.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Complete before starting leaves the discovery boundary unclear."
+      },
+      "rationale": "A manifest is observable; discovery between those two checks lacks a transition rule. Contract closure can reveal files after the initial list.",
+      "finding_ids": [
+        "PD-01"
+      ],
+      "related_ids": []
+    },
+    {
+      "id": "DP-04",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Requests with materially different interpretations.",
+        "observable": "A question can be observed, but its answer is not required by the literal body.",
+        "consistency": "The title promises clarification before assumption.",
+        "exceptions": "Independent investigation and prior explicit answers are unspecified.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Ask before acting leaves an ask-then-assume loophole."
+      },
+      "rationale": "A question can be observed, but its answer is not required by the literal body. The title promises clarification before assumption.",
+      "finding_ids": [
+        "PD-02"
+      ],
+      "related_ids": [
+        "DP-08"
+      ]
+    },
+    {
+      "id": "DP-05",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Representation supported by the schema.",
+        "observable": "Compare intended semantics with available native constructs and repeated prose.",
+        "consistency": "DP-09 addresses enforcement; this addresses representation.",
+        "exceptions": "A construct must provide the intended semantics to be the most specific match.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Concrete construct/prose distinction supports the broad preference."
+      },
+      "rationale": "Compare intended semantics with available native constructs and repeated prose. DP-09 addresses enforcement; this addresses representation.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-09"
+      ]
+    },
+    {
+      "id": "DP-06",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Ownership of operative facts across delivered surfaces.",
+        "observable": "Find one editable owner and trace delivered projections.",
+        "consistency": "DP-29/33/36 and AP-23/74 need one explicit delivery interpretation.",
+        "exceptions": "Delivery copies are expressly permitted if they are not independent edit homes.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The copy exception needs provenance and maintenance semantics."
+      },
+      "rationale": "Find one editable owner and trace delivered projections. DP-29/33/36 and AP-23/74 need one explicit delivery interpretation.",
+      "finding_ids": [
+        "PD-03"
+      ],
+      "related_ids": [
+        "DP-29",
+        "DP-33",
+        "DP-36",
+        "AP-23",
+        "AP-74"
+      ]
+    },
+    {
+      "id": "DP-07",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Introducing a naming or structural pattern.",
+        "observable": "Record the search and compare the proposed pattern with existing examples.",
+        "consistency": "AP-04 adds its specific approval test.",
+        "exceptions": "An existing convention supplies the default.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Search before introducing is a directly observable action."
+      },
+      "rationale": "Record the search and compare the proposed pattern with existing examples. AP-04 adds its specific approval test.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-04"
+      ]
+    },
+    {
+      "id": "DP-08",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Changes with irreversible or partial reversal costs.",
+        "observable": "Record impact and explicit authority for the particular effect.",
+        "consistency": "DP-10 has the more specific removal condition.",
+        "exceptions": "Existing authority and the meaning of semi-reversible are unstated.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The risk boundary benefits from operational examples."
+      },
+      "rationale": "Record impact and explicit authority for the particular effect. DP-10 has the more specific removal condition.",
+      "finding_ids": [
+        "PD-04"
+      ],
+      "related_ids": [
+        "DP-10"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AC-03",
+      "kind": "repair-conflict",
+      "priority": "medium",
+      "entries": [
+        "AP-136",
+        "AP-144"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-136",
+          "source": "sources/anti-patterns.md",
+          "start": 1780,
+          "end": 1784,
+          "quote": "**Detect:** A rule, I/O description, Capability, resource, README, or another technique's Protocol says \"step N\", \"phase N\", or \"the Nth step\". Numbering belongs to the loader ([workflow-canonical](/meta/resources/workflow-canonical.md#protocol)). Test: insert one phase above the cited one; the sentence now names the wrong work.\n\n**Do not flag:** An ordinal inside the `## Protocol` that owns the numbering. A link to the phase heading. A dotted rule address (`dotted-rule-address`). An ordinal that is a declared id, heading text, or quoted output.\n\n**Fix:** Name the technique or op that holds the phase. Anchor the heading where that one phase is required. Where the pointer only explains the cited work, delete it. See also `anchored-protocol-references`."
+        },
+        {
+          "entry": "AP-144",
+          "source": "sources/anti-patterns.md",
+          "start": 1876,
+          "end": 1880,
+          "quote": "**Detect:** For each prose reference to a value, a tool result, or a completed action, name the construct that supplies it — a declared input or output on this technique, a workflow variable, an earlier phase of this Protocol, a resolvable link, or a field a named call returns. Flag when nothing supplies it, and when the named kind is one the context holds several of. Passive wording is the tell: \"already returned by\", \"as returned\", \"has already landed\", or \"carry it to X\" where no phase applies X.\n\n**Do not flag:** A reference whose target is declared but wears the wrong form (`anchored-protocol-references`). A needed value absent from `inputs[]` (`technique-inputs-declared`). A vague noun for a declared output (`brace-output-references`). Magnitudes (`branch-on-undeclared-threshold`). Anaphora for a noun already anchored once in the same step. A precondition another technique guarantees, where the step names that technique.\n\n**Fix:** Name the supplier — the phase that produces the value, the call that returns it, or the technique that guarantees the action — or declare it and reference the designator. Where nothing supplies it, delete the reference. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+        },
+        {
+          "entry": "AP-157",
+          "source": "sources/anti-patterns.md",
+          "start": 2032,
+          "end": 2036,
+          "quote": "**Detect:** A technique file names another technique or technique — in Capability, Protocol, or `## Rules` — by a markdown link to a technique file or by a `::` address, and no work is invoked: a rule naming the instrument for a question or forbidding one, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. Test: what the reader does with the name needs a file the delivery did not carry.\n\n**Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol. Resource citations, which travel with the technique citing them. A bare technique id where the slot's value is a technique id, with no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`).\n\n**Fix:** State the fact the reference stood for, without naming the technique. Where it carried a standing choice of instrument, move it to the container technique that holds both techniques, phrased so it needs no reference. Where it carried sequencing, the run binding both techniques owns it. See [A Technique Names Only What Its Reader Holds](./design-principles.md#36-a-technique-names-only-what-its-reader-holds); also `pass-orchestration-in-technique`, `anchored-protocol-references`."
+        }
+      ],
+      "problem": "A phase-heading link and naming a different technique as a precondition supplier are recommended fixes, yet AP-157 removes non-invoking references to other techniques when delivery does not carry the needed text. Naming a supplier is not proof the reader receives its contract or its value.",
+      "witness": "A leaf Protocol says \"step 3 in resolver guarantees the selected root.\" AP-136 permits replacing this with a link to resolver.md#3-selected-root; AP-144 permits naming resolver as the guarantee. The reference invokes nothing and needs undelivered text, which AP-157 flags.",
+      "proposed_fix": "AP-136 Fix: \"For a reference within the delivered Protocol, identify the outcome by its heading. Put cross-technique sequencing at the bind site. A consumer of an earlier result declares that value or checkable precondition; it does not link to an undelivered phase.\" AP-144 Do not flag: replace the other-technique guarantee with \"A declared precondition whose evidence this reader receives and can check.\" Fix: \"Name a supplied value or local producer, or declare the missing contract and arrange its binding. A supplier name alone does not supply the value.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag an undeclared \"already resolved root\" supported only by a link to another technique; introduce a bound selected_root with its required evidence.",
+        "negative": "Do not flag a declared selected_root or a local earlier phase that produces it. An orientation README may still link to the resolver phase."
+      }
+    },
+    {
+      "id": "AC-04",
+      "kind": "missing-exception",
+      "priority": "medium",
+      "entries": [
+        "AP-127"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-127",
+          "source": "sources/anti-patterns.md",
+          "start": 1672,
+          "end": 1676,
+          "quote": "**Detect:** Cross-reference literals in workflow, activity, technique, and resource content against the workflow's `variables[]` and the enclosing technique's `## Inputs` and `## Outputs`. Flag a verbatim value — path root, branch or remote name, identifier, count, enum member, host — where a declared slot carries that meaning and `{name}` belongs. Both must hold: the slot's `description` names what the literal denotes, and the literal is the operative value rather than a shape illustration.\n\n**Do not flag:** The declaration itself (`defaultValue`, or an enum or shape hint inside the slot's own `description`). A Template or example fence that shows a resolved shape. A planning-folder artifact recording one session's resolved values. An exemplar line in a catalogue entry. A literal with no declared slot: a path repeated across sites (`factor-repeated-paths`), a host absolute path or checkout root (`worktree-root-placeholders`), state tracked in prose with no variable (`variable-for-approval`), a literal of state a declared variable already derives (`no-derived-state-shadow`).\n\n**Fix:** Replace the literal with `{name}` for the declared slot. Leave exactly one home for the value — the declaration."
+        },
+        {
+          "entry": "AP-52",
+          "source": "sources/anti-patterns.md",
+          "start": 704,
+          "end": 704,
+          "quote": "**Fix:** Brace as `{declared_id}`. For an orphan value write \"when `{declared_id}` is 23\". Replace a disguise wrapper with braces."
+        },
+        {
+          "entry": "AP-112",
+          "source": "sources/anti-patterns.md",
+          "start": 1444,
+          "end": 1444,
+          "quote": "**Fix:** Keep the authoritative variable; rewrite conditions, technique inputs, and effects to compare it directly; delete the shadow declarations and every write to them. See also [Single Source of Truth](./design-principles.md#14-single-source-of-truth)."
+        }
+      ],
+      "problem": "The literal-replacement rule includes enum members but does not distinguish a copied runtime value from a comparison constant. Its general replacement can erase a branch predicate; the expression \"where {name} belongs\" leaves that distinction to the reviewer.",
+      "witness": "operation_type describes the selected operation and admits review/update. In \"when {operation_type} is review\", review is an operative enum literal and a declared slot carries operation-kind meaning. Replacing review with {operation_type} makes a self-comparison. AP-52 explicitly prescribes relating a literal to its input, and AP-112 requires gates to compare the authoritative variable directly.",
+      "proposed_fix": "Add to Detect: \"The literal substitutes for the current value of that slot; it is not an independently meaningful comparison operand or pattern.\" Add to Do not flag: \"Enum members and fixed constants used to test, classify, or select the declared value, such as when {operation_type} is review.\" Retain the replacement rule only for copied bound values. Where the consumer is a resource, put caller-specific bindings on the technique or activity and keep the resource parameter abstract.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag \"push to workflows\" when target_branch is the bound destination and may name another branch.",
+        "negative": "Do not flag \"when {operation_type} is review\" or \"retry when {attempts} is below 3\" when 3 is the authoritative declared policy constant."
+      }
+    },
+    {
+      "id": "AC-05",
+      "kind": "unsound-exemption",
+      "priority": "medium",
+      "entries": [
+        "AP-128"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-128",
+          "source": "sources/anti-patterns.md",
+          "start": 1680,
+          "end": 1688,
+          "quote": "\"`when: intent_detected == true` on the sole producer\" / \"`variable: matched_item`, `operator: ==`, `value: null` on the reader's gate\"\n\nA reader can reach a variable on a path that skips its only producer.\n\n**Detect:** The sole producer (step output, remap, or `set`) is gated by `when` or `condition`, or sits in a `while` body whose `continueWhile` decides the first pass. A later reader — an input, a `when`, `condition`, `continueWhile`, `breakCondition`, or `{token}` — is reachable where that producer is skipped, and the variable has no `defaultValue`. Two shapes: a reader gated by equality or a relational operator, and an ungated reader with no producer arm for the gate's negation.\n\n**Do not flag:** A `defaultValue` seeded at session creation. A reader gated by the same expression as its producer. A checkpoint `setVariable` that applies on every option. A projection of state another variable already carries (`no-derived-state-shadow`).\n\n**Fix:** Ask definedness with `operator: exists` or `notExists`. Where the excluded path needs the value, add the producer arm so the gates are exhaustive. A `defaultValue` a reader cannot tell from a produced value is not that arm."
+        }
+      ],
+      "problem": "Textually identical producer and reader gates do not prove availability if intervening steps change the gate inputs. The sole-producer/later-reader wording also leaves initial reads in the producer own gate unclear. A definedness test must preserve the original domain condition.",
+      "witness": "enabled starts false. Step A produces result only when enabled. Step B sets enabled true. Step C reads result when enabled. A and C have the same expression, so the exemption excuses C even though this execution reaches C without result. Separately, an unseeded intent_detected gating its own sole producer cannot establish the first value.",
+      "proposed_fix": "Replace the same-expression carve-out with: \"Every path reaching the reader includes a producer or a valid seed; equivalent gates establish this only when the values they test cannot change between evaluations.\" Include conditions evaluated before a producer among readers. Fix: \"Add a definedness precondition while retaining any required domain predicate, or provide an exhaustive producer/seed whose meaning the consumer can distinguish.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag the false-to-true enabled path and an unseeded output used in its own producer gate.",
+        "negative": "Do not flag matching gates with unchanged predicate inputs and a guaranteed producer before every read; a meaningful declared seed can also establish availability."
+      }
+    },
+    {
+      "id": "AC-06",
+      "kind": "improvement",
+      "priority": "low",
+      "entries": [
+        "AP-131"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-131",
+          "source": "sources/anti-patterns.md",
+          "start": 1720,
+          "end": 1724,
+          "quote": "**Detect:** Read each id under `**/resources/**` with the body closed. For a template, guide, vocabulary, criteria, or policy, flag a verb head or an imperative. Also flag a noun that omits the kind word its siblings carry (`-guide`, `-template`, `-forms`, `-seed`) while the file holds a `## Template`.\n\n**Do not flag:** A prompt the agent executes (a lens, bootstrap, or agent-conduct prompt). An id that already names its content. A bare noun where no sibling carries a kind word. A noun-modifier that only looks verbal (`review-format`, `update-mode-guide`). A technique or activity id.\n\n**Fix:** Rename to the content plus its kind, and update `name:`, the resources index, and every relative and `::` reference in one edit. Where the verb names a technique, move the content into a technique. See [Convention Over Invention](./design-principles.md#7-convention-over-invention)."
+        }
+      ],
+      "problem": "The kind-suffix test uses any sibling, although a resources folder can contain different artifact kinds. Its broad \"already names its content\" exemption also overlaps the missing-kind detector. This makes an otherwise useful naming check depend on which unrelated neighbor happens to exist.",
+      "witness": "findings.md is a report template beside review-policy.md and decision-guide.md. It names its content, but one sibling carries -guide, so the Detect and the broad exemption support different dispositions.",
+      "proposed_fix": "Replace the suffix clause with: \"Within a documented family of the same resource kind, flag an id that omits that family established kind suffix and is ambiguous without opening the body.\" Do not flag: \"An unambiguous content noun, or a resource of another kind; a sibling suffix alone does not establish a convention.\" Keep verb-headed consult-resource detection.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag complete-wp for a close-out template, and an ambiguous outlier within a documented family of template names.",
+        "negative": "Do not flag risk-vocabulary because a neighboring file is a decision-guide, or review-format merely because review can also be a verb."
+      }
+    }
+  ]
+}

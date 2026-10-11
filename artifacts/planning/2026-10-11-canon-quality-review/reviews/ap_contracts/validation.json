@@ -1,0 +1,159 @@
+{
+  "primary_entries": 42,
+  "candidate_records": 23,
+  "evidence_quotes": 49,
+  "dispositions": {
+    "clear": 16,
+    "finding": 17,
+    "improvement": 9
+  },
+  "measured_source_utf8_bytes": 176058,
+  "rendered_source_utf8_bytes": 188372,
+  "source_read_commands": 12,
+  "first_measured_read_utc": "2026-10-11T12:18:22.655753+00:00",
+  "last_measured_read_utc": "2026-10-11T12:19:03.309046+00:00",
+  "bounded_read_span_seconds": 40.653293,
+  "measured_review_span_seconds": 909.932404,
+  "source_read_seconds_in_python": 0.007850111986044794,
+  "validation_elapsed_seconds": 0.011967524013016373,
+  "validated_utc": "2026-10-11T12:33:32.588157+00:00",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "sources": [
+    {
+      "source": "sources/anti-patterns.md",
+      "bytes": 161582,
+      "lines": 2084,
+      "sha256": "dbdf297b3d7ddb5517993b694705e0baa292374a82373aaee19c36fb8994e681",
+      "read_commands": 10,
+      "coverage": "complete, contiguous, no overlap",
+      "ranges": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          480
+        ],
+        [
+          481,
+          720
+        ],
+        [
+          721,
+          960
+        ],
+        [
+          961,
+          1200
+        ],
+        [
+          1201,
+          1440
+        ],
+        [
+          1441,
+          1640
+        ],
+        [
+          1641,
+          1810
+        ],
+        [
+          1811,
+          1935
+        ],
+        [
+          1936,
+          2084
+        ]
+      ]
+    },
+    {
+      "source": "sources/design-principles.md",
+      "bytes": 14476,
+      "lines": 205,
+      "sha256": "dc51605fb74d9a4a3f6bdefb93b984bfa2a6b909bfbd00f164f2d277566d8e7b",
+      "read_commands": 2,
+      "coverage": "complete, contiguous, no overlap",
+      "ranges": [
+        [
+          1,
+          105
+        ],
+        [
+          106,
+          205
+        ]
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "ledger-01.json",
+      "bytes": 6793,
+      "count": 8
+    },
+    {
+      "path": "ledger-02.json",
+      "bytes": 6859,
+      "count": 8
+    },
+    {
+      "path": "ledger-03.json",
+      "bytes": 7027,
+      "count": 8
+    },
+    {
+      "path": "ledger-04.json",
+      "bytes": 7165,
+      "count": 8
+    },
+    {
+      "path": "ledger-05.json",
+      "bytes": 7130,
+      "count": 8
+    },
+    {
+      "path": "ledger-06.json",
+      "bytes": 1978,
+      "count": 2
+    },
+    {
+      "path": "findings-01.json",
+      "bytes": 11656,
+      "count": 2
+    },
+    {
+      "path": "findings-02.json",
+      "bytes": 15679,
+      "count": 4
+    },
+    {
+      "path": "findings-03.json",
+      "bytes": 14755,
+      "count": 4
+    },
+    {
+      "path": "findings-04.json",
+      "bytes": 15477,
+      "count": 4
+    },
+    {
+      "path": "findings-05.json",
+      "bytes": 13435,
+      "count": 4
+    },
+    {
+      "path": "findings-06.json",
+      "bytes": 12494,
+      "count": 4
+    },
+    {
+      "path": "findings-07.json",
+      "bytes": 4038,
+      "count": 1
+    }
+  ],
+  "result": "PASS: primary coverage, six checks, referenced records, byte/count limits, exact quote ranges, complete source reads, source identities"
+}

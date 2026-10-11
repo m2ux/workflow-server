@@ -1,0 +1,168 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "entries": [
+    {
+      "id": "AP-152",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Independent constraints bundled into one named Rule.",
+        "observable": "Independently citable/editable parts are the actual test.",
+        "consistency": "Single-invariant stance matches DP-45 and duplicate ownership exclusions.",
+        "exceptions": "Length alone does not decide; subordinate cases remain with their invariant.",
+        "fix": "Split independently owned constraints and retain dependent qualification.",
+        "expression": "Signals are explicitly subordinate to the semantic independence test."
+      },
+      "rationale": "The rule correctly avoids replacing clarity with a numeric sentence budget.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-22",
+        "AP-25",
+        "AP-133",
+        "DP-45"
+      ]
+    },
+    {
+      "id": "AP-153",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Tool arguments required by reachable runtime states but optional in schema.",
+        "observable": "Use tool description/refusal plus the state the Protocol reaches.",
+        "consistency": "Separates state-dependent duties from schema-shape copying in AP-135.",
+        "exceptions": "Marked partial signatures and state-independent optional arguments are excluded.",
+        "fix": "Pass the needed value and describe when an optional input may be absent.",
+        "expression": "The refusal witness and stated reachable state make the criterion operational."
+      },
+      "rationale": "Useful boundary: schema validity alone cannot establish call success in reachable states.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-135",
+        "AP-154",
+        "AP-155"
+      ]
+    },
+    {
+      "id": "AP-154",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Whole tool signatures against an authoritative parameter schema.",
+        "observable": "A missing required parameter is directly observable when the schema is available.",
+        "consistency": "DP-21 covers the actual harness; registration alone is not its evidence boundary.",
+        "exceptions": "Partial signatures are legitimate; unavailable contracts need an evidence-gap result.",
+        "fix": "Add missing arguments and sweep equivalent call sites.",
+        "expression": "State whether external harness calls are in scope or unreviewed."
+      },
+      "rationale": "The structural test is clear; broaden or explicitly document the tool boundary.",
+      "finding_ids": [
+        "AC-17"
+      ],
+      "related_ids": [
+        "AP-153",
+        "AP-155",
+        "DP-21"
+      ]
+    },
+    {
+      "id": "AP-155",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Supplied arguments against the effective argument contract.",
+        "observable": "Explicit-key comparison must include dynamic maps and valid schema alternatives.",
+        "consistency": "DP-21 requires actual acceptance semantics, not merely a property-name roster.",
+        "exceptions": "Open maps and unavailable external contracts need explicit treatment.",
+        "fix": "Delete or rename truly excluded parameters only.",
+        "expression": "At that level does not explain admitted unnamed object keys."
+      },
+      "rationale": "Valid dynamic data can be mistaken for an undeclared argument.",
+      "finding_ids": [
+        "AC-17",
+        "AC-18"
+      ],
+      "related_ids": [
+        "AP-153",
+        "AP-154",
+        "DP-21"
+      ]
+    },
+    {
+      "id": "AP-156",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Top-level Protocol phases written as numbered list items.",
+        "observable": "Markdown heading/list structure is mechanically distinguishable.",
+        "consistency": "Phase headings agree with DP-15 and DP-39.",
+        "exceptions": "Ordered substeps inside a real phase remain valid.",
+        "fix": "Create one outcome heading and keep its actual work beneath it.",
+        "expression": "The anchor test explains the structural distinction."
+      },
+      "rationale": "No extra phase should be invented solely to house a standing rule or caveat.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-108",
+        "AP-121",
+        "DP-15",
+        "DP-39"
+      ]
+    },
+    {
+      "id": "AP-157",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Non-invoking technique references requiring undelivered text.",
+        "observable": "Determine what reference resolution requires and what delivery carries.",
+        "consistency": "The delivery premise matches DP-36; related repair conflicts are attributed to their owners.",
+        "exceptions": "Resources, orientation, technique-id data, and work invokes are distinguished.",
+        "fix": "State the needed fact or place sequencing at its binding owner.",
+        "expression": "The test correctly requires inaccessible content, not just a link-shaped token."
+      },
+      "rationale": "As a delivery-boundary invariant this is clear; AP-136/AP-144 recommendations need alignment.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-114",
+        "AP-125",
+        "AP-136",
+        "AP-144",
+        "DP-36"
+      ]
+    },
+    {
+      "id": "AP-158",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Wrappers with no reading beyond raw response naming.",
+        "observable": "Compare added interpretation/fixed-question argument selection with the tool contract.",
+        "consistency": "The criterion is useful but AP-137 can require exactly the wrapper it retires.",
+        "exceptions": "Output/Rules readings and fixed-question wrappers remain legitimate.",
+        "fix": "Retain useful interpretation; avoid creating a wrapper from reuse count alone.",
+        "expression": "No numeric complexity threshold is necessary to show additional judgment."
+      },
+      "rationale": "The local criterion is sound; shared-capability extraction must honor it before creating a technique.",
+      "finding_ids": [
+        "AC-10"
+      ],
+      "related_ids": [
+        "AP-137",
+        "AP-110",
+        "DP-26"
+      ]
+    },
+    {
+      "id": "AP-159",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Definition-bearing construct subfolders and their orientation.",
+        "observable": "Enumerate folders and inspect local or file-grain parent README coverage.",
+        "consistency": "Matches DP-11 with a defined parent-orientation alternative.",
+        "exceptions": "Fixtures/specimens and already-indexed children are correctly excluded.",
+        "fix": "Add purpose/shared domain/next-link orientation without transcribing contracts.",
+        "expression": "The required folder list makes completeness assessable."
+      },
+      "rationale": "The check uses concrete orientation evidence rather than demanding duplicated README content.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-40",
+        "DP-11"
+      ]
+    }
+  ]
+}

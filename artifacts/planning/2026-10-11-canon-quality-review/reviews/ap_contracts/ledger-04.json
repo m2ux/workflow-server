@@ -1,0 +1,169 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "entries": [
+    {
+      "id": "AP-144",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Provenance and uniqueness of referenced values or completed actions.",
+        "observable": "Name a supplied contract/local producer and distinguish multiple candidates.",
+        "consistency": "A technique guarantee by name can conflict with AP-157 delivery requirements.",
+        "exceptions": "Anchored local references and checkable evidence are sound; a supplier name alone is not.",
+        "fix": "Declare and bind the value/precondition rather than linking an unavailable producer.",
+        "expression": "Name the supplier should not imply naming is sufficient."
+      },
+      "rationale": "The provenance test needs evidence delivery as well as an address.",
+      "finding_ids": [
+        "AC-03"
+      ],
+      "related_ids": [
+        "AP-16",
+        "AP-54",
+        "AP-136",
+        "AP-157"
+      ]
+    },
+    {
+      "id": "AP-145",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Bootstrap text before session-backed lookup exists.",
+        "observable": "Remove references and test whether every instruction still has executable substance.",
+        "consistency": "DP-33 explicitly permits necessary inline substance at this boundary.",
+        "exceptions": "Direct resource URIs and forward labels have actionable versus descriptive roles.",
+        "fix": "Inline the required substance and mark future-home labels as nonessential now.",
+        "expression": "The temporal scope and strike-reference test are concrete."
+      },
+      "rationale": "AP-122 deletion applies only when citation preserves fidelity; an unresolved pre-session cite cannot meet that premise.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-122",
+        "AP-53",
+        "DP-33",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-146",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Instruction audience and duty reach, with orientation needing a separate boundary.",
+        "observable": "Check whether the reader can act on or verify the described fact.",
+        "consistency": "Third-person duty rewriting can compete with DP-17 orientation voice.",
+        "exceptions": "Checkable preconditions and role data are protected; add descriptive orientation.",
+        "fix": "Address actual duties to the reader while preserving legitimate descriptions.",
+        "expression": "The surface list is broader than the word instruction suggests."
+      },
+      "rationale": "Narrow normative duty detection instead of treating all third-person behavior as instruction.",
+      "finding_ids": [
+        "AC-14"
+      ],
+      "related_ids": [
+        "AP-37",
+        "AP-147",
+        "DP-17"
+      ]
+    },
+    {
+      "id": "AP-147",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Technique-local rules attempting to own wider subject policy.",
+        "observable": "Compare constrained subject, produced product, and delivered audience.",
+        "consistency": "The exceptions distinguish local conformance from wider ownership.",
+        "exceptions": "Own outputs/cadence and canonical pointers remain valid.",
+        "fix": "Move wider policy to its owner and retain the technique-specific obligation.",
+        "expression": "The subject/reader tests are concrete qualitative checks."
+      },
+      "rationale": "Broad policy scope is measurable by who is bound and whether they receive the rule.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-104",
+        "AP-146",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-148",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Leaf Inputs repeated from merged ancestor contracts.",
+        "observable": "Resolve the effective contract and compare duplicate or changed slots.",
+        "consistency": "Unrestricted optionality changes can violate DP-46 substitutability.",
+        "exceptions": "Contract-changing exemptions need an accepted-input/guarantee test.",
+        "fix": "Remove duplicates; represent stricter needs through a distinct contract or conforming wrapper.",
+        "expression": "Optionality the technique needs is not a sufficient safety condition."
+      },
+      "rationale": "A required leaf input can reject a call the advertised ancestor permits.",
+      "finding_ids": [
+        "AC-15"
+      ],
+      "related_ids": [
+        "AP-55",
+        "AP-143",
+        "DP-46"
+      ]
+    },
+    {
+      "id": "AP-149",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Prose repeating facts already readable from schema.",
+        "observable": "Compare the semantic claim to the schema-owned field.",
+        "consistency": "The schema-extension Fix exceeds Detect and AP-02 scope.",
+        "exceptions": "Engine-only facts the schema cannot carry are correctly exempt.",
+        "fix": "Delete/cite owned facts; separately scope new schema capability.",
+        "expression": "Cannot express then declare it in schema is unclear and potentially unexecutable."
+      },
+      "rationale": "Remove the repair branch that does not follow from the detector.",
+      "finding_ids": [
+        "AC-16"
+      ],
+      "related_ids": [
+        "AP-02",
+        "AP-151",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-150",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Engine internals disclosed to a caller with only tool-level reach.",
+        "observable": "Deletion should leave calls, arguments, and recognizable outcomes unchanged.",
+        "consistency": "Actionable constraints remain under DP-17 and tool-contract principles.",
+        "exceptions": "Paths to write, failure recognition, and behavior invariants are protected.",
+        "fix": "Keep the obligation and tool interaction while removing irrelevant machinery.",
+        "expression": "The changed-action test disambiguates useful detail from narration."
+      },
+      "rationale": "This is an observable relevance rule rather than a blanket ban on technical explanation.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-50",
+        "AP-117",
+        "DP-17"
+      ]
+    },
+    {
+      "id": "AP-151",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Fixed admitted values of declared variables in prose only.",
+        "observable": "Compare enumerated prose with the variable values declaration.",
+        "consistency": "Structured enum ownership complements AP-126 and AP-149.",
+        "exceptions": "Computed sets and non-string forms the schema cannot carry are excepted.",
+        "fix": "Declare the supported set once and leave meaning/absence in prose.",
+        "expression": "The added-option thought experiment exposes the drift risk."
+      },
+      "rationale": "A structural source-of-truth test is possible without testing every enum member dynamically.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-126",
+        "AP-149",
+        "AP-161",
+        "DP-06"
+      ]
+    }
+  ]
+}

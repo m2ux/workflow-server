@@ -1,0 +1,164 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "entries": [
+    {
+      "id": "AP-124",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Protocol alternatives and host policy are two different subjects.",
+        "observable": "Exactly-one variant selection can be observed from branches and calls.",
+        "consistency": "Procedural slices in Rules collide with AP-19 and AP-25.",
+        "exceptions": "Single-phase alternatives and standing policy are legitimate but different cases.",
+        "fix": "Separate operations or branch one outcome; keep only invariants in Rules.",
+        "expression": "The compound Detect hides two different repairs."
+      },
+      "rationale": "An observable smell is paired with a migration that recreates procedural Rules.",
+      "finding_ids": [
+        "AC-01"
+      ],
+      "related_ids": [
+        "AP-19",
+        "AP-25",
+        "AP-121",
+        "DP-15"
+      ]
+    },
+    {
+      "id": "AP-125",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Technique associations in I/O are clearly delimited.",
+        "observable": "Links and producer/executor wording are directly inspectable.",
+        "consistency": "The Protocol Apply repair conflicts with AP-114.",
+        "exceptions": "Resource links are sound; the Apply exemption needs removal.",
+        "fix": "Keep relationships at supported binds and I/O about meaning/shape.",
+        "expression": "The example resource phrase also illustrates HOW, so examples should avoid conditional duties."
+      },
+      "rationale": "Retain the I/O boundary but repair its recommended destination.",
+      "finding_ids": [
+        "AC-02"
+      ],
+      "related_ids": [
+        "AP-42",
+        "AP-114",
+        "AP-119",
+        "AP-141"
+      ]
+    },
+    {
+      "id": "MR-01",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Comments/JSDoc, with licenses and non-expressible API contracts excepted.",
+        "observable": "Information loss on deletion is observable through the code and types.",
+        "consistency": "Its information test agrees with succinctness; a line limit is not necessary.",
+        "exceptions": "Necessary rationale can require more than one line.",
+        "fix": "Delete redundant narration while retaining every non-obvious operative fact.",
+        "expression": "Single why-line is more restrictive than the stated defect."
+      },
+      "rationale": "A small exception/repair change preserves the useful redundancy test.",
+      "finding_ids": [
+        "AC-21"
+      ],
+      "related_ids": []
+    },
+    {
+      "id": "MR-02",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Prose adjacent to complete examples and Templates.",
+        "observable": "The detector requires that the paragraph only re-explain shown keys.",
+        "consistency": "Template and Rules ownership agree with resource citation principles.",
+        "exceptions": "Additional constraints fall outside the only-restatement trigger.",
+        "fix": "Delete repeated explanation and cite the actual fill rules.",
+        "expression": "The field/timeout exemplar distinguishes duplication from new information."
+      },
+      "rationale": "No necessary numerical density threshold: factual duplication is a usable qualitative test.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-90",
+        "AP-102",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "MR-03",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Reusable content carrying literal host or worktree roots.",
+        "observable": "A checkout-specific path can be compared with declared placeholders.",
+        "consistency": "Portability agrees with AP-61 and AP-127.",
+        "exceptions": "Resolved paths in planning evidence are explicitly protected.",
+        "fix": "Replace only the machine root with the applicable supplied placeholder.",
+        "expression": "Concrete bad example and portable alternatives make the criterion understandable."
+      },
+      "rationale": "The scope separates portable instructions from session evidence.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-61",
+        "AP-127",
+        "AP-132"
+      ]
+    },
+    {
+      "id": "MR-04",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Parallel install/build/start guidance already owned by setup.",
+        "observable": "Compare runbook steps with the setup home and unique deltas.",
+        "consistency": "Single ownership and retained workflow deltas are coherent.",
+        "exceptions": "Workflow-specific material and orientation links are protected.",
+        "fix": "Use the setup link and retain only additional requirements.",
+        "expression": "The clone/install/start exemplar identifies the repeated content."
+      },
+      "rationale": "The rule detects copied operating instructions rather than all secondary documentation.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-74",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-126",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Workflow variable descriptions only.",
+        "observable": "Sentence count and producer/gate/default restatements can be inspected.",
+        "consistency": "Meaning and compact shape agree with I/O contract separation.",
+        "exceptions": "Shape hints remain; value rosters move to structured values.",
+        "fix": "Keep the value definition and remove wiring tails.",
+        "expression": "One-line is best read as one concise definition, not rendered screen width."
+      },
+      "rationale": "The structural tails provide an observable test beyond the qualitative word essay-length.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-151",
+        "AP-42",
+        "DP-13"
+      ]
+    },
+    {
+      "id": "AP-127",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Operative literals across definitions require a reference-versus-constant distinction.",
+        "observable": "Declared-slot meaning is evidence, but does not decide comparison operands.",
+        "consistency": "Direct enum comparisons are required by AP-52/AP-112.",
+        "exceptions": "Missing a constant-in-predicate exception.",
+        "fix": "Replace copied bound values, not meaningful test constants.",
+        "expression": "Where a designator belongs assumes the question the detector must decide."
+      },
+      "rationale": "A literal enum member can be correct operative syntax rather than duplicated state.",
+      "finding_ids": [
+        "AC-04"
+      ],
+      "related_ids": [
+        "AP-52",
+        "AP-112",
+        "DP-14",
+        "DP-30"
+      ]
+    }
+  ]
+}

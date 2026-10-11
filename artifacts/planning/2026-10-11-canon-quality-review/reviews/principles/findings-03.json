@@ -1,0 +1,113 @@
+{
+  "reviewer": "/root",
+  "findings": [
+    {
+      "id": "PD-09",
+      "kind": "improvement",
+      "priority": "P3",
+      "entries": [
+        "DP-19"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-19",
+          "start": 91,
+          "end": 94,
+          "quote": "## 19. Name Symbols Affirmatively\n\nA symbol id states what the value is: affirmative, head noun last, `snake_case`. A boolean is a predicate, a collection is a plural, and an I/O id carries neither direction nor representation. A rule slug states a positive invariant when that is clearer than a negation."
+        }
+      ],
+      "problem": "Affirmative meaning, noun order, case, boolean shape, collection plurality, I/O direction and rule negation are independently editable policies under one invariant heading.",
+      "witness": "A plural collection can have the wrong case, while a correctly cased boolean can fail predicate naming. One check of the heading does not settle its independent clauses.",
+      "proposed_fix": "Keep a semantic naming principle and cite the conventions/AP entries owning spelling and type-specific forms. Alternatively give independently applicable clauses stable sub-identifiers and record each result, without repeating their wording across homes.",
+      "observing_check": "A naming review records each applicable predicate. Changing the case convention updates one owner rather than several copied statements."
+    },
+    {
+      "id": "PD-10",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-22",
+        "AP-01"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-22",
+          "start": 103,
+          "end": 106,
+          "quote": "## 22. Modular Over Inline\n\nA construct lives in its own file. A parent references that file."
+        },
+        {
+          "entry": "AP-01",
+          "start": 62,
+          "end": 73,
+          "quote": "### AP-01. no-inline-content\n\n\"Let me just inline that\"\n\nContent is embedded in a parent file instead of living in its own file.\n\n**Detect:** An activity, technique, or resource body is inlined into a parent YAML/markdown file (or a new construct is authored inline rather than as a sibling file).\n\n**Do not flag:** Short inline literals that the schema requires on the parent (e.g. a one-line `description:` field); hyperlinks to separate files.\n\n**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#22-modular-over-inline)."
+        }
+      ],
+      "problem": "Construct is broad enough to include schema-required inline actions and literals, but the covering AP explicitly exempts them.",
+      "witness": "An inline action map required by an activity schema can be called a construct; extracting it into an unsupported file would satisfy a literal DP-22 reading and break the schema.",
+      "proposed_fix": "Separately referenceable workflow definitions, activities, techniques, routines and resources have their own files. Schema-owned inline fields and actions remain in their required parent.",
+      "observing_check": "A separately authored activity body embedded in a parent fails; an inline schema action passes."
+    },
+    {
+      "id": "PD-11",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-24",
+        "AP-113"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-24",
+          "start": 111,
+          "end": 114,
+          "quote": "## 24. Keep Session Interaction in Activities\n\nA technique takes inputs, works over tools and resources, and emits outputs. An activity owns when and how those products reach a person: `action: message`, checkpoint `message` and `options`, and artifact links."
+        },
+        {
+          "entry": "AP-113",
+          "start": 1446,
+          "end": 1457,
+          "quote": "### AP-113. session-interaction-in-technique\n\n\"Present `{drafting_plan}`\" / \"Present findings to the user\" / \"surface the summary in chat\"\n\nA technique performs or prescribes human/session interaction.\n\n**Detect:** Technique Capability, Protocol, or Rules instructs presenting, surfacing, showing, narrating, or otherwise delivering content to a user, session, or chat. Test: the imperative needs a human audience or session channel to succeed, and no tool or technique owns that channel.\n\n**Do not flag:** Assembling or persisting a declared output the activity will surface. An activity binding a tool or technique whose domain is external delivery (push, open a PR, send). Naming \"the user's request\" as an input origin (`io-agnostic-contract`). A stage or gate locus (`technique-stage-agnostic`).\n\n**Fix:** Delete present, surface, and show-to-user phases. Keep assemble, derive, and persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message`, or a checkpoint message linking `{id}` or a path). See [Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities)."
+        }
+      ],
+      "problem": "Person and session delivery can encompass domain operations such as sending a notification, whereas AP-113 distinguishes domain-owned delivery channels.",
+      "witness": "A notification technique calls its domain tool and returns delivery evidence. That reaches a person, but is not the workflow operator checkpoint/message operation.",
+      "proposed_fix": "Activities own workflow-operator messages, approvals and checkpoint presentation. A technique may execute a declared domain delivery operation through its owning tool and return its result; the binding activity owns when that domain operation runs.",
+      "observing_check": "A technique narrating findings into operator chat fails; a bound notification operation with a declared result is assessed as domain work."
+    },
+    {
+      "id": "PD-12",
+      "kind": "improvement",
+      "priority": "P2",
+      "entries": [
+        "DP-26",
+        "DP-42",
+        "AP-158"
+      ],
+      "evidence": [
+        {
+          "entry": "DP-26",
+          "start": 119,
+          "end": 122,
+          "quote": "## 26. A Technique Is a Reading\n\nA technique is the judgement a loop, branch, or gate cannot hold: how to orient a tool for this anatomy, how to read what came back, and how to recover when that is not what was expected. The tool schema owns the remaining parameters. The inputs name the situation the path applies to. A path that only calls the tool is the tool's own leaflet. A judgement that already has an endpoint or a step kind lives in that construct."
+        },
+        {
+          "entry": "DP-42",
+          "start": 183,
+          "end": 186,
+          "quote": "## 42. A Routine Holds the Codified Path\n\nWhere an application is still free-form, it is a technique. Where the path is accepted and consistent, it is a routine: a named run of those produce paths, spliced into the activity that binds it, and the home for a sequence, an iteration, a branch, or a gate that several sites share. Its sources are the two in [Workflows Ossify Patterns](#1-workflows-ossify-patterns). The Protocol that remains is the reading that routine cannot hold ([A Technique Is a Reading](#26-a-technique-is-a-reading))."
+        },
+        {
+          "entry": "AP-158",
+          "start": 2038,
+          "end": 2049,
+          "quote": "### AP-158. produce-path-without-a-reading\n\n\"1. Call `<tool> { \u2026 }` and record the `{report}`.\" as the whole Protocol\n\nA technique's Protocol is the tool's own call and nothing else, so the technique contributes no reading the raw response does not already give.\n\n**Detect:** A technique `## Protocol` whose phases reduce to invoking one tool, or reading one resource, and recording the response under a declared id, with no phase that interprets, bounds, or qualifies the answer: no statement of what the response omits or caps, no derivation, no verdict, no recovery for an unexpected answer. Test: what a reader gains beyond the tool's own schema is only a variable name.\n\n**Do not flag:** A reading that lives in a declared Output description or a `## Rules` entry. A wrapper whose contribution is the argument shape it fixes for one named question. A compose step that assembles a value another step consumes. A Protocol that carries the tool's argument structure (`tool-contract-restated-in-protocol`).\n\n**Fix:** Add the phase that reads the answer \u2014 what it caps, what it omits, what an empty result means, what the recovery is. Where no such reading exists, retire the technique and bind the tool at the run that needed it. See [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading)."
+        }
+      ],
+      "problem": "Reading, anatomy, leaflet, free-form, accepted and consistent leave the technique/routine boundary dependent on metaphor.",
+      "witness": "A wrapper fixes arguments for one bounded question without post-processing. AP-158 permits it, while a literal only-calls-the-tool reading can retire it.",
+      "proposed_fix": "Name the technique contribution: a bounded question/argument choice, interpretation, derivation, qualification or recovery that the native construct does not supply. A fixed sequence/branch/loop/gate with an accepted input-output contract belongs in a routine; retain only those named contributions in its techniques.",
+      "observing_check": "An alias that merely renames a raw return fails. A fixed-argument wrapper with a documented semantic question and the catalog exception passes. A reusable structural sequence has a routine owner."
+    }
+  ]
+}

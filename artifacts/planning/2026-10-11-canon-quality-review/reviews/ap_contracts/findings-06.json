@@ -1,0 +1,127 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AC-19",
+      "kind": "detection-gap",
+      "priority": "medium",
+      "entries": [
+        "AP-160"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-160",
+          "source": "sources/anti-patterns.md",
+          "start": 2068,
+          "end": 2072,
+          "quote": "**Detect:** On a change surface, a gate, an exit, a bound technique, or a rule that the base ref carried at a site is absent there, and an equivalent construct appears elsewhere. Flag where neither site states the outcome, option, input, or audience the move preserves, nor the check that confirms it. Test: what the move had to keep, and where that is recorded, exists only in the reviewer's head. A relocation reads clean file by file, so a per-file walk never reaches it.\n\n**Do not flag:** A removal the change states as a removal. A receiving site that declares the same output, gate, or artifact the losing site did. Surviving prose still asserting the old behaviour (`stale-restatement-after-change`).\n\n**Fix:** At the receiving site, state the outcome that still has to hold and the check confirming it — a declared output the consumers read, a gate on the same variable, an artifact at the same path. Where the move retires the behaviour, say so where the behaviour was. See [A Relocation Records the Outcome It Keeps](./design-principles.md#38-a-relocation-records-the-outcome-it-keeps)."
+        },
+        {
+          "entry": "DP-38",
+          "source": "sources/design-principles.md",
+          "start": 169,
+          "end": 169,
+          "quote": "A restructuring that removes a gate, re-routes an exit, relocates a technique, or collapses a rule into another home names the outcome, option, input, or audience that still holds, and the check that confirms it."
+        },
+        {
+          "entry": "DP-17",
+          "source": "sources/design-principles.md",
+          "start": 85,
+          "end": 85,
+          "quote": "Definition prose — `description`, `outcome`, option text, and README orientation for the defined workflow — states what the system is or does, in declarative present tense."
+        }
+      ],
+      "problem": "A matching output, gate, or artifact declaration at the receiving site is exempted without showing that reachability, options, or audience survived. That is weaker than DP-38 requirement to name the preserved outcome and the confirming check. Requiring retirement narration at the old runtime site also blurs change evidence with current definition prose.",
+      "witness": "An approval gate is relocated beneath a condition that skips it on one path. The receiving gate still names the same variable and options, satisfying the current exemption, but an action can now be reached without approval. A file-name match likewise cannot prove its former audience still receives it.",
+      "proposed_fix": "Detect: \"For a relocation, identify the preserved observable outcome and compare its producer, paths, consumers, options, and audience before and after. Flag a missing preservation claim or a missing check that supports it.\" Do not flag: \"An intentional removal recorded in the change scope, or preservation supported by a path/contract comparison or test; a matching declaration alone is insufficient.\" Fix: \"Record the claim and evidence in the change review or planning record; express the surviving runtime contract at its owner. Record intentional retirement in the change record.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag the relocated approval gate when an action becomes reachable through a path that skips it, even though the new gate text matches.",
+        "negative": "Do not flag a move whose before/after path check preserves every required option and audience, with the evidence recorded beside the change."
+      }
+    },
+    {
+      "id": "AC-20",
+      "kind": "repair-gap",
+      "priority": "medium",
+      "entries": [
+        "AP-161"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-161",
+          "source": "sources/anti-patterns.md",
+          "start": 2080,
+          "end": 2084,
+          "quote": "**Detect:** For each value a technique's `## Outputs` enumerates — on an entry, a component, or a nested field — name the phase that leaves it standing when the run ends. Flag a value whose assigning phase is followed by a phase that reassigns the same field over a population that includes those subjects, and a value no phase assigns. Test: as the last phase completes, a later phase's own criteria settle that subject's field. Each phase can be correct alone; only their order is wrong.\n\n**Do not flag:** A value a later phase's criteria exclude, by a condition naming the subjects the earlier phase settled. A value the tool supplies in its own response. A value the contract admits and no available fixture exercises — record it unevidenced and leave the declaration. A value set whose only home is prose (`value-set-in-prose`).\n\n**Fix:** Scope the settling phase to the subjects it judges, so a value an earlier phase recorded survives. Where no path can produce the value, delete it and fold what it distinguished into a value that has a path. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); a whole output with no home is `output-without-destination`."
+        },
+        {
+          "entry": "DP-38",
+          "source": "sources/design-principles.md",
+          "start": 169,
+          "end": 169,
+          "quote": "A restructuring that removes a gate, re-routes an exit, relocates a technique, or collapses a rule into another home names the outcome, option, input, or audience that still holds, and the check that confirms it."
+        }
+      ],
+      "problem": "The Fix for a value with no producing path only deletes/folds the value. A contract may be correct while the producer is incomplete; deleting a semantically distinct required outcome can hide that defect. The test also says \"as the last phase completes, a later phase\", which obscures the intended last-writer check.",
+      "witness": "An output contract distinguishes cancelled from completed, but no branch records user cancellation. Deleting cancelled and folding it into completed makes the enum producible while falsely reporting work completed. In the provided unanswerable/none shape, the distinction may likewise be a required negative result.",
+      "proposed_fix": "Fix: \"Where the value is required by the intended contract, add or repair a reachable producer and preserve it through later assignments. Where the value is unintended, remove it only with its consumer and semantic changes accounted for. Keep an unexercised but reachable value as unevidenced, not defective.\" Test: \"For each feasible input class, trace assignments to the terminal state; flag a promised value that no feasible path leaves as the final value.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag cancelled if cancellation is an admitted input event but every terminal path records completed; repair the missing branch.",
+        "negative": "Do not flag a reachable, preserved rare status merely because available fixtures have not exercised it. Removing an accidental unused status is valid when it changes no required distinction."
+      }
+    },
+    {
+      "id": "AC-21",
+      "kind": "improvement",
+      "priority": "low",
+      "entries": [
+        "MR-01"
+      ],
+      "evidence": [
+        {
+          "entry": "MR-01",
+          "source": "sources/anti-patterns.md",
+          "start": 1612,
+          "end": 1616,
+          "quote": "**Detect:** Comments or JSDoc whose removal leaves the code equally clear; multi-line blocks that paraphrase identifiers; \"what\" narration without a non-obvious \"why\".\n\n**Do not flag:** One-line rationale for a surprising constraint, safety invariant, or non-local coupling; license headers; public API contracts that the language cannot express.\n\n**Fix:** Delete or collapse to a single why-line. Prefer renaming and structure over commentary."
+        }
+      ],
+      "problem": "The information-redundancy test is useful, but a one-line rationale exception and single why-line repair can compress a necessary multi-part safety or API constraint past usefulness. The operative distinction is information the code already communicates, not line count.",
+      "witness": "A surprising invariant has two independent nonlocal conditions and neither is encoded in the type system. A two-line explanation preserves both facts. A rule that requires one why-line creates pressure to omit a condition although the comment is not narration.",
+      "proposed_fix": "Do not flag: \"The shortest clear statement of a non-obvious invariant, rationale, coupling, or public contract the code and types do not express.\" Fix: \"Delete redundant narration. Preserve every operative fact; condense or improve naming/structure when that communicates the same information more clearly.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag \"increments count\" beside count += 1 when it adds no information.",
+        "negative": "Do not flag a concise multi-line safety invariant whose conditions are absent from the code and types."
+      }
+    },
+    {
+      "id": "AC-22",
+      "kind": "improvement",
+      "priority": "low",
+      "entries": [
+        "AP-129"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-129",
+          "source": "sources/anti-patterns.md",
+          "start": 1696,
+          "end": 1700,
+          "quote": "**Detect:** A change alters a gate, precondition, default, or ordering. Search the pre-change phrasing across every README tier, activity `description`, `## Capability`, `outcome[]`, and resource body. Flag each hit that still asserts the old behaviour. Count occurrences in the tree: a manifest naming one file for a claim that appears in three is the same defect.\n\n**Do not flag:** A restatement the change did not affect. A planning artifact that records the before state. A claim held once. A restated Detect body (`canon-layer-cites-not-restates`). A stale clause about another actor (`instruction-narrates-an-actor`).\n\n**Fix:** Update every occurrence in one edit and record the count in the file manifest. Where the claim has one home, delete the restatements. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+        }
+      ],
+      "problem": "Searching the old wording is a good discovery technique but cannot establish that every claim was updated: paraphrases may assert the same old contract, and Protocol/Rules are absent from the named surface list. The rule should separate locating candidates from deciding semantic staleness.",
+      "witness": "A gate changes from unconditional resume to explicit resume intent. README contains the old exact phrase, while a Rule paraphrases it as \"all saved sessions resume automatically\". Searching only the old phrase and listed description surfaces can miss the operative Rule.",
+      "proposed_fix": "Detect: \"Enumerate the surfaces that state or consume the changed contract, including Protocol and Rules. Search old terms and related symbols to locate candidates, then compare each surviving claim with the current behavior. A phrase search alone is not the completeness proof.\" Fix: \"Update or remove each semantically stale claim and record the reviewed surface; retain permitted orientation without duplicating operative ownership.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag an old-behavior paraphrase in Rules even if its words differ from the edited README.",
+        "negative": "Do not flag a historical planning record clearly describing the before-state, or an unaffected current claim."
+      }
+    }
+  ]
+}

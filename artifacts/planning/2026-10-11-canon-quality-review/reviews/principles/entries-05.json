@@ -1,0 +1,151 @@
+{
+  "reviewer": "/root",
+  "entries": [
+    {
+      "id": "DP-33",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Instruction surfaces before references resolve.",
+        "observable": "Strike references and test whether the remaining instruction is executable.",
+        "consistency": "It supplies the explicit bounded exception to DP-06.",
+        "exceptions": "Later canonical names can remain labels, not required resolution paths.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The counterfactual test is concrete."
+      },
+      "rationale": "Strike references and test whether the remaining instruction is executable. It supplies the explicit bounded exception to DP-06.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-06",
+        "AP-145"
+      ]
+    },
+    {
+      "id": "DP-34",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Coupling caused solely by duplicated owned facts.",
+        "observable": "Change an owner fact and identify consumers requiring synchronization only.",
+        "consistency": "DP-06 provides the ownership premise.",
+        "exceptions": "Consumers whose actual behavior changes are not merely restated copies.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The only-to-keep-agreeing qualifier bounds the broad opening."
+      },
+      "rationale": "Change an owner fact and identify consumers requiring synchronization only. DP-06 provides the ownership premise.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-06"
+      ]
+    },
+    {
+      "id": "DP-35",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Competing paths covered by a prohibition.",
+        "observable": "Compare capability, preconditions, authority and lifecycle before treating paths as duplicates.",
+        "consistency": "DP-34 supports one owner for duplicate policy.",
+        "exceptions": "Intentional alternatives can be distinct capabilities despite a shared verb.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Means two constructs do one job overstates the inference."
+      },
+      "rationale": "Compare capability, preconditions, authority and lifecycle before treating paths as duplicates. DP-34 supports one owner for duplicate policy.",
+      "finding_ids": [
+        "PD-15"
+      ],
+      "related_ids": [
+        "DP-34"
+      ]
+    },
+    {
+      "id": "DP-36",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Names and facts available to a technique reader.",
+        "observable": "Prove delivery or explicit prerequisite retrieval, not merely a qualified spelling.",
+        "consistency": "DP-29 allows resource policy citation; AP-53 distinguishes spelling from delivery.",
+        "exceptions": "A full other-library address alone does not demonstrate availability.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Own text or stated plainly leaves delivered resources and qualified external rules ambiguous."
+      },
+      "rationale": "Prove delivery or explicit prerequisite retrieval, not merely a qualified spelling. DP-29 allows resource policy citation; AP-53 distinguishes spelling from delivery.",
+      "finding_ids": [
+        "PD-03"
+      ],
+      "related_ids": [
+        "DP-06",
+        "DP-29",
+        "AP-53",
+        "AP-157"
+      ]
+    },
+    {
+      "id": "DP-37",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Technique I/O contract value meaning.",
+        "observable": "Identify caller/activity/workflow provenance leaking into a value definition.",
+        "consistency": "AP-42 supplies the specific coupling smell.",
+        "exceptions": "Contract shape may name semantic roles without naming a caller.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The what-versus-who distinction is explicit."
+      },
+      "rationale": "Identify caller/activity/workflow provenance leaking into a value definition. AP-42 supplies the specific coupling smell.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-42"
+      ]
+    },
+    {
+      "id": "DP-38",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Restructuring a gate, exit, technique or rule.",
+        "observable": "Compare the preserved outcome/binding/audience and its observing check.",
+        "consistency": "AP-160 tests the cross-file relocation consequence.",
+        "exceptions": "An intentional retirement is a separate declared removal.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The preservation witness is concrete."
+      },
+      "rationale": "Compare the preserved outcome/binding/audience and its observing check. AP-160 tests the cross-file relocation consequence.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-160"
+      ]
+    },
+    {
+      "id": "DP-39",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Phase heading wording and length.",
+        "observable": "Count words and identify the outcome; four words receives inconsistent guidance.",
+        "consistency": "DP-15 owns phase semantics.",
+        "exceptions": "No title/proper-name exception or fourth-word rule is stated.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Two-or-three and past-four establish different boundaries."
+      },
+      "rationale": "Count words and identify the outcome; four words receives inconsistent guidance. DP-15 owns phase semantics.",
+      "finding_ids": [
+        "PD-16"
+      ],
+      "related_ids": [
+        "DP-15"
+      ]
+    },
+    {
+      "id": "DP-40",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Worker/activity fan-out versus one-worker work units.",
+        "observable": "Trace the graph destinations, gather activity and within-worker loop.",
+        "consistency": "DP-42 can own reusable sequences containing that structural work.",
+        "exceptions": "The scope distinguishes execution layers rather than choosing by task size alone.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The second sentence makes the opening layer claim operational."
+      },
+      "rationale": "Trace the graph destinations, gather activity and within-worker loop. DP-42 can own reusable sequences containing that structural work.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-42"
+      ]
+    }
+  ]
+}

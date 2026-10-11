@@ -1,0 +1,142 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AC-07",
+      "kind": "improvement",
+      "priority": "medium",
+      "entries": [
+        "AP-133"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-133",
+          "source": "sources/anti-patterns.md",
+          "start": 1744,
+          "end": 1748,
+          "quote": "**Detect:** In one bucket (`## Rules`, a `rules.*` array, or fill rules), an input satisfies both triggers, the handling differs, and neither entry orders them: a broad rule beside a narrower one that does not name itself the exception, two thresholds on one measure, or two criteria on one field. Test: one input in the intersection, read alone, does not determine the behaviour.\n\n**Do not flag:** Triggers that cannot both hold. A pair already ordered, by a precedence clause or a group key (`rule-group-disambiguation`). One invariant stated twice (`single-rule-authority`). Mutually exclusive prescriptions (`no-contradictory-rules`). A carve-out that names the entry it excepts.\n\n**Fix:** One entry, the narrower case as a condition inside it. Where both remain, the narrower names what it overrides (`dotted-rule-address`). Splitting the triggers is valid where the split is a real distinction."
+        },
+        {
+          "entry": "AP-20",
+          "source": "sources/anti-patterns.md",
+          "start": 308,
+          "end": 312,
+          "quote": "**Detect:** Two rules read as conflicting when co-listed, and they are not separated by grouped rule keys that supply context.\n\n**Do not flag:** Rules that are truly contradictory (`no-contradictory-rules`); already-grouped arrays with clear keys.\n\n**Fix:** Place each rule under a descriptive group key that supplies the missing context (e.g. `code-commentary` vs `attribution-prohibition`)."
+        }
+      ],
+      "problem": "Different handling in overlapping scopes is not itself ambiguous: independent constraints can apply together. A group key supplies context but does not necessarily order two still-overlapping rules. The present test should identify the missing composition or precedence decision, rather than treating difference as the defect.",
+      "witness": "\"Every finding cites evidence\" and \"High findings name an owner\" both apply to a High finding without conflict or required order. Keys general and high do not, by themselves, settle two different default-owner choices.",
+      "proposed_fix": "Detect: \"The triggers overlap and applying both leaves an observable result underdetermined: they compete for one choice, or their order changes the required result, and neither an explicit precedence rule nor disjoint scope settles it.\" Do not flag: \"Compatible cumulative constraints. Grouping that actually makes contexts disjoint; a group label alone does not supply precedence.\" Keep mutually exclusive obligations under no-contradictory-rules.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag two applicable fallback-selection rules whose chosen output depends on an unspecified precedence.",
+        "negative": "Do not flag evidence-for-all plus owner-for-High, since both obligations are simultaneously and unambiguously satisfiable."
+      }
+    },
+    {
+      "id": "AC-08",
+      "kind": "unsound-exemption",
+      "priority": "medium",
+      "entries": [
+        "AP-134"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-134",
+          "source": "sources/anti-patterns.md",
+          "start": 1756,
+          "end": 1760,
+          "quote": "**Detect:** A technique cites a multi-section resource with no `#anchor` while the link text, or the phrase beside it, matches one heading. Also flag a bare citation beside an anchored citation of the same resource: both are delivered.\n\n**Do not flag:** A consumer that reads the body: a filler using `## Template` with its `## Rules`, an audit of every entry, or a technique whose sections are most of the file. A single-section resource. A bare citation that introduces the resource.\n\n**Fix:** Cite `../resources/example.md#section-title`, link text the section title, one citation per section. A bare citation beside anchored ones is anchored or dropped. A large resource no section covers is a split under [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain)."
+        },
+        {
+          "entry": "DP-32",
+          "source": "sources/design-principles.md",
+          "start": 145,
+          "end": 145,
+          "quote": "A citation names the narrowest section that carries what the prose needs. The path after `resources/`, with `.md` stripped and any `#anchor` kept, is the unit loaded. The bare resource is the citation when the consumer reads the whole body. Every distinct citation is delivered, so a bare citation beside anchored ones sends the file and the sections. Where several sections are needed, cite each anchor. Where the set is most of the body, cite the resource once."
+        }
+      ],
+      "problem": "The bare-citation introduction exemption permits the exact whole-plus-section pair Detect identifies as redundant delivery. Introducing a resource does not change the documented loading behavior.",
+      "witness": "A Protocol first says \"Consult [guide](guide.md)\" as an introduction, then \"Apply [Rules](guide.md#rules)\". Detect flags both delivered units; the bare-introduction exemption allows the first. DP-32 states every distinct citation is delivered.",
+      "proposed_fix": "Delete \"A bare citation that introduces the resource\" from Do not flag. Replace with: \"A bare citation is appropriate when this application consumes the whole body; use that single citation and avoid additional delivered section citations. Orientation outside a delivered technique may introduce a resource with a bare link.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag a delivered bare introduction plus an anchored citation when only the section is consumed.",
+        "negative": "Do not flag a single bare citation for an audit of every entry, or only anchored citations for a narrow section consumer."
+      }
+    },
+    {
+      "id": "AC-09",
+      "kind": "repair-conflict",
+      "priority": "low",
+      "entries": [
+        "AP-135"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-135",
+          "source": "sources/anti-patterns.md",
+          "start": 1768,
+          "end": 1772,
+          "quote": "**Detect:** Protocol or a rule spells out field names, types, cardinality, required-versus-optional, permitted values, or omit-versus-empty for a tool whose schema the harness shows the caller. The bullet says what the argument is.\n\n**Do not flag:** A call signature naming which arguments a step passes. What the caller does with the response. A constraint on a value, such as relaying a map verbatim. An obligation the schema cannot express, such as which dispatches must pass the argument.\n\n**Fix:** Keep the obligation and the reason. Drop the shape. See [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface)."
+        },
+        {
+          "entry": "AP-26",
+          "source": "sources/anti-patterns.md",
+          "start": 384,
+          "end": 388,
+          "quote": "**Detect:** A `description`, `message`, option or action description, procedure bullet, technique `## Rules` entry, or `rules.*` string explains why a construct exists, what consumes it, or whose remit it falls under, compares it to a prior implementation, or restates a fact adjacent structure already encodes (`steps[]` order, `when`, effects, exits, the workflow graph, a default). Test: delete the clause; if the prohibition or invariant still says what is constrained, the clause was rationale.\n\n**Do not flag:** A one-line summary of what the construct does. A structural field itself. A prohibition citing the home that owns the behaviour it forbids (`no-rule-protocol-restatement`). A rule whose subject is the boundary between actors.\n\n**Fix:** Delete the rationale, narration, or restatement. Keep a clause whose deletion would lose a fact. Where a reader needs another actor's contract, link that contract's home. Put rationale in a commit, an ADR, or a planning doc."
+        }
+      ],
+      "problem": "\"Keep the obligation and the reason\" does not distinguish an operative constraint from explanatory rationale. AP-26 removes rationale whose deletion leaves the obligation intact, including from Protocol and Rules.",
+      "witness": "After deleting a duplicated tool argument shape, AP-135 keeps \"Relay the map verbatim because the server performs the merge.\" The server-mechanism clause adds no constraint and AP-26 deletes it. This is a conflict in the prescribed retained prose, not in the caller obligation.",
+      "proposed_fix": "Replace Fix with: \"Keep the caller obligation and every fact needed to apply it. Drop argument shape the tool schema already declares. Put explanatory rationale in its design record; cite a canonical contract when the caller needs that contract.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag a prose field/type roster already supplied by the tool schema, and remove a rationale-only tail.",
+        "negative": "Do not flag \"Pass the map verbatim\" or a state-dependent obligation the tool schema cannot express; those constrain the call."
+      }
+    },
+    {
+      "id": "AC-10",
+      "kind": "repair-conflict",
+      "priority": "medium",
+      "entries": [
+        "AP-137",
+        "AP-158"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-137",
+          "source": "sources/anti-patterns.md",
+          "start": 1792,
+          "end": 1796,
+          "quote": "**Detect:** One tool is named for the same capability in two or more technique bodies, and no technique declares that product on `## Outputs`. Signals: permitted argument values listed at more than one site; a citation of another consumer (`single-rule-authority`). Test: no file answers which technique a caller would bind.\n\n**Do not flag:** One call site (`duplicate-shared-capability`). A site that already binds a wrapping op, and the wrapper (`canonical-technique-reference`). An engine, conduct, bootstrap, or agent-entry surface. Distinct capabilities of one tool.\n\n**Fix:** Author the technique, declare the product, bind it as an activity step, and let consumers declare that product as an input. Repoint sideways citations at the owner. See also `pass-orchestration-in-technique`."
+        },
+        {
+          "entry": "AP-158",
+          "source": "sources/anti-patterns.md",
+          "start": 2044,
+          "end": 2048,
+          "quote": "**Detect:** A technique `## Protocol` whose phases reduce to invoking one tool, or reading one resource, and recording the response under a declared id, with no phase that interprets, bounds, or qualifies the answer: no statement of what the response omits or caps, no derivation, no verdict, no recovery for an unexpected answer. Test: what a reader gains beyond the tool's own schema is only a variable name.\n\n**Do not flag:** A reading that lives in a declared Output description or a `## Rules` entry. A wrapper whose contribution is the argument shape it fixes for one named question. A compose step that assembles a value another step consumes. A Protocol that carries the tool's argument structure (`tool-contract-restated-in-protocol`).\n\n**Fix:** Add the phase that reads the answer — what it caps, what it omits, what an empty result means, what the recovery is. Where no such reading exists, retire the technique and bind the tool at the run that needed it. See [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading)."
+        },
+        {
+          "entry": "DP-26",
+          "source": "sources/design-principles.md",
+          "start": 121,
+          "end": 121,
+          "quote": "A technique is the judgement a loop, branch, or gate cannot hold: how to orient a tool for this anatomy, how to read what came back, and how to recover when that is not what was expected. The tool schema owns the remaining parameters. The inputs name the situation the path applies to. A path that only calls the tool is the tool's own leaflet. A judgement that already has an endpoint or a step kind lives in that construct."
+        }
+      ],
+      "problem": "AP-137 treats repeated use of one primitive as sufficient reason to author a shared output-producing wrapper. AP-158 retires a wrapper whose only contribution is naming the raw response. Reuse count does not prove there is shared interpretation, policy, or a fixed question to extract.",
+      "witness": "Two substantive techniques call the same generic query tool with caller-supplied arguments and use its raw response locally for different derivations. No technique exposes that raw response as an output. AP-137 creates a generic call-and-return wrapper; AP-158 flags that wrapper because it adds no reading or fixed argument shape. This is a repair cycle unless the criterion first establishes useful shared work.",
+      "proposed_fix": "AP-137 Detect: \"Two or more techniques duplicate the same tool-facing interpretation, recovery policy, or argument selection for one named question, and no technique owns that shared product.\" Do not flag: \"Independent use of a raw primitive exactly as its tool contract defines, with distinct caller-owned interpretation.\" Fix: \"Extract the proven shared contribution; preserve direct primitive use where there is no such contribution.\" Cross-reference produce-path-without-a-reading as a precondition for the extraction.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag duplicated pagination interpretation and identical absence handling for the same domain query; one shared technique can own those decisions.",
+        "negative": "Do not flag two domain techniques that use the same raw query primitive but ask different questions and interpret results differently."
+      }
+    }
+  ]
+}

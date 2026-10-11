@@ -1,0 +1,167 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "entries": [
+    {
+      "id": "AP-128",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Readers of possibly unproduced values, including pre-producer conditions.",
+        "observable": "Control paths and assignments establish availability.",
+        "consistency": "Identical predicates are insufficient when their inputs change.",
+        "exceptions": "Same-expression exemption can admit a skipped producer.",
+        "fix": "Prove dominance/definedness while preserving domain predicates.",
+        "expression": "Sole producer and later reader wording misses some initial-read cases."
+      },
+      "rationale": "A concrete false-to-true gate mutation reproduces the unsound exemption.",
+      "finding_ids": [
+        "AC-05"
+      ],
+      "related_ids": [
+        "AP-112",
+        "AP-161"
+      ]
+    },
+    {
+      "id": "AP-129",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Changed contracts and claims that describe or consume them.",
+        "observable": "Semantic comparison is stronger than exact old-phrase hits.",
+        "consistency": "One-home remediation remains coherent.",
+        "exceptions": "Historical evidence is correctly exempt.",
+        "fix": "Enumerate relevant claims and then update or remove semantic staleness.",
+        "expression": "Named surface list omits Rules/Protocol and can read as exhaustive."
+      },
+      "rationale": "Make search a locating method rather than the entire completeness test.",
+      "finding_ids": [
+        "AC-22"
+      ],
+      "related_ids": [
+        "AP-103",
+        "AP-149",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-130",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Artifact declaration bodies as filenames under an assigned prefix.",
+        "observable": "Literal/template filenames versus prose or multiple destinations are distinguishable.",
+        "consistency": "Separate outputs and bind-gated modes fit artifact ownership.",
+        "exceptions": "Token templates are explicitly valid.",
+        "fix": "Split actual files; declare sibling-owned files at the sibling.",
+        "expression": "The one-filename invariant is concrete and examples cover common confusions."
+      },
+      "rationale": "Filename selection remains a narrow declaration rule; no current-engine conformance claim is made.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-31",
+        "AP-44",
+        "AP-138"
+      ]
+    },
+    {
+      "id": "AP-131",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Consult-resource identities and established naming families.",
+        "observable": "Verb-headed names are observable; unrelated siblings are weak evidence of a suffix convention.",
+        "consistency": "Convention search is sound but should compare like resource kinds.",
+        "exceptions": "Already names content overlaps the missing-kind test.",
+        "fix": "Rename genuinely ambiguous family outliers; preserve unambiguous nouns.",
+        "expression": "Specify which sibling family establishes the kind suffix."
+      },
+      "rationale": "Narrowing the suffix branch would reduce inconsistent naming verdicts.",
+      "finding_ids": [
+        "AC-06"
+      ],
+      "related_ids": [
+        "DP-07"
+      ]
+    },
+    {
+      "id": "AP-132",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Deployment locations in Capability.",
+        "observable": "Substitute another artifact root while keeping the capability constant.",
+        "consistency": "Locations belong in bound inputs/defaults and Protocol, consistent with DP-13.",
+        "exceptions": "An operation whose subject is the path is explicitly protected.",
+        "fix": "State the artifact class and declare the needed location.",
+        "expression": "The portability test gives the path detector a semantic boundary."
+      },
+      "rationale": "A concrete relocation thought experiment is sufficient qualitative evidence.",
+      "finding_ids": [],
+      "related_ids": [
+        "MR-03",
+        "AP-61",
+        "DP-13"
+      ]
+    },
+    {
+      "id": "AP-133",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Intersecting triggers with underdetermined composition or precedence.",
+        "observable": "A joint-input witness is available, but different handling alone is not the defect.",
+        "consistency": "Contradiction ownership remains AP-24; group labels do not necessarily order rules.",
+        "exceptions": "Compatible cumulative constraints deserve an explicit exemption.",
+        "fix": "Order genuinely competing choices or make contexts disjoint.",
+        "expression": "Clarify underdetermined behavior before listing threshold examples."
+      },
+      "rationale": "The intersection test becomes useful when it distinguishes coexistence from competition.",
+      "finding_ids": [
+        "AC-07"
+      ],
+      "related_ids": [
+        "AP-20",
+        "AP-24",
+        "AP-22"
+      ]
+    },
+    {
+      "id": "AP-134",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Delivered technique citations into multi-section resources.",
+        "observable": "Bare-plus-anchor delivery is directly observable under DP-32.",
+        "consistency": "The introduction carve-out undermines the duplicate-delivery detector.",
+        "exceptions": "Whole-body use is valid; introduction alone does not justify delivery.",
+        "fix": "Keep one whole citation or the required anchors, based on consumed content.",
+        "expression": "The introduction exemption needs an explicit nondelivered-surface boundary."
+      },
+      "rationale": "The same citation pair can be flagged and excused without a semantic difference.",
+      "finding_ids": [
+        "AC-08"
+      ],
+      "related_ids": [
+        "DP-32",
+        "AP-139"
+      ]
+    },
+    {
+      "id": "AP-135",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Tool argument shape restated in Protocol or Rules.",
+        "observable": "Compare the prose to the schema the harness actually presents.",
+        "consistency": "Keeping all reasons conflicts with AP-26 rationale deletion.",
+        "exceptions": "Caller obligations outside schema expressiveness are correctly retained.",
+        "fix": "Keep actionable obligations and facts; remove redundant shape and rationale.",
+        "expression": "Reason conflates an operative condition with an explanation."
+      },
+      "rationale": "The detection is sound; the retained-text instruction needs precision.",
+      "finding_ids": [
+        "AC-09"
+      ],
+      "related_ids": [
+        "AP-26",
+        "AP-153",
+        "AP-154",
+        "DP-21"
+      ]
+    }
+  ]
+}

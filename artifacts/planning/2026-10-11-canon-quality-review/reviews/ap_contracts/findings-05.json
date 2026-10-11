@@ -1,0 +1,135 @@
+{
+  "reviewer": "ap_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AC-15",
+      "kind": "unsound-exemption",
+      "priority": "medium",
+      "entries": [
+        "AP-148"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-148",
+          "source": "sources/anti-patterns.md",
+          "start": 1924,
+          "end": 1928,
+          "quote": "**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf is read. Where the leaf's wording narrows the value to that one technique, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.\n\n**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the technique needs. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).\n\n**Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+        },
+        {
+          "entry": "DP-46",
+          "source": "sources/design-principles.md",
+          "start": 201,
+          "end": 201,
+          "quote": "A definition that declares a shared contract is usable wherever that contract is expected. The consumer binds the contract."
+        }
+      ],
+      "problem": "The exemption allows a leaf to change optionality whenever that technique needs it, without testing the shared contract. Making an inherited optional input required rejects a call the ancestor contract permits, contrary to the substitutability stance in DP-46.",
+      "witness": "The shared contract admits an absent filter. A leaf redeclares filter as required, then advertises the same shared contract. AP-148 exempts the change, but a consumer that legally binds the shared contract without filter cannot use that leaf.",
+      "proposed_fix": "Do not flag: \"A supported default or optionality override that accepts every input the advertised shared contract accepts and preserves its guarantees.\" Fix: \"Delete duplicate prose. If a leaf needs a stricter precondition, represent it through an explicitly different contract or supply the requirement inside a conforming wrapper; do not silently narrow the inherited slot.\"",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag an optional-to-required override that breaks an otherwise valid shared-contract call.",
+        "negative": "Do not flag deletion of duplicated wording, a permitted default within the same semantic contract, or an override that weakens an input precondition while preserving guarantees."
+      }
+    },
+    {
+      "id": "AC-16",
+      "kind": "improvement",
+      "priority": "low",
+      "entries": [
+        "AP-149"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-149",
+          "source": "sources/anti-patterns.md",
+          "start": 1936,
+          "end": 1940,
+          "quote": "**Detect:** Technique Rules, Capability, or resource prose states a field's semantics rather than using the field: an operator or value roster the schema enumerates, a field's default or optionality, a co-declaration requirement (\"a soft gate declares both\"), a validation outcome (\"a mismatch is stored as written\"), or a mapping from a construct to the fields that express it. Test: the sentence would need editing by whoever edits the schema, and a reader could read the same fact off the schema resource the server serves.\n\n**Do not flag:** A definition that uses a field and names it in passing (\"gated on `is_review_mode`\"). Prose whose subject is the schema — the schema resource, the construct inventory, an authoring guide teaching the constructs. An engine technique that states a contract the schema does not carry, such as which agent may resolve a gate. A rule that constrains an authoring choice among valid shapes (`overlapping-rule-scopes`).\n\n**Fix:** Delete the restatement and let the field carry it; where prose needs the fact, cite the schema resource once. Where the schema cannot express the fact, declare it in the schema first, then delete the prose (`value-set-in-prose`). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+        },
+        {
+          "entry": "AP-02",
+          "source": "sources/anti-patterns.md",
+          "start": 80,
+          "end": 84,
+          "quote": "**Detect:** A change proposes altering workflow/activity/technique schema (or inventing fields) so existing content validates.\n\n**Do not flag:** Legitimate schema evolution requested explicitly by the user as a separate task.\n\n**Fix:** Rewrite the content to conform to the current schema."
+        }
+      ],
+      "problem": "The Fix says to declare a fact in the schema where the schema cannot express it, although Detect is restricted to facts already readable from that schema and the exception protects engine-owned facts the schema does not carry. This branch is either unreachable or broadens a prose cleanup into schema evolution.",
+      "witness": "A duplicate operator roster can simply be deleted or linked. An actor-specific permission that the schema cannot state is instead protected by the exception; trying to put it in the schema is not the same repair and AP-02 separately constrains schema changes.",
+      "proposed_fix": "Replace the final schema-extension sentence with: \"A fact the schema does not express is not a restatement under this entry; keep it at its operative contract home. A proposed schema capability change is separately scoped schema work.\" Retain deletion/citation for facts the schema already owns.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag a copied operator roster whose authoritative field schema contains the same choices.",
+        "negative": "Do not flag an engine-owned rule about which actor resolves a gate merely because the schema cannot encode that actor duty."
+      }
+    },
+    {
+      "id": "AC-17",
+      "kind": "improvement",
+      "priority": "medium",
+      "entries": [
+        "AP-154",
+        "AP-155"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-154",
+          "source": "sources/anti-patterns.md",
+          "start": 1996,
+          "end": 2000,
+          "quote": "**Detect:** For each tool call a Protocol phase or Rule writes as a whole signature, compare the arguments it names against the parameters that tool declares required. Flag every required parameter the signature does not name. A signature is whole unless its own text marks it partial. Test: the call the signature stands for is one the tool refuses before its handler runs.\n\n**Do not flag:** A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. A call to a tool the corpus does not register. An argument required only in a state the schema cannot express (`call-omits-conditionally-required-argument`).\n\n**Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the omission traces to a parameter the tool gained after the technique was written, sweep every call the corpus describes to that tool (`stale-restatement-after-change`)."
+        },
+        {
+          "entry": "AP-155",
+          "source": "sources/anti-patterns.md",
+          "start": 2008,
+          "end": 2012,
+          "quote": "**Detect:** Compare every argument a described signature names against the parameters the tool declares, whole signature or partial alike. Flag each name the tool does not carry. Where the argument sits on a nested object the tool declares, read the name at that level. A renamed or withdrawn parameter and a name that was never one fail the same way.\n\n**Do not flag:** A call to a tool the corpus does not register. A response field the prose names alongside the call.\n\n**Fix:** Delete the argument, or correct it to the name the tool declares. Where it names a parameter the tool once carried, sweep every call the corpus describes to that tool (`stale-restatement-after-change`)."
+        },
+        {
+          "entry": "DP-21",
+          "source": "sources/design-principles.md",
+          "start": 101,
+          "end": 101,
+          "quote": "Tool names, return shapes, and bootstrap paths in techniques and docs match the harness. Guidance about a tool's behaviour has one home. What a phase may claim about a response is [A Phase States Answers the Tool Has Returned](#41-a-phase-states-answers-the-tool-has-returned)."
+        }
+      ],
+      "problem": "A tool not registered by this corpus is categorically exempt even when its authoritative installed schema is available. Conversely, lack of a schema is an evidence gap rather than evidence the call is correct. The text should state its intentional review boundary and preserve unknowns.",
+      "witness": "A workflow wraps an external harness tool whose visible schema requires repo_id. The signature omits repo_id, but the current nonregistered-tool exemption skips it. If the external schema is unavailable, the same call cannot honestly receive a correctness verdict.",
+      "proposed_fix": "Replace the registration exemption with: \"Apply when the tool authoritative schema is available at the reviewed revision, including an external harness contract. Where it is unavailable, record the call unevaluated with the missing source; do not invent a parameter contract.\" If scope is intentionally only server-registered tools, state that in Detect and report excluded external calls as outside coverage.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Check and flag an omitted required argument on an external tool whose schema is supplied in the review context.",
+        "negative": "Do not assert failure or success for an external tool with no available authoritative contract; record the coverage limit."
+      }
+    },
+    {
+      "id": "AC-18",
+      "kind": "missing-exception",
+      "priority": "medium",
+      "entries": [
+        "AP-155"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-155",
+          "source": "sources/anti-patterns.md",
+          "start": 2008,
+          "end": 2012,
+          "quote": "**Detect:** Compare every argument a described signature names against the parameters the tool declares, whole signature or partial alike. Flag each name the tool does not carry. Where the argument sits on a nested object the tool declares, read the name at that level. A renamed or withdrawn parameter and a name that was never one fail the same way.\n\n**Do not flag:** A call to a tool the corpus does not register. A response field the prose names alongside the call.\n\n**Fix:** Delete the argument, or correct it to the name the tool declares. Where it names a parameter the tool once carried, sweep every call the corpus describes to that tool (`stale-restatement-after-change`)."
+        }
+      ],
+      "problem": "Checking each name against an enumerated property list is not sufficient for a schema that intentionally admits dynamic object keys or multiple argument shapes. The nested-object sentence can flag a valid map key as an undeclared argument.",
+      "witness": "A registered tool declares labels as an object map from arbitrary string keys to strings. A signature passes labels: {owner: \"team-a\"}. owner is not an explicitly named property, but it is admitted by that map contract. Deleting it discards valid data.",
+      "proposed_fix": "Detect: \"Flag a supplied argument or nested key only when the effective schema excludes it at that position. Resolve object maps, admitted additional keys, key patterns, and applicable alternatives before comparing explicit property names.\" Do not flag: \"Keys admitted by an open map or pattern contract, provided their values conform.\" Keep renamed or withdrawn closed-object parameters as failures.",
+      "observing_check": {
+        "method": "Apply the quoted criteria to the two constructed cases; these are canon-quality witnesses, not corpus-conformance findings.",
+        "positive": "Flag session_index on a closed start_session argument object that admits no such field, including misspelled nested closed-object keys.",
+        "negative": "Do not flag owner inside a labels map that explicitly admits arbitrary string keys, or a field admitted by the selected valid argument alternative."
+      }
+    }
+  ]
+}

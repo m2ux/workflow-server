@@ -1,0 +1,157 @@
+{
+  "reviewer": "/root",
+  "entries": [
+    {
+      "id": "DP-25",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Composing sibling/shared technique work.",
+        "observable": "Inspect binding-site steps and distinguish them from Protocol work invokes.",
+        "consistency": "DP-42 and AP-114 expressly permit routine composition.",
+        "exceptions": "The activity-only wording leaves authoring versus expanded execution unclear.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "State activity-or-routine ownership and retire obsolete Protocol invocation guidance."
+      },
+      "rationale": "Inspect binding-site steps and distinguish them from Protocol work invokes. DP-42 and AP-114 expressly permit routine composition.",
+      "finding_ids": [
+        "PD-07"
+      ],
+      "related_ids": [
+        "DP-16",
+        "DP-42",
+        "AP-51",
+        "AP-114"
+      ]
+    },
+    {
+      "id": "DP-26",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Contribution of a technique beyond a native tool/step.",
+        "observable": "Name the interpretation, bounded question, derivation or recovery contributed.",
+        "consistency": "AP-158 permits a wrapper fixing arguments for one named question.",
+        "exceptions": "Fixed-argument wrappers and pure composition need consistent treatment.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Reading, anatomy and leaflet obscure the acceptance predicate."
+      },
+      "rationale": "Name the interpretation, bounded question, derivation or recovery contributed. AP-158 permits a wrapper fixing arguments for one named question.",
+      "finding_ids": [
+        "PD-12"
+      ],
+      "related_ids": [
+        "AP-158",
+        "DP-42"
+      ]
+    },
+    {
+      "id": "DP-27",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Container technique contract contribution.",
+        "observable": "Compare named shared Inputs/Outputs/Rules/domain invariants with the actual container.",
+        "consistency": "The canonical loader home owns composition semantics.",
+        "exceptions": "Container Protocol is expressly local.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Specific sections and a linked semantic owner bound the statement."
+      },
+      "rationale": "Compare named shared Inputs/Outputs/Rules/domain invariants with the actual container. The canonical loader home owns composition semantics.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-115"
+      ]
+    },
+    {
+      "id": "DP-28",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Planning documents persisted by a workflow.",
+        "observable": "Map each authored document to a template and filling constraints.",
+        "consistency": "AP-116 narrows to planning outputs but does not distinguish captured raw evidence.",
+        "exceptions": "Logs, snapshots and schema-validated machine data need a stated boundary.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Artifact and generated document are broader than a fillable planning document."
+      },
+      "rationale": "Map each authored document to a template and filling constraints. AP-116 narrows to planning outputs but does not distinguish captured raw evidence.",
+      "finding_ids": [
+        "PD-13"
+      ],
+      "related_ids": [
+        "AP-116"
+      ]
+    },
+    {
+      "id": "DP-29",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Resource-owned policy used by Protocol.",
+        "observable": "Resolve the cited section and check that it contains the needed policy.",
+        "consistency": "DP-36 can be read as requiring the same fact inline.",
+        "exceptions": "Delivered resource content should count as reader-held context.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The rule is clear in isolation; its cross-rule delivery relation needs clarification."
+      },
+      "rationale": "Resolve the cited section and check that it contains the needed policy. DP-36 can be read as requiring the same fact inline.",
+      "finding_ids": [
+        "PD-03"
+      ],
+      "related_ids": [
+        "DP-06",
+        "DP-36"
+      ]
+    },
+    {
+      "id": "DP-30",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Reusable resource bodies and per-run bindings.",
+        "observable": "Separate template placeholders/domain roles from actual session-bound values.",
+        "consistency": "DP-44 governs section delivery.",
+        "exceptions": "Examples and template skeletons remain part of the abstraction.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The kind-versus-instance distinction is concrete."
+      },
+      "rationale": "Separate template placeholders/domain roles from actual session-bound values. DP-44 governs section delivery.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-44"
+      ]
+    },
+    {
+      "id": "DP-31",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Conditional detail inside one Protocol step.",
+        "observable": "Inspect note syntax and whether a condition instead selects a structural path.",
+        "consistency": "DP-09 explicitly owns step/activity/path selection.",
+        "exceptions": "A lone caveat can be note prose; multiple items are note bullets.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The structural boundary prevents the apparent prose-branch conflict."
+      },
+      "rationale": "Inspect note syntax and whether a condition instead selects a structural path. DP-09 explicitly owns step/activity/path selection.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-09"
+      ]
+    },
+    {
+      "id": "DP-32",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Resource citation and delivered context.",
+        "observable": "Trace required sections and prerequisites; most of the body has no chosen measurement.",
+        "consistency": "DP-44 locates shared framing without requiring every entry path to retrieve it.",
+        "exceptions": "Whole-body consumption is a clear exception; most-body consumption is not.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The cited unit and its necessary context need one closed delivery set."
+      },
+      "rationale": "Trace required sections and prerequisites; most of the body has no chosen measurement. DP-44 locates shared framing without requiring every entry path to retrieve it.",
+      "finding_ids": [
+        "PD-14"
+      ],
+      "related_ids": [
+        "DP-44",
+        "AP-134"
+      ]
+    }
+  ]
+}

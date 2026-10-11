@@ -1,0 +1,156 @@
+{
+  "reviewer": "/root",
+  "entries": [
+    {
+      "id": "DP-09",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Critical constraints affecting execution.",
+        "observable": "Inspect whether rejection prevents the prohibited path, not merely whether a field exists.",
+        "consistency": "AP-79 concerns structural backing.",
+        "exceptions": "Human judgments can be represented by a recorded checkpoint decision.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Critical and is a checkpoint do not define effective enforcement."
+      },
+      "rationale": "Inspect whether rejection prevents the prohibited path, not merely whether a field exists. AP-79 concerns structural backing.",
+      "finding_ids": [
+        "PD-05"
+      ],
+      "related_ids": [
+        "AP-79"
+      ]
+    },
+    {
+      "id": "DP-10",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Removing existing material.",
+        "observable": "Compare content and match each removal to informed approval.",
+        "consistency": "DP-08 covers impact; DP-38 preserves relocation outcomes.",
+        "exceptions": "Prior approval already naming the removal should be distinguished from new scope.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Approval is observable, but the renewal boundary is unstated."
+      },
+      "rationale": "Compare content and match each removal to informed approval. DP-08 covers impact; DP-38 preserves relocation outcomes.",
+      "finding_ids": [
+        "PD-04"
+      ],
+      "related_ids": [
+        "DP-08",
+        "DP-38"
+      ]
+    },
+    {
+      "id": "DP-11",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Workflow roots and construct folders readers open.",
+        "observable": "Enumerate folders and their own or parent file-grain orientation.",
+        "consistency": "AP-159 supplies the targeted folder test and fixture exception.",
+        "exceptions": "A parent README can supply the orientation explicitly.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Purpose and a file-grain index are inspectable."
+      },
+      "rationale": "Enumerate folders and their own or parent file-grain orientation. AP-159 supplies the targeted folder test and fixture exception.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-159"
+      ]
+    },
+    {
+      "id": "DP-12",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Artifacts and checkpoints for a declared audience.",
+        "observable": "An artifact can coherently own several new facts; one fact has no defined grain.",
+        "consistency": "AP-84 expressly allows a closeout document with retrospective sections.",
+        "exceptions": "Links preserve other owners without requiring one file per scalar.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Fact, record and decision are conflated."
+      },
+      "rationale": "An artifact can coherently own several new facts; one fact has no defined grain. AP-84 expressly allows a closeout document with retrospective sections.",
+      "finding_ids": [
+        "PD-06"
+      ],
+      "related_ids": [
+        "AP-84",
+        "AP-88"
+      ]
+    },
+    {
+      "id": "DP-13",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Technique value contracts versus work procedure.",
+        "observable": "Classify a sentence as meaning/shape/recognition or as instructions for producing/using a value.",
+        "consistency": "AP-111 and AP-119 distinguish recognition from procedural work.",
+        "exceptions": "Output recognition is explicitly allowed.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The how/what distinction is supported by examples and placement rules."
+      },
+      "rationale": "Classify a sentence as meaning/shape/recognition or as instructions for producing/using a value. AP-111 and AP-119 distinguish recognition from procedural work.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-111",
+        "AP-119"
+      ]
+    },
+    {
+      "id": "DP-14",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Authoritative session state.",
+        "observable": "Find independent variables representing the same fact and possible divergent writes.",
+        "consistency": "AP-112 distinguishes state shadows from declared output projections.",
+        "exceptions": "Correlated facts are separate facts.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The state ownership invariant is concrete."
+      },
+      "rationale": "Find independent variables representing the same fact and possible divergent writes. AP-112 distinguishes state shadows from declared output projections.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-112"
+      ]
+    },
+    {
+      "id": "DP-15",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Sequential Protocol phases.",
+        "observable": "Identify an outcome, prerequisite order and elaborating bullets.",
+        "consistency": "DP-39 owns heading wording; AP-108 owns collapsed phases.",
+        "exceptions": "Facets of one outcome stay in the same phase.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "Outcome and dependency provide a qualitative test."
+      },
+      "rationale": "Identify an outcome, prerequisite order and elaborating bullets. DP-39 owns heading wording; AP-108 owns collapsed phases.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-39",
+        "AP-108"
+      ]
+    },
+    {
+      "id": "DP-16",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Protocol designators and technique argument notation.",
+        "observable": "Reference forms are inspectable, but the invocation form conflicts with the current composition policy.",
+        "consistency": "DP-25 and AP-114 prohibit the Protocol work calls this notation assumes.",
+        "exceptions": "A spelling requirement does not by itself authorize an invocation.",
+        "fix": "Positive design stance supplies the remedy; any proposed correction is named in finding_ids.",
+        "expression": "The supported surface for technique arguments needs a single home."
+      },
+      "rationale": "Reference forms are inspectable, but the invocation form conflicts with the current composition policy. DP-25 and AP-114 prohibit the Protocol work calls this notation assumes.",
+      "finding_ids": [
+        "PD-07"
+      ],
+      "related_ids": [
+        "DP-25",
+        "AP-51",
+        "AP-56",
+        "AP-114"
+      ]
+    }
+  ]
+}
