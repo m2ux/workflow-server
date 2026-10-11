@@ -23,6 +23,11 @@ steps:
   - kind: technique
     id: record
     technique: record
+  # Last, and larger than the eager budget of the window one walk declares, so that walk
+  # receives the three techniques above and fetches this one after the activity has opened.
+  - kind: technique
+    id: surplus
+    technique: surplus
   - kind: checkpoint
     id: approach-gate
     message: The approach this run is built on, summarised above.
