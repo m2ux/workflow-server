@@ -25,7 +25,7 @@ All 212 captured entries have a primary review. Final dispositions reflect indep
 | AP-19 · no-rule-protocol-restatement | clear | — | [Review](reviews/ap_structures/ledger-03.json) |
 | AP-20 · rule-group-disambiguation | correction | [AS-08](recommendations-structures.md#as-08) | [Review](reviews/ap_structures/ledger-03.json) |
 | AP-21 · grouped-rule-keys | clear | — | [Review](reviews/ap_structures/ledger-03.json) |
-| AP-22 · single-rule-authority | correction | [AS-09](recommendations-structures.md#as-09) | [Review](reviews/ap_structures/ledger-03.json) |
+| AP-22 · single-rule-authority | clear | [AS-09](recommendations-structures.md#as-09) | [Review](reviews/ap_structures/ledger-03.json) |
 | AP-23 · worker-rule-reach | correction | [AS-09](recommendations-structures.md#as-09), [AS-10](recommendations-structures.md#as-10) | [Review](reviews/ap_structures/ledger-03.json) |
 | AP-24 · no-contradictory-rules | correction | [AS-08](recommendations-structures.md#as-08) | [Review](reviews/ap_structures/ledger-03.json) |
 | AP-25 · no-one-step-rules | improvement | [AS-11](recommendations-structures.md#as-11) | [Review](reviews/ap_structures/ledger-04.json) |
@@ -72,7 +72,7 @@ All 212 captured entries have a primary review. Final dispositions reflect indep
 | AP-66 · io-id-shape | clear | — | [Review](reviews/ap_structures/ledger-09.json) |
 | AP-67 · rule-slug-shape | clear | — | [Review](reviews/ap_structures/ledger-09.json) |
 | AP-68 · technique-stage-agnostic | correction | [AS-22](recommendations-structures.md#as-22) | [Review](reviews/ap_structures/ledger-09.json) |
-| AP-69 · no-activity-prose-rules | correction | [AE-01](recommendations-execution.md#ae-01) | [Review](reviews/ap_execution/ledger-01.json) |
+| AP-69 · no-activity-prose-rules | clear | [AE-01](recommendations-execution.md#ae-01) | [Review](reviews/ap_execution/ledger-01.json) |
 | AP-70 · capability-group-placement | correction | [AE-02](recommendations-execution.md#ae-02) | [Review](reviews/ap_execution/ledger-01.json) |
 | AP-71 · no-false-resource-delivery | clear | — | [Review](reviews/ap_execution/ledger-01.json) |
 | AP-72 · complete-bootstrap-path | improvement | [AE-04](recommendations-execution.md#ae-04) | [Review](reviews/ap_execution/ledger-01.json) |
@@ -117,7 +117,7 @@ All 212 captured entries have a primary review. Final dispositions reflect indep
 | AP-111 · contract-not-procedure | clear | — | [Review](reviews/ap_execution/ledger-06.json) |
 | AP-112 · no-derived-state-shadow | clear | — | [Review](reviews/ap_execution/ledger-06.json) |
 | AP-113 · session-interaction-in-technique | clear | — | [Review](reviews/ap_execution/ledger-06.json) |
-| AP-114 · pass-orchestration-in-technique | correction | [AE-26](recommendations-execution.md#ae-26) | [Review](reviews/ap_execution/ledger-06.json) |
+| AP-114 · pass-orchestration-in-technique | clear | [AE-26](recommendations-execution.md#ae-26) | [Review](reviews/ap_execution/ledger-06.json) |
 | AP-115 · platform-semantics-in-capability | clear | — | [Review](reviews/ap_execution/ledger-06.json) |
 | AP-116 · no-template-creation-guide | correction | [AE-27](recommendations-execution.md#ae-27) | [Review](reviews/ap_execution/ledger-06.json) |
 | AP-117 · no-engine-mechanics-as-rules | clear | — | [Review](reviews/ap_execution/ledger-07.json) |
@@ -165,7 +165,7 @@ All 212 captured entries have a primary review. Final dispositions reflect indep
 | AP-155 · call-names-an-undeclared-argument | correction | [AC-17](recommendations-contracts.md#ac-17), [AC-18](recommendations-contracts.md#ac-18) | [Review](reviews/ap_contracts/ledger-05.json) |
 | AP-156 · protocol-phase-as-list-item | clear | — | [Review](reviews/ap_contracts/ledger-05.json) |
 | AP-157 · unreachable-operation-reference | clear | — | [Review](reviews/ap_contracts/ledger-05.json) |
-| AP-158 · produce-path-without-a-reading | correction | [AC-10](recommendations-contracts.md#ac-10) | [Review](reviews/ap_contracts/ledger-05.json) |
+| AP-158 · produce-path-without-a-reading | clear | [AC-10](recommendations-contracts.md#ac-10) | [Review](reviews/ap_contracts/ledger-05.json) |
 | AP-159 · construct-folder-without-a-readme | clear | — | [Review](reviews/ap_contracts/ledger-05.json) |
 | AP-160 · relocation-without-a-preserved-outcome | correction | [AC-19](recommendations-contracts.md#ac-19) | [Review](reviews/ap_contracts/ledger-06.json) |
 | AP-161 · unproducible-declared-value | correction | [AC-20](recommendations-contracts.md#ac-20) | [Review](reviews/ap_contracts/ledger-06.json) |
@@ -197,10 +197,10 @@ All 212 captured entries have a primary review. Final dispositions reflect indep
 | DP-26 · A Technique Is a Reading | clear | [PD-12](recommendations-principles.md#pd-12) | [Review](reviews/principles/entries-04.json) |
 | DP-27 · State Contract Contribution | clear | — | [Review](reviews/principles/entries-04.json) |
 | DP-28 · Creation Guide for Generated Documents | improvement | [PD-13](recommendations-principles.md#pd-13) | [Review](reviews/principles/entries-04.json) |
-| DP-29 · Cite Resource Policy; Do Not Restate It | improvement | [PD-03](recommendations-principles.md#pd-03) | [Review](reviews/principles/entries-04.json) |
+| DP-29 · Cite Resource Policy; Do Not Restate It | clear | [PD-03](recommendations-principles.md#pd-03) | [Review](reviews/principles/entries-04.json) |
 | DP-30 · Resources Stay Abstract | clear | — | [Review](reviews/principles/entries-04.json) |
 | DP-31 · Isolate Conditional Branches as Notes | clear | — | [Review](reviews/principles/entries-04.json) |
-| DP-32 · Cite Resources at Section Grain | correction | [PD-14](recommendations-principles.md#pd-14) | [Review](reviews/principles/entries-04.json) |
+| DP-32 · Cite Resources at Section Grain | clear | [PD-14](recommendations-principles.md#pd-14) | [Review](reviews/principles/entries-04.json) |
 | DP-33 · Pre-Session Prose Stands Alone | clear | — | [Review](reviews/principles/entries-05.json) |
 | DP-34 · Edit the Owner | clear | — | [Review](reviews/principles/entries-05.json) |
 | DP-35 · Prefer Removing the Thing That Needs a Prohibition | improvement | [PD-15](recommendations-principles.md#pd-15) | [Review](reviews/principles/entries-05.json) |
@@ -220,3 +220,12 @@ All 212 captured entries have a primary review. Final dispositions reflect indep
 AP-57 has an observable literal-escaping rule, but its renderer-specific premise is not proved by the pinned engine. See the [implementation check](reviews/ap_structures/implementation-check.md). It receives an explicit evidence limit rather than an unsupported current-client assertion.
 
 First-pass dispositions remain intact in the linked records. A rejected candidate contributes no required correction to the final entry disposition.
+
+Some clear entries are evidence for a repair at another owner. Their linked proposals remain visible without implying that these entries themselves need correction:
+
+- AP-22: AS-09 repairs worker-copy delivery and duplicate-guidance rules; single-rule-authority already points to that delivery exception.
+- AP-69: AE-01 preserves the structural-only activity rule and repairs the placement advice in worker-rule-reach.
+- AP-114: AE-26 preserves the binding-site boundary and repairs the entries prescribing Protocol work calls.
+- AP-158: AC-10 qualifies extraction in unowned-harness-capability; the existing meaningful-contribution test remains valid.
+- DP-29: PD-03 explicitly retains resource-policy citation and clarifies delivered context in the related principles.
+- DP-32: PD-14 retains minimal-sufficient citation guidance and places prerequisite receipt on the section-delivery principle.

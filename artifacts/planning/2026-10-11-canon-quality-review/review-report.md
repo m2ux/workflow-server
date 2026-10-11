@@ -2,7 +2,7 @@
 
 The canon contains incompatible repair instructions, ambiguous applicability boundaries, and checks that can discard necessary evidence. The review covers **all 47 design principles, all 161 anti-patterns and all four manual-review entries** at corpus revision `e70b44778f71d9d699f746f78a16b892531c82d3`. The corpus remains unchanged. The linked recommendations contain specific replacement wording and an observing check for each retained proposal.
 
-Independent reconciliation produced **58 confirmed, 35 narrowed and two rejected candidates**. Of the 95 candidate records, 50 recommend a correction and 43 an optional improvement; several describe the same cross-rule issue, so these are not 93 distinct defects. The [complete coverage ledger](coverage-ledger.md) records 63 entries with corrections, 50 with improvements, 98 with no correction established and one renderer-dependent evidence limit. These are criterion-quality judgments, not violations found in production definitions.
+Independent reconciliation produced **58 confirmed, 35 narrowed and two rejected candidates**. Of the 95 candidate records, 50 recommend a correction and 43 an optional improvement; several describe the same cross-rule issue, so these are not 93 distinct defects. The [complete coverage ledger](coverage-ledger.md) records 58 entries with corrections, 49 with improvements, 104 with no correction established and one renderer-dependent evidence limit. Entries that merely supply the sound boundary for a neighboring rule's repair remain clear. These are criterion-quality judgments, not violations found in production definitions.
 
 ## Contradictions and repair conflicts
 

@@ -116,11 +116,21 @@ lines = ['# Complete canon coverage ledger', '',
     '| Entry | Final disposition | Proposal records | Six-check primary evidence |',
     '| --- | --- | --- | --- |']
 final_dispositions = Counter()
+unchanged_owners = {
+    'AP-22': 'AS-09 repairs worker-copy delivery and duplicate-guidance rules; single-rule-authority already points to that delivery exception.',
+    'AP-69': 'AE-01 preserves the structural-only activity rule and repairs the placement advice in worker-rule-reach.',
+    'AP-114': 'AE-26 preserves the binding-site boundary and repairs the entries prescribing Protocol work calls.',
+    'AP-158': 'AC-10 qualifies extraction in unowned-harness-capability; the existing meaningful-contribution test remains valid.',
+    'DP-29': 'PD-03 explicitly retains resource-policy citation and clarifies delivered context in the related principles.',
+    'DP-32': 'PD-14 retains minimal-sufficient citation guidance and places prerequisite receipt on the section-delivery principle.',
+}
 for entry in inventory['entries']:
     ident = entry['id']
     ledger = ledgers[ident]
     categories = {reviews[finding]['category'] for finding in ledger['finding_ids']}
     state = 'correction' if 'correction' in categories else 'improvement' if 'improvement' in categories else 'clear'
+    if ident in unchanged_owners:
+        state = 'clear'
     if ident == 'AP-57':
         state = 'evidence limit'
     final_dispositions[state] += 1
@@ -129,6 +139,9 @@ for entry in inventory['entries']:
                  '[Review](' + paths[ident] + ') |')
 lines += ['', 'AP-57 has an observable literal-escaping rule, but its renderer-specific premise is not proved by the pinned engine. See the [implementation check](reviews/ap_structures/implementation-check.md). It receives an explicit evidence limit rather than an unsupported current-client assertion.', '',
           'First-pass dispositions remain intact in the linked records. A rejected candidate contributes no required correction to the final entry disposition.', '']
+lines += ['Some clear entries are evidence for a repair at another owner. Their linked proposals remain visible without implying that these entries themselves need correction:', '']
+lines += ['- ' + ident + ': ' + reason for ident, reason in unchanged_owners.items()]
+lines += ['']
 (root / 'coverage-ledger.md').write_text('\n'.join(lines))
 
 lines = ['# Candidate reconciliation index', '',
