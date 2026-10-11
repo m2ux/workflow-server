@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.2
+  version: 1.4.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The rendered consolidated review summary text, authored to the [Review Comment T
 
 ### review_type
 
-*(optional, enum: `approve` | `request-changes` | `comment`; default: derived from the summary's Overall Rating)* Which review event to post.
+*(optional, enum: `approve` | `request-changes` | `comment`)* Which review event to post.
 
 ### live_review_body
 

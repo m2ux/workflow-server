@@ -11,7 +11,7 @@ Rule-hygiene audit of `rules[]` across workflow, activities, and techniques agai
 
 ### rule_hygiene_findings
 
-Rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step), and the recommended action.
+Rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step, several constraints), and the recommended action.
 
 #### artifact
 
@@ -29,8 +29,9 @@ Count of entries in `{rule_hygiene_findings}`.
 
 ### 1. Load Catalog Section
 
-- Load [Rule Hygiene](/canon/resources/anti-patterns.md#rule-hygiene) — sole source of Rule Hygiene detect, exclusion, and fix criteria
-- That section is this pass's whole scope: `no-rule-protocol-restatement` through `no-one-step-rules`, including `worker-rule-reach`
+- Load [Rule Hygiene](/canon/resources/anti-patterns.md#rule-hygiene) — the family's detect, exclusion, and fix criteria
+- Load [AP-156. one-invariant-per-rule](/canon/resources/anti-patterns.md#ap-156-one-invariant-per-rule) — that entry's detect, exclusion, and fix criteria
+- This pass's scope is that family, `no-rule-protocol-restatement` through `no-one-step-rules` including `worker-rule-reach`, and `one-invariant-per-rule`
 - Do not restate, summarize, or number those entries here; follow each as written
 
 ### 2. Apply Rule Hygiene Entries
