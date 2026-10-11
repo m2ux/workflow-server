@@ -1,0 +1,15 @@
+# Check-selector verification cycle
+
+The diagnosis identifies one supported reading-path defect: the shared selector omits a task-supplied bounded checker and does not place the identified-base condition beside the delta-check route. The revision changes only that selector and the existing generic check operation's selection sentence. Core audit tools, fixture criteria and semantic ledgers are unchanged.
+
+Before launching workers, this record fixes one bounded cycle: two fresh Author contexts and two fresh Audit contexts. The second Author scenario includes a changed candidate invalidating prior evidence; the second Audit scenario includes a disputed exclusion. Each receives a realistic retrieval-only task, fixture/candidate/checker locations, the paired engine, authority limits and an evidence destination. Workers do not receive expected reading choices, prior failure notes or expected fixture findings. They preserve exact commands and raw returns, including bootstrap failures and any truncated reads. No production definitions or audit states are changed by the walks.
+
+The coordinator additionally traces the production selector with an identified comparison base and with a single candidate, using the written branch predicates. The common command selection has no changed Review/Revise entry path; their project-selected invocation remains supported. Static checks cover links, frontmatter, summaries and the required edit-guard suite. The live worker tasks cover the affected Author/Audit reading decisions and reuse of command prerequisites.
+
+Acceptance uses the existing strict disclosure rule: complete required context, selected branch boundaries, correct task explanation and honest execution limits. Both mode repeats must pass before any claim of consistent behavior for these scenarios. Previous failures remain observed failures. If this cycle has another failure, preserve it and stop the cycle with Revise incomplete; another equivalent retry is not a remedy.
+
+No token-saving or defect-recall improvement is inferred from this cycle. It tests instruction retrieval, not a completed semantic audit. Current completed semantic qualification retains its independently verified receipts.
+
+Dispatch uses the three available child slots in two waves for four fresh contexts. The prior largest retained disclosure trace was 148,001 bytes. A 20 percent margin gives 177,602 input units under the conservative one-byte-per-token proxy; 5,000 assignment units, 16,000 output units, 20,000 reserved units and 30,000 safety units total 248,602 against the recorded 258,400 capacity. This is a packing estimate, not measured model tokens. Raw evidence is persisted in bounded batches, and the result narrative stays within the output allocation. Scenario/mode boundaries keep one accountable owner per trace.
+
+Changed skill commit: `e8be42ce`. Its two documentation changes follow `ac53785d`; the functional audit-tool identity is unchanged. Static checks at the changed bytes pass: 211 local links, repository-valid frontmatter, three mode-summary tests, 36 edit-guard tests and a clean diff check.
