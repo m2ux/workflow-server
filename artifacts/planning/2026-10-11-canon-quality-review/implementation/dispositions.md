@@ -16,6 +16,9 @@ Corpus branch `workflow/technique-vocabulary`, from `e70b44778f71d9d699f746f78a1
 | `7f005bb5` | Judge a call, a relocation and an output against evidence that reaches them |
 | `5a73004a` | State the principles as boundaries an observer can decide |
 | `4d333ca0` | Give each catalog defect one entry, and number the catalog by file order |
+| `65be29e4` | Key the runtime-rule entry on restatement rather than subject matter |
+
+[verify_applied.py](verify_applied.py) holds each retained recommendation to an entry in its scope that differs from the reviewed revision. Its first run found AE-21 unevidenced: `9ea3be34` named it and did not carry it, and `65be29e4` applies it. A commit message is a claim; this check is the evidence.
 
 ## Shared repairs
 
@@ -94,7 +97,7 @@ Citations are by kebab name, so no citation of a surviving entry changed. The 29
 | AE-18 | Confirmed | correction | P2 | AP-96 | `9ea3be34` |
 | AE-19 | Confirmed | improvement | P3 | AP-97 | `9ea3be34` |
 | AE-20 | Confirmed | improvement | P2 | AP-98 | `9ea3be34` |
-| AE-21 | Narrowed | improvement | P2 | AP-100 | `9ea3be34` |
+| AE-21 | Narrowed | improvement | P2 | AP-100 | `65be29e4` |
 | AE-22 | Narrowed | improvement | P3 | AP-102, AP-105 | `4d333ca0` |
 | AE-23 | Narrowed | improvement | P2 | AP-108, DP-15 | `8a19f735` |
 | AE-24 | Confirmed | correction | P2 | AP-109, AP-138 | `8a19f735` |

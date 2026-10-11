@@ -28,7 +28,9 @@ Every policy-dependent recommendation carries a user answer. Explicitly approved
 - [x] Verify corrected entries, repair examples, cross-entry consistency and affected consumers.
 - [x] Commit and push each completed concern, then reconcile all 95 candidate dispositions.
 
-All 93 retained proposals are applied across eight commits; [dispositions](dispositions.md) accounts for every candidate. The slices were applied directly rather than dispatched, because reconciliation had already settled the exact replacement wording.
+All 93 retained proposals are applied across nine commits; [dispositions](dispositions.md) accounts for every candidate. The slices were applied directly rather than dispatched, because reconciliation had already settled the exact replacement wording.
+
+The branch expresses those corrections against the reviewed revision. It is 343 commits behind `origin/workflows`, whose canon has since gained the Fires-on index, promoted the manual-review entries into AP numbering, and retired the activity-level `decision` for exits bound in the graph. [Integration drift](integration-drift.md) measures what a merge has to reconcile; until that merge, five sentences on this branch name a construct the integration target no longer carries.
 
 ## Verification
 
