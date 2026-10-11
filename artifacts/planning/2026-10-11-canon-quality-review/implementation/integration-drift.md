@@ -21,6 +21,10 @@ Operative text — the intro sentence and the Detect / Do not flag / Fix triad, 
 - **The Fires-on line.** The three retired entries take their lines with them; `validate-committed-bytes` needs one, and `verify-format-literacy` keeps its own.
 - **The renumbering.** Both sides renumbered independently, so the merged file is renumbered once more. [renumber.py](renumber.py) keys on the stable entry name rather than the old number, so it re-runs against the merged file without change.
 
+## Proposed
+
+[#1297](https://github.com/m2ux/workflow-server/pull/1297) carries the nine commits onto `workflows`. It does not merge cleanly — GitHub reports it dirty, which is what the Fires-on index touching every entry comes to while this branch rewrites and renumbers them. The reconciliation above is review's to settle, because whose wording survives on the overlapping entries is a judgment call rather than a mechanical merge.
+
 ## Limits
 
 This measures the two canon homes and the files citing them. It does not measure whether the 343 upstream commits changed definitions that the rewritten criteria judge, and it does not establish that a merge resolves cleanly — only which entries both sides touched.
