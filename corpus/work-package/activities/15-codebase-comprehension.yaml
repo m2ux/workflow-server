@@ -129,11 +129,7 @@ steps:
             artifact_content: comprehension_log
       - kind: checkpoint
         id: comprehension-sufficient
-        condition:
-          type: simple
-          variable: has_open_questions
-          operator: ==
-          value: true
+        when: has_open_questions == true
         message: "Open questions remain after this pass over the area the [comprehension artifact]({comprehension_artifact_path}) covers."
         defaultOption: sufficient
         autoAdvanceMs: 30000

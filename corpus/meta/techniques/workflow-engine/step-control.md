@@ -24,14 +24,12 @@ Operators are `==`, `!=`, `>`, `<`, `>=`, `<=`, unary `!`, `&&`, `||`, parenthes
 
 ### structured-condition-evaluation
 
-`continueWhile`, `breakCondition` and a checkpoint's `condition` are written structurally: `{ type: simple, variable, operator, value }`, composed under `and`, `or` and `not`. The executing agent evaluates these too.
+`continueWhile`, `breakCondition` and an action's `condition` are written structurally: `{ type: simple, variable, operator, value }`, composed under `and`, `or` and `not`. The executing agent evaluates these too.
 
 - `variable` is a dotted path, read as `gate-evaluation` reads one.
 - `==`, `!=` and the four ordering operators carry the meanings they carry inline.
 - `exists` holds when the value is neither absent nor null; `notExists` is its complement. The form has no truthiness of its own, so a bare name's is stated this way.
 - `and` and `or` each take two or more conditions.
-
-On a checkpoint, `condition` is what makes the gate dismissible through `respond_checkpoint { condition_not_met }`; `when` there decides only whether the step is reached.
 
 ### loop-control
 
