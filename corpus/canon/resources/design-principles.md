@@ -30,13 +30,13 @@ Read the construct model — Goal, Workflow, Activity, Technique, Routine — th
 
 ## 3. Define Complete Scope Before Execution
 
-List every file to create, modify, or remove, including the session edit root at `{target_path}`, before starting, and check that list again before claiming the work done.
+List the intended files to create, modify, or remove, including the session edit root at `{target_path}`, before their dependent edits. A dependency discovered later joins that list before it is changed, within the approved scope. A material scope or authority change resolves before dependent work, and the list is reconciled before the work is claimed done.
 
 **Fires on:** `*`
 
 ## 4. Clarify Before Assuming
 
-When the request admits materially different interpretations, ask one question before acting.
+When unresolved interpretations materially change the outcome, scope, authority, or acceptance test, ask one question and wait for its answer before dependent action. An existing explicit instruction resolves the choices it covers, and independent investigation continues meanwhile.
 
 **Fires on:** `*`
 
@@ -48,7 +48,7 @@ Use the most specific construct the schema provides. A prose field (`description
 
 ## 6. One Authoritative Home
 
-Each operative fact has one statement. Resources hold fill and consult: templates, vocabularies, criteria, policy. Protocol holds cadence and how. Other layers cite that statement. A repeated copy exists only where delivery would not carry the statement, and that copy is not a second text to edit.
+Each operative fact has one statement. Resources hold fill and consult: templates, vocabularies, criteria, policy. Protocol holds cadence and how. Other layers cite that statement. A repeated copy exists only where delivery would not carry the statement; it has an identifiable canonical source, is updated from that source, and is not a second text to edit.
 
 **Fires on:** `*`
 
@@ -60,19 +60,19 @@ Search existing naming, field order, and structure before introducing a pattern.
 
 ## 8. Confirm Before Irreversible Changes
 
-A semi-reversible or irreversible change waits for explicit confirmation that includes the impact.
+A change whose reversal cannot restore the prior state, requires another party, or incurs material loss has explicit approval covering its target and impact before execution. That approval stays effective for the same target and impact; a material change to either takes a new decision.
 
 **Fires on:** `*`
 
 ## 9. Encode Constraints as Structure
 
-A critical constraint is a checkpoint, a condition, a validate action, or an exit `when`. Rule text does not enforce it.
+A constraint designated as a required execution or acceptance boundary is enforced by a checkpoint, a condition, a validate action, or an exit `when`, so that a rejection or missing required evidence cannot reach the prohibited operation or accepted completion. The predicate and its failure route are identified in the structure that owns them. Rule text does not enforce it.
 
 **Fires on:** `activity.steps`, `activity.exits`, `workflow.rules`, `activity.rules`, `technique.rules`
 
 ## 10. Non-Destructive Updates
 
-Compare new content with what is there. A change that removes material names the removal and waits for explicit approval. A move that must keep an outcome is [A Relocation Records the Outcome It Keeps](#38-a-relocation-records-the-outcome-it-keeps).
+Compare new content with what is there. Identify the removed material and verify that explicit approval covers that removal. A move that must keep an outcome is [A Relocation Records the Outcome It Keeps](#38-a-relocation-records-the-outcome-it-keeps).
 
 **Fires on:** `*`
 
@@ -84,7 +84,7 @@ A workflow root, and each construct folder a reader can open, has a README that 
 
 ## 12. Output Economy
 
-An artifact or a checkpoint states one fact for one declared audience, and links the home of every other fact.
+An artifact has one declared audience and one coherent purpose: it owns the facts produced for that purpose and links the facts owned elsewhere. A checkpoint presents one decision subject with the context needed to decide it.
 
 **Fires on:** `technique.outputs`, `activity.steps`, `resource`
 
@@ -108,7 +108,7 @@ A Protocol phase is one outcome that finishes before the next begins, written as
 
 ## 16. Distinguish Designators from Parameters
 
-In Protocol, a declared value is `{id}`, a technique argument name is italic, and the argument list sits in parentheses on the technique reference. Argument names stay out of braces and backticks.
+In Protocol, a declared value is `{id}`. Argument names stay out of braces and backticks; a binding site names them in the schema the bind uses.
 
 **Fires on:** `technique.protocol`
 
@@ -120,13 +120,13 @@ Definition prose — `description`, `outcome`, option text, and README orientati
 
 ## 18. Prefer Shared Capability
 
-When a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. A local recipe exists when the shared surface cannot absorb the caller's diversity. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work).
+When a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. Compare the caller's required inputs, outputs and guarantees with that contract, identifying the requirement in the existing design evidence: a missing configurable value is closed at the shared owner, while a genuinely incompatible capability or contract keeps a local recipe with a truthful boundary. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work).
 
 **Fires on:** `activity.steps`, `activity.techniques`, `workflow.techniques`, `technique`
 
 ## 19. Name Symbols Affirmatively
 
-A symbol id states what the value is: affirmative, head noun last, `snake_case`. A boolean is a predicate, a collection is a plural, and an I/O id carries neither direction nor representation. A rule slug states a positive invariant when that is clearer than a negation.
+A symbol id identifies its value affirmatively, and the type-specific forms make that meaning explicit: a boolean is a predicate, a collection is a plural, and an I/O id carries neither direction nor representation. Exact case, plurality, and spelling are `snake-case-symbols` and `io-id-shape`. A rule slug states a positive invariant when that is clearer than a negation.
 
 **Fires on:** `technique.inputs`, `technique.outputs`, `technique.rules`, `workflow.variables`, `activity.variables`
 
@@ -144,7 +144,7 @@ Tool names, return shapes, and bootstrap paths in techniques and docs match the 
 
 ## 22. Modular Over Inline
 
-A construct lives in its own file. A parent references that file.
+A separately referenceable definition lives in its own file, and its parent references it. The fields and steps the schema owns inline remain on that parent.
 
 **Fires on:** `workflow`, `activity`, `technique`, `resource`, `routine`
 
@@ -156,13 +156,13 @@ When implementation is in scope, a recommendation is followed by the action, or 
 
 ## 24. Keep Session Interaction in Activities
 
-A technique takes inputs, works over tools and resources, and emits outputs. An activity owns when and how those products reach a person: `action: message`, checkpoint `message` and `options`, and artifact links.
+A technique takes inputs, works over tools and resources, and emits outputs. Activities own in-session presentation and operator decisions: `action: message`, checkpoint `message` and `options`, and artifact links. A bound technique may perform a domain delivery operation through its owning tool, and the activity owns when that operation runs.
 
 **Fires on:** `technique`, `activity.steps`
 
 ## 25. Bind Sibling Techniques as Steps
 
-Multi-technique work lives in activity `steps[]`, checkpoints, and loops. Each sibling or shared technique is its own step. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs.
+Sibling and shared techniques are bound as steps in the activity or routine that owns their sequence, each its own step among the checkpoints and loops. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs.
 
 **Fires on:** `activity.steps`, `technique.protocol`
 
@@ -180,7 +180,7 @@ Capability on a container `TECHNIQUE.md` names the shared Inputs, Outputs, Rules
 
 ## 28. Creation Guide for Generated Documents
 
-Every planning artifact a workflow persists has a creation-guide resource with a `## Template` section and operative `## Rules` for filling it. The persisting technique cites that template. A shared shape may share one guide. Every bare filename still maps to a guide.
+A planning document whose content a technique authors or fills has a creation-guide resource with a `## Template` section and operative `## Rules` for filling it, which the persisting technique cites. A byte-exact capture or producer-defined evidence format cites its producer or format contract and preserves its bytes, needing no competing layout template. Structured authored planning data still has operative filling criteria, even where a schema validates its shape. A shared shape may share one guide, and every bare filename still maps to a guide.
 
 **Fires on:** `resource`, `technique.protocol`
 
@@ -222,13 +222,13 @@ Name every file a later extension of a contract would force an edit to. A file t
 
 ## 35. Prefer Removing the Thing That Needs a Prohibition
 
-A warning against a second path means two constructs do one job. Retire one, and the warning, the validation, and the carve-outs that policed the overlap go with it. Where both paths remain, the prohibition names the home that owns the surviving behaviour.
+Where a prohibition distinguishes paths that serve the same required capability under the same preconditions, authority, and lifecycle, two constructs do one job: choose one owner and retire the duplicate, and the warning, the validation, and the carve-outs that policed the overlap go with it. Preserve an intentional difference, and let the prohibition name the owner of each behaviour.
 
 **Fires on:** `*`
 
 ## 36. A Technique Names Only What Its Reader Holds
 
-A technique arrives as its own text and its inherited rules. A name in that text — a technique, or a rule slug — is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address. A fact the technique needs is in its own text, or stated plainly. A choice between two techniques belongs to the container that holds both, phrased so it needs no reference.
+A technique arrives as its own text and its inherited rules. A name in that text — a technique, or a rule slug — is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address; a qualified address identifies its owner, and the reader must also receive the operative fact. A required fact is in the technique, in its delivered contracts, or in a resource section delivered or fetched before use. A choice between two techniques belongs to the container that holds both, phrased so it needs no reference.
 
 **Fires on:** `technique`
 
@@ -246,7 +246,7 @@ A restructuring that removes a gate, re-routes an exit, relocates a technique, o
 
 ## 39. A Phase Heading Names the Outcome
 
-A phase heading is two or three words in Title Case, with the articles dropped. It names the outcome. Past four words it carries the bullet's detail. A heading that only repeats its bullet is a phase with no outcome of its own.
+A phase heading is two or three words in Title Case, with the articles dropped. It names the outcome. More than three words carries detail that belongs in the bullet. A heading that only repeats its bullet is a phase with no outcome of its own.
 
 **Fires on:** `technique.protocol`
 
@@ -258,7 +258,7 @@ Fan-out belongs to the layer that runs the work. Several workers, or one activit
 
 ## 41. A Phase States Answers the Tool Has Returned
 
-A schema settles the call. What a Protocol does with a response — the branch it takes, the emptiness it reads as absence, the name it expects to resolve — states answers the tool has returned on a real subject.
+A schema settles the call. What a Protocol does with a response — the branch it takes, the emptiness it reads as absence, the name it expects to resolve — identifies its evidence: a captured live response, or an authoritative response contract with a representative fixture. A claim that the tool has returned a response takes observation; contract-backed but unobserved recovery is labelled as such.
 
 **Fires on:** `technique.protocol`
 
@@ -270,13 +270,13 @@ Where an application is still free-form, it is a technique. Where the path is ac
 
 ## 43. A Workflow Borrows Activities
 
-A workflow borrows another workflow's activity file, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). The reference form is the one the [construct inventory](./schema-construct-inventory.md#compose-or-reuse-activities) states.
+A workflow borrows another workflow's activity file, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher). The preference it serves is [Prefer Shared Capability](#18-prefer-shared-capability), and the reference form is the one the [construct inventory](./schema-construct-inventory.md#compose-or-reuse-activities) states.
 
 **Fires on:** `workflow.activities`
 
 ## 44. A Resource Splits for Section Delivery
 
-A multi-part resource splits into per-category sections, each holding the fragment for one category, with the whole-document skeleton in its own section. Shared fragments — scales, mappings, reference tables — sit in one shared section. Operative framing, shared keys, and obligations a section reader needs live under a `##` heading an anchor can deliver. The consumer fetches the section it renders.
+A multi-part resource splits into per-category sections, each holding the fragment for one category, with the whole-document skeleton in its own section. Shared fragments — scales, mappings, reference tables — sit in one shared section. Operative framing, shared keys, and obligations a section reader needs live under a `##` heading an anchor can deliver. Before applying a section, the consumer receives that section and every shared definition, rule, or template fragment it requires, named at the consumption site or as a fetched prerequisite. Loading a broader body is an optimisation that may not omit required context.
 
 **Fires on:** `resource`
 
@@ -288,7 +288,7 @@ A `## Rules` entry states one constraint. A part that can be cited and edited on
 
 ## 46. A Consumer Binds the Contract
 
-A definition that declares a shared contract is usable wherever that contract is expected. The consumer binds the contract.
+A definition advertising a shared contract accepts every input that contract admits, without stronger preconditions, and preserves its promised outputs, failure behaviour, and relevant effects. Consumers bind against those promises.
 
 **Fires on:** `technique`, `activity`, `workflow`
 
